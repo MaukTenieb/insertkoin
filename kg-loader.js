@@ -141,6 +141,8 @@
   }
   var HOOKS={
     chess:function(){
+      // [IK] the original never clears the game-over flag when a new game starts from the menu: a second game froze
+      var st=window.chStart;if(typeof st==='function'&&!st.__ik){window.chStart=function(){window.chOver=false;return st.apply(this,arguments);};window.chStart.__ik=1;}
       // chDoMove sets chOver when a King is taken; the side that just moved (chTurn) wins.
       var orig=window.chDoMove;
       window.chDoMove=function(r1,c1,r2,c2,board,sim){
