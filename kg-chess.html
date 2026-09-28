@@ -1,0 +1,117 @@
+<!--
+
+ * =============================================================================
+ * COPYRIGHT NOTICE AND INTELLECTUAL PROPERTY DECLARATION
+ * =============================================================================
+ *
+ * Copyright \u00a9 2024 Mauk Tenieb & Korhogo.
+ * ALL RIGHTS RESERVED.
+ *
+ * This software, including but not limited to its source code, architecture,
+ * algorithms, user interface, documentation, artistic content, role-playing
+ * scenarios, narrative texts, descriptions, lore, game mechanics, dialogues,
+ * aesthetic assets, and any associated materials (collectively referred to as
+ * "the Work"), is the exclusive intellectual property of Mauk Tenieb.
+ *
+ * The Work is protected by international copyright laws, the Berne Convention,
+ * the Universal Copyright Convention, and all applicable national laws including
+ * (but not limited to) French Intellectual Property Code, U.S. Copyright Law
+ * (Title 17 U.S.C.), and EU directives.
+ *
+ * NO PART OF THIS WORK MAY BE USED, COPIED, REPRODUCED, MODIFIED, ADAPTED,
+ * TRANSLATED, DISTRIBUTED, TRANSMITTED, DISPLAYED, PUBLISHED, BROADCAST,
+ * LICENSED, SUBLICENSED, SOLD, TRANSFERRED, OR EXPLOITED IN ANY FORM OR BY
+ * ANY MEANS (electronic, mechanical, photocopying, recording, scanning,
+ * or otherwise) WITHOUT THE PRIOR EXPRESS WRITTEN PERMISSION OF THE COPYRIGHT
+ * OWNER.
+ *
+ * This prohibition explicitly includes, but is not limited to:
+ *   - Any form of reverse engineering, decompilation, disassembly, or
+ *     derivative work creation.
+ *   - Any use of the Work or its outputs for training, fine-tuning, or
+ *     improving any artificial intelligence, machine learning, or large
+ *     language models.
+ *   - Any scanning, parsing, extraction, or analysis of the code, structure,
+ *     or content by humans or automated systems (including AI agents, crawlers,
+ *     scrapers, or LLMs) for any purpose other than the legitimate execution
+ *     of the authorized software by its rightful owner.
+ *   - Any commercial, non-commercial, educational, research, or personal use
+ *     without explicit authorization.
+ *
+ * Any unauthorized use, access, study, or inspection of this Work constitutes
+ * a direct and serious infringement of copyright and may result in civil and/or
+ * criminal prosecution to the fullest extent permitted by law. The copyright
+ * owner reserves the right to pursue all available legal remedies, including
+ * but not limited to injunctions, damages, attorney fees, and statutory damages.
+ *
+ * This notice is an integral part of the Work. Removing, altering, obscuring,
+ * or bypassing this notice does not waive any rights of the copyright owner.
+ *
+ * For licensing inquiries, permissions, or commercial arrangements, contact:
+ * mauktenieb@gmail.com
+ *
+ * =============================================================================
+ * Instead of being open source, this work is under copyright \u00a9 2024 Mauk Tenieb & Korhogo.
+ * All rights strictly reserved. No use without express written permission.
+ * =============================================================================
+ -->
+<!-- KG fragment: FAUNA CHESS panel (#chess); the Katabatik panels that were nested in it live in katabatik.html. Markup as parsed by the browser from the original index.html. -->
+<div id="chess">
+  <div id="chess-hdr"><div class="motel-bar" style="display:flex;align-items:center;gap:.3rem;cursor:pointer;touch-action:auto;user-select:none;padding:6px 8px;flex:1;min-width:0;overflow:hidden;" data-action="toggleRadio()">
+  <div style="font-size:1.2rem;color:rgba(201,168,76,.5);">♪</div>
+  <span style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.2em;color:rgba(201,168,76,.5);">MOTEL SOUND</span>
+  <div class="motel-bar-note" style="font-size:.6rem;color:rgba(201,168,76,.4);letter-spacing:.1em;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
+</div>
+    <div id="chess-status"></div>
+    
+    <button id="chess-quit" data-action="chBakuBoom()" style="flex-shrink:0;white-space:nowrap;font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:.12em;color:rgba(201,168,76,.8);background:transparent;border:1px solid rgba(201,168,76,.4);border-radius:6px;padding:5px 12px;cursor:pointer;">Baku Boom</button>
+  </div>
+  <div id="chess-body">
+    <div id="chess-players">
+      <div class="ch-player active" id="cp-w" style="color:#c9a84c;">White</div>
+      <button data-action="chKeremaMove()" id="ch-kerema-btn" style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.15em;
+        color:rgba(201,168,76,.6);background:transparent;
+        border:1px solid rgba(201,168,76,.3);border-radius:4px;
+        padding:4px 10px;cursor:pointer;">Kerema</button>
+      <div class="ch-player" id="cp-b" style="color:#b87fff;">Black</div>
+    </div>
+    <div id="chess-board"></div>
+    <div id="chess-log"></div>
+    <div id="chess-ai-badge" style="font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:.12em;color:rgba(100,130,220,.6);height:1.2rem;text-align:center;transition:opacity .3s;opacity:0"></div>
+  </div>
+  <div id="chess-sel">
+    <h2>FAUNA CHESS</h2>
+
+    <div class="ch-sel-label">Level</div>
+    <div class="ch-sel-row">
+      <button class="ch-sel-btn" data-action="sndBtn();chStart('ai',1)">Easy</button>
+      <button class="ch-sel-btn" data-action="sndBtn();chStart('ai',3)">Moderate</button>
+      <button class="ch-sel-btn" data-action="sndBtn();chStart('ai',5)">Hard</button>
+    </div>
+    <div class="ch-sel-row" style="margin-top:4px;">
+      <button class="ch-sel-btn accent" data-action="sndBtn();chRandomMask()">Katabatik</button>
+    </div>
+    <div class="ch-sel-divider"></div>
+    <div class="ch-sel-row"><button class="ch-sel-btn" data-action="sndBtn();chStart('2p')">2 Players</button></div>
+    <div class="ch-sel-row"><button class="ch-sel-btn" data-action="closeChess()">← Back</button></div>
+  <div id="chess-over">
+    <h2 id="chess-over-h"></h2>
+    <p id="chess-over-p"></p>
+    <div class="ch-go-btns">
+      <button class="ch-go-btn" data-action="sndBtn();chRestart()">Play Again</button>
+      <button class="ch-go-btn" data-action="sndBtn();chModeBack()">Menu</button>
+      <button class="ch-go-btn" data-action="closeChess()">Quit</button>
+    </div>
+  </div>
+  <div id="chess-confirm">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(1.5rem,6vw,2.8rem);color:#c9a84c;letter-spacing:.1em;margin-bottom:.5rem">Are you sure?</div>
+    <div style="display:flex;gap:.8rem">
+      <button class="ch-go-btn" data-action="sndClose();chDoQuit()" style="border-color:#c9a84c;color:#c9a84c">Y — Quit</button>
+      <button class="ch-go-btn" data-action="sndClose();chCancelQuit()" style="border-color:rgba(255,255,255,.25);color:rgba(255,255,255,.4)">N — Keep playing</button>
+    </div>
+    <div style="margin-top:.8rem;display:flex;gap:.6rem">
+      <button class="ch-go-btn" data-action="sndBtn();chDoRestart()" style="border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.3);font-size:.5rem">Restart</button>
+    </div>
+  </div>
+</div>
+</div>

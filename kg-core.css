@@ -1,0 +1,81 @@
+/*
+ * =============================================================================
+ * COPYRIGHT NOTICE AND INTELLECTUAL PROPERTY DECLARATION
+ * =============================================================================
+ *
+ * Copyright \u00a9 2024 Mauk Tenieb & Korhogo.
+ * ALL RIGHTS RESERVED.
+ *
+ * This software, including but not limited to its source code, architecture,
+ * algorithms, user interface, documentation, artistic content, role-playing
+ * scenarios, narrative texts, descriptions, lore, game mechanics, dialogues,
+ * aesthetic assets, and any associated materials (collectively referred to as
+ * "the Work"), is the exclusive intellectual property of Mauk Tenieb.
+ *
+ * The Work is protected by international copyright laws, the Berne Convention,
+ * the Universal Copyright Convention, and all applicable national laws including
+ * (but not limited to) French Intellectual Property Code, U.S. Copyright Law
+ * (Title 17 U.S.C.), and EU directives.
+ *
+ * NO PART OF THIS WORK MAY BE USED, COPIED, REPRODUCED, MODIFIED, ADAPTED,
+ * TRANSLATED, DISTRIBUTED, TRANSMITTED, DISPLAYED, PUBLISHED, BROADCAST,
+ * LICENSED, SUBLICENSED, SOLD, TRANSFERRED, OR EXPLOITED IN ANY FORM OR BY
+ * ANY MEANS (electronic, mechanical, photocopying, recording, scanning,
+ * or otherwise) WITHOUT THE PRIOR EXPRESS WRITTEN PERMISSION OF THE COPYRIGHT
+ * OWNER.
+ *
+ * This prohibition explicitly includes, but is not limited to:
+ *   - Any form of reverse engineering, decompilation, disassembly, or
+ *     derivative work creation.
+ *   - Any use of the Work or its outputs for training, fine-tuning, or
+ *     improving any artificial intelligence, machine learning, or large
+ *     language models.
+ *   - Any scanning, parsing, extraction, or analysis of the code, structure,
+ *     or content by humans or automated systems (including AI agents, crawlers,
+ *     scrapers, or LLMs) for any purpose other than the legitimate execution
+ *     of the authorized software by its rightful owner.
+ *   - Any commercial, non-commercial, educational, research, or personal use
+ *     without explicit authorization.
+ *
+ * Any unauthorized use, access, study, or inspection of this Work constitutes
+ * a direct and serious infringement of copyright and may result in civil and/or
+ * criminal prosecution to the fullest extent permitted by law. The copyright
+ * owner reserves the right to pursue all available legal remedies, including
+ * but not limited to injunctions, damages, attorney fees, and statutory damages.
+ *
+ * This notice is an integral part of the Work. Removing, altering, obscuring,
+ * or bypassing this notice does not waive any rights of the copyright owner.
+ *
+ * For licensing inquiries, permissions, or commercial arrangements, contact:
+ * mauktenieb@gmail.com
+ *
+ * =============================================================================
+ * Instead of being open source, this work is under copyright \u00a9 2024 Mauk Tenieb & Korhogo.
+ * All rights strictly reserved. No use without express written permission.
+ * =============================================================================
+ */
+/* KG core styles -- rules copied from the original Korhogo stylesheet, each selector scoped with :where(.kg-layer) (zero specificity). */
+/* [KG] The KG layer: holds the injected game panels. It takes no room in the host layout
+   and forms one stacking context above the host page (host bar uses z-index <= 60). The
+   panels inside keep their original z-index values (200..9400) relative to each other. */
+.kg-layer{position:fixed;top:0;left:0;width:0;height:0;overflow:visible;z-index:1000}
+/* [KG] Values the original page gave the panels through inheritance from html/body/:root */
+.kg-layer{--ink:#080604;--ink2:#0d0a06;--parch:#d4c4a0;--dim:#7a6a50;--gold:#c8922a;--gbr:#f0b84a;--blood:#7a1a0a;--oil:#1a1208;--rc:#c84030;--oc:#c86020;--gc:#507050;--pc:#7040a0;--bc:#3060a0;--wc:#b0a080;--yc:#908020;--pkc:#c06080;--gc2:#809090;
+  font-family:'Courier Prime',monospace;color:var(--parch);cursor:crosshair;
+  font-size:16px;line-height:normal;letter-spacing:normal;font-weight:400;font-style:normal;
+  text-transform:none;word-spacing:normal;white-space:normal;text-align:start;direction:ltr;
+  color-scheme:normal;-webkit-tap-highlight-color:transparent;touch-action:none}
+/* [KG] Site-wide overlays of the original page, shown only while a KG game is open */
+.kg-layer:not(.kg-on) #scanlines{display:none}
+.kg-layer.kg-on::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+
+:where(.kg-layer) *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:where(.kg-layer) *{margin:0;padding:0;box-sizing:border-box;}
+:where(.kg-layer) input,:where(.kg-layer) textarea,:where(.kg-layer) select{background:transparent;border:1px solid #2a2010;color:var(--parch);font-family:'Courier Prime',monospace;font-size:11px;padding:7px 10px;outline:none;width:100%;}
+:where(.kg-layer) input::placeholder,:where(.kg-layer) textarea::placeholder{color:var(--dim);}
+:where(.kg-layer) select option{background:var(--oil);color:var(--parch);}
+:where(.kg-layer) textarea{resize:vertical;line-height:1.7;}
+:where(.kg-layer) ::-webkit-scrollbar{width:3px;height:3px;}
+:where(.kg-layer) ::-webkit-scrollbar-track{background:var(--ink2);}
+:where(.kg-layer) ::-webkit-scrollbar-thumb{background:#2a1a08;}
+:where(.kg-layer) #scanlines{position:fixed;inset:0;z-index:600;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.06) 0,rgba(0,0,0,.06) 1px,transparent 1px,transparent 3px)}

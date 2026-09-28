@@ -1,0 +1,78 @@
+/*
+ * =============================================================================
+ * COPYRIGHT NOTICE AND INTELLECTUAL PROPERTY DECLARATION
+ * =============================================================================
+ *
+ * Copyright \u00a9 2024 Mauk Tenieb & Korhogo.
+ * ALL RIGHTS RESERVED.
+ *
+ * This software, including but not limited to its source code, architecture,
+ * algorithms, user interface, documentation, artistic content, role-playing
+ * scenarios, narrative texts, descriptions, lore, game mechanics, dialogues,
+ * aesthetic assets, and any associated materials (collectively referred to as
+ * "the Work"), is the exclusive intellectual property of Mauk Tenieb.
+ *
+ * The Work is protected by international copyright laws, the Berne Convention,
+ * the Universal Copyright Convention, and all applicable national laws including
+ * (but not limited to) French Intellectual Property Code, U.S. Copyright Law
+ * (Title 17 U.S.C.), and EU directives.
+ *
+ * NO PART OF THIS WORK MAY BE USED, COPIED, REPRODUCED, MODIFIED, ADAPTED,
+ * TRANSLATED, DISTRIBUTED, TRANSMITTED, DISPLAYED, PUBLISHED, BROADCAST,
+ * LICENSED, SUBLICENSED, SOLD, TRANSFERRED, OR EXPLOITED IN ANY FORM OR BY
+ * ANY MEANS (electronic, mechanical, photocopying, recording, scanning,
+ * or otherwise) WITHOUT THE PRIOR EXPRESS WRITTEN PERMISSION OF THE COPYRIGHT
+ * OWNER.
+ *
+ * This prohibition explicitly includes, but is not limited to:
+ *   - Any form of reverse engineering, decompilation, disassembly, or
+ *     derivative work creation.
+ *   - Any use of the Work or its outputs for training, fine-tuning, or
+ *     improving any artificial intelligence, machine learning, or large
+ *     language models.
+ *   - Any scanning, parsing, extraction, or analysis of the code, structure,
+ *     or content by humans or automated systems (including AI agents, crawlers,
+ *     scrapers, or LLMs) for any purpose other than the legitimate execution
+ *     of the authorized software by its rightful owner.
+ *   - Any commercial, non-commercial, educational, research, or personal use
+ *     without explicit authorization.
+ *
+ * Any unauthorized use, access, study, or inspection of this Work constitutes
+ * a direct and serious infringement of copyright and may result in civil and/or
+ * criminal prosecution to the fullest extent permitted by law. The copyright
+ * owner reserves the right to pursue all available legal remedies, including
+ * but not limited to injunctions, damages, attorney fees, and statutory damages.
+ *
+ * This notice is an integral part of the Work. Removing, altering, obscuring,
+ * or bypassing this notice does not waive any rights of the copyright owner.
+ *
+ * For licensing inquiries, permissions, or commercial arrangements, contact:
+ * mauktenieb@gmail.com
+ *
+ * =============================================================================
+ * Instead of being open source, this work is under copyright \u00a9 2024 Mauk Tenieb & Korhogo.
+ * All rights strictly reserved. No use without express written permission.
+ * =============================================================================
+ */
+/* KG module "katabatik" -- rules copied from the original Korhogo stylesheet, each selector scoped with :where(.kg-layer) (zero specificity). */
+:where(.kg-layer) #bb-grid{width:100%;max-width:400px;}
+:where(.kg-layer) .bb-row{display:flex;align-items:center;gap:2px;flex:1;overflow:hidden;}
+:where(.kg-layer) .bb-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.05em;
+  width:28px;flex-shrink:0;text-align:right;padding-right:4px;}
+:where(.kg-layer) .bb-step{flex:1;min-width:0;aspect-ratio:1;border-radius:4px;
+  background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);
+  cursor:pointer;transition:background .08s;}
+:where(.kg-layer) .bb-step.bb-group-start{margin-left:4px;}
+:where(.kg-layer) .bb-step.bb-active{background:rgba(201,168,76,.55);border-color:rgba(201,168,76,.7);}
+:where(.kg-layer) .bb-step.bb-cursor{border-color:#c9a84c;box-shadow:0 0 4px rgba(201,168,76,.6);}
+:where(.kg-layer) .bb-step.bb-active.bb-cursor{background:#c9a84c;}
+:where(.kg-layer) #bb-controls{display:flex;align-items:center;gap:12px;margin-top:4px;}
+:where(.kg-layer) #bb-play-btn{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.15em;
+  color:#c9a84c;background:transparent;border:1px solid rgba(201,168,76,.5);
+  border-radius:6px;padding:8px 20px;cursor:pointer;}
+:where(.kg-layer) #bb-bpm-lbl{font-family:'DM Mono',monospace;font-size:10px;color:rgba(201,168,76,.5);
+  min-width:60px;}
+:where(.kg-layer) input[type=range]#bb-bpm{-webkit-appearance:none;width:90px;height:2px;
+  background:rgba(201,168,76,.3);border-radius:2px;outline:none;}
+:where(.kg-layer) input[type=range]#bb-bpm::-webkit-slider-thumb{-webkit-appearance:none;
+  width:12px;height:12px;border-radius:50%;background:#c9a84c;cursor:pointer;}
