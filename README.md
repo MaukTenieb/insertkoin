@@ -1,6 +1,6 @@
 # Insert Koin
 
-Insert Koin, an arcade ritual in the browser, by Mauk Tenieb. Puck You! against the eighteen Masks of the Fauna, Fauna Chess, Erratik, Faunarratik, Katabatik, 3615.
+A home for the Korhogo Fauna. And an arcade Kave for odd applicants — from da Motel. Expect games, a terminal, links, a bio and access to art galleries. By Mauk Tenieb.
 
 **Online: https://mauktenieb.github.io/insertkoin/** · French: https://mauktenieb.github.io/insertkoin/fr.html
 

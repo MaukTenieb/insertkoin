@@ -2,6 +2,20 @@
 User-agent: *
 Allow: /
 
+# Search and answer agents, named explicitly: they may read and cite the site
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: Claude-SearchBot
+Allow: /
+User-agent: Claude-User
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Perplexity-User
+Allow: /
+
 # Model-training crawlers: no
 User-agent: GPTBot
 Disallow: /
