@@ -1,6 +1,6 @@
 # Insert Koin
 
-A home for the Korhogo Fauna. And an arcade Kave for odd applicants — from da Motel. Expect games, a terminal, links, a bio and access to art galleries. By Mauk Tenieb.
+A home for the Korhogo Fauna. And an arcade Kave. Expect games, bio, links, terminal and burrows to the art galleries. Korhogo™, Korhogo Fauna™ & all content © Mauk Tenieb.
 
 **Online: https://mauktenieb.github.io/insertkoin/** · French: https://mauktenieb.github.io/insertkoin/fr.html
 
@@ -35,7 +35,7 @@ Contact: mauktenieb@gmail.com
 
 ## Français
 
-Terrier numérique de la Fauna Korhogo. Depuis le Motel, ouvrez votre Kave, sous le signe de l'arcade et du rétro. En tant qu'impétrant. Ici ? Jeux, terminal, liens, biographie, galeries vidéo, photo, musicales, écrites. Tout est signé Mauk Tenieb.
+Terrier numérique de la Fauna Korhogo. Depuis le Motel, ouvrez votre Kave, sous le signe de l'arcade et du rétro. En tant qu'impétrant. Ici ? Jeux, terminal, liens, biographie, galeries vidéo, photo, musicales, écrites. Tout est signé Mauk Tenieb. Korhogo™, Korhogo Fauna™ & tout contenu © Mauk Tenieb.
 
 **En ligne : https://mauktenieb.github.io/insertkoin/fr.html** · English: https://mauktenieb.github.io/insertkoin/
 
