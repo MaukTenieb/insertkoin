@@ -280,7 +280,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
   <section id="home">
     <div class="hero">
       <picture><source type="image/webp" srcset="poster-800.webp 800w, poster.webp 1200w" sizes="(max-width:900px) 100vw, 1040px"><img src="poster.jpg" width="1200" height="896" alt="The eighteen Fauna of Korhogo gathered in a motel room" fetchpriority="high"></picture>
-      <div class="heroText"><div class="koro">MAUK TENIEB PRESENTS</div><h1 class="logo">INSERT KOIN</h1></div>
+      <div class="heroText"><div class="koro" data-i18n="presents">MAUK TENIEB PRESENTS</div><h1 class="logo">INSERT KOIN</h1></div>
     </div>
     <p class="intro"><span class="bi" lang="en">A home for the Korhogo Fauna. And an arcade Kave for odd applicants — from da Motel. Expect games, a terminal, links, a bio and access to art galleries. By Mauk Tenieb.</span><span class="bi" lang="fr">Terrier numérique de la Fauna Korhogo. Depuis le Motel, ouvrez votre Kave, sous le signe de l'arcade et du rétro. En tant qu'impétrant. Ici ? Jeux, terminal, liens, biographie, galeries vidéo, photo, musicales, écrites. Tout est signé Mauk Tenieb.</span></p>
     <nav class="cabinets" aria-label="Arcade">
@@ -299,7 +299,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
       <a href="https://korhogo.threadless.com" target="_blank" rel="noopener" style="--mc:#ff7043">TL</a>
       <a href="https://www.instagram.com/mauktenieb" target="_blank" rel="noopener" style="--mc:#f48fb1">IG</a>
     </nav>
-    <p class="copy">© <b>Korhogo™</b> · Korhogo Fauna™ · Fauna Masks™ — any content, any form, any medium. Mauk Tenieb.</p>
+    <p class="copy"><span class="bi" lang="en">© <b>Korhogo™</b> · Korhogo Fauna™ · Fauna Masks™ — any content, any form, any medium. Mauk Tenieb.</span><span class="bi" lang="fr">© <b>Korhogo™</b> · Korhogo Fauna™ · Fauna Masks™ — tout contenu, toute forme, tout support. Mauk Tenieb.</span></p>
   </section>
 
   <section id="select" hidden>
@@ -452,7 +452,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.</pre></details>
 
 </div>
-<noscript><p style="padding:16px">Insert Koin needs JavaScript.</p></noscript>
+<noscript><p style="padding:16px">Insert Koin needs JavaScript. · Insert Koin a besoin de JavaScript.</p></noscript>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script src="kg-loader.js"></script>
 <script>
@@ -1038,7 +1038,7 @@ function startMatch(i,rank){loadSheet(R[i]);if(RUN&&RUN.order[RUN.idx+1])loadShe
   $('mRun').textContent=RUN?`${tr('runof')} ${RUN.idx+1} / 18`:'';$('count').hidden=true;$('oName').textContent=r.name.toUpperCase();$('mName').textContent=r.name.toUpperCase();$('mMotto').textContent='N° '+String(r.n).padStart(2,'0')+(r.motto?' · « '+r.motto+' »':'');$('msg').style.setProperty('--c',r.glow);hud();$('over').hidden=true;$('msg').hidden=false;show('game');}
 function toMenu(){G=null;buildLobby();show('select');}
 function endMatch(){const e=G.e,won=e.player_score>e.opponent_score;if(won&&!beaten.includes(G.r.id)){beaten.push(G.r.id);saveBeaten();}
-  setFace(won?7:4,99);$('ovT').textContent=won?'YOU WIN':'YOU LOSE';$('ovS').textContent=`${e.player_score} - ${e.opponent_score} AGAINST ${G.r.name.toUpperCase()}`;$('next').hidden=G.i>=R.length-1;$('over').hidden=false;afterMatch(won);}
+  setFace(won?7:4,99);$('ovT').textContent=won?'YOU WIN':'YOU LOSE';$('ovS').textContent=`${e.player_score} - ${e.opponent_score} ${tr('against')} ${G.r.name.toUpperCase()}`;$('next').hidden=G.i>=R.length-1;$('over').hidden=false;afterMatch(won);}
 function setFace(f,t){G.face=f;G.faceT=t;}
 function tick(){const e=G.e;G.prev=G.cur;e.tick(mouse,btn);G.cur=snap(e);
   G.spin*=.94;G.ang+=G.spin;
@@ -1187,12 +1187,12 @@ setInterval(()=>{const s=7;if(keys.ArrowLeft)mouse[0]-=s;if(keys.ArrowRight)mous
 $('snd').onclick=()=>{sound=!sound;$('snd').setAttribute('aria-pressed',sound);$('snd').textContent=sound?'FX ON':'FX OFF';if(sound)ac();};
 /* ================= INSERT KOIN shell ================= */
 const I18N={en:{run:'ARCADE · 1→18 · ◉ 1',pick:'◉ 1',you:'YOU',serve:'▶ CLICK · SPACE',
-  win:'YOU WIN',lose:'YOU LOSE',champ:'MAKE A NOISY SILENCE!',next:'NEXT',cont:'CONTINUE · ◉ 1',again:'REMATCH · ◉ 1',select:'SELECT',back:'← BACK',nokoin:'◉ 0 · ',beaten:'BEATEN',runof:'RUN',kap:'KAPTURE · CAM + MIC ?',yes:'YES',no:'NO'},
+  win:'YOU WIN',lose:'YOU LOSE',champ:'MAKE A NOISY SILENCE!',next:'NEXT',cont:'CONTINUE · ◉ 1',again:'REMATCH · ◉ 1',select:'SELECT',back:'← BACK',nokoin:'◉ 0 · ',beaten:'BEATEN',runof:'RUN',kap:'KAPTURE · CAM + MIC ?',presents:'MAUK TENIEB PRESENTS',against:'AGAINST',lobbyAlt:'The motel room with the eighteen Fauna: pick one to challenge',posterAlt:'The eighteen Fauna of Korhogo gathered in a motel room',yes:'YES',no:'NO'},
  fr:{run:'ARCADE · 1→18 · ◉ 1',pick:'◉ 1',you:'TOI',serve:'▶ CLIC · ESPACE',
-  win:'GAGNÉ',lose:'PERDU',champ:'MAKE A NOISY SILENCE!',next:'SUIVANT',cont:'CONTINUER · ◉ 1',again:'REVANCHE · ◉ 1',select:'CHOISIR',back:'← RETOUR',nokoin:'◉ 0 · ',beaten:'BATTUS',runof:'PARTIE',kap:'KAPTURE · CAMÉRA + MICRO ?',yes:'OUI',no:'NON'}};
+  win:'GAGNÉ',lose:'PERDU',champ:'MAKE A NOISY SILENCE!',next:'SUIVANT',cont:'CONTINUER · ◉ 1',again:'REVANCHE · ◉ 1',select:'CHOISIR',back:'← RETOUR',nokoin:'◉ 0 · ',beaten:'BATTUS',runof:'PARTIE',kap:'KAPTURE · CAMÉRA + MICRO ?',presents:'MAUK TENIEB PRÉSENTE',against:'CONTRE',lobbyAlt:'La chambre de motel et les dix-huit de la Fauna : choisis ton adversaire',posterAlt:'Les dix-huit de la Fauna de Korhogo réunis dans une chambre de motel',yes:'OUI',no:'NON'}};
 let LANG='en';try{LANG=localStorage.getItem('ik.lang')||window.IK_LANG||'en';}catch(e){}if(LANG!=='fr')LANG='en';
 const tr=k=>(I18N[LANG]&&I18N[LANG][k])||I18N.en[k]||k;
-function applyLang(){document.documentElement.lang=LANG;document.querySelectorAll('[data-i18n]').forEach(el=>{el.innerHTML=tr(el.dataset.i18n);});$('lang').textContent=LANG==='en'?'FR':'EN';if(G)hud();}
+function applyLang(){document.documentElement.lang=LANG;try{document.getElementById('lobbyImg').alt=tr('lobbyAlt');document.querySelector('.hero img').alt=tr('posterAlt');}catch(e){}document.querySelectorAll('[data-i18n]').forEach(el=>{el.innerHTML=tr(el.dataset.i18n);});$('lang').textContent=LANG==='en'?'FR':'EN';if(G)hud();}
 $('lang').onclick=()=>{LANG=LANG==='en'?'fr':'en';try{localStorage.setItem('ik.lang',LANG);}catch(e){}applyLang();};
 
 /* ---- Koins (shared on mauktenieb.github.io, readable by 3615 as the Kalabass) ---- */
@@ -1214,7 +1214,7 @@ document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=
 function go(k){ac();
   if(k==='puck'){buildLobby();show('select');setTimeout(lobbyHint,250);return;}
   if(k==='room'){buildLobby();show('select');return;}
-  if(k==='terminal'){try{if(!localStorage.getItem('vdx.lang'))localStorage.setItem('vdx.lang',LANG);}catch(e){}return openCalque('/3615/','3615');}
+  if(k==='terminal'){try{localStorage.setItem('vdx.lang',LANG);}catch(e){}return openCalque('/3615/','3615');}
   if(k==='visit'){openCalque('/katabase/','DIVE!');kataLang();return;}
   const t={chess:'FAUNA CHESS',erratic:'ERRATIK',faunarratics:'FAUNARRATIK',katabatik:'KATABATIK',kapture:'KAPTURE'}[k];
   if(t)return openGame(k,t);}
