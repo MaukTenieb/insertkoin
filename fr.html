@@ -192,7 +192,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 .cab .num{position:absolute;left:10px;top:8px;z-index:2;font-family:"DM Mono",monospace;font-size:.58rem;letter-spacing:.2em;color:var(--nc);text-shadow:0 0 8px var(--nc);pointer-events:none}
 .cab.boot{animation:boot .5s}@keyframes boot{0%{filter:brightness(3) saturate(0)}30%{filter:brightness(.4)}100%{filter:brightness(1)}}
 .crt{animation:crt .38s cubic-bezier(.2,.8,.2,1)}@keyframes crt{0%{transform:scaleY(.004) scaleX(.6);filter:brightness(4)}45%{transform:scaleY(.04) scaleX(1);filter:brightness(2.4)}100%{transform:none;filter:none}}
-.copy{margin:22px 0 0;text-align:center;font-family:"DM Mono",monospace;font-size:.62rem;letter-spacing:.22em;color:var(--dim)}
+.copy{margin:8px 0 0;text-align:center;font-family:"DM Mono",monospace;font-size:.62rem;letter-spacing:.22em;color:var(--dim)}
 .copy b{font-weight:400;color:var(--gold2);text-shadow:0 0 10px rgba(255,224,138,.4)}
 @media (max-width:560px){.cab b{font-size:.8rem;letter-spacing:.03em}}
 @media (prefers-reduced-motion:reduce){.cab,.crt,.cab.lit b,.cab.boot{animation:none;transition:none;transform:none}.hero .heroFx{display:none}}
@@ -236,7 +236,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 .champ .chT{position:relative;display:grid;justify-items:center;gap:6px;margin-top:-18%}
 .champ .chT{padding-inline:16px;text-align:center}.champ .chT b{font-family:"Bebas Neue",Impact,sans-serif;font-weight:400;font-size:clamp(30px,6.4vw,72px);letter-spacing:.08em;color:#fff;text-shadow:0 0 18px #ffa726,0 0 40px #ffa726}
 .champ #chOk{position:absolute;bottom:14px;right:14px}
-.intro{margin:12px auto 0;max-width:70ch;text-align:center;font-family:"DM Mono",monospace;font-size:clamp(.72rem,1.2vw,.86rem);line-height:1.7;letter-spacing:.02em;color:#e6dcc6}
+.intro{margin:26px auto 0;max-width:62ch;text-align:center;font-family:"DM Mono",monospace;font-size:.62rem;line-height:1.7;letter-spacing:.04em;color:var(--dim)}
 #radio-toggle{font:inherit;color:inherit;appearance:none}
 </style>
 
@@ -282,7 +282,6 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
       <picture><source type="image/webp" srcset="poster-800.webp 800w, poster.webp 1200w" sizes="(max-width:900px) 100vw, 1040px"><img src="poster.jpg" width="1200" height="896" alt="The eighteen Fauna of Korhogo gathered in a motel room" fetchpriority="high"></picture>
       <div class="heroText"><div class="koro" data-i18n="presents">MAUK TENIEB PRESENTS</div><h1 class="logo">INSERT KOIN</h1></div>
     </div>
-    <p class="intro"><span class="bi" lang="en">A home for the Korhogo Fauna. And an arcade Kave for odd applicants — from da Motel. Expect games, a terminal, links, a bio and access to art galleries. By Mauk Tenieb.</span><span class="bi" lang="fr">Terrier numérique de la Fauna Korhogo. Depuis le Motel, ouvrez votre Kave, sous le signe de l'arcade et du rétro. En tant qu'impétrant. Ici ? Jeux, terminal, liens, biographie, galeries vidéo, photo, musicales, écrites. Tout est signé Mauk Tenieb.</span></p>
     <nav class="cabinets" aria-label="Arcade">
       <div class="cab main" style="--th:url(thumb-puck.jpg);--nc:#ffa726"><button type="button" class="hit" data-go="puck"><b>PUCK YOU!</b></button></div>
       <div class="cab" style="--th:url(thumb-chess.jpg);--nc:#ab47bc"><button type="button" class="hit" data-go="chess"><b>FAUNA CHESS</b></button></div>
@@ -299,7 +298,8 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
       <a href="https://korhogo.threadless.com" target="_blank" rel="noopener" style="--mc:#ff7043">TL</a>
       <a href="https://www.instagram.com/mauktenieb" target="_blank" rel="noopener" style="--mc:#f48fb1">IG</a>
     </nav>
-    <p class="copy"><span class="bi" lang="en">© <b>Korhogo™</b> · Korhogo Fauna™ · Fauna Masks™ — any content, any form, any medium. Mauk Tenieb.</span><span class="bi" lang="fr">© <b>Korhogo™</b> · Korhogo Fauna™ · Fauna Masks™ — tout contenu, toute forme, tout support. Mauk Tenieb.</span></p>
+    <p class="intro"><span class="bi" lang="en">A home for the Korhogo Fauna. And an arcade Kave for odd applicants — from da Motel. Expect games, a terminal, links, a bio and access to art galleries. By Mauk Tenieb.</span><span class="bi" lang="fr">Terrier numérique de la Fauna Korhogo. Depuis le Motel, ouvrez votre Kave, sous le signe de l'arcade et du rétro. En tant qu'impétrant. Ici ? Jeux, terminal, liens, biographie, galeries vidéo, photo, musicales, écrites. Tout est signé Mauk Tenieb.</span></p>
+    <p class="copy"><span class="bi" lang="en">All content © Korhogo™, Korhogo Fauna™ &amp; Mauk Tenieb</span><span class="bi" lang="fr">Tout contenu © Korhogo™, Korhogo Fauna™ &amp; Mauk Tenieb</span></p>
   </section>
 
   <section id="select" hidden>
