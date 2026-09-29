@@ -27,6 +27,8 @@
  *                               'erratic'   all pairs found (original mWin)           detail {pairs,moves,time}
  *                               'katabatik' player wins Connect 4 / completes Pairs   detail {game:'c4'|'pair',ctx}
  *                               (Beat Box has no win/end condition in the original: never fires.)
+ *   KG.setLang(l)  / KG.lang()   [KG] 'fr' | 'en'. The games follow <html lang> live by themselves
+ *                               (MutationObserver); setLang forces a language until <html lang> changes.
  *   KG.isOpen(name)             true while a game opened with KG.open is on screen.
  *   KG.stats                    bytes fetched per file (for diagnostics).
  *
@@ -128,7 +130,13 @@
     modDone[m]=Promise.all([css,html]).then(function(r){
       inject(r[1]);
       return MODS[m].faces?loadFaces():null;
-    }).then(function(){return loadJs(BASE+m+'.js');}).then(function(){if(HOOKS[m])HOOKS[m]();});
+    }).then(function(){return loadJs(BASE+m+'.js');}).then(function(){
+      // [KG] i18n layer (FR/EN) loaded right after the core
+      if(m==='core')return loadJs(BASE+'i18n-dict.js').then(function(){return loadJs(BASE+'i18n.js');}).then(function(){
+        if(pendingLang)window.KGI18N.setLang(pendingLang);
+        window.KGI18N.watch(ensureLayer());
+      });
+    }).then(function(){if(HOOKS[m])HOOKS[m]();});
     return modDone[m];
   }
 
@@ -157,7 +165,17 @@
       var orig=window.mWin;
       window.mWin=function(){var res=orig.apply(this,arguments);win('erratic',{pairs:mPairs,moves:mMoves,time:mElapsed});return res;};
     },
+    faunarratics:function(){
+      // [KG] i18n: section headers of the downloaded konklave.txt
+      var ob=window.kkBuildTxt;
+      window.kkBuildTxt=function(){var r=ob.apply(this,arguments);return window.KGI18N?window.KGI18N.txt(r):r;};
+    },
     katabatik:function(){
+      // [KG] i18n: Connect 4 canvas texts ('your turn', 'thinking\u2026', '\u2026 WINS', 'DRAW');
+      // redraw on language change via the game's own mousemove handler (off-board -> no hover)
+      if(window.KGI18N)window.KGI18N.wrapCanvas(document.getElementById('c4-canvas'),function(cv){
+        try{cv.dispatchEvent(new MouseEvent('mousemove',{clientX:-9999,clientY:-9999}));}catch(e){}
+      });
       // Pairs: the original writes 'Done!' in #pair-status when the 18th pair is found.
       var ps=document.getElementById('pair-status'),pairWon=false;
       var oPair=window.pairOpen;
@@ -234,6 +252,11 @@
     });
   };
   KG.isOpen=function(name){return !!sessions[name];};
+  // [KG] language: follows <html lang> automatically (MutationObserver in i18n.js); KG.setLang('fr'|'en')
+  // forces it (e.g. for hosts that do not set <html lang>). KG.lang() -> current language.
+  var pendingLang=null;
+  KG.setLang=function(l){pendingLang=(l==='fr'?'fr':'en');if(window.KGI18N)window.KGI18N.setLang(pendingLang);};
+  KG.lang=function(){return window.KGI18N?window.KGI18N.lang():((document.documentElement.lang||'en').toLowerCase().indexOf('fr')===0?'fr':'en');};
   /* [IK] close from the host page (BACK / BAKU BOOM of Insert Koin): hide the game's panels the way their own close buttons leave them */
   var forced={};
   KG.close=function(name){
