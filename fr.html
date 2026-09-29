@@ -220,9 +220,12 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 .stage .rot{display:none;position:absolute;right:8px;top:8px;z-index:3;font-size:22px;color:var(--gold2);text-shadow:0 0 10px var(--gold2);pointer-events:none;animation:rotw 2s ease-in-out infinite}
 @keyframes rotw{50%{transform:rotate(90deg)}}
 @media (pointer:coarse) and (orientation:portrait){.stage .rot{display:block}}
-.stage:fullscreen{width:100vw;height:100vh;max-width:none;aspect-ratio:auto;background:#000;display:grid;place-items:center}
-.stage:fullscreen canvas{width:100%;height:100%;object-fit:contain}
-.stage:fullscreen .rot{display:none}
+.fs body.playing .stage{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;max-width:none;aspect-ratio:auto;z-index:90;background:#000}
+.fs body.playing .stage canvas{width:100%;height:100%;object-fit:contain}
+.fs body.playing .stage .rot{display:none}
+.fs body.playing .hud{position:fixed;top:0;left:0;right:0;width:auto;z-index:91;padding:4px 6px;background:linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,0));pointer-events:none}
+.fs body.playing .hud button{pointer-events:auto}
+.fs body.playing .bar{display:none}
 @media (max-width:480px){.bar{flex-wrap:wrap;row-gap:6px}.bar .dock:first-of-type{order:3;flex-basis:100%;margin:0}.bar .dock:last-of-type{margin-left:auto}#radio-toggle{flex:1;justify-content:center}.dk.kap{font-size:.6rem!important;padding:4px 8px}.dk.kap .rec{font-size:.8rem}}
 .sig{margin-left:6px;font-size:1.1em;display:inline-block;text-shadow:0 0 8px currentColor}
 .sig.on{animation:sigp .6s ease-out}@keyframes sigp{0%{transform:scale(2.2);filter:brightness(2)}100%{transform:none}}
@@ -1168,10 +1171,11 @@ function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;
 
 /* ---------- input: the pointer maps onto the original 512x343 window ---------- */
 const TOUCH=new Set();
-function toScreen(e){const r=cv.getBoundingClientRect(),up=e.pointerType==='touch'?26:0;return[Math.round((e.clientX-r.left)/r.width*W),Math.round((e.clientY-r.top)/r.height*H)-up];}
+/* the picture may be letterboxed (full screen, object-fit: contain): map the pointer onto the picture itself */
+function toScreen(e){const r=cv.getBoundingClientRect(),s=Math.min(r.width/W,r.height/H),ox=r.left+(r.width-W*s)/2,oy=r.top+(r.height-H*s)/2,up=e.pointerType==='touch'?26:0;return[Math.round((e.clientX-ox)/s),Math.round((e.clientY-oy)/s)-up];}
 function begin(){if(G&&!G.started){G.started=true;G.e.running=true;$('msg').hidden=true;}}
 cv.addEventListener('pointermove',e=>{if(e.pointerType==='touch'){if([...TOUCH][0]!==e.pointerId)return;mouse=toScreen(e);btn=TOUCH.size>1;return;}mouse=toScreen(e);btn=e.pointerType==='mouse'&&(e.buttons&1)===1;});
-cv.addEventListener('pointerdown',e=>{ac();if(e.pointerType==='touch'){TOUCH.add(e.pointerId);if(TOUCH.size>1){btn=true;e.preventDefault();return;}}mouse=toScreen(e);cv.setPointerCapture?.(e.pointerId);if(G&&!G.started){begin();return;}btn=e.pointerType==='mouse';});
+cv.addEventListener('pointerdown',e=>{ac();if(e.pointerType==='touch'){TOUCH.add(e.pointerId);if(TOUCH.size>1){btn=true;e.preventDefault();return;}}mouse=toScreen(e);try{cv.setPointerCapture(e.pointerId);}catch(_){}if(G&&!G.started){begin();return;}btn=e.pointerType==='mouse';});
 const lift=e=>{TOUCH.delete(e.pointerId);btn=false;};cv.addEventListener('pointerup',lift);cv.addEventListener('pointercancel',lift);
 const keys={};
 window.addEventListener('keydown',e=>{if(!G||$('game').hidden)return;if(e.key.startsWith('Arrow')){keys[e.key]=true;e.preventDefault();}if(e.key===' '){e.preventDefault();ac();if(!G.started)begin();else btn=true;}});
@@ -1271,8 +1275,12 @@ applyLang();show('home');
 document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>{const inGame=!$('game').hidden;RUN=null;exitFs();if(inGame)toMenu();else goHome();}));
 /* ---- touch screens: the table goes full screen, in landscape, when the match starts ---- */
 const touchDev=matchMedia('(pointer:coarse)').matches;
-function exitFs(){try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){}}
-$('cv').addEventListener('pointerdown',e=>{if(e.pointerType!=='touch'||document.fullscreenElement)return;const st=$('stage');try{const p=st.requestFullscreen?st.requestFullscreen({navigationUI:'hide'}):null;if(p&&p.then)p.then(()=>{try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{});}catch(e){}}).catch(()=>{});}catch(e){}},true);
+/* phones: the table takes the whole screen (the page goes full screen when it can; otherwise the table is pinned over the page) */
+function setFs(on){document.documentElement.classList.toggle('fs',!!on);}
+function exitFs(){setFs(false);try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){}}
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&document.documentElement.classList.contains('fs')&&!touchDev)setFs(false);});
+$('cv').addEventListener('pointerdown',e=>{if(e.pointerType!=='touch'||document.documentElement.classList.contains('fs'))return;setFs(true);
+  const d=document.documentElement;try{const p=d.requestFullscreen?d.requestFullscreen({navigationUI:'hide'}):null;if(p&&p.then)p.then(()=>{try{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{});}catch(e){}}).catch(()=>{});}catch(e){}},true);
 /* ---- the lobby: each Fauna lights up in their colour; on arrival they light up one after another ---- */
 function lobbyHint(){const sp=[...document.querySelectorAll('#lobby .spot')];sp.forEach((b,i)=>setTimeout(()=>{b.classList.add('hint');setTimeout(()=>b.classList.remove('hint'),520);},120+i*70));}
 
@@ -1358,6 +1366,8 @@ function champion(){const el=$('champ');if(!el)return;el.hidden=false;R.forEach(
     c.globalCompositeOperation='lighter';for(const s of sp){s.y+=s.vy;s.l-=.008;c.fillStyle=hexA(s.c,Math.max(0,s.l));c.fillRect(s.x,s.y,1.5,1.5);}c.globalCompositeOperation='source-over';
     for(let i=sp.length-1;i>=0;i--)if(sp[i].l<=0)sp.splice(i,1);})(t0);
   $('chOk').onclick=()=>{el.hidden=true;RUN=null;saveRun();toMenu();};}
+/* leaving the table leaves full screen */
+{const _s=show;show=function(id){if(id!=='game')exitFs();_s(id);};}
 
 requestAnimationFrame(frame);
 })();
