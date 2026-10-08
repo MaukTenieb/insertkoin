@@ -1,0 +1,80 @@
+<!doctype html>
+<!-- 3615 — Mauk Tenieb. Copyright © Mauk Tenieb & Korhogo. All rights reserved.
+     Repli local du terminal quand /3615/ n'est pas servi à la même origine que l'arcade :
+     même contrat que le 3615 en ligne, en plus sobre (pas de passerelle ici). -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>3615</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;height:100%}
+body{background:#07060a;color:#ece4d2;font-family:"DM Mono",ui-monospace,monospace;display:grid;place-items:center}
+main{width:min(92vw,560px)}
+.screen{background:#0b0f0b;border:1px solid rgba(127,220,138,.4);box-shadow:0 0 30px rgba(127,220,138,.12) inset,0 0 24px rgba(0,0,0,.6);padding:26px 24px 30px;min-height:340px;position:relative}
+.screen::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 2px,transparent 2px 4px)}
+.top{display:flex;justify-content:space-between;font-size:.62rem;letter-spacing:.18em;color:#7fdc8a;opacity:.85}
+.out{margin:26px 0 0;font-size:15px;line-height:2;white-space:pre-wrap;color:#dfffe4;text-shadow:0 0 8px rgba(127,220,138,.45)}
+.out b{color:#ffe08a;text-shadow:0 0 10px rgba(255,224,138,.6);font-weight:400}
+.bar{display:flex;gap:8px;margin-top:18px}
+input{flex:1;background:#0b0f0b;border:1px solid rgba(127,220,138,.4);color:#dfffe4;font:inherit;font-size:14px;padding:9px 12px;letter-spacing:.08em;outline:none}
+input:focus{border-color:#7fdc8a;box-shadow:0 0 12px rgba(127,220,138,.25)}
+button{background:rgba(127,220,138,.12);border:1px solid rgba(127,220,138,.5);color:#dfffe4;font:inherit;font-size:.66rem;letter-spacing:.16em;padding:9px 16px;cursor:pointer}
+button:hover,button:focus-visible{background:rgba(127,220,138,.28);outline:none}
+.hint{margin:14px 2px 0;font-size:.6rem;letter-spacing:.16em;color:#8f8672}
+.lang{position:absolute;top:10px;right:12px;font:inherit;font-size:.6rem;letter-spacing:.14em;background:none;border:0;color:#8f8672;cursor:pointer}
+.lang:hover{color:#ffe08a}
+</style>
+</head>
+<body>
+<main>
+  <div class="screen">
+    <div class="top"><span>3615</span><button class="lang" id="lg" type="button">FR</button></div>
+    <div class="out" id="out"></div>
+  </div>
+  <form class="bar" id="form">
+    <input id="cmd" autocomplete="off" spellcheck="false" maxlength="40" aria-label="3615">
+    <button type="submit">ENVOI</button>
+  </form>
+  <p class="hint" id="hint"></p>
+</main>
+<script>
+(function(){
+'use strict';
+var LANG='en';try{LANG=localStorage.getItem('vdx.lang')||'en';}catch(e){}
+if(LANG!=='fr')LANG='en';
+var T={
+ en:{ready:'3615  READY',balance:function(n){return 'Truce checks your balance: '+n+'.';},won:'You won 1 Koin!',menu:'1  KOINS   2  KORHOGO',cmd:'Code or n° ?',offline:'MINITEL: not wired here (local).',bad:'UNKNOWN CODE',hint:'3615 KOINS · 3615 KORHOGO',korhogo:'KORHOGO  https://mauktenieb.github.io/korhogo'},
+ fr:{ready:'3615  PRÊT',balance:function(n){return 'Truce vérifie ton solde : '+n+'.';},won:'Tu gagnes 1 Koin !',menu:'1  KOINS   2  KORHOGO',cmd:'Code ou n° ?',offline:'MINITEL : non câblé ici (local).',bad:'CODE INCONNU',hint:'3615 KOINS · 3615 KORHOGO',korhogo:'KORHOGO  https://mauktenieb.github.io/korhogo'}};
+function t(k){return T[LANG][k];}
+var out=document.getElementById('out'),cmd=document.getElementById('cmd');
+function line(html){var d=document.createElement('div');d.innerHTML=html;out.appendChild(d);}
+function say(html){out.innerHTML='';line(html);}
+function koins(){try{var s=localStorage.getItem('ik.koins');var n=s==null?3:parseInt(s,10);return isNaN(n)||n<0?0:n;}catch(e){return 3;}}
+function grant(){try{var n=koins();localStorage.setItem('ik.koins',String(n+1));localStorage.setItem('ik.freeAt','0');return true;}catch(e){return false;}}
+function home(){say('<b>'+t('ready')+'</b>\n'+t('balance')(koins())+'\n'+t('menu'));document.getElementById('hint').textContent=t('hint');}
+function dial(svc){
+  svc=String(svc||'').trim().toUpperCase().replace(/^3615\s*/,'');
+  if(svc==='KOINS'||svc==='3'||svc==='1'){
+    if(grant()){say('<b>'+t('balance')(koins())+'</b>\n'+t('won'));}
+    else{say(t('balance')(koins()));}
+    return;
+  }
+  if(svc==='KORHOGO'||svc==='2'){say('<b>'+t('korhogo')+'</b>');return;}
+  if(svc==='MINITEL'||svc==='SNCF'||svc==='METEO'||svc==='ENCYCLO'){say(t('offline'));return;}
+  if(svc===''){home();return;}
+  say('<b>'+t('bad')+'</b>\n'+t('menu'));
+}
+document.getElementById('form').addEventListener('submit',function(e){e.preventDefault();dial(cmd.value);cmd.select();});
+document.getElementById('lg').addEventListener('click',function(){LANG=LANG==='fr'?'en':'fr';try{localStorage.setItem('vdx.lang',LANG);}catch(e){}this.textContent=LANG==='en'?'FR':'EN';home();});
+var q=new URLSearchParams(location.search).get('svc');
+document.getElementById('lg').textContent=LANG==='en'?'FR':'EN';
+home();
+if(String(q||'').toLowerCase()==='koins')dial('KOINS');
+cmd.focus();
+})();
+</script>
+</body>
+</html>

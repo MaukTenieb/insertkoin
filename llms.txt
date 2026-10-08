@@ -1,0 +1,86 @@
+# Insert Koin
+
+> Insert Koin, an arcade ritual in the browser, by Mauk Tenieb, from the Korhogo universe: Puck You!, an air-puck game against the eighteen Masks of the Fauna, each playing by their Korhogo stats and oil power; Fauna Chess; Erratik; Faunarratik; Katabatik; 3615, the Minitel terminal; VHS, the Korhogo tape deck; Photofauna, the pocket photo emulator; and Faunator, the Fauna browser. Motel Sound jukebox, Kapture, FR/EN.> FR : Insert Koin, un rituel d'arcade dans le navigateur, de Mauk Tenieb, depuis l’univers de Korhogo : Puck You!, un jeu de palet contre les dix-huit Masks de la Fauna, chacun selon ses caractéristiques et son pouvoir d’Oil de Korhogo ; Fauna Chess; Erratik; Faunarratik; Katabatik; 3615, le terminal Minitel ; VHS, le magnétoscope de Korhogo ; Photofauna, l’émulateur photo de poche ; et Faunator, le navigateur de la Fauna. Jukebox Motel Sound, Kapture, FR/EN.
+
+## The arcade
+- [Insert Koin](https://mauktenieb.github.io/insertkoin/): Puck You! (air-puck against the Fauna), Fauna Chess, Erratik, Faunarratik, Katabatik (a mini-game at random), 3615 (Minitel terminal), VHS (the tape deck), Photofauna (the pocket photo emulator), Faunator (the Fauna browser). Jukebox (Motel Sound), Kapture, Baku Boom, Koins.
+
+## The Fauna (canonical order)
+- **N° 01 Unkle Maukie** (STR 7, DEX 7, INT 9, WIS 9, CHA 9, CON 7): « Decide from the dance floor of things » Panther's Crude Roar. At the table: Strikes only on the beat of a drum that quickens as the match goes on. The reigning champion.
+- **N° 02 dogXim** (STR 7, DEX 9, INT 8, WIS 6, CHA 8, CON 6): « Chaos is the ladder of fuck! » Fox's Crude Jet. At the table: Reacts at the very last moment; one shot in four is a jet at full force.
+- **N° 03 C7H5N3O6** (STR 9, DEX 8, INT 10, WIS 6, CHA 4, CON 7): « Efficiency is... » Golem's Oil Crush. At the table: Moves only sideways behind a huge paddle and never leaves his line.
+- **N° 04 Naphta** (STR 7, DEX 8, INT 9, WIS 7, CHA 8, CON 6): « Presence is the essence of power » Reptilian Oil Blaze. At the table: Hardly moves; every fourth return is a blaze.
+- **N° 05 Croisière Noire** (STR 9, DEX 6, INT 8, WIS 7, CHA 5, CON 10): « Shelter brings expansion » Hive's Crude Swarm. At the table: Covers the whole width without rest, inside a buzzing swarm.
+- **N° 06 Ts'ui Pên** (STR 5, DEX 6, INT 9, WIS 10, CHA 7, CON 6): « Infinity breathes wisdom » Butterfly's Oil Haze. At the table: A veil of butterflies hides the middle of the table.
+- **N° 07 Hátra Lövés** (STR 6, DEX 10, INT 5, WIS 7, CHA 6, CON 8): « Surviving is striking from behind » Archer's Crude Shot. At the table: Plays banked shots off the side rails.
+- **N° 08 Honey Buzzard** (STR 6, DEX 8, INT 7, WIS 10, CHA 5, CON 8): « Even nothing is something that is nothing » Buzzard's Oil Rot. At the table: Alternates dead drops and smashes at random, and decays as the night goes on.
+- **N° 09 Aube** (STR 6, DEX 9, INT 7, WIS 10, CHA 7, CON 8): « Light dawns anew » Oil of the Wrathful Dawn. At the table: Her paddle widens after every point, like armour going on; her strikes leave a prismatic trail.
+- **N° 10 Maiden Call** (STR 5, DEX 7, INT 6, WIS 8, CHA 10, CON 6): « I'll come if you come » Siren's Oil Lure. At the table: Answers the rotary phone mid-rally and lets go of the paddle; while it rings, her call pulls your paddle toward the centre.
+- **N° 11 Auvergne** (STR 7, DEX 6, INT 8, WIS 9, CHA 9, CON 6): « Men become equal by covenant and right » Lyre's Oil Resonance. At the table: Hums before each strike: a low note means left, a high note means right.
+- **N° 12 Silent Pact** (STR 7, DEX 6, INT 8, WIS 9, CHA 5, CON 8): Oath's Oil Shroud. At the table: Makes no sound on his half of the table; his paddle is nearly invisible.
+- **N° 13 Cadaver Synod** (STR 8, DEX 7, INT 7, WIS 8, CHA 9, CON 6): « Judgement is stronger than death! » Synod's Oil Verdict. At the table: Hits harder the further you lead.
+- **N° 14 Poisoned Well** (STR 4, DEX 6, INT 9, WIS 10, CHA 8, CON 5): « Words are venom » Venom's Oil Whisper. At the table: Alternates soft bait returns with sudden hard ones.
+- **N° 15 Plague of Justinian** (STR 7, DEX 6, INT 8, WIS 5, CHA 10, CON 8): « In contagion strength » Plague's Oil Miasma. At the table: Every exchange speeds the puck up, and a miasma spreads down the table.
+- **N° 16 Truce** (STR 6, DEX 8, INT 8, WIS 7, CHA 8, CON 6): « Do we have an agreement? » Scales' Oil Equilibrium. At the table: Two mirrored paddles, one grey and one yellow.
+- **N° 17 Grand Colonel** (STR 10, DEX 6, INT 5, WIS 7, CHA 9, CON 8): Wolf's Crude Slash. At the table: Diagonal smashes from rail to rail.
+- **N° 18 Malika** (STR 7, DEX 5, INT 8, WIS 9, CHA 7, CON 9): « I am the debt of the fire » Ember's Oil Smoulder. At the table: Gets sharper whenever she is behind; her shots leave embers.
+
+## Links
+- [Bio — GitHub](https://github.com/MaukTenieb)
+- [Lore — Substack](https://mauktenieb.substack.com)
+- [Dive! — Katabase](https://mauktenieb.github.io/katabase)
+- [3615](https://mauktenieb.github.io/3615/)
+- [Korhogo](https://mauktenieb.github.io/korhogo)
+- [TL — Threadless](https://korhogo.threadless.com)
+- [IG — Instagram](https://www.instagram.com/mauktenieb)
+
+## Mauk Tenieb
+
+Transmedia underground worldbuilder.
+
+**Korhogo Fauna** is a self-proliferating sci-fi world of 18 avatars (Unkle Maukie, dogXim, C7H5N3O6, Naphta, Ts'ui Pên, Croisière Noire, Hátra Lövés, Honey Buzzard, Aube, Maiden Call, Plague of Justinian, Silent Pact, Poisoned Well, Cadaver Synod, Truce, Auvergne, Grand Colonel, Malika) and an uncanny crucible-platform for: Experimental Hip-Hop, Concept Albums, Illbient, IDM, Experimental Dub.
+
+Concept Albums: Experimental Hip-Hop/Dub, IDM/Braindance, Ethnotronica/Free Improvisation, Concept Soundtracks.
+
+### Now — Korhogo Fauna
+- The work: [Korhogo Fauna](https://mauktenieb.github.io/katabase) · [Insert Koin](https://mauktenieb.github.io/insertkoin)
+- Music and sales: [Bandcamp](https://mauktenieb.bandcamp.com)
+- Clips and mini-films: [YouTube](https://www.youtube.com/@mauktenieb)
+- The massive diary, in small feuilleton slices: [Substack](https://korhogo.substack.com)
+- Official bio: [ORCID](https://orcid.org/0009-0007-9096-8267)
+- Records: [Discogs](https://www.discogs.com/artist/9104440-Mauk-Tenieb)
+
+### Before Korhogo
+Korhogo is a superb city in Ivory Coast. But before its octopus centrality in the lore — like William S. Burroughs' Tangier, a literary and existential Interzone — there was:
+- The big photographic pre-lore, as it is nervous and mute: [Facebook](https://www.facebook.com/mauktenieb/photos_by)
+- Budapest, 2008–2012 and 2021: [Instagram](https://www.instagram.com/mauktenieb) and its side galleries: [route6166](https://www.instagram.com/route6166) · [gorbuzsadr](https://www.instagram.com/gorbuzsadr) · [mauktenieb2](https://www.instagram.com/mauktenieb2) · [mauktenieb3](https://www.instagram.com/mauktenieb3)
+- A testimony of the French years: [Flickr](https://www.flickr.com/people/mauktenieb/)
+
+Lure, Lore, More.
+
+
+## Rights
+Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related material — including characters, names, symbols, rules, lore and texts, in any form or medium — are the exclusive property of Korhogo™. The source code of this site is published for reading, reflections, additions, requests, etc. - the lore, names, marks and works remain the property of the author.
+
+## Fauna pages
+- [Unkle Maukie](https://mauktenieb.github.io/insertkoin/fauna-unkle_maukie.html)
+- [dogXim](https://mauktenieb.github.io/insertkoin/fauna-dogxim.html)
+- [C7H5N3O6](https://mauktenieb.github.io/insertkoin/fauna-c7h5n3o6.html)
+- [Naphta](https://mauktenieb.github.io/insertkoin/fauna-naphta.html)
+- [Croisière Noire](https://mauktenieb.github.io/insertkoin/fauna-croisiere_noire.html)
+- [Ts'ui Pên](https://mauktenieb.github.io/insertkoin/fauna-tsui_pen.html)
+- [Hátra Lövés](https://mauktenieb.github.io/insertkoin/fauna-hatra_loves.html)
+- [Honey Buzzard](https://mauktenieb.github.io/insertkoin/fauna-honey_buzzard.html)
+- [Aube](https://mauktenieb.github.io/insertkoin/fauna-aube.html)
+- [Maiden Call](https://mauktenieb.github.io/insertkoin/fauna-maiden_call.html)
+- [Auvergne](https://mauktenieb.github.io/insertkoin/fauna-auvergne.html)
+- [Silent Pact](https://mauktenieb.github.io/insertkoin/fauna-silent_pact.html)
+- [Cadaver Synod](https://mauktenieb.github.io/insertkoin/fauna-cadaver_synod.html)
+- [Poisoned Well](https://mauktenieb.github.io/insertkoin/fauna-poisoned_well.html)
+- [Plague of Justinian](https://mauktenieb.github.io/insertkoin/fauna-plague_of_justinian.html)
+- [Truce](https://mauktenieb.github.io/insertkoin/fauna-truce.html)
+- [Grand Colonel](https://mauktenieb.github.io/insertkoin/fauna-grand_colonel.html)
+- [Malika](https://mauktenieb.github.io/insertkoin/fauna-malika.html)
+
+## Français
+- [Insert Koin en français](https://mauktenieb.github.io/insertkoin/fr.html)

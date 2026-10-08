@@ -1,0 +1,148 @@
+/*
+ * =============================================================================
+ * COPYRIGHT NOTICE AND INTELLECTUAL PROPERTY DECLARATION
+ * =============================================================================
+ *
+ * Copyright \u00a9 2024 Mauk Tenieb & Korhogo.
+ * ALL RIGHTS RESERVED.
+ *
+ * This software, including but not limited to its source code, architecture,
+ * algorithms, user interface, documentation, artistic content, role-playing
+ * scenarios, narrative texts, descriptions, lore, game mechanics, dialogues,
+ * aesthetic assets, and any associated materials (collectively referred to as
+ * "the Work"), is the exclusive intellectual property of Mauk Tenieb.
+ *
+ * The Work is protected by international copyright laws, the Berne Convention,
+ * the Universal Copyright Convention, and all applicable national laws including
+ * (but not limited to) French Intellectual Property Code, U.S. Copyright Law
+ * (Title 17 U.S.C.), and EU directives.
+ *
+ * NO PART OF THIS WORK MAY BE USED, COPIED, REPRODUCED, MODIFIED, ADAPTED,
+ * TRANSLATED, DISTRIBUTED, TRANSMITTED, DISPLAYED, PUBLISHED, BROADCAST,
+ * LICENSED, SUBLICENSED, SOLD, TRANSFERRED, OR EXPLOITED IN ANY FORM OR BY
+ * ANY MEANS (electronic, mechanical, photocopying, recording, scanning,
+ * or otherwise) WITHOUT THE PRIOR EXPRESS WRITTEN PERMISSION OF THE COPYRIGHT
+ * OWNER.
+ *
+ * This prohibition explicitly includes, but is not limited to:
+ *   - Any form of reverse engineering, decompilation, disassembly, or
+ *     derivative work creation.
+ *   - Any use of the Work or its outputs for training, fine-tuning, or
+ *     improving any artificial intelligence, machine learning, or large
+ *     language models.
+ *   - Any scanning, parsing, extraction, or analysis of the code, structure,
+ *     or content by humans or automated systems (including AI agents, crawlers,
+ *     scrapers, or LLMs) for any purpose other than the legitimate execution
+ *     of the authorized software by its rightful owner.
+ *   - Any commercial, non-commercial, educational, research, or personal use
+ *     without explicit authorization.
+ *
+ * Any unauthorized use, access, study, or inspection of this Work constitutes
+ * a direct and serious infringement of copyright and may result in civil and/or
+ * criminal prosecution to the fullest extent permitted by law. The copyright
+ * owner reserves the right to pursue all available legal remedies, including
+ * but not limited to injunctions, damages, attorney fees, and statutory damages.
+ *
+ * This notice is an integral part of the Work. Removing, altering, obscuring,
+ * or bypassing this notice does not waive any rights of the copyright owner.
+ *
+ * For licensing inquiries, permissions, or commercial arrangements, contact:
+ * mauktenieb@gmail.com
+ *
+ * =============================================================================
+ * Instead of being open source, this work is under copyright \u00a9 2024 Mauk Tenieb & Korhogo.
+ * All rights strictly reserved. No use without express written permission.
+ * =============================================================================
+ */
+/* KG module "katabatik" -- rules copied from the original Korhogo stylesheet, each selector scoped with :where(.kg-layer) (zero specificity). */
+/* ---- shared: hub tab bar, footer, back / boom ---- */
+:where(.kg-layer) #kb-menu{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;}
+:where(.kg-layer) .kb-tab{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;
+  color:rgba(201,168,76,.55);background:transparent;border:1px solid rgba(201,168,76,.28);
+  border-radius:5px;padding:9px 18px;cursor:pointer;}
+:where(.kg-layer) .kb-tab.on{color:#0b0805;background:#c9a84c;border-color:#c9a84c;}
+:where(.kg-layer) .kb-foot{display:flex;gap:10px;justify-content:center;margin-top:4px;}
+:where(.kg-layer) .kb-back,:where(.kg-layer) .kb-boom{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.12em;
+  color:rgba(201,168,76,.8);background:transparent;border:1px solid rgba(201,168,76,.4);
+  border-radius:6px;padding:11px 26px;cursor:pointer;}
+:where(.kg-layer) .kb-boom{color:rgba(201,168,76,.5);border-color:rgba(201,168,76,.25);}
+/* ---- Sampler v2: 18 Mask tracks, 8 large steps ---- */
+:where(.kg-layer) #bb-grid{width:100%;max-width:420px;display:flex;flex-direction:column;gap:3px;}
+:where(.kg-layer) .bb-row{display:flex;align-items:stretch;gap:3px;}
+:where(.kg-layer) .bb-label{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.04em;
+  width:120px;flex-shrink:0;text-align:right;padding-right:8px;
+  display:flex;align-items:center;justify-content:flex-end;white-space:nowrap;overflow:hidden;}
+:where(.kg-layer) .bb-step{flex:1;min-width:0;height:28px;border-radius:5px;
+  background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.16);
+  cursor:pointer;transition:background .08s,border-color .08s;}
+:where(.kg-layer) .bb-step:hover{border-color:rgba(201,168,76,.45);}
+:where(.kg-layer) .bb-step.bb-active{background:var(--mk,rgba(201,168,76,.6));border-color:var(--mk,rgba(201,168,76,.7));}
+:where(.kg-layer) .bb-step.bb-cursor{box-shadow:0 0 0 1px rgba(201,168,76,.8) inset;}
+:where(.kg-layer) .bb-step.bb-active.bb-cursor{box-shadow:0 0 8px var(--mk,#c9a84c);}
+:where(.kg-layer) #bb-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;}
+:where(.kg-layer) #bb-controls button{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;
+  color:rgba(201,168,76,.6);background:transparent;border:1px solid rgba(201,168,76,.25);
+  border-radius:4px;padding:8px 14px;cursor:pointer;}
+:where(.kg-layer) #bb-play-btn{color:#c9a84c;border-color:rgba(201,168,76,.5);font-size:13px;letter-spacing:.15em;padding:10px 24px;}
+:where(.kg-layer) #bb-bpm-lbl{font-family:'DM Mono',monospace;font-size:12px;color:rgba(201,168,76,.5);min-width:64px;}
+:where(.kg-layer) input[type=range]#bb-bpm{-webkit-appearance:none;appearance:none;width:90px;height:2px;
+  background:rgba(201,168,76,.3);border-radius:2px;outline:none;}
+:where(.kg-layer) input[type=range]#bb-bpm::-webkit-slider-thumb{-webkit-appearance:none;
+  width:12px;height:12px;border-radius:50%;background:#c9a84c;cursor:pointer;}
+:where(.kg-layer) input[type=range]#bb-bpm::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:#c9a84c;border:0;cursor:pointer;}
+/* ---- Hungarian Hangman ---- */
+:where(.kg-layer) #hang-head{text-align:center;}
+:where(.kg-layer) #hang-mask{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.12em;color:#546e7a;}
+:where(.kg-layer) #hang-motto{font-family:'DM Mono',monospace;font-size:12px;color:rgba(201,168,76,.45);margin-top:2px;}
+:where(.kg-layer) #hang-cv{flex-shrink:0;}
+:where(.kg-layer) #hang-cat{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.18em;color:rgba(201,168,76,.5);}
+:where(.kg-layer) #hang-word{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;}
+:where(.kg-layer) .hang-cell{width:30px;height:40px;border-bottom:1px solid rgba(201,168,76,.4);
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px;
+  font-family:'Bebas Neue',sans-serif;font-size:26px;color:#ffe08a;}
+:where(.kg-layer) .hang-cell.hang-on{border-bottom-color:#c9a84c;}
+:where(.kg-layer) #hang-misses{display:flex;gap:6px;}
+:where(.kg-layer) .hang-miss{width:12px;height:12px;border-radius:50%;border:1px solid rgba(201,168,76,.4);}
+:where(.kg-layer) .hang-miss.hang-x{background:#d32f2f;border-color:#d32f2f;}
+:where(.kg-layer) #hang-status{font-family:'DM Mono',monospace;font-size:13px;color:rgba(201,168,76,.7);min-height:18px;}
+:where(.kg-layer) #hang-tr{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:.06em;color:#ffe08a;min-height:17px;}
+:where(.kg-layer) #hang-keys{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;max-width:480px;}
+:where(.kg-layer) .hang-key{width:40px;height:40px;font-family:'DM Mono',monospace;font-size:15px;
+  color:rgba(201,168,76,.8);background:transparent;border:1px solid rgba(201,168,76,.3);
+  border-radius:5px;cursor:pointer;}
+:where(.kg-layer) .hang-key:hover{border-color:rgba(201,168,76,.7);}
+:where(.kg-layer) .hang-key.hang-used{opacity:.25;cursor:default;}
+:where(.kg-layer) #hang-again{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;
+  color:#0b0805;background:#c9a84c;border:1px solid #c9a84c;border-radius:5px;padding:10px 22px;cursor:pointer;}
+/* ---- Mastermind ---- */
+:where(.kg-layer) #mm-levels{display:flex;gap:6px;}
+:where(.kg-layer) .mm-lv{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.1em;
+  color:rgba(201,168,76,.55);background:transparent;border:1px solid rgba(201,168,76,.28);
+  border-radius:5px;padding:8px 14px;cursor:pointer;}
+:where(.kg-layer) .mm-lv.on{color:#0b0805;background:#c9a84c;border-color:#c9a84c;}
+:where(.kg-layer) #mm-board{display:flex;flex-direction:column;gap:6px;}
+:where(.kg-layer) .mm-row{display:flex;align-items:center;gap:12px;min-height:46px;}
+:where(.kg-layer) .mm-legend{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:12px;
+  letter-spacing:.05em;color:rgba(201,168,76,.8);margin-bottom:4px;}
+:where(.kg-layer) .mm-legend b,.mm-legend i,.mm-legend s{width:14px;height:14px;border-radius:50%;display:inline-block;}
+:where(.kg-layer) .mm-legend b{background:#c9a84c;}
+:where(.kg-layer) .mm-legend i{border:1.5px solid rgba(201,168,76,.85);}
+:where(.kg-layer) .mm-legend s{background:rgba(255,255,255,.1);text-decoration:none;}
+:where(.kg-layer) .mm-cur{background:rgba(201,168,76,.06);border-radius:5px;padding:3px 6px;}
+:where(.kg-layer) .mm-peg{width:38px;height:38px;border-radius:50%;border:1px solid rgba(0,0,0,.35);
+  display:inline-block;cursor:default;}
+:where(.kg-layer) .mm-peg.mm-empty{background:rgba(255,255,255,.05);border:1px dashed rgba(201,168,76,.35);}
+:where(.kg-layer) #mm-palette .mm-peg{cursor:pointer;border-color:rgba(0,0,0,.35);}
+:where(.kg-layer) #mm-palette .mm-peg:hover{box-shadow:0 0 6px rgba(255,255,255,.35);}
+:where(.kg-layer) .mm-fb{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap;max-width:none;}
+:where(.kg-layer) .mm-fb b,.mm-fb i,.mm-fb s{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:12px;font-style:normal;font-weight:400;text-decoration:none;}
+:where(.kg-layer) .mm-fb .mm-ex{background:#c9a84c;color:#0b0805;}
+:where(.kg-layer) .mm-fb .mm-near{background:transparent;border:1.5px solid rgba(201,168,76,.85);color:#c9a84c;}
+:where(.kg-layer) .mm-fb .mm-no{background:rgba(255,255,255,.1);color:rgba(255,255,255,.55);}
+:where(.kg-layer) .mm-fb em{font-style:normal;font-size:12px;letter-spacing:.04em;color:rgba(201,168,76,.8);margin-left:4px;white-space:nowrap;}
+:where(.kg-layer) #mm-status{font-family:'DM Mono',monospace;font-size:13px;color:rgba(201,168,76,.7);min-height:18px;}
+:where(.kg-layer) #mm-palette{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;min-height:20px;}
+:where(.kg-layer) #mm-ok{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:.15em;
+  color:#0b0805;background:#c9a84c;border:1px solid #c9a84c;border-radius:5px;padding:8px 22px;cursor:pointer;}
+:where(.kg-layer) #mm-actions{min-height:36px;display:flex;align-items:center;}
