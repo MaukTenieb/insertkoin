@@ -1,0 +1,167 @@
+<!--
+
+ * =============================================================================
+ * COPYRIGHT NOTICE AND INTELLECTUAL PROPERTY DECLARATION
+ * =============================================================================
+ *
+ * Copyright \u00a9 2024 Mauk Tenieb & Korhogo.
+ * ALL RIGHTS RESERVED.
+ *
+ * This software, including but not limited to its source code, architecture,
+ * algorithms, user interface, documentation, artistic content, role-playing
+ * scenarios, narrative texts, descriptions, lore, game mechanics, dialogues,
+ * aesthetic assets, and any associated materials (collectively referred to as
+ * "the Work"), is the exclusive intellectual property of Mauk Tenieb.
+ *
+ * The Work is protected by international copyright laws, the Berne Convention,
+ * the Universal Copyright Convention, and all applicable national laws including
+ * (but not limited to) French Intellectual Property Code, U.S. Copyright Law
+ * (Title 17 U.S.C.), and EU directives.
+ *
+ * NO PART OF THIS WORK MAY BE USED, COPIED, REPRODUCED, MODIFIED, ADAPTED,
+ * TRANSLATED, DISTRIBUTED, TRANSMITTED, DISPLAYED, PUBLISHED, BROADCAST,
+ * LICENSED, SUBLICENSED, SOLD, TRANSFERRED, OR EXPLOITED IN ANY FORM OR BY
+ * ANY MEANS (electronic, mechanical, photocopying, recording, scanning,
+ * or otherwise) WITHOUT THE PRIOR EXPRESS WRITTEN PERMISSION OF THE COPYRIGHT
+ * OWNER.
+ *
+ * This prohibition explicitly includes, but is not limited to:
+ *   - Any form of reverse engineering, decompilation, disassembly, or
+ *     derivative work creation.
+ *   - Any use of the Work or its outputs for training, fine-tuning, or
+ *     improving any artificial intelligence, machine learning, or large
+ *     language models.
+ *   - Any scanning, parsing, extraction, or analysis of the code, structure,
+ *     or content by humans or automated systems (including AI agents, crawlers,
+ *     scrapers, or LLMs) for any purpose other than the legitimate execution
+ *     of the authorized software by its rightful owner.
+ *   - Any commercial, non-commercial, educational, research, or personal use
+ *     without explicit authorization.
+ *
+ * Any unauthorized use, access, study, or inspection of this Work constitutes
+ * a direct and serious infringement of copyright and may result in civil and/or
+ * criminal prosecution to the fullest extent permitted by law. The copyright
+ * owner reserves the right to pursue all available legal remedies, including
+ * but not limited to injunctions, damages, attorney fees, and statutory damages.
+ *
+ * This notice is an integral part of the Work. Removing, altering, obscuring,
+ * or bypassing this notice does not waive any rights of the copyright owner.
+ *
+ * For licensing inquiries, permissions, or commercial arrangements, contact:
+ * mauktenieb@gmail.com
+ *
+ * =============================================================================
+ * Instead of being open source, this work is under copyright \u00a9 2024 Mauk Tenieb & Korhogo.
+ * All rights strictly reserved. No use without express written permission.
+ * =============================================================================
+ -->
+<!-- KG fragment: FAUNARRATICS / Konklave panel (#konklave-panel) + #og-transition. Markup as parsed by the browser from the original index.html. -->
+<div id="konklave-panel">
+
+  <div class="kk-screen kk-active" id="kk-intro">
+    <!-- Phase 1: Kerema presents itself, fades out -->
+    <div id="kk-intro-p1">
+      <div class="kk-eye"></div>
+      <div class="kk-iline kk-l1">This is the Konklave.</div>
+      <div class="kk-iline kk-l2">The Kerema — also known as the AI — is here.</div>
+    </div>
+    <!-- Phase 2: Instructions, clickable -->
+    <div id="kk-intro-p2" data-action="kkEnter()">
+      <div class="kk-iline kk-l3">You'll have to seal the Kave. You and your Krews — or you as a lonely busy bee — will have to sculpt a new tale.</div>
+      <div class="kk-iline kk-l4">Three Masks ordained. You choose the rest: four, nine, or all eighteen. Each Mask displays visual material, glyphs, sentences, numbers, words… Pick one, two or three blocks that speak to something in you. Write freely what's going on. For each Mask. Be good. Go!</div>
+    </div>
+  </div>
+
+  <div class="kk-screen" id="kk-mask">
+    <div class="kk-top">
+      <button class="kk-exit" data-action="kkExit()">←</button>
+      <div class="kk-top-title">THE KONKLAVE</div>
+      <div class="kk-count" id="kk-count">MASK 1 / 3</div>
+    </div>
+    <div class="kk-dots" id="kk-dots"></div>
+    <div class="kk-stage">
+      <div class="kk-instr" id="kk-instr"></div>
+      <div class="kk-fiche" id="kk-fiche"></div>
+      <div class="kk-feed" id="kk-feed"><div class="kk-feedlbl">KEREMA</div></div>
+      <button class="kk-fork-btn" data-action="kkFork()">☰ close / press on</button>
+    </div>
+    <div class="kk-sticky-bottom">
+      <div class="kk-sections" id="kk-sections"></div>
+      <div class="kk-entry"><textarea class="kk-box" id="kk-box" placeholder="Pick one to three blocks. Write what they spark in you. Go."></textarea></div>
+      <div class="kk-counter-wrap"><span class="kk-counter" id="kk-counter">0/10 phrases</span></div>
+      <div class="kk-actions">
+        <button class="kk-hand" data-action="kkHand()">✶ NEED A HAND?</button>
+        <button class="kk-add" id="kk-add-btn" data-action="kkAdd()" disabled="">ADD →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="kk-screen" id="kk-threshold">
+    <div class="kk-eye"></div>
+    <div class="kk-th-hd">THREE MASKS IN.</div>
+    <div class="kk-th-q" id="kk-th-p2"></div>
+    <div class="kk-th-btns">
+      <button class="kk-big" data-action="kkPick4()">FOUR MORE MASKS <span class="kk-th-n">7 in all</span></button>
+      <button class="kk-big" data-action="kkPick7()">NINE MORE MASKS <span class="kk-th-n">12 in all</span></button>
+      <button class="kk-big" data-action="kkPick18()">ALL EIGHTEEN MASKS <span class="kk-th-n">18 in all</span></button>
+    </div>
+  </div>
+
+  <div class="kk-screen" id="kk-fork">
+    <div class="kk-eye"></div>
+    <div class="kk-forkq" id="kk-forkq"></div>
+    <div class="kk-forkbtns">
+      <button class="kk-big" data-action="kkNext()">ANOTHER MASK →</button>
+      <button class="kk-ghost" data-action="kkSynth()">SEAL THE LORE</button>
+    </div>
+  </div>
+
+  <div class="kk-screen" id="kk-choose">
+    <div class="kk-top">
+      <button class="kk-exit" data-action="kkBackFromChoose()">← BACK</button>
+      <div class="kk-top-title">NEXT MASK.</div>
+      <div class="kk-count" id="kk-choose-count"></div>
+    </div>
+    <div class="kk-choose-list" id="kk-choose-list"></div>
+    <div class="kk-sticky-bottom">
+      <div class="kk-actions">
+        <button class="kk-add" id="kk-play-btn" data-action="kkPlayChosen()" disabled="">PLAY →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="kk-screen" id="kk-synth">
+    <div class="kk-top"><div class="kk-top-title">THE RECKONING</div><div class="kk-count" id="kk-scount">3 MASKS PLAYED</div></div>
+    <div class="kk-synthscroll">
+      <div class="kk-kerema" style="margin-bottom:14px;"><span class="kk-who">── KEREMA ─────────────────────────</span><span class="kk-kerema-body">Here is everything you raised. It could work. Read it back, fix what limps, then bind it into one Kalabass tale.</span></div>
+      <div id="kk-recall"></div>
+      <div id="kk-stake-recall" class="kk-stake-recall" style="display:none;"></div>
+      <div class="kk-flabel">THE STORY</div>
+      <textarea class="kk-synthbox" id="kk-story" placeholder="Bind it together. Correct as you go — any language. The Kerema ▓░▒ all of it."></textarea>
+      <button class="kk-hand" style="margin:8px 0 4px;width:100%;" data-action="kkHandSynth()">✶ LET THE KEREMA WRAP IT</button>
+      <button class="kk-big" style="margin-top:12px;" data-action="kkSeal()">Wanna seal the lore in da Kalabass?</button>
+    </div>
+  </div>
+
+  <div class="kk-screen" id="kk-done">
+    <div style="margin:auto;text-align:center;padding:8vw;">
+      <div class="kk-eye" style="margin:0 auto 30px;"></div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:6px;color:#ffe08a;margin-bottom:16px;">THIS TALE IS STRONGER THAN YA!</div>
+      <div style="font-size:13px;line-height:1.8;color:#b8a888;max-width:340px;margin:0 auto;">The Kerema ▒░ it. Time to seal the lore.</div>
+      <button class="kk-ghost" style="margin-top:28px;max-width:240px;" data-action="kkEnter()">NEW KONKLAVE</button>
+      <button class="kk-ghost" style="margin-top:10px;max-width:240px;" data-action="kkExit()">LEAVE THE KAVE</button>
+    </div>
+  </div>
+
+  <div id="kk-confirm" style="display:none;position:absolute;inset:0;z-index:300;background:rgba(5,4,3,.92);align-items:center;justify-content:center;padding:10vw;">
+    <div style="max-width:340px;text-align:center;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:4px;color:#ffe08a;margin-bottom:14px;">ARE U SURE?</div>
+      <div id="kk-confirm-sub" style="font-size:13px;line-height:1.7;color:#b8a888;margin-bottom:24px;">Unanimity's mandatory, you Krew.</div>
+      <div style="display:flex;gap:10px;">
+        <button class="kk-ghost" data-action="kkConfirmNo()">NO</button>
+        <button class="kk-big" style="flex:1;" data-action="kkConfirmYes()">YES →</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="og-transition" style="display:none;position:fixed;inset:0;z-index:9400;background:#000;opacity:0;pointer-events:none;transition:opacity 0.5s;"></div>

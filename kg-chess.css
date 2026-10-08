@@ -1,0 +1,106 @@
+/*
+ * =============================================================================
+ * COPYRIGHT NOTICE AND INTELLECTUAL PROPERTY DECLARATION
+ * =============================================================================
+ *
+ * Copyright \u00a9 2024 Mauk Tenieb & Korhogo.
+ * ALL RIGHTS RESERVED.
+ *
+ * This software, including but not limited to its source code, architecture,
+ * algorithms, user interface, documentation, artistic content, role-playing
+ * scenarios, narrative texts, descriptions, lore, game mechanics, dialogues,
+ * aesthetic assets, and any associated materials (collectively referred to as
+ * "the Work"), is the exclusive intellectual property of Mauk Tenieb.
+ *
+ * The Work is protected by international copyright laws, the Berne Convention,
+ * the Universal Copyright Convention, and all applicable national laws including
+ * (but not limited to) French Intellectual Property Code, U.S. Copyright Law
+ * (Title 17 U.S.C.), and EU directives.
+ *
+ * NO PART OF THIS WORK MAY BE USED, COPIED, REPRODUCED, MODIFIED, ADAPTED,
+ * TRANSLATED, DISTRIBUTED, TRANSMITTED, DISPLAYED, PUBLISHED, BROADCAST,
+ * LICENSED, SUBLICENSED, SOLD, TRANSFERRED, OR EXPLOITED IN ANY FORM OR BY
+ * ANY MEANS (electronic, mechanical, photocopying, recording, scanning,
+ * or otherwise) WITHOUT THE PRIOR EXPRESS WRITTEN PERMISSION OF THE COPYRIGHT
+ * OWNER.
+ *
+ * This prohibition explicitly includes, but is not limited to:
+ *   - Any form of reverse engineering, decompilation, disassembly, or
+ *     derivative work creation.
+ *   - Any use of the Work or its outputs for training, fine-tuning, or
+ *     improving any artificial intelligence, machine learning, or large
+ *     language models.
+ *   - Any scanning, parsing, extraction, or analysis of the code, structure,
+ *     or content by humans or automated systems (including AI agents, crawlers,
+ *     scrapers, or LLMs) for any purpose other than the legitimate execution
+ *     of the authorized software by its rightful owner.
+ *   - Any commercial, non-commercial, educational, research, or personal use
+ *     without explicit authorization.
+ *
+ * Any unauthorized use, access, study, or inspection of this Work constitutes
+ * a direct and serious infringement of copyright and may result in civil and/or
+ * criminal prosecution to the fullest extent permitted by law. The copyright
+ * owner reserves the right to pursue all available legal remedies, including
+ * but not limited to injunctions, damages, attorney fees, and statutory damages.
+ *
+ * This notice is an integral part of the Work. Removing, altering, obscuring,
+ * or bypassing this notice does not waive any rights of the copyright owner.
+ *
+ * For licensing inquiries, permissions, or commercial arrangements, contact:
+ * mauktenieb@gmail.com
+ *
+ * =============================================================================
+ * Instead of being open source, this work is under copyright \u00a9 2024 Mauk Tenieb & Korhogo.
+ * All rights strictly reserved. No use without express written permission.
+ * =============================================================================
+ */
+/* KG module "chess" -- rules copied from the original Korhogo stylesheet, each selector scoped with :where(.kg-layer) (zero specificity). */
+:where(.kg-layer) #chess{position:fixed;inset:0;z-index:501;background:#050505;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .4s cubic-bezier(.16,1,.3,1),visibility 0s linear .4s;visibility:hidden}
+:where(.kg-layer) #chess.open{transform:translateY(0);visibility:visible;transition:transform .4s cubic-bezier(.16,1,.3,1),visibility 0s}
+:where(.kg-layer) #chess-hdr{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;border-bottom:1px solid rgba(201,168,76,.25);background:rgba(201,168,76,.05);flex-shrink:0}
+:where(.kg-layer) #chess-status{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.15em;color:rgba(255,255,255,.7);text-align:center;flex:1;padding:0 .5rem}
+:where(.kg-layer) #chess-quit{font-family:'DM Mono',monospace;font-size:.55rem;background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.35);padding:.35em .8em;cursor:pointer;touch-action:auto}
+:where(.kg-layer) #chess-quit:active{border-color:#c9a84c;color:#c9a84c}
+:where(.kg-layer) #chess-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.5rem;gap:.5rem}
+:where(.kg-layer) #chess-players{display:flex;justify-content:space-between;width:min(94vw,94vh);max-width:420px}
+:where(.kg-layer) .ch-player{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.12em;padding:.35em .8em;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.5);transition:all .2s}
+:where(.kg-layer) .ch-player.active{border-color:currentColor;background:rgba(128,128,128,.06)}
+:where(.kg-layer) #chess-board{display:grid;grid-template-columns:repeat(8,1fr);width:min(94vw,94vh);max-width:420px;aspect-ratio:1;border:1px solid rgba(201,168,76,.4)}
+:where(.kg-layer) .sq{aspect-ratio:1;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;touch-action:auto}
+:where(.kg-layer) .sq.light{background:#4a3c28}
+:where(.kg-layer) .sq.dark{background:#28200f}
+:where(.kg-layer) .sq.sel{background:rgba(201,168,76,.4)!important}
+:where(.kg-layer) .sq.hint{background:rgba(201,168,76,.2)!important}
+:where(.kg-layer) .sq.hint::after{content:'';position:absolute;width:30%;height:30%;border-radius:50%;background:rgba(201,168,76,.5)}
+:where(.kg-layer) .sq.last{box-shadow:inset 0 0 0 2px rgba(201,168,76,.4)}
+:where(.kg-layer) .piece{font-size:clamp(1.65rem,9vw,3.5rem);line-height:1;user-select:none;position:relative;z-index:1;transition:filter .15s,text-shadow .3s}
+:where(.kg-layer) .piece.black{color:#e8d8ff;text-shadow:0 0 2px #fff,0 0 6px #d8b4ff,0 0 14px #b87fff,0 0 24px #9955dd,0 0 42px #7733bb;filter:brightness(1.8);animation:glow-b 2.4s ease-in-out infinite alternate}
+:where(.kg-layer) #chess-log{width:min(94vw,94vh);max-width:420px;font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.08em;color:rgba(255,255,255,.2);display:flex;gap:.3rem;flex-wrap:wrap;max-height:2.5rem;overflow:hidden}
+:where(.kg-layer) .cm{padding:.1em .3em;border:1px solid rgba(255,255,255,.06)}
+:where(.kg-layer) .cm.w{color:rgba(201,168,76,.6)}
+:where(.kg-layer) .cm.b{color:rgba(100,130,220,.6)}
+:where(.kg-layer) #chess-sel{position:absolute;inset:0;background:linear-gradient(180deg,#0a0805 0%,#050302 100%);z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:.7rem;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:28px 20px 36px;}
+:where(.kg-layer) #chess-sel h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,7vw,2.4rem);color:#c9a84c;letter-spacing:.2em;text-shadow:0 0 30px rgba(201,168,76,.4);margin:0 0 4px;}
+:where(.kg-layer) .ch-sel-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.22em;color:rgba(201,168,76,.5);text-transform:uppercase;margin:6px 0 4px;}
+:where(.kg-layer) .ch-sel-row{display:flex;gap:8px;width:100%;max-width:300px;justify-content:center;}
+:where(.kg-layer) .ch-sel-btn{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;flex:1;padding:9px 4px;border:1px solid rgba(201,168,76,.25);background:rgba(201,168,76,.04);color:rgba(201,168,76,.7);cursor:pointer;border-radius:4px;}
+:where(.kg-layer) .ch-sel-btn.on,:where(.kg-layer) .ch-sel-btn:active{border-color:#c9a84c;background:rgba(201,168,76,.14);color:#ffe08a;box-shadow:0 0 12px rgba(201,168,76,.2);}
+:where(.kg-layer) .ch-sel-btn.accent{border-color:rgba(201,168,76,.5);color:#c9a84c;}
+:where(.kg-layer) .ch-sel-divider{width:100%;max-width:300px;height:1px;background:rgba(201,168,76,.1);margin:4px 0;}
+:where(.kg-layer) #chess-sel h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,7vw,2.6rem);color:#c9a84c;letter-spacing:.18em;text-shadow:0 0 20px rgba(201,168,76,.5);text-align:center;margin:0;}
+:where(.kg-layer) #chess-confirm{display:none;position:absolute;inset:0;background:rgba(5,5,5,.96);z-index:12;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;text-align:center}
+:where(.kg-layer) #chess-confirm.show{display:flex}
+:where(.kg-layer) #chess-over{display:none;position:absolute;inset:0;background:rgba(5,5,5,.92);z-index:10;flex-direction:column;align-items:center;justify-content:center;gap:1rem;text-align:center}
+:where(.kg-layer) #chess-over.show{display:flex}
+:where(.kg-layer) #chess-over h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,9vw,5rem);letter-spacing:.1em}
+:where(.kg-layer) #chess-over p{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.2em;color:rgba(255,255,255,.3);text-transform:uppercase}
+:where(.kg-layer) .ch-go-btns{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center}
+:where(.kg-layer) .ch-go-btn{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.12em;padding:.7em 1.4em;border:1px solid rgba(201,168,76,.4);color:rgba(201,168,76,.6);background:none;cursor:pointer;text-transform:uppercase;touch-action:auto}
+:where(.kg-layer) .ch-go-btn:active{background:#c9a84c;color:#000}
+:where(.kg-layer) #crazy-panel{position:fixed;inset:0;z-index:510;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s,visibility 0s linear .35s}
+:where(.kg-layer) #crazy-panel.open{opacity:1;pointer-events:all;visibility:visible;transition:visibility 0s,opacity .35s}
+:where(.kg-layer) #journal-panel{position:fixed;inset:0;z-index:515;background:rgba(0,0,0,.95);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s,visibility 0s linear .35s}
+:where(.kg-layer) #journal-panel.open{opacity:1;pointer-events:all;visibility:visible;transition:visibility 0s,opacity .35s}
+
+/* keyframes */
+@keyframes glow-b{from{text-shadow:0 0 2px #fff,0 0 6px #fff,0 0 14px #aac8ff,0 0 24px #6699ff,0 0 42px #4466ff}to{text-shadow:0 0 4px #fff,0 0 10px #fff,0 0 20px #aac8ff,0 0 36px #6699ff,0 0 60px #4466ff,0 0 80px rgba(68,102,255,.4)}}

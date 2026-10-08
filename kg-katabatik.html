@@ -1,0 +1,117 @@
+<!--
+ * =============================================================================
+ * COPYRIGHT NOTICE AND INTELLECTUAL PROPERTY DECLARATION
+ * =============================================================================
+ *
+ * Copyright © 2024 Mauk Tenieb & Korhogo.
+ * ALL RIGHTS RESERVED.
+ *
+ * This software, including but not limited to its source code, architecture,
+ * algorithms, user interface, documentation, artistic content, role-playing
+ * scenarios, narrative texts, descriptions, lore, game mechanics, dialogues,
+ * aesthetic assets, and any associated materials (collectively referred to as
+ * "the Work"), is the exclusive intellectual property of Mauk Tenieb.
+ *
+ * The Work is protected by international copyright laws, the Berne Convention,
+ * the Universal Copyright Convention, and all applicable national laws including
+ * (but not limited to) French Intellectual Property Code, U.S. Copyright Law
+ * (Title 17 U.S.C.), and EU directives.
+ *
+ * NO PART OF THIS WORK MAY BE USED, COPIED, REPRODUCED, MODIFIED, ADAPTED,
+ * TRANSLATED, DISTRIBUTED, TRANSMITTED, DISPLAYED, PUBLISHED, BROADCAST,
+ * LICENSED, SUBLICENSED, SOLD, TRANSFERRED, OR EXPLOITED IN ANY FORM OR BY
+ * ANY MEANS (electronic, mechanical, photocopying, recording, scanning,
+ * or otherwise) WITHOUT THE PRIOR EXPRESS WRITTEN PERMISSION OF THE COPYRIGHT
+ * OWNER.
+ *
+ * This prohibition explicitly includes, but is not limited to:
+ *   - Any form of reverse engineering, decompilation, disassembly, or
+ *     derivative work creation.
+ *   - Any use of the Work, its outputs for training, fine-tuning, or
+ *     improving any artificial intelligence, machine learning, or large
+ *     language models.
+ *   - Any scanning, parsing, extraction, or analysis of the code, structure,
+ *     or content by humans or automated systems (including AI agents, crawlers,
+ *     scrapers, or LLMs) for any purpose other than the legitimate execution
+ *     of the authorized software by its rightful owner.
+ *   - Any commercial, non-commercial, educational, research, or personal use
+ *     without explicit authorization.
+ *
+ * Any unauthorized use, access, study, or inspection of this Work constitutes
+ * a direct and serious infringement of copyright and may result in civil and/or
+ * criminal prosecution to the fullest extent permitted by law. The copyright
+ * owner reserves the right to pursue all available legal remedies, including
+ * but not limited to injunctions, damages, attorney fees, and statutory damages.
+ *
+ * This notice is an integral part of the Work. Removing, altering, obscuring,
+ * or bypassing this notice does not waive any rights of the copyright owner.
+ *
+ * For licensing inquiries, permissions, or commercial arrangements, contact:
+ * mauktenieb@gmail.com
+ *
+ * =============================================================================
+ * Instead of being open source, this work is under copyright © 2024 Mauk Tenieb & Korhogo.
+ * All rights strictly reserved. No use without express written permission.
+ * =============================================================================
+ -->
+<!-- KG fragment: KATABATIK panels (#c4-panel + #bb-panel + #hang-panel + #mm-panel). Markup as parsed by the browser from the original index.html; the four games are Insert Koin additions. -->
+<div id="c4-panel" style="display:none;position:fixed;inset:0;z-index:9200;background:rgba(3,2,1,.97);flex-direction:column;align-items:center;justify-content:center;gap:14px;overflow-y:auto;padding:16px 10px;">
+  <div id="kb-menu">
+    <button class="kb-tab on" data-action="kbShow('c4')">CONNECT 4</button>
+    <button class="kb-tab" data-action="kbShow('bb')">SAMPLER</button>
+    <button class="kb-tab" data-action="kbShow('hang')">HANGMAN</button>
+    <button class="kb-tab" data-action="kbShow('mm')">MASTERMIND</button>
+  </div>
+  <canvas id="c4-canvas" style="display:block;touch-action:none;"></canvas>
+  <button data-action="bakuBoomToChessMenu()" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;color:rgba(201,168,76,.8);background:transparent;border:1px solid rgba(201,168,76,.4);border-radius:6px;padding:9px 22px;cursor:pointer;">Baku Boom</button>
+</div>
+<div id="bb-panel" style="display:none;position:fixed;inset:0;z-index:9200;background:rgba(3,2,1,.97);flex-direction:column;align-items:center;justify-content:flex-start;padding:12px 10px 10px;gap:8px;overflow:hidden;">
+  <div id="bb-motto" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.06em;text-align:center;opacity:.75;min-height:16px;padding:0 16px;"></div>
+  <div id="bb-grid"></div>
+  <div id="bb-controls">
+    <button id="bb-play-btn" data-action="bbTogglePlay()">PLAY</button>
+    <button data-action="bbRefresh()">Refresh</button>
+    <input type="range" id="bb-bpm" min="60" max="180" value="90" oninput="bbSetBPM(this.value)" ontouchend="bbSetBPM(this.value)">
+    <span id="bb-bpm-lbl">90 BPM</span>
+    <button data-action="bbKave()">Kave it!</button>
+  </div>
+  <div class="kb-foot">
+    <button class="kb-back" data-action="kbShow('c4')">← KATABATIK</button>
+    <button class="kb-boom" data-action="bbBakuBoom()">Baku Boom</button>
+  </div>
+</div>
+<div id="hang-panel" style="display:none;position:fixed;inset:0;z-index:9200;background:rgba(3,2,1,.97);flex-direction:column;align-items:center;justify-content:flex-start;gap:12px;overflow-y:auto;padding:18px 12px;">
+  <div id="hang-head">
+    <div id="hang-mask">PLAGUE OF JUSTINIAN</div>
+    <div id="hang-motto">In contagion strength</div>
+  </div>
+  <canvas id="hang-cv" width="440" height="560" style="width:220px;height:280px;max-width:70vw;display:block;"></canvas>
+  <div id="hang-cat"></div>
+  <div id="hang-word"></div>
+  <div id="hang-misses"></div>
+  <div id="hang-status"></div>
+  <div id="hang-tr"></div>
+  <div id="hang-keys"></div>
+  <button id="hang-again" data-action="hangNew()" style="display:none;">ANOTHER WORD →</button>
+  <div class="kb-foot">
+    <button class="kb-back" data-action="kbShow('c4')">← KATABATIK</button>
+    <button class="kb-boom" data-action="bakuBoomToChessMenu()">Baku Boom</button>
+  </div>
+</div>
+<div id="mm-panel" style="display:none;position:fixed;inset:0;z-index:9200;background:rgba(3,2,1,.97);flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;overflow-y:auto;padding:16px 12px;">
+  <div id="mm-levels">
+    <button class="mm-lv on" data-action="mmLevel(0)">Beginner</button>
+    <button class="mm-lv" data-action="mmLevel(1)">Intermediate</button>
+    <button class="mm-lv" data-action="mmLevel(2)">Expert</button>
+  </div>
+  <div id="mm-board"></div>
+  <div id="mm-status"></div>
+  <div id="mm-palette"></div>
+  <div id="mm-actions">
+    <button id="mm-ok" data-action="mmSubmit()" style="display:none;">OK →</button>
+  </div>
+  <div class="kb-foot">
+    <button class="kb-back" data-action="kbShow('c4')">← KATABATIK</button>
+    <button class="kb-boom" data-action="bakuBoomToChessMenu()">Baku Boom</button>
+  </div>
+</div>

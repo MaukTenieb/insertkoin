@@ -1,0 +1,85 @@
+<!--
+
+ * =============================================================================
+ * COPYRIGHT NOTICE AND INTELLECTUAL PROPERTY DECLARATION
+ * =============================================================================
+ *
+ * Copyright \u00a9 2024 Mauk Tenieb & Korhogo.
+ * ALL RIGHTS RESERVED.
+ *
+ * This software, including but not limited to its source code, architecture,
+ * algorithms, user interface, documentation, artistic content, role-playing
+ * scenarios, narrative texts, descriptions, lore, game mechanics, dialogues,
+ * aesthetic assets, and any associated materials (collectively referred to as
+ * "the Work"), is the exclusive intellectual property of Mauk Tenieb.
+ *
+ * The Work is protected by international copyright laws, the Berne Convention,
+ * the Universal Copyright Convention, and all applicable national laws including
+ * (but not limited to) French Intellectual Property Code, U.S. Copyright Law
+ * (Title 17 U.S.C.), and EU directives.
+ *
+ * NO PART OF THIS WORK MAY BE USED, COPIED, REPRODUCED, MODIFIED, ADAPTED,
+ * TRANSLATED, DISTRIBUTED, TRANSMITTED, DISPLAYED, PUBLISHED, BROADCAST,
+ * LICENSED, SUBLICENSED, SOLD, TRANSFERRED, OR EXPLOITED IN ANY FORM OR BY
+ * ANY MEANS (electronic, mechanical, photocopying, recording, scanning,
+ * or otherwise) WITHOUT THE PRIOR EXPRESS WRITTEN PERMISSION OF THE COPYRIGHT
+ * OWNER.
+ *
+ * This prohibition explicitly includes, but is not limited to:
+ *   - Any form of reverse engineering, decompilation, disassembly, or
+ *     derivative work creation.
+ *   - Any use of the Work or its outputs for training, fine-tuning, or
+ *     improving any artificial intelligence, machine learning, or large
+ *     language models.
+ *   - Any scanning, parsing, extraction, or analysis of the code, structure,
+ *     or content by humans or automated systems (including AI agents, crawlers,
+ *     scrapers, or LLMs) for any purpose other than the legitimate execution
+ *     of the authorized software by its rightful owner.
+ *   - Any commercial, non-commercial, educational, research, or personal use
+ *     without explicit authorization.
+ *
+ * Any unauthorized use, access, study, or inspection of this Work constitutes
+ * a direct and serious infringement of copyright and may result in civil and/or
+ * criminal prosecution to the fullest extent permitted by law. The copyright
+ * owner reserves the right to pursue all available legal remedies, including
+ * but not limited to injunctions, damages, attorney fees, and statutory damages.
+ *
+ * This notice is an integral part of the Work. Removing, altering, obscuring,
+ * or bypassing this notice does not waive any rights of the copyright owner.
+ *
+ * For licensing inquiries, permissions, or commercial arrangements, contact:
+ * mauktenieb@gmail.com
+ *
+ * =============================================================================
+ * Instead of being open source, this work is under copyright \u00a9 2024 Mauk Tenieb & Korhogo.
+ * All rights strictly reserved. No use without express written permission.
+ * =============================================================================
+ -->
+<!-- KG fragment: KAPTURE button (#kapture-btn, shown by the loader only while Kapture is open) + #kapture-overlay. Markup as parsed by the browser from the original index.html. -->
+<button id="kapture-btn">KAPTURE!</button>
+<div id="kapture-overlay">
+  <canvas id="kapture-canvas"></canvas>
+  <!-- Screen 1: choose -->
+  <div id="kapture-choose">
+        <div id="kapture-choose-sub">Join the...</div>
+    <div id="kapture-choose-btns">
+      <button id="kap-btn-kam" class="kap-toggle" data-action="kaptureToggle('kam')">KAM</button>
+      <button id="kap-btn-mik" class="kap-toggle" data-action="kaptureToggle('mik')">MIK</button>
+    </div>
+    <button id="kap-btn-go" class="kap-go" data-action="kaptureGo()">GO →</button>
+    <button id="kap-btn-nope" class="kap-nope" data-action="kaptureNope()">Fuck u in Baku-Bayou!</button>
+  </div>
+  <!-- Screen 2: recording -->
+  <div id="kapture-rec" style="display:none">
+    <div id="kapture-hud">
+      <div id="kapture-timer"></div>
+      <div id="kapture-label"></div>
+    </div>
+  </div>
+  <!-- Screen 3: done -->
+  <div id="kapture-done" style="display:none">
+    <div id="kapture-done-title"></div>
+    <a id="kapture-dl" download="kapture.webm" style="display:none;font-family:'DM Mono',monospace;font-size:13px;letter-spacing:.2em;padding:12px 28px;border:1px solid #c9a84c;border-radius:6px;color:#ffe08a;text-decoration:none;background:rgba(201,168,76,.12);">⬇ VIDEO</a>
+    <button id="kapture-close" data-action="kaptureClose()">✕</button>
+  </div>
+</div>

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KGVHS REC-over — smoke test</title>
+<style>
+  body { font-family: ui-monospace, Consolas, monospace; background: #111; color: #ddd; padding: 24px; }
+  h1 { font-size: 18px; } h2 { font-size: 14px; margin-top: 20px; }
+  .pass { color: #7dd87d; } .fail { color: #ff5f5f; } .warn { color: #e5c15b; }
+  pre { background: #181818; border: 1px solid #333; padding: 12px; font-size: 12px; white-space: pre-wrap; }
+  #deck-holder { margin-top: 16px; transform: scale(.72); transform-origin: top left; height: 620px; overflow: hidden; border: 1px solid #333; }
+  link-kgt { display: none; }
+</style>
+<!-- feuille du deck (chargée en JS après le mock fetch) -->
+</head>
+<body>
+<h1>KGVHS REC-over — smoke test (REC par-dessus la cassette, backend mocké)</h1>
+<pre id="log">chargement…</pre>
+
+<script>
+/* ==================================================================
+ *  Mock CHANNEL.SCRAPE : un mini-backend à état dans la page.
+ *  jobs   : id -> {channel}         (DELETE le retire vraiment)
+ *  videos : piste par job
+ *  /videos/all est dérivé de l'état : après erase, Alpha disparaît.
+ * ================================================================== */
+(function () {
+  var state = {
+    jobs: {
+      "job-1": { channel: "Alpha Channel" },
+      "job-2": { channel: "Alpha Channel" },
+      "job-3": { channel: "Beta Channel" }
+    },
+    videos: [
+      { video_id: "vidA1", title: "01 - Alpha One", channel: "Alpha Channel", job_id: "job-1" },
+      { video_id: "vidA2", title: "Alpha Two", channel: "Alpha Channel", job_id: "job-2" },
+      { video_id: "vidB1", title: "Beta One", channel: "Beta Channel", job_id: "job-3" }
+    ],
+    recStarted: false, pollCount: 0
+  };
+  var calls = { deletes: [], starts: 0 };
+
+  function deriveVideosAll() {
+    var sources = [], videos = [];
+    Object.keys(state.jobs).forEach(function (id) {
+      var ch = state.jobs[id].channel;
+      var vids = state.videos.filter(function (v) { return v.job_id === id; });
+      var s = sources.filter(function (x) { return x.channel === ch; })[0];
+      if (!s) { s = { job_id: id, channel: ch, channel_url: "https://www.youtube.com/@" + ch, count: 0 }; sources.push(s); }
+      s.count += vids.length;
+      videos = videos.concat(vids);
+    });
+    return { sources: sources, videos: videos, total: videos.length };
+  }
+  function res(body) { return Promise.resolve({ ok: true, status: 200, json: function () { return Promise.resolve(body); } }); }
+
+  window.__mockState = state; window.__mockCalls = calls;
+  var API = "http://127.0.0.1:8001/api";
+  var realFetch = window.fetch.bind(window);
+  window.fetch = function (url, opts) {
+    url = String(url);
+    // Les appels hors-API (kg-vhs.html, scripts…) passent au fetch réel.
+    if (url.indexOf(API) !== 0) return realFetch(url, opts);
+    var path = url.slice(API.length);
+    if (path.indexOf("/videos/all") === 0) return res(deriveVideosAll());
+    if (path === "/history") {
+      var items = Object.keys(state.jobs).map(function (id) { return { id: id, channel: state.jobs[id].channel }; });
+      return res({ items: items });
+    }
+    var m = path.match(/^\/history\/([^/?]+)$/);
+    if (m && opts && opts.method === "DELETE") {
+      var id = m[1], job = state.jobs[id];
+      if (job) {
+        state.videos = state.videos.filter(function (v) { return v.job_id !== id; });
+        delete state.jobs[id];
+      }
+      calls.deletes.push(id);
+      return res({ ok: true });
+    }
+    if (path === "/scrape/start") {
+      calls.starts++;
+      state.recStarted = true;
+      state.jobs["job-rec"] = { channel: "New Channel" };
+      // Comme le vrai backend : la prise est écrite dans la base au fil du
+      // scraping, donc /videos/all la liste dès le premier poll.
+      state.videos.push({ video_id: "vidN1", title: "New Take One", channel: "New Channel", job_id: "job-rec" });
+      return res({ job_id: "job-rec" });
+    }
+    if (path.indexOf("/scrape/status/") === 0) {
+      state.pollCount++;
+      var first = state.pollCount === 1;
+      return res(first
+        ? { status: "running", processed: 1, total: 1, new_videos: [{ video_id: "vidN1" }], channel: { channel: "New Channel" } }
+        : { status: "completed", processed: 1, total: 1, new_videos: [], channel: { channel: "New Channel" } });
+    }
+    return Promise.reject(new Error("mock: url inattendue " + url));
+  };
+})();
+
+/* ==================================================================
+ *  Harnais d'assertions
+ * ================================================================== */
+window.__results = [];
+function check(label, cond, extra) {
+  window.__results.push({ label: label, pass: !!cond, extra: extra || "" });
+  render();
+}
+function render() {
+  var el = document.getElementById("log");
+  if (!el) return;
+  var fails = window.__results.filter(function (r) { return !r.pass; }).length;
+  var lines = window.__results.map(function (r) { return (r.pass ? "PASS  " : "FAIL  ") + r.label + (r.pass ? "" : " — " + r.extra); });
+  var done = window.__done;
+  lines.push("", done ? (fails === 0 ? ">>> SMOKE REC-OVER : TOUT PASSE (" + window.__results.length + " checks)" : ">>> " + fails + " ECHEC(S) sur " + window.__results.length) : "… scénario en cours");
+  el.textContent = lines.join("\n");
+  el.className = fails === 0 ? "pass" : "fail";
+}
+
+/* ==================================================================
+ *  Scénario : fragment du deck injecté, modules RÉELS chargés dessus
+ * ================================================================== */
+var CSS = document.createElement("link");
+CSS.rel = "stylesheet"; CSS.href = "kg-vhs.css";
+document.head.appendChild(CSS);
+
+fetch("kg-vhs.html").then(function (r) { return r.text(); }).then(function (html) {
+  var holder = document.createElement("div");
+  holder.id = "deck-holder";
+  holder.innerHTML = html; // <div id="vhs" data-vhs-root>…</div>
+  document.body.appendChild(holder);
+
+  // Modules réels, dans l'ordre : deck, library, recorder (boot() câble la baie REC)
+  return loadScript("kg-vhs.js")
+    .then(function () { return loadScript("kg-vhs-library.js"); })
+    .then(function () { return loadScript("kg-vhs-recorder.js"); });
+}).then(runScenario).catch(function (e) {
+  check("scénario démarré", false, String(e && e.stack || e));
+  window.__done = true; render();
+});
+
+function loadScript(src) {
+  return new Promise(function (res, rej) {
+    var s = document.createElement("script");
+    s.src = src; s.onload = res; s.onerror = function () { rej(new Error("load " + src)); };
+    document.body.appendChild(s);
+  });
+}
+
+function runScenario() {
+  var L = window.KGVHSLibrary;
+  var wait = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+
+  L.ready().then(function () {
+    check("library prête depuis le mock (3 pistes)", (window.KG_VHS_TRACKS || []).length === 3, String((window.KG_VHS_TRACKS || []).length));
+    check("JUKE_TRACKS intact (non défini)", window.JUKE_TRACKS === undefined);
+
+    // La cassette Alpha est chargée sur le deck (clic étagère simulé par l'API réelle)
+    L.selectTape("Alpha Channel");
+    check("cassette Alpha chargée (current)", L.current() === "Alpha Channel", String(L.current()));
+
+    // REC réel : remplir le champ et cliquer le vrai bouton
+    var input = document.querySelector("[data-vhs-rec-input]");
+    var btn = document.querySelector("[data-vhs-rec-btn]");
+    check("baie REC câblée (champ + bouton)", !!input && !!btn);
+    var hint = document.querySelector("[data-vhs-rec-hint]");
+    check("ligne d'aide REC-over injectée", !!hint && /erase|effac/i.test(hint.textContent || ""), hint && hint.textContent);
+    input.value = "https://www.youtube.com/@newchannel/videos";
+    btn.click();
+
+    // +2 s : la complétion (2e poll) a eu lieu, erase + refresh faits
+    wait(2200).then(function () {
+      var calls = window.__mockCalls, st = window.__mockState;
+      check("REC parti vers le mock", calls.starts === 1, String(calls.starts));
+
+      // Le cœur : SEULEMENT les jobs d'Alpha sont effacés, Beta intact
+      var del = calls.deletes.slice().sort();
+      check("jobs d'Alpha effacés (job-1, job-2)", del.indexOf("job-1") >= 0 && del.indexOf("job-2") >= 0, JSON.stringify(del));
+      check("Beta épargné (job-3 non effacé)", del.indexOf("job-3") < 0, JSON.stringify(del));
+      check("mock: Alpha n'a plus de job", !st.jobs["job-1"] && !st.jobs["job-2"]);
+      check("mock: Beta toujours là", !!st.jobs["job-3"]);
+
+      // La bibliothèque rafraîchie ne connaît plus Alpha, connaît New Channel
+      var names = L.tapes().map(function (t) { return t.channel; }).sort();
+      check("étagère: Alpha disparue, New Channel présente", names.indexOf("Alpha Channel") < 0 && names.indexOf("New Channel") >= 0, JSON.stringify(names));
+
+      // Le deck est chargé avec la nouvelle prise (comportement magnétoscope)
+      check("deck: nouvelle cassette chargée (current)", L.current() === "New Channel", String(L.current()));
+      check("deck: 1 piste (la nouvelle prise)", (window.KG_VHS_TRACKS || []).length === 1 && window.KG_VHS_TRACKS[0].id === "vidN1", JSON.stringify(window.KG_VHS_TRACKS));
+
+      // La ligne de progression annonce l'effacement
+      var prog = document.querySelector("[data-vhs-rec-progress]");
+      check("message: cassette effacée et rembobinée", prog && /rembobin/i.test(prog.textContent || ""), prog && prog.textContent);
+
+      check("JUKE_TRACKS toujours intact", window.JUKE_TRACKS === undefined);
+
+      window.__done = true; render();
+    });
+  });
+}
+</script>
+</body>
+</html>

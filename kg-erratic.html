@@ -1,0 +1,99 @@
+<!--
+
+ * =============================================================================
+ * COPYRIGHT NOTICE AND INTELLECTUAL PROPERTY DECLARATION
+ * =============================================================================
+ *
+ * Copyright \u00a9 2024 Mauk Tenieb & Korhogo.
+ * ALL RIGHTS RESERVED.
+ *
+ * This software, including but not limited to its source code, architecture,
+ * algorithms, user interface, documentation, artistic content, role-playing
+ * scenarios, narrative texts, descriptions, lore, game mechanics, dialogues,
+ * aesthetic assets, and any associated materials (collectively referred to as
+ * "the Work"), is the exclusive intellectual property of Mauk Tenieb.
+ *
+ * The Work is protected by international copyright laws, the Berne Convention,
+ * the Universal Copyright Convention, and all applicable national laws including
+ * (but not limited to) French Intellectual Property Code, U.S. Copyright Law
+ * (Title 17 U.S.C.), and EU directives.
+ *
+ * NO PART OF THIS WORK MAY BE USED, COPIED, REPRODUCED, MODIFIED, ADAPTED,
+ * TRANSLATED, DISTRIBUTED, TRANSMITTED, DISPLAYED, PUBLISHED, BROADCAST,
+ * LICENSED, SUBLICENSED, SOLD, TRANSFERRED, OR EXPLOITED IN ANY FORM OR BY
+ * ANY MEANS (electronic, mechanical, photocopying, recording, scanning,
+ * or otherwise) WITHOUT THE PRIOR EXPRESS WRITTEN PERMISSION OF THE COPYRIGHT
+ * OWNER.
+ *
+ * This prohibition explicitly includes, but is not limited to:
+ *   - Any form of reverse engineering, decompilation, disassembly, or
+ *     derivative work creation.
+ *   - Any use of the Work or its outputs for training, fine-tuning, or
+ *     improving any artificial intelligence, machine learning, or large
+ *     language models.
+ *   - Any scanning, parsing, extraction, or analysis of the code, structure,
+ *     or content by humans or automated systems (including AI agents, crawlers,
+ *     scrapers, or LLMs) for any purpose other than the legitimate execution
+ *     of the authorized software by its rightful owner.
+ *   - Any commercial, non-commercial, educational, research, or personal use
+ *     without explicit authorization.
+ *
+ * Any unauthorized use, access, study, or inspection of this Work constitutes
+ * a direct and serious infringement of copyright and may result in civil and/or
+ * criminal prosecution to the fullest extent permitted by law. The copyright
+ * owner reserves the right to pursue all available legal remedies, including
+ * but not limited to injunctions, damages, attorney fees, and statutory damages.
+ *
+ * This notice is an integral part of the Work. Removing, altering, obscuring,
+ * or bypassing this notice does not waive any rights of the copyright owner.
+ *
+ * For licensing inquiries, permissions, or commercial arrangements, contact:
+ * mauktenieb@gmail.com
+ *
+ * =============================================================================
+ * Instead of being open source, this work is under copyright \u00a9 2024 Mauk Tenieb & Korhogo.
+ * All rights strictly reserved. No use without express written permission.
+ * =============================================================================
+ -->
+<!-- KG fragment: ERRATIC memory game panel (#mem). Markup as parsed by the browser from the original index.html. -->
+<div id="mem">
+  <div class="m-screen" id="m-title">
+    <div class="motel-bar" style="display:flex;align-items:center;gap:.6rem;cursor:pointer;touch-action:auto;user-select:none;padding:10px 16px;justify-content:center;" data-action="toggleRadio()">
+  <div style="font-size:1.2rem;color:rgba(201,168,76,.5);">♪</div>
+  <span style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.2em;color:rgba(201,168,76,.5);">MOTEL SOUND</span>
+  <div class="motel-bar-note" style="font-size:.6rem;color:rgba(201,168,76,.4);letter-spacing:.1em;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
+</div>
+    <div class="sub">Korhogo · Memory</div>
+    <h1>THE FAUNA</h1>
+    <div class="m-grid">
+      <button class="m-btn" data-action="sndBtn();mStart(6)">6 pairs<br><small style="opacity:.5">easy</small></button>
+      <button class="m-btn" data-action="sndBtn();mStart(9)">9 pairs<br><small style="opacity:.5">medium</small></button>
+      <button class="m-btn" data-action="sndBtn();mStart(12)">12 pairs<br><small style="opacity:.5">hard</small></button>
+      <button class="m-btn" data-action="sndBtn();mStart(18)">18 pairs<br><small style="opacity:.5">full fauna</small></button>
+      <button class="m-btn full" data-action="sndClose();closeMem()">← BACK TO FAUNA</button>
+    </div>
+    <div id="m-scores"></div>
+  </div>
+  <div class="m-screen hidden" id="m-game">
+    <div id="m-hud">
+      <div style="display:flex;gap:1rem">
+        <div class="m-stat">PAIRS <b id="m-pairs">0/0</b></div>
+        <div class="m-stat">MOVES <b id="m-moves">0</b></div>
+        <div class="m-stat">TIME <b id="m-time">0:00</b></div>
+      </div>
+      <button id="m-quit" data-action="mMenuBack()">← MENU</button>
+    </div>
+    <div id="m-board"></div>
+    <div id="m-flash"><div id="m-flash-name"></div></div>
+  </div>
+  <div class="m-screen hidden" id="m-win">
+    <h2>FOUND!</h2>
+    <div class="w-sub">All pairs matched</div>
+    <div class="w-score" id="m-win-score"></div>
+    <div class="w-btns">
+      <button class="w-btn" data-action="sndBtn();mRestartSame()">Play Again</button>
+      <button class="w-btn" data-action="sndBtn();mMenuBack()">Menu</button>
+      <button class="w-btn" data-action="sndClose();closeMem()">← Exit</button>
+    </div>
+  </div>
+</div>

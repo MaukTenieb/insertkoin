@@ -1,0 +1,217 @@
+/*
+ * =============================================================================
+ * COPYRIGHT NOTICE AND INTELLECTUAL PROPERTY DECLARATION
+ * =============================================================================
+ *
+ * Copyright \u00a9 2024 Mauk Tenieb & Korhogo.
+ * ALL RIGHTS RESERVED.
+ *
+ * This software, including but not limited to its source code, architecture,
+ * algorithms, user interface, documentation, artistic content, role-playing
+ * scenarios, narrative texts, descriptions, lore, game mechanics, dialogues,
+ * aesthetic assets, and any associated materials (collectively referred to as
+ * "the Work"), is the exclusive intellectual property of Mauk Tenieb.
+ *
+ * The Work is protected by international copyright laws, the Berne Convention,
+ * the Universal Copyright Convention, and all applicable national laws including
+ * (but not limited to) French Intellectual Property Code, U.S. Copyright Law
+ * (Title 17 U.S.C.), and EU directives.
+ *
+ * NO PART OF THIS WORK MAY BE USED, COPIED, REPRODUCED, MODIFIED, ADAPTED,
+ * TRANSLATED, DISTRIBUTED, TRANSMITTED, DISPLAYED, PUBLISHED, BROADCAST,
+ * LICENSED, SUBLICENSED, SOLD, TRANSFERRED, OR EXPLOITED IN ANY FORM OR BY
+ * ANY MEANS (electronic, mechanical, photocopying, recording, scanning,
+ * or otherwise) WITHOUT THE PRIOR EXPRESS WRITTEN PERMISSION OF THE COPYRIGHT
+ * OWNER.
+ *
+ * This prohibition explicitly includes, but is not limited to:
+ *   - Any form of reverse engineering, decompilation, disassembly, or
+ *     derivative work creation.
+ *   - Any use of the Work or its outputs for training, fine-tuning, or
+ *     improving any artificial intelligence, machine learning, or large
+ *     language models.
+ *   - Any scanning, parsing, extraction, or analysis of the code, structure,
+ *     or content by humans or automated systems (including AI agents, crawlers,
+ *     scrapers, or LLMs) for any purpose other than the legitimate execution
+ *     of the authorized software by its rightful owner.
+ *   - Any commercial, non-commercial, educational, research, or personal use
+ *     without explicit authorization.
+ *
+ * Any unauthorized use, access, study, or inspection of this Work constitutes
+ * a direct and serious infringement of copyright and may result in civil and/or
+ * criminal prosecution to the fullest extent permitted by law. The copyright
+ * owner reserves the right to pursue all available legal remedies, including
+ * but not limited to injunctions, damages, attorney fees, and statutory damages.
+ *
+ * This notice is an integral part of the Work. Removing, altering, obscuring,
+ * or bypassing this notice does not waive any rights of the copyright owner.
+ *
+ * For licensing inquiries, permissions, or commercial arrangements, contact:
+ * mauktenieb@gmail.com
+ *
+ * =============================================================================
+ * Instead of being open source, this work is under copyright \u00a9 2024 Mauk Tenieb & Korhogo.
+ * All rights strictly reserved. No use without express written permission.
+ * =============================================================================
+ */
+/* KG module "faunarratics" -- rules copied from the original Korhogo stylesheet, each selector scoped with :where(.kg-layer) (zero specificity). */
+:where(.kg-layer) .bw{display:flex;flex-direction:column;align-items:center;gap:3px}
+:where(.kg-layer) .bl{font-family:'DM Mono',monospace;font-size:.48rem;font-weight:300;color:rgba(255,255,255,.25)}
+:where(.kg-layer) .bv{font-family:'DM Mono',monospace;font-size:.55rem;font-weight:400;color:rgba(255,255,255,.65)}
+:where(.kg-layer) .bt{width:clamp(15px,2.6vw,34px);height:42px;background:rgba(255,255,255,.06);position:relative;overflow:hidden;border-radius:2px}
+:where(.kg-layer) .bf{width:100%;position:absolute;bottom:0;left:0;right:0;transition:height .6s ease-out}
+:where(.kg-layer) .kk-bars{flex-direction:row !important;justify-content:space-around;gap:6px;}
+:where(.kg-layer) .kk-eye{width:50px;height:50px;margin-bottom:28px;border-radius:50%;border:1px solid rgba(201,168,76,.5);display:flex;align-items:center;justify-content:center;animation:kkEyePulse 3s ease-in-out infinite;}
+:where(.kg-layer) .kk-eye::after{content:"";width:13px;height:13px;border-radius:50%;background:#c9a84c;box-shadow:0 0 16px #c9a84c;animation:kkEyeShrink 4s ease-in-out infinite;}
+:where(.kg-layer) .kk-top{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(201,168,76,.12);gap:10px;}
+:where(.kg-layer) .kk-top-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:4px;color:#c9a84c;flex:1;text-align:center;}
+:where(.kg-layer) .kk-count{font-size:11px;color:#b8a888;letter-spacing:.1em;cursor:pointer;border:1px solid rgba(201,168,76,.25);border-radius:4px;padding:3px 8px;}
+:where(.kg-layer) .kk-stage{flex:1 1 0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px 24px;}
+:where(.kg-layer) .kk-instr{font-size:11px;line-height:1.6;color:#b8a888;margin-bottom:11px;text-align:center;}
+:where(.kg-layer) .kk-fiche{display:flex;flex-direction:column;gap:12px;align-items:center;max-width:480px;margin:0 auto;text-align:left;}
+:where(.kg-layer) .kk-fiche .kk-meta{width:100%;}
+:where(.kg-layer) .kk-meta{flex:1;min-width:0;}
+:where(.kg-layer) .kk-rub{padding:7px 10px;margin:0 0 5px;border-radius:6px;border:1px solid transparent;cursor:pointer;transition:background .2s,border-color .2s;}
+:where(.kg-layer) .kk-rub:hover{background:rgba(201,168,76,.06);}
+:where(.kg-layer) .kk-rub-lbl{font-family:'DM Mono',monospace;font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;opacity:.4;margin-bottom:3px;}
+:where(.kg-layer) .kk-rub.kk-rub-on{background:rgba(201,168,76,.13);border-color:rgba(201,168,76,.5);box-shadow:0 0 14px rgba(201,168,76,.15);}
+:where(.kg-layer) .kk-rub.kk-rub-on .kk-rub-lbl{opacity:.75;color:#c9a84c;}
+:where(.kg-layer) .kk-imgwrap.kk-rub{padding:0;}
+:where(.kg-layer) .kk-imgwrap.kk-rub-on{border-color:#c9a84c;box-shadow:0 0 18px rgba(201,168,76,.4);}
+:where(.kg-layer) .kk-bars.kk-rub{padding:8px;}
+:where(.kg-layer) .kk-sub{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.55;margin:3px 0 8px;}
+:where(.kg-layer) .kk-bars{margin:8px 0 12px;display:flex;flex-direction:column;gap:4px;}
+:where(.kg-layer) .kk-body{margin-top:6px;}
+:where(.kg-layer) .kk-body p{margin:0 0 .55em;}
+:where(.kg-layer) .kk-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;line-height:1.05;margin-bottom:5px;}
+:where(.kg-layer) .kk-sections{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:4px 12px 6px;}
+:where(.kg-layer) .kk-chip{font-size:10px;letter-spacing:.06em;padding:7px 10px;border:1px solid rgba(201,168,76,.5);border-radius:18px;color:#c9a84c;background:rgba(12,9,5,.6);cursor:pointer;transition:all .2s;}
+:where(.kg-layer) .kk-chip.on{background:#c9a84c;color:#000;box-shadow:0 0 14px rgba(201,168,76,.4);}
+:where(.kg-layer) .kk-chip .n{opacity:.55;font-size:8px;}
+:where(.kg-layer) .kk-entry{width:100%;min-height:48px;background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.22);border-radius:6px;color:#e8dcc4;font-family:'DM Mono',monospace;font-size:13px;line-height:1.6;padding:10px 12px;resize:none;outline:none;}
+:where(.kg-layer) .kk-entry::placeholder{color:rgba(184,168,136,.4);}
+:where(.kg-layer) .kk-actions{display:flex;gap:8px;padding:9px 16px;position:sticky;bottom:0;background:linear-gradient(to bottom,rgba(5,4,3,.4),rgba(5,4,3,.96) 30%);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:50;border-top:1px solid rgba(201,168,76,.15);}
+:where(.kg-layer) .kk-dots{display:flex;justify-content:center;gap:6px;padding:4px 16px 6px;flex-wrap:wrap;align-items:center;}
+:where(.kg-layer) .kk-dot{display:inline-block;background:rgba(201,168,76,.18);transition:all .25s;}
+:where(.kg-layer) .kk-dot-sq{width:7px;height:7px;border-radius:1px;}
+:where(.kg-layer) .kk-dot-pt{width:4px;height:4px;border-radius:50%;}
+:where(.kg-layer) .kk-dot.done{background:rgba(201,168,76,.55);}
+:where(.kg-layer) .kk-dot.cur{background:#ffe08a;box-shadow:0 0 6px rgba(255,224,138,.7);}
+:where(.kg-layer) .kk-dot-sep{display:inline-block;width:1px;height:8px;background:rgba(201,168,76,.3);margin:0 4px;}
+:where(.kg-layer) .kk-dot{width:6px;height:6px;border-radius:50%;background:rgba(201,168,76,.2);border:1px solid rgba(201,168,76,.35);transition:all .3s;}
+:where(.kg-layer) .kk-dot-sep{width:1px;height:8px;background:rgba(201,168,76,.18);margin:0 4px;align-self:center;}
+:where(.kg-layer) .kk-hand{flex:1;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.06em;padding:11px;border:1px solid rgba(201,168,76,.3);border-radius:6px;background:rgba(201,168,76,.06);color:#c9a84c;cursor:pointer;}
+:where(.kg-layer) .kk-hand:active{background:rgba(201,168,76,.18);}
+:where(.kg-layer) .kk-add{flex:1;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:3px;padding:9px;border:1px solid #c9a84c;border-radius:6px;background:rgba(201,168,76,.16);color:#ffe08a;cursor:pointer;}
+:where(.kg-layer) .kk-feed{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 16px 30px;display:flex;flex-direction:column;gap:8px;border-top:1px solid rgba(201,168,76,.1);}
+:where(.kg-layer) .kk-bubble{max-width:86%;padding:9px 12px;border-radius:9px;font-size:12.5px;line-height:1.55;align-self:flex-end;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.2);color:#e8dcc4;}
+:where(.kg-layer) .kk-kerema{align-self:flex-start;max-width:94%;font-size:12px;line-height:1.65;color:#c9a84c;font-style:normal;font-family:'DM Mono',monospace;padding:6px 0 4px 0;border:none;}
+:where(.kg-layer) .kk-kerema .kk-who{font-style:normal;font-size:9px;letter-spacing:.18em;color:rgba(201,168,76,.7);display:block;margin-bottom:4px;white-space:nowrap;overflow:hidden;}
+:where(.kg-layer) .kk-kerema-body{display:block;padding-left:3px;border-left:1px solid rgba(201,168,76,.28);margin-top:1px;font-size:12px;line-height:1.65;color:#c9a84c;}
+:where(.kg-layer) .kk-screen{position:absolute;inset:0;display:none;flex-direction:column;}
+:where(.kg-layer) .kk-screen.kk-active{display:flex!important;}
+:where(.kg-layer) #kk-intro{justify-content:center;align-items:center;padding:8vw;text-align:center;cursor:pointer;}
+:where(.kg-layer) .kk-eye{width:54px;height:54px;margin-bottom:34px;border-radius:50%;border:1px solid rgba(201,168,76,.5);display:flex;align-items:center;justify-content:center;animation:kkEyePulse 3s ease-in-out infinite;}
+:where(.kg-layer) .kk-eye::after{content:"";width:14px;height:14px;border-radius:50%;background:#c9a84c;box-shadow:0 0 16px #c9a84c;animation:kkEyeShrink 4s ease-in-out infinite;}
+:where(.kg-layer) .kk-iline{font-size:15px;line-height:2;letter-spacing:.04em;max-width:380px;opacity:0;animation:kkFadeUp 1s forwards;}
+:where(.kg-layer) .kk-l1{animation-delay:.4s;}
+:where(.kg-layer) .kk-l2{animation-delay:1.8s;color:#ffe08a;}
+:where(.kg-layer) .kk-l3{animation-delay:1.2s;}
+:where(.kg-layer) .kk-l4{animation-delay:1.8s;}
+:where(.kg-layer) #kk-intro-p1{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8vw;animation:kkFadeUp .8s forwards;}
+:where(.kg-layer) #kk-intro-p2{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8vw;opacity:0;pointer-events:none;cursor:pointer;}
+:where(.kg-layer) #kk-intro-p2.visible{pointer-events:auto;animation:kkFadeUp .8s forwards;}
+:where(.kg-layer) .kk-l1{animation-delay:.1s!important;}
+:where(.kg-layer) .kk-l2{animation-delay:.8s!important;color:#ffe08a;}
+:where(.kg-layer) .kk-l3{animation-delay:.1s!important;}
+:where(.kg-layer) .kk-l4{animation-delay:.7s!important;}
+:where(.kg-layer) #kk-intro-p1.fadeout{animation:kkFadeOut .8s forwards;}
+:where(.kg-layer) .kk-top{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid rgba(201,168,76,.12);gap:8px;}
+:where(.kg-layer) .kk-exit{background:none;border:none;color:#c9a84c;font-size:20px;cursor:pointer;padding:0 6px;}
+:where(.kg-layer) .kk-top-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:4px;color:#c9a84c;flex:1;}
+:where(.kg-layer) .kk-count{font-size:11px;color:#b8a888;letter-spacing:.1em;}
+:where(.kg-layer) .kk-stage{flex:1 1 0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px 24px;}
+:where(.kg-layer) .kk-instr{font-size:11px;line-height:1.6;color:#b8a888;margin-bottom:11px;text-align:center;}
+:where(.kg-layer) .kk-fiche{display:flex;flex-direction:column;gap:12px;align-items:center;max-width:480px;margin:0 auto;text-align:left;}
+:where(.kg-layer) .kk-fiche .kk-meta{width:100%;}
+:where(.kg-layer) .kk-imgwrap{width:128px;height:128px;flex:0 0 auto;border-radius:6px;overflow:hidden;border:1px solid rgba(201,168,76,.25);background:radial-gradient(ellipse at 50% 30%,#241c14,#0c0907);display:flex;align-items:center;justify-content:center;}
+:where(.kg-layer) .kk-imgwrap img{width:100%;height:100%;object-fit:contain;display:block;}
+:where(.kg-layer) .kk-imgwrap .kk-ph{font-family:'Bebas Neue',sans-serif;font-size:44px;color:rgba(201,168,76,.3);}
+:where(.kg-layer) .kk-meta{flex:1;min-width:0;}
+:where(.kg-layer) .kk-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;line-height:1.05;margin-bottom:5px;}
+:where(.kg-layer) .kk-sections{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:4px 12px 6px;}
+:where(.kg-layer) .kk-chip{font-size:9.5px;letter-spacing:.06em;padding:7px 10px;border:1px solid rgba(201,168,76,.5);border-radius:18px;color:#c9a84c;background:rgba(12,9,5,.6);cursor:pointer;transition:all .2s;}
+:where(.kg-layer) .kk-chip.on{background:#c9a84c;color:#000;box-shadow:0 0 14px rgba(201,168,76,.4);}
+:where(.kg-layer) .kk-entry{padding:0 16px 8px;}
+:where(.kg-layer) .kk-box{width:100%;min-height:48px;background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.22);border-radius:6px;color:#e8dcc4;font-family:'DM Mono',monospace;font-size:13px;line-height:1.6;padding:10px 12px;resize:none;outline:none;}
+:where(.kg-layer) .kk-box::placeholder{color:rgba(184,168,136,.4);}
+:where(.kg-layer) .kk-box:focus{border-color:rgba(201,168,76,.5);}
+:where(.kg-layer) .kk-counter-wrap{display:flex;justify-content:flex-end;padding:2px 18px 0;pointer-events:none;}
+:where(.kg-layer) .kk-counter{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.05em;color:rgba(201,168,76,.35);background:rgba(5,4,3,.7);padding:2px 7px;border-radius:3px;transition:color .25s;}
+:where(.kg-layer) .kk-counter.ok{color:rgba(201,168,76,.6);}
+:where(.kg-layer) .kk-counter.over{color:rgba(212,109,89,.85);}
+:where(.kg-layer) .kk-actions{display:flex;gap:8px;padding:9px 16px;position:sticky;bottom:0;background:linear-gradient(to bottom,rgba(5,4,3,.4),rgba(5,4,3,.96) 30%);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:50;border-top:1px solid rgba(201,168,76,.15);}
+:where(.kg-layer) .kk-hand{flex:1;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.06em;padding:10px;border:1px solid rgba(201,168,76,.3);border-radius:6px;background:rgba(201,168,76,.06);color:#c9a84c;cursor:pointer;}
+:where(.kg-layer) .kk-hand:active{background:rgba(201,168,76,.18);}
+:where(.kg-layer) .kk-add{flex:1;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:3px;padding:8px;border:1px solid #c9a84c;border-radius:6px;background:rgba(201,168,76,.16);color:#ffe08a;cursor:pointer;transition:opacity .2s,filter .2s;}
+:where(.kg-layer) .kk-add:disabled{opacity:.28;filter:grayscale(.7);cursor:default;}
+:where(.kg-layer) .kk-choose-list{flex:1 1 0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 16px 24px;display:flex;flex-direction:column;gap:8px;}
+:where(.kg-layer) .kk-choose-item{padding:13px 16px;border-radius:8px;border:1px solid transparent;cursor:pointer;transition:background .18s,border-color .18s;display:flex;align-items:center;gap:10px;}
+:where(.kg-layer) .kk-choose-item:hover{background:rgba(255,255,255,.04);}
+:where(.kg-layer) .kk-choose-item.selected{border-color:var(--mc,#c9a84c);background:rgba(201,168,76,.1);}
+:where(.kg-layer) .kk-choose-dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;border:1px solid var(--mc,#c9a84c);transition:background .18s;}
+:where(.kg-layer) .kk-choose-item.selected .kk-choose-dot{background:var(--mc,#c9a84c);}
+:where(.kg-layer) .kk-choose-name{font-family:"Bebas Neue",sans-serif;font-size:18px;letter-spacing:2px;color:var(--mc,#c9a84c);}
+:where(.kg-layer) .kk-choose-sub{font-family:"DM Mono",monospace;font-size:9px;letter-spacing:.1em;opacity:.45;margin-top:2px;}
+:where(.kg-layer) .kk-sticky-bottom{position:sticky;bottom:0;z-index:60;background:linear-gradient(to bottom,rgba(5,4,3,.0) 0%,rgba(5,4,3,.97) 18%);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
+:where(.kg-layer) .kk-sticky-bottom .kk-actions{border-top:1px solid rgba(201,168,76,.12);}
+:where(.kg-layer) .kk-sticky-bottom .kk-entry{padding:10px 16px 4px;}
+:where(.kg-layer) .kk-feed{padding:8px 16px 14px;display:flex;flex-direction:column;gap:8px;border-top:1px solid rgba(201,168,76,.1);}
+:where(.kg-layer) .kk-feedlbl{font-size:9px;letter-spacing:.25em;color:rgba(201,168,76,.5);text-transform:uppercase;}
+:where(.kg-layer) .kk-bubble{max-width:86%;padding:9px 12px;border-radius:9px;font-size:12.5px;line-height:1.55;align-self:flex-end;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.2);}
+:where(.kg-layer) .kk-bubble .kk-tag{font-size:9px;letter-spacing:.1em;color:#c9a84c;opacity:.7;display:block;margin-bottom:3px;}
+:where(.kg-layer) .kk-bubble .kk-sec{font-size:9px;color:#ffe08a;letter-spacing:.1em;}
+:where(.kg-layer) .kk-kerema{align-self:flex-start;max-width:90%;font-size:12px;line-height:1.6;color:#c9a84c;font-style:italic;padding:4px 0 4px 14px;border-left:2px solid rgba(201,168,76,.4);}
+:where(.kg-layer) .kk-kerema .kk-who{font-style:normal;font-size:9px;letter-spacing:.2em;color:rgba(201,168,76,.5);display:block;margin-bottom:3px;}
+:where(.kg-layer) .kk-fork-btn{position:absolute;bottom:10px;right:14px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;padding:7px 12px;border:1px solid rgba(201,168,76,.3);border-radius:20px;background:rgba(7,5,4,.85);color:#c9a84c;cursor:pointer;z-index:5;}
+:where(.kg-layer) #kk-fork{justify-content:center;align-items:center;text-align:center;padding:8vw;gap:18px;}
+:where(.kg-layer) .kk-forkq{font-size:14px;line-height:1.8;color:#e8dcc4;max-width:360px;margin-bottom:10px;}
+:where(.kg-layer) .kk-forkbtns{display:flex;flex-direction:column;gap:10px;width:100%;max-width:280px;}
+:where(.kg-layer) .kk-synthscroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px 30px;}
+:where(.kg-layer) .kk-rhd{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:#c9a84c;margin-bottom:4px;display:flex;justify-content:space-between;}
+:where(.kg-layer) .kk-rhd .kk-n{font-family:'DM Mono',monospace;font-size:10px;color:#b8a888;}
+:where(.kg-layer) .kk-ritem{font-size:12px;line-height:1.5;color:#b8a888;padding:4px 0 4px 12px;border-left:1px solid rgba(201,168,76,.2);margin-bottom:3px;}
+:where(.kg-layer) .kk-flabel{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;color:#ffe08a;margin:16px 0 7px;}
+:where(.kg-layer) .kk-synthbox{width:100%;min-height:90px;background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.25);border-radius:6px;color:#e8dcc4;font-family:'DM Mono',monospace;font-size:13px;line-height:1.6;padding:12px;resize:none;outline:none;}
+:where(.kg-layer) .kk-big{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:4px;padding:13px;border:1px solid #c9a84c;border-radius:6px;background:rgba(201,168,76,.16);color:#ffe08a;cursor:pointer;width:100%;}
+:where(.kg-layer) .kk-ghost{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.15em;padding:11px;border:1px solid rgba(201,168,76,.3);border-radius:6px;background:transparent;color:#c9a84c;cursor:pointer;width:100%;}
+:where(.kg-layer) .kk-flow-line{font-family:'DM Mono',monospace;font-size:11.5px;line-height:1.7;color:#b8a888;text-align:center;letter-spacing:.02em;margin-bottom:2px;}
+:where(.kg-layer) .kk-flow-mk{font-family:Archivo,sans-serif;font-size:13px;color:#ffe08a;font-style:italic;text-align:center;margin-top:6px;letter-spacing:.02em;}
+:where(.kg-layer) .kk-flow-mk-apart{color:rgba(201,168,76,.6);font-size:11px;}
+:where(.kg-layer) .kk-apart-line{align-self:flex-start;font-size:10px;opacity:.5;font-style:normal;font-family:'DM Mono',monospace;color:#b8a888;padding:2px 0 2px 3px;border-left:1px solid rgba(201,168,76,.15);letter-spacing:.04em;}
+:where(.kg-layer) .kk-apart{font-size:10.5px;opacity:.7;font-style:italic;color:rgba(201,168,76,.7);}
+:where(.kg-layer) .kk-rapo{padding:11px 14px;border:1px dashed rgba(192,96,128,.5);background:rgba(192,96,128,.08);color:#e8dcc4;align-self:stretch;text-align:left;font-size:12px;line-height:1.65;border-radius:8px;}
+:where(.kg-layer) .kk-rapo .kk-who{font-style:normal;font-size:9px;letter-spacing:.2em;color:rgba(192,96,128,.7);display:block;margin-bottom:4px;}
+:where(.kg-layer) .kk-build{border-left-color:#c9a84c;color:#ffe08a;}
+:where(.kg-layer) .kk-kerema-tail{opacity:.85;}
+:where(.kg-layer) #kk-threshold{justify-content:center;align-items:center;text-align:center;padding:8vw;gap:14px;}
+:where(.kg-layer) .kk-th-hd{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:#c9a84c;margin-bottom:4px;}
+:where(.kg-layer) .kk-th-q{font-size:13.5px;line-height:1.75;color:#e8dcc4;max-width:380px;text-align:center;margin:0 auto 14px;font-style:italic;}
+:where(.kg-layer) .kk-th-btns{display:flex;flex-direction:column;gap:11px;width:100%;max-width:300px;margin:0 auto;}
+:where(.kg-layer) .kk-th-n{display:block;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.15em;color:rgba(255,224,138,.55);margin-top:2px;font-weight:normal;}
+:where(.kg-layer) .kk-stake-recall{margin:10px 0 14px;padding:11px 13px;border:1px solid rgba(255,224,138,.35);background:rgba(255,224,138,.05);border-radius:7px;}
+:where(.kg-layer) .kk-recall-block{margin-bottom:14px;}
+:where(.kg-layer) .kk-ritem-wrap{margin-bottom:6px;}
+:where(.kg-layer) .kk-ritem-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;color:rgba(201,168,76,.65);text-transform:uppercase;margin-bottom:3px;}
+:where(.kg-layer) .kk-ritem{font-size:12px;line-height:1.55;color:#b8a888;padding:4px 0 4px 12px;border-left:1px solid rgba(201,168,76,.2);margin-bottom:3px;}
+:where(.kg-layer) #konklave-panel{position:fixed;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;z-index:9000;background:#070504;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .4s cubic-bezier(.16,1,.3,1),visibility 0s linear .4s;visibility:hidden;font-family:'DM Mono',monospace;color:#e8dcc4;}
+:where(.kg-layer) #konklave-panel.open{transform:translateY(0)!important;visibility:visible;transition:transform .4s cubic-bezier(.16,1,.3,1),visibility 0s;}
+
+/* keyframes */
+@keyframes kkEyePulse{0%,100%{box-shadow:0 0 0 rgba(201,168,76,0);}50%{box-shadow:0 0 30px rgba(201,168,76,.3);}}
+@keyframes kkEyePulse{0%,100%{box-shadow:0 0 0 rgba(201,168,76,0);}50%{box-shadow:0 0 30px rgba(201,168,76,.3);}}
+@keyframes kkEyeShrink{0%,100%{transform:scale(1);}50%{transform:scale(.6);}}
+@keyframes kkEyeShrink{0%,100%{transform:scale(1);}50%{transform:scale(.6);}}
+@keyframes kkFadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes kkFadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes kkFadeOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-12px)}}

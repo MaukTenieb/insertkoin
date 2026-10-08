@@ -1,0 +1,155 @@
+<div id="vhs" class="vhs" data-vhs-root tabindex="-1" role="region" aria-label="VHS">
+  <div class="vhs-shell">
+
+    <div class="vhs-topline">
+      <div class="vhs-brand">VHS</div>
+      <div class="vhs-status" data-vhs-status role="status">Stop</div>
+      <button type="button" class="vhs-eject" data-vhs-action="eject"
+              data-vhs-i18n-aria="Eject" aria-label="Eject"><span aria-hidden="true">&#x23CF;</span> <span data-vhs-i18n="EJECT">EJECT</span></button>
+    </div>
+
+    <!-- One screen, two sources. Catalogue: the untouched YouTube player.
+         Files: <video> (hidden, decoded) -> WebGL2 canvas (visible). -->
+    <div class="vhs-screen-wrap">
+      <div class="vhs-screen" data-vhs-screen>
+        <!-- Cassette boot: random snow, then the tape slides in (skippable). -->
+        <div class="vhs-boot" data-vhs-boot aria-hidden="true">
+          <div class="vhs-boot-snow"></div>
+          <div class="vhs-boot-flap"></div>
+          <svg class="vhs-boot-tape" viewBox="0 0 120 78" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="6" width="116" height="66" rx="5" fill="#141414" stroke="#2c2c2c" stroke-width="2"/>
+            <rect x="14" y="12" width="92" height="30" rx="3" fill="#1e1e1e" stroke="#333" stroke-width="1"/>
+            <rect x="18" y="16" width="84" height="22" rx="2" fill="#0c0c0c"/>
+            <circle cx="34" cy="52" r="11" fill="#0a0a0a" stroke="#3a3a3a" stroke-width="2"/>
+            <circle cx="86" cy="52" r="11" fill="#0a0a0a" stroke="#3a3a3a" stroke-width="2"/>
+            <circle cx="34" cy="52" r="4.5" fill="#181818" stroke="#555" stroke-width="1.5"/>
+            <circle cx="86" cy="52" r="4.5" fill="#181818" stroke="#555" stroke-width="1.5"/>
+            <rect x="52" y="49" width="16" height="6" rx="1.5" fill="#0f0f0f" stroke="#3a3a3a"/>
+            <rect x="8" y="8" width="104" height="2.5" rx="1" fill="#b9d84a" opacity="0.55"/>
+          </svg>
+          <div class="vhs-boot-load">LOADING &#x25B8;&#x25B8;</div>
+        </div>
+        <!-- Picture search (REW / FFW): horizontal noise bars over the picture. -->
+        <div class="vhs-scan" data-vhs-scan hidden aria-hidden="true"></div>
+        <div class="vhs-youtube" data-vhs-youtube></div>
+        <video class="vhs-video" data-vhs-video playsinline preload="metadata"></video>
+        <canvas class="vhs-canvas" data-vhs-canvas aria-hidden="true"></canvas>
+      </div>
+    </div>
+
+    <div class="vhs-osd">
+      <span data-vhs-osd-state>Stop</span>
+      <span data-vhs-osd-counter>00:00:00</span>
+      <span data-vhs-osd-track aria-live="polite">&mdash;</span>
+    </div>
+
+    <div class="vhs-transport" data-vhs-transport>
+      <input type="range" class="vhs-seek" data-vhs-seek min="0" max="1000" step="1" value="0"
+             data-vhs-i18n-aria="Position" aria-label="Position">
+    </div>
+
+    <div class="vhs-controls" data-vhs-controls>
+      <button type="button" data-vhs-action="prev" data-vhs-i18n-aria="Rewind 5 seconds" aria-label="Rewind 5 seconds"><span aria-hidden="true">&#x25C0;&#x25C0;</span><span data-vhs-i18n="REW">REW</span></button>
+      <button type="button" data-vhs-action="play" data-vhs-i18n-aria="Play / pause" aria-label="Play / pause"><span data-vhs-play-label>&#x25B6;</span></button>
+      <button type="button" data-vhs-action="next" data-vhs-i18n-aria="Forward 5 seconds" aria-label="Forward 5 seconds"><span aria-hidden="true">&#x25B6;&#x25B6;</span><span data-vhs-i18n="FFW">FFW</span></button>
+      <button type="button" data-vhs-action="random" data-vhs-i18n-aria="Random" aria-label="Random">RND</button>
+      <button type="button" data-vhs-action="mute" data-vhs-i18n-aria="Mute / unmute" aria-label="Mute / unmute" aria-pressed="false">MUTE</button>
+    </div>
+
+    <div class="vhs-source-tabs" role="tablist" data-vhs-i18n-aria="Source" aria-label="Source">
+      <button type="button" class="vhs-tab is-active" data-vhs-source="youtube" role="tab"
+              id="vhs-tab-catalogue" aria-controls="vhs-panel-catalogue" aria-selected="true"
+              data-vhs-i18n="CATALOGUE">CATALOGUE</button>
+      <button type="button" class="vhs-tab" data-vhs-source="local" role="tab"
+              id="vhs-tab-local" aria-controls="vhs-panel-local" aria-selected="false"
+              data-vhs-i18n="FILES">FILES</button>
+    </div>
+
+    <div class="vhs-catalogue" data-vhs-catalogue id="vhs-panel-catalogue" role="tabpanel" aria-labelledby="vhs-tab-catalogue">
+
+      <!-- Cassette shelf: one tape per scraped channel (CHANNEL.SCRAPE). -->
+      <div class="vhs-shelf" data-vhs-shelf>
+        <div class="vhs-shelf-head">
+          <span class="vhs-shelf-title" data-vhs-i18n="CASSETTES">CASSETTES</span>
+          <span class="vhs-shelf-actions">
+            <button type="button" class="vhs-ttx-btn" data-vhs-ttx-btn data-vhs-i18n="TEXT">TEXT</button>
+            <button type="button" class="vhs-tape vhs-tape-all" data-vhs-tape-all>
+              <span class="vhs-tape-name" data-vhs-i18n="all">all</span>
+            </button>
+          </span>
+        </div>
+        <div class="vhs-shelf-row" data-vhs-shelf-row></div>
+        <div class="vhs-shelf-empty" data-vhs-shelf-empty data-vhs-i18n="No cassette yet. Record a channel.">No cassette yet. Record a channel.</div>
+
+        <!-- Tape tools: exports + eject for the selected cassette (History). -->
+        <div class="vhs-tapetools" data-vhs-tapetools hidden>
+          <span class="vhs-tapetools-name" data-vhs-tapetools-name></span>
+          <span class="vhs-tapetools-actions">
+            <a class="vhs-tapetools-link" data-vhs-tapetools-csv href="#" download data-vhs-i18n="CSV">CSV</a>
+            <a class="vhs-tapetools-link" data-vhs-tapetools-json href="#" download data-vhs-i18n="JSON">JSON</a>
+            <a class="vhs-tapetools-link" data-vhs-tapetools-xlsx href="#" download data-vhs-i18n="XLSX">XLSX</a>
+            <a class="vhs-tapetools-link" data-vhs-tapetools-txt href="#" download data-vhs-i18n="TXT">TXT</a>
+            <a class="vhs-tapetools-link" data-vhs-tapetools-md href="#" download data-vhs-i18n="MD">MD</a>
+            <button type="button" class="vhs-tapetools-eject" data-vhs-tapetools-eject data-vhs-i18n="ERASE">ERASE</button>
+          </span>
+        </div>
+      </div>
+
+      <!-- Finder: live filter over the deck's tracklist (Explorer). -->
+      <div class="vhs-find" data-vhs-find>
+        <input type="search" class="vhs-find-input" data-vhs-find-input
+               data-vhs-i18n-aria="Find a track in the deck"
+               aria-label="Find a track in the deck"
+               spellcheck="false" autocomplete="off">
+        <span class="vhs-find-count" data-vhs-find-count></span>
+        <select class="vhs-find-sort" data-vhs-find-sort
+                data-vhs-i18n-aria="Sort the tracklist" aria-label="Sort the tracklist">
+          <option value="native" data-vhs-i18n="Tape order">Tape order</option>
+          <option value="date_desc" data-vhs-i18n="Newest first">Newest first</option>
+          <option value="date_asc" data-vhs-i18n="Oldest first">Oldest first</option>
+          <option value="title_az" data-vhs-i18n="Title A – Z">Title A – Z</option>
+          <option value="title_za" data-vhs-i18n="Title Z – A">Title Z – A</option>
+          <option value="random" data-vhs-i18n="Shuffle">Shuffle</option>
+        </select>
+      </div>
+
+      <!-- Recorder bay: paste a channel URL, REC records it onto a cassette. -->
+      <div class="vhs-rec" data-vhs-rec>
+        <input type="url" class="vhs-rec-input" data-vhs-rec-input
+               placeholder="https://www.youtube.com/@channel"
+               data-vhs-i18n-aria="YouTube channel or playlist URL"
+               aria-label="YouTube channel or playlist URL"
+               spellcheck="false" autocomplete="off">
+        <button type="button" class="vhs-rec-btn" data-vhs-rec-btn>
+          <span class="vhs-rec-dot" aria-hidden="true">&#x25CF;</span>
+          <span data-vhs-i18n="REC">REC</span>
+        </button>
+        <button type="button" class="vhs-rec-cancel" data-vhs-rec-cancel hidden
+                data-vhs-i18n="CANCEL">CANCEL</button>
+        <div class="vhs-rec-progress" data-vhs-rec-progress></div>
+      </div>
+
+      <ol class="vhs-tracklist" data-vhs-tracklist data-vhs-i18n-aria="CATALOGUE" aria-label="CATALOGUE"></ol>
+
+      <!-- Teletext: the Critiques pages, decoded through the deck (data line 21). -->
+      <div class="vhs-ttx" data-vhs-ttx hidden>
+        <div class="vhs-ttx-head">
+          <span class="vhs-ttx-brand">P100</span>
+          <span class="vhs-ttx-title" data-vhs-i18n="KRITIK">KRITIK</span>
+          <button type="button" class="vhs-ttx-close" data-vhs-ttx-close aria-label="Close">&#x2715;</button>
+        </div>
+        <div class="vhs-ttx-sources" data-vhs-ttx-sources></div>
+        <div class="vhs-ttx-items" data-vhs-ttx-items>
+          <div class="vhs-ttx-hint" data-vhs-i18n="Pick a page.">Pick a page.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vhs-local" data-vhs-local id="vhs-panel-local" role="tabpanel" aria-labelledby="vhs-tab-local" hidden>
+      <div class="vhs-local-empty" data-vhs-local-empty data-vhs-i18n="No local VHS files have been supplied.">No local VHS files have been supplied.</div>
+      <ol class="vhs-local-list" data-vhs-local-list data-vhs-i18n-aria="FILES" aria-label="FILES"></ol>
+    </div>
+
+    <div class="vhs-message" data-vhs-message role="status"></div>
+  </div>
+</div>

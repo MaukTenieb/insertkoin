@@ -1,0 +1,799 @@
+/* VHS cabinet — original code for Insert Koin. v2.1.0
+ * Convention of this repository (kg-loader): the .kg-layer is 0x0 and every
+ * panel positions itself (position:fixed, inset:0) and slides in when its own
+ * `open` class is toggled (see kg-chess.css). Scroll happens inside the panel:
+ * the layer sets touch-action:none for the canvas games, so the VHS cabinet
+ * explicitly restores touch panning for everything inside it.
+ */
+
+#vhs{position:fixed;inset:0;z-index:520;background:#0a0a0a;display:flex;flex-direction:column;
+  transform:translateY(100%);visibility:hidden;pointer-events:none;
+  transition:transform .4s cubic-bezier(.16,1,.3,1),visibility 0s linear .4s;}
+#vhs.open{transform:translateY(0);visibility:visible;pointer-events:auto;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+
+.vhs {
+  --vhs-bg: #111;
+  --vhs-panel: #181818;
+  --vhs-border: #666;
+  --vhs-text: #ddd;
+  --vhs-dim: #9a9a9a;
+  --vhs-accent: #b9d84a;
+  --vhs-warn: #e5c15b;
+
+  overflow: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-x pan-y pinch-zoom;
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+  padding: clamp(10px, 2vw, 22px);
+  color: var(--vhs-text);
+  font-family: "DM Mono", monospace;
+}
+
+.vhs,
+.vhs * { touch-action: pan-x pan-y pinch-zoom; }
+
+.vhs:focus { outline: none; }
+
+.vhs *,
+.vhs *::before,
+.vhs *::after { box-sizing: border-box; }
+
+.vhs [hidden] { display: none !important; }
+
+.vhs-shell {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: clamp(10px, 2vw, 18px);
+  border: 2px solid var(--vhs-border);
+  background:
+    linear-gradient(rgba(255, 255, 255, .025) 50%, transparent 50%),
+    var(--vhs-panel);
+  background-size: 100% 4px, auto;
+  box-shadow: inset 0 0 0 1px #050505, 0 8px 30px rgba(0, 0, 0, .4);
+}
+
+/* ---- top line + OSD ---------------------------------------------------- */
+
+.vhs-topline,
+.vhs-osd {
+  display: grid;
+  gap: 12px;
+  align-items: center;
+  min-height: 32px;
+  padding: 5px 8px;
+  background: #090909;
+  border: 1px solid #444;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-size: 12px;
+}
+
+.vhs-topline { grid-template-columns: 1fr auto auto; }
+
+.vhs-osd {
+  grid-template-columns: auto auto auto minmax(0, 1fr);
+  margin-top: 8px;
+}
+
+.vhs-brand { color: var(--vhs-accent); font-weight: 700; }
+.vhs-status { min-width: 70px; }
+
+.vhs-osd [data-vhs-osd-counter] { font-variant-numeric: tabular-nums; }
+
+.vhs-osd [data-vhs-osd-track] {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+.vhs-eject { min-height: 0; padding: 2px 10px; }
+
+.vhs-controls button { white-space: nowrap; }
+
+/* ---- picture search (REW / FFW) ---------------------------------------- */
+
+/* Horizontal noise bars sweep over the picture while the heads skim the
+   tape; direction sets which way they run and how far they darken it. */
+#vhs .vhs-scan[hidden] { display: none; }
+
+.vhs-scan {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.14) 0px,
+    rgba(210, 210, 210, 0.05) 7px,
+    rgba(0, 0, 0, 0.30) 13px,
+    rgba(255, 255, 255, 0.10) 17px,
+    rgba(0, 0, 0, 0.0) 26px,
+    rgba(0, 0, 0, 0.0) 60px
+  );
+  background-size: 100% 160px;
+  mix-blend-mode: screen;
+  opacity: 0.75;
+}
+
+.vhs-screen.is-ffw .vhs-scan {
+  animation: vhs-scan-ffw 0.45s linear infinite;
+}
+
+.vhs-screen.is-rew .vhs-scan {
+  animation: vhs-scan-rew 0.45s linear infinite;
+}
+
+@keyframes vhs-scan-ffw {
+  from { background-position: 0 0; }
+  to { background-position: 0 160px; }
+}
+
+@keyframes vhs-scan-rew {
+  from { background-position: 0 0; }
+  to { background-position: 0 -160px; }
+}
+
+/* ---- screen ------------------------------------------------------------ */
+
+.vhs-screen-wrap {
+  margin-top: 8px;
+  background: #000;
+  border: 4px solid #282828;
+  padding: 7px;
+}
+
+.vhs-screen {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 200px;
+  overflow: hidden;
+  background: #000;
+}
+
+/* Tape swap on source change: the picture collapses to a horizontal line,
+   like the deck grabbing the tape again. */
+.vhs-screen.is-tape-swap .vhs-video,
+.vhs-screen.is-tape-swap .vhs-canvas,
+.vhs-screen.is-tape-swap .vhs-youtube {
+  animation: vhs-tapeline .9s steps(12, end);
+}
+@keyframes vhs-tapeline {
+  0%   { transform: scaleY(1);   filter: brightness(1); }
+  30%  { transform: scaleY(0.02); filter: brightness(2.4); }
+  55%  { transform: scaleY(0.02); filter: brightness(0.2); }
+  80%  { transform: scaleY(0.02); filter: brightness(1.8); }
+  100% { transform: scaleY(1);   filter: brightness(1); }
+}
+
+/* ---- cassette boot ----------------------------------------------------- */
+
+.vhs-boot {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  background: #000;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Random-length snow burst (duration handed over by JS as --snow-ms). */
+.vhs-boot-snow {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.09) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 2px, transparent 2px 4px);
+  animation: vhs-snow .09s steps(2) infinite;
+}
+@keyframes vhs-snow {
+  0%   { transform: translate(0, 0);    filter: brightness(.9); }
+  50%  { transform: translate(-6px, 3px); filter: brightness(1.25); }
+  100% { transform: translate(4px, -4px); filter: brightness(.75); }
+}
+
+/* Deck flap: opens while the snow runs. */
+.vhs-boot-flap {
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 14%;
+  background: linear-gradient(#1b1b1b, #0a0a0a);
+  border-bottom: 2px solid #2e2e2e;
+  transform-origin: top;
+  animation: vhs-flap 1s ease .1s both;
+}
+@keyframes vhs-flap {
+  0%   { transform: perspective(600px) rotateX(0deg); }
+  100% { transform: perspective(600px) rotateX(72deg); opacity: .35; }
+}
+
+/* The cassette slides in, then the picture locks on. */
+.vhs-boot-tape {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 38%;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,.8));
+  animation: vhs-tape-in .55s cubic-bezier(.2,.9,.25,1) both;
+  animation-delay: var(--snow-ms, .6s);
+}
+@keyframes vhs-tape-in {
+  0%   { transform: translate(-50%, -50%) translateY(-160%) rotate(-4deg); opacity: 0; }
+  100% { transform: translate(-50%, -50%) translateY(0) rotate(0deg); opacity: 1; }
+}
+
+.vhs-boot-load {
+  position: absolute;
+  left: 0; right: 0; bottom: 7%;
+  text-align: center;
+  color: var(--vhs-accent, #b9d84a);
+  font-size: 11px;
+  letter-spacing: .18em;
+  opacity: 0;
+  animation: vhs-load .5s steps(2) both;
+  animation-delay: calc(var(--snow-ms, .6s) + .55s);
+}
+@keyframes vhs-load { to { opacity: .8; } }
+
+/* Skipped: JS adds .is-inserting when the boot ends (or is clicked away). */
+.vhs-boot.is-inserting .vhs-boot-tape { animation: vhs-tape-in .3s reverse both; }
+.vhs-boot.is-inserting .vhs-boot-snow,
+.vhs-boot.is-inserting .vhs-boot-load { display: none; }
+.vhs-boot.is-inserting { animation: vhs-boot-out .35s both; }
+@keyframes vhs-boot-out { to { opacity: 0; } }
+
+.vhs-youtube,
+.vhs-video,
+.vhs-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.vhs-youtube iframe { display: block; width: 100%; height: 100%; border: 0; }
+
+.vhs-canvas { display: block; }
+
+/* Catalogue mode: only the YouTube player is on screen, unmodified. */
+.vhs[data-mode="catalogue"] .vhs-video,
+.vhs[data-mode="catalogue"] .vhs-canvas,
+.vhs[data-mode="catalogue"] .vhs-transport { display: none; }
+
+/* Files mode: YouTube stays mounted (paused) but invisible. */
+.vhs[data-mode="local"] .vhs-youtube { visibility: hidden; pointer-events: none; }
+
+/* The decoded <video> stays rendered (opacity 0, not display:none):
+ * some mobile browsers refuse to decode or upload a display:none video. */
+.vhs[data-mode="local"][data-gl="on"] .vhs-video {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* No WebGL2 / context lost: show the plain video with native controls. */
+.vhs[data-mode="local"][data-gl="off"] .vhs-canvas { display: none; }
+.vhs[data-mode="local"][data-gl="off"] .vhs-transport { display: none; }
+.vhs[data-mode="local"][data-gl="off"] .vhs-video { opacity: 1; }
+
+/* ---- transport + controls ---------------------------------------------- */
+
+.vhs-transport { margin-top: 8px; }
+
+.vhs-seek {
+  display: block;
+  width: 100%;
+  margin: 0;
+  accent-color: var(--vhs-accent);
+  cursor: pointer;
+}
+
+.vhs-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.vhs button {
+  min-height: 34px;
+  border: 1px solid #555;
+  background: #101010;
+  color: var(--vhs-text);
+  font: inherit;
+  font-size: 12px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.vhs button:hover { border-color: var(--vhs-accent); }
+
+.vhs button:focus-visible,
+.vhs .vhs-seek:focus-visible {
+  outline: 2px solid var(--vhs-accent);
+  outline-offset: 2px;
+}
+
+.vhs button:disabled { opacity: .4; cursor: default; }
+
+.vhs button[aria-pressed="true"] {
+  color: var(--vhs-warn);
+  border-color: var(--vhs-warn);
+}
+
+/* ---- tabs + lists ------------------------------------------------------ */
+
+.vhs-source-tabs { display: flex; gap: 4px; margin-top: 12px; }
+
+.vhs-tab { border-bottom: 2px solid transparent; }
+
+.vhs-tab.is-active {
+  color: var(--vhs-accent);
+  border-bottom-color: var(--vhs-accent);
+}
+
+.vhs-catalogue,
+.vhs-local { margin-top: 10px; }
+
+.vhs-tracklist,
+.vhs-local-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 3px;
+  max-height: 34vh;
+  overflow: auto;
+}
+
+.vhs-tracklist button,
+.vhs-local-list button {
+  width: 100%;
+  text-align: left;
+  min-height: 32px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vhs-tracklist button.is-active,
+.vhs-local-list button.is-active {
+  color: var(--vhs-accent);
+  border-color: var(--vhs-accent);
+}
+
+.vhs-message {
+  min-height: 1.5em;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--vhs-warn);
+}
+
+/* ---- cassette shelf (CHANNEL.SCRAPE library) ----------------------------- */
+
+.vhs-shelf {
+  border: 1px solid #333;
+  background: linear-gradient(rgba(255,255,255,.02) 50%, transparent 50%), #131313;
+  background-size: 100% 4px, auto;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.vhs-shelf-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.vhs-shelf-title {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--vhs-dim);
+}
+
+.vhs-shelf-title::before {
+  content: "\25CF ";
+  color: var(--vhs-accent);
+}
+
+.vhs-tape-all { min-height: 24px; font-size: 10px; padding: 2px 8px; }
+
+.vhs-shelf-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  max-height: 21vh;
+  overflow: auto;
+}
+
+.vhs-tape {
+  min-height: 30px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+  font-size: 11px;
+}
+
+.vhs-tape.is-active {
+  color: var(--vhs-accent);
+  border-color: var(--vhs-accent);
+}
+
+.vhs-tape-count {
+  color: var(--vhs-dim);
+  margin-left: 6px;
+  font-size: 10px;
+}
+
+.vhs-tape.is-active .vhs-tape-count { color: var(--vhs-accent); }
+
+.vhs-shelf-empty {
+  padding: 8px;
+  border: 1px dashed #444;
+  font-size: 11px;
+  color: var(--vhs-dim);
+  text-align: center;
+}
+
+/* ---- recorder bay --------------------------------------------------------- */
+
+.vhs-rec {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid #333;
+  background: #101010;
+  margin-bottom: 8px;
+}
+
+.vhs-rec-input {
+  flex: 1 1 220px;
+  min-width: 0;
+  min-height: 30px;
+  border: 1px solid #555;
+  background: #0a0a0a;
+  color: var(--vhs-text);
+  font: inherit;
+  font-size: 12px;
+  padding: 6px 8px;
+}
+
+.vhs-rec-input:focus {
+  outline: none;
+  border-color: var(--vhs-accent);
+}
+
+.vhs-rec-input::placeholder { color: var(--vhs-dim); }
+
+.vhs-rec-btn {
+  color: var(--vhs-accent);
+  border-color: #3f4a1e;
+}
+
+.vhs-rec-dot {
+  color: var(--vhs-warn);
+  margin-right: 4px;
+}
+
+.vhs-rec-btn[aria-busy="true"] .vhs-rec-dot {
+  color: #ff2b2b;
+  animation: vhs-rec-blink 1s steps(2, start) infinite;
+}
+
+.vhs-rec-btn[aria-busy="true"] {
+  color: var(--vhs-warn);
+}
+
+.vhs-rec-cancel { min-height: 30px; font-size: 11px; }
+
+.vhs-rec-progress {
+  flex-basis: 100%;
+  min-height: 1.2em;
+  font-size: 11px;
+  color: var(--vhs-accent);
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vhs-rec-progress.is-error { color: var(--vhs-warn); }
+
+.vhs-rec-hint {
+  flex-basis: 100%;
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--vhs-dim, #8f8672);
+}
+
+@keyframes vhs-rec-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vhs-rec-btn[aria-busy="true"] .vhs-rec-dot { animation: none; }
+}
+
+/* ---- finder (Explorer -> deck) -------------------------------------------- */
+
+.vhs-find {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.vhs-find-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 28px;
+  border: 1px dashed #555;
+  background: #0a0a0a;
+  color: var(--vhs-text);
+  font: inherit;
+  font-size: 11px;
+  padding: 4px 8px;
+}
+
+.vhs-find-input:focus { outline: none; border-color: var(--vhs-accent); }
+
+.vhs-find-input::placeholder { color: var(--vhs-dim); }
+
+.vhs-find-sort {
+  flex: 0 0 auto;
+  min-height: 28px;
+  border: 1px dashed #555;
+  background: #0a0a0a;
+  color: var(--vhs-text);
+  font: inherit;
+  font-size: 11px;
+  padding: 0 4px;
+}
+
+.vhs-find-sort:focus { outline: none; border-color: var(--vhs-accent); }
+
+.vhs-find-count { white-space: nowrap; }
+
+.vhs-find-count {
+  flex: 0 0 auto;
+  font-size: 10px;
+  color: var(--vhs-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.vhs-track-hidden { display: none; }
+
+/* ---- tape tools (History -> deck) ----------------------------------------- */
+
+.vhs-tapetools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+  padding: 6px 8px;
+  border: 1px solid #2c2c2c;
+  background: #0d0d0d;
+  font-size: 11px;
+}
+
+.vhs-tapetools-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--vhs-accent);
+}
+
+.vhs-tapetools-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.vhs-tapetools-link,
+.vhs-tapetools-eject {
+  min-height: 24px;
+  font-size: 10px;
+  padding: 2px 8px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.vhs-tapetools-link {
+  text-decoration: none;
+}
+
+.vhs-tapetools-eject {
+  border-color: #5a1f1f;
+  color: #ff6b6b;
+}
+
+.vhs-tapetools-eject.is-armed {
+  border-color: #ff2b2b;
+  background: #2a0d0d;
+  color: #ff2b2b;
+}
+
+/* ---- teletext (Critiques -> deck) ------------------------------------------ */
+
+.vhs-shelf-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.vhs-ttx-btn {
+  min-height: 24px;
+  font-size: 10px;
+  padding: 2px 8px;
+  color: #7de0ff;
+  border-color: #1d4a5a;
+}
+
+.vhs-ttx {
+  margin-top: 8px;
+  border: 2px solid #1d4a5a;
+  background: #05070c;
+  color: #7de0ff;
+  font-family: "DM Mono", monospace;
+  font-size: 12px;
+}
+
+.vhs-ttx-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-bottom: 1px solid #1d4a5a;
+  background: #0a1018;
+}
+
+.vhs-ttx-brand {
+  color: #ffd24a;
+  letter-spacing: 0.12em;
+}
+
+.vhs-ttx-title {
+  letter-spacing: 0.2em;
+}
+
+.vhs-ttx-close {
+  margin-left: auto;
+  min-height: 22px;
+  min-width: 26px;
+  padding: 0 6px;
+  color: #7de0ff;
+  font-size: 11px;
+}
+
+.vhs-ttx-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px;
+  border-bottom: 1px dashed #143241;
+}
+
+.vhs-ttx-source {
+  min-height: 24px;
+  font-size: 10px;
+  padding: 2px 8px;
+  color: #7de0ff;
+  border-color: #1d4a5a;
+}
+
+.vhs-ttx-source.is-active {
+  color: #05070c;
+  background: #7de0ff;
+}
+
+.vhs-ttx-items {
+  max-height: 30vh;
+  overflow: auto;
+  padding: 8px;
+}
+
+.vhs-ttx-item {
+  display: block;
+  padding: 4px 0;
+  color: #7de0ff;
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vhs-ttx-item:hover { color: #ffd24a; }
+
+/* Critiques↔cassettes match rows: review line + playable cassette line */
+.vhs-ttx-match { margin: 0; }
+
+.vhs-ttx-match-track {
+  color: #b8e986;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  padding-left: 18px !important;
+}
+
+.vhs-ttx-match-track:hover { color: #ffd24a; }
+
+.vhs-ttx-source-match { color: #b8e986; }
+
+.vhs-ttx-item .idx { color: #ffd24a; margin-right: 8px; }
+
+.vhs-ttx-hint {
+  color: #3f6e80;
+  padding: 4px 0;
+}
+
+.vhs-ttx-error {
+  color: #ff6b6b;
+  padding: 4px 0;
+}
+
+.vhs-ttx-status {
+  color: #3f6e80;
+  font-size: 10px;
+  padding: 4px 0;
+}
+
+.vhs-local-empty {
+  padding: 18px;
+  border: 1px dashed #555;
+  text-align: center;
+  font-size: 12px;
+  color: var(--vhs-dim);
+}
+
+/* ---- responsive / input modes ------------------------------------------ */
+
+@media (max-width: 760px) {
+  .vhs { padding: 6px; }
+  .vhs-shell { padding: 7px; }
+
+  .vhs-topline,
+  .vhs-osd { font-size: 11px; gap: 6px; }
+
+  .vhs-osd { grid-template-columns: auto 1fr auto; }
+
+  .vhs-osd [data-vhs-osd-track] {
+    grid-column: 1 / -1;
+    text-align: left;
+  }
+
+  .vhs-controls button { flex: 1 1 calc(33.333% - 6px); }
+}
+
+@media (pointer: coarse) {
+  .vhs button { min-height: 44px; }
+  .vhs-tracklist button,
+  .vhs-local-list button { min-height: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #vhs,
+  #vhs.open { transition: none; }
+
+  /* The boot overlay is removed by JS before it can be seen; the swap
+     animation never runs either (JS checks the same media query). */
+  .vhs-screen.is-tape-swap .vhs-video,
+  .vhs-screen.is-tape-swap .vhs-canvas,
+  .vhs-screen.is-tape-swap .vhs-youtube { animation: none; }
+
+  .vhs-screen.is-rew .vhs-scan,
+  .vhs-screen.is-ffw .vhs-scan { animation: none; opacity: 0.5; }
+}
