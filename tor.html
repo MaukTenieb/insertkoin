@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Faunator — Korhogo Fauna</title>
+<meta name="description" content="Faunator — recherche DuckDuckGo, web classique et .onion.">
+<link rel="icon" href="favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#c9a84c;--gold2:#ffe08a;--bg:#07060a;--dim:#8a8272}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:#fff;font-family:"DM Mono",monospace;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid rgba(201,168,76,.35);background:#0b0a08}
+.brand{font-family:"Bebas Neue",sans-serif;font-size:22px;letter-spacing:.14em;color:var(--gold2);text-shadow:0 1px 6px #000;padding:0 6px 0 2px;flex-shrink:0}
+.brand i{font-style:normal;color:#d32f2f}
+.tbtn{font-family:"DM Mono",monospace;font-size:13px;color:rgba(201,168,76,.85);
+  background:transparent;border:1px solid rgba(201,168,76,.4);border-radius:5px;padding:8px 10px;cursor:pointer;flex-shrink:0;min-width:38px}
+.tbtn:hover{border-color:var(--gold2);color:var(--gold2)}
+.tbtn:disabled{opacity:.35;cursor:default}
+#url{flex:1;min-width:120px;background:#000;border:1px solid rgba(201,168,76,.4);border-radius:5px;
+  color:var(--gold2);font-family:"DM Mono",monospace;font-size:13px;padding:9px 11px;outline:none}
+#url:focus{border-color:var(--gold)}
+#go{color:#0b0805;background:var(--gold);border-color:var(--gold)}
+#lang{min-width:52px;text-align:center}
+#status{font-size:10px;color:var(--dim);padding:5px 10px;min-height:15px;letter-spacing:.05em}
+main{flex:1;position:relative;background:#000}
+#view{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
+#notice{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;text-align:center;padding:24px;background:rgba(7,6,10,.97)}
+#notice.show{display:flex}
+#notice h1{font-family:"Bebas Neue",sans-serif;font-weight:400;font-size:30px;letter-spacing:.14em;color:var(--gold2);margin:0}
+#notice p{max-width:52ch;color:#d9d1be;font-size:12px;line-height:1.7;margin:0}
+#notice .tbtn{font-size:12px;padding:11px 22px}
+@media (max-width:640px){header{flex-wrap:wrap}.brand{font-size:18px}#url{width:100%;flex-basis:100%;order:9}}
+</style>
+</head>
+<body>
+<header>
+  <span class="brand">FAUNATOR<i>●</i></span>
+  <button class="tbtn" id="back" data-l="◀ Retour|◀ Back" title="Retour">◀</button>
+  <button class="tbtn" id="fwd" data-l="▶ Avancer|▶ Forward" title="Avancer">▶</button>
+  <button class="tbtn" id="reload" data-l="⟳ Recharger|⟳ Reload" title="Recharger">⟳</button>
+  <button class="tbtn" id="home" data-l="⌂ Accueil|⌂ Home" title="Accueil">⌂</button>
+  <input id="url" spellcheck="false" autocomplete="off">
+  <button class="tbtn" id="go" data-l="ALLER|GO">ALLER</button>
+  <button class="tbtn" id="tab" data-l="↗ ONGLET|↗ TAB">↗</button>
+  <button class="tbtn" id="lang" title="Français / English">FR</button>
+</header>
+<div id="status"></div>
+<main>
+  <iframe id="view" title="Faunator" referrerpolicy="no-referrer"></iframe>
+  <div id="notice"><h1 id="ntitle"></h1><p id="ntext"></p><button class="tbtn" id="naction" style="display:none"></button>
+    <span style="color:var(--dim);font-size:11px" id="nhint"></span></div>
+</main>
+<script>
+(function(){
+'use strict';
+var LANG='fr';
+try{LANG=localStorage.getItem('tor.lang')||localStorage.getItem('vdx.lang')||'fr';if(LANG!=='en')LANG='fr';}catch(e){}
+function L(fr,en){return LANG==='en'?en:fr;}
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function status(t){$('status').textContent=t||'';}
+function setLang(l){LANG=l==='en'?'en':'fr';try{localStorage.setItem('tor.lang',LANG);}catch(e){}
+  document.documentElement.lang=LANG;
+  document.querySelectorAll('[data-l]').forEach(function(el){var p=el.getAttribute('data-l').split('|');el.textContent=p[LANG==='en'?1:0];});
+  $('url').placeholder=L('recherche ou adresse — https, .onion','search or address — https, .onion');
+  $('url').setAttribute('aria-label',L('Recherche ou adresse','Search or address'));
+  $('lang').textContent=LANG==='en'?'FR':'EN';}
+
+var history_=[],hi=-1,cur=null,reloadFn=null;
+function mark(url){if(cur===url)return;history_=history_.slice(0,hi+1);history_.push(url);hi=history_.length-1;cur=url;refreshBtns();}
+function refreshBtns(){$('back').disabled=hi<=0;$('fwd').disabled=hi<0||hi>=history_.length-1;}
+
+function showNotice(t1,t2,btn,href,hint){$('ntitle').textContent=t1;$('ntext').textContent=t2;
+  var b=$('naction');if(btn){b.style.display='inline-block';b.textContent=btn;b.onclick=function(){window.open(href,'_blank','noopener');};}
+  else b.style.display='none';
+  $('nhint').textContent=hint||'';$('notice').classList.add('show');}
+function hideNotice(){$('notice').classList.remove('show');}
+
+/* ---- .onion : rendu dans la vue par un passereau tor2web ; ↗ tente toujours la vraie fenêtre ---- */
+function toGateway(u){
+  var m=u.match(/^(https?:\/\/)([a-z0-9-]+\.onion)(?=\/|$)/i);
+  if(!m)return null;
+  return 'https://'+m[2].toLowerCase()+'.ly'+u.slice(m[1].length+m[2].length);
+}
+function nav(url,push){
+  if(!url)return;
+  hideNotice();
+  if(/\.onion/i.test(url)){
+    var gw=toGateway(url.trim());
+    $('tab').dataset.onion=url;
+    if(gw){
+      $('view').removeAttribute('srcdoc');$('view').src=gw;
+      status(L('.onion via '+gw.split('/')[2]+' — si la page reste vide, ↗ tente la vraie fenêtre Tor.','.onion via '+gw.split('/')[2]+' — if the page stays empty, ↗ tries the real Tor window.'));
+    }else status(L('.onion : adresse non reconnue.','.onion: address not recognised.'));
+    reloadFn=function(){nav(url,false);};
+    if(push)mark('onion:'+url);
+    return;
+  }
+  $('tab').dataset.onion='';
+  $('view').removeAttribute('srcdoc');$('view').src=url;
+  status(L('Chargement… — si la page reste vide, le site refuse l\u2019encapsulation : ↗ ONGLET.','Loading… — if the page stays empty, the site refuses framing: ↗ TAB.'));
+  reloadFn=function(){nav(url,false);};
+  if(push)mark(url);
+}
+
+/* ---- page d'accueil : recherche DuckDuckGo (web classique) + Ahmia (.onion) ---- */
+function searchPage(){
+  var h='<!DOCTYPE html><html lang="'+LANG+'"><head><meta charset="utf-8"><style>'
+  +'body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#07060a;color:#fff;font-family:"DM Mono",monospace}'
+  +'h1{font-family:"Bebas Neue",sans-serif;font-weight:400;font-size:36px;letter-spacing:.14em;color:#ffe08a;margin:0}'
+  +'h1 i{font-style:normal;color:#d32f2f}'
+  +'form{display:flex;gap:8px;width:min(560px,86vw)}'
+  +'input{flex:1;background:#000;border:1px solid rgba(201,168,76,.5);border-radius:6px;color:#ffe08a;font:13px "DM Mono",monospace;padding:11px 12px;outline:none}'
+  +'button{background:#c9a84c;color:#0b0805;border:0;border-radius:6px;font:bold 12px "DM Mono",monospace;letter-spacing:.1em;padding:0 18px;cursor:pointer}'
+  +'p{color:#8a8272;font-size:11px;text-align:center;max-width:52ch;line-height:1.7;margin:0}'
+  +'</style></head><body>'
+  +'<h1>FAUNATOR<i>\u25CF</i></h1>'
+  +'<form id="f"><input id="q" autofocus placeholder="'+esc(L('mots-clés, adresse https ou .onion','keywords, https or .onion address'))+'"><button>'+esc(L('CHERCHER','SEARCH'))+'</button></form>'
+  +'<p>'+esc(L('DuckDuckGo pour le web classique, Ahmia pour les .onion — ou tape une adresse.','DuckDuckGo for the classic web, Ahmia for .onion — or type an address.'))+'<\/p>'
+  +'<script>document.getElementById("f").addEventListener("submit",function(e){e.preventDefault();var q=document.getElementById("q").value.trim();if(q&&parent.__torSearch)parent.__torSearch(q);});<\/script>'
+  +'</body></html>';
+  $('view').src='about:blank';
+  $('view').srcdoc=h;
+}
+function home(){$('url').value='';status(L('Recherche DuckDuckGo — web classique et .onion.','DuckDuckGo search — classic web and .onion.'));hideNotice();searchPage();
+  reloadFn=home;if(push0)mark('home');}
+var push0=false;
+
+/* ---- recherche : web via DuckDuckGo, .onion via Ahmia, par passereaux CORS ---- */
+var PROXIES=[
+  function(u){return 'https://api.allorigins.win/raw?url='+encodeURIComponent(u);},
+  function(u){return 'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(u);},
+  /* lecteur CORS-friendly : rend du texte/markdown — les parseurs ont leur repli texte */
+  function(u){return 'https://r.jina.ai/'+u;}
+];
+function fetchVia(u){
+  var i=0,lastErr=null;
+  function tryNext(){
+    if(i>=PROXIES.length)return Promise.reject(lastErr||new Error('proxy'));
+    /* garde-fou : un passereau qui ne répond pas (12 s) bascule sur le suivant */
+    var ctl=typeof AbortController!=='undefined'?new AbortController():null;
+    var timer=ctl?setTimeout(function(){try{ctl.abort();}catch(e){}},12000):null;
+    var opts=ctl?{signal:ctl.signal}:{};
+    return fetch(PROXIES[i++](u),opts).then(function(r){if(timer)clearTimeout(timer);if(!r.ok)throw new Error('http '+r.status);return r.text();})
+      .catch(function(e){if(timer)clearTimeout(timer);lastErr=e;return tryNext();});
+  }
+  return tryNext();
+}
+function ddgUrl(q){return 'https://html.duckduckgo.com/html/?q='+encodeURIComponent(q);}
+function ahmiaUrl(q){return 'https://ahmia.fi/search/?q='+encodeURIComponent(q);}
+function ddgUnwrap(href){try{var u=new URL(href,'https://html.duckduckgo.com');var ud=u.searchParams.get('uddg');return ud||u.href;}catch(e){return null;}}
+function parseDdg(text){
+  var out=[],doc=new DOMParser().parseFromString(text,'text/html');
+  doc.querySelectorAll('a.result__a').forEach(function(a){
+    var u=ddgUnwrap(a.getAttribute('href')||'');
+    if(!u||!/^https?:/i.test(u))return;
+    var d='';var box=a.closest('.result');if(box){var sn=box.querySelector('.result__snippet');if(sn)d=sn.textContent.trim();}
+    out.push({t:a.textContent.trim(),u:u,d:d});
+  });
+  if(!out.length){
+    /* repli texte/markdown (r.jina.ai) : liens [titre](url) — unwrap uddg, liens DDG internes écartés */
+    var re=/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,m;
+    while((m=re.exec(text))){
+      var u2=ddgUnwrap(m[2]);
+      if(!u2||!/https?:/i.test(u2))continue;
+      if(/duckduckgo\.com|ahmia\.fi/i.test(u2))continue;
+      out.push({t:m[1].trim(),u:u2,d:''});
+    }
+  }
+  return out.filter(function(r){return r.t;}).slice(0,10);
+}
+function parseAhmia(text){
+  var out=[],seen={},doc=new DOMParser().parseFromString(text,'text/html');
+  doc.querySelectorAll('a[href]').forEach(function(a){
+    var h=a.getAttribute('href')||'',u=null;
+    if(/\.onion/i.test(h)){try{u=new URL(h,'https://ahmia.fi').href;}catch(e){}}
+    else{try{var U=new URL(h,'https://ahmia.fi');var r=U.searchParams.get('redirect_url')||U.searchParams.get('u');if(r&&/\.onion/i.test(r))u=r;}catch(e){}}
+    if(!u)return;
+    u=u.replace(/^https?:\/\//i,'http://');
+    var key=u.toLowerCase().split('/')[0]+'//'+u.split('/')[2];
+    if(seen[key])return;seen[key]=1;
+    out.push({t:a.textContent.trim()||u,u:u,d:''});
+  });
+  if(!out.length){
+    var re=/https?:\/\/[a-z0-9-]+\.onion(?:\/[^\s"'<>)]*)?/gi,m;
+    while((m=re.exec(text))){var k=m[0].toLowerCase();if(!seen[k]){seen[k]=1;out.push({t:m[0],u:m[0],d:''});}}
+  }
+  if(!out.length){
+    /* repli markdown (r.jina.ai) : [titre](url .onion) */
+    var md=/\[([^\]]+)\]\((https?:\/\/[^)\s]*\.onion[^)\s]*)\)/g,m2;
+    while((m2=md.exec(text))){var k2=m2[2].toLowerCase();if(!seen[k2]){seen[k2]=1;out.push({t:m2[1].trim(),u:m2[2],d:''});}}
+  }
+  return out.slice(0,10);
+}
+function section(label,items,note){
+  var h='<h2>'+esc(label)+'</h2>';
+  if(note)h+='<p class="note">'+esc(note)+'</p>';
+  if(!items.length)return h;
+  h+='<ul>';
+  items.forEach(function(r){h+='<li><a href="#" data-u="'+esc(r.u)+'">'+esc(r.t||r.u)+'</a>'
+    +(r.d?'<span>'+esc(r.d.slice(0,120))+'</span>':'<span>'+esc(r.u)+'</span>')+'</li>';});
+  return h+'</ul>';
+}
+function resultsPage(q,web,onion,errWeb,errOnion){
+  var h='<!DOCTYPE html><html lang="'+LANG+'"><head><meta charset="utf-8"><style>'
+  +'body{margin:0;padding:22px 4vw 40px;background:#07060a;color:#e9e1d0;font-family:"DM Mono",monospace}'
+  +'h1{font-family:"Bebas Neue",sans-serif;font-weight:400;font-size:24px;letter-spacing:.1em;color:#ffe08a;margin:0 0 4px}'
+  +'h2{font-size:12px;letter-spacing:.2em;color:#c9a84c;margin:26px 0 10px;border-bottom:1px solid rgba(201,168,76,.25);padding-bottom:6px}'
+  +'ul{list-style:none;margin:0;padding:0}li{margin:0 0 14px}'
+  +'a{color:#ffe08a;font-size:13px;text-decoration:none;display:block}a:hover{text-decoration:underline}'
+  +'span{display:block;color:#8a8272;font-size:11px;margin-top:3px;line-height:1.6}'
+  +'.note{color:#8a8272;font-size:11px;margin:0 0 10px}.top{color:#8a8272;font-size:11px;margin:0 0 8px}'
+  +'</style></head><body>'
+  +'<h1>'+esc(q)+'</h1><p class="top">'+esc(L('Entrée pour une nouvelle recherche dans la barre d\u2019adresse.','Type a new search in the address bar.'))+'</p>'
+  +section(L('WEB — DUCKDUCKGO','WEB — DUCKDUCKGO'),web,errWeb)
+  +section(L('.ONION — AHMIA','.ONION — AHMIA'),onion,errOnion)
+  +'<script>document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[data-u]");if(a){e.preventDefault();if(parent.__torGo)parent.__torGo(a.getAttribute("data-u"));}});<\/script>'
+  +'</body></html>';
+  $('view').srcdoc=h;
+}
+window.__torGo=function(u){go(u,true);};
+window.__torSearch=function(q){
+  q=String(q||'').trim();if(!q)return;
+  if(/^https?:\/\//i.test(q)||/\.onion/i.test(q)){go(q,true);return;}
+  if(/^[\w.-]+\.[a-z]{2,}(\/|$)/i.test(q)){go('https://'+q,true);return;}
+  $('url').value=q;
+  status(L('Recherche — web et .onion…','Searching — web and .onion…'));
+  hideNotice();$('tab').dataset.onion='';
+  var done=0,web=[],onion=[],errWeb=null,errOnion=null;
+  function fin(){done++;if(done<2)return;
+    mark('search:'+q);refreshBtns();
+    if(!web.length&&!onion.length&&!errWeb&&!errOnion)errWeb=L('Aucun résultat.','No results.');
+    resultsPage(q,web,onion,errWeb,errOnion);
+    reloadFn=function(){__torSearch(q);};
+    status(L('Résultats — DuckDuckGo (web) et Ahmia (.onion).','Results — DuckDuckGo (web) and Ahmia (.onion).'));}
+  fetchVia(ddgUrl(q)).then(function(t){web=parseDdg(t);}).catch(function(){errWeb=L('Web injoignable (passereau).','Web unreachable (proxy).');}).then(fin);
+  fetchVia(ahmiaUrl(q)).then(function(t){onion=parseAhmia(t);}).catch(function(){errOnion=L('.onion injoignable (passereau).','.onion unreachable (proxy).');}).then(fin);
+};
+
+/* ---- barre d'adresse ---- */
+function go(input,push){
+  var u=String(input||'').trim();
+  if(!u){home();return;}
+  if(/^https?:\/\//i.test(u)){nav(u,push);return;}
+  if(/\.onion/i.test(u)){nav('http://'+u.replace(/^\/+/,''),push);return;}
+  if(/^(index|fr)$/i.test(u))u=u.toLowerCase()+'.html';
+  else if(/^fauna-[\w-]+$/i.test(u))u=u.toLowerCase()+'.html';
+  else if(/^llms(\.txt)?$/i.test(u))u='llms.txt';
+  else if(/^readme(\.md)?$/i.test(u))u='README.md';
+  if(/^(index\.html|fr\.html|llms\.txt|README\.md|fauna-[\w-]+\.html|fotofauna\.html|tor\.html)$/i.test(u)){nav(u,push);return;}
+  if(/^[\w.-]+\.[a-z]{2,}(\/|$)/i.test(u)){nav('https://'+u,push);return;}
+  __torSearch(u);
+}
+$('go').addEventListener('click',function(){go($('url').value,true);});
+$('url').addEventListener('keydown',function(e){if(e.key==='Enter')go($('url').value,true);});
+
+/* ---- ↗ : une vraie fenêtre de navigation, hors encapsulation ---- */
+function realWin(u){
+  if(!/^https?:\/\//i.test(u)&&/^[\w.-]+\.[a-z]{2,}(\/|$)/i.test(u))u='https://'+u;
+  var w=window.open(u,'torwin','menubar=yes,toolbar=yes,location=yes,status=yes,resizable=yes,scrollbars=yes,width=1020,height=760');
+  if(w){try{w.focus();}catch(e){}}else{window.open(u,'_blank','noopener');}
+  return !!w;}
+$('tab').addEventListener('click',function(){
+  var u=$('tab').dataset.onion||$('url').value.trim();
+  if(!u)return;realWin(u);});
+
+/* ---- boutons standards ---- */
+$('back').addEventListener('click',function(){if(hi>0){hi--;var u=history_[hi];cur=u;refreshBtns();
+  if(/^search:/.test(u))__torSearch(u.slice(7));
+  else if(/^onion:/.test(u))nav(u.slice(6),false);
+  else if(u==='home')home();
+  else nav(u,false);}});
+$('fwd').addEventListener('click',function(){if(hi<history_.length-1){hi++;var u=history_[hi];cur=u;refreshBtns();
+  if(/^search:/.test(u))__torSearch(u.slice(7));
+  else if(/^onion:/.test(u))nav(u.slice(6),false);
+  else if(u==='home')home();
+  else nav(u,false);}});
+$('reload').addEventListener('click',function(){if(reloadFn)reloadFn();});
+$('home').addEventListener('click',function(){push0=true;home();push0=false;});
+$('lang').addEventListener('click',function(){setLang(LANG==='fr'?'en':'fr');reloadFn&&reloadFn();});
+$('view').addEventListener('load',function(){if($('view').srcdoc)setTimeout(function(){try{$('view').contentDocument&&$('view').contentDocument.getElementById('q')&&$('view').contentDocument.getElementById('q').focus();}catch(e){}},0);});
+
+setLang(LANG);home();
+})();
+</script>
+</body>
+</html>
