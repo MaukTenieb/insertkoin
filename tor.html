@@ -80,22 +80,34 @@ function showNotice(t1,t2,btn,href,hint){$('ntitle').textContent=t1;$('ntext').t
   $('nhint').textContent=hint||'';$('notice').classList.add('show');}
 function hideNotice(){$('notice').classList.remove('show');}
 
-/* ---- .onion : rendu dans la vue par un passereau tor2web ; ↗ tente toujours la vraie fenêtre ---- */
-function toGateway(u){
-  var m=u.match(/^(https?:\/\/)([a-z0-9-]+\.onion)(?=\/|$)/i);
-  if(!m)return null;
-  return 'https://'+m[2].toLowerCase()+'.ly'+u.slice(m[1].length+m[2].length);
+/* ---- .onion : sonde Tor → vue directe si Tor actif ; sinon notice + ↗ (plus de passerelles tor2web : toutes mortes) ---- */
+function probeTor(u){
+  var ctl=typeof AbortController!=='undefined'?new AbortController():null;
+  var timer=ctl?setTimeout(function(){try{ctl.abort();}catch(e){}},12000):null;
+  var opts=ctl?{signal:ctl.signal,mode:'no-cors',cache:'no-store'}:{mode:'no-cors',cache:'no-store'};
+  return fetch(u,opts).then(function(){if(timer)clearTimeout(timer);return true;})
+    .catch(function(){if(timer)clearTimeout(timer);return false;});
 }
 function nav(url,push){
   if(!url)return;
   hideNotice();
   if(/\.onion/i.test(url)){
-    var gw=toGateway(url.trim());
-    $('tab').dataset.onion=url;
-    if(gw){
-      $('view').removeAttribute('srcdoc');$('view').src=gw;
-      status(L('.onion via '+gw.split('/')[2]+' — si la page reste vide, ↗ tente la vraie fenêtre Tor.','.onion via '+gw.split('/')[2]+' — if the page stays empty, ↗ tries the real Tor window.'));
-    }else status(L('.onion : adresse non reconnue.','.onion: address not recognised.'));
+    var u=url.trim();
+    $('tab').dataset.onion=u;
+    $('view').removeAttribute('srcdoc');
+    status(L('Sonde du réseau Tor…','Probing the Tor network…'));
+    probeTor(u).then(function(ok){
+      if(ok){
+        $('view').src=u;
+        status(L('.onion en direct — Tor actif.','.onion direct — Tor active.'));
+      }else{
+        showNotice(
+          L('.onion exige Tor','.onion needs Tor'),
+          L('Les passerelles tor2web n\'existent plus fiablement. Ouvre Tor Browser — depuis Tor, ce même Faunator affichera l\'adresse en direct, ici même.','No reliable tor2web gateways are left. Open Tor Browser — from Tor, this same Faunator will load the address directly, right here.'),
+          L('↗ OUVRIR DANS TOR','↗ OPEN IN TOR'), u,
+          L('Ou copie l\'adresse dans la barre de Tor Browser.','Or copy the address into the Tor Browser bar.'));
+      }
+    });
     reloadFn=function(){nav(url,false);};
     if(push)mark('onion:'+url);
     return;
