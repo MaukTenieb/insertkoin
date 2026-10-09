@@ -1967,11 +1967,14 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
   function say(el,name,text){const r=homeXY(el),gx=parseFloat(g.style.left),gw=parseFloat(g.style.getPropertyValue('--gw'))||60,W=home.clientWidth;
     tip.innerHTML='';const b=document.createElement('b');b.textContent=name;tip.appendChild(b);if(text)text.split('\n').forEach(l=>{const d=document.createElement('div');d.textContent=l;tip.appendChild(d);});
     const right=gx+gw+10+320<W;tip.style.left=(right?gx+gw+6:Math.max(4,gx-Math.min(320,W*.7)-6))+'px';tip.style.top=(parseFloat(g.style.top)+8)+'px';tip.classList.add('on');}
-  async function tour(){if(touring)return;touring=true;idleT=Infinity;ac();const W=ms=>new Promise(r=>setTimeout(r,ms));
+  let TQ=[],TI=0;
+  async function tour(resume){if(touring)return;touring=true;idleT=Infinity;ac();const W=ms=>new Promise(r=>setTimeout(r,ms));
     const cabs=[...home.querySelectorAll('.cabinets .cab')],chips=[...home.querySelectorAll('.menu a,.menu button')];
-    const first=cabs.filter(c=>c.querySelector('[data-go="puck"]')),rest=cabs.filter(c=>!first.includes(c)).sort(()=>Math.random()-.5),stops=first.concat(rest,chips.sort(()=>Math.random()-.5),[document.getElementById('radio-toggle')||document.querySelector('.motel-bar'),$('kapture')].filter(Boolean));
+    /* every visit starts on any tile or menu, at random, then goes on in order */
+    let stops;if(resume&&resume.length)stops=resume;else{const all=cabs.concat(chips,[document.getElementById('radio-toggle')||document.querySelector('.motel-bar'),$('kapture')].filter(Boolean)),k=Math.floor(Math.random()*all.length);stops=all.slice(k).concat(all.slice(0,k));}
+    TQ=stops;
     const L=SAY[LANG]||SAY.en;
-    for(const el of stops){if(!touring)break;const isCab=el.classList.contains('cab');const hr=(el.getAttribute('href')||(el.querySelector('a')||{}).href||'')+'';const go=(el.querySelector('[data-go]')||el).dataset.go||(el.id==='kapture'?'kapture':(el.id==='radio-toggle'||el.classList.contains('motel-bar'))?'motel':el.id==='refresh'?'refresh':/substack/.test(hr)?'lore':/threadless/.test(hr)?'tl':/instagram/.test(hr)?'ig':/github\.com\/MaukTenieb/.test(hr)?'bio':'');
+    for(let i=0;i<stops.length;i++){const el=stops[i];TI=i;if(!touring)break;const isCab=el.classList.contains('cab');const hr=(el.getAttribute('href')||(el.querySelector('a')||{}).href||'')+'';const go=(el.querySelector('[data-go]')||el).dataset.go||(el.id==='kapture'?'kapture':(el.id==='radio-toggle'||el.classList.contains('motel-bar'))?'motel':el.id==='refresh'?'refresh':/substack/.test(hr)?'lore':/threadless/.test(hr)?'tl':/instagram/.test(hr)?'ig':/github\.com\/MaukTenieb/.test(hr)?'bio':'');
       el.scrollIntoView({block:'center',behavior:RMg?'auto':'smooth'});await W(RMg?60:420);if(!touring)break;
       const r=homeXY(el),gw=parseFloat(g.style.getPropertyValue('--gw'))||60;g.classList.add('walk');face(r.x<parseFloat(g.style.left)?2:3);
       const vt=el.getBoundingClientRect().top,inBar=!!el.closest('.bar'),HW=home.clientWidth;
@@ -1983,28 +1986,31 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
       const nm=(el.querySelector('b')||el).textContent.replace(/^[^A-Za-z0-9À-ÿ]+/,'').replace(/\s+/g,' ').trim();say(el,go==='motel'?'MOTEL SOUND':nm,L[go]||'');await W(L[go]?2600:1500);if(isCab)el.classList.remove('lit');face(0);}
     stop();}
   function stop(){if(!touring)return;touring=false;tip.classList.remove('on');home.querySelectorAll('.cab.lit').forEach(c=>c.classList.remove('lit'));idleT=performance.now()+5000;}
-  /* grab the guide with the mouse or a finger and throw it: it slides and bounces off the edges like the Puck You! puck, lights up on each impact, and after one or two impacts lays a Koin to pick up */
-  let fl=null,dragged=false,lastKoin=0;
+  /* grab the guide with the mouse or a finger and throw it: it slides and bounces off the edges like the Puck You! puck, lights up on each impact, and after one or two impacts lays a Koin that goes to the counter by itself — one or two Koins at most per visit, however long one plays */
+  let fl=null,dragged=false,lastKoin=0,koinsLeft=1+Math.floor(Math.random()*2),pending=null;
   function bounds(){const b=home.getBoundingClientRect(),gw=parseFloat(g.style.getPropertyValue('--gw'))||60;return{x0:0,x1:home.clientWidth-gw,y0:Math.max(0,-b.top),y1:Math.max(0,-b.top)+innerHeight-H-4};}
   function impact(){g.classList.remove('hit');void g.offsetWidth;g.classList.add('hit');clearTimeout(g._hitT);g._hitT=setTimeout(()=>g.classList.remove('hit'),240);
     if(AC&&sound){burst(2600,'bandpass',.07,.05);tone(880+Math.random()*220,.06,'triangle',.03);}
-    if(fl&&fl.layAt&&++fl.hits>=fl.layAt&&Date.now()-lastKoin>20000){fl.layAt=0;lastKoin=Date.now();lay(parseFloat(g.style.left),parseFloat(g.style.top));}}
+    if(fl&&fl.layAt&&++fl.hits>=fl.layAt&&koinsLeft>0){fl.layAt=0;koinsLeft--;lastKoin=Date.now();lay(parseFloat(g.style.left),parseFloat(g.style.top));}}
   function lay(x,y){const gw=parseFloat(g.style.getPropertyValue('--gw'))||60,k=document.createElement('button');k.type='button';k.className='gkoin';k.setAttribute('aria-label','Koin');k.textContent='◉';
     k.style.left=(x+gw/2-14)+'px';k.style.top=(y+H-30)+'px';home.appendChild(k);if(AC&&sound){tone(1320,.08,'square',.03);tone(1760,.12,'square',.025,0,.08);}
-    const gone=setTimeout(()=>k.remove(),14000);
-    k.addEventListener('click',e=>{e.stopPropagation();clearTimeout(gone);koins=Math.min(Number.MAX_SAFE_INTEGER,koins+1);saveKoins();koinFx();if(typeof koinDrop==='function')koinDrop(1);if(AC&&sound)tone(1046,.1,'triangle',.04);k.classList.add('got');setTimeout(()=>k.remove(),500);});}
+    let got=false;const take=()=>{if(got)return;got=true;koins=Math.min(Number.MAX_SAFE_INTEGER,koins+1);saveKoins();koinFx();if(typeof koinDrop==='function')koinDrop(1);if(AC&&sound)tone(1046,.1,'triangle',.04);k.classList.add('got');setTimeout(()=>k.remove(),500);};
+    /* it goes to the counter by itself; a touch only hurries it */
+    k.addEventListener('click',e=>{e.stopPropagation();take();});setTimeout(take,1100);}
   function fly(){if(!fl)return;const t=performance.now(),dt=Math.min(.05,(t-fl.t)/1000);fl.t=t;const B=bounds();
     let x=parseFloat(g.style.left)+fl.vx*dt,y=parseFloat(g.style.top)+fl.vy*dt;
     if(x<B.x0){x=B.x0;fl.vx=Math.abs(fl.vx)*.86;impact();}else if(x>B.x1){x=B.x1;fl.vx=-Math.abs(fl.vx)*.86;impact();}
     if(y<B.y0){y=B.y0;fl.vy=Math.abs(fl.vy)*.86;impact();}else if(y>B.y1){y=B.y1;fl.vy=-Math.abs(fl.vy)*.86;impact();}
     const f=Math.pow(.42,dt);fl.vx*=f;fl.vy*=f;place(x,y);face(fl.vx<0?2:3);
-    if(Math.hypot(fl.vx,fl.vy)<18){fl=null;g.classList.remove('fling');face(0);idleT=performance.now()+12000+Math.random()*10000;return;}
+    if(Math.hypot(fl.vx,fl.vy)<18){fl=null;g.classList.remove('fling');face(0);idleT=performance.now()+12000+Math.random()*10000;
+      /* thrown in the middle of a visit: it takes it up again, calmly, a few seconds later */
+      if(pending){const q=pending;pending=null;setTimeout(()=>{if(!touring&&!fl&&!g._drag)tour(q);},3000+Math.random()*2500);}return;}
     requestAnimationFrame(fly);}
   g.style.touchAction='none';
-  g.addEventListener('pointerdown',e=>{if(touring||away)return;ac();dragged=false;fl=null;const r=g.getBoundingClientRect();
+  g.addEventListener('pointerdown',e=>{if(away)return;ac();dragged=false;fl=null;const r=g.getBoundingClientRect();
     const d={id:e.pointerId,ox:e.clientX-r.left,oy:e.clientY-r.top,pts:[[e.clientX,e.clientY,performance.now()]],sx:e.clientX,sy:e.clientY};g._drag=d;try{g.setPointerCapture(e.pointerId);}catch(_){}});
   g.addEventListener('pointermove',e=>{const d=g._drag;if(!d||d.id!==e.pointerId)return;if(!dragged&&Math.hypot(e.clientX-d.sx,e.clientY-d.sy)<6)return;
-    if(!dragged){dragged=true;g.classList.add('fling');g.classList.remove('walk');tip.classList.remove('on');}
+    if(!dragged){dragged=true;if(touring){pending=TQ.slice(TI);stop();}g.classList.add('fling');g.classList.remove('walk');tip.classList.remove('on');}
     const b=home.getBoundingClientRect(),B=bounds();place(Math.max(B.x0,Math.min(B.x1,e.clientX-b.left-d.ox)),Math.max(B.y0,Math.min(B.y1,e.clientY-b.top-d.oy)));
     d.pts.push([e.clientX,e.clientY,performance.now()]);if(d.pts.length>6)d.pts.shift();});
   function drop(e){const d=g._drag;if(!d||d.id!==e.pointerId)return;g._drag=null;if(!dragged)return;
