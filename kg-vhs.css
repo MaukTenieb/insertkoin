@@ -901,7 +901,6 @@
 .vhs[data-atelier="off"] .vhs-shelf:not(:has(.vhs-tape:not(.vhs-tape-all))) { display: none; }
 /* [IK] on the public site the REC bay records in the page; KRITIK and the tape tools need the workshop server */
 .vhs[data-atelier="page"] .vhs-ttx-btn,
-.vhs[data-atelier="page"] .vhs-tapetools,
 .vhs[data-atelier="page"] .vhs-shelf-empty,
 .vhs[data-atelier="page"] .vhs-ttx { display: none !important; }
 .vhs[data-atelier="page"] .vhs-shelf:not(:has(.vhs-tape:not(.vhs-tape-all))) { display: none; }

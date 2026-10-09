@@ -438,6 +438,18 @@
       writeLocal(a);
       state.lastFailureAt = 0; state.status = "idle";
     },
+    /** [IK] erase a cassette recorded in this browser */
+    eraseLocal: function (channel) {
+      writeLocal(readLocal().filter(function (t) { return t && t.channel !== channel; }));
+      var left = cache.tapes.filter(function (t) { return t.channel !== channel; }), tr = [];
+      left.forEach(function (t) { tr = tr.concat(t.tracks || []); });
+      cache = { tracks: uniqByVideoId(tr), tapes: left };
+      if (currentTape === channel) currentTape = null;
+      global.KG_VHS_TRACKS = cache.tracks.length ? cache.tracks : undefined;
+      state.status = cache.tracks.length ? "ready" : "idle"; state.lastFailureAt = 0;
+    },
+    /** [IK] a cassette recorded in this browser (with its tracks), or null */
+    localTape: function (channel) { var a = readLocal(); for (var i = 0; i < a.length; i++) if (a[i] && a[i].channel === channel) return a[i]; return null; },
     /** [IK] a cassette recorded in this browser? */
     isLocal: function (channel) { return readLocal().some(function (t) { return t && t.channel === channel; }); },
     /** Backend base URL in use (for companion modules, e.g. the recorder). */

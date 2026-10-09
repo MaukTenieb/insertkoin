@@ -528,6 +528,53 @@
     }, 2500);
   }
 
+  /* [IK] exports of a cassette recorded in the page, made right here */
+  function rows(tape) { return (tape.tracks || []).map(function (x, i) { return { n: i + 1, title: x.title || x.id, id: x.id, url: "https://www.youtube.com/watch?v=" + x.id }; }); }
+  function slug(s) { return String(s || "cassette").replace(/[^\w\u00C0-\u024F-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "cassette"; }
+  function csvCell(v) { v = String(v); return /[",\n;]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+  function crc32(u8) { var c, t = crc32.t; if (!t) { t = crc32.t = []; for (var n = 0; n < 256; n++) { c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } }
+    c = 0xFFFFFFFF; for (var i = 0; i < u8.length; i++) c = t[(c ^ u8[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+  function zip(files) { /* stored, no compression: enough for a sheet */
+    var enc = new TextEncoder(), parts = [], cen = [], off = 0;
+    files.forEach(function (f) {
+      var name = enc.encode(f.name), data = enc.encode(f.data), crc = crc32(data), h = new DataView(new ArrayBuffer(30));
+      h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint32(14, crc, true); h.setUint32(18, data.length, true); h.setUint32(22, data.length, true); h.setUint16(26, name.length, true);
+      parts.push(new Uint8Array(h.buffer), name, data);
+      var c = new DataView(new ArrayBuffer(46));
+      c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true); c.setUint16(28, name.length, true); c.setUint32(42, off, true);
+      cen.push(new Uint8Array(c.buffer), name); off += 30 + name.length + data.length;
+    });
+    var size = cen.reduce(function (a, b) { return a + b.length; }, 0), e = new DataView(new ArrayBuffer(22));
+    e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, size, true); e.setUint32(16, off, true);
+    return new Blob(parts.concat(cen, [new Uint8Array(e.buffer)]), { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  }
+  function xml(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function xlsx(tape) {
+    var R = [["#", "Title", "Video", "URL"]].concat(rows(tape).map(function (r) { return [r.n, r.title, r.id, r.url]; }));
+    var col = function (i) { return "ABCD".charAt(i); };
+    var sheet = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>' +
+      R.map(function (row, ri) { return '<row r="' + (ri + 1) + '">' + row.map(function (v, ci) { var ref = col(ci) + (ri + 1);
+        return typeof v === "number" ? '<c r="' + ref + '"><v>' + v + '</v></c>' : '<c r="' + ref + '" t="inlineStr"><is><t>' + xml(v) + '</t></is></c>'; }).join("") + '</row>'; }).join("") +
+      '</sheetData></worksheet>';
+    return zip([
+      { name: "[Content_Types].xml", data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>' },
+      { name: "_rels/.rels", data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
+      { name: "xl/workbook.xml", data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="' + xml(String(tape.channel).slice(0, 31).replace(/[\[\]:*?\/\\]/g, " ")) + '" sheetId="1" r:id="rId1"/></sheets></workbook>' },
+      { name: "xl/_rels/workbook.xml.rels", data: '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>' },
+      { name: "xl/worksheets/sheet1.xml", data: sheet }
+    ]);
+  }
+  function localExports(tape) {
+    var r = rows(tape), url = tape.channel_url || "";
+    return {
+      csv: new Blob(["\uFEFF#,title,video_id,url\n" + r.map(function (x) { return [x.n, x.title, x.id, x.url].map(csvCell).join(","); }).join("\n")], { type: "text/csv" }),
+      json: new Blob([JSON.stringify({ channel: tape.channel, channel_url: url, count: r.length, videos: r.map(function (x) { return { video_id: x.id, title: x.title, url: x.url }; }) }, null, 1)], { type: "application/json" }),
+      xlsx: xlsx(tape),
+      txt: new Blob([tape.channel + (url ? "\n" + url : "") + "\n\n" + r.map(function (x) { return x.n + ". " + x.title + "  " + x.url; }).join("\n")], { type: "text/plain" }),
+      md: new Blob(["# " + tape.channel + "\n\n" + (url ? url + "\n\n" : "") + r.map(function (x) { return x.n + ". [" + x.title.replace(/[\[\]]/g, "") + "](" + x.url + ")"; }).join("\n") + "\n"], { type: "text/markdown" })
+    };
+  }
+
   function showTools(root, selection) {
     var bar = q(root, "[data-vhs-tapetools]");
     if (!bar) return;
@@ -537,6 +584,27 @@
     var name = q(root, "[data-vhs-tapetools-name]");
     if (name) name.textContent = selection ? selection.channel + " (" + selection.count + " " + t("tracks") + ")" : "";
     if (!selection || !L) return;
+    var lt = L.localTape && L.localTape(selection.channel);
+    if (lt) {
+      var ex = localExports(lt), base0 = slug(lt.channel);
+      ["csv", "json", "xlsx", "txt", "md"].forEach(function (fmt) {
+        var a = q(root, "[data-vhs-tapetools-" + fmt + "]");
+        if (!a) return;
+        if (a.__blob) try { URL.revokeObjectURL(a.__blob); } catch (e) {}
+        a.__blob = URL.createObjectURL(ex[fmt]); a.href = a.__blob; a.setAttribute("download", base0 + "." + fmt);
+      });
+      var eb = q(root, "[data-vhs-tapetools-eject]");
+      if (eb) {
+        eb.__armed = false; eb.classList.remove("is-armed"); eb.textContent = t("ERASE"); eb.disabled = false;
+        eb.onclick = function () {
+          if (!eb.__armed) { eb.__armed = true; eb.classList.add("is-armed"); eb.textContent = t("SURE?");
+            global.setTimeout(function () { eb.__armed = false; eb.classList.remove("is-armed"); eb.textContent = t("ERASE"); }, 2500); return; }
+          L.eraseLocal(lt.channel); tools.channel = null; showTools(root, null);
+          L.ready().then(function () { renderShelf(root); L.selectAll(); if (global.KGVHS && global.KGVHS.refreshTracks) global.KGVHS.refreshTracks(); });
+        };
+      }
+      return;
+    }
     var base = String(L.apiUrl() || "").replace(/\/+$/, "");
     historyJobsFor(L, selection.channel).then(function (jobs) {
       tools.jobs = jobs;
