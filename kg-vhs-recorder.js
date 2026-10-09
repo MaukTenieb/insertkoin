@@ -315,7 +315,7 @@
       if (rec.abort) throw new Error("cancelled");
       var over = rec.over; rec.over = null; rec.local = false;
       L.saveLocal(tape, over && over !== tape.channel ? over : null);
-      finishRecording(root, true, tape.channel, tape.tracks.length);
+      finishRecording(root, true, tape.channel, tape.expected > tape.tracks.length ? tape.tracks.length + " / " + tape.expected : tape.tracks.length);
       if (L.selectTape) L.ready().then(function () { L.selectTape(tape.channel); renderShelf(root); if (global.KGVHS && global.KGVHS.refreshTracks) global.KGVHS.refreshTracks(); });
     }).catch(function (e) {
       var cancelled = rec.abort; rec.local = false;

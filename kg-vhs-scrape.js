@@ -42,6 +42,10 @@
       return json ? r.json() : r.text();
     }, function (e) { if (t) clearTimeout(t); throw e; });
   }
+  /* a refused page is asked again, after a breath, before the road gives up */
+  function again(mk, tries, wait) {
+    return mk().catch(function (e) { if (tries <= 1) throw e; return new Promise(function (r) { setTimeout(r, wait || 1500); }).then(function () { return again(mk, tries - 1, (wait || 1500) * 2); }); });
+  }
   function any(ps) {
     return new Promise(function (res, rej) {
       var n = ps.length, f = 0; if (!n) rej(new Error("none"));
@@ -156,18 +160,18 @@
       }
       function next(np, n) {
         if (stop()) throw new Error("cancelled");
-        return timed("https://" + host + "/nextpage/channel/" + id + "?nextpage=" + enc(np), 15000, true).then(function (d) {
+        return again(function () { return timed("https://" + host + "/nextpage/channel/" + id + "?nextpage=" + enc(np), 20000, true); }, 4).then(function (d) {
           take(d);
-          return d.nextpage && (d.relatedStreams || []).length && n < 60 && out.length < 3000 ? next(d.nextpage, n + 1) : out;
-        }, function () { return out; });
+          return d.nextpage && (d.relatedStreams || []).length && n < 120 && out.length < 5000 ? next(d.nextpage, n + 1) : out;
+        }, function () { out.partial = true; return out; });
       }
       /* channels now keep their videos behind a tab */
       function tab(data, np, n) {
         if (stop()) throw new Error("cancelled");
-        return timed("https://" + host + "/channels/tabs?data=" + enc(data) + (np ? "&nextpage=" + enc(np) : ""), 20000, true).then(function (d) {
+        return again(function () { return timed("https://" + host + "/channels/tabs?data=" + enc(data) + (np ? "&nextpage=" + enc(np) : ""), 20000, true); }, 4).then(function (d) {
           take({ relatedStreams: d.content || d.relatedStreams || [] });
-          return d.nextpage && (d.content || []).length && n < 80 && out.length < 3000 ? tab(data, d.nextpage, n + 1) : out;
-        }, function (e) { if (out.length) return out; throw e; });
+          return d.nextpage && (d.content || []).length && n < 120 && out.length < 5000 ? tab(data, d.nextpage, n + 1) : out;
+        }, function (e) { if (out.length) { out.partial = true; return out; } throw e; });
       }
       return timed("https://" + host + "/channel/" + id, 15000, true).then(function (d) {
         name = d.name || ""; take(d);
@@ -185,9 +189,9 @@
               if (j >= ids.length || stop() || out.length >= 3000) return out;
               var L = ids[j++];
               function pg(np, n) {
-                return timed("https://" + host + (np ? "/nextpage/playlists/" + L + "?nextpage=" + enc(np) : "/playlists/" + L), 20000, true).then(function (z) {
+                return again(function () { return timed("https://" + host + (np ? "/nextpage/playlists/" + L + "?nextpage=" + enc(np) : "/playlists/" + L), 20000, true); }, 3).then(function (z) {
                   take({ relatedStreams: z.relatedStreams || [] });
-                  return z.nextpage && (z.relatedStreams || []).length && n < 20 ? pg(z.nextpage, n + 1) : null;
+                  return z.nextpage && (z.relatedStreams || []).length && n < 40 ? pg(z.nextpage, n + 1) : null;
                 });
               }
               return pg("", 0).then(one, one);
@@ -328,9 +332,26 @@
       .then(function (tape) { tape.count = tape.tracks.length; return tape; })
       .catch(function (e) { var err = new Error(WHY.join(" · ") || (e && e.message) || "failed"); err.why = WHY.slice(); throw err; });
   }
+  /* how many videos the channel says it has (its header, read through r.jina.ai) */
+  function expected(id) {
+    return jina("https://www.youtube.com/channel/" + id + "/videos", 30000).then(function (h) {
+      var m = /"videosCountText":\{"runs":\[\{"text":"([\d.,\s\u00a0\u202f]+)"/.exec(h) || /"content":"([\d.,\s\u00a0\u202f]+)\s*videos?"/.exec(h) || /([\d][\d.,\u00a0\u202f]*)\s+videos\b/.exec(h);
+      return m ? parseInt(m[1].replace(/[^\d]/g, ""), 10) || 0 : 0;
+    }).catch(function () { return 0; });
+  }
   function publicRoads(url, prog, stop, live) {
+    var exp = null;
     return resolve(url).catch(function (e) { why("resolve", e); throw e; }).then(function (c) {
       if (stop()) throw new Error("cancelled");
+      if (c.id) exp = expected(c.id);
+      return publicRoad(c, url, prog, stop, live);
+    }).then(function (tape) {
+      if (!exp) return tape;
+      return Promise.race([exp, new Promise(function (r) { setTimeout(function () { r(0); }, 9000); })]).then(function (n) { if (n) tape.expected = n; return tape; });
+    });
+  }
+  function publicRoad(c, url, prog, stop, live) {
+    return Promise.resolve().then(function () {
       if (c.playlist) {
         return playlist(c.playlist, function (n) { prog(n, ""); }).then(function (p) {
           return { channel: p.title || c.playlist, channel_url: c.url, tracks: p.tracks };
