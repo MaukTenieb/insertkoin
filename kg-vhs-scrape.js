@@ -1,0 +1,158 @@
+/*
+ * Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna
+ * Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related
+ * material — including characters, names, symbols, rules, lore and texts, in any form or
+ * medium — are the exclusive property of Korhogo™. The source code of this site is
+ * published for reading, reflections, additions, requests, etc. - the lore, names, marks
+ * and works remain the property of the author. No use for training artificial
+ * intelligence. Contact: mauktenieb@gmail.com
+ */
+/*!
+ * KG-VHS Scrape — CHANNEL.SCRAPE inside the page, for the public site where no local
+ * server runs. A YouTube channel (or playlist) URL becomes a cassette: { channel, channel_url, tracks:[{id,title}] }.
+ *
+ * Roads, first that answers wins (the same as FaunaTor's):
+ *   1. Invidious instances (open API, CORS) — the whole channel, page after page;
+ *   2. the channel's uploads playlist page, read through the public relays or Tor — up to ~100;
+ *   3. the channel's RSS feed — the latest 15.
+ */
+(function (g) {
+  "use strict";
+  var enc = encodeURIComponent;
+  var RELAYS = [
+    function (u) { return "https://api.allorigins.win/raw?url=" + enc(u); },
+    function (u) { return "https://api.cors.lol/?url=" + enc(u); },
+    function (u) { return "https://cors.x2u.in/" + u; },
+    function (u) { return "https://thingproxy.freeboard.io/fetch/" + u; }
+  ];
+  var INVIDIOUS = ["inv.nadeko.net", "invidious.nerdvpn.de", "yewtu.be", "invidious.f5.si", "iv.melmac.space", "invidious.privacyredirect.com", "invidious.materialio.us", "inv.tux.pizza"];
+
+  function timed(url, ms, json) {
+    var ctl = typeof AbortController !== "undefined" ? new AbortController() : null;
+    var t = ctl ? setTimeout(function () { try { ctl.abort(); } catch (e) {} }, ms) : null;
+    return fetch(url, ctl ? { signal: ctl.signal } : {}).then(function (r) {
+      if (t) clearTimeout(t);
+      if (!r.ok) throw new Error("http " + r.status);
+      return json ? r.json() : r.text();
+    }, function (e) { if (t) clearTimeout(t); throw e; });
+  }
+  function any(ps) {
+    return new Promise(function (res, rej) {
+      var n = ps.length, f = 0; if (!n) rej(new Error("none"));
+      ps.forEach(function (p) { p.then(res, function () { if (++f === n) rej(new Error("all")); }); });
+    });
+  }
+  var torMod = null;
+  function tor() { return torMod || (torMod = import("./faunator-tor.js").catch(function () { return null; })); }
+  /* a YouTube page, through the relays and Tor at once */
+  function page(u) {
+    var ps = RELAYS.map(function (f) { return timed(f(u), 12000).then(function (x) { if (!x || x.length < 500) throw 0; return x; }); });
+    ps.push(tor().then(function (m) { if (!m) throw 0; return m.get(u); }).then(function (r) { if (!r || !r.text || r.text.length < 500) throw 0; return r.text; }));
+    return any(ps);
+  }
+  function unesc(s) {
+    try { return JSON.parse('"' + s + '"'); } catch (e) { return s.replace(/\\u0026/g, "&").replace(/\\"/g, '"'); }
+  }
+
+  /* the channel's id (UC…) and name, from any channel / handle / video / playlist URL */
+  function resolve(url) {
+    url = String(url || "").trim();
+    var m = /youtube\.com\/channel\/(UC[\w-]{22})/i.exec(url);
+    var pl = /[?&]list=([\w-]{10,})/i.exec(url);
+    if (pl && !/^UU/.test(pl[1])) return Promise.resolve({ playlist: pl[1], url: url });
+    if (m) {
+      return page("https://www.youtube.com/channel/" + m[1]).then(function (h) { return { id: m[1], name: nameOf(h), url: url }; },
+        function () { return { id: m[1], name: "", url: url }; });
+    }
+    var u = /^https?:/i.test(url) ? url : "https://www.youtube.com/" + url.replace(/^@?/, "@");
+    return page(u).then(function (h) {
+      var id = (/"externalId":"(UC[\w-]{22})"/.exec(h) || /"channelId":"(UC[\w-]{22})"/.exec(h) || /channel\/(UC[\w-]{22})/.exec(h) || [])[1];
+      if (!id) throw new Error("no channel");
+      return { id: id, name: nameOf(h), url: url };
+    });
+  }
+  function nameOf(h) {
+    var n = (/<meta property="og:title" content="([^"]+)"/.exec(h) || /"channelMetadataRenderer":\{"title":"([^"]+)"/.exec(h) || [])[1];
+    return n ? unesc(n.replace(/&amp;/g, "&").replace(/&#39;/g, "'").replace(/&quot;/g, '"')) : "";
+  }
+
+  /* road 1: Invidious, every page */
+  function invidious(id, prog, stop) {
+    var hosts = INVIDIOUS.slice().sort(function () { return Math.random() - 0.5; });
+    function from(host) {
+      var out = [], seen = {};
+      function next(cont, n) {
+        if (stop()) throw new Error("cancelled");
+        var u = "https://" + host + "/api/v1/channels/" + id + "/videos" + (cont ? "?continuation=" + enc(cont) : "");
+        return timed(u, 15000, true).then(function (d) {
+          var vs = (d && (d.videos || d)) || [];
+          vs.forEach(function (v) { if (v && v.videoId && !seen[v.videoId]) { seen[v.videoId] = 1; out.push({ id: v.videoId, title: v.title || v.videoId, author: v.author }); } });
+          prog(out.length);
+          if (d && d.continuation && vs.length && n < 40 && out.length < 1200) return next(d.continuation, n + 1);
+          if (!out.length) throw new Error("empty");
+          return out;
+        });
+      }
+      return next("", 0);
+    }
+    return any(hosts.slice(0, 4).map(from)).catch(function () { return any(hosts.slice(4).map(from)); });
+  }
+  /* road 2: the uploads playlist page */
+  function playlist(listId, prog) {
+    return page("https://www.youtube.com/playlist?list=" + listId).then(function (h) {
+      var out = [], seen = {}, re = /"playlistVideoRenderer":\{"videoId":"([\w-]{11})"[\s\S]*?"title":\{"runs":\[\{"text":"((?:[^"\\]|\\.)*)"/g, m;
+      while ((m = re.exec(h))) if (!seen[m[1]]) { seen[m[1]] = 1; out.push({ id: m[1], title: unesc(m[2]) }); }
+      if (!out.length) throw new Error("empty");
+      prog(out.length);
+      var title = (/"metadata":\{"playlistMetadataRenderer":\{"title":"((?:[^"\\]|\\.)*)"/.exec(h) || [])[1];
+      return { tracks: out, title: title ? unesc(title) : "" };
+    });
+  }
+  /* road 3: the RSS feed */
+  function rss(id, prog) {
+    return page("https://www.youtube.com/feeds/videos.xml?channel_id=" + id).then(function (x) {
+      var d = new DOMParser().parseFromString(x, "text/xml"), out = [];
+      Array.prototype.forEach.call(d.getElementsByTagName("entry"), function (e) {
+        var v = e.getElementsByTagName("yt:videoId")[0] || e.getElementsByTagNameNS("http://www.youtube.com/xml/schemas/2015", "videoId")[0];
+        var t = e.getElementsByTagName("title")[0];
+        if (v) out.push({ id: v.textContent, title: t ? t.textContent : v.textContent });
+      });
+      if (!out.length) throw new Error("empty");
+      prog(out.length);
+      var a = d.getElementsByTagName("author")[0], nm = a && a.getElementsByTagName("name")[0];
+      return { tracks: out, name: nm ? nm.textContent : "" };
+    });
+  }
+
+  /* record(url, {onProgress(n, name), isCancelled()}) -> Promise<tape> */
+  function record(url, o) {
+    o = o || {};
+    var prog = o.onProgress || function () {}, stop = o.isCancelled || function () { return false; };
+    return resolve(url).then(function (c) {
+      if (stop()) throw new Error("cancelled");
+      if (c.playlist) {
+        return playlist(c.playlist, function (n) { prog(n, ""); }).then(function (p) {
+          return { channel: p.title || c.playlist, channel_url: c.url, tracks: p.tracks };
+        });
+      }
+      var name = c.name || "";
+      prog(0, name);
+      return invidious(c.id, function (n) { prog(n, name); }, stop).then(function (t) {
+        return { channel: name || (t[0] && t[0].author) || c.id, channel_url: c.url, tracks: t.map(function (x) { return { id: x.id, title: x.title }; }) };
+      }).catch(function (e) {
+        if (stop()) throw e;
+        return playlist("UU" + c.id.slice(2), function (n) { prog(n, name); }).then(function (p) {
+          return { channel: name || c.id, channel_url: c.url, tracks: p.tracks };
+        }).catch(function () {
+          return rss(c.id, function (n) { prog(n, name); }).then(function (r) {
+            return { channel: name || r.name || c.id, channel_url: c.url, tracks: r.tracks };
+          });
+        });
+      });
+    }).then(function (tape) {
+      tape.count = tape.tracks.length;
+      return tape;
+    });
+  }
+  g.KGVHSScrape = { record: record, resolve: resolve };
+})(window);

@@ -288,11 +288,48 @@
       });
   }
 
+  /* [IK] no CHANNEL.SCRAPE server here (the public site): the page records the channel itself */
+  function scraper() {
+    if (global.KGVHSScrape) return Promise.resolve(global.KGVHSScrape);
+    return new Promise(function (res, rej) {
+      var s = global.document.createElement("script");
+      var base = (global.KG && global.KG.base) ? String(global.KG.base).replace(/kg-$/, "") : "";
+      s.src = base + "kg-vhs-scrape.js";
+      s.onload = function () { global.KGVHSScrape ? res(global.KGVHSScrape) : rej(new Error("scrape")); };
+      s.onerror = rej; global.document.head.appendChild(s);
+    });
+  }
+  function recordInPage(root, url) {
+    var L = lib();
+    setBusy(root, true);
+    rec.active = true; rec.local = true; rec.abort = false;
+    rec.over = (L.current && typeof L.current === "function") ? L.current() : null;
+    setProgress(root, t("Recording") + " \u25B8 \u2026", false);
+    global.dispatchEvent(new CustomEvent("kg-vhs:recording", { detail: { jobId: "page", url: url } }));
+    scraper().then(function (S) {
+      return S.record(url, {
+        isCancelled: function () { return rec.abort; },
+        onProgress: function (n, name) { if (rec.active) setProgress(root, t("Recording") + " \u25B8 " + (n || "\u2026") + (name ? " \u00B7 " + name : ""), false); }
+      });
+    }).then(function (tape) {
+      if (rec.abort) throw new Error("cancelled");
+      var over = rec.over; rec.over = null; rec.local = false;
+      L.saveLocal(tape, over && over !== tape.channel ? over : null);
+      finishRecording(root, true, tape.channel, tape.tracks.length);
+      if (L.selectTape) L.ready().then(function () { L.selectTape(tape.channel); renderShelf(root); if (global.KGVHS && global.KGVHS.refreshTracks) global.KGVHS.refreshTracks(); });
+    }).catch(function (e) {
+      var cancelled = rec.abort; rec.local = false;
+      finishRecording(root, false, "", 0, cancelled ? "Recording cancelled." : "Recording failed.");
+    });
+  }
+
   function startRecording(root, url) {
     var L = lib();
     if (!L) { setProgress(root, "kg-vhs-library.js missing.", true); return; }
     if (rec.active) { setProgress(root, t("Already recording."), true); return; }
-    if (!YT_URL_RE().test(url)) { setProgress(root, t("Not a YouTube URL."), true); return; }
+    if (!YT_URL_RE().test(url) && !/^@[\w.-]+$/.test(url)) { setProgress(root, t("Not a YouTube URL."), true); return; }
+    var st = L.status ? L.status() : null;
+    if (!st || !st.fromBackend) { recordInPage(root, url); return; }
 
     var base = String(L.apiUrl() || "").replace(/\/+$/, "");
     setBusy(root, true);
@@ -323,6 +360,7 @@
   }
 
   function cancelRecording(root) {
+    if (rec.active && rec.local) { rec.abort = true; return; }
     if (!rec.active || !rec.jobId) return;
     var L = lib();
     var base = String(L.apiUrl() || "").replace(/\/+$/, "");
@@ -534,7 +572,7 @@
     } catch (_e) { up = false; }
     openBtn.hidden = !up;
     /* [IK] the whole workshop (REC bay, KRITIK, tape tools) lives with the backend */
-    root.setAttribute("data-atelier", up ? "on" : "off");
+    root.setAttribute("data-atelier", up ? "on" : "page");
     if (!up) {
       var panel = q(root, "[data-vhs-ttx]");
       if (panel) panel.hidden = true;

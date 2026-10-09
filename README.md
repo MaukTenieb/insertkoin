@@ -43,3 +43,7 @@ FaunaTor carries Tor inside the page: two Tor clients compiled to WebAssembly re
 - `.onion` (v3, http://): [andrewtheguy/webtor-rs](https://github.com/andrewtheguy/webtor-rs) (MIT) → `tor-onion.js`, `tor-onion_bg.wasm`
 
 The workflow `.github/workflows/faunator-tor.yml` builds both and commits them at the top level (it runs by itself once, or from Actions → FaunaTor Tor → Run workflow). Until then, the web client loads from its author's CDN and `.onion` falls back on the public gateways. Glue: `faunator-tor.js`. Optional own relay for the plain web: `faunator-worker.js` (Cloudflare Worker).
+
+## VHS — REC
+
+Paste a YouTube channel (or playlist) link and press REC: the page records it onto a cassette by itself (`kg-vhs-scrape.js`) — Invidious for the whole channel, else the uploads playlist or the RSS feed, read through the public relays or FaunaTor's Tor. The cassettes stay in the browser. With the CHANNEL.SCRAPE server running on the author's machine, REC uses it instead, and KRITIK and the tape tools come back.
