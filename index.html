@@ -1502,6 +1502,11 @@ function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;
 
 /* ---------- input: the pointer maps onto the original 512x343 window ---------- */
 const TOUCH=new Set();
+/* a finger drives the paddle like a trackpad, with gain: no need to reach the screen's edge to pull back, and swings come out fast */
+let T0=null;const TG=[1.7,2.2];window.__mouse=()=>mouse.slice();
+function touchDrag(e){if(!T0){T0={x:e.clientX,y:e.clientY,m:mouse.slice()};return;}const r=cv.getBoundingClientRect(),evs=e.getCoalescedEvents?e.getCoalescedEvents():[];const pt=evs.length?evs[evs.length-1]:e;
+  let x=T0.m[0]+(pt.clientX-T0.x)*W/r.width*TG[0],y=T0.m[1]+(pt.clientY-T0.y)*H/r.height*TG[1];const cx=Math.max(0,Math.min(W,x)),cy=Math.max(30,Math.min(H,y));
+  if(cx!==x||cy!==y)T0={x:pt.clientX,y:pt.clientY,m:[cx,cy]};mouse=[cx,cy];}
 function toScreen(e){const r=cv.getBoundingClientRect(),up=e.pointerType==='touch'?26:0;return[Math.round((e.clientX-r.left)/r.width*W),Math.round((e.clientY-r.top)/r.height*H)-up];}
 function begin(){if(G&&!G.started){G.started=true;G.e.running=true;$('msg').hidden=true;}}
 /* the mouse stays inside the table while a match is on: a double-click or Enter lets it go */
@@ -1511,8 +1516,8 @@ function letGo(){if(locked())try{document.exitPointerLock();}catch(e){}}
 cv.addEventListener('dblclick',e=>{if(locked()){e.preventDefault();letGo();}});
 window.addEventListener('keydown',e=>{if(e.key==='Enter'&&locked()){e.preventDefault();letGo();}},true);
 document.addEventListener('pointerlockchange',()=>{cv.style.cursor=locked()?'none':'';});
-cv.addEventListener('pointermove',e=>{if(locked()){const r=cv.getBoundingClientRect();mouse=[Math.max(0,Math.min(W,mouse[0]+e.movementX*W/r.width)),Math.max(0,Math.min(H,mouse[1]+e.movementY*H/r.height))];btn=(e.buttons&1)===1;return;}if(e.pointerType==='touch'){if([...TOUCH][0]!==e.pointerId)return;mouse=toScreen(e);btn=TOUCH.size>1;return;}mouse=toScreen(e);btn=e.pointerType==='mouse'&&(e.buttons&1)===1;});
-cv.addEventListener('pointerdown',e=>{ac();if(e.pointerType==='touch'){TOUCH.add(e.pointerId);if(TOUCH.size>1){btn=true;e.preventDefault();return;}}if(!locked())mouse=toScreen(e);cv.setPointerCapture?.(e.pointerId);if(e.pointerType==='mouse')lockIn();if(G&&!G.started){begin();return;}btn=e.pointerType==='mouse';});
+cv.addEventListener('pointermove',e=>{if(locked()){const r=cv.getBoundingClientRect();mouse=[Math.max(0,Math.min(W,mouse[0]+e.movementX*W/r.width)),Math.max(0,Math.min(H,mouse[1]+e.movementY*H/r.height))];btn=(e.buttons&1)===1;return;}if(e.pointerType==='touch'){if([...TOUCH][0]!==e.pointerId)return;touchDrag(e);btn=TOUCH.size>1;return;}mouse=toScreen(e);btn=e.pointerType==='mouse'&&(e.buttons&1)===1;});
+cv.addEventListener('pointerdown',e=>{ac();if(e.pointerType==='touch'){TOUCH.add(e.pointerId);if(TOUCH.size>1){btn=true;e.preventDefault();return;}T0={x:e.clientX,y:e.clientY,m:mouse.slice()};}if(!locked()&&e.pointerType!=='touch')mouse=toScreen(e);cv.setPointerCapture?.(e.pointerId);if(e.pointerType==='mouse')lockIn();if(G&&!G.started){begin();return;}btn=e.pointerType==='mouse';});
 const lift=e=>{TOUCH.delete(e.pointerId);btn=false;};cv.addEventListener('pointerup',lift);cv.addEventListener('pointercancel',lift);
 const keys={};
 window.addEventListener('keydown',e=>{if(!G||$('game').hidden)return;if(e.key.startsWith('Arrow')){keys[e.key]=true;e.preventDefault();}if(e.key===' '){e.preventDefault();ac();if(!G.started)begin();else btn=true;}});
