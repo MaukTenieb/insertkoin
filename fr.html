@@ -1366,8 +1366,8 @@ function snap(e){return{px:e.puck_x,pz:e.puck_z,ox:e.opp_x,oz:e.opp_z,ax:e.pad_x
 function hud(){$('sP').textContent=G.e.player_score;$('sO').textContent=G.e.opponent_score;}
 /* ---- the Kerema decides: once per tournament a die sets the applicant's swing, from -15 % (⚀) to +15 % (⚅) ---- */
 const KV=[.85,.91,.97,1.03,1.09,1.15],KDC=['#ffe08a','#ff5a5a','#4fc3f7','#7fdc8a','#ab47bc','#ff9a1a','#f48fb1','#e8e0c8'];
-/* the Kerema weighs your Koins: with few it leans to the high faces, with many to the low ones */
-function kThrow(){const b=Math.max(-1,Math.min(1,(Math.log2((typeof koins==='number'?koins:3)+1)-3)/5));const w=[0,1,2,3,4,5].map(f=>Math.exp(-b*(f-2.5)*.55));let t=Math.random()*w.reduce((a,x)=>a+x,0);for(let f=0;f<6;f++){if((t-=w[f])<=0)return f;}return 5;}
+/* the Kerema weighs your Koins: the rich earned them before, so many Koins lean to the high faces, few to the low ones (about 7 Koins: even) */
+function kThrow(){const b=Math.max(-1,Math.min(1,(Math.log2((typeof koins==='number'?koins:3)+1)-3)/5));const w=[0,1,2,3,4,5].map(f=>Math.exp(b*(f-2.5)*.55));let t=Math.random()*w.reduce((a,x)=>a+x,0);for(let f=0;f<6;f++){if((t-=w[f])<=0)return f;}return 5;}
 function kSwing(e,face){const K=['up_lr_power','up_fb_power','down_lr_power','down_fb_power'];if(!e._kb){e._kb={};K.forEach(k=>e._kb[k]=e.p[k]);}K.forEach(k=>{if(typeof e._kb[k]==='number')e.p[k]=Math.round(e._kb[k]*KV[face]);});
   let kd=document.querySelector('.score .kd');if(!kd){kd=document.createElement('span');kd.className='kd';kd.setAttribute('aria-hidden','true');const w=document.querySelector('.score .who');if(w)w.parentNode.insertBefore(kd,w);}kd.textContent=DICE[face];kd.title=(KV[face]>1?'+':'')+Math.round((KV[face]-1)*100)+'%';}
 function kDie(face,done,ghost){const st=$('stage');let o=st.querySelector('.kdie');if(!o){o=document.createElement('div');o.className='kdie';o.innerHTML='<span class="d"></span><b>The Kerema decides!</b><i></i>';st.appendChild(o);}
@@ -1375,10 +1375,21 @@ function kDie(face,done,ghost){const st=$('stage');let o=st.querySelector('.kdie
   const iv=setInterval(()=>{const f=++n>=N?face:Math.floor(Math.random()*6);d.textContent=DICE[f];d.style.setProperty('--r',(n>=N?0:(Math.random()-.5)*80).toFixed(0)+'deg');if(AC&&sound)burst(1800+Math.random()*1600,'bandpass',.05,.035);
     if(n>=N){clearInterval(iv);d.classList.remove('land');void d.offsetWidth;d.classList.add('land');if(AC&&sound){burst(260,'lowpass',.22,.09);tone(196,.08,'triangle',.05);setTimeout(()=>{tone(523,.09,'square',.04);tone(784,.12,'square',.035,0,.09);},260);}
       pc.textContent=(KV[face]>1?'+':'')+Math.round((KV[face]-1)*100)+' %';setTimeout(()=>o.classList.add('told'),220);setTimeout(()=>{o.classList.remove('on','told');if(!ghost)$('msg').style.visibility='';done&&done();},ghost?2000:2600);}},70+n*6);}
-function kAgain(){if(!G||(G.kRe||0)>=2||Math.random()>.12)return;G.kRe=(G.kRe||0)+1;const e=G.e,f=kThrow();kSwing(e,f);kDie(f,null,true);}
+/* once in two matches a floating die comes by mid-game, once or twice, at a point drawn in advance: touch it with the paddle to take the Kerema's throw (plus or minus, the Koins leaning), or let it drift away */
+function kPlan(max){const t=[];if(Math.random()<.5){const n=Math.random()<.5?1:2,lo=2,hi=Math.max(lo,max-1);while(t.length<n&&hi-lo+1>=n){const k=lo+Math.floor(Math.random()*(hi-lo+1));if(!t.includes(k))t.push(k);}}return t;}
+const KASK={en:['Want Kerema?'],fr:['On est joueur ?','Koquinette ou Koquinou ?']};
+function kAgain(){if(!G||!G.kAt)return;const e=G.e,pts=e.player_score+e.opponent_score;if(!G.kAt.includes(pts)||e.isOver())return;G.kAt=G.kAt.filter(x=>x!==pts);kSpawn();}
+function kSpawn(){const A=KASK[LANG]||KASK.en;G.fl={x:(Math.random()*2-1)*170,z:70+Math.random()*170,ph:Math.random()*6.3,age:0,life:9,kc:KDC[Math.floor(Math.random()*KDC.length)],ask:A[Math.floor(Math.random()*A.length)],f:Math.floor(Math.random()*6),ft:0};if(AC&&sound){tone(880,.12,'triangle',.03);tone(1320,.16,'triangle',.025,0,.1);}}
+function kFloat(dt){const f=G&&G.fl;if(!f)return;f.age+=dt;f.ft-=dt;if(f.ft<0){f.ft=.35;f.f=(f.f+1+Math.floor(Math.random()*5))%6;}
+  f.x=Math.max(-200,Math.min(200,f.x+Math.sin(f.age*.7+f.ph)*dt*38));f.z=Math.max(50,Math.min(260,f.z+Math.cos(f.age*.55+f.ph)*dt*30));
+  const e=G.e;if(G.started&&e.running&&Math.abs(e.pad_x-f.x)<e.p.pad_size+16&&Math.abs(e.pad_z-f.z)<30){G.fl=null;G.kTook=(G.kTook||0)+1;const v=kThrow();kSwing(e,v);kDie(v,null,true);return;}
+  if(f.age>f.life)G.fl=null;}
+function kDraw(c){const f=G.fl;if(!f)return;const bob=Math.sin(f.age*2.4)*5,[sx,sy]=fproj(f.x,FLOOR_Y-95+bob,f.z),[sx2]=fproj(f.x+22,FLOOR_Y-95,f.z),sz=Math.max(10,(sx2-sx)*2.2);
+  const a=Math.min(1,f.age*2,(f.life-f.age))*.62;if(a<=0)return;c.save();c.globalAlpha=a;c.textAlign='center';c.textBaseline='middle';c.shadowColor=f.kc;c.shadowBlur=10;c.fillStyle=f.kc;
+  c.font=Math.round(sz)+'px "DejaVu Sans","Segoe UI Symbol",sans-serif';c.fillText(DICE[f.f],sx,sy);c.shadowBlur=6;c.fillStyle='#fff';c.font='400 '+Math.max(9,Math.round(sz*.42))+'px "Bebas Neue",Impact,sans-serif';c.fillText(f.ask,sx,sy-sz*.78);c.restore();}
 function startMatch(i,rank){rollRoom(R[i].id);loadSheet(R[i]);if(RUN&&RUN.order[RUN.idx+1])loadSheet(R.find(q=>q.id===RUN.order[RUN.idx+1]));const r=R[i],e=new FaunaEngine(Object.assign({tick_hz:25},r.p,{max_score:rank==null?15:11}),r.sig);card(r);G_trail=[];
   G={i,r,e,prev:snap(e),cur:snap(e),t:0,face:0,faceT:0,blinkT:2,hitT:0,flash:0,started:false,drawn:[0,0],stroke:0,ang:0,spin:0,tv:0,krew:null};
-  {let face,fresh;if(RUN){if(RUN.kv==null){RUN.kv=kThrow();fresh=true;saveRun();}face=RUN.kv;}else{face=kThrow();fresh=true;}kSwing(e,face);G.kRe=0;if(fresh)setTimeout(()=>{if(G&&G.e===e)kDie(face);},450);}
+  {const kd=document.querySelector('.score .kd');if(kd)kd.remove();G.fl=null;let face,fresh;const roll=()=>Math.random()<.5?kThrow():-1;if(RUN){if(RUN.kv==null){RUN.kv=roll();fresh=true;saveRun();}face=RUN.kv;}else{face=roll();fresh=true;}if(face>=0){kSwing(e,face);if(fresh)setTimeout(()=>{if(G&&G.e===e)kDie(face);},450);}G.kAt=kPlan(e.p.max_score);}
   if(RUN&&RUN.krew){const q=R.find(x=>x.id===RUN.krew);if(q){const n=parseInt(q.glow.slice(1),16);G.krew=[n>>16,n>>8&255,n&255];}}
   $('mRun').textContent=RUN?`${tr('runof')} ${RUN.idx+1} / 18`:'';$('count').hidden=true;$('oName').textContent=r.name.toUpperCase();$('mName').textContent=r.name.toUpperCase();$('mMotto').textContent='N° '+String(r.n).padStart(2,'0')+(r.motto?' · « '+r.motto+' »':'');$('msg').style.setProperty('--c',r.glow);hud();$('over').hidden=true;$('msg').hidden=false;show('game');}
 function toMenu(){letGo();G=null;buildLobby();show('select');}
@@ -1512,7 +1523,7 @@ function render(a,dt){const c=ctx,e=G.e,p=G.prev,q=G.cur,L=(u,v)=>u+(v-u)*a;
   const ox=cl(L(p.ox,q.ox),bdk-250,250-bdk),oz=cl(L(p.oz,q.oz),0,e.p.back),px=cl(L(p.px,q.px),sck-250,250-sck),pz=cl(L(p.pz,q.pz),0,e.p.back),ax=cl(L(p.ax,q.ax),pdk-250,250-pdk),az=cl(L(p.az,q.az),0,300);
   portrait(c,Math.round(ox*.08));c.drawImage(rlL,0,0,W,H);
   let oa=.95;if(G.r.sig==='silent')oa=Math.max(.06,Math.min(.95,1.1-Math.hypot(px-ox,pz-oz)/320));if(e.down>0)oa=0;
-  const objs=[{z:az,d:()=>plate(c,ax,az,e.p.pad_size,'rgba(233,226,207,.16)','#e9e2cf',1)}];
+  const objs=[{z:az,d:()=>plate(c,ax,az,e.p.pad_size,'rgba(233,226,207,.16)','#e9e2cf',1)}];if(G.fl)objs.push({z:G.fl.z,d:()=>kDraw(c)});
   if(oa>0){objs.push({z:oz,d:()=>plate(c,ox,oz,e.p.back_pad_size,G.r.pad[0],G.r.pad[2],oa)});if(e.p.twins)objs.push({z:oz,d:()=>plate(c,-ox,oz,e.p.back_pad_size,G.r.pad2[0],G.r.pad2[2],oa)});}
   if(e.crack_hold===0||pz>0&&pz<e.p.back)objs.push({z:pz,d:()=>{trail(c,px,pz);if(G.dr&&e.puck_vz<0&&pz>260){const k=Math.min(1,(pz-260)/900);c.save();c.globalAlpha=.6*Math.min(1,k*2.2);G.dr.forEach(d=>puck(c,px+d*k,pz));c.restore();}else if(e.puck_vz>0)G.dr=null;puck(c,px,pz);}});
   objs.sort((m,n)=>n.z-m.z).forEach(o=>o.d());veil(c);
@@ -1521,7 +1532,7 @@ function render(a,dt){const c=ctx,e=G.e,p=G.prev,q=G.cur,L=(u,v)=>u+(v-u)*a;
   smoke(c);
   if(G.flash>0){c.fillStyle=`rgba(236,240,255,${Math.min(.5,G.flash*2.5)})`;c.fillRect(0,0,W,H);}}
 function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;
-  if(G&&!$('game').hidden&&!document.hidden){G.t+=dt;if(G.hitT>0)G.hitT-=dt;if(G.trailT>0)G.trailT-=dt;if(G.flash>0)G.flash-=dt;if(G.faceT>0&&G.faceT<90)G.faceT-=dt;G.blinkT-=dt;if(G.blinkT<0)G.blinkT=1.6+Math.random()*3.5;
+  if(G&&!$('game').hidden&&!document.hidden){G.t+=dt;if(G.hitT>0)G.hitT-=dt;if(G.trailT>0)G.trailT-=dt;if(G.flash>0)G.flash-=dt;kFloat(dt);if(G.faceT>0&&G.faceT<90)G.faceT-=dt;G.blinkT-=dt;if(G.blinkT<0)G.blinkT=1.6+Math.random()*3.5;
     if(stopT>0){stopT-=dt;}else if(G.started&&G.e.running){const step=1/G.e.p.tick_hz;acc+=dt;while(acc>=step){tick();acc-=step;}}else{G.prev=G.cur=snap(G.e);acc=0;}
     render(G.started?Math.min(1,acc*G.e.p.tick_hz):1,dt);}
   requestAnimationFrame(frame);}
@@ -1529,7 +1540,7 @@ function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;
 /* ---------- input: the pointer maps onto the original 512x343 window ---------- */
 const TOUCH=new Set();
 /* a finger drives the paddle like a trackpad, with gain: no need to reach the screen's edge to pull back, and swings come out fast */
-let T0=null;const TG=[1.7,2.2];window.__mouse=()=>mouse.slice();
+let T0=null;const TG=[1.7,2.2];window.__mouse=()=>mouse.slice();window.__pk=()=>G;
 function touchDrag(e){if(!T0){T0={x:e.clientX,y:e.clientY,m:mouse.slice()};return;}const r=cv.getBoundingClientRect(),evs=e.getCoalescedEvents?e.getCoalescedEvents():[];const pt=evs.length?evs[evs.length-1]:e;
   let x=T0.m[0]+(pt.clientX-T0.x)*W/r.width*TG[0],y=T0.m[1]+(pt.clientY-T0.y)*H/r.height*TG[1];const cx=Math.max(0,Math.min(W,x)),cy=Math.max(30,Math.min(H,y));
   if(cx!==x||cy!==y)T0={x:pt.clientX,y:pt.clientY,m:[cx,cy]};mouse=[cx,cy];}
