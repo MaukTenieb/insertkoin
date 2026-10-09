@@ -962,14 +962,14 @@ var HANG_GIFT=[
  {who:'Ligeti György',c:[/* the author's quotations: 'text', 'text' … */],u:'https://hu.wikipedia.org/wiki/Ligeti_Gy%C3%B6rgy',l:'Wikipédia',k:{en:'music',fr:'musique'},w:[['Atmosphères',1961],['Lux aeterna',1966],['Lontano',1967],['Le Grand Macabre',1978]]},
  {who:'Lukács György',c:[/* the author's quotations: 'text', 'text' … */],u:'https://en.wikiquote.org/wiki/Gy%C3%B6rgy_Luk%C3%A1cs',l:'Wikiquote',k:{en:'essay',fr:'essai'},w:[['A lélek és a formák',1910],['Die Theorie des Romans',1916],['Geschichte und Klassenbewusstsein',1923]]}];
 function hangGift(){
+  /* one voice at a time, its origin kept hidden: a few of József Attila's stanzas, taken at random, or one of the author's own quotations (c:[ ] above) */
   var g=document.getElementById('hang-gift');if(!g)return;
-  var lg=(document.documentElement.lang||'en')==='fr'?'fr':'en',pick=Math.floor(Math.random()*(HANG_GIFT.length+1)),esc=function(t){return String(t).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
-  if(pick===0){var i=Math.floor(Math.random()*3),st=HANG_JA.slice(i,i+2);
-    g.innerHTML=st.map(function(v){return '<p>'+v.map(esc).join('<br>')+'</p>';}).join('')+'<cite>József Attila — Tiszta szívvel (1925)</cite>';}
-  else{var a=HANG_GIFT[pick-1],w=a.w[Math.floor(Math.random()*a.w.length)];
-    if(a.c&&a.c.length){g.innerHTML='<p>'+esc(a.c[Math.floor(Math.random()*a.c.length)])+'</p><cite>'+esc(a.who)+'</cite><a class="hang-wq" href="'+a.u+'" target="_blank" rel="noopener">'+a.l+' ↗</a>';g.style.display='block';return;}
-    g.innerHTML='<p class="hang-work"><i>'+esc(w[0])+'</i></p><cite>'+esc(a.who)+' — '+a.k[lg]+', '+w[1]+'</cite><a class="hang-wq" href="'+a.u+'" target="_blank" rel="noopener">'+a.l+' ↗</a>';}
-  g.style.display='block';
+  var esc=function(t){return String(t).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
+  var pool=[null].concat(HANG_GIFT.filter(function(a){return a.c&&a.c.length;})),a=pool[Math.floor(Math.random()*pool.length)],body;
+  if(!a){var idx=[0,1,2,3].sort(function(){return Math.random()-.5;}).slice(0,2+Math.floor(Math.random()*2)).sort();
+    body=idx.map(function(i){return HANG_JA[i].map(esc).join('<br>');}).join('</p><p>');}
+  else body=esc(a.c[Math.floor(Math.random()*a.c.length)]);
+  g.innerHTML='<p>„'+body+'”</p>';g.style.display='block';
 }
 window.hangGift=hangGift;
 var HANG_MAX=6;
