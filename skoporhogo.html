@@ -36,7 +36,7 @@
   .bar span{ width:96px; }
   .bar i{ flex:1; height:12px; border:2px solid var(--w); position:relative; }
   .bar b{ position:absolute; left:0; top:0; bottom:0; background:var(--w); }
-  #hint{ text-align:center; padding:24px 0; }
+  #hint{ display:none !important; }
   #roster{ display:grid; grid-template-columns:1fr; gap:4px; }
   .row{ display:grid; grid-template-columns:34px minmax(0,1fr) auto; grid-template-rows:auto auto; column-gap:8px; align-items:center;
     text-align:left; padding:3px 6px; font-size:19px; }
@@ -65,7 +65,7 @@
 <main>
   <div id="stage"><canvas id="view"></canvas></div>
   <aside>
-    <div id="card"><div id="hint"></div><div id="cbody" hidden>
+    <div id="card" hidden><div id="hint"></div><div id="cbody" hidden>
       <img id="pcv" alt="">
       <div id="cname"></div><div id="cact"></div><div id="bars"></div>
     </div></div>
@@ -1106,7 +1106,7 @@ function updateRoster(){
 }
 const pcv=document.getElementById('pcv');
 function select(i){ selected=(selected===i)?-1:i; VIEW.follow=selected>=0; rows.forEach((r,k)=>r.b.classList.toggle('on',k===selected));
-  document.getElementById('hint').hidden=selected>=0; document.getElementById('cbody').hidden=selected<0;
+  document.getElementById('hint').hidden=selected>=0; document.getElementById('cbody').hidden=selected<0; document.getElementById('card').hidden=selected<0;
   if(selected>=0){ pcv.src=PORTRAITS[AG[selected].d.k]; pcv.alt=AG[selected].d.n;
     document.getElementById('cname').textContent=AG[selected].d.n; }
   updateCard(); }
