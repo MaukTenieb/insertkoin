@@ -103,7 +103,7 @@ function nav(url,push){
     probeTor(u).then(function(ok){
       if(ok){sandbox(false);$('view').removeAttribute('srcdoc');$('view').src=u;status('');return;}
       var gates=onionGates(u);
-      torReady.then(function(m){if(!m)throw 0;return m.hasOnion().then(function(ok){if(!ok)throw 0;return m.get(u);});})
+      torReady.then(function(m){if(!m){torWhy='tor: not loaded';throw 0;}return m.hasOnion().then(function(ok){if(!ok){torWhy='tor: no onion client';throw 0;}return m.get(u);});})
         .then(function(r){if(!r||!r.text)throw 0;return onionInline(u,r.text).then(function(h){show(u,h,false);});})
         .catch(function(){
           return any(gates.map(function(g){return fetchRaw(g).then(function(h){return {g:g,h:h};});}))
@@ -170,12 +170,13 @@ function fetchRaw(u){
   return any(ps);
 }
 /* Tor inside the page (faunator-tor.js): bootstraps as soon as FaunaTor opens */
-var TOR=null,torReady=import('./faunator-tor.js').then(function(m){TOR=m;try{m.warm();}catch(e){}return m;}).catch(function(){return null;});
+var TOR=null,torReady=import('./faunator-tor.js').then(function(m){TOR=m;try{m.warm();}catch(e){}return m;}).catch(function(e){torWhy='tor: '+(e&&e.message||'not loaded');return null;});
 function torGet(u){return torReady.then(function(m){if(!m)throw new Error('no tor');return m.get(u);}).then(function(r){if(!r||r.status>=500||!r.text||r.text.length<60)throw new Error('tor '+(r&&r.status));return r.text;});}
 /* every road at once — the relays answer fast, Tor answers what they refuse — then the reader */
 function fetchVia(u){return any([fetchRaw(u),torGet(u)]).catch(function(){return timed(readerUrl(u),20000);});}
 /* the rejection, the only failure FaunaTor ever speaks */
-function rejected(href){var w='';try{w=TOR&&TOR.lastWords?TOR.lastWords():'';}catch(e){}showNotice(L('Ton Kalabass a été rejeté.','Your Kalabass was rejected.'),L('Postule plus tard.','Apply later.'),href?'↗':null,href,w);status('');}
+var torWhy='';
+function rejected(href){var w='';try{w=TOR&&TOR.lastWords?TOR.lastWords():'';}catch(e){}if(!w)w=torWhy||(TOR?'tor: no answer':'tor: not loaded');showNotice(L('Ton Kalabass a été rejeté.','Your Kalabass was rejected.'),L('Postule plus tard.','Apply later.'),href?'↗':null,href,w);status('');}
 
 /* ---- a page, read: scripts out, links and forms kept inside FaunaTor ---- */
 var SHIM='<script>(function(){function up(h){try{return new URL(h,document.baseURI).href;}catch(e){return null;}}'
