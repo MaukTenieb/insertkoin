@@ -320,7 +320,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 @keyframes rotw{50%{transform:rotate(90deg)}}
 @media (pointer:coarse) and (orientation:portrait){.stage .rot{display:block}}
 .stage:fullscreen{width:100vw;height:100vh;max-width:none;aspect-ratio:auto;background:#000;display:grid;place-items:center}
-.stage:fullscreen canvas{width:100%;height:100%;object-fit:contain}
+.stage:fullscreen canvas{width:min(100vw,calc(100vh * 512 / 343));height:min(100vh,calc(100vw * 343 / 512))}/* the table keeps its proportions on any screen, 20:9 phones included */
 .stage:fullscreen .rot{display:none}
 @media (max-width:480px){.bar{flex-wrap:wrap;row-gap:6px}.bar .dock:first-of-type{order:3;flex-basis:100%;margin:0}.bar .dock:last-of-type{margin-left:auto}#radio-toggle{flex:1;justify-content:center}.dk.kap{font-size:.6rem!important;padding:4px 8px}.dk.kap .rec{font-size:.8rem}}
 .sig{margin-left:6px;font-size:1.1em;display:inline-block;text-shadow:0 0 8px currentColor}
@@ -1290,7 +1290,7 @@ function tvPick(e,forced){const T=G.tvs,r=G.r,ch=['motto','motto','score','stats
 let tvClipLast=-1e9;function tvClipOk(){return navigator.onLine!==false&&typeof JUKE_TRACKS!=='undefined'&&JUKE_TRACKS.length&&performance.now()-tvClipLast>45000&&!matchMedia('(prefers-reduced-motion:reduce)').matches;}
 function tvClip(sec){let f=$('tvClip');if(!sec){if(f)f.remove();return;}tvClipLast=performance.now();const st=$('stage');if(!st)return;if(f)f.remove();
   const tk=JUKE_TRACKS[Math.floor(Math.random()*JUKE_TRACKS.length)],t0=20+Math.floor(Math.random()*90);f=document.createElement('div');f.id='tvClip';f.className='tvclip';
-  Object.assign(f.style,{left:TV.x/W*100+'%',top:TV.y/H*100+'%',width:TV.w/W*100+'%',height:TV.h/H*100+'%'});
+  const cr=$('cv').getBoundingClientRect(),sr=st.getBoundingClientRect();Object.assign(f.style,{left:cr.left-sr.left+TV.x/W*cr.width+'px',top:cr.top-sr.top+TV.y/H*cr.height+'px',width:TV.w/W*cr.width+'px',height:TV.h/H*cr.height+'px'});
   f.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${tk.id}?autoplay=1&mute=1&controls=0&disablekb=1&fs=0&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&start=${t0}" allow="autoplay; encrypted-media" tabindex="-1" title=""></iframe>`;st.appendChild(f);
   setTimeout(()=>{const g=$('tvClip');if(g===f)f.remove();},sec*1000+400);}
 function tvScreen(c,t,e){const T=G.tvs||(G.tvs={ch:'motto',at:0,until:0,snow:0,rally:0,best:0,lastTv:G.tv});
