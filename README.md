@@ -46,4 +46,4 @@ The workflow `.github/workflows/faunator-tor.yml` builds both and commits them a
 
 ## VHS — REC
 
-Paste a YouTube channel (or playlist) link and press REC: the page records it onto a cassette by itself (`kg-vhs-scrape.js`) — Invidious for the whole channel, else the uploads playlist or the RSS feed, read through the public relays or FaunaTor's Tor. The cassettes stay in the browser. With the CHANNEL.SCRAPE server running on the author's machine, REC uses it instead, and KRITIK and the tape tools come back.
+Paste a YouTube channel (or playlist) link and press REC: the page records it onto a cassette by itself (`kg-vhs-scrape.js`) — Invidious for the whole channel, else the uploads playlist or the RSS feed, read through the public relays or FaunaTor's Tor. The cassettes stay in the browser; pick one on the shelf for its tools: CSV, JSON, XLSX, TXT, MD exports and ERASE (press twice). With the CHANNEL.SCRAPE server running on the author's machine, REC uses it instead, and KRITIK and the tape tools come back.
