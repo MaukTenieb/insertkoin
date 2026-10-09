@@ -1,52 +1,42 @@
 // Real-world check of VHS REC from the live site (run by .github/workflows/vhs-probe.yml)
 import { chromium } from 'playwright';
 const SITE = 'https://mauktenieb.github.io/insertkoin/';
-const CH = 'UC_x5XG1OV2P6uZZ5FSM9Ttw'; // Google for Developers
+const CH = 'UC_x5XG1OV2P6uZZ5FSM9Ttw';
 const b = await chromium.launch(); const p = await b.newPage();
-const logs = []; p.on('console', m => logs.push(m.text()));
 await p.goto(SITE, { waitUntil: 'load' });
 const r = await p.evaluate(async (CH) => {
-  const t = (u, ms = 15000, opt = {}) => { const c = new AbortController(); const k = setTimeout(() => c.abort(), ms);
-    const s = Date.now(); return fetch(u, { ...opt, signal: c.signal }).then(async x => { clearTimeout(k); const tx = await x.text(); return { st: x.status, len: tx.length, ms: Date.now() - s, head: tx.slice(0, 120) }; },
-      e => ({ err: String(e.name || e), ms: Date.now() - s })); };
-  const out = {};
-  const inv = await t('https://api.invidious.io/instances.json?sort_by=health');
-  out.invList = inv.err || inv.st;
-  let live = []; try { live = (await (await fetch('https://api.invidious.io/instances.json?sort_by=health')).json()).filter(x => x[1].type === 'https').map(x => x[0] + (x[1].api ? ' api' : '') + (x[1].cors ? ' cors' : '')); } catch (e) {}
-  out.invLive = live;
-  const INV = ['inv.nadeko.net', 'invidious.nerdvpn.de', 'yewtu.be', 'invidious.f5.si', 'iv.melmac.space', 'invidious.privacyredirect.com', 'invidious.materialio.us', 'inv.tux.pizza'].concat(live.map(x => x.split(' ')[0]));
-  out.inv = {}; await Promise.all([...new Set(INV)].map(async h => out.inv[h] = await t('https://' + h + '/api/v1/channels/' + CH + '/videos')));
-  let pl = []; const pi = await t('https://piped-instances.kavin.rocks/'); out.pipedList = pi.err || pi.st;
-  try { pl = (await (await fetch('https://piped-instances.kavin.rocks/')).json()).map(x => x.api_url.replace(/^https?:\/\//, '')); } catch (e) {}
-  const PIP = ['pipedapi.kavin.rocks', 'pipedapi.adminforge.de', 'api.piped.private.coffee', 'pipedapi.r4fo.com', 'pipedapi.leptons.xyz', 'pipedapi.nosebs.ru', 'piped-api.lunar.icu', 'pipedapi.drgns.space', 'pipedapi.ducks.party', 'pipedapi.reallyaweso.me'].concat(pl);
-  out.piped = {}; await Promise.all([...new Set(PIP)].map(async h => out.piped[h] = await t('https://' + h + '/channel/' + CH)));
+  const t = (u, ms = 20000, opt = {}) => { const c = new AbortController(); const k = setTimeout(() => c.abort(), ms);
+    const s = Date.now(); return fetch(u, { ...opt, signal: c.signal }).then(async x => { clearTimeout(k); const tx = await x.text(); return { st: x.status, len: tx.length, ms: Date.now() - s, head: tx.slice(0, 300), ext: (/"externalId":"(UC[\w-]{22})"/.exec(tx) || /channel_id=(UC[\w-]{22})/.exec(tx) || [])[1], pv: (tx.match(/playlistVideoRenderer/g) || []).length, vids: (tx.match(/watch\?v=[\w-]{11}/g) || []).length, entries: (tx.match(/<entry>/g) || []).length, nextpage: /"nextpage":"/.test(tx) }; },
+      e => ({ err: String(e.name || e) + ' ' + String(e.message || ''), ms: Date.now() - s })); };
+  const P = 'https://api.piped.private.coffee';
   const yt = 'https://www.youtube.com/@GoogleDevelopers';
-  const R = { allorigins: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(yt), corslol: 'https://api.cors.lol/?url=' + encodeURIComponent(yt), x2u: 'https://cors.x2u.in/' + yt, thingproxy: 'https://thingproxy.freeboard.io/fetch/' + yt,
-    codetabs: 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(yt), corsproxyio: 'https://corsproxy.io/?url=' + encodeURIComponent(yt), whatever: 'https://whateverorigin.org/get?url=' + encodeURIComponent(yt),
-    rss_allorigins: 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://www.youtube.com/feeds/videos.xml?channel_id=' + CH),
-    rss_codetabs: 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent('https://www.youtube.com/feeds/videos.xml?channel_id=' + CH),
-    pl_allorigins: 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://www.youtube.com/playlist?list=UU' + CH.slice(2)),
-    jina: 'https://r.jina.ai/' + yt };
-  out.relay = {}; await Promise.all(Object.entries(R).map(async ([k, u]) => { const x = await t(u, 20000); out.relay[k] = { ...x, head: undefined, ext: undefined }; }));
-  out.ytdirect = await t('https://www.youtube.com/youtubei/v1/browse?prettyPrint=false', 15000, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ context: { client: { clientName: 'WEB', clientVersion: '2.20250101.00.00' } }, browseId: CH }) });
-  out.gapi = await t('https://www.googleapis.com/youtube/v3/channels?part=id&id=' + CH + '&key=x');
+  const J = { headers: { 'X-Return-Format': 'html' } };
+  const out = {
+    pc_channel: await t(P + '/channel/' + CH),
+    pc_handle1: await t(P + '/@/GoogleDevelopers'),
+    pc_handle2: await t(P + '/c/GoogleDevelopers'),
+    pc_handle3: await t(P + '/user/GoogleDevelopers'),
+    pc_search: await t(P + '/search?q=GoogleDevelopers&filter=channels'),
+    pc_resolve: await t(P + '/resolve?url=' + encodeURIComponent(yt)),
+    pc_playlist: await t(P + '/playlists/UU' + CH.slice(2)),
+    mk_search: await t(P + '/search?q=Mauk%20Tenieb&filter=channels'),
+    jina_html: await t('https://r.jina.ai/' + yt, 30000, J),
+    jina_plain: await t('https://r.jina.ai/' + yt, 30000),
+    jina_rss: await t('https://r.jina.ai/https://www.youtube.com/feeds/videos.xml?channel_id=' + CH, 30000, J),
+    jina_pl: await t('https://r.jina.ai/https://www.youtube.com/playlist?list=UU' + CH.slice(2), 30000, J),
+    jina_mk: await t('https://r.jina.ai/https://www.youtube.com/@MaukTenieb', 30000, J),
+    noembed: await t('https://noembed.com/embed?url=' + encodeURIComponent('https://www.youtube.com/watch?v=dQw4w9WgXcQ')),
+    oembed: await t('https://www.youtube.com/oembed?url=' + encodeURIComponent('https://www.youtube.com/watch?v=dQw4w9WgXcQ') + '&format=json'),
+    allorigins_get: await t('https://api.allorigins.win/get?url=' + encodeURIComponent(yt)),
+    corsproxy_org: await t('https://corsproxy.org/?' + encodeURIComponent(yt)),
+    cors_eu: await t('https://cors.eu.org/' + yt),
+    htmldriven: await t('https://cors-proxy.htmldriven.com/?url=' + encodeURIComponent(yt)),
+    everyorigin: await t('https://everyorigin.jwvbremen.nl/api/get?url=' + encodeURIComponent(yt)),
+    fringe: await t('https://cors.fringe.zone/' + yt)
+  };
+  try { const d = await (await fetch(P + '/channel/' + CH)).json(); out.pc_detail = { name: d.name, n: (d.relatedStreams || []).length, np: !!d.nextpage, first: d.relatedStreams && d.relatedStreams[0] };
+    if (d.nextpage) { const d2 = await (await fetch(P + '/nextpage/channel/' + CH + '?nextpage=' + encodeURIComponent(d.nextpage))).json(); out.pc_next = { n: (d2.relatedStreams || []).length, np: !!d2.nextpage, err: d2.error || d2.message }; } } catch (e) { out.pc_detail = String(e); }
   return out;
 }, CH);
-const ok = o => Object.entries(o).filter(([k, v]) => v.st === 200 && v.len > 500).map(([k, v]) => k + ' (' + v.len + 'b ' + v.ms + 'ms)');
-const bad = o => Object.entries(o).filter(([k, v]) => !(v.st === 200 && v.len > 500)).map(([k, v]) => k + ': ' + (v.err || v.st + ' ' + v.len + 'b ' + (v.head || '').replace(/\s+/g, ' ').slice(0, 60)));
-console.log('INVIDIOUS list', r.invList, JSON.stringify(r.invLive));
-console.log('INVIDIOUS OK', JSON.stringify(ok(r.inv))); console.log('INVIDIOUS KO', JSON.stringify(bad(r.inv), null, 1));
-console.log('PIPED list', r.pipedList); console.log('PIPED OK', JSON.stringify(ok(r.piped))); console.log('PIPED KO', JSON.stringify(bad(r.piped), null, 1));
-console.log('RELAYS', JSON.stringify(r.relay, null, 1));
-console.log('YT innertube direct', JSON.stringify(r.ytdirect)); console.log('GOOGLEAPIS', JSON.stringify(r.gapi));
-// full REC through the UI
-for (const ch of ['https://www.youtube.com/@GoogleDevelopers', 'https://www.youtube.com/@MaukTenieb']) {
-  await p.goto(SITE, { waitUntil: 'load' }); await p.waitForTimeout(1000);
-  await p.click('[data-go="vhs"]'); await p.waitForTimeout(3000);
-  await p.fill('[data-vhs-rec-input]', ch); await p.click('[data-vhs-rec-btn]');
-  const s = Date.now(); let txt = '';
-  while (Date.now() - s < 150000) { txt = await p.innerText('[data-vhs-rec-progress]').catch(() => ''); if (/RECORDED|ENREGISTR|failed|chou/i.test(txt) && !/▸/.test(txt.split('\n')[0])) break; await p.waitForTimeout(2000); }
-  console.log('REC', ch, Math.round((Date.now() - s) / 1000) + 's', JSON.stringify(txt));
-}
+for (const [k, v] of Object.entries(r)) console.log(k, JSON.stringify(v).slice(0, 700));
 await b.close();
-// Fri Oct  9 04:38:23 CEST 2026
