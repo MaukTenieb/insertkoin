@@ -1993,6 +1993,10 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
   function impact(){g.classList.remove('hit');void g.offsetWidth;g.classList.add('hit');clearTimeout(g._hitT);g._hitT=setTimeout(()=>g.classList.remove('hit'),240);
     if(AC&&sound){burst(2600,'bandpass',.07,.05);tone(880+Math.random()*220,.06,'triangle',.03);}
     if(fl&&fl.layAt&&++fl.hits>=fl.layAt&&koinsLeft>0){fl.layAt=0;koinsLeft--;lastKoin=Date.now();lay(parseFloat(g.style.left),parseFloat(g.style.top));}}
+  const QUIP={en:["I don't Kave.","I don't give a Puck."],fr:["J'm'en contre-Fauna.","Konneries..."]};
+  function quip(){if(touring)return;const Q=QUIP[LANG]||QUIP.en,gx=parseFloat(g.style.left),gw=parseFloat(g.style.getPropertyValue('--gw'))||60,W=home.clientWidth;
+    tip.innerHTML='';const d=document.createElement('div');d.textContent=Q[Math.floor(Math.random()*Q.length)];tip.appendChild(d);
+    tip.style.left=(gx+gw+10+260<W?gx+gw+6:Math.max(4,gx-266))+'px';tip.style.top=(parseFloat(g.style.top)+8)+'px';tip.classList.add('on');clearTimeout(tip._q);tip._q=setTimeout(()=>{if(!touring)tip.classList.remove('on');},2600);}
   function lay(x,y){const gw=parseFloat(g.style.getPropertyValue('--gw'))||60,k=document.createElement('button');k.type='button';k.className='gkoin';k.setAttribute('aria-label','Koin');k.textContent='◉';
     k.style.left=(x+gw/2-14)+'px';k.style.top=(y+H-30)+'px';home.appendChild(k);if(AC&&sound){tone(1320,.08,'square',.03);tone(1760,.12,'square',.025,0,.08);}
     let got=false;const take=()=>{if(got)return;got=true;koins=Math.min(Number.MAX_SAFE_INTEGER,koins+1);saveKoins();koinFx();if(typeof koinDrop==='function')koinDrop(1);if(AC&&sound)tone(1046,.1,'triangle',.04);k.classList.add('got');setTimeout(()=>k.remove(),500);};
@@ -2003,7 +2007,9 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
     if(x<B.x0){x=B.x0;fl.vx=Math.abs(fl.vx)*.86;impact();}else if(x>B.x1){x=B.x1;fl.vx=-Math.abs(fl.vx)*.86;impact();}
     if(y<B.y0){y=B.y0;fl.vy=Math.abs(fl.vy)*.86;impact();}else if(y>B.y1){y=B.y1;fl.vy=-Math.abs(fl.vy)*.86;impact();}
     const f=Math.pow(.42,dt);fl.vx*=f;fl.vy*=f;place(x,y);face(fl.vx<0?2:3);
-    if(Math.hypot(fl.vx,fl.vy)<18){fl=null;g.classList.remove('fling');face(0);idleT=performance.now()+12000+Math.random()*10000;
+    if(Math.hypot(fl.vx,fl.vy)<18){const fl0=fl;fl=null;g.classList.remove('fling');face(0);idleT=performance.now()+12000+Math.random()*10000;
+      /* now and then, once it has come to rest after its bounces, it grumbles */
+      if(fl0.hits&&Math.random()<.35)quip();
       /* thrown in the middle of a visit: it takes it up again, calmly, a few seconds later */
       if(pending){const q=pending;pending=null;setTimeout(()=>{if(!touring&&!fl&&!g._drag)tour(q);},3000+Math.random()*2500);}return;}
     requestAnimationFrame(fly);}
