@@ -43,7 +43,7 @@ A few seconds after the title screen opens, then now and then, a guide wanders a
 - The mouse stays inside the table while playing; a double-click or Enter lets it go.
 - Each Mask plays by its Korhogo stats (STR power, DEX speed, INT precision, WIS reading, CHA placing, CON stamina) and a signature move, and keeps its own fixed level.
 - **Duel**: click a Mask in the room, first to 15. **Kompete!** starts a tournament against the eighteen Masks, first to 11 each time; **Continue** picks a saved one up where it stopped.
-- The room is drawn anew for each match (wallpaper, roses, carpet) and its two paintings are Fauna drawn at random. The CRT on the dresser switches at random and on every point between the Mask's motto, the score, its stats, the rally, its signature, your Koins, the hour, Motel Sound, test cards, snow and a few seconds of a Mauk Tenieb clip.
+- The room is a painted motel room; its two paintings show Fauna drawn at random for each match, and the board on the left wall keeps the score. The CRT on the dresser switches at random and on every point between the Mask's motto, the score, its stats, the rally, its signature, your Koins, the hour, Motel Sound, test cards, snow and a few seconds of a Mauk Tenieb clip.
 - **The Kerema decides!** One tournament in two opens with a die that sets the applicant's swing, from −15% (⚀) to +15% (⚅); the face stays by the score. One match in two, a translucent die floats over the table once or twice (*Want Kerema?*, *Got Kerem... ilk?* — *On est joueur ?*, *Koquinette ou Koquinou ?*): touch it with the paddle to take the throw, or let it drift away. The Kerema leans toward those who earned their Koins: the more Koins, the higher the faces (about 7 Koins: even).
 - Now and then, after a point, the Kerema's sarcasm comes on the TV, in the visitor's language.
 - On a phone held upright, a phone sign turns over the table; on its side, the table takes the whole height; in full screen the score follows inside the table.
@@ -100,6 +100,7 @@ Everything sits at the top level, no folders (except `tor/` and `.github/`), so 
 | `mask-*.webp` | the Masks' portraits (Photofauna, the paintings of the room) |
 | `thumb-*.jpg` | the cabinets (`thumb-bio-*.jpg`: the Bio cabinet draws one of the eighteen Masks) |
 | `poster*.{jpg,webp}`, `room.webp` | the painting and the pixel room |
+| `room-puck.webp` | the painted motel room of Puck You! (the table, the Mask, the window's sky, the TV, the portraits and the score board are laid over it by the game) |
 | `kg-hang-ja.json` | Akasztófa's stanzas |
 | `kg-*` | the Korhogo games, loaded on demand (`kg-loader.js`, `kg-core.*`, `kg-chess.*`, `kg-erratic.*`, `kg-faunarratics.*`, `kg-katabatik.*`, `kg-kapture.*`); `kg-faces.json` their portraits |
 | `kg-vhs.*`, `kg-vhs-library.js`, `kg-vhs-recorder.js`, `kg-vhs-scrape.js` | VHS: the deck, the cassette library, the shelf and REC bay, the in-page recorder |
