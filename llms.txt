@@ -34,6 +34,7 @@
 - **N° 18 Malika** (STR 7, DEX 5, INT 8, WIS 9, CHA 7, CON 9): « I am the debt of the fire » Ember's Oil Smoulder. At the table: Gets sharper whenever she is behind; her shots leave embers.
 
 ## Links
+- [Start here — mauktenieb.github.io](https://mauktenieb.github.io/)
 - [Bio — GitHub](https://github.com/MaukTenieb)
 - [Lore — Substack](https://mauktenieb.substack.com)
 - [Dive! — Katabase](https://mauktenieb.github.io/katabase)
