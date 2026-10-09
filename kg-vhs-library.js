@@ -277,7 +277,20 @@
     return [];
   }
 
+  /* [IK] cassettes recorded in the page (kg-vhs-scrape.js), kept in this browser */
+  var LOCAL_KEY = "kg.vhs.tapes.local.v1";
+  function readLocal() {
+    try { var a = JSON.parse(safeGet(global.localStorage, LOCAL_KEY) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; }
+  }
+  function writeLocal(a) { safeSet(global.localStorage, LOCAL_KEY, JSON.stringify(a)); }
+  function withLocal(tapes) {
+    var have = {}, out = (tapes || []).slice();
+    out.forEach(function (t) { have[t.channel] = 1; });
+    readLocal().forEach(function (t) { if (t && t.channel && !have[t.channel]) { have[t.channel] = 1; out.push(t); } });
+    return out;
+  }
   function publish(tapes, fromBackend, fromCache) {
+    tapes = withLocal(tapes);
     var tracks = [];
     for (var i = 0; i < tapes.length; i++) {
       tracks = tracks.concat((tapes[i] && tapes[i].tracks) || []);
@@ -319,6 +332,7 @@
       if (cached && cached.tracks.length) {
         return publish(cached.tapes || [], false, true);
       }
+      if (readLocal().length) return publish([], false, false);
       return false;
     };
 
@@ -417,6 +431,15 @@
     _setCache: function (tracks, tapes) {
       cache = { tracks: tracks || [], tapes: tapes || [] };
     },
+    /** [IK] keep a cassette recorded in the page; `over` (a channel) is erased first — record-over */
+    saveLocal: function (tape, over) {
+      var a = readLocal().filter(function (t) { return t && t.channel !== tape.channel && (!over || t.channel !== over); });
+      a.push({ channel: tape.channel, channel_url: tape.channel_url || "", count: tape.tracks.length, tracks: tape.tracks.slice(0, config.maxTracks) });
+      writeLocal(a);
+      state.lastFailureAt = 0; state.status = "idle";
+    },
+    /** [IK] a cassette recorded in this browser? */
+    isLocal: function (channel) { return readLocal().some(function (t) { return t && t.channel === channel; }); },
     /** Backend base URL in use (for companion modules, e.g. the recorder). */
     apiUrl: function () {
       return config.apiUrl;
