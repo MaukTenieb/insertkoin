@@ -923,3 +923,4 @@
 /* no explanations under REC */
 .vhs [data-vhs-rec-hint]{display:none!important}
 @media (prefers-reduced-motion:reduce){.vhs.is-fresh .vhs-key-play{animation:none}}
+.vhs-boot-tape,.vhs-boot-flap{display:none!important}
