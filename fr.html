@@ -1263,7 +1263,19 @@ function buildRoom(){const c=bg;c.imageSmoothingEnabled=true;c.clearRect(0,0,W,H
   /* night light: darken, then warm and cold pools */
   c.globalCompositeOperation='multiply';c.fillStyle='rgb(150,140,160)';c.fillRect(0,0,W,H);c.globalCompositeOperation='source-over';
   const vg=c.createRadialGradient(W/2,H*.35,80,W/2,H*.4,360);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.55)');c.fillStyle=vg;c.fillRect(0,0,W,H);
+  /* the painted room (room-puck.webp, laid out on this very geometry): it replaces the drawn walls and furniture; the two Fauna portraits and the score board stay alive on it */
+  if(ROOMPIC.complete&&ROOMPIC.naturalWidth){c.save();c.imageSmoothingEnabled=true;c.clearRect(0,0,W,H);c.drawImage(ROOMPIC,0,0,W,H);
+    const[p0x,p0y]=P3(170,-40,RZ),[p1x,p1y]=P3(300,110,RZ);drawPic(c,RV.pics&&RV.pics[0],p0x+1.2,p0y+1.2,p1x-p0x-2.4,p1y-p0y-2.4);
+    const[q0x,q0y]=P3(RX,-10,2070),[q1x,q1y]=P3(RX,190,1880);drawPic(c,RV.pics&&RV.pics[1],Math.min(q0x,q1x)+.8,q0y+1,Math.abs(q1x-q0x)-1.6,q1y-q0y-2);
+    /* the board on the left wall: YOU, the Mask's name, and the tallies, chalked in red */
+    const[a0x,a0y]=P3(-RX,-20,1650),[a1x,a1y]=P3(-RX,-20,2030),[,a2y]=P3(-RX,280,1650);
+    c.setTransform(2,0,0,2,0,0);c.transform((a1x-a0x)/100,(a1y-a0y)/100,0,(a2y-a0y)/100,a0x,a0y);
+    c.fillStyle='rgba(200,36,58,.85)';c.textBaseline='top';c.font='9px "Press Start 2P",monospace';c.fillText(tr?tr('you'):'YOU',10,8);
+    c.font='6px "Press Start 2P",monospace';c.fillText(G?G.r.name.toUpperCase().slice(0,12):'',8,52);
+    c.strokeStyle='rgba(200,36,58,.85)';c.lineWidth=1.4;for(let r2=0;r2<2;r2++)for(let i=0;i<Math.min(15,sc[r2]);i++){const g=Math.floor(i/5),k=i%5,gx=10+g*26,gy=r2?66:24;c.beginPath();if(k<4){c.moveTo(gx+k*4.5,gy);c.lineTo(gx+k*4.5+1,gy+16);}else{c.moveTo(gx-3,gy+14);c.lineTo(gx+19,gy+2);}c.stroke();}
+    c.restore();}
   c.imageSmoothingEnabled=false;bgKey=sc[0]*100+sc[1];}
+const ROOMPIC=new Image();ROOMPIC.decoding='async';ROOMPIC.onload=()=>{bgKey=-1;};ROOMPIC.src='room-puck.webp';
 /* ---- live layer ---- */
 /* ---- the television on the wall: the Mask's motto, the match, and the Kerema's asides, at random ---- */
 const TVT={en:{run:'RUN',duel:'DUEL',rally:'RALLY',best:'LONGEST',serve:'SERVE',koins:'KOINS',to:'FIRST TO',you:'YOU',now:'NOW'},fr:{run:'PARTIE',duel:'DUEL',rally:'ÉCHANGE',best:'RECORD',serve:'SERVICE',koins:'KOINS',to:'EN',you:'TOI',now:'EN COURS'}};
@@ -1349,7 +1361,7 @@ function room(c){if(!G)return;if(G.e.player_score*100+G.e.opponent_score!==bgKey
   c.fillStyle='#d8cfb8';for(let i=0;i<3;i++){const a=t*(3+i)+i*2.1;c.fillRect(Math.round(lx+Math.cos(a)*(6+i*3)),Math.round(ly-4+Math.sin(a*1.3)*(4+i*2)),1,1);}
   const mins=133+(e.player_score+e.opponent_score)*7,hh=String(Math.floor(mins/60)%12||12).padStart(2,'0'),mm=String(mins%60).padStart(2,'0');c.fillStyle='#ff3a2a';c.font='4px "Press Start 2P",monospace';c.textBaseline='top';c.fillText(hh+(Math.floor(t*2)%2?':':' ')+mm,CLK.x,CLK.y);
   /* ashtray smoke */
-  {const[a,b2]=P3(347,462,2215);c.fillStyle='rgba(210,205,195,.25)';for(let i=0;i<4;i++){const s=(t*.35+i/4)%1;c.fillRect(Math.round(a+Math.sin(t*1.5+i*2)*3*s),Math.round(b2-s*34),1+Math.round(s*3),2);}}
+  if(!(ROOMPIC.complete&&ROOMPIC.naturalWidth)){const[a,b2]=P3(347,462,2215);c.fillStyle='rgba(210,205,195,.25)';for(let i=0;i<4;i++){const s=(t*.35+i/4)%1;c.fillRect(Math.round(a+Math.sin(t*1.5+i*2)*3*s),Math.round(b2-s*34),1+Math.round(s*3),2);}}
   /* headlights sweep the room now and then */
   const hl=(t%19)/2.4;if(hl<1){const x=W+80-hl*(W+220);c.fillStyle='rgba(255,250,220,.08)';c.beginPath();c.moveTo(x,0);c.lineTo(x+60,0);c.lineTo(x+20,170);c.lineTo(x-50,170);c.fill();}
   /* a cockroach crosses the carpet */
