@@ -3,6 +3,8 @@ on:
   workflow_dispatch:
   push:
     paths: ['.github/probe/**']
+permissions:
+  contents: write
 jobs:
   probe:
     runs-on: ubuntu-latest
@@ -12,4 +14,9 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
       - run: npm i playwright@1.47.2 && npx playwright install --with-deps chromium
-      - run: node .github/probe/probe.mjs
+      - run: node .github/probe/probe.mjs > /tmp/probe.txt 2>&1 || true
+      - run: |
+          cd /tmp && rm -rf pr && mkdir pr && cd pr && git init -q && cp /tmp/probe.txt result.txt
+          git config user.name probe && git config user.email probe@users.noreply.github.com
+          git add result.txt && git commit -qm "probe $(date -u +%FT%TZ)"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:refs/heads/probe-results

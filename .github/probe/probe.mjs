@@ -49,3 +49,4 @@ for (const ch of ['https://www.youtube.com/@GoogleDevelopers', 'https://www.yout
   console.log('REC', ch, Math.round((Date.now() - s) / 1000) + 's', JSON.stringify(txt));
 }
 await b.close();
+// Fri Oct  9 04:38:23 CEST 2026
