@@ -151,7 +151,7 @@
       var out = [], seen = {}, name = "";
       function take(d) {
         (d.relatedStreams || []).forEach(function (v) { var m = /v=([\w-]{11})/.exec(v.url || ""); if (m && !seen[m[1]]) { seen[m[1]] = 1;
-          out.push({ id: m[1], title: v.title || m[1], author: v.uploaderName || name, date: v.uploaded > 0 ? new Date(v.uploaded).toISOString().slice(0, 10) : "", duration: v.duration > 0 ? v.duration : 0, views: v.views > 0 ? v.views : 0 }); } });
+          out.push({ id: m[1], title: v.title || m[1], author: v.uploaderName || name, date: v.uploadedDate && /ago|il y a/i.test(v.uploadedDate) ? v.uploadedDate : v.uploaded > 0 ? new Date(v.uploaded).toISOString().slice(0, 10) : "", duration: v.duration > 0 ? v.duration : 0, views: v.views > 0 ? v.views : 0 }); } });
         prog(out.length);
       }
       function next(np, n) {
