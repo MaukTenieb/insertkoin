@@ -35,6 +35,11 @@ try{var sp=speechSynthesis.speak.bind(speechSynthesis);speechSynthesis.speak=fun
 <style>
 :root{color-scheme:dark;--bg:#07060a;--ink:#0d0b09;--panel:#14120e;--line:#2a261c;--txt:#ece4d2;--dim:#8f8672;--gold:#c9a84c;--gold2:#ffe08a;--hot:#ff5a7a}
 [hidden]{display:none!important}
+/* the title screen takes, each time, the faint colour of one Mask: a soft wash over the picture, the lines and golds leaning a little toward it */
+#mtint{position:fixed;inset:0;z-index:50;pointer-events:none;background:radial-gradient(120% 90% at 50% 30%,var(--mc,#c9a84c),transparent 75%),var(--mc,#c9a84c);mix-blend-mode:soft-light;opacity:0;transition:opacity 3.5s ease}
+body.on-home #mtint.on{opacity:.13}
+body.on-home{--line:color-mix(in srgb,var(--mc,#2a261c) 16%,#2a261c);--dim:color-mix(in srgb,var(--mc,#8f8672) 10%,#8f8672);--gold:color-mix(in srgb,var(--mc,#c9a84c) 12%,#c9a84c);background:color-mix(in srgb,var(--mc,#07060a) 3%,#07060a)}
+
 html,body{background:var(--bg);color:var(--txt)}
 body{font-family:"DM Mono",ui-monospace,monospace;padding-inline:16px}
 a{color:inherit}
@@ -616,6 +621,14 @@ SOFTWARE.</pre></details>
 
 </div>
 <noscript><p style="padding:16px">Insert Koin needs JavaScript.</p></noscript>
+<div id="mtint" aria-hidden="true"></div>
+<script>/* one Mask's colour, drawn at random each time the title screen opens */
+(function(){const C=["#ab47bc", "#42a5f5", "#9e9e9e", "#ffd54f", "#78909c", "#ff7043", "#546e7a", "#d32f2f", "#4fc3f7", "#e53935", "#bf360c", "#90a4ae", "#8d6e63", "#66bb6a", "#bdbdbd", "#ef6c00", "#f48fb1", "#ffa726"],t=document.getElementById('mtint');let last='';
+  function wash(){let c;do{c=C[Math.floor(Math.random()*C.length)];}while(c===last&&C.length>1);last=c;document.body.style.setProperty('--mc',c);t.classList.remove('on');void t.offsetWidth;requestAnimationFrame(()=>t.classList.add('on'));}
+  if(!document.body.className)document.body.classList.add('on-home');t.dataset.seen=1;
+  wash();window.__wash=wash;
+  new MutationObserver(()=>{if(document.body.classList.contains('on-home')&&!t.dataset.seen){t.dataset.seen=1;wash();}if(!document.body.classList.contains('on-home'))delete t.dataset.seen;}).observe(document.body,{attributes:true,attributeFilter:['class']});
+})();</script>
 <script src="ik-name.js"></script>
 <script src="kg-vhs-library.js"></script>
 <script src="kg-loader.js"></script>
@@ -1965,7 +1978,8 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
   g.addEventListener('click',e=>{e.stopPropagation();touring?stop():tour();});g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();touring?stop():tour();}});
   document.addEventListener('click',e=>{if(touring&&!g.contains(e.target))stop();},true);
   addEventListener('keydown',e=>{if(e.key==='Escape')stop();});
-  later();
+  /* the first guide comes soon after the title screen opens */
+  setTimeout(arrive,2500+Math.random()*3500);
   window.__guide={go:()=>{arrive();setTimeout(tour,1200);}};})();
 /* ---- a Koin earned anywhere (here, or in 3615) falls into the counter ---- */
 function koinOut(){const k=$('koins');if(!k||matchMedia('(prefers-reduced-motion:reduce)').matches)return;const r=k.getBoundingClientRect(),c=document.createElement('span');c.className='kdrop';c.textContent='◉';c.style.left=(r.left+4)+'px';c.style.top=r.top+'px';document.body.appendChild(c);
