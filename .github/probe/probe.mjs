@@ -1,32 +1,14 @@
 import { chromium } from 'playwright';
 const SITE = 'https://mauktenieb.github.io/insertkoin/';
-const b = await chromium.launch(); const p = await b.newPage();
-await p.goto(SITE, { waitUntil: 'load' });
+const b = await chromium.launch(); const p = await b.newPage(); const logs = [];
+p.on('console', m => { const t = m.text(); if (/consensus|Tor|circuit|error|fail/i.test(t)) logs.push(t.slice(0, 200)); });
+await p.goto(SITE + 'tor.html', { waitUntil: 'load' }); await p.waitForTimeout(1500);
 const r = await p.evaluate(async () => {
-  const P = 'https://api.piped.private.coffee', CH = 'UCsYxJt19tb_ZLjVoTGgf5Mg', out = {};
-  const J = async u => (await fetch(u)).json();
-  try {
-    const d = await J(P + '/channel/' + CH); out.tabs = (d.tabs || []).map(t => t.name).join(','); out.related = (d.relatedStreams || []).length; out.np = !!d.nextpage;
-    for (const t of d.tabs || []) {
-      let q = await J(P + '/channels/tabs?data=' + encodeURIComponent(t.data)), n = 0, pages = 0, types = {};
-      while (q && pages < 30) { (q.content || []).forEach(c => types[c.type] = (types[c.type] || 0) + 1); n += (q.content || []).length; pages++; if (!q.nextpage) break; q = await J(P + '/channels/tabs?data=' + encodeURIComponent(t.data) + '&nextpage=' + encodeURIComponent(q.nextpage)).catch(e => ({ err: String(e) })); if (q.err || q.error) { out['tabErr_' + t.name] = q.err || q.error; break; } }
-      out['tab_' + t.name] = n + ' items, ' + pages + ' pages ' + JSON.stringify(types);
-      if (t.name === 'playlists') {
-        const q0 = await J(P + '/channels/tabs?data=' + encodeURIComponent(t.data));
-        out.playlists = [];
-        for (const c of (q0.content || []).slice(0, 40)) { const L = (/list=([\w-]+)/.exec(c.url || '') || [])[1]; let z = await J(P + '/playlists/' + L).catch(() => ({})), m = (z.relatedStreams || []).length, pg = 1, tot = z.videos;
-          while (z.nextpage && pg < 20) { z = await J(P + '/nextpage/playlists/' + L + '?nextpage=' + encodeURIComponent(z.nextpage)).catch(() => ({})); m += (z.relatedStreams || []).length; pg++; }
-          out.playlists.push(c.name + ' [' + (c.uploaderName || '') + '] ' + m + '/' + tot); }
-      }
-    }
-  } catch (e) { out.err = String(e); }
-  const H = { headers: { 'X-Return-Format': 'html' } };
-  for (const tab of ['videos', 'shorts', 'streams', 'releases', 'playlists', 'featured']) {
-    try { const tx = await (await fetch('https://r.jina.ai/https://www.youtube.com/channel/' + CH + '/' + tab, H)).text(); out['jina_' + tab] = tx.length + ' ids:' + new Set((tx.match(/"videoId":"([\w-]{11})"/g) || [])).size + ' tabsSeen:' + [...new Set((tx.match(/"title":"(Home|Videos|Shorts|Live|Releases|Playlists|Posts|Podcasts|Courses|Store)"/g) || []))].join('|'); } catch (e) { out['jina_' + tab] = String(e); }
-  }
-  try { const tx = await (await fetch('https://r.jina.ai/https://www.youtube.com/playlist?list=UU' + CH.slice(2), H)).text(); out.uploads = (/"numVideosText":\{"runs":\[\{"text":"([^"]+)"/.exec(tx) || /([\d,]+) videos/.exec(tx) || [])[1] + ' ids:' + new Set((tx.match(/"videoId":"([\w-]{11})"/g) || [])).size; } catch (e) { out.uploads = String(e); }
-  try { const tx = await (await fetch('https://r.jina.ai/https://www.youtube.com/@MaukTenieb', H)).text(); out.about = (/"videoCountText":\{[^}]*?"text":"([^"]+)"/.exec(tx) || /([\d,.]+\s*videos)/.exec(tx) || [])[1]; } catch (e) {}
+  const out = {}; const t0 = Date.now();
+  try { const m = await import('./faunator-tor.js'); const res = await Promise.race([m.get('https://example.com/'), new Promise((_, j) => setTimeout(() => j(new Error('timeout 240s')), 240000))]);
+    out.web = 'status ' + res.status + ' len ' + (res.text || '').length + ' in ' + Math.round((Date.now() - t0) / 1000) + 's'; out.title = (/<title>([^<]*)/.exec(res.text || '') || [])[1];
+  } catch (e) { out.web = 'ERR ' + String(e.message || e).slice(0, 200) + ' after ' + Math.round((Date.now() - t0) / 1000) + 's'; try { const m = await import('./faunator-tor.js'); out.last = m.lastWords(); } catch (e2) {} }
   return out;
 });
-for (const [k, v] of Object.entries(r)) console.log(k, typeof v === 'string' ? v.slice(0, 400) : JSON.stringify(v, null, 0).slice(0, 3000));
+console.log('RESULT', JSON.stringify(r)); console.log('LOGS', JSON.stringify(logs.slice(-15)));
 await b.close();
