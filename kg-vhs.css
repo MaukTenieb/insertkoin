@@ -917,3 +917,10 @@
 .vhs .vhs-find-sort { max-width: 42vw; }
 /* one source only: no tabs to choose from */
 .vhs-source-tabs:not(:has([data-vhs-source="local"]:not([hidden]))) { display: none; }
+
+/* [IK] an untouched deck: the ▶ key glows on and off, the way a VCR blinks at 12:00 */
+.vhs.is-fresh .vhs-key-play{animation:vhs-fresh 1.1s steps(2,start) infinite}
+@keyframes vhs-fresh{50%{color:var(--vhs-accent,#7fe3c4);text-shadow:0 0 8px currentColor}}
+/* no explanations under REC */
+.vhs [data-vhs-rec-hint]{display:none!important}
+@media (prefers-reduced-motion:reduce){.vhs.is-fresh .vhs-key-play{animation:none}}

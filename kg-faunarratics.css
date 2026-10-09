@@ -175,3 +175,8 @@
 .kk-ante-meta{font-size:11px;letter-spacing:.12em;color:#8f8672;margin-top:2px}
 .kk-ante-empty{padding:30px 4px;color:#8f8672;font-size:13px}
 .kk-ante-rd-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.08em;color:#ffe08a;margin:4px 0 14px}
+/* [IK] the phase-2 text can be touched: a gold point breathes under it, nothing written */
+:where(.kg-layer) #kk-intro-p2.visible::after{content:"";width:7px;height:7px;border-radius:50%;background:#c9a84c;margin-top:28px;box-shadow:0 0 12px #c9a84c;animation:kkBreath 1.6s ease-in-out 1.5s infinite;opacity:0}
+@keyframes kkBreath{0%,100%{opacity:.15;transform:scale(.8)}50%{opacity:1;transform:scale(1.25)}}
+/* one instruction on the writing screen: the field's own placeholder */
+:where(.kg-layer) .kk-chip-hint{display:none!important}

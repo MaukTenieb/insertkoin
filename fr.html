@@ -13,6 +13,15 @@
 <meta name="description" content="Insert Koin, un rituel d&#x27;arcade dans le navigateur, de Mauk Tenieb. Puck You! contre les dix-huit Masks de la Fauna, Fauna Chess, Erratik, Faunarratik, Katabatik, 3615.">
 <meta name="author" content="Mauk Tenieb">
 <meta name="robots" content="index, follow, max-image-preview:large">
+<script>
+/* [IK] one switch for every sound effect of the motel: each audio context any game opens is
+   registered here, and FX OFF suspends them all; the Kerema's voice obeys it too. Remembered. */
+(function(){var W=window,A=W.AudioContext||W.webkitAudioContext,list=[];var off=false;try{off=localStorage.getItem('ik.fx')==='off';}catch(e){}
+W.__ikFx={on:function(){return !off;},set:function(v){off=!v;try{localStorage.setItem('ik.fx',off?'off':'on');}catch(e){}
+  list.forEach(function(c){try{if(c.state==='closed')return;off?c.suspend():c.resume();}catch(e){}});if(off)try{speechSynthesis.cancel();}catch(e){}}};
+if(A){var P=function(){var c=new A(...arguments);list.push(c);if(off)try{c.suspend();}catch(e){}return c;};P.prototype=A.prototype;W.AudioContext=P;if(W.webkitAudioContext)W.webkitAudioContext=P;}
+try{var sp=speechSynthesis.speak.bind(speechSynthesis);speechSynthesis.speak=function(u){if(off)return;return sp(u);};}catch(e){}})();
+</script>
 <link rel="canonical" href="https://mauktenieb.github.io/insertkoin/fr.html">
 <link rel="alternate" hreflang="en" href="https://mauktenieb.github.io/insertkoin/"><link rel="alternate" hreflang="fr" href="https://mauktenieb.github.io/insertkoin/fr.html"><link rel="alternate" hreflang="x-default" href="https://mauktenieb.github.io/insertkoin/">
 <link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="icon.png">
@@ -105,6 +114,20 @@ a{color:inherit}
 .cab .bigdie.on{opacity:1;transform:translate(-50%,-50%) rotate(var(--r,0deg)) scale(1)}
 .cab .bigdie.land{transform:translate(-50%,-50%) rotate(0deg) scale(1.25);animation:dieland .5s ease-out}
 @keyframes dieland{0%{transform:translate(-50%,-62%) scale(1.4)}40%{transform:translate(-50%,-48%) scale(1.15)}70%{transform:translate(-50%,-53%) scale(1.27)}100%{transform:translate(-50%,-50%) scale(1.25)}}
+
+/* one band of controls above every game: the site's own (Back, Baku Boom, title); the modules' copies go */
+#kg-root #chess-hdr .motel-bar,#kg-root #chess-hdr .motel-bar-note,#kg-root #chess-quit,
+#kg-root #mem .motel-bar,#kg-root #mem .motel-bar-note,#kg-root #mem .m-btn.full[data-action*="closeMem"],#kg-root #mem .w-btn[data-action*="closeMem"],
+#kg-root #c4-panel > button[data-action^="bakuBoom"],#kg-root .kb-back,#kg-root .kb-boom,
+#kg-root #kk-mask .kk-top .kk-exit{display:none!important}
+
+/* readable menus: nothing under 11px, nothing below 4.5 of contrast */
+#kg-root .m-btn small{opacity:.8!important;font-size:11px}
+#kg-root #m-quit{font-size:11px!important;color:#d9d1be!important;opacity:1!important}
+#kg-root .ch-sel-label{font-size:11px!important;color:#c9c1ad!important;opacity:1!important}
+#kg-root .ch-sel-btn{font-size:12px!important;color:#ece4d2!important;border-color:rgba(201,168,76,.5)!important}
+#kg-root #ch-kerema-btn{font-size:11px!important;color:#e6d9b0!important}
+#kg-root #chess-log{font-size:11px!important}
 </style>
 <style>
 *{box-sizing:border-box}html,body{margin:0}
@@ -824,7 +847,7 @@ function jukeStartPlay(){
     jukePlayer.setLoop(true);
     jukePlayer.setShuffle(true);
     jukePlayer.unMute();
-    jukePlayer.setVolume(100);
+    jukePlayer.setVolume(window.__jukeVol||100);
     jukePlayer.playVideo();
     jukeSetLabel('MOTEL SOUND');
   }catch(e){}
@@ -876,7 +899,7 @@ function jukeStop(){
   if(jukePlayer&&jukePlayer.pauseVideo){try{jukePlayer.pauseVideo();}catch(e){}}
   jukeSetLabel('MOTEL SOUND');
 }
-window.jukeStart=jukeStart;window.jukeStop=jukeStop;window.jukeNext=jukeNext;
+window.jukeStart=jukeStart;window.jukeStop=jukeStop;window.__juke=function(){return jukePlayer;};window.jukeNext=jukeNext;
 window.jukeCreatePlayer=jukeCreatePlayer;
 // === EXPORT PLAYLIST as .txt ===
 function exportPlaylist(){
@@ -1152,7 +1175,7 @@ function room(c){if(!G)return;if(G.e.player_score*100+G.e.opponent_score!==bgKey
   poly(rl,[Hh(-268,1500),Hh(268,1500),F(268,1514),F(-268,1514)],'#4b301c');rl.fillStyle='#7a5232';const a=Hh(-268,1500),b=Hh(268,1500);rl.fillRect(Math.round(a[0]),Math.round(a[1]),Math.round(b[0]-a[0]),2);})();
 
 /* ---------- audio ---------- */
-let AC=null,sound=true,noise=null;
+let AC=null,sound=window.__ikFx?window.__ikFx.on():true,noise=null;
 function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)();const n=AC.sampleRate*.8;noise=AC.createBuffer(1,n,AC.sampleRate);const d=noise.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2);}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();}
 function tone(f,d,type='square',v=.05,slide=0,delay=0){if(!sound||!AC)return;const t0=AC.currentTime+delay,o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f,t0);if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(30,f*slide),t0+d);g.gain.setValueAtTime(v,t0);g.gain.exponentialRampToValueAtTime(.0001,t0+d);o.connect(g).connect(AC.destination);o.start(t0);o.stop(t0+d+.02);}
 function burst(freq,type,v,dur){if(!sound||!AC||!noise)return;const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=noise;f.type=type;f.frequency.value=freq;g.gain.value=v;s.connect(f).connect(g).connect(AC.destination);s.start();s.stop(AC.currentTime+dur);}
@@ -1335,7 +1358,10 @@ const keys={};
 window.addEventListener('keydown',e=>{if(!G||$('game').hidden)return;if(e.key.startsWith('Arrow')){keys[e.key]=true;e.preventDefault();}if(e.key===' '){e.preventDefault();ac();if(!G.started)begin();else btn=true;}});
 window.addEventListener('keyup',e=>{keys[e.key]=false;if(e.key===' ')btn=false;});
 setInterval(()=>{const s=7;if(keys.ArrowLeft)mouse[0]-=s;if(keys.ArrowRight)mouse[0]+=s;if(keys.ArrowUp)mouse[1]-=s;if(keys.ArrowDown)mouse[1]+=s;mouse=[Math.max(0,Math.min(W,mouse[0])),Math.max(30,Math.min(330,mouse[1]))];},16);
-$('snd').onclick=()=>{sound=!sound;$('snd').setAttribute('aria-pressed',sound);$('snd').textContent=sound?'FX ON':'FX OFF';if(sound)ac();};
+$('snd').onclick=()=>{sound=!sound;if(window.__ikFx)__ikFx.set(sound);$('snd').setAttribute('aria-pressed',sound);$('snd').textContent=sound?'FX ON':'FX OFF';if(sound)ac();};
+$('snd').setAttribute('aria-pressed',sound);$('snd').textContent=sound?'FX ON':'FX OFF';
+/* the jukebox steps back when a tape, the Sampler or the Kerema's voice takes the room */
+setInterval(()=>{try{const jukePlayer=window.__juke&&window.__juke();if(!jukePlayer||!jukePlayer.setVolume)return;const v=document.getElementById('vhs'),vhsOn=v&&v.offsetParent!==null&&v.classList.contains('is-loaded'),talk=window.speechSynthesis&&speechSynthesis.speaking,samp=window._bbPlaying===true;const want=(vhsOn||talk||samp)?12:100;if(want!==window.__jukeVol){window.__jukeVol=want;jukePlayer.setVolume(want);}}catch(e){}},500);
 /* ================= INSERT KOIN shell ================= */
 const I18N={en:{run:'ARCADE',pick:'◉ 1',you:'APPLICANT',serve:'▶',
   win:'APPLICANT WON',lose:'MASK WON',champ:'MAKE A NOISY SILENCE!',next:'NEXT',cont:'CONTINUE',again:'REMATCH',select:'SELECT',back:'← BACK',nokoin:'◉ 0 · ',beaten:'MASKS DOWN',runof:'RUN',kap:'KAPTURE · CAM + MIC ?',yes:'YES',no:'NO'},

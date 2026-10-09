@@ -1490,6 +1490,7 @@
   }
 
   function handleAction(s, action) {
+    if (action === "play" && s.root) s.root.classList.remove("is-fresh");
     if (action === "play") { if (isPlaying(s)) VSND.key(); else VSND.thread(); }
     else if (action === "eject") VSND.eject();
     else VSND.key();
