@@ -209,7 +209,7 @@ var KK_FRAME_INSTRS=[
   +'<div class="kk-flow-line">Find out when, exactly.</div>'
   +'<div class="kk-flow-line">Stay granular.</div>'
   +'<div class="kk-flow-mk kk-flow-mk-apart">(Yes you did.)</div>',
-  '<div class="kk-flow-line">Select any content \u2014 the one that disturbs and/or makes sense, tale wise.</div>'
+  '<div class="kk-flow-line">Select any content \u2014 the one that disturbs and/or makes sense, tale-wise.</div>'
   +'<div class="kk-flow-line">Write down what for. What\u2019s lurking.</div>'
   +'<div class="kk-flow-line">Remain immersive.</div>'
   +'<div class="kk-flow-mk">Make it\u2026</div>'
@@ -256,11 +256,11 @@ function kkShowMask(){
   // Compteur: KONTEXT 1 ON 5 / STORY 1 ON N
   var cEl=document.getElementById('kk-count');
   if(cEl){
-    if(kkIdx<3) cEl.textContent='KONTEXT '+(kkIdx+1)+' ON 3';
+    if(kkIdx<3) cEl.textContent='KONTEXT '+(kkIdx+1)+' OF 3';
     else{
       var storyN=Math.min(kkIdx-2, kkTotal-3);
       var storyM=kkTotal-3;
-      cEl.textContent='STORY '+storyN+' ON '+storyM;
+      cEl.textContent='STORY '+storyN+' OF '+storyM;
     }
   }
   kkRenderDots();
@@ -528,7 +528,7 @@ function kkUpdateCounter(){
   var c=document.getElementById('kk-counter');if(!c)return;
   var box=document.getElementById('kk-box');if(!box){c.textContent='';return;}
   var n=kkSentenceCount(box.value);
-  c.textContent=n+'/10 phrases';
+  c.textContent=n+'/10 sentences';
   if(n>10)c.className='kk-counter over';
   else if(n>=1)c.className='kk-counter ok';
   else c.className='kk-counter';
@@ -590,7 +590,7 @@ function kkLeaveThreshold(){
 
 function kkFork(){
   var q=document.getElementById('kk-forkq');
-  if(q)q.innerHTML=(kkIdx)+' Masks played. The Kerema holds \u2014 for now.<br><br>Press on, or close the Konklave and seal the lore?';
+  if(q)q.innerHTML=(kkIdx)+(kkIdx===1?' Mask':' Masks')+' played. The Kerema holds \u2014 for now.<br><br>Press on, or close the Konklave and seal the lore?';
   kkGo('kk-fork');
 }
 

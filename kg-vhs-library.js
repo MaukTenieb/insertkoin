@@ -510,7 +510,7 @@
         "Already recording.": "Enregistrement déjà en cours.",
         "Recording cancelled.": "Enregistrement annulé.",
         /* finder / tape tools / teletext */
-        "Find a track in the deck": "Chercher une piste dans le deck",
+        "Find a track on the deck": "Chercher une piste dans le deck",
         "CSV": "CSV",
         "JSON": "JSON",
         "XLSX": "XLSX",
