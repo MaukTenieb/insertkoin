@@ -1019,7 +1019,9 @@ function hangGuess(L){
 window.hangNew=hangNew;window.hangGuess=hangGuess;
 function hangArp(win){
   try{
-    var ac=new(window.AudioContext||window.webkitAudioContext)();
+    /* [IK] one context for the hangman, kept: a new one per game ran out after a dozen games */
+    var ac=hangArp.ac||(hangArp.ac=new(window.AudioContext||window.webkitAudioContext)());
+    if(ac.state==='suspended'&&(!window.__ikFx||window.__ikFx.on()))try{ac.resume();}catch(_r){}
     var t0=ac.currentTime+.03;
     var seq=win?[440,554,659,880]:[220,208,196,185];
     seq.forEach(function(f,i){
@@ -1029,7 +1031,7 @@ function hangArp(win){
       g.gain.exponentialRampToValueAtTime(.0008,t0+i*.11+.3);
       o.connect(g);g.connect(ac.destination);o.start(t0+i*.11);o.stop(t0+i*.11+.32);
     });
-    setTimeout(function(){try{var c=ac.close();if(c&&c.catch)c.catch(function(){});}catch(_e2){}},900);
+    /* the context is kept for the next game */
   }catch(_e){}
 }
 
