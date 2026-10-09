@@ -60,12 +60,12 @@ main{flex:1;position:relative;background:#000}
 (function(){
 'use strict';
 var LANG='fr';
-try{LANG=localStorage.getItem('tor.lang')||localStorage.getItem('ik.lang')||'en';if(LANG!=='fr')LANG='en';}catch(e){}
+try{LANG=localStorage.getItem('ik.lang')||localStorage.getItem('tor.lang')||'en';if(LANG!=='fr')LANG='en';}catch(e){}
 function L(fr,en){return LANG==='en'?en:fr;}
 function $(id){return document.getElementById(id);}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function status(t){$('status').textContent=t||'';}
-function setLang(l){LANG=l==='en'?'en':'fr';try{localStorage.setItem('tor.lang',LANG);}catch(e){}
+function setLang(l){LANG=l==='en'?'en':'fr';try{localStorage.setItem('tor.lang',LANG);localStorage.setItem('ik.lang',LANG);}catch(e){}
   document.documentElement.lang=LANG;
   document.querySelectorAll('[data-l]').forEach(function(el){var p=el.getAttribute('data-l').split('|');el.textContent=p[LANG==='en'?1:0];});
   $('url').placeholder='';

@@ -178,6 +178,8 @@
       };
     },
     vhs:function(){
+      /* [IK] the shelf and the REC bay load with the deck, not with the arcade */
+      if(!window.KGVHSRecorder&&!document.querySelector('script[data-vhs-rec]')){var rs=document.createElement('script');rs.src=BASE+'vhs-recorder.js';rs.setAttribute('data-vhs-rec','1');document.head.appendChild(rs);}
       // The library module (kg-vhs-library.js) ships the KGI18N bridge and
       // reads CHANNEL.SCRAPE in the background; the recorder wires the shelf.
       if(window.KGVHSLibrary&&typeof window.KGVHSLibrary.ready==='function')window.KGVHSLibrary.ready();
