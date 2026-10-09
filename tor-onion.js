@@ -221,16 +221,16 @@ if (!('encodeInto' in cachedTextEncoder)) {
 
 let WASM_VECTOR_LEN = 0;
 
-function wasm_bindgen_10c1779110d0f4f8___convert__closures_____invoke______(arg0, arg1) {
-    wasm.wasm_bindgen_10c1779110d0f4f8___convert__closures_____invoke______(arg0, arg1);
-}
-
 function wasm_bindgen_10c1779110d0f4f8___convert__closures_____invoke___web_sys_a2731fb08a4a4bc3___features__gen_CloseEvent__CloseEvent_____(arg0, arg1, arg2) {
     wasm.wasm_bindgen_10c1779110d0f4f8___convert__closures_____invoke___web_sys_a2731fb08a4a4bc3___features__gen_CloseEvent__CloseEvent_____(arg0, arg1, arg2);
 }
 
 function wasm_bindgen_10c1779110d0f4f8___convert__closures_____invoke___wasm_bindgen_10c1779110d0f4f8___JsValue_____(arg0, arg1, arg2) {
     wasm.wasm_bindgen_10c1779110d0f4f8___convert__closures_____invoke___wasm_bindgen_10c1779110d0f4f8___JsValue_____(arg0, arg1, arg2);
+}
+
+function wasm_bindgen_10c1779110d0f4f8___convert__closures_____invoke______(arg0, arg1) {
+    wasm.wasm_bindgen_10c1779110d0f4f8___convert__closures_____invoke______(arg0, arg1);
 }
 
 function wasm_bindgen_10c1779110d0f4f8___convert__closures_____invoke___wasm_bindgen_10c1779110d0f4f8___JsValue__wasm_bindgen_10c1779110d0f4f8___JsValue_____(arg0, arg1, arg2, arg3) {
