@@ -950,19 +950,17 @@ var HANG_WORDS={
 var HANG_KEYS='AÁBCDEÉFGHIÍJKLMNOÓÖŐPQRSTUÚÜŰVWXYZ';
 /* the keys sit as on a Hungarian keyboard (QWERTZ: Ö Ü Ó on the number row, Ő Ú and É Á Ű on the right, Í before Y) */
 var HANG_ROWS=['ÖÜÓ','QWERTZUIOPŐÚ','ASDFGHJKLÉÁŰ','ÍYXCVBNM'];
-/* a win brings a few lines: József Attila's own stanzas (Tiszta szívvel, 1925), or one work of Tarr, Krasznahorkai, Ligeti or Lukács */
+/* a win brings a few lines: József Attila's own stanzas (Tiszta szívvel, 1925), or one work of Ligeti György or Lukács György */
 var HANG_JA=[['Nincsen apám, se anyám,','se istenem, se hazám,','se bölcsőm, se szemfedőm,','se csókom, se szeretőm.'],
  ['Harmadnapja nem eszek,','se sokat, se keveset.','Húsz esztendőm hatalom,','húsz esztendőm eladom.'],
  ['Hogyha nem kell senkinek,','hát az ördög veszi meg.','Tiszta szívvel betörök,','ha kell, embert is ölök.'],
  ['Elfognak és felkötnek,','áldott földdel befödnek','s halált hozó fű terem','gyönyörűszép szívemen.']];
 var HANG_GIFT=[
- {who:'Tarr Béla',k:{en:'film',fr:'film'},w:[['Kárhozat',1988],['Sátántangó',1994],['Werckmeister harmóniák',2000],['A torinói ló',2011]]},
- {who:'Krasznahorkai László',k:{en:'novel',fr:'roman'},w:[['Sátántangó',1985],['Az ellenállás melankóliája',1989],['Háború és háború',1999],['Báró Wenckheim hazatér',2016]]},
  {who:'Ligeti György',k:{en:'music',fr:'musique'},w:[['Atmosphères',1961],['Lux aeterna',1966],['Lontano',1967],['Le Grand Macabre',1978]]},
  {who:'Lukács György',k:{en:'essay',fr:'essai'},w:[['A lélek és a formák',1910],['Die Theorie des Romans',1916],['Geschichte und Klassenbewusstsein',1923]]}];
 function hangGift(){
   var g=document.getElementById('hang-gift');if(!g)return;
-  var lg=(document.documentElement.lang||'en')==='fr'?'fr':'en',pick=Math.floor(Math.random()*5),esc=function(t){return String(t).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
+  var lg=(document.documentElement.lang||'en')==='fr'?'fr':'en',pick=Math.floor(Math.random()*(HANG_GIFT.length+1)),esc=function(t){return String(t).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
   if(pick===0){var i=Math.floor(Math.random()*3),st=HANG_JA.slice(i,i+2);
     g.innerHTML=st.map(function(v){return '<p>'+v.map(esc).join('<br>')+'</p>';}).join('')+'<cite>József Attila — Tiszta szívvel (1925)</cite>';}
   else{var a=HANG_GIFT[pick-1],w=a.w[Math.floor(Math.random()*a.w.length)];
