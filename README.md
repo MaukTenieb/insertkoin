@@ -1,49 +1,133 @@
 # Insert Koin
 
-Insert Koin, an arcade ritual in the browser, by Mauk Tenieb. Puck You! against the eighteen Masks of the Fauna, Fauna Chess, Erratik, Faunarratik, Katabatik, 3615, VHS, Photofauna, TOR.
+An arcade ritual in the browser, by Mauk Tenieb, from the Korhogo universe.
 
-**Online: https://mauktenieb.github.io/insertkoin/** · French: https://mauktenieb.github.io/insertkoin/fr.html
+**Play: https://mauktenieb.github.io/insertkoin/** · in French: https://mauktenieb.github.io/insertkoin/fr.html
 
-- **Puck You!** — air-puck in the tradition of Shufflepuck Café (Brøderbund, 1988), against the eighteen Masks of the Fauna. Each opponent plays by their Korhogo stats (STR, DEX, INT, WIS, CHA, CON) and a signature move. Each Mask has its own fixed level, the one its stats and signature give in play. Arcade run: the 16 others climb in four bands of four, shuffled inside each band, then Aube, then Unkle Maukie; 11 points per match (15 in a chosen duel).
-- **Fauna Chess**, **Erratik**, **Faunarratik**, **Katabatik** (a mini-game at random) — the Korhogo games; only the code of the game opened is loaded (`kg-*` files).
-- **3615** — the K Terminal, https://mauktenieb.github.io/3615/
-- **VHS** — the Korhogo deck: a television on a tape deck (slot, fluorescent counter, piano keys, motor and eject noises). The Motel Sound catalogue plays through YouTube under a layer of tape wear (grain, tracking band, head-switching noise); local files go through the WebGL tape shader. Quick REW/FFW taps nudge ±5 s, holding runs the picture search. Anyone can record a YouTube channel onto a cassette and export it (see VHS REC below).
-- **Photofauna** — the pocket photo emulator, honouring the photo apps of 2008–2019: 45 tribute cabinets (film, toy cameras, instant, glitch, painting…), including the **Réviseur des 16** (a complete editor for the 16 engine operators that stayed without a cabinet: framing, distortion, selective colour, posterize, quantize, datamosh, pixel sort, relief, wear, blend, stickers, style transfer, capture aids…), the Pocket Studio editor (filters, selective retouch, brush), recipes kept inside the saved PNG, GIF export, deterministic renders. One self-contained file, `fotofauna.html`.
-- **TOR** — the Fauna browser: one self-contained file, `tor.html`. Real browsing of the burrow's own pages (the eighteen Fauna pages, index, fr, llms.txt, README), the frameable web, and a real navigation window (↗) for everything else — web addresses and `.onion` alike; the network answers, or it doesn't. FR/EN.
-- Always there: **Motel Sound** (the Korhogo jukebox), **Kapture** (camera and microphone recorder), **Baku Boom**, FR/EN.
+No account, no installation, no server of ours. Desktop and phone, upright or on its side. English and French.
+
+---
+
+## The arcade
+
+The home screen is the motel painting, then the cabinets. Every visit draws its own arrangement: Reporhogo, Bio, Dive!, Faunarratik and Erratik stand either as big cabinets or as small chips under them, and the rows always come out full.
+
+| Cabinet | What it is |
+|---|---|
+| **Puck You!** | Air-puck against the eighteen Masks of the Fauna, in the tradition of Shufflepuck Café (Brøderbund, 1988). |
+| **Fauna Chess** | Fairy chess against the Fauna. |
+| **Erratik** | The memory game. |
+| **Faunarratik** | A tale built with the Masks; *Let the Kerema wrap it* saves it as a text file. English only. |
+| **Katabatik** | A die is thrown on the cabinet: Konnect4, Sampler, the Hungarian hangman or Mastermind. |
+| **3615** | The K Terminal, a Minitel emulator: https://mauktenieb.github.io/3615/ |
+| **VHS** | A television on a tape deck: Motel Sound and your own YouTube tapes. |
+| **Photofauna** | The pocket photo app: take or open a photo, edit it through 44 looks. |
+| **FaunaTor** | A browser that carries Tor inside the page, `.onion` included. |
+| **Skoporhogo** | The Fauna living in an isometric hotel room. |
+| **Reporhogo** | One topic searched across the code forges at once; every related repository's URL is collected. |
+| Bio · Dive! · Lore · TL · IG | Mauk Tenieb on GitHub · Korhogo Fauna (katabase) · the Substack · the Threadless store · Instagram. |
+
+Always there, on every screen: **Motel Sound** (the Korhogo jukebox, free), **Kapture** (camera and microphone recorder), **Baku Boom** (back to the menu), **FX** on/off (remembered), **FR/EN**.
+
+### The living home
+The painting takes the visitor's hour (bluish night, pink dawn, orange evening). The television is never steady and changes channel in the snow; some visits bring a storm behind the window, with thunder when FX are on; Plague of Justinian's cloud rumbles; the scarab breathes; the cigarette smokes; a beetle sometimes crosses the picture; the longer one stays, the more the picture wears (grain, tape tears, scratches). A light runs over the cabinets now and then, or one flickers; the neons of the chips falter; the devices of the motel call (the television leads to VHS, the telephone to 3615, the chessboard to Fauna Chess, the cards to Erratik, Unkle Maukie to Puck You!, the Koins on the floor to 3615 Koins, the lyre to Motel Sound, the window to FaunaTor, the boxes to Katabatik). Now and then, the sign slips from INSERT KOIN to INTERSEKTION.
+
+### The guide
+Now and then a guide wanders along the cabinets, shining in its colour when it arrives: C7H5N3O6 (blue), Honey Buzzard (red), Ts'ui Pên (orange) or Croisière Noire (its own grey), drawn from their Puck You! sprites. Touched, it walks every cabinet and chip, then Motel Sound and Kapture, lights each one and names it with one line. A click elsewhere, or Escape, stops it.
+
+---
+
+## Puck You!
+
+- Move the paddle with the mouse, a finger or the arrow keys. Pull back, then drive through the puck to hit hard; hold the button or Space to catch it. The whole back line is the goal.
+- The mouse stays inside the table while playing; a double-click or Enter lets it go.
+- Each Mask plays by its Korhogo stats (STR power, DEX speed, INT precision, WIS reading, CHA placing, CON stamina) and a signature move, and keeps its own fixed level.
+- **Duel**: click a Mask in the room, first to 15. **Continue** picks a saved run up where it stopped.
+- The room is drawn anew for each match (wallpaper, roses, carpet) and its two paintings are Fauna drawn at random. The CRT on the dresser switches at random and on every point between the Mask's motto, the score, its stats, the rally, its signature, your Koins, the hour, Motel Sound, test cards, snow and a few seconds of a Mauk Tenieb clip.
+- On a phone held upright, a phone turns over the table; on its side, the table takes the whole height; in full screen the score follows inside the table.
 
 ## Koins
-One Koin per game: a Puck You! duel, an arcade run (all eighteen), a Korhogo game. The machines (3615, VHS, Photofauna, FaunaTor) are free. A win doubles the total (x2); Katabatik's four games, Erratik, Fauna Chess and a sealed Faunarratik tale all count. At 0, one Koin comes back after 30 seconds. In the 3615: 1 Koin per connection to **3615 KOINS**; 1 per Fauna profile read to its last page; 1 per message sent (5 a day). No ceiling. The balance is shared with the 3615 (same address, `ik.koins` in the browser).
 
-## Files
-Everything sits at the top level, no folders, so the site updates in one upload.
-- `index.html` — the site; `fr.html` — the same page opening in French (generated from `index.html`: edit `index.html` only).
-- `fonts.css`, `font-*.woff2` — the fonts, served by the site itself.
-- `fauna-*.html` / `fauna-*.webp` — one page per member of the Fauna.
-- `sprite-*.webp` — the opponents of Puck You! (8 expressions each); `thumb-*.jpg` — the tiles.
-- `kg-*` — the Korhogo games, loaded on demand; `kg-faces.json` — their portraits. `kg-vhs.js/css/html` — the VHS deck; `kg-vhs-library.js` — the cassette library bridge (CHANNEL.SCRAPE → `KG_VHS_TRACKS`, offline cache, EN/FR); `kg-vhs-recorder.js` — the shelf and the REC bay.
-- `fotofauna.html` — FOTOFAUNA, the pocket photo emulator: one self-contained file (engine, registry, i18n and demo photo inline), opened by the arcade in its own frame. Changed here: `app.revueur16` (45th cabinet) + `PANELS.revueur16` — same edits on the Desktop master (`Desktop/fotofauna.html`).
-- `poster.*`, `room.*` — the painting and the room; `icon.png`, `favicon.png`, `manifest.webmanifest`, `sw.js` — installation and offline use.
-- `robots.txt`, `sitemap.xml`, `llms.txt` — for search engines and answer engines (training crawlers are refused).
-
-## Updating
-GitHub › Add file › Upload files: select all the files, drop them, Commit changes. The site follows within a minute or two.
-
-## Rights
-Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related material — including characters, names, symbols, rules, lore and texts, in any form or medium — are the exclusive property of Korhogo™. The source code of this site is published for reading, reflections, additions, requests, etc. - the lore, names, marks and works remain the property of the author.
-
-Puck You! runs on a JavaScript port of PuffleHuck (https://github.com/iconidentify/pufflehuck, MIT licence, see `LICENSE`). Fonts: Bebas Neue, DM Mono, Press Start 2P, Archivo (SIL Open Font License), served from the site. Characters, images and music: Mauk Tenieb; the Motel Sound jukebox plays through YouTube.
-
-Contact: mauktenieb@gmail.com
-
-## FaunaTor and Tor
-
-FaunaTor carries Tor inside the page: two Tor clients compiled to WebAssembly reach the network through Snowflake, the Tor Project's own bridges, with no server of ours.
-- the web, through Tor exits: [privacy-ethereum/webtor-rs](https://github.com/privacy-ethereum/webtor-rs) (MIT) → `tor-web.js`, `tor-web_bg.wasm`
-- `.onion` (v3, http://): [andrewtheguy/webtor-rs](https://github.com/andrewtheguy/webtor-rs) (MIT) → `tor-onion.js`, `tor-onion_bg.wasm`
-
-The workflow `.github/workflows/faunator-tor.yml` builds both and commits them at the top level (it runs by itself once, or from Actions → FaunaTor Tor → Run workflow). Until then, the web client loads from its author's CDN and `.onion` falls back on the public gateways. Glue: `faunator-tor.js`. Optional own relay for the plain web: `faunator-worker.js` (Cloudflare Worker).
+- One Koin opens a game (a Puck You! duel or run, a Korhogo game). The machines (3615, VHS, Photofauna, FaunaTor, Skoporhogo, Reporhogo) and Motel Sound are free.
+- **Every win doubles the total.** A win rains Koins on the screen.
+- In the 3615: **1 Koin per connection to 3615 KOINS**; 1 per Fauna profile read to its last page; 1 per message sent (5 a day). No ceiling.
+- At 0, one Koin comes back after 30 seconds.
+- The balance is shared with the 3615 (same address, `ik.koins` in the browser).
 
 ## VHS — REC
 
-Paste a YouTube channel (or playlist) link and press REC: the page records it onto a cassette by itself, no server (`kg-vhs-scrape.js`). Roads, first that answers wins: YouTube's own Data API when `YT_KEY` is set (whole channel, with dates, durations, views, likes, comments); Invidious and Piped raced (whole channel, dates, durations, views); the uploads playlist page or the RSS feed, read through the public relays or FaunaTor's Tor. The cassettes stay in the visitor's browser; pick one on the shelf for its tools: CSV, JSON, XLSX, TXT, MD exports and ERASE (press twice).
+Paste a YouTube channel (or playlist) link and press REC: the page records it onto a cassette by itself, with no server (`kg-vhs-scrape.js`). Several roads are tried, the first that answers wins:
+
+1. YouTube's own Data API, when a key is set in `YT_KEY` (whole channel, with dates, durations, views, likes, comments);
+2. Piped (api.piped.private.coffee first) and Invidious, raced: the whole channel, page after page, its shorts and streams, and an artist's playlists when the uploads are few;
+3. the channel's pages rendered by r.jina.ai;
+4. the uploads playlist page or the RSS feed, through public relays or FaunaTor's Tor.
+
+Refused pages are asked again before giving up; a cassette that could not be read to the end says so (for example 56 / 200). Cassettes stay in the visitor's browser. Pick one on the shelf for its tools: CSV, JSON, XLSX, TXT and MD exports (title, link, publication, duration, views, likes, comments), and ERASE (press twice).
+
+## FaunaTor and Tor
+
+FaunaTor carries Tor inside the page: two Tor clients compiled to WebAssembly reach the network through Snowflake, the Tor Project's own bridges (WebSocket first, WebRTC last), with no server of ours.
+
+- the web, through Tor exits: [privacy-ethereum/webtor-rs](https://github.com/privacy-ethereum/webtor-rs) (MIT) → `tor-web.js`, `tor-web_bg.wasm`
+- `.onion` (v3): [andrewtheguy/webtor-rs](https://github.com/andrewtheguy/webtor-rs) (MIT) → `tor-onion.js`, `tor-onion_bg.wasm`
+- the Tor consensus is fetched from the directory authorities twice a day and published on this site (`tor/`), so the web client reads it from here.
+
+When a page cannot be reached: *Your Kalabass was rejected. Apply later.* — with the reason, small, underneath.
+
+## Photofauna
+
+A pocket photo app honouring the photo apps of 2008–2019: 44 looks (simulated film, toy cameras, historical processes, instants, glitch, painting, shapes…), an editor with adjustments, recipes kept inside the saved PNG, GIF export, deterministic renders. The camera opens on a Mask drawn at random. One self-contained file: `fotofauna.html`.
+
+---
+
+## Files
+
+Everything sits at the top level, no folders (except `tor/` and `.github/`), so the site updates in one upload.
+
+| Files | Role |
+|---|---|
+| `index.html` | the site |
+| `fr.html` | the same page opening in French — **generated**: edit `index.html`, then run `python3 build-fr.py` |
+| `fauna-*.html`, `fauna-*.webp` | one page per member of the Fauna |
+| `sprite-*.webp` | the Masks of Puck You! (8 expressions each) |
+| `mask-*.webp` | the Masks' portraits (Photofauna, the paintings of the room) |
+| `thumb-*.jpg` | the cabinets |
+| `poster*.{jpg,webp}`, `room.webp` | the painting and the pixel room |
+| `kg-*` | the Korhogo games, loaded on demand (`kg-loader.js`, `kg-core.*`, `kg-chess.*`, `kg-erratic.*`, `kg-faunarratics.*`, `kg-katabatik.*`, `kg-kapture.*`); `kg-faces.json` their portraits |
+| `kg-vhs.*`, `kg-vhs-library.js`, `kg-vhs-recorder.js`, `kg-vhs-scrape.js` | VHS: the deck, the cassette library, the shelf and REC bay, the in-page recorder |
+| `fotofauna.html` | Photofauna |
+| `tor.html`, `faunator-tor.js`, `tor-web*`, `tor-onion*`, `tor/` | FaunaTor and its Tor clients; `faunator-worker.js`, an optional Cloudflare Worker relay |
+| `skoporhogo.html`, `three.min.js` | Skoporhogo and three.js r128 |
+| `reporhogo.html` | Reporhogo |
+| `fonts.css`, `font-*.woff2` | the fonts, served by the site |
+| `manifest.webmanifest`, `sw.js`, `icon.png`, `favicon.png` | installation and offline use (`sw.js`: pages and code from the network first, images from the cache) |
+| `robots.txt`, `sitemap.xml`, `llms.txt` | search and answer engines are welcome; training crawlers are refused |
+| `build-fr.py` | builds `fr.html` from `index.html` |
+
+### Workflows (`.github/workflows/`)
+- `faunator-tor.yml` — builds the two Tor clients and commits them.
+- `tor-consensus.yml` — refreshes the Tor consensus in `tor/` twice a day.
+- `vhs-probe.yml` — runs a real browser against the live site (every cabinet, desktop, French, phone upright and on its side, a real REC) and writes the result to the `probe-results` branch. Run it from Actions → vhs-probe → Run workflow.
+
+## Updating
+
+Edit, then commit to `main`: GitHub Pages publishes within a minute or two. After any change to `index.html`, run `python3 build-fr.py` so the French page follows, and bump the cache name at the top of `sw.js` so returning visitors get the new code.
+
+---
+
+## Rights
+
+Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related material — including characters, names, symbols, rules, lore and texts, in any form or medium — are the exclusive property of Korhogo™. The source code of this site is published for reading, reflections, additions, requests, etc. — the lore, names, marks and works remain the property of the author.
+
+No reproduction or reuse without written permission, including for training or use by artificial-intelligence systems.
+
+Third-party components:
+- Puck You! runs on a JavaScript port of [PuffleHuck](https://github.com/iconidentify/pufflehuck) (MIT, see `LICENSE`).
+- FaunaTor's Tor clients: webtor-rs by privacy-ethereum and by andrewtheguy (MIT, see `TOR-LICENSES.txt`).
+- Skoporhogo uses [three.js](https://threejs.org) r128 (MIT).
+- Fonts: Bebas Neue, DM Mono, Press Start 2P, Archivo (SIL Open Font License), served from the site.
+
+Characters, images and music: Mauk Tenieb. Motel Sound plays through YouTube.
+
+Contact: mauktenieb@gmail.com
