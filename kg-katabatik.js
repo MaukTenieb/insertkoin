@@ -961,7 +961,7 @@ var HANG_GIFT=[
  {who:'Krasznahorkai László',c:[/* the author's quotations: 'text', 'text' … */],u:'https://hu.wikipedia.org/wiki/Krasznahorkai_L%C3%A1szl%C3%B3',l:'Wikipédia',k:{en:'novel',fr:'roman'},w:[['Sátántangó',1985],['Az ellenállás melankóliája',1989],['Háború és háború',1999],['Báró Wenckheim hazatér',2016]]},
  {who:'Ligeti György',c:[/* the author's quotations: 'text', 'text' … */],u:'https://hu.wikipedia.org/wiki/Ligeti_Gy%C3%B6rgy',l:'Wikipédia',k:{en:'music',fr:'musique'},w:[['Atmosphères',1961],['Lux aeterna',1966],['Lontano',1967],['Le Grand Macabre',1978]]},
  {who:'Lukács György',c:[/* the author's quotations: 'text', 'text' … */],u:'https://en.wikiquote.org/wiki/Gy%C3%B6rgy_Luk%C3%A1cs',l:'Wikiquote',k:{en:'essay',fr:'essai'},w:[['A lélek és a formák',1910],['Die Theorie des Romans',1916],['Geschichte und Klassenbewusstsein',1923]]}];
-/* József Attila's poems up to 1928 (public domain), from the ELTE Poetry Corpus (MEK edition): kg-hang-ja.json, loaded on the first win */
+/* József Attila's poems up to 1928, in verse and in prose (public domain), from the ELTE Poetry Corpus (MEK edition): kg-hang-ja.json, loaded on the first win */
 var HANG_POOL=null;
 function hangPool(cb){if(HANG_POOL)return cb(HANG_POOL);try{fetch('kg-hang-ja.json').then(function(r){return r.json();}).then(function(d){HANG_POOL=d&&d.length?d:[HANG_JA];cb(HANG_POOL);}).catch(function(){cb([HANG_JA]);});}catch(e){cb([HANG_JA]);}}
 function hangGift(){
@@ -972,7 +972,7 @@ function hangGift(){
   var others=HANG_GIFT.filter(function(a){return a.c&&a.c.length;}),k=Math.floor(Math.random()*(others.length+1));
   if(k<others.length){var a=others[k];show(esc(a.c[Math.floor(Math.random()*a.c.length)]));return;}
   hangPool(function(P){var poem=P[Math.floor(Math.random()*P.length)],n=Math.min(poem.length,2+Math.floor(Math.random()*2)),i=Math.floor(Math.random()*(poem.length-n+1));
-    show(poem.slice(i,i+n).map(function(st){return st.map(esc).join('<br>');}).join('</p><p>'));});
+    show(poem.slice(i,i+n).map(function(st){if(st.length>12){var j=Math.floor(Math.random()*(st.length-9));st=st.slice(j,j+10);}return st.map(esc).join('<br>');}).join('</p><p>'));});
 }
 window.hangGift=hangGift;
 var HANG_MAX=6;
