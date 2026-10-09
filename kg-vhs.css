@@ -1,3 +1,12 @@
+/*
+ * Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna
+ * Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related
+ * material — including characters, names, symbols, rules, lore and texts, in any form or
+ * medium — are the exclusive property of Korhogo™. The source code of this site is
+ * published for reading, reflections, additions, requests, etc. - the lore, names, marks
+ * and works remain the property of the author. No use for training artificial
+ * intelligence. Contact: mauktenieb@gmail.com
+ */
 /* VHS cabinet — original code for Insert Koin. v2.1.0
  * Convention of this repository (kg-loader): the .kg-layer is 0x0 and every
  * panel positions itself (position:fixed, inset:0) and slides in when its own
@@ -12,13 +21,15 @@
 #vhs.open{transform:translateY(0);visibility:visible;pointer-events:auto;transition:transform .4s cubic-bezier(.16,1,.3,1)}
 
 .vhs {
-  --vhs-bg: #111;
-  --vhs-panel: #181818;
-  --vhs-border: #666;
-  --vhs-text: #ddd;
-  --vhs-dim: #9a9a9a;
-  --vhs-accent: #b9d84a;
-  --vhs-warn: #e5c15b;
+  --vhs-bg: #0b0a09;
+  --vhs-panel: #161514;
+  --vhs-border: #2a2725;
+  --vhs-text: #d9d4cc;
+  --vhs-dim: #8c867d;
+  --vhs-accent: #7fe3c4;   /* fluorescent display */
+  --vhs-warn: #ff6a3d;     /* the red of a REC diode */
+  --vhs-plastic: #1d1c1b;
+  --vhs-plastic-hi: #2b2a28;
 
   overflow: auto;
   overscroll-behavior: contain;
@@ -43,55 +54,105 @@
 .vhs [hidden] { display: none !important; }
 
 .vhs-shell {
-  width: min(1180px, 100%);
+  width: min(980px, 100%);
   margin: 0 auto;
-  padding: clamp(10px, 2vw, 18px);
-  border: 2px solid var(--vhs-border);
+  padding: clamp(6px, 1.6vw, 14px) 0 24px;
+}
+
+/* ---- the television ----------------------------------------------------- */
+
+.vhs-tv {
+  padding: clamp(10px, 2.2vw, 22px) clamp(10px, 2.2vw, 22px) 8px;
+  border-radius: 14px;
   background:
-    linear-gradient(rgba(255, 255, 255, .025) 50%, transparent 50%),
-    var(--vhs-panel);
-  background-size: 100% 4px, auto;
-  box-shadow: inset 0 0 0 1px #050505, 0 8px 30px rgba(0, 0, 0, .4);
+    radial-gradient(120% 90% at 50% 0%, rgba(255,255,255,.05), transparent 60%),
+    linear-gradient(180deg, #24211e, #151311);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.07), inset 0 -2px 0 rgba(0,0,0,.5), 0 18px 40px rgba(0,0,0,.55);
 }
+.vhs-tv-foot { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 8px 4px 0; }
+.vhs-tv-led { width: 5px; height: 5px; border-radius: 50%; background: #3a120a; box-shadow: none; }
+.vhs[data-mode] .vhs-tv-led { background: #ff3b1f; box-shadow: 0 0 6px #ff3b1f; }
 
-/* ---- top line + OSD ---------------------------------------------------- */
+/* ---- the deck ----------------------------------------------------------- */
 
-.vhs-topline,
-.vhs-osd {
+.vhs-deck {
+  position: relative;
   display: grid;
-  gap: 12px;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) auto;
   align-items: center;
-  min-height: 32px;
-  padding: 5px 8px;
-  background: #090909;
-  border: 1px solid #444;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  font-size: 12px;
+  gap: clamp(10px, 2vw, 22px);
+  margin: 14px auto 0;
+  width: 92%;
+  padding: 14px clamp(12px, 2vw, 20px);
+  border-radius: 4px 4px 6px 6px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255,255,255,.012) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, var(--vhs-plastic-hi), var(--vhs-plastic) 40%, #121110);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.09), inset 0 -1px 0 rgba(0,0,0,.6), 0 10px 22px rgba(0,0,0,.6);
+}
+.vhs-deck::after { /* feet */
+  content: ""; position: absolute; left: 6%; right: 6%; bottom: -5px; height: 5px;
+  background: linear-gradient(90deg, #0a0909 0 8%, transparent 8% 92%, #0a0909 92%);
 }
 
-.vhs-topline { grid-template-columns: 1fr auto auto; }
-
-.vhs-osd {
-  grid-template-columns: auto auto auto minmax(0, 1fr);
-  margin-top: 8px;
+/* cassette slot: the flap swings in when a tape loads; the tape label shows through */
+.vhs-slot {
+  position: relative; height: 46px; border-radius: 2px; overflow: hidden;
+  background: #070707; box-shadow: inset 0 2px 4px rgba(0,0,0,.9), 0 1px 0 rgba(255,255,255,.05);
 }
-
-.vhs-brand { color: var(--vhs-accent); font-weight: 700; }
-.vhs-status { min-width: 70px; }
-
-.vhs-osd [data-vhs-osd-counter] { font-variant-numeric: tabular-nums; }
-
-.vhs-osd [data-vhs-osd-track] {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  text-align: right;
+.vhs-flap {
+  position: absolute; inset: 3px; border-radius: 1px; transform-origin: 50% 0;
+  background: linear-gradient(180deg, #232120, #191817);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+  transition: transform .35s cubic-bezier(.3,1.4,.5,1);
 }
+.vhs.is-loaded .vhs-flap { transform: perspective(200px) rotateX(-78deg); }
+.vhs-label {
+  position: absolute; left: 10%; right: 10%; top: 9px; height: 26px;
+  padding: 0 8px; display: flex; align-items: center;
+  background: #e9e3d6; color: #1b1a18; border-radius: 1px;
+  font-size: 11px; letter-spacing: .04em; text-transform: uppercase;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  opacity: 0; transition: opacity .2s .25s;
+}
+.vhs.is-loaded .vhs-label { opacity: 1; }
 
-.vhs-eject { min-height: 0; padding: 2px 10px; }
+/* fluorescent display */
+.vhs-vfd {
+  position: relative; min-width: 0; padding: 7px 12px 9px; border-radius: 2px;
+  background: #050807;
+  box-shadow: inset 0 0 0 1px #000, inset 0 0 18px rgba(127,227,196,.05);
+  display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 4px 14px;
+  color: var(--vhs-accent); text-shadow: 0 0 6px rgba(127,227,196,.55);
+}
+.vhs-vfd-state { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
+.vhs-vfd-counter { justify-self: end; font-size: clamp(18px, 2.6vw, 24px); letter-spacing: .06em; font-variant-numeric: tabular-nums; }
+.vhs-vfd .vhs-transport { grid-column: 1 / -1; margin: 0; }
 
-.vhs-controls button { white-space: nowrap; }
+/* piano keys */
+.vhs-keys { display: flex; align-items: center; gap: 4px; }
+.vhs .vhs-key {
+  min-height: 0; width: clamp(34px, 4.6vw, 46px); height: 30px; padding: 0;
+  border: 0; border-radius: 2px;
+  background: linear-gradient(180deg, #3a3835, #23211f);
+  color: #b8b2a8; font: 12px/1 "DM Mono", monospace; letter-spacing: -.12em;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 3px 0 #0b0a09, 0 4px 5px rgba(0,0,0,.6);
+  transform: translateY(0); transition: transform .05s, box-shadow .05s;
+}
+.vhs .vhs-key:hover { border: 0; color: #fff; }
+.vhs .vhs-key:active, .vhs .vhs-key.is-down {
+  transform: translateY(2px); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 1px 0 #0b0a09, 0 1px 2px rgba(0,0,0,.6);
+}
+.vhs .vhs-key-play { width: clamp(44px, 5.6vw, 56px); color: #e8e2d6; }
+.vhs .vhs-key-eject { margin-right: 6px; }
+.vhs .vhs-key-small { width: 26px; height: 22px; font-size: 13px; letter-spacing: 0; margin-left: 6px; }
+.vhs .vhs-tv-key {
+  min-height: 0; padding: 3px 8px; border: 0; border-radius: 2px;
+  background: linear-gradient(180deg, #2c2926, #1c1a18); color: #8c867d;
+  font: 9px/1 "DM Mono", monospace; letter-spacing: .2em;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 2px 0 #0b0a09;
+}
+.vhs .vhs-tv-key[aria-pressed="true"] { color: var(--vhs-warn); border: 0; }
 
 /* ---- picture search (REW / FFW) ---------------------------------------- */
 
@@ -139,19 +200,30 @@
 /* ---- screen ------------------------------------------------------------ */
 
 .vhs-screen-wrap {
-  margin-top: 8px;
-  background: #000;
-  border: 4px solid #282828;
-  padding: 7px;
+  padding: clamp(6px, 1.2vw, 12px);
+  border-radius: 22px / 18px;
+  background: #050505;
+  box-shadow: inset 0 0 0 2px #0e0d0c, inset 0 6px 18px rgba(0,0,0,.9);
 }
 
 .vhs-screen {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 4 / 3;
+  max-height: 62vh;
   min-height: 200px;
+  margin: 0 auto;
   overflow: hidden;
+  border-radius: 18px / 14px;
   background: #000;
+}
+/* the glass: a soft reflection and a vignette, over everything on the tube */
+.vhs-screen::after {
+  content: ""; position: absolute; inset: 0; z-index: 7; pointer-events: none; border-radius: inherit;
+  background:
+    radial-gradient(120% 90% at 30% 10%, rgba(255,255,255,.07), transparent 45%),
+    radial-gradient(ellipse at center, transparent 58%, rgba(0,0,0,.55) 100%);
+  box-shadow: inset 0 0 40px rgba(0,0,0,.7);
 }
 
 /* Tape swap on source change: the picture collapses to a horizontal line,
@@ -279,50 +351,33 @@
 .vhs[data-mode="local"][data-gl="off"] .vhs-transport { display: none; }
 .vhs[data-mode="local"][data-gl="off"] .vhs-video { opacity: 1; }
 
-/* ---- transport + controls ---------------------------------------------- */
-
-.vhs-transport { margin-top: 8px; }
+/* ---- transport --------------------------------------------------------- */
 
 .vhs-seek {
-  display: block;
-  width: 100%;
-  margin: 0;
-  accent-color: var(--vhs-accent);
-  cursor: pointer;
+  display: block; width: 100%; height: 10px; margin: 0;
+  -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer;
 }
-
-.vhs-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 8px;
-}
+.vhs-seek::-webkit-slider-runnable-track { height: 2px; background: rgba(127,227,196,.28); }
+.vhs-seek::-moz-range-track { height: 2px; background: rgba(127,227,196,.28); }
+.vhs-seek::-webkit-slider-thumb { -webkit-appearance: none; width: 6px; height: 10px; margin-top: -4px; background: var(--vhs-accent); box-shadow: 0 0 6px var(--vhs-accent); border: 0; }
+.vhs-seek::-moz-range-thumb { width: 6px; height: 10px; background: var(--vhs-accent); border: 0; border-radius: 0; }
 
 .vhs button {
-  min-height: 34px;
-  border: 1px solid #555;
-  background: #101010;
+  min-height: 30px;
+  border: 1px solid #2f2c29;
+  background: #121110;
   color: var(--vhs-text);
   font: inherit;
-  font-size: 12px;
-  padding: 6px 10px;
+  font-size: 11px;
+  letter-spacing: .08em;
+  padding: 5px 10px;
   cursor: pointer;
 }
-
-.vhs button:hover { border-color: var(--vhs-accent); }
-
+.vhs button:hover { border-color: #5a554e; }
 .vhs button:focus-visible,
-.vhs .vhs-seek:focus-visible {
-  outline: 2px solid var(--vhs-accent);
-  outline-offset: 2px;
-}
-
+.vhs .vhs-seek:focus-visible { outline: 1px solid var(--vhs-accent); outline-offset: 2px; }
 .vhs button:disabled { opacity: .4; cursor: default; }
-
-.vhs button[aria-pressed="true"] {
-  color: var(--vhs-warn);
-  border-color: var(--vhs-warn);
-}
+.vhs button[aria-pressed="true"] { color: var(--vhs-warn); border-color: var(--vhs-warn); }
 
 /* ---- tabs + lists ------------------------------------------------------ */
 
@@ -763,19 +818,10 @@
 
 @media (max-width: 760px) {
   .vhs { padding: 6px; }
-  .vhs-shell { padding: 7px; }
-
-  .vhs-topline,
-  .vhs-osd { font-size: 11px; gap: 6px; }
-
-  .vhs-osd { grid-template-columns: auto 1fr auto; }
-
-  .vhs-osd [data-vhs-osd-track] {
-    grid-column: 1 / -1;
-    text-align: left;
-  }
-
-  .vhs-controls button { flex: 1 1 calc(33.333% - 6px); }
+  .vhs-deck { grid-template-columns: 1fr 1fr; width: 100%; }
+  .vhs-keys { grid-column: 1 / -1; justify-content: center; }
+  .vhs .vhs-key { width: 52px; height: 36px; }
+  .vhs .vhs-key-play { width: 64px; }
 }
 
 @media (pointer: coarse) {
@@ -797,3 +843,70 @@
   .vhs-screen.is-rew .vhs-scan,
   .vhs-screen.is-ffw .vhs-scan { animation: none; opacity: 0.5; }
 }
+
+/* ---- [IK] tape wear over the YouTube catalogue -------------------------- */
+/* YouTube's pixels never reach the WebGL shader (other origin), so the wear is
+   laid over the player: a softened, slightly washed picture, scanlines, grain,
+   a tracking band that drifts up, head-switching noise at the bottom. */
+.vhs-wear { position: absolute; inset: 0; z-index: 4; pointer-events: none; display: none; overflow: hidden; }
+.vhs[data-mode="catalogue"] .vhs-wear { display: block; }
+.vhs[data-mode="catalogue"] .vhs-youtube iframe { filter: saturate(.78) contrast(1.08) brightness(1.03) blur(.45px) sepia(.06); }
+.vhs-wear::before { /* scanlines */
+  content: ""; position: absolute; inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,.22) 0 1px, transparent 1px 3px);
+}
+.vhs-grain { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .55; mix-blend-mode: screen; transition: opacity .4s; }
+.vhs.is-loaded .vhs-grain { opacity: .07; }
+.vhs-band {
+  position: absolute; left: 0; right: 0; height: 7%; top: 100%;
+  backdrop-filter: blur(1.6px) saturate(1.7) brightness(1.18);
+  -webkit-backdrop-filter: blur(1.6px) saturate(1.7) brightness(1.18);
+  background: repeating-linear-gradient(0deg, rgba(255,255,255,.10) 0 1px, transparent 1px 4px);
+  animation: vhs-band 11s linear infinite;
+}
+@keyframes vhs-band { 0% { top: 105%; } 100% { top: -10%; } }
+.vhs-head {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 3.2%;
+  backdrop-filter: blur(2.2px) hue-rotate(-14deg) brightness(1.2);
+  -webkit-backdrop-filter: blur(2.2px) hue-rotate(-14deg) brightness(1.2);
+  background: repeating-linear-gradient(0deg, rgba(255,255,255,.18) 0 1px, rgba(0,0,0,.25) 1px 2px);
+}
+.vhs[data-mode="catalogue"] .vhs-screen.is-wobble .vhs-youtube { animation: vhs-wobble .18s steps(3) 1; }
+@keyframes vhs-wobble { 33% { transform: translateX(-2px); } 66% { transform: translateX(1.5px); } }
+
+/* ---- [IK] the shelf, the find field, the tapes --------------------------- */
+.vhs-source-tabs { margin-top: 18px; }
+.vhs-find { display: flex; align-items: center; gap: 8px; margin-top: 16px; position: relative; }
+.vhs-find-glass { position: absolute; left: 9px; top: 50%; transform: translateY(-52%); color: var(--vhs-dim); font-size: 14px; pointer-events: none; }
+.vhs .vhs-find-input { flex: 1; min-width: 0; padding-left: 26px; }
+.vhs .vhs-find-input::placeholder { color: transparent; }
+.vhs-tracklist { margin-top: 10px; display: grid; gap: 3px; }
+.vhs-tracklist button, .vhs-local-list button {
+  width: 100%; text-align: left; min-height: 30px; padding: 6px 10px 6px 14px;
+  border: 0; border-left: 4px solid #e9e3d6; border-radius: 1px;
+  background: linear-gradient(90deg, #151413, #10100f); color: #cfc9be;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.vhs-tracklist button:hover, .vhs-local-list button:hover { color: #fff; border-left-color: #fff; }
+.vhs-tracklist button.is-active, .vhs-local-list button.is-active,
+.vhs-tracklist button[aria-current="true"], .vhs-local-list button[aria-current="true"] { color: var(--vhs-accent); border-left-color: var(--vhs-accent); }
+
+/* ---- [IK] the workshop (REC bay, KRITIK, tape tools) only with its backend */
+.vhs[data-atelier="off"] .vhs-rec,
+.vhs[data-atelier="off"] .vhs-ttx-btn,
+.vhs[data-atelier="off"] .vhs-tapetools,
+.vhs[data-atelier="off"] .vhs-shelf-empty,
+.vhs[data-atelier="off"] .vhs-ttx { display: none !important; }
+.vhs[data-atelier="off"] .vhs-shelf:not(:has(.vhs-tape:not(.vhs-tape-all))) { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .vhs-band { animation: none; top: 62%; }
+  .vhs-flap, .vhs .vhs-key { transition: none; }
+}
+
+.vhs .vhs-find { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; }
+.vhs .vhs-find-input, .vhs .vhs-find-sort { border: 1px solid #2f2c29; border-radius: 1px; background: #0f0e0d; color: var(--vhs-text); min-height: 30px; }
+.vhs .vhs-find-input { width: 100%; }
+.vhs .vhs-find-sort { max-width: 42vw; }
+/* one source only: no tabs to choose from */
+.vhs-source-tabs:not(:has([data-vhs-source="local"]:not([hidden]))) { display: none; }

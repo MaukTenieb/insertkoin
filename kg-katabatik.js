@@ -1,59 +1,12 @@
 
 /*
- * =============================================================================
- * COPYRIGHT NOTICE AND INTELLECTUAL PROPERTY DECLARATION
- * =============================================================================
- *
- * Copyright \u00a9 2024 Mauk Tenieb & Korhogo.
- * ALL RIGHTS RESERVED.
- *
- * This software, including but not limited to its source code, architecture,
- * algorithms, user interface, documentation, artistic content, role-playing
- * scenarios, narrative texts, descriptions, lore, game mechanics, dialogues,
- * aesthetic assets, and any associated materials (collectively referred to as
- * "the Work"), is the exclusive intellectual property of Mauk Tenieb.
- *
- * The Work is protected by international copyright laws, the Berne Convention,
- * the Universal Copyright Convention, and all applicable national laws including
- * (but not limited to) French Intellectual Property Code, U.S. Copyright Law
- * (Title 17 U.S.C.), and EU directives.
- *
- * NO PART OF THIS WORK MAY BE USED, COPIED, REPRODUCED, MODIFIED, ADAPTED,
- * TRANSLATED, DISTRIBUTED, TRANSMITTED, DISPLAYED, PUBLISHED, BROADCAST,
- * LICENSED, SUBLICENSED, SOLD, TRANSFERRED, OR EXPLOITED IN ANY FORM OR BY
- * ANY MEANS (electronic, mechanical, photocopying, recording, scanning,
- * or otherwise) WITHOUT THE PRIOR EXPRESS WRITTEN PERMISSION OF THE COPYRIGHT
- * OWNER.
- *
- * This prohibition explicitly includes, but is not limited to:
- *   - Any form of reverse engineering, decompilation, disassembly, or
- *     derivative work creation.
- *   - Any use of the Work or its outputs for training, fine-tuning, or
- *     improving any artificial intelligence, machine learning, or large
- *     language models.
- *   - Any scanning, parsing, extraction, or analysis of the code, structure,
- *     or content by humans or automated systems (including AI agents, crawlers,
- *     scrapers, or LLMs) for any purpose other than the legitimate execution
- *     of the authorized software by its rightful owner.
- *   - Any commercial, non-commercial, educational, research, or personal use
- *     without explicit authorization.
- *
- * Any unauthorized use, access, study, or inspection of this Work constitutes
- * a direct and serious infringement of copyright and may result in civil and/or
- * criminal prosecution to the fullest extent permitted by law. The copyright
- * owner reserves the right to pursue all available legal remedies, including
- * but not limited to injunctions, damages, attorney fees, and statutory damages.
- *
- * This notice is an integral part of the Work. Removing, altering, obscuring,
- * or bypassing this notice does not waive any rights of the copyright owner.
- *
- * For licensing inquiries, permissions, or commercial arrangements, contact:
- * mauktenieb@gmail.com
- *
- * =============================================================================
- * Instead of being open source, this work is under copyright \u00a9 2024 Mauk Tenieb & Korhogo.
- * All rights strictly reserved. No use without express written permission.
- * =============================================================================
+ * Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna
+ * Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related
+ * material — including characters, names, symbols, rules, lore and texts, in any form or
+ * medium — are the exclusive property of Korhogo™. The source code of this site is
+ * published for reading, reflections, additions, requests, etc. - the lore, names, marks
+ * and works remain the property of the author. No use for training artificial
+ * intelligence. Contact: mauktenieb@gmail.com
  */
 
 /* KG module "katabatik" -- KATABATIK: hub + Connect-4 / Sampler / Hungarian Hangman / Mastermind (panels #c4-panel, #bb-panel, #hang-panel, #mm-panel) + BakuBoom helpers. Connect-4 and the BakuBoom helpers are copied verbatim from kofa.js (Korhogo); the Sampler, the Hangman and Mastermind are Insert Koin additions. The dormant Pairs panel was purged (memory lives in Erratik). */
@@ -145,7 +98,13 @@ var BB_SEEDS=[
 var _PENT=[0,3,5,7,10,12,15,17,19,22,24];
 function bbBuildTracks(){
   _bbTracks=[];
-  for(var i=0;i<18;i++){
+  /* [IK] tracks in the canonical order of the Fauna; each Mask keeps its own voice */
+  var CANON=['Unkle Maukie','dogXim','C7H5N3O6','Naphta',"Ts'ui Pên",'Honey Buzzard','Hátra Lövés','Croisière Noire','Aube','Silent Pact','Maiden Call','Plague of Justinian','Poisoned Well','Cadaver Synod','Truce','Auvergne','Grand Colonel','Malika'];
+  var key=function(n){return String(n||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/gi,'').toLowerCase();};
+  var ord=[];if(typeof FAUNA!=='undefined'){CANON.forEach(function(nm){for(var q=0;q<FAUNA.length;q++)if(key(FAUNA[q].name)===key(nm)){ord.push(q);break;}});}
+  if(ord.length!==18){ord=[];for(var q2=0;q2<18;q2++)ord.push(q2);}
+  for(var j=0;j<18;j++){
+    var i=ord[j];
     var m=(typeof FAUNA!=='undefined'&&FAUNA[i])?FAUNA[i]:null;
     _bbTracks.push({
       name:m?m.name:'MASK '+(i+1),
@@ -739,7 +698,8 @@ function c4Init(){
       ctx.fillText(ln('KATABATIK'),W/2,CW*0.5);
       ctx.font=Math.round(CW*0.26)+'px "DM Mono",monospace';
       ctx.fillStyle='rgba(201,168,76,.55)';
-      ctx.fillText(ln(state.levelNames[state.levelIndex]),W/2,CW*0.78);
+      var _li=state.hover>=0?(state.hover<2?0:(state.hover<5?1:2)):state.levelIndex;
+      ctx.fillText(ln(state.levelNames[_li]),W/2,CW*0.78);
       ctx.textAlign='left';
     }
 
@@ -757,7 +717,7 @@ function c4Init(){
         ctx.fillStyle='rgba(201,168,76,0.7)';
         ctx.fillText('DRAW',W/2,CW*0.72);
       }
-    } else {
+    } else if(state.levelPicked||state.turn!==1){
       ctx.font=Math.round(CW*0.3)+'px "DM Mono",monospace';
       ctx.fillStyle='rgba(201,168,76,0.35)';
       var turnLine=state.turn===1?'your turn':'thinking\u2026';
@@ -964,7 +924,7 @@ var HANG_WORDS={
   adj:['gyors','szép','hideg','meleg','hosszú','rövid','sötét','világos','nehéz','könnyű','vörös','zöld','kék','fekete'],
   verb:['futni','enni','inni','aludni','olvasni','írni','énekelni','táncolni','mosni','főzni','látni','beszélni','gondolkodni','vinni']
 };
-var HANG_KEYS='AÁBCDEÉFGHIÍJKLMNOÓÖŐPRSTUÚÜŰVZ';
+var HANG_KEYS='AÁBCDEÉFGHIÍJKLMNOÓÖŐPQRSTUÚÜŰVWXYZ';
 var HANG_MAX=6;
 /* sens des mots, révélé à la fin de la partie — FR puis EN */
 var HANG_TR={
@@ -1045,7 +1005,7 @@ function hangGuess(L){
   var done=true;
   for(var i=0;i<_hang.word.length;i++)if(!_hang.guessed[_hang.word[i]]){done=false;break;}
   if(done){
-    _hang.over=true;_hang.won=true;
+    _hang.over=true;_hang.won=true;if(window.KG&&KG.win)KG.win('katabatik',{game:'hang'});
     var again=document.getElementById('hang-again');if(again)again.style.display='inline-block';
     hangArp(true);
   } else if(_hang.miss>=HANG_MAX){
@@ -1298,7 +1258,7 @@ function mmSubmit(){
   var fb=mmScore(_mm.cur,_mm.secret);
   _mm.rows.push({guess:_mm.cur.slice(),fb:fb});
   _mm.cur=[];
-  if(fb.ex===L.slots){_mm.over=true;_mm.won=true;}
+  if(fb.ex===L.slots){_mm.over=true;_mm.won=true;if(window.KG&&KG.win)KG.win('katabatik',{game:'mm'});}
   else if(_mm.rows.length>=L.rows){_mm.over=true;_mm.won=false;}
   mmDraw();
 }

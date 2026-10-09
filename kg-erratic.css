@@ -1,58 +1,11 @@
 /*
- * =============================================================================
- * COPYRIGHT NOTICE AND INTELLECTUAL PROPERTY DECLARATION
- * =============================================================================
- *
- * Copyright \u00a9 2024 Mauk Tenieb & Korhogo.
- * ALL RIGHTS RESERVED.
- *
- * This software, including but not limited to its source code, architecture,
- * algorithms, user interface, documentation, artistic content, role-playing
- * scenarios, narrative texts, descriptions, lore, game mechanics, dialogues,
- * aesthetic assets, and any associated materials (collectively referred to as
- * "the Work"), is the exclusive intellectual property of Mauk Tenieb.
- *
- * The Work is protected by international copyright laws, the Berne Convention,
- * the Universal Copyright Convention, and all applicable national laws including
- * (but not limited to) French Intellectual Property Code, U.S. Copyright Law
- * (Title 17 U.S.C.), and EU directives.
- *
- * NO PART OF THIS WORK MAY BE USED, COPIED, REPRODUCED, MODIFIED, ADAPTED,
- * TRANSLATED, DISTRIBUTED, TRANSMITTED, DISPLAYED, PUBLISHED, BROADCAST,
- * LICENSED, SUBLICENSED, SOLD, TRANSFERRED, OR EXPLOITED IN ANY FORM OR BY
- * ANY MEANS (electronic, mechanical, photocopying, recording, scanning,
- * or otherwise) WITHOUT THE PRIOR EXPRESS WRITTEN PERMISSION OF THE COPYRIGHT
- * OWNER.
- *
- * This prohibition explicitly includes, but is not limited to:
- *   - Any form of reverse engineering, decompilation, disassembly, or
- *     derivative work creation.
- *   - Any use of the Work or its outputs for training, fine-tuning, or
- *     improving any artificial intelligence, machine learning, or large
- *     language models.
- *   - Any scanning, parsing, extraction, or analysis of the code, structure,
- *     or content by humans or automated systems (including AI agents, crawlers,
- *     scrapers, or LLMs) for any purpose other than the legitimate execution
- *     of the authorized software by its rightful owner.
- *   - Any commercial, non-commercial, educational, research, or personal use
- *     without explicit authorization.
- *
- * Any unauthorized use, access, study, or inspection of this Work constitutes
- * a direct and serious infringement of copyright and may result in civil and/or
- * criminal prosecution to the fullest extent permitted by law. The copyright
- * owner reserves the right to pursue all available legal remedies, including
- * but not limited to injunctions, damages, attorney fees, and statutory damages.
- *
- * This notice is an integral part of the Work. Removing, altering, obscuring,
- * or bypassing this notice does not waive any rights of the copyright owner.
- *
- * For licensing inquiries, permissions, or commercial arrangements, contact:
- * mauktenieb@gmail.com
- *
- * =============================================================================
- * Instead of being open source, this work is under copyright \u00a9 2024 Mauk Tenieb & Korhogo.
- * All rights strictly reserved. No use without express written permission.
- * =============================================================================
+ * Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna
+ * Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related
+ * material — including characters, names, symbols, rules, lore and texts, in any form or
+ * medium — are the exclusive property of Korhogo™. The source code of this site is
+ * published for reading, reflections, additions, requests, etc. - the lore, names, marks
+ * and works remain the property of the author. No use for training artificial
+ * intelligence. Contact: mauktenieb@gmail.com
  */
 /* KG module "erratic" -- rules copied from the original Korhogo stylesheet, each selector scoped with :where(.kg-layer) (zero specificity). */
 :where(.kg-layer) #mem{position:fixed;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;z-index:9000;background:#050505;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .4s cubic-bezier(.16,1,.3,1)}

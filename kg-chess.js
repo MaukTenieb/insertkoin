@@ -1,59 +1,12 @@
 
 /*
- * =============================================================================
- * COPYRIGHT NOTICE AND INTELLECTUAL PROPERTY DECLARATION
- * =============================================================================
- *
- * Copyright \u00a9 2024 Mauk Tenieb & Korhogo.
- * ALL RIGHTS RESERVED.
- *
- * This software, including but not limited to its source code, architecture,
- * algorithms, user interface, documentation, artistic content, role-playing
- * scenarios, narrative texts, descriptions, lore, game mechanics, dialogues,
- * aesthetic assets, and any associated materials (collectively referred to as
- * "the Work"), is the exclusive intellectual property of Mauk Tenieb.
- *
- * The Work is protected by international copyright laws, the Berne Convention,
- * the Universal Copyright Convention, and all applicable national laws including
- * (but not limited to) French Intellectual Property Code, U.S. Copyright Law
- * (Title 17 U.S.C.), and EU directives.
- *
- * NO PART OF THIS WORK MAY BE USED, COPIED, REPRODUCED, MODIFIED, ADAPTED,
- * TRANSLATED, DISTRIBUTED, TRANSMITTED, DISPLAYED, PUBLISHED, BROADCAST,
- * LICENSED, SUBLICENSED, SOLD, TRANSFERRED, OR EXPLOITED IN ANY FORM OR BY
- * ANY MEANS (electronic, mechanical, photocopying, recording, scanning,
- * or otherwise) WITHOUT THE PRIOR EXPRESS WRITTEN PERMISSION OF THE COPYRIGHT
- * OWNER.
- *
- * This prohibition explicitly includes, but is not limited to:
- *   - Any form of reverse engineering, decompilation, disassembly, or
- *     derivative work creation.
- *   - Any use of the Work or its outputs for training, fine-tuning, or
- *     improving any artificial intelligence, machine learning, or large
- *     language models.
- *   - Any scanning, parsing, extraction, or analysis of the code, structure,
- *     or content by humans or automated systems (including AI agents, crawlers,
- *     scrapers, or LLMs) for any purpose other than the legitimate execution
- *     of the authorized software by its rightful owner.
- *   - Any commercial, non-commercial, educational, research, or personal use
- *     without explicit authorization.
- *
- * Any unauthorized use, access, study, or inspection of this Work constitutes
- * a direct and serious infringement of copyright and may result in civil and/or
- * criminal prosecution to the fullest extent permitted by law. The copyright
- * owner reserves the right to pursue all available legal remedies, including
- * but not limited to injunctions, damages, attorney fees, and statutory damages.
- *
- * This notice is an integral part of the Work. Removing, altering, obscuring,
- * or bypassing this notice does not waive any rights of the copyright owner.
- *
- * For licensing inquiries, permissions, or commercial arrangements, contact:
- * mauktenieb@gmail.com
- *
- * =============================================================================
- * Instead of being open source, this work is under copyright \u00a9 2024 Mauk Tenieb & Korhogo.
- * All rights strictly reserved. No use without express written permission.
- * =============================================================================
+ * Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna
+ * Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related
+ * material — including characters, names, symbols, rules, lore and texts, in any form or
+ * medium — are the exclusive property of Korhogo™. The source code of this site is
+ * published for reading, reflections, additions, requests, etc. - the lore, names, marks
+ * and works remain the property of the author. No use for training artificial
+ * intelligence. Contact: mauktenieb@gmail.com
  */
 
 /* KG module "chess" -- FAUNA CHESS (panel #chess). Code copied verbatim from kofa.js (Korhogo). */
@@ -121,6 +74,7 @@ function chDoRestart(){document.getElementById('chess-confirm').classList.remove
 function chModeBack(){document.getElementById('chess-sel').style.display='flex';document.getElementById('chess-over').classList.remove('show');sndClose();}
 function chRestart(){chInit();document.getElementById('chess-over').classList.remove('show');document.getElementById('chess-sel').style.display='none';chRender();chLogRender();}
 function chInit(){
+  chSeen={};chQuiet=0;
   randomiseAvatars();
   chBoard=[];for(var r=0;r<8;r++){chBoard[r]=[];for(var c=0;c<8;c++)chBoard[r][c]=null;}
   // White back rank (row 7): \u00b7 R B Q K B R \u00b7
@@ -158,7 +112,7 @@ function chCanCap(att,tgt){
   if(chIsSpec(tgt)&&!tgt.moved)return false;
   return true;
 }
-function chCopy(b){return b.map(function(row){return row.map(function(p){return p?{t:p.t,col:p.col,moved:p.moved}:null;});});}
+function chCopy(b){return b.map(function(row){return row.map(function(p){return p?{t:p.t,col:p.col,moved:p.moved,av:p.av}:null;});});}
 function chRawMoves(r,c,board){
   var p=board[r][c];if(!p)return[];var moves=[];
   function tryAdd(nr,nc){if(nr<0||nr>=8||nc<0||nc>=8)return;var t=board[nr][nc];if(chCanCap(p,t))moves.push([nr,nc]);}
@@ -168,6 +122,18 @@ function chRawMoves(r,c,board){
   if(p.t==='B'){[[1,1],[1,-1],[-1,1],[-1,-1]].forEach(function(d){slide(d[0],d[1]);});}
   if(p.t==='Q'){[[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]].forEach(function(d){slide(d[0],d[1]);});}
   return moves;
+}
+/* [IK] draws: the same position three times, or fifty moves each without a capture */
+var chSeen={},chQuiet=0;
+function chKey(board,turn){var k=turn;for(var r=0;r<8;r++)for(var c=0;c<8;c++){var p=board[r][c];k+=p?(p.col+p.t+(p.moved?'*':'')):'.';}return k;}
+function chDraw(why){
+  chOver=true;
+  document.getElementById('chess-over-h').textContent='Draw';
+  document.getElementById('chess-over-h').style.color='#c9a84c';
+  document.getElementById('chess-over-p').textContent=why==='rep'?'\u2014 the same position, three times':'\u2014 fifty moves without a capture';
+  document.getElementById('chess-over').classList.add('show');
+  document.getElementById('chess-status').textContent='GAME OVER';
+  chRender();
 }
 function chDoMove(r1,c1,r2,c2,board,sim){
   board=board||chBoard;var nb=chCopy(board);var p=nb[r1][c1];var cap=nb[r2][c2];
@@ -187,7 +153,11 @@ function chDoMove(r1,c1,r2,c2,board,sim){
       document.getElementById('chess-status').textContent='GAME OVER';
       sndWin();chRender();return nb;
     }
-    chTurn=chTurn==='w'?'b':'w';chRender();
+    chTurn=chTurn==='w'?'b':'w';
+    chQuiet=cap?0:chQuiet+1;var pk=chKey(nb,chTurn);chSeen[pk]=(chSeen[pk]||0)+1;
+    if(chSeen[pk]>=3){chDraw('rep');return nb;}
+    if(chQuiet>=100){chDraw('fifty');return nb;}
+    chRender();
     if(chMode==='ai'&&chTurn!==chPlayerColour&&!chOver){if(typeof chAiThink==='function')chAiThink();setTimeout(chAiMove,420);}
   }
   return nb;
@@ -256,7 +226,7 @@ function chRender(){
     (function(row,col){sq.addEventListener('click',function(){chSqClick(row,col);});sq.addEventListener('touchend',function(e){e.preventDefault();chSqClick(row,col);},{passive:false});})(r,c);
     bd.appendChild(sq);
   }}
-  if(!chOver){var turn=chTurn==='w'?'White':'Black';document.getElementById('chess-status').textContent=turn+"'S TURN";}
+  if(!chOver){var turn=chTurn==='w'?'WHITE':'BLACK';document.getElementById('chess-status').textContent=turn+"'S TURN";}
   var _cpw=document.getElementById('cp-w');
   var _cpb=document.getElementById('cp-b');
   if(_cpw){_cpw.classList.toggle('active',chTurn==='w');
@@ -283,12 +253,14 @@ function getAvName(p){
 
 function chEval(board){var s=0;for(var r=0;r<8;r++)for(var c=0;c<8;c++){var p=board[r][c];if(!p)continue;var v=PV[p.t]||0;if(chIsSpec(p)&&p.moved)v-=50;var cd=Math.abs(c-3.5)+Math.abs(r-3.5);s+=(p.col==='w'?1:-1)*(v+(4-cd)*3);}return s;}
 function chAllMoves(col,board){var moves=[];for(var r=0;r<8;r++)for(var c=0;c<8;c++){if(board&&board[r]&&board[r][c]&&board[r][c].col===col){var ms=chRawMoves(r,c,board);if(ms)ms.forEach(function(m){if(m&&m.length>=2)moves.push([r,c,m[0],m[1]]);});}}return moves;}
+/* [IK] captures first (most valuable victim): alpha-beta then prunes far more */
+function chOrder(moves,board){return moves.map(function(m){var t=board[m[2]][m[3]];return [t?(PV[t.t]||0):0,m];}).sort(function(x,y){return y[0]-x[0];}).map(function(x){return x[1];});}
 function chMM(board,depth,a,b,max){
   if(depth===0)return chEval(board);
   var hasW=false,hasB=false;
   for(var ri=0;ri<8;ri++)for(var ci=0;ci<8;ci++){var pi=board[ri][ci];if(pi&&pi.t==='K'){if(pi.col==='w')hasW=true;else hasB=true;}}
   if(!hasW)return -99999;if(!hasB)return 99999;
-  var col=max?'w':'b',moves=chAllMoves(col,board);
+  var col=max?'w':'b',moves=chOrder(chAllMoves(col,board),board);
   if(!moves.length)return max?-9999:9999;
   var best=max?-Infinity:Infinity;
   for(var i=0;i<moves.length;i++){
@@ -363,11 +335,15 @@ function chAiMove(){
   if(!moves||!moves.length)return;
   var aiMax=(aiC==='w');
   var best=aiMax?-Infinity:Infinity;
-  var bm=moves[Math.floor(Math.random()*moves.length)];
+  // equal moves: a random one, not always the top-left piece
+  for(var si=moves.length-1;si>0;si--){var sj=Math.floor(Math.random()*(si+1));var st=moves[si];moves[si]=moves[sj];moves[sj]=st;}
+  moves=chOrder(moves,chBoard);
+  var bm=moves[0];
   for(var i=0;i<moves.length;i++){
     var m=moves[i];if(!m)continue;
     var nb=chDoMove(m[0],m[1],m[2],m[3],chCopy(chBoard),true);
-    var v=chMM(nb,chAiLv,-Infinity,Infinity,!aiMax);
+    var v=aiMax?chMM(nb,chAiLv,best,Infinity,false):chMM(nb,chAiLv,-Infinity,best,true);
+    if(chSeen[chKey(nb,aiMax?'b':'w')]&&(aiMax?v>0:v<0))v+=aiMax?-60:60;
     if(aiMax?v>best:v<best){best=v;bm=m;}
   }
   if(bm){
@@ -377,7 +353,7 @@ function chAiMove(){
     var badge=document.getElementById('chess-ai-badge');
     if(badge){
       var cols='abcdefgh';
-      badge.textContent='Black: '+cols[bm[2]]+(8-bm[3]);
+      badge.textContent=(aiC==='w'?'White':'Black')+': '+cols[bm[3]]+(8-bm[2]);
       badge.style.opacity='1';
       setTimeout(function(){badge.style.opacity='0';},2500);
     }
@@ -394,7 +370,7 @@ function chPickColour(col){
 }
 
 function chStart(mode,lv){
-  sndBtn();chMode=mode;chAiLv=Math.min(lv||3,3);
+  chSeen={};chQuiet=0;sndBtn();chMode=mode;chAiLv=Math.max(1,Math.min(lv||2,3));
   if(chMode==='ai') chPlayerColour=Math.random()<0.5?'w':'b';
   else chPlayerColour='w';
   chInit();

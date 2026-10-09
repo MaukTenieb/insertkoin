@@ -1,3 +1,12 @@
+/*
+ * Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna
+ * Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related
+ * material — including characters, names, symbols, rules, lore and texts, in any form or
+ * medium — are the exclusive property of Korhogo™. The source code of this site is
+ * published for reading, reflections, additions, requests, etc. - the lore, names, marks
+ * and works remain the property of the author. No use for training artificial
+ * intelligence. Contact: mauktenieb@gmail.com
+ */
 /*!
  * KG-VHS Recorder — records YouTube channels onto cassettes via CHANNEL.SCRAPE,
  * and manages the cassette shelf inside the VHS cabinet.
@@ -524,6 +533,8 @@
       up = !!(st && st.fromBackend);
     } catch (_e) { up = false; }
     openBtn.hidden = !up;
+    /* [IK] the whole workshop (REC bay, KRITIK, tape tools) lives with the backend */
+    root.setAttribute("data-atelier", up ? "on" : "off");
     if (!up) {
       var panel = q(root, "[data-vhs-ttx]");
       if (panel) panel.hidden = true;

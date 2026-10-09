@@ -1,4 +1,13 @@
 /*
+ * Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna
+ * Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related
+ * material — including characters, names, symbols, rules, lore and texts, in any form or
+ * medium — are the exclusive property of Korhogo™. The source code of this site is
+ * published for reading, reflections, additions, requests, etc. - the lore, names, marks
+ * and works remain the property of the author. No use for training artificial
+ * intelligence. Contact: mauktenieb@gmail.com
+ */
+/*
  * VHS cabinet — original code for Insert Koin. v2.2.0
  *
  * Third-party code: none. The YIQ matrices are the standard NTSC constants;
@@ -499,6 +508,7 @@
       label = (i + 1) + "/" + n + " \u2014 " + s.localFiles[i].label;
     }
     setText(s, "[data-vhs-osd-track]", label);
+    if (s.root) s.root.classList.toggle("is-loaded", label !== "\u2014");
 
     const mark = (selector, active) => {
       qa(s, selector).forEach((button, idx) => {
@@ -797,6 +807,97 @@
     try { s.player.pauseVideo(); } catch (_) { /* ignore */ }
   }
 
+
+  /* ------------------------------------------------------------------ *
+   * [IK] The deck's own noises, synthesised: key clicks, the relay that
+   * threads the tape, the capstan motor, the spinning reels during REW /
+   * FFW, the eject spring. Silent when the arcade's FX switch is off.
+   * ------------------------------------------------------------------ */
+  const VSND = (() => {
+    let ac = null, noiseBuf = null, whir = null;
+    const fxOn = () => { const b = document.getElementById("snd"); return !b || b.getAttribute("aria-pressed") !== "false"; };
+    const ctx = () => {
+      if (!fxOn()) return null;
+      try {
+        if (!ac) {
+          ac = new (window.AudioContext || window.webkitAudioContext)();
+          const n = ac.sampleRate;
+          noiseBuf = ac.createBuffer(1, n, n);
+          const d = noiseBuf.getChannelData(0);
+          for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+        }
+        if (ac.state === "suspended") ac.resume();
+      } catch (_) { return null; }
+      return ac;
+    };
+    const noise = (c, t0, dur, type, freq, q, gain) => {
+      const src = c.createBufferSource(); src.buffer = noiseBuf;
+      const f = c.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q || 1;
+      const g = c.createGain(); g.gain.setValueAtTime(gain, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      src.connect(f).connect(g).connect(c.destination); src.start(t0); src.stop(t0 + dur + 0.02);
+    };
+    const thump = (c, t0, freq, dur, gain) => {
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = "sine"; o.frequency.setValueAtTime(freq, t0); o.frequency.exponentialRampToValueAtTime(freq * 0.5, t0 + dur);
+      g.gain.setValueAtTime(gain, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      o.connect(g).connect(c.destination); o.start(t0); o.stop(t0 + dur + 0.02);
+    };
+    const api = {
+      key() { const c = ctx(); if (!c) return; const t = c.currentTime;
+        noise(c, t, 0.018, "bandpass", 3200, 1.4, 0.22); thump(c, t, 140, 0.05, 0.18); },
+      thread() { const c = ctx(); if (!c) return; const t = c.currentTime;
+        thump(c, t, 90, 0.09, 0.35); noise(c, t, 0.03, "bandpass", 1800, 2, 0.2);              // relay
+        noise(c, t + 0.08, 0.7, "bandpass", 420, 3, 0.05);                                     // threading arms
+        thump(c, t + 0.62, 70, 0.08, 0.25); noise(c, t + 0.62, 0.025, "highpass", 2500, 1, 0.12); },
+      load() { const c = ctx(); if (!c) return; const t = c.currentTime;
+        noise(c, t, 0.12, "lowpass", 900, 1, 0.18); thump(c, t + 0.05, 60, 0.18, 0.4);         // tape pushed in
+        noise(c, t + 0.2, 1.0, "bandpass", 300, 4, 0.06); thump(c, t + 1.15, 80, 0.09, 0.3); }, // carriage down
+      eject() { const c = ctx(); if (!c) return; const t = c.currentTime;
+        thump(c, t, 110, 0.07, 0.3); noise(c, t + 0.02, 0.5, "bandpass", 520, 3, 0.07);
+        const o = c.createOscillator(), g = c.createGain(); o.type = "triangle";
+        o.frequency.setValueAtTime(240, t + 0.45); o.frequency.exponentialRampToValueAtTime(90, t + 0.6);
+        g.gain.setValueAtTime(0.08, t + 0.45); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.62);
+        o.connect(g).connect(c.destination); o.start(t + 0.45); o.stop(t + 0.65);
+        noise(c, t + 0.48, 0.05, "highpass", 1500, 1, 0.12); },
+      whirStart(dir) { const c = ctx(); if (!c || whir) return; const t = c.currentTime;
+        const src = c.createBufferSource(); src.buffer = noiseBuf; src.loop = true;
+        const f = c.createBiquadFilter(); f.type = "bandpass"; f.Q.value = 6;
+        f.frequency.setValueAtTime(260, t); f.frequency.exponentialRampToValueAtTime(dir < 0 ? 1100 : 950, t + 1.6);
+        const o = c.createOscillator(); o.type = "sawtooth";
+        o.frequency.setValueAtTime(38, t); o.frequency.exponentialRampToValueAtTime(dir < 0 ? 150 : 128, t + 1.6);
+        const og = c.createGain(); og.gain.value = 0.018;
+        const g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.09, t + 0.25);
+        src.connect(f).connect(g); o.connect(og).connect(g); g.connect(c.destination);
+        src.start(t); o.start(t); whir = { src, o, g };
+        thump(c, t, 100, 0.06, 0.25); },
+      whirStop() { if (!whir || !ac) return; const t = ac.currentTime, w = whir; whir = null;
+        w.g.gain.cancelScheduledValues(t); w.g.gain.setValueAtTime(w.g.gain.value, t); w.g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+        w.src.stop(t + 0.2); w.o.stop(t + 0.2); thump(ac, t + 0.05, 85, 0.07, 0.3); },
+    };
+    return api;
+  })();
+
+  /* [IK] grain + an occasional horizontal jolt over the YouTube catalogue */
+  function wearLoop(s) {
+    const cv = s.root && s.root.querySelector(".vhs-grain");
+    if (!cv || s.wearRaf) return;
+    const c = cv.getContext("2d"), img = c.createImageData(cv.width, cv.height), d = img.data;
+    let last = 0;
+    const tick = (now) => {
+      if (!live(s)) { s.wearRaf = 0; return; }
+      s.wearRaf = requestAnimationFrame(tick);
+      if (s.source !== "youtube" || s.reducedMotion || now - last < 70) return;
+      last = now;
+      for (let i = 0; i < d.length; i += 4) { const v = Math.random() * 255 | 0; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; }
+      c.putImageData(img, 0, 0);
+      if (Math.random() < 0.012) {
+        const sc = s.root.querySelector("[data-vhs-screen]");
+        if (sc) { sc.classList.remove("is-wobble"); void sc.offsetWidth; sc.classList.add("is-wobble"); }
+      }
+    };
+    s.wearRaf = requestAnimationFrame(tick);
+  }
+
   /* ------------------------------------------------------------------ *
    * Transport
    * ------------------------------------------------------------------ */
@@ -810,6 +911,7 @@
     stopScan(s);
     if (opts && opts.release) return; // key released: scan already torn down
     s.scanDir = dir;
+    VSND.whirStart(dir);
     const root = s.root;
     if (root) {
       const screen = root.querySelector("[data-vhs-screen]");
@@ -851,6 +953,7 @@
     if (s.scanTimer) { clearTimeout(s.scanTimer); s.scanTimer = 0; }
     if (!s.scanDir) return;
     s.scanDir = 0;
+    VSND.whirStop();
     const root = s.root;
     if (root) {
       const screen = root.querySelector("[data-vhs-screen]");
@@ -1197,8 +1300,10 @@
 
   function resizeCanvas(s) {
     if (!s.canvas || !s.gl) return;
-    const rect = s.canvas.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
+    // Layout size, not the on-screen box: the arcade's CRT switch-on squashes the
+    // whole frame for 0.4 s, and measuring then froze a 32000 x 120 canvas.
+    const rect = { width: s.canvas.clientWidth, height: s.canvas.clientHeight };
+    if (!rect.width || !rect.height || rect.height < 40) return;
 
     // Internal resolution follows the broadcast standard (576 / 480 lines),
     // capped by what the screen can actually show. Cheaper and more VHS.
@@ -1385,6 +1490,9 @@
   }
 
   function handleAction(s, action) {
+    if (action === "play") { if (isPlaying(s)) VSND.key(); else VSND.thread(); }
+    else if (action === "eject") VSND.eject();
+    else VSND.key();
     if (action === "prev") nudge(s, -1); // quick tap: rewind 5 s with noise
     else if (action === "next") nudge(s, 1); // quick tap: forward 5 s
     else if (action === "rew") startScan(s, -1); // keydown only: held REW
@@ -1485,6 +1593,7 @@
     if (!boot) { onDone(); return; }
     bootState = { done: false, timer: 0, onDone: onDone };
     s.root.classList.add("is-booting");
+    VSND.load();
 
     // Random snow duration: the deck takes its time to lock on.
     const snowMs = 350 + Math.floor(Math.random() * 850);
@@ -1699,6 +1808,7 @@
     // Cassette boot: random snow burst, then the tape slides in. The panels
     // underneath stay usable: the overlay only covers the screen area.
     startBoot(s, () => {});
+    wearLoop(s);
 
     try { root.focus({ preventScroll: true }); } catch (_) { /* ignore */ }
     window.dispatchEvent(new CustomEvent("kg-vhs:open"));
@@ -1750,6 +1860,8 @@
       s.rollStart = performance.now();
     }
     window.dispatchEvent(new CustomEvent("kg-vhs:eject"));
+    VSND.whirStop();
+    if (s.wearRaf) { cancelAnimationFrame(s.wearRaf); s.wearRaf = 0; }
 
     stopLoop(s);
     s.cleanups.splice(0).forEach((fn) => { try { fn(); } catch (_) { /* ignore */ } });

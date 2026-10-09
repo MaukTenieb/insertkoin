@@ -1,59 +1,12 @@
 
 /*
- * =============================================================================
- * COPYRIGHT NOTICE AND INTELLECTUAL PROPERTY DECLARATION
- * =============================================================================
- *
- * Copyright \u00a9 2024 Mauk Tenieb & Korhogo.
- * ALL RIGHTS RESERVED.
- *
- * This software, including but not limited to its source code, architecture,
- * algorithms, user interface, documentation, artistic content, role-playing
- * scenarios, narrative texts, descriptions, lore, game mechanics, dialogues,
- * aesthetic assets, and any associated materials (collectively referred to as
- * "the Work"), is the exclusive intellectual property of Mauk Tenieb.
- *
- * The Work is protected by international copyright laws, the Berne Convention,
- * the Universal Copyright Convention, and all applicable national laws including
- * (but not limited to) French Intellectual Property Code, U.S. Copyright Law
- * (Title 17 U.S.C.), and EU directives.
- *
- * NO PART OF THIS WORK MAY BE USED, COPIED, REPRODUCED, MODIFIED, ADAPTED,
- * TRANSLATED, DISTRIBUTED, TRANSMITTED, DISPLAYED, PUBLISHED, BROADCAST,
- * LICENSED, SUBLICENSED, SOLD, TRANSFERRED, OR EXPLOITED IN ANY FORM OR BY
- * ANY MEANS (electronic, mechanical, photocopying, recording, scanning,
- * or otherwise) WITHOUT THE PRIOR EXPRESS WRITTEN PERMISSION OF THE COPYRIGHT
- * OWNER.
- *
- * This prohibition explicitly includes, but is not limited to:
- *   - Any form of reverse engineering, decompilation, disassembly, or
- *     derivative work creation.
- *   - Any use of the Work or its outputs for training, fine-tuning, or
- *     improving any artificial intelligence, machine learning, or large
- *     language models.
- *   - Any scanning, parsing, extraction, or analysis of the code, structure,
- *     or content by humans or automated systems (including AI agents, crawlers,
- *     scrapers, or LLMs) for any purpose other than the legitimate execution
- *     of the authorized software by its rightful owner.
- *   - Any commercial, non-commercial, educational, research, or personal use
- *     without explicit authorization.
- *
- * Any unauthorized use, access, study, or inspection of this Work constitutes
- * a direct and serious infringement of copyright and may result in civil and/or
- * criminal prosecution to the fullest extent permitted by law. The copyright
- * owner reserves the right to pursue all available legal remedies, including
- * but not limited to injunctions, damages, attorney fees, and statutory damages.
- *
- * This notice is an integral part of the Work. Removing, altering, obscuring,
- * or bypassing this notice does not waive any rights of the copyright owner.
- *
- * For licensing inquiries, permissions, or commercial arrangements, contact:
- * mauktenieb@gmail.com
- *
- * =============================================================================
- * Instead of being open source, this work is under copyright \u00a9 2024 Mauk Tenieb & Korhogo.
- * All rights strictly reserved. No use without express written permission.
- * =============================================================================
+ * Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna
+ * Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related
+ * material — including characters, names, symbols, rules, lore and texts, in any form or
+ * medium — are the exclusive property of Korhogo™. The source code of this site is
+ * published for reading, reflections, additions, requests, etc. - the lore, names, marks
+ * and works remain the property of the author. No use for training artificial
+ * intelligence. Contact: mauktenieb@gmail.com
  */
 
 /* KG module "erratic" -- ERRATIC memory game (panel #mem). Code copied verbatim from kofa.js (Korhogo). */
@@ -81,15 +34,27 @@ function showMScores(){
   var lines=[];[[6],[9],[12],[18]].forEach(function(x){var b=mBests[x[0]];if(b)lines.push(x[0]+' pairs: '+b.moves+' moves \u00b7 '+mFmt(b.time));});
   document.getElementById('m-scores').textContent=lines.length?'BEST: '+lines.join(' | '):'';
 }
+/* [IK] a fair shuffle (Fisher-Yates) */
+function mShuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+/* [IK] the whole deck fits the frame: as many columns as it takes for every card to be seen at once */
+function mFit(){
+  var board=document.getElementById('m-board');if(!board||!mCards.length)return;
+  var W=board.clientWidth-16,H=board.clientHeight-16,N=mCards.length,gap=6,best=null;
+  if(W<=0||H<=0)return;
+  for(var c=3;c<=12;c++){var w=(W-gap*(c-1))/c,h=w/.72,rows=Math.ceil(N/c);var hh=(H-gap*(rows-1))/rows;var s=Math.min(w,hh*.72);if(!best||s>best.s)best={c:c,s:s};}
+  board.style.gridTemplateColumns='repeat('+best.c+','+Math.floor(best.s)+'px)';
+  board.style.justifyContent='center';board.style.gap=gap+'px';
+}
+window.addEventListener('resize',function(){var g=document.getElementById('m-game');if(g&&!g.classList.contains('hidden'))mFit();});
 function mStart(n){
   sndBtn();mLastPairs=n;mPairs=n;mMoves=0;mMatched=0;mFlipped=[];mCanFlip=true;mElapsed=0;
   document.getElementById('m-pairs').textContent='0/'+n;
   document.getElementById('m-moves').textContent='0';
   document.getElementById('m-time').textContent='0:00';
   clearInterval(mTimer);mTimer=setInterval(function(){mElapsed++;document.getElementById('m-time').textContent=mFmt(mElapsed);},1000);
-  var pool=MF.slice().sort(function(){return Math.random()-.5;}).slice(0,n);
+  var pool=mShuffle(MF.slice()).slice(0,n);
   var deck=[];pool.forEach(function(f){deck.push({f:f,id:f.name});deck.push({f:f,id:f.name});});
-  deck.sort(function(){return Math.random()-.5;});mCards=deck;
+  mShuffle(deck);mCards=deck;
   var cols=n<=6?3:4;
   var board=document.getElementById('m-board');board.style.gridTemplateColumns='repeat('+cols+',1fr)';board.innerHTML='';
   deck.forEach(function(card,i){
@@ -105,6 +70,7 @@ function mStart(n){
     board.appendChild(el);card.el=el;
   });
   mShow('m-game');
+  setTimeout(mFit,0);
 }
 function mFlip(el,i,card){
   if(!mCanFlip||el.classList.contains('flipped')||el.classList.contains('matched'))return;

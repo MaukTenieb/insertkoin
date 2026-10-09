@@ -1,0 +1,71 @@
+# FaunaTor: builds the two in-page Tor clients and puts them at the top level of the site.
+# Runs by itself the first time (when the files are missing), and on demand (Actions → FaunaTor Tor → Run workflow).
+name: FaunaTor Tor
+
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/faunator-tor.yml', 'faunator-tor.js']
+
+permissions:
+  contents: write
+
+env:
+  WEB_REF: v0.5.7            # privacy-ethereum/webtor-rs — the web, through Tor exits
+  ONION_REF: v0.0.1-alpha.25 # andrewtheguy/webtor-rs — v3 onion services
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Already built?
+        id: need
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ -f tor-web_bg.wasm ] && [ -f tor-onion_bg.wasm ]; then echo "go=no" >> $GITHUB_OUTPUT; else echo "go=yes" >> $GITHUB_OUTPUT; fi
+
+      - name: Tools
+        if: steps.need.outputs.go == 'yes'
+        run: |
+          rustup target add wasm32-unknown-unknown
+          npm i -g wasm-pack@0.15.0
+
+      - name: Web client
+        if: steps.need.outputs.go == 'yes'
+        run: |
+          git clone --depth 1 --branch "$WEB_REF" https://github.com/privacy-ethereum/webtor-rs /tmp/web
+          cd /tmp/web
+          rustup show active-toolchain || rustup toolchain install
+          rustup target add wasm32-unknown-unknown
+          wasm-pack build webtor-wasm --target web --release
+          cp webtor-wasm/pkg/webtor_wasm.js      "$GITHUB_WORKSPACE/tor-web.js"
+          cp webtor-wasm/pkg/webtor_wasm_bg.wasm "$GITHUB_WORKSPACE/tor-web_bg.wasm"
+
+      - name: Onion client
+        if: steps.need.outputs.go == 'yes'
+        run: |
+          git clone --depth 1 --branch "$ONION_REF" https://github.com/andrewtheguy/webtor-rs /tmp/onion
+          cd /tmp/onion
+          rustup show active-toolchain || rustup toolchain install
+          rustup target add wasm32-unknown-unknown
+          wasm-pack build crates/webtor-wasm --release --target web
+          cp crates/webtor-wasm/pkg/webtor_wasm.js      "$GITHUB_WORKSPACE/tor-onion.js"
+          cp crates/webtor-wasm/pkg/webtor_wasm_bg.wasm "$GITHUB_WORKSPACE/tor-onion_bg.wasm"
+
+      - name: Licences
+        if: steps.need.outputs.go == 'yes'
+        run: |
+          {
+            echo "tor-web.js / tor-web_bg.wasm — privacy-ethereum/webtor-rs $WEB_REF — MIT"; echo; cat /tmp/web/LICENSE* 2>/dev/null || true; echo; echo;
+            echo "tor-onion.js / tor-onion_bg.wasm — andrewtheguy/webtor-rs $ONION_REF — MIT"; echo; cat /tmp/onion/LICENSE* 2>/dev/null || true
+          } > TOR-LICENSES.txt
+
+      - name: Commit
+        if: steps.need.outputs.go == 'yes'
+        run: |
+          git config user.name "faunator-bot"
+          git config user.email "faunator-bot@users.noreply.github.com"
+          git add tor-web.js tor-web_bg.wasm tor-onion.js tor-onion_bg.wasm TOR-LICENSES.txt
+          git commit -m "FaunaTor: in-page Tor clients ($WEB_REF, $ONION_REF)" || exit 0
+          git push
