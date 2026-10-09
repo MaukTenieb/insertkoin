@@ -45,6 +45,7 @@ Now and then a guide wanders along the cabinets, shining in its colour when it a
 - **Duel**: click a Mask in the room, first to 15. **Continue** picks a saved run up where it stopped.
 - The room is drawn anew for each match (wallpaper, roses, carpet) and its two paintings are Fauna drawn at random. The CRT on the dresser switches at random and on every point between the Mask's motto, the score, its stats, the rally, its signature, your Koins, the hour, Motel Sound, test cards, snow and a few seconds of a Mauk Tenieb clip.
 - **The Kerema decides!** One tournament in two opens with a die that sets the applicant's swing, from −15 % (⚀) to +15 % (⚅); the face stays by the score. One match in two, a translucent die floats over the table once or twice (*Want Kerema?*, *Got Kerem... ilk?* — *On est joueur ?*, *Koquinette ou Koquinou ?*): touch it with the paddle to take the throw, or let it drift away. The Kerema leans toward those who earned their Koins: the more Koins, the higher the faces (about 7 Koins: even).
+- Now and then, after a point, the Kerema's sarcasm crosses the room, in the visitor's language.
 - On a phone held upright, a phone turns over the table; on its side, the table takes the whole height; in full screen the score follows inside the table.
 
 ## Koins
