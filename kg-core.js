@@ -73,6 +73,7 @@ function stopMotto(){try{if('speechSynthesis' in window)window.speechSynthesis.c
 window.speakMotto=speakMotto;window.stopMotto=stopMotto;
 
 function kkRepublicanDate(){
+  if(window.ikRep){var r=window.ikRep();if(r){var M=['Vendemiaire','Brumaire','Frimaire','Nivose','Pluviose','Ventose','Germinal','Floreal','Prairial','Messidor','Thermidor','Fructidor'];return r.day+' '+(r.month<13?M[r.month-1]:'complementary days')+' an '+r.year;}}
   var months=['Vendemiaire','Brumaire','Frimaire','Nivose','Pluviose','Ventose',
     'Germinal','Floreal','Prairial','Messidor','Thermidor','Fructidor'];
   var d=new Date();
