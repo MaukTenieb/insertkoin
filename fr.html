@@ -247,6 +247,17 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 .gtip.on{opacity:1;transform:none}
 .gtip b{display:block;font:400 18px/1 "Bebas Neue",Impact,sans-serif;letter-spacing:.06em;color:var(--gc,#c9a84c);margin-bottom:3px}
 #home{position:relative}
+/* the guide arrives shining in its own colour, then twinkles now and then */
+.guide::before,.guide::after{content:"✦";position:absolute;font-size:16px;line-height:1;color:var(--gc);text-shadow:0 0 8px var(--gc),0 0 16px var(--gc);opacity:0;pointer-events:none}
+.guide::before{left:-8px;top:10%}.guide::after{right:-6px;top:38%;font-size:12px}
+.guide.shine{animation:gshine .55s steps(2) 8,gbob 1.6s ease-in-out infinite}
+.guide.shine::before{animation:gspark .7s ease-in-out 6}.guide.shine::after{animation:gspark .7s ease-in-out .35s 6}
+.guide.twink::before{animation:gspark .8s ease-in-out 2}.guide.twink::after{animation:gspark .8s ease-in-out .4s 2}
+.guide.twink{animation:gtw .4s steps(2) 3,gbob 1.6s ease-in-out infinite}
+@keyframes gshine{0%{filter:drop-shadow(0 0 4px var(--gc)) drop-shadow(0 0 14px var(--gc)) brightness(1.35)}100%{filter:drop-shadow(0 0 1px var(--gc)) drop-shadow(0 6px 8px rgba(0,0,0,.7)) brightness(1)}}
+@keyframes gtw{0%{filter:drop-shadow(0 0 3px var(--gc)) drop-shadow(0 0 10px var(--gc)) brightness(1.2)}100%{filter:drop-shadow(0 6px 8px rgba(0,0,0,.7))}}
+@keyframes gspark{0%,100%{opacity:0;transform:scale(.4) rotate(0)}50%{opacity:1;transform:scale(1.2) rotate(45deg)}}
+
 @media (prefers-reduced-motion:reduce){.guide,.guide.walk{animation:none;transition:opacity .3s}}
 /* the arcade breathes: a light passes over a cabinet, a neon falters, a device calls */
 .menu a,.menu button{position:relative;overflow:hidden}
@@ -1854,7 +1865,7 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
   let who=null,fw=0,sc=1,frame=0,touring=false,idleT=0,blinkT=0,away=true;
   const H=touchDev?70:92;
   function dress(){who=WHO[Math.floor(Math.random()*WHO.length)];const S=SH[who],r=R.find(x=>x.id===who);fw=S.w*(S.k||1);sc=H/(S.h*(S.k||1));
-    g.style.setProperty('--gw',Math.round(fw*sc)+'px');g.style.setProperty('--gh',H+'px');g.style.backgroundImage=`url(${S.src})`;g.style.backgroundSize=`${Math.round(fw*8*sc)}px ${H}px`;g.style.setProperty('--gc',r?r.glow:'#c9a84c');tip.style.setProperty('--gc',r?r.glow:'#c9a84c');face(0);}
+    g.style.setProperty('--gw',Math.round(fw*sc)+'px');g.style.setProperty('--gh',H+'px');g.style.backgroundImage=`url(${S.src})`;g.style.backgroundSize=`${Math.round(fw*8*sc)}px ${H}px`;const gc=({honey_buzzard:'#ff2a3a',c7h5n3o6:'#3aa0ff',tsui_pen:'#ff9a1a'})[who]||(r?r.glow:'#c9a84c');g.style.setProperty('--gc',gc);tip.style.setProperty('--gc',gc);face(0);}
   function face(f){frame=f;g.style.backgroundPosition=`${-Math.round(f*fw*sc)}px 0`;}
   function homeXY(el){const a=el.getBoundingClientRect(),b=home.getBoundingClientRect();return{x:a.left-b.left,y:a.top-b.top,w:a.width,h:a.height};}
   function place(x,y){g.style.left=x+'px';g.style.top=y+'px';}
@@ -1862,12 +1873,12 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
     return Math.random()<.5?{x:r.x+Math.random()*(r.w-gw),y:r.y-H+8}:{x:Math.random()<.5?r.x-gw*.3:r.x+r.w-gw*.7,y:r.y+Math.random()*(r.h-H)};}
   function arrive(){if(touring||$('home').hidden||document.hidden){return later();}dress();const p=spot(),side=Math.random()<.5?-1:1;
     g.style.transition='none';place(p.x+side*160,p.y);void g.offsetWidth;g.style.transition='';g.classList.remove('gone');g.classList.add('walk');face(side>0?2:3);place(p.x,p.y);away=false;
-    setTimeout(()=>{if(!touring){g.classList.remove('walk');face(0);}},950);idleT=performance.now()+12000+Math.random()*14000;}
+    g.classList.remove('shine','twink');void g.offsetWidth;g.classList.add('shine');setTimeout(()=>g.classList.remove('shine'),4600);setTimeout(()=>{if(!touring){g.classList.remove('walk');face(0);}},950);idleT=performance.now()+12000+Math.random()*14000;}
   function leave(){if(touring)return;g.classList.add('walk');face(Math.random()<.5?2:3);g.classList.add('gone');away=true;setTimeout(()=>g.classList.remove('walk'),600);later();}
   function later(){setTimeout(arrive,(touring?4000:9000)+Math.random()*22000);}
   /* blinks, glances, and goes away after a while */
   setInterval(()=>{if(away||touring)return;const t=performance.now();if(t>idleT){leave();return;}
-    if(Math.random()<.18){face(1);setTimeout(()=>{if(!touring&&frame===1)face(0);},140);}else if(Math.random()<.06){const f=Math.random()<.5?2:3;face(f);setTimeout(()=>{if(!touring&&frame===f)face(0);},900);}},700);
+    if(Math.random()<.12&&!g.classList.contains('shine')){g.classList.remove('twink');void g.offsetWidth;g.classList.add('twink');setTimeout(()=>g.classList.remove('twink'),1700);}if(Math.random()<.18){face(1);setTimeout(()=>{if(!touring&&frame===1)face(0);},140);}else if(Math.random()<.06){const f=Math.random()<.5?2:3;face(f);setTimeout(()=>{if(!touring&&frame===f)face(0);},900);}},700);
   function say(el,name,text){const r=homeXY(el),gx=parseFloat(g.style.left),gw=parseFloat(g.style.getPropertyValue('--gw'))||60,W=home.clientWidth;
     tip.innerHTML='';const b=document.createElement('b');b.textContent=name;tip.appendChild(b);if(text)text.split('\n').forEach(l=>{const d=document.createElement('div');d.textContent=l;tip.appendChild(d);});
     const right=gx+gw+10+320<W;tip.style.left=(right?gx+gw+6:Math.max(4,gx-Math.min(320,W*.7)-6))+'px';tip.style.top=(parseFloat(g.style.top)+8)+'px';tip.classList.add('on');}
