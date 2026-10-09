@@ -1,3 +1,5 @@
+build: same-origin-consensus-1
+
 tor-web.js / tor-web_bg.wasm — privacy-ethereum/webtor-rs v0.5.7 — MIT
 
 
