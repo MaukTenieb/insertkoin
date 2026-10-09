@@ -1859,6 +1859,11 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
   let flash=[],nextBolt=performance.now()+R(9000,30000),cloud=0,nextCloud=performance.now()+R(5000,14000);
   let scar=0,nextScar=performance.now()+R(8000,25000),smoke=[],sm=0,bug=null,nextBug=performance.now()+R(25000,70000);
   let tear=null,scratch=null;
+  /* glints, each in its own colour: Aube's hands (pink), Maiden Call's telephone (blue), Auvergne's green eyes */
+  const GL=[{p:[[470,277],[571,268]],rgb:'255,125,195',r:15},{p:[[458,410],[477,479]],rgb:'95,175,255',r:16},{p:[[687,155],[701,155]],rgb:'90,255,130',r:7,eyes:1}];
+  GL.forEach(q=>{q.next=performance.now()+R(3000,16000);q.a=0;});
+  function star(cx,cy,r,rgb,a){if(a<=0)return;glow(cx,cy,r,rgb,.55*a);x.globalCompositeOperation='lighter';x.strokeStyle=`rgba(${rgb},${.8*a})`;x.lineWidth=Math.max(.6,1.1*k);const L=r*1.3*k*a,X0=X(cx),Y0=Y(cy);
+    x.beginPath();x.moveTo(X0-L,Y0);x.lineTo(X0+L,Y0);x.moveTo(X0,Y0-L);x.lineTo(X0,Y0+L);x.stroke();glow(cx,cy,r*.25,'255,255,255',.7*a);}
   let age=0;try{age=+sessionStorage.getItem('ik.wear')||0;}catch(e){}
   const grain=document.createElement('canvas');grain.width=grain.height=96;const gx=grain.getContext('2d'),gd=gx.createImageData(96,96);
   function regrain(){for(let i=0;i<gd.data.length;i+=4){const v=Math.random()*255;gd.data[i]=gd.data[i+1]=gd.data[i+2]=v;gd.data[i+3]=255;}gx.putImageData(gd,0,0);}
@@ -1884,6 +1889,8 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
     /* the scarab breathes, and sometimes wakes */
     if(t>nextScar){scar=1;nextScar=t+R(9000,30000);}scar=Math.max(0,scar-dt*.6);
     const br=.12+.06*Math.sin(t/900)+.45*scar;glow(1035,186,34,'120,235,255',br);if(scar>.3)lit(.4*scar,1012,165,1058,208);
+    GL.forEach(q=>{if(t>q.next){q.a=1;q.next=t+R(9000,26000);q.w=Math.random();}if(q.a>0){q.a=Math.max(0,q.a-dt*(q.eyes?1.1:.8));const s1=Math.sin((1-q.a)*Math.PI);
+      if(q.eyes){q.p.forEach(pt=>star(pt[0],pt[1],q.r,q.rgb,s1));}else{const pt=q.p[q.w<.5?0:1];star(pt[0],pt[1],q.r,q.rgb,s1);if(q.w>.8)star(q.p[0][0],q.p[0][1],q.r*.8,q.rgb,s1*.7);}}});
     /* the cigarette: smoke rises, curls, thins */
     sm+=dt;if(sm>.11){sm=0;smoke.push({x:817+R(-1,1),y:512,vx:R(-4,4),vy:R(-26,-16),r:2,a:.13,ph:Math.random()*6});}
     x.globalCompositeOperation='lighter';smoke=smoke.filter(p=>{p.ph+=dt*1.3;p.x+=(p.vx+Math.sin(p.ph)*7)*dt;p.y+=p.vy*dt;p.r+=dt*5.5;p.a-=dt*.035;if(p.a<=0)return false;
@@ -1906,7 +1913,7 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
     x.globalCompositeOperation='source-over';}
   fit();addEventListener('resize',fit);try{new ResizeObserver(fit).observe(hero);}catch(e){}if(!im.complete)im.addEventListener('load',fit);
   addEventListener('pagehide',()=>{try{sessionStorage.setItem('ik.wear',age.toFixed(3));}catch(e){}});
-  hero.__life={bugAt:()=>bug&&[X(bug.x),Y(bug.y)],pt:(a,b)=>[X(a),Y(b),k,ox,oy,il,it],bolt:()=>{storm=true;nextBolt=0;},bug:()=>{nextBug=0;},ch:()=>{nextCh=0;},cloud:()=>{nextCloud=0;},scar:()=>{nextScar=0;},age:v=>{age=v;}};
+  hero.__life={glint:i=>{const q=GL[i];if(q){q.next=0;}},bugAt:()=>bug&&[X(bug.x),Y(bug.y)],pt:(a,b)=>[X(a),Y(b),k,ox,oy,il,it],bolt:()=>{storm=true;nextBolt=0;},bug:()=>{nextBug=0;},ch:()=>{nextCh=0;},cloud:()=>{nextCloud=0;},scar:()=>{nextScar=0;},age:v=>{age=v;}};
   if(RM)return;
   let last=0,fr=0;
   function step(t){requestAnimationFrame(step);if($('home').hidden||document.hidden){last=t;return;}if(++fr%2)return;const dt=Math.min(.1,(t-last)/1000||0);last=t;draw(t,dt);}
