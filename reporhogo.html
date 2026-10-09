@@ -63,6 +63,15 @@ select{font:500 13px var(--display);border:2px solid var(--fg);background:var(--
 
 .btn{color:#07060a}.btn.ghost{color:var(--fg)}
 #q::placeholder{color:var(--muted)}
+
+.tile{text-decoration:none}
+.tile[data-s="zero"]{opacity:1;filter:none}
+.tile[data-s="hit"]{border-color:var(--accent);animation:twinkle 1.6s ease-in-out infinite;box-shadow:0 0 0 1px var(--accent),0 0 18px color-mix(in srgb,var(--accent) 45%,transparent)}
+.tile[data-s="hit"] .n{color:var(--accent)}
+.tile[data-s="hit"]::after{content:"✦";position:absolute;right:7px;top:5px;color:var(--accent);text-shadow:0 0 8px var(--accent);animation:spark 1.1s ease-in-out infinite}
+@keyframes twinkle{0%,100%{background:var(--panel)}50%{background:color-mix(in srgb,var(--accent) 18%,var(--panel))}}
+@keyframes spark{0%,100%{opacity:.2;transform:scale(.7) rotate(0)}50%{opacity:1;transform:scale(1.15) rotate(45deg)}}
+@media (prefers-reduced-motion:reduce){.tile[data-s="hit"],.tile[data-s="hit"]::after{animation:none}}
 </style>
 </head>
 <body>
@@ -73,16 +82,9 @@ select{font:500 13px var(--display);border:2px solid var(--fg);background:var(--
     <input id="q" type="search" placeholder="Topic…" autocomplete="off" aria-label="Topic">
     <button class="btn" type="submit">Collect URLs</button>
   </form>
-  <div class="row">
-    <span class="label" id="sum">41 forges</span>
-    <div class="seg" role="group" aria-label="Tiles">
-      <button type="button" data-v="on">All on</button>
-      <button type="button" data-v="off">All off</button>
-      <button type="button" data-v="hits">Hits only</button>
-    </div>
-  </div>
+  <span id="sum" hidden></span>
   <div class="tiles" id="tiles"></div>
-  <div class="row"><span class="label" id="osum">URLs</span><button class="btn ghost" type="button" id="copy">Copy</button></div>
+  <div class="row"><span class="label" id="osum"></span><button class="btn ghost" type="button" id="copy">Copy</button></div>
   <span id="note" hidden></span>
   <textarea id="out" readonly aria-label="Collected URLs" placeholder="Comma-separated URLs appear here."></textarea>
 </div>
@@ -167,18 +169,18 @@ const count=id=>results.filter(r=>r.forge===id&&rel(r)).length;
 function urls(){
   const seen=new Set(),L=[];
   const words=lastQ.toLowerCase().replace(/\*/g,"").split(/\s+/).filter(Boolean);
-  for(const r of results){ if(!on[r.forge]) continue;
+  for(const r of results){
     const hay=(r.title+" "+r.url+" "+(r.desc||"")).toLowerCase(); if(!words.every(w=>hay.includes(w))) continue; const k=r.url.replace(/(\.git)?\/?$/,""); if(seen.has(k.toLowerCase())) continue; seen.add(k.toLowerCase()); L.push(k); }
   return L;
 }
 function draw(){ if(lastQ) auto();
   $("tiles").innerHTML=ALL.map(f=>{const s=state[f.id]?.s||(f.api?"idle":"idle"),n=count(f.id);
     const st=s==="run"?"searching":s==="ok"?"live":s==="arch"?"archive":s==="err"?"blocked":f.api?"live api":"archive";
-    return `<button class="tile" type="button" data-id="${f.id}" data-s="${lastQ&&s!=="run"&&!n?"zero":s}" aria-pressed="${on[f.id]}"><b>${f.n}</b><span><span class="n">${lastQ?n:"–"}</span> <span class="st">${st}</span></span></button>`}).join("");
+    return `<a class="tile" data-id="${f.id}" data-s="${s==="run"?"run":n?"hit":"zero"}" href="${lastQ?f.s(lastQ):"#"}" target="_blank" rel="noopener"><b>${f.n}</b><span class="n">${lastQ&&s!=="run"?n:""}</span></a>`}).join("");
   const L=urls(); $("out").value=L.join(", ");
-  $("osum").textContent=`${L.length} URLs`;
+  $("osum").textContent=L.length?String(L.length):"";
   const r=Object.values(state).filter(x=>x.s==="run").length;
-  $("sum").textContent=r?`Searching… ${r} pending`:lastQ?`${results.length} found · ${ALL.filter(f=>on[f.id]).length} forges included`:"41 forges";
+
 }
 async function search(q){
   const id=++run; lastQ=q; results=[]; state={}; blocked=false; manual={}; $("note").hidden=true;
@@ -201,9 +203,8 @@ async function search(q){
   if(id===run&&net>=total){ blocked=true; $("note").textContent="Network blocked in this viewer. Open the file in Chrome or Firefox."; $("note").hidden=false; draw(); }
 }
 $("f").addEventListener("submit",e=>{e.preventDefault();const q=$("q").value.trim();if(q)search(q)});
-$("tiles").addEventListener("click",e=>{const t=e.target.closest(".tile");if(!t||!lastQ)return;const id=t.dataset.id;manual[id]=1;on[id]=!on[id];draw()});
-document.querySelector(".seg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
-  ALL.forEach(f=>{manual[f.id]=1;on[f.id]=b.dataset.v==="on"?true:b.dataset.v==="off"?false:count(f.id)>0;});draw()});
+$("tiles").addEventListener("click",e=>{const t=e.target.closest(".tile");if(t&&!lastQ)e.preventDefault();});
+
 $("copy").addEventListener("click",async()=>{const b=$("copy");try{await navigator.clipboard.writeText($("out").value);b.textContent="Copied"}catch{$("out").select();b.textContent="Selected"}setTimeout(()=>b.textContent="Copy",1500)});
 draw();
 </script>
