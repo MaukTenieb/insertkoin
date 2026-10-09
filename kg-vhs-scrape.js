@@ -51,8 +51,17 @@
   var torMod = null;
   function tor() { return torMod || (torMod = import("./faunator-tor.js").catch(function () { return null; })); }
   /* a YouTube page, through the relays and Tor at once */
+  /* r.jina.ai renders the page in a real browser and hands the HTML back, CORS open */
+  function jina(u, ms) {
+    var ctl = typeof AbortController !== "undefined" ? new AbortController() : null;
+    var t = ctl ? setTimeout(function () { try { ctl.abort(); } catch (e) {} }, ms || 40000) : null;
+    return fetch("https://r.jina.ai/" + u, { headers: { "X-Return-Format": "html" }, signal: ctl ? ctl.signal : undefined }).then(function (r) {
+      if (t) clearTimeout(t); if (!r.ok) throw new Error("jina " + r.status); return r.text();
+    }, function (e) { if (t) clearTimeout(t); throw e; }).then(function (x) { if (!x || x.length < 500) throw new Error("jina empty"); return x; });
+  }
   function page(u) {
     var ps = RELAYS.map(function (f) { return timed(f(u), 12000).then(function (x) { if (!x || x.length < 500) throw 0; return x; }); });
+    ps.unshift(jina(u));
     ps.push(tor().then(function (m) { if (!m) throw 0; return m.get(u); }).then(function (r) { if (!r || !r.text || r.text.length < 500) throw 0; return r.text; }));
     return any(ps);
   }
@@ -71,11 +80,15 @@
         function () { return { id: m[1], name: "", url: url }; });
     }
     var u = /^https?:/i.test(url) ? url : "https://www.youtube.com/" + url.replace(/^@?/, "@");
-    return page(u).then(function (h) {
+    var hd = /@([^\/?#]+)/.exec(u), us = /\/(?:c|user)\/([^\/?#]+)/.exec(u);
+    var viaPiped = (hd || us) ? any(PIPED_FIRST.map(function (host) {
+      return timed("https://" + host + (hd ? "/@/" + hd[1] : "/c/" + us[1]), 12000, true).then(function (d) { if (!d || !/^UC[\w-]{22}$/.test(d.id || "")) throw 0; return { id: d.id, name: d.name || "", url: url, piped: d, host: host }; });
+    })) : Promise.reject(new Error("no handle"));
+    return any([viaPiped, page(u).then(function (h) {
       var id = (/"externalId":"(UC[\w-]{22})"/.exec(h) || /"channelId":"(UC[\w-]{22})"/.exec(h) || /channel\/(UC[\w-]{22})/.exec(h) || [])[1];
       if (!id) throw new Error("no channel");
       return { id: id, name: nameOf(h), url: url };
-    });
+    })]);
   }
   function nameOf(h) {
     var n = (/<meta property="og:title" content="([^"]+)"/.exec(h) || /"channelMetadataRenderer":\{"title":"([^"]+)"/.exec(h) || [])[1];
@@ -124,7 +137,8 @@
   }
 
   /* road 1b: Piped — another open API, page after page */
-  var PIPED = ["pipedapi.kavin.rocks", "pipedapi.adminforge.de", "api.piped.private.coffee", "pipedapi.r4fo.com", "pipedapi.leptons.xyz", "pipedapi.nosebs.ru", "piped-api.lunar.icu", "pipedapi.drgns.space", "pipedapi.ducks.party", "pipedapi.reallyaweso.me"];
+  var PIPED_FIRST = ["api.piped.private.coffee", "pipedapi.kavin.rocks"];
+  var PIPED = ["api.piped.private.coffee", "pipedapi.kavin.rocks", "pipedapi.adminforge.de", "pipedapi.r4fo.com", "pipedapi.leptons.xyz", "pipedapi.nosebs.ru", "piped-api.lunar.icu", "pipedapi.drgns.space", "pipedapi.ducks.party", "pipedapi.reallyaweso.me"];
   function livePiped() {
     return timed("https://piped-instances.kavin.rocks/", 8000, true).then(function (a) {
       return a.filter(function (x) { return x && x.api_url && x.up_to_date !== false; }).map(function (x) { return x.api_url.replace(/^https?:\/\//, "").replace(/\/+$/, ""); });
@@ -146,13 +160,40 @@
           return d.nextpage && (d.relatedStreams || []).length && n < 60 && out.length < 3000 ? next(d.nextpage, n + 1) : out;
         }, function () { return out; });
       }
+      /* channels now keep their videos behind a tab */
+      function tab(data, np, n) {
+        if (stop()) throw new Error("cancelled");
+        return timed("https://" + host + "/channels/tabs?data=" + enc(data) + (np ? "&nextpage=" + enc(np) : ""), 20000, true).then(function (d) {
+          take({ relatedStreams: d.content || d.relatedStreams || [] });
+          return d.nextpage && (d.content || []).length && n < 80 && out.length < 3000 ? tab(data, d.nextpage, n + 1) : out;
+        }, function (e) { if (out.length) return out; throw e; });
+      }
       return timed("https://" + host + "/channel/" + id, 15000, true).then(function (d) {
         name = d.name || ""; take(d);
-        if (!out.length) throw new Error("empty");
-        return d.nextpage ? next(d.nextpage, 0) : out;
+        if (out.length) return d.nextpage ? next(d.nextpage, 0) : out;
+        var vt = (d.tabs || []).filter(function (t) { return /^videos?$/i.test(t.name || ""); })[0] || (d.tabs || []).filter(function (t) { return /video/i.test(t.name || ""); })[0];
+        if (!vt) throw new Error("empty");
+        return tab(vt.data, "", 0).then(function (o) { if (!o.length) throw new Error("empty"); return o; });
       });
     }
     return any(hosts.slice(0, 6).map(from)).catch(function () { return any(hosts.slice(6, 16).map(from)); });
+  }
+
+  /* road 1c: the channel's videos tab, rendered by r.jina.ai — the latest hundred or so */
+  function jinaVideos(id, prog) {
+    return jina("https://www.youtube.com/channel/" + id + "/videos", 60000).then(function (h) {
+      var d = new DOMParser().parseFromString(h, "text/html"), by = {}, order = [];
+      Array.prototype.forEach.call(d.querySelectorAll('a[href*="watch?v="]'), function (a) {
+        var m = /[?&]v=([\w-]{11})/.exec(a.getAttribute("href") || ""); if (!m) return;
+        var t = (a.getAttribute("title") || a.getAttribute("aria-label") || a.textContent || "").replace(/\s+/g, " ").trim();
+        if (!(m[1] in by)) { by[m[1]] = ""; order.push(m[1]); }
+        if (t.length > by[m[1]].length && t.length < 300) by[m[1]] = t;
+      });
+      if (!order.length) { var re = /"videoId":"([\w-]{11})"[\s\S]{0,400}?"text":"((?:[^"\\]|\\.)*)"/g, mm; while ((mm = re.exec(h))) if (!(mm[1] in by)) { by[mm[1]] = unesc(mm[2]); order.push(mm[1]); } }
+      if (!order.length) throw new Error("empty");
+      prog(order.length);
+      return { tracks: order.map(function (i) { return { id: i, title: by[i] || i }; }), name: nameOf(h) };
+    });
   }
 
   /* the live list of Invidious instances that open their API to other sites */
@@ -237,9 +278,12 @@
         return { channel: name || (t[0] && t[0].author) || c.id, channel_url: c.url, tracks: t.map(function (x) { var y = { id: x.id, title: x.title }; ["date", "duration", "views"].forEach(function (k) { if (x[k]) y[k] = x[k]; }); return y; }) };
       }).catch(function (e) {
         if (stop()) throw e;
+        return jinaVideos(c.id, function (n) { prog(n, name); }).then(function (j) {
+          return { channel: name || j.name || c.id, channel_url: c.url, tracks: j.tracks };
+        }).catch(function (ej) { why("jina", ej); if (stop()) throw ej;
         return playlist("UU" + c.id.slice(2), function (n) { prog(n, name); }).then(function (p) {
           return { channel: name || c.id, channel_url: c.url, tracks: p.tracks };
-        }).catch(function (e2) {
+        }); }).catch(function (e2) {
           why("playlist", e2);
           return rss(c.id, function (n) { prog(n, name); }).then(function (r) {
             return { channel: name || r.name || c.id, channel_url: c.url, tracks: r.tracks };
