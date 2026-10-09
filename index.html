@@ -400,7 +400,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 
   <section id="select" hidden>
     <div class="selbar"><button class="btn" type="button" data-back data-i18n="back">← BACK</button><button class="btn hot" id="run2" type="button" hidden></button><button class="btn hot" id="run" type="button" data-i18n="run">ARCADE</button><span id="pick" data-i18n="pick">◉ 1</span><span id="tally"></span></div>
-    <div class="lobby" id="lobby"><img id="lobbyImg" src="room.webp" width="512" height="382" alt="Pixel-art motel room with the eighteen Fauna: click one to challenge them"></div>
+    <div class="lobby" id="lobby"><img id="lobbyImg" src="room.webp" width="512" height="382" loading="lazy" decoding="async" alt="Pixel-art motel room with the eighteen Fauna: click one to challenge them"></div>
   </section>
 
   <section id="game" class="game" hidden>
@@ -550,7 +550,6 @@ SOFTWARE.</pre></details>
 </div>
 <noscript><p style="padding:16px">Insert Koin needs JavaScript.</p></noscript>
 <script src="kg-vhs-library.js"></script>
-<script src="kg-vhs-recorder.js"></script>
 <script src="kg-loader.js"></script>
 <script>
 /* Engine ported to JavaScript from PuffleHuck's src/game.rs (https://github.com/iconidentify/pufflehuck),
