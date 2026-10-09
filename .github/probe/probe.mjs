@@ -1,21 +1,31 @@
-// Real REC on the live site (run by .github/workflows/vhs-probe.yml)
+// Full smoke test of the live site (run by .github/workflows/vhs-probe.yml)
 import { chromium } from 'playwright';
 const SITE = 'https://mauktenieb.github.io/insertkoin/';
-const b = await chromium.launch(); const p = await b.newPage({ acceptDownloads: true });
-// wait for the new scraper to be deployed
-for (let i = 0; i < 30; i++) { const r = await p.request.get(SITE + 'kg-vhs-scrape.js?x=' + Date.now()); if ((await r.text()).includes('il y a')) break; await p.waitForTimeout(10000); }
-for (const ch of ['https://www.youtube.com/@MaukTenieb', 'https://www.youtube.com/@GoogleDevelopers', 'https://www.youtube.com/channel/UCsYxJt19tb_ZLjVoTGgf5Mg']) {
-  await p.goto(SITE, { waitUntil: 'load' }); await p.evaluate(() => localStorage.clear()); await p.reload({ waitUntil: 'load' }); await p.waitForTimeout(1000);
-  await p.click('[data-go="vhs"]'); await p.waitForTimeout(3000);
-  await p.fill('[data-vhs-rec-input]', ch); await p.click('[data-vhs-rec-btn]');
-  const s = Date.now(); let txt = '';
-  while (Date.now() - s < 240000) { txt = await p.innerText('[data-vhs-rec-progress]').catch(() => ''); if (/RECORDED|ENREGISTR|failed|chou|cancel/i.test(txt)) break; await p.waitForTimeout(2000); }
-  console.log('REC', ch, Math.round((Date.now() - s) / 1000) + 's', JSON.stringify(txt));
-  const tape = await p.evaluate(() => { try { const a = JSON.parse(localStorage.getItem('kg.vhs.tapes.local.v1') || '[]'); return a.map(t => ({ ch: t.channel, n: t.tracks.length, first: t.tracks.slice(0, 3), last: t.tracks[t.tracks.length - 1] })); } catch (e) { return String(e); } });
-  console.log('TAPE', JSON.stringify(tape).slice(0, 900));
-  if (/RECORDED|ENREGISTR/i.test(txt)) {
-    await p.click('.vhs-tape:not(.vhs-tape-all)').catch(() => {}); await p.waitForTimeout(800);
-    try { const [d] = await Promise.all([p.waitForEvent('download', { timeout: 8000 }), p.click('[data-vhs-tapetools-csv]')]); const f = await d.path(); const fs = await import('fs'); console.log('CSV', d.suggestedFilename(), JSON.stringify(fs.readFileSync(f, 'utf8').slice(0, 400))); } catch (e) { console.log('CSV fail', String(e).slice(0, 200)); }
+const b = await chromium.launch();
+for (let i = 0; i < 30; i++) { const r = await (await b.newPage()).request.get(SITE + 'kg-loader.js?x=' + Date.now()); if ((await r.text()).includes('data-vhs-rec')) break; await new Promise(r => setTimeout(r, 10000)); }
+const GAMES = ['puck', 'chess', 'erratic', 'faunarratics', 'katabatik', 'vhs', 'photo', 'tor', 'terminal'];
+for (const [name, vp, touch, page] of [['desk', { width: 1280, height: 860 }, false, ''], ['deskFR', { width: 1280, height: 860 }, false, 'fr.html'], ['phone', { width: 390, height: 844 }, true, ''], ['phoneL', { width: 844, height: 390 }, true, '']]) {
+  const ctx = await b.newContext({ viewport: vp, hasTouch: touch, isMobile: touch }); const p = await ctx.newPage(); const errs = [];
+  p.on('pageerror', e => errs.push('pageerror ' + String(e).slice(0, 160)));
+  p.on('console', m => { if (m.type() === 'error' && !/Failed to load resource|favicon|ERR_|net::/.test(m.text())) errs.push('console ' + m.text().slice(0, 160)); });
+  await p.goto(SITE + page, { waitUntil: 'load' }); await p.evaluate(() => localStorage.setItem('ik.koins', '50')); await p.reload({ waitUntil: 'load' }); await p.waitForTimeout(2500);
+  const res = [];
+  for (const g of GAMES) {
+    try {
+      await p.goto(SITE + page, { waitUntil: 'load' }); await p.waitForTimeout(1200);
+      await p.click(`.cab [data-go="${g}"]`, { timeout: 5000 }); await p.waitForTimeout(g === 'katabatik' ? 5000 : 3500);
+      const st = await p.evaluate(() => ({ home: !document.getElementById('home').hidden, sel: !document.getElementById('select').hidden, game: !document.getElementById('game').hidden, calque: document.getElementById('calque') && !document.getElementById('calque').hidden, kg: !document.getElementById('kg-root').hidden, cf: !document.getElementById('cf').hidden }));
+      if (g === 'puck' && st.sel) { await p.click('#run'); await p.waitForTimeout(2500); st.game = await p.evaluate(() => !document.getElementById('game').hidden); }
+      res.push(g + ':' + Object.entries(st).filter(([k, v]) => v).map(([k]) => k).join('+'));
+    } catch (e) { res.push(g + ':FAIL ' + String(e).slice(0, 80)); }
   }
+  console.log(name, res.join('  '));
+  console.log(name, 'errors', errs.length, JSON.stringify([...new Set(errs)].slice(0, 8)));
+  await ctx.close();
 }
+// real REC
+const p = await b.newPage(); await p.goto(SITE, { waitUntil: 'load' }); await p.waitForTimeout(1000); await p.click('[data-go="vhs"]'); await p.waitForTimeout(4000);
+await p.fill('[data-vhs-rec-input]', 'https://www.youtube.com/@MaukTenieb'); await p.click('[data-vhs-rec-btn]');
+const s = Date.now(); let txt = ''; while (Date.now() - s < 150000) { txt = await p.innerText('[data-vhs-rec-progress]').catch(() => ''); if (/RECORDED|ENREGISTR|failed|chou/i.test(txt)) break; await p.waitForTimeout(2000); }
+console.log('REC', JSON.stringify(txt));
 await b.close();
