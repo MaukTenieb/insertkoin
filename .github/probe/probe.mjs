@@ -3,7 +3,7 @@ import { chromium } from 'playwright';
 const SITE = 'https://mauktenieb.github.io/insertkoin/';
 const b = await chromium.launch(); const p = await b.newPage({ acceptDownloads: true });
 // wait for the new scraper to be deployed
-for (let i = 0; i < 30; i++) { const r = await p.request.get(SITE + 'kg-vhs-scrape.js?x=' + Date.now()); if ((await r.text()).includes('videosIn')) break; await p.waitForTimeout(10000); }
+for (let i = 0; i < 30; i++) { const r = await p.request.get(SITE + 'kg-vhs-scrape.js?x=' + Date.now()); if ((await r.text()).includes('il y a')) break; await p.waitForTimeout(10000); }
 for (const ch of ['https://www.youtube.com/@MaukTenieb', 'https://www.youtube.com/@GoogleDevelopers', 'https://www.youtube.com/channel/UCsYxJt19tb_ZLjVoTGgf5Mg']) {
   await p.goto(SITE, { waitUntil: 'load' }); await p.evaluate(() => localStorage.clear()); await p.reload({ waitUntil: 'load' }); await p.waitForTimeout(1000);
   await p.click('[data-go="vhs"]'); await p.waitForTimeout(3000);
