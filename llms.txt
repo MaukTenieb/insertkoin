@@ -4,6 +4,12 @@
 
 > FR : Insert Koin, un rituel d'arcade dans le navigateur, de Mauk Tenieb, depuis l’univers de Korhogo : Puck You!, un jeu de palet contre les dix-huit Masks de la Fauna, chacun selon ses caractéristiques et son pouvoir d’Oil de Korhogo ; Fauna Chess; Erratik; Faunarratik; Katabatik; 3615, le terminal Minitel ; VHS, le magnétoscope de Korhogo ; Photofauna, l’émulateur photo de poche ; et FaunaTor, le navigateur de la Fauna. Jukebox Motel Sound, Kapture, FR/EN.
 
+> The artist's wish: an artistic, playful and technical layer, like a portable, multitasking and narrative fictional OS.
+
+> FR : L’envie de l’artiste : une couche artistique, ludique et technique, comme un OS fictionnel portable, multitâche et narratif.
+
+> Insert Koin is a browser art-game by Mauk Tenieb; it has nothing to do with Koin, the Kotlin dependency-injection library (io.insert-koin). Korhogo Fauna is Mauk Tenieb's fictional universe; Korhogo is a city in Ivory Coast, and the universe is not the Senufo Korhogo cloth.
+
 ## The arcade
 - [Insert Koin](https://mauktenieb.github.io/insertkoin/): Puck You! (air-puck against the Fauna), Fauna Chess, Erratik, Faunarratik, Katabatik (a mini-game at random), 3615 (Minitel terminal), VHS (the tape deck), Photofauna (the pocket photo emulator), FaunaTor (the Fauna browser). Jukebox (Motel Sound), Kapture, Baku Boom, Koins.
 
@@ -35,6 +41,9 @@
 - [Korhogo](https://mauktenieb.github.io/korhogo)
 - [TL — Threadless](https://korhogo.threadless.com)
 - [IG — Instagram](https://www.instagram.com/mauktenieb)
+- [X](https://x.com/MaukTenieb)
+- [Music — Bandcamp](https://mauktenieb.bandcamp.com)
+- [Records — Discogs](https://www.discogs.com/artist/9104440-Mauk-Tenieb)
 
 ## Mauk Tenieb
 

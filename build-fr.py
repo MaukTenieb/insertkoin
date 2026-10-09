@@ -15,4 +15,6 @@ s=sub(s,'<link rel="canonical" href="https://mauktenieb.github.io/insertkoin/">'
 s=sub(s,'<meta property="og:locale" content="en_US"><meta property="og:locale:alternate" content="fr_FR">','<meta property="og:locale" content="fr_FR"><meta property="og:locale:alternate" content="en_US">',1,'oglocale')
 s=sub(s,f'<meta property="og:description" content="{EN_DESC}"><meta property="og:url" content="https://mauktenieb.github.io/insertkoin/">',
       f'<meta property="og:description" content="{FR_DESC}"><meta property="og:url" content="https://mauktenieb.github.io/insertkoin/fr.html">',1,'ogdesc')
+# the artist's wish and the disambiguation, in French in the French page's JSON-LD
+s=s.replace("The artist's wish: an artistic, playful and technical layer, like a portable, multitasking and narrative fictional OS.","L’envie de l’artiste : une couche artistique, ludique et technique, comme un OS fictionnel portable, multitâche et narratif.")
 open(D+'fr.html','w',encoding='utf8').write(s); print('fr.html built',len(s))
