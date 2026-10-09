@@ -29,4 +29,11 @@ const r = await p.evaluate(async () => {
   return out;
 });
 for (const [k, v] of Object.entries(r)) console.log(k, typeof v === 'string' ? v.slice(0, 400) : JSON.stringify(v, null, 0).slice(0, 3000));
+/* from the runner itself (no CORS): what YouTube says the channel holds */
+for (const tab of ['videos', 'shorts', 'streams', 'playlists']) {
+  try { const tx = await (await fetch('https://www.youtube.com/@MaukTenieb/' + tab, { headers: { 'Accept-Language': 'en' } })).text();
+    console.log('yt_' + tab, tx.length, 'ids:' + new Set((tx.match(/"videoId":"([\w-]{11})"/g) || [])).size, 'count:' + ((/"videosCountText":\{"runs":\[\{"text":"([^"]+)"/.exec(tx) || /(\d[\d,.]*) videos/.exec(tx) || [])[1] || '?'), 'cont:' + /continuationCommand/.test(tx)); } catch (e) { console.log('yt_' + tab, String(e)); }
+}
+try { const tx = await (await fetch('https://www.youtube.com/feeds/videos.xml?channel_id=UCsYxJt19tb_ZLjVoTGgf5Mg')).text(); console.log('rss entries', (tx.match(/<entry>/g) || []).length); } catch (e) {}
 await b.close();
+// probe run 2026-10-09 18:50
