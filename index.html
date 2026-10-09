@@ -237,12 +237,12 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 @media (prefers-reduced-motion:reduce){.cab,.crt,.cab.lit b,.cab.boot{animation:none;transition:none;transform:none}.hero .heroFx{display:none}}
 
 /* the guide: a Mask in miniature who walks the cabinets when touched */
-.guide{position:absolute;z-index:40;width:var(--gw);height:var(--gh);cursor:pointer;background-repeat:no-repeat;filter:drop-shadow(0 6px 8px rgba(0,0,0,.7));transition:left .9s cubic-bezier(.45,.05,.4,1),top .9s cubic-bezier(.45,.05,.4,1),opacity .5s;animation:gbob 1.6s ease-in-out infinite;-webkit-tap-highlight-color:transparent}
+.guide{position:absolute;z-index:60;width:var(--gw);height:var(--gh);cursor:pointer;background-repeat:no-repeat;filter:drop-shadow(0 6px 8px rgba(0,0,0,.7));transition:left .9s cubic-bezier(.45,.05,.4,1),top .9s cubic-bezier(.45,.05,.4,1),opacity .5s;animation:gbob 1.6s ease-in-out infinite;-webkit-tap-highlight-color:transparent}
 .guide.walk{animation:gwalk .32s ease-in-out infinite}
 @keyframes gbob{50%{transform:translateY(-3px)}}
 @keyframes gwalk{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
 .guide.gone{opacity:0;pointer-events:none}
-.gtip{position:absolute;z-index:41;max-width:min(320px,70vw);padding:8px 11px 9px;background:rgba(7,6,10,.92);border:1px solid var(--gc,#c9a84c);box-shadow:0 0 18px color-mix(in srgb,var(--gc,#c9a84c) 40%,transparent);font:12px/1.5 "DM Mono",monospace;color:#e8e0c8;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .25s,transform .25s}
+.gtip{position:absolute;z-index:61;max-width:min(320px,70vw);padding:8px 11px 9px;background:rgba(7,6,10,.92);border:1px solid var(--gc,#c9a84c);box-shadow:0 0 18px color-mix(in srgb,var(--gc,#c9a84c) 40%,transparent);font:12px/1.5 "DM Mono",monospace;color:#e8e0c8;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .25s,transform .25s}
 .gtip.on{opacity:1;transform:none}
 .gtip b{display:block;font:400 18px/1 "Bebas Neue",Impact,sans-serif;letter-spacing:.06em;color:var(--gc,#c9a84c);margin-bottom:3px}
 #home{position:relative}
@@ -1877,7 +1877,7 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
     for(const el of stops){if(!touring)break;const isCab=el.classList.contains('cab');const hr=(el.getAttribute('href')||(el.querySelector('a')||{}).href||'')+'';const go=(el.querySelector('[data-go]')||el).dataset.go||(el.id==='kapture'?'kapture':el.id==='refresh'?'refresh':/substack/.test(hr)?'lore':/threadless/.test(hr)?'tl':/instagram/.test(hr)?'ig':/github\.com\/MaukTenieb/.test(hr)?'bio':'');
       el.scrollIntoView({block:'center',behavior:RMg?'auto':'smooth'});await W(RMg?60:420);if(!touring)break;
       const r=homeXY(el),gw=parseFloat(g.style.getPropertyValue('--gw'))||60;g.classList.add('walk');face(r.x<parseFloat(g.style.left)?2:3);
-      place(isCab?r.x+r.w-gw-6:r.x+r.w/2-gw/2,isCab?r.y+r.h-H-4:r.y-H+6);tip.classList.remove('on');await W(950);if(!touring)break;g.classList.remove('walk');face(4);
+      const vt=el.getBoundingClientRect().top;place(isCab?r.x+r.w-gw-6:r.x+r.w/2-gw/2,isCab?r.y+r.h-H-4:(vt<H+10?r.y+r.h+6:r.y-H+6));tip.classList.remove('on');await W(950);if(!touring)break;g.classList.remove('walk');face(4);
       if(isCab){el.classList.remove('lit','sweep');void el.offsetWidth;el.classList.add('lit','sweep');}else{el.classList.remove('sweep');void el.offsetWidth;el.classList.add('sweep');}
       if(AC&&sound){const n=drawNote();tone(330*Math.pow(2,n/12),.09,'triangle',.035);tone(660*Math.pow(2,n/12),.05,'sine',.017,0,.03);}
       const nm=(el.querySelector('b')||el).textContent.replace(/^[●\s]+/,'').trim();say(el,nm,L[go]||'');await W(L[go]?2600:1500);if(isCab)el.classList.remove('lit');face(0);}
