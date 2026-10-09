@@ -29,6 +29,22 @@ const r = await p.evaluate(async () => {
   return out;
 });
 for (const [k, v] of Object.entries(r)) console.log(k, typeof v === 'string' ? v.slice(0, 400) : JSON.stringify(v, null, 0).slice(0, 3000));
+/* the uploads playlist through Piped and Invidious, page after page, from the page (CORS as visitors) */
+const up = await p.evaluate(async () => {
+  const CH = 'UCsYxJt19tb_ZLjVoTGgf5Mg', L = 'UU' + CH.slice(2), out = {};
+  const J = async (u, ms = 20000) => { const c = new AbortController(); const t = setTimeout(() => c.abort(), ms); try { return await (await fetch(u, { signal: c.signal })).json(); } finally { clearTimeout(t); } };
+  for (const h of ['api.piped.private.coffee', 'pipedapi.kavin.rocks', 'pipedapi.adminforge.de']) {
+    try { let z = await J('https://' + h + '/playlists/' + L), ids = new Set(), pg = 1; (z.relatedStreams || []).forEach(v => ids.add(v.url)); const tot = z.videos;
+      while (z.nextpage && pg < 30) { z = await J('https://' + h + '/nextpage/playlists/' + L + '?nextpage=' + encodeURIComponent(z.nextpage)); (z.relatedStreams || []).forEach(v => ids.add(v.url)); pg++; }
+      out['piped_' + h] = ids.size + '/' + tot + ' in ' + pg + ' pages'; } catch (e) { out['piped_' + h] = String(e).slice(0, 80); }
+  }
+  for (const h of ['inv.nadeko.net', 'invidious.nerdvpn.de', 'yewtu.be']) {
+    try { let ids = new Set(), page = 1, z; do { z = await J('https://' + h + '/api/v1/playlists/' + L + '?page=' + page); (z.videos || []).forEach(v => ids.add(v.videoId)); page++; } while ((z.videos || []).length && page < 20);
+      out['inv_' + h] = ids.size + ' in ' + (page - 1) + ' pages'; } catch (e) { out['inv_' + h] = String(e).slice(0, 80); }
+  }
+  return out;
+});
+for (const [k, v] of Object.entries(up)) console.log(k, v);
 /* from the runner itself (no CORS): what YouTube says the channel holds */
 for (const tab of ['videos', 'shorts', 'streams', 'playlists']) {
   try { const tx = await (await fetch('https://www.youtube.com/@MaukTenieb/' + tab, { headers: { 'Accept-Language': 'en' } })).text();
@@ -36,4 +52,4 @@ for (const tab of ['videos', 'shorts', 'streams', 'playlists']) {
 }
 try { const tx = await (await fetch('https://www.youtube.com/feeds/videos.xml?channel_id=UCsYxJt19tb_ZLjVoTGgf5Mg')).text(); console.log('rss entries', (tx.match(/<entry>/g) || []).length); } catch (e) {}
 await b.close();
-// probe run 2026-10-09 18:50
+// probe run 2026-10-09 19:00
