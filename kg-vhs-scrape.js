@@ -45,7 +45,8 @@
   function any(ps) {
     return new Promise(function (res, rej) {
       var n = ps.length, f = 0; if (!n) rej(new Error("none"));
-      ps.forEach(function (p) { p.then(res, function () { if (++f === n) rej(new Error("all")); }); });
+      var last = "";
+      ps.forEach(function (p) { p.then(res, function (e) { if (e && e.message && !/^(all|0)$/.test(e.message)) last = e.message; if (++f === n) rej(new Error(last || "all")); }); });
     });
   }
   var torMod = null;
@@ -171,16 +172,81 @@
       return timed("https://" + host + "/channel/" + id, 15000, true).then(function (d) {
         name = d.name || ""; take(d);
         if (out.length) return d.nextpage ? next(d.nextpage, 0) : out;
-        var vt = (d.tabs || []).filter(function (t) { return /^videos?$/i.test(t.name || ""); })[0] || (d.tabs || []).filter(function (t) { return /video/i.test(t.name || ""); })[0];
-        if (!vt) throw new Error("empty");
-        return tab(vt.data, "", 0).then(function (o) { if (!o.length) throw new Error("empty"); return o; });
+        var tabs = (d.tabs || []).filter(function (t) { return /video|short|stream|live/i.test(t.name || ""); });
+        var pls = (d.tabs || []).filter(function (t) { return /playlist/i.test(t.name || ""); })[0];
+        var k = 0;
+        function each() { if (k >= tabs.length) return Promise.resolve(out); return tab(tabs[k++].data, "", 0).then(each, each); }
+        /* an artist's channel keeps its music in playlists (albums): read them when the uploads are thin */
+        function lists() {
+          if (!pls || out.length >= 50) return out;
+          return timed("https://" + host + "/channels/tabs?data=" + enc(pls.data), 20000, true).then(function (q) {
+            var ids = (q.content || []).map(function (c) { return (/list=([\w-]+)/.exec(c.url || "") || [])[1]; }).filter(Boolean).slice(0, 40), j = 0;
+            function one() {
+              if (j >= ids.length || stop() || out.length >= 3000) return out;
+              var L = ids[j++];
+              function pg(np, n) {
+                return timed("https://" + host + (np ? "/nextpage/playlists/" + L + "?nextpage=" + enc(np) : "/playlists/" + L), 20000, true).then(function (z) {
+                  take({ relatedStreams: z.relatedStreams || [] });
+                  return z.nextpage && (z.relatedStreams || []).length && n < 20 ? pg(z.nextpage, n + 1) : null;
+                });
+              }
+              return pg("", 0).then(one, one);
+            }
+            return one();
+          }, function () { return out; });
+        }
+        return each().then(lists).then(function (o) { if (!o.length) throw new Error("empty tabs (" + (d.tabs || []).map(function (t) { return t.name; }).join("/") + ")"); return o; });
       });
     }
     return any(hosts.slice(0, 6).map(from)).catch(function () { return any(hosts.slice(6, 16).map(from)); });
   }
 
+  /* every video named in a YouTube page's ytInitialData, whatever the layout of the day */
+  function initialData(h) {
+    var i = h.indexOf("ytInitialData"); if (i < 0) return null;
+    var a = h.indexOf("{", i), depth = 0, q = false, esc = false;
+    for (var j = a; j < h.length; j++) {
+      var ch = h.charAt(j);
+      if (q) { if (esc) esc = false; else if (ch === "\\") esc = true; else if (ch === '"') q = false; continue; }
+      if (ch === '"') q = true; else if (ch === "{") depth++; else if (ch === "}") { if (--depth === 0) { try { return JSON.parse(h.slice(a, j + 1)); } catch (e) { return null; } } }
+    }
+    return null;
+  }
+  function txt(o) { if (!o) return ""; if (typeof o === "string") return o; if (o.simpleText) return o.simpleText; if (o.content) return o.content; if (o.runs) return o.runs.map(function (r) { return r.text; }).join(""); return ""; }
+  function videosIn(data) {
+    var out = [], seen = {};
+    function add(id, t) { if (id && /^[\w-]{11}$/.test(id) && !seen[id]) { seen[id] = 1; out.push({ id: id, title: t || id }); } }
+    (function walk(o, d) {
+      if (!o || typeof o !== "object" || d > 60) return;
+      if (Array.isArray(o)) { for (var i = 0; i < o.length; i++) walk(o[i], d + 1); return; }
+      var r = o.videoRenderer || o.gridVideoRenderer || o.playlistVideoRenderer || o.compactVideoRenderer || o.playlistPanelVideoRenderer;
+      if (r && r.videoId) add(r.videoId, txt(r.title));
+      if (o.reelItemRenderer && o.reelItemRenderer.videoId) add(o.reelItemRenderer.videoId, txt(o.reelItemRenderer.headline));
+      var sl = o.shortsLockupViewModel;
+      if (sl) { try { add(sl.onTap.innertubeCommand.reelWatchEndpoint.videoId, txt(sl.overlayMetadata.primaryText)); } catch (e) {} }
+      var lv = o.lockupViewModel;
+      if (lv && /VIDEO/.test(lv.contentType || "") && lv.contentId) { var md = lv.metadata && lv.metadata.lockupMetadataViewModel; add(lv.contentId, md && txt(md.title)); }
+      for (var k in o) if (k !== "frameworkUpdates" && Object.prototype.hasOwnProperty.call(o, k)) walk(o[k], d + 1);
+    })(data, 0);
+    return out;
+  }
+
   /* road 1c: the channel's videos tab, rendered by r.jina.ai — the latest hundred or so */
   function jinaVideos(id, prog) {
+    var all = [], seen = {}, name = "";
+    function grab(tabName) {
+      return jina("https://www.youtube.com/channel/" + id + "/" + tabName, 60000).then(function (h) {
+        if (!name) name = nameOf(h);
+        videosIn(initialData(h)).forEach(function (v) { if (!seen[v.id]) { seen[v.id] = 1; all.push(v); } });
+        prog(all.length);
+      }, function () {});
+    }
+    return grab("videos").then(function () { return grab("shorts"); }).then(function () { return grab("streams"); }).then(function () {
+      if (all.length) return { tracks: all, name: name };
+      return jinaVideosDom(id, prog);
+    });
+  }
+  function jinaVideosDom(id, prog) {
     return jina("https://www.youtube.com/channel/" + id + "/videos", 60000).then(function (h) {
       var d = new DOMParser().parseFromString(h, "text/html"), by = {}, order = [];
       Array.prototype.forEach.call(d.querySelectorAll('a[href*="watch?v="]'), function (a) {
@@ -229,6 +295,7 @@
     return page("https://www.youtube.com/playlist?list=" + listId).then(function (h) {
       var out = [], seen = {}, re = /"playlistVideoRenderer":\{"videoId":"([\w-]{11})"[\s\S]*?"title":\{"runs":\[\{"text":"((?:[^"\\]|\\.)*)"/g, m;
       while ((m = re.exec(h))) if (!seen[m[1]]) { seen[m[1]] = 1; out.push({ id: m[1], title: unesc(m[2]) }); }
+      if (!out.length) out = videosIn(initialData(h));
       if (!out.length) throw new Error("empty");
       prog(out.length);
       var title = (/"metadata":\{"playlistMetadataRenderer":\{"title":"((?:[^"\\]|\\.)*)"/.exec(h) || [])[1];
