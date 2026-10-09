@@ -73,4 +73,4 @@ jobs:
           git config user.email "faunator-bot@users.noreply.github.com"
           git add tor-web.js tor-web_bg.wasm tor-onion.js tor-onion_bg.wasm TOR-LICENSES.txt
           git commit -m "FaunaTor: in-page Tor clients ($WEB_REF, $ONION_REF)" || exit 0
-          git push
+          for i in 1 2 3; do git pull --rebase -q && git push && break; sleep 5; done
