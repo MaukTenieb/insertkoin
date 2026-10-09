@@ -1,0 +1,36 @@
+# FaunaTor: the Tor network's consensus, fetched from the directory authorities twice a day
+# and published on this site (tor/), so the in-page Tor client reads it without crossing origins.
+# Script: privacy-ethereum/webtor-rs scripts/fetch-consensus.sh (MIT).
+name: FaunaTor consensus
+
+on:
+  schedule:
+    - cron: '23 5,17 * * *'
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/tor-consensus.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  consensus:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch
+        run: |
+          sudo apt-get install -y brotli >/dev/null
+          curl -fsSL https://raw.githubusercontent.com/privacy-ethereum/webtor-rs/v0.5.7/scripts/fetch-consensus.sh -o /tmp/fetch.sh
+          bash /tmp/fetch.sh /tmp/cached
+          mkdir -p tor
+          cp /tmp/cached/consensus.txt.br /tmp/cached/microdescriptors.txt.br tor/
+          ls -la tor
+      - name: Commit
+        run: |
+          git config user.name "faunator-bot"
+          git config user.email "faunator-bot@users.noreply.github.com"
+          git add tor/consensus.txt.br tor/microdescriptors.txt.br
+          git commit -m "FaunaTor: Tor consensus $(date -u +%Y-%m-%dT%H:%MZ)" || exit 0
+          git pull --rebase -q || true
+          git push
