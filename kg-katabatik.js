@@ -983,6 +983,7 @@ function hangGift(){
 }
 window.hangGift=hangGift;
 var HANG_MAX=6;
+var HANG_FAM=['AÁ','EÉ','IÍ','OÓÖŐ','UÚÜŰ'];
 /* sens des mots, révélé à la fin de la partie — FR puis EN */
 var HANG_TR={
  kalap:{fr:'chapeau',en:'hat'},kút:{fr:'puits',en:'well'},tenger:{fr:'mer',en:'sea'},madár:{fr:'oiseau',en:'bird'},
@@ -1058,8 +1059,11 @@ function hangDraw(){
 function hangGuess(L){
   if(typeof kkClick==='function')try{kkClick();}catch(_e){}
   if(!_hang||_hang.over||_hang.guessed[L]!==undefined)return;
-  _hang.guessed[L]=_hang.word.indexOf(L)>=0;
-  if(!_hang.guessed[L]){_hang.miss++;_hangPartAt=Date.now();hangFall(L);}else kbSfx('tick',6);
+  /* a vowel counts with or without its accents: A finds Á, O finds Ó Ö Ő, and so on */
+  var fam=HANG_FAM.filter(function(f){return f.indexOf(L)>=0;})[0]||L,hit=false;
+  for(var f=0;f<fam.length;f++){var on=_hang.word.indexOf(fam[f])>=0;_hang.guessed[fam[f]]=on;if(on)hit=true;}
+  if(!hit)_hang.guessed[L]=false;
+  if(!hit){_hang.miss++;_hangPartAt=Date.now();hangFall(L);}else kbSfx('tick',6);
   var done=true;
   for(var i=0;i<_hang.word.length;i++)if(!_hang.guessed[_hang.word[i]]){done=false;break;}
   if(done){
