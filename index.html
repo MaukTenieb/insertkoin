@@ -387,24 +387,36 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
     <nav class="cabinets" aria-label="Arcade">
       <div class="cab main" style="--th:url(thumb-puck.jpg);--nc:#ffa726"><button type="button" class="hit" data-go="puck"><b>PUCK YOU!</b></button></div>
       <div class="cab" style="--th:url(thumb-chess.jpg);--nc:#ab47bc"><button type="button" class="hit" data-go="chess"><b>FAUNA CHESS</b></button></div>
-      <div class="cab" style="--th:url(thumb-erratic.jpg);--nc:#42a5f5"><button type="button" class="hit" data-go="erratic"><b>ERRATIK</b></button></div>
-      <div class="cab" style="--th:url(thumb-faunarratics.jpg);--nc:#4fc3f7"><button type="button" class="hit" data-go="faunarratics"><b>FAUNARRATIK</b></button></div>
+      <div class="cab" data-swap="erratic" style="--th:url(thumb-erratic.jpg);--nc:#42a5f5"><button type="button" class="hit" data-go="erratic"><b>ERRATIK</b></button></div>
+      <div class="cab" data-swap="faunarratics" style="--th:url(thumb-faunarratics.jpg);--nc:#4fc3f7"><button type="button" class="hit" data-go="faunarratics"><b>FAUNARRATIK</b></button></div>
       <div class="cab dice" style="--th:url(thumb-katabatik.jpg);--nc:#f48fb1"><button type="button" class="hit" data-go="katabatik"><b data-d="⚄">KATABATIK</b></button></div>
       <div class="cab tel" style="--th:url(thumb-3615.jpg);--nc:#66bb6a"><button type="button" class="hit" data-go="terminal"><b>3615</b></button></div>
       <div class="cab" style="--th:url(thumb-vhs.jpg);--nc:#b9d84a"><button type="button" class="hit" data-go="vhs"><b>VHS</b></button></div>
       <div class="cab" style="--th:url(thumb-photo.jpg);--nc:#ff5a5a"><button type="button" class="hit" data-go="photo"><b>Photofauna</b></button></div>
       <div class="cab" style="--th:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect width='400' height='400' fill='%2307060a'/%3E%3Ccircle cx='200' cy='168' r='96' fill='none' stroke='%23c9a84c' stroke-opacity='.45' stroke-width='3'/%3E%3Ccircle cx='200' cy='168' r='66' fill='none' stroke='%23c9a84c' stroke-opacity='.7' stroke-width='3'/%3E%3Ccircle cx='200' cy='168' r='36' fill='none' stroke='%23ffe08a' stroke-width='3'/%3E%3Ccircle cx='200' cy='118' r='10' fill='%23d32f2f'/%3E%3C/svg%3E&quot;);--nc:#7e57c2"><button type="button" class="hit" data-go="tor"><b>F<small>AUNA</small>T<small>OR</small></b></button></div>
+      <div class="cab" style="--th:url(thumb-skopo.jpg);--nc:#4fc3f7"><button type="button" class="hit" data-go="skopo"><b>SKOPO<small style="font-size:1em;color:#e8c96a">RHOGO</small></b></button></div>
+      <div class="cab" data-swap="repo" style="--th:url(thumb-repo.jpg);--nc:#b9d84a"><button type="button" class="hit" data-go="repo"><b>REPO<small style="font-size:1em;color:#e8c96a">RHOGO</small></b></button></div>
+      <div class="cab" data-swap="bio" style="--th:url(thumb-bio.jpg);--nc:#66bb6a"><a class="hit" href="https://github.com/MaukTenieb" target="_blank" rel="noopener"><b>BIO</b></a></div>
+      <div class="cab" data-swap="dive" style="--th:url(thumb-dive.jpg);--nc:#42a5f5"><button type="button" class="hit" data-go="visit"><b>DIVE!</b></button></div>
     </nav>
     <nav class="menu" aria-label="Korhogo">
       <a href="https://mauktenieb.substack.com" target="_blank" rel="noopener" style="--mc:#ab47bc">LORE</a>
-      <button type="button" data-go="visit" style="--mc:#42a5f5">DIVE!</button>
-      <a href="https://github.com/MaukTenieb" target="_blank" rel="noopener" style="--mc:#66bb6a">BIO</a>
+      <button type="button" data-swap="dive" data-go="visit" style="--mc:#42a5f5">DIVE!</button>
+      <a data-swap="bio" href="https://github.com/MaukTenieb" target="_blank" rel="noopener" style="--mc:#66bb6a">BIO</a>
       <button type="button" id="refresh" style="--mc:#ffa726">INSERT KOIN</button>
-      <button type="button" data-go="repo" style="--mc:#b9d84a" aria-label="Reporhogo">REPO<span style="color:#c9a84c;text-shadow:0 0 10px rgba(201,168,76,.6)">RHOGO</span></button>
-      <button type="button" data-go="skopo" style="--mc:#4fc3f7" aria-label="Skoporhogo">SKOPO<span style="color:#c9a84c;text-shadow:0 0 10px rgba(201,168,76,.6)">RHOGO</span></button>
+      <button type="button" data-swap="erratic" data-go="erratic" style="--mc:#42a5f5">ERRATIK</button>
+      <button type="button" data-swap="faunarratics" data-go="faunarratics" style="--mc:#4fc3f7">FAUNARRATIK</button>
+      <button type="button" data-swap="repo" data-go="repo" style="--mc:#b9d84a" aria-label="Reporhogo">REPO<span style="color:#c9a84c;text-shadow:0 0 10px rgba(201,168,76,.6)">RHOGO</span></button>
       <a href="https://korhogo.threadless.com" target="_blank" rel="noopener" style="--mc:#ff7043">TL</a>
       <a href="https://www.instagram.com/mauktenieb" target="_blank" rel="noopener" style="--mc:#f48fb1">IG</a>
     </nav>
+    <script>/* each visit draws which of these stand as big cabinets and which shrink to chips; rows always full */
+    (function(){var home=document.getElementById('home'),grid=home.querySelector('.cabinets'),sw=['repo','bio','dive','faunarratics','erratic'];
+      var fixed=grid.querySelectorAll('.cab:not([data-swap])').length,ks=[1,2,3,4,5].filter(function(k){return (fixed+k)%3===0;}),k=ks[Math.floor(Math.random()*ks.length)];
+      sw.sort(function(){return Math.random()-.5;});var big=sw.slice(0,k);
+      sw.forEach(function(id){var cab=grid.querySelector('.cab[data-swap="'+id+'"]'),chip=home.querySelector('.menu [data-swap="'+id+'"]');
+        if(big.indexOf(id)>=0){if(chip)chip.remove();if(cab){var cs=[].slice.call(grid.children),at=1+Math.floor(Math.random()*(cs.length-1));grid.insertBefore(cab,cs[at]||null);}}
+        else if(cab)cab.remove();});})();</script>
     <p class="copy">© <b>Korhogo™</b> · Korhogo Fauna™ · Fauna Masks™ — any content, any form, any medium. Mauk Tenieb.</p>
   </section>
 
