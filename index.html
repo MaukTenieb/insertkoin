@@ -1570,7 +1570,13 @@ setInterval(syncKoins,1500);syncKoins();
 $('kal').onclick=()=>go('kal');   // 3615Koins : connexion directe au service KOINS (+1 par connexion)
 /* the Korhogo games: one Koin to open, two for a win */
 const _openGame=openGame;openGame=function(k,title){if(k!=='kapture'&&k!=='vhs'&&!pay()){syncKoins();$('kal').classList.remove('pay');void $('kal').offsetWidth;$('kal').classList.add('pay');return;}_openGame(k,title);};
-if(window.KG)KG.onwin=()=>earn(2);
+/* a win rains Koins over the game, then they pour into the counter */
+function koinRain(){if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;const N=touchDev?16:26;
+  for(let i=0;i<N;i++){const c=document.createElement('span');c.className='kdrop';c.textContent='◉';const x=Math.random()*innerWidth,sz=12+Math.random()*16,d=900+Math.random()*900,dl=Math.random()*700;
+    c.style.cssText+=`left:${x}px;top:-30px;font-size:${sz}px;z-index:10000`;document.body.appendChild(c);
+    const a=c.animate([{transform:'translateY(0) rotateY(0)',opacity:1},{transform:`translate(${(Math.random()-.5)*80}px,${innerHeight+60}px) rotateY(${720+Math.random()*1080}deg)`,opacity:.9}],{duration:d,delay:dl,easing:'cubic-bezier(.45,0,.95,.6)',fill:'both'});
+    if(i%3===0)setTimeout(()=>{try{tone(2093+Math.random()*900,.05,'triangle',.03);tone(3136,.07,'triangle',.018,0,.03);}catch(e){}},dl+d*.92);a.onfinish=()=>c.remove();}}
+if(window.KG)KG.onwin=()=>{earn(2);koinRain();};
 /* saved run: CONTINUE picks it up where it stopped */
 const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b=$('run2');b.hidden=!r;if(r)b.textContent=tr('cont');};
 
