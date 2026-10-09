@@ -1,51 +1,16 @@
 import { chromium } from 'playwright';
-const SITE = 'https://mauktenieb.github.io/insertkoin/';
+/* a real REC of a channel against the live site, as a visitor's browser does it */
+const SITE = 'https://mauktenieb.github.io/insertkoin/', URL_ = 'https://youtube.com/@mauktenieb';
+await new Promise(r => setTimeout(r, 90000)); /* let Pages publish the last commit */
 const b = await chromium.launch(); const p = await b.newPage();
-await p.goto(SITE, { waitUntil: 'load' });
-const r = await p.evaluate(async () => {
-  const P = 'https://api.piped.private.coffee', CH = 'UCsYxJt19tb_ZLjVoTGgf5Mg', out = {};
-  const J = async u => (await fetch(u)).json();
-  try {
-    const d = await J(P + '/channel/' + CH); out.tabs = (d.tabs || []).map(t => t.name).join(','); out.related = (d.relatedStreams || []).length; out.np = !!d.nextpage;
-    for (const t of d.tabs || []) {
-      let q = await J(P + '/channels/tabs?data=' + encodeURIComponent(t.data)), n = 0, pages = 0, types = {};
-      while (q && pages < 30) { (q.content || []).forEach(c => types[c.type] = (types[c.type] || 0) + 1); n += (q.content || []).length; pages++; if (!q.nextpage) break; q = await J(P + '/channels/tabs?data=' + encodeURIComponent(t.data) + '&nextpage=' + encodeURIComponent(q.nextpage)).catch(e => ({ err: String(e) })); if (q.err || q.error) { out['tabErr_' + t.name] = q.err || q.error; break; } }
-      out['tab_' + t.name] = n + ' items, ' + pages + ' pages ' + JSON.stringify(types);
-      if (t.name === 'playlists') {
-        const q0 = await J(P + '/channels/tabs?data=' + encodeURIComponent(t.data));
-        out.playlists = [];
-        for (const c of (q0.content || []).slice(0, 40)) { const L = (/list=([\w-]+)/.exec(c.url || '') || [])[1]; let z = await J(P + '/playlists/' + L).catch(() => ({})), m = (z.relatedStreams || []).length, pg = 1, tot = z.videos;
-          while (z.nextpage && pg < 20) { z = await J(P + '/nextpage/playlists/' + L + '?nextpage=' + encodeURIComponent(z.nextpage)).catch(() => ({})); m += (z.relatedStreams || []).length; pg++; }
-          out.playlists.push(c.name + ' [' + (c.uploaderName || '') + '] ' + m + '/' + tot); }
-      }
-    }
-  } catch (e) { out.err = String(e); }
-  const H = { headers: { 'X-Return-Format': 'html' } };
-  for (const tab of ['videos', 'shorts', 'streams', 'releases', 'playlists', 'featured']) {
-    try { const tx = await (await fetch('https://r.jina.ai/https://www.youtube.com/channel/' + CH + '/' + tab, H)).text(); out['jina_' + tab] = tx.length + ' ids:' + new Set((tx.match(/"videoId":"([\w-]{11})"/g) || [])).size + ' tabsSeen:' + [...new Set((tx.match(/"title":"(Home|Videos|Shorts|Live|Releases|Playlists|Posts|Podcasts|Courses|Store)"/g) || []))].join('|'); } catch (e) { out['jina_' + tab] = String(e); }
-  }
-  try { const tx = await (await fetch('https://r.jina.ai/https://www.youtube.com/playlist?list=UU' + CH.slice(2), H)).text(); out.uploads = (/"numVideosText":\{"runs":\[\{"text":"([^"]+)"/.exec(tx) || /([\d,]+) videos/.exec(tx) || [])[1] + ' ids:' + new Set((tx.match(/"videoId":"([\w-]{11})"/g) || [])).size; } catch (e) { out.uploads = String(e); }
-  try { const tx = await (await fetch('https://r.jina.ai/https://www.youtube.com/@MaukTenieb', H)).text(); out.about = (/"videoCountText":\{[^}]*?"text":"([^"]+)"/.exec(tx) || /([\d,.]+\s*videos)/.exec(tx) || [])[1]; } catch (e) {}
-  return out;
-});
-for (const [k, v] of Object.entries(r)) console.log(k, typeof v === 'string' ? v.slice(0, 400) : JSON.stringify(v, null, 0).slice(0, 3000));
-/* jina: the uploads playlist page, then a watch page inside the playlist (its side panel lists ~200 entries around the index) */
-const jw = await p.evaluate(async () => {
-  const CH = 'UCsYxJt19tb_ZLjVoTGgf5Mg', L = 'UU' + CH.slice(2), H = { headers: { 'X-Return-Format': 'html' } }, out = {};
-  const ids = tx => [...new Set((tx.match(/"videoId":"([\w-]{11})"/g) || []).map(x => x.slice(11, 22)))];
-  try { const t1 = await (await fetch('https://r.jina.ai/https://www.youtube.com/playlist?list=' + L, H)).text(); const a = ids(t1); out.pl = a.length;
-    const last = a[a.length - 1];
-    for (const ix of [100, 150, 189]) { try { const t2 = await (await fetch('https://r.jina.ai/https://www.youtube.com/watch?v=' + last + '&list=' + L + '&index=' + ix, H)).text(); const b = ids(t2); out['watch_' + ix] = b.length + ' new:' + b.filter(x => !a.includes(x)).length + ' panelTotal:' + ((/"totalVideos":(\d+)/.exec(t2) || [])[1] || '?'); b.forEach(x => a.includes(x) || a.push(x)); } catch (e) { out['watch_' + ix] = String(e).slice(0, 60); } }
-    out.union = a.length;
-  } catch (e) { out.err = String(e).slice(0, 80); }
-  return out;
-});
-for (const [k, v] of Object.entries(jw)) console.log('jw', k, v);
-/* from the runner itself (no CORS): what YouTube says the channel holds */
-for (const tab of ['videos', 'shorts', 'streams', 'playlists']) {
-  try { const tx = await (await fetch('https://www.youtube.com/@MaukTenieb/' + tab, { headers: { 'Accept-Language': 'en' } })).text();
-    console.log('yt_' + tab, tx.length, 'ids:' + new Set((tx.match(/"videoId":"([\w-]{11})"/g) || [])).size, 'count:' + ((/"videosCountText":\{"runs":\[\{"text":"([^"]+)"/.exec(tx) || /(\d[\d,.]*) videos/.exec(tx) || [])[1] || '?'), 'cont:' + /continuationCommand/.test(tx)); } catch (e) { console.log('yt_' + tab, String(e)); }
-}
-try { const tx = await (await fetch('https://www.youtube.com/feeds/videos.xml?channel_id=UCsYxJt19tb_ZLjVoTGgf5Mg')).text(); console.log('rss entries', (tx.match(/<entry>/g) || []).length); } catch (e) {}
+await p.goto(SITE + '?v=' + Date.now(), { waitUntil: 'load' });
+const r = await p.evaluate(async (u) => {
+  await new Promise((ok, ko) => { const s = document.createElement('script'); s.src = 'kg-vhs-scrape.js?v=' + Date.now(); s.onload = ok; s.onerror = ko; document.head.appendChild(s); });
+  const t0 = Date.now(), log = [];
+  try { const tape = await window.KGVHSScrape.record(u, { onProgress: (n, nm) => log.push(n) });
+    return { ok: true, count: tape.tracks.length, expected: tape.expected, channel: tape.channel, secs: Math.round((Date.now() - t0) / 1000), steps: log.filter((x, i) => i % 10 === 0).join(','), sample: tape.tracks.slice(-3).map(t => t.id + ' ' + (t.title || '').slice(0, 40) + ' ' + (t.duration || '')) };
+  } catch (e) { return { ok: false, err: String(e && e.message || e).slice(0, 400), why: e && e.why } }
+}, URL_);
+console.log('REC', JSON.stringify(r, null, 1));
 await b.close();
-// probe run 2026-10-09 19:10
+// probe run 2026-10-09 19:20
