@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07060a">
-<title>Fotofauna</title>
+<title>Photofauna</title>
 <link href="fonts.css" rel="stylesheet">
 <script>try{var _l=localStorage.getItem('ik.lang');if(_l)localStorage.setItem('obturama.lang',JSON.stringify(_l==='fr'?'fr':'en'));}catch(e){}</script>
 <style>/* Fotofauna — direction artistique Fauna : noir chaud, or de Korhogo, ivoire du site (aligné sur l'arcade) */
@@ -404,6 +404,20 @@ header.top{background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:non
 }
 @media (max-width:560px){.actions button{min-height:42px;flex-direction:row;gap:6px;font-size:12.5px}}
 </style>
+<style id="ff-fit">
+/* [IK] the photo never covers the tools: on an upright phone it scrolls away with the page and stays modest;
+   on its side, the photo stands left and the tools scroll on the right; full screen follows the same rules */
+@media (max-width:999px) and (orientation:portrait){
+ .stageCol{position:relative!important;top:auto!important}
+ #view{max-height:40svh!important;max-width:100%!important;width:auto!important;height:auto!important}
+}
+@media (orientation:landscape) and (max-height:560px){
+ main.left{display:grid!important;grid-template-columns:auto minmax(0,1fr)!important;height:calc(100svh - var(--hd))!important;overflow:hidden!important}
+ .stageCol{position:relative!important;top:auto!important;height:100%!important;overflow:hidden!important;padding:6px 10px!important;justify-content:center;box-shadow:none!important;border-bottom:0!important;border-right:1px solid var(--line)}
+ #view{max-height:calc(100svh - var(--hd) - 96px)!important;max-width:46vw!important;width:auto!important;height:auto!important}
+ .inspector{height:100%!important;overflow:auto!important;min-width:0}
+}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -423,7 +437,7 @@ header.top{background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:non
 </defs></svg>
 <div class="app" id="app">
 <header class="top">
- <div class="logo" aria-label="Fotofauna"><svg class="mark" aria-hidden="true"><use href="#i-aperture"/></svg><span class="word">Fotofauna</span></div>
+ <div class="logo" aria-label="Photofauna"><svg class="mark" aria-hidden="true"><use href="#i-aperture"/></svg><span class="word">Photofauna</span></div>
  <span class="led" id="counter" hidden title="Poses restantes"></span>
  <button id="bOpen" class="ghost tb" title="Ouvrir une photo"><svg class="ic" aria-hidden="true"><use href="#i-open"/></svg><span>Ouvrir</span></button>
  <button id="bShoot" class="ghost tb" title="Prendre une photo"><svg class="ic" aria-hidden="true"><use href="#i-camera"/></svg><span>Prendre</span></button>
@@ -1632,7 +1646,7 @@ function trS(s){if(LANG!=='en'||!s)return s;const t=s.trim();if(!t)return s;if(E
  return s;}
 function trNode(n){if(n.nodeType===3){if(n.parentNode&&/^(SCRIPT|STYLE)$/.test(n.parentNode.nodeName))return;const v=trS(n.nodeValue);if(v!==n.nodeValue)n.nodeValue=v;return;}
  if(n.nodeType!==1||/^(SCRIPT|STYLE)$/.test(n.nodeName))return;['placeholder','title','aria-label'].forEach(a=>{const v=n.getAttribute&&n.getAttribute(a);if(v){const t=trS(v);if(t!==v)n.setAttribute(a,t);}});for(const c of n.childNodes)trNode(c);}
-function applyLang(){document.documentElement.lang=LANG;const b=document.getElementById('bLang');if(b){b.title=LANG==='fr'?'Switch to English':'Passer en français';b.setAttribute('aria-label',LANG==='fr'?'Language: French. Switch to English':'Language: English. Passer en français');}if(LANG==='en'){trNode(document.body);document.title='Fotofauna';}}
+function applyLang(){document.documentElement.lang=LANG;const b=document.getElementById('bLang');if(b){b.title=LANG==='fr'?'Switch to English':'Passer en français';b.setAttribute('aria-label',LANG==='fr'?'Language: French. Switch to English':'Language: English. Passer en français');}if(LANG==='en'){trNode(document.body);document.title='Photofauna';}}
 new MutationObserver(ms=>{if(LANG!=='en')return;for(const m of ms){if(m.type==='characterData')trNode(m.target);else if(m.type==='attributes')trNode(m.target);else m.addedNodes.forEach(trNode);}}).observe(document.documentElement,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['placeholder','title','aria-label']});
 document.addEventListener('DOMContentLoaded',applyLang);
 const _promptFR=window.prompt.bind(window);window.prompt=(m,d)=>_promptFR(trS(m),d);const _confirmFR=window.confirm.bind(window);window.confirm=m=>_confirmFR(trS(m));
