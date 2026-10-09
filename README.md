@@ -44,6 +44,7 @@ Now and then a guide wanders along the cabinets, shining in its colour when it a
 - Each Mask plays by its Korhogo stats (STR power, DEX speed, INT precision, WIS reading, CHA placing, CON stamina) and a signature move, and keeps its own fixed level.
 - **Duel**: click a Mask in the room, first to 15. **Continue** picks a saved run up where it stopped.
 - The room is drawn anew for each match (wallpaper, roses, carpet) and its two paintings are Fauna drawn at random. The CRT on the dresser switches at random and on every point between the Mask's motto, the score, its stats, the rally, its signature, your Koins, the hour, Motel Sound, test cards, snow and a few seconds of a Mauk Tenieb clip.
+- **The Kerema decides!** One tournament in two opens with a die that sets the applicant's swing, from −15 % (⚀) to +15 % (⚅); the face stays by the score. One match in two, a translucent die floats over the table once or twice (*Want Kerema?*, *Got Kerem... ilk?* — *On est joueur ?*, *Koquinette ou Koquinou ?*): touch it with the paddle to take the throw, or let it drift away. The Kerema leans toward those who earned their Koins: the more Koins, the higher the faces (about 7 Koins: even).
 - On a phone held upright, a phone turns over the table; on its side, the table takes the whole height; in full screen the score follows inside the table.
 
 ## Koins
@@ -77,7 +78,11 @@ When a page cannot be reached: *Your Kalabass was rejected. Apply later.* — wi
 
 ## Photofauna
 
-A pocket photo app honouring the photo apps of 2008–2019: 44 looks (simulated film, toy cameras, historical processes, instants, glitch, painting, shapes…), an editor with adjustments, recipes kept inside the saved PNG, GIF export, deterministic renders. The camera opens on a Mask drawn at random. One self-contained file: `fotofauna.html`.
+A pocket photo app honouring the photo apps of 2008–2019: 44 looks (simulated film, toy cameras, historical processes, instants, glitch, painting, shapes…), an editor with adjustments, recipes kept inside the saved PNG, GIF export, deterministic renders. The camera opens on a Mask drawn at random. Every shot is saved at once, untouched. Looks pile up: **Keep** fixes the current look into the picture and the next one goes on top; **Undo** steps back, last look first, then last layer. The saved PNG carries the fixed layers in its recipe. One self-contained file: `fotofauna.html`.
+
+## Saved files
+
+Everything Insert Koin saves (Photofauna, Faunarratik, the Sampler, Kapture, VHS exports, the Motel Sound list) is named by the French Republican calendar, then the program, then a counter of the day: `18-vendemiaire-235_photofauna_001.jpg`. The day is the visitor's own; years III, VII, XI and XV are sextile as they were kept, then Romme's rule (`ik-name.js`).
 
 ---
 
@@ -103,6 +108,7 @@ Everything sits at the top level, no folders (except `tor/` and `.github/`), so 
 | `fonts.css`, `font-*.woff2` | the fonts, served by the site |
 | `manifest.webmanifest`, `sw.js`, `icon.png`, `favicon.png` | installation and offline use (`sw.js`: pages and code from the network first, images from the cache) |
 | `robots.txt`, `sitemap.xml`, `llms.txt` | search and answer engines are welcome; training crawlers are refused |
+| `ik-name.js` | names every saved file by the Republican calendar (`fotofauna.html` carries its own copy) |
 | `build-fr.py` | builds `fr.html` from `index.html` |
 
 ### Workflows (`.github/workflows/`)

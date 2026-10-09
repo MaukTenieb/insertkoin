@@ -595,7 +595,7 @@
         var a = q(root, "[data-vhs-tapetools-" + fmt + "]");
         if (!a) return;
         if (a.__blob) try { URL.revokeObjectURL(a.__blob); } catch (e) {}
-        a.__blob = URL.createObjectURL(ex[fmt]); a.href = a.__blob; a.setAttribute("download", base0 + "." + fmt);
+        a.__blob = URL.createObjectURL(ex[fmt]); a.href = a.__blob; a.setAttribute("download", base0 + "." + fmt); a.onclick = function () { if (window.ikName) a.setAttribute("download", window.ikName("vhs", fmt)); };
       });
       var eb = q(root, "[data-vhs-tapetools-eject]");
       if (eb) {

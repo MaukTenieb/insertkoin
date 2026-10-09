@@ -690,7 +690,7 @@ function kkWrapTxt(){
   }
   lines.push('');
   lines.push('(c) Korhogo(tm)');
-  kkSave(lines.join('\n'),'konklave-tale.txt');
+  kkSave(lines.join('\n'),window.ikName?ikName('faunarratik','txt'):'konklave-tale.txt');
 }
 window.kkWrapTxt=kkWrapTxt;
 function kkDownloadTxt(){
@@ -699,7 +699,7 @@ function kkDownloadTxt(){
     var blob=new Blob([txt],{type:'text/plain;charset=utf-8'});
     var url=URL.createObjectURL(blob);
     var a=document.createElement('a');
-    a.href=url;a.download='konklave.txt';
+    a.href=url;a.download=window.ikName?ikName('faunarratik','txt'):'konklave.txt';
     document.body.appendChild(a);a.click();
     setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
   }catch(e){}

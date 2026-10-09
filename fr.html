@@ -607,6 +607,7 @@ SOFTWARE.</pre></details>
 
 </div>
 <noscript><p style="padding:16px">Insert Koin needs JavaScript.</p></noscript>
+<script src="ik-name.js"></script>
 <script src="kg-vhs-library.js"></script>
 <script src="kg-loader.js"></script>
 <script>
@@ -1012,7 +1013,7 @@ function exportPlaylist(){
     var blob=new Blob([lines.join('\n')],{type:'text/plain'});
     var url=URL.createObjectURL(blob);
     var a=document.createElement('a');
-    a.href=url;a.download='motel-sound-playlist.txt';
+    a.href=url;a.download=window.ikName?ikName('motel-sound','txt'):'motel-sound-playlist.txt';
     document.body.appendChild(a);a.click();
     setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},200);
     if(typeof sndBtn==='function')sndBtn();
@@ -1377,7 +1378,7 @@ function kDie(face,done,ghost){const st=$('stage');let o=st.querySelector('.kdie
       pc.textContent=(KV[face]>1?'+':'')+Math.round((KV[face]-1)*100)+' %';setTimeout(()=>o.classList.add('told'),220);setTimeout(()=>{o.classList.remove('on','told');if(!ghost)$('msg').style.visibility='';done&&done();},ghost?2000:2600);}},70+n*6);}
 /* once in two matches a floating die comes by mid-game, once or twice, at a point drawn in advance: touch it with the paddle to take the Kerema's throw (plus or minus, the Koins leaning), or let it drift away */
 function kPlan(max){const t=[];if(Math.random()<.5){const n=Math.random()<.5?1:2,lo=2,hi=Math.max(lo,max-1);while(t.length<n&&hi-lo+1>=n){const k=lo+Math.floor(Math.random()*(hi-lo+1));if(!t.includes(k))t.push(k);}}return t;}
-const KASK={en:['Want Kerema?'],fr:['On est joueur ?','Koquinette ou Koquinou ?']};
+const KASK={en:['Want Kerema?','Got Kerem... ilk?'],fr:['On est joueur ?','Koquinette ou Koquinou ?']};
 function kAgain(){if(!G||!G.kAt)return;const e=G.e,pts=e.player_score+e.opponent_score;if(!G.kAt.includes(pts)||e.isOver())return;G.kAt=G.kAt.filter(x=>x!==pts);kSpawn();}
 function kSpawn(){const A=KASK[LANG]||KASK.en;G.fl={x:(Math.random()*2-1)*170,z:70+Math.random()*170,ph:Math.random()*6.3,age:0,life:9,kc:KDC[Math.floor(Math.random()*KDC.length)],ask:A[Math.floor(Math.random()*A.length)],f:Math.floor(Math.random()*6),ft:0};if(AC&&sound){tone(880,.12,'triangle',.03);tone(1320,.16,'triangle',.025,0,.1);}}
 function kFloat(dt){const f=G&&G.fl;if(!f)return;f.age+=dt;f.ft-=dt;if(f.ft<0){f.ft=.35;f.f=(f.f+1+Math.floor(Math.random()*5))%6;}

@@ -342,7 +342,7 @@ function bbKave(){
     var blob=new Blob([buf],{type:'audio/wav'});
     var url=URL.createObjectURL(blob);
     var a=document.createElement('a');
-    a.href=url;a.download='katabatik.wav';
+    a.href=url;a.download=window.ikName?ikName('sampler','wav'):'katabatik.wav';
     document.body.appendChild(a);a.click();
     setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
   }).catch(function(e){console.warn('bbKave render error',e);});

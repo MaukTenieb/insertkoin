@@ -682,7 +682,7 @@ function startRecording(){
     var ext=type.indexOf('mp4')>=0?'mp4':'webm';
     var repDate='';
     try{if(typeof kkRepublicanDate==='function') repDate='-'+kkRepublicanDate().replace(/\s+/g,'-');}catch(_rd){}
-    var fname='kapture'+repDate+'.'+ext;
+    var fname=window.ikName?ikName('kapture',ext):'kapture'+repDate+'.'+ext;
     var blobUrl=URL.createObjectURL(blob);
     var tmpA=document.createElement('a');
     tmpA.href=blobUrl;tmpA.setAttribute('download',fname);
