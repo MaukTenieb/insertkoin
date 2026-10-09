@@ -51,7 +51,7 @@ select{font:500 13px var(--display);border:2px solid var(--fg);background:var(--
 .tile[data-s="arch"]::before{background:var(--accent)}
 .tile[data-s="err"]::before{background:var(--err)}
 .tile[data-s="run"]::before{background:var(--warn)}
-.tile[data-s="zero"]{opacity:.55}
+.tile[data-s="zero"]{opacity:.22}
 .tile[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
 .tile[hidden]{display:none}
 @media (prefers-reduced-motion:no-preference){.tile[data-s="run"]::before{animation:pulse .8s ease-in-out infinite alternate}}
@@ -74,7 +74,7 @@ select{font:500 13px var(--display);border:2px solid var(--fg);background:var(--
     <button class="btn" type="submit">Collect URLs</button>
   </form>
   <div class="row">
-    <span class="label" id="sum">41 forges · click a tile to include or exclude it</span>
+    <span class="label" id="sum">41 forges</span>
     <div class="seg" role="group" aria-label="Tiles">
       <button type="button" data-v="on">All on</button>
       <button type="button" data-v="off">All off</button>
@@ -159,7 +159,9 @@ async function swh(q){
 
 
 const $=id=>document.getElementById(id);
-let on=Object.fromEntries(ALL.map(f=>[f.id,true])), blocked=false;
+let on=Object.fromEntries(ALL.map(f=>[f.id,false])), blocked=false, manual={};
+/* only the forges that hold related repos light up; a tap still includes or leaves one out */
+const auto=()=>ALL.forEach(f=>{if(!(f.id in manual))on[f.id]=count(f.id)>0;});
 const rel=r=>{const h=(r.title+" "+r.url+" "+(r.desc||"")).toLowerCase();return lastQ.toLowerCase().replace(/\*/g,"").split(/\s+/).filter(Boolean).every(w=>h.includes(w))};
 const count=id=>results.filter(r=>r.forge===id&&rel(r)).length;
 function urls(){
@@ -169,17 +171,17 @@ function urls(){
     const hay=(r.title+" "+r.url+" "+(r.desc||"")).toLowerCase(); if(!words.every(w=>hay.includes(w))) continue; const k=r.url.replace(/(\.git)?\/?$/,""); if(seen.has(k.toLowerCase())) continue; seen.add(k.toLowerCase()); L.push(k); }
   return L;
 }
-function draw(){
+function draw(){ if(lastQ) auto();
   $("tiles").innerHTML=ALL.map(f=>{const s=state[f.id]?.s||(f.api?"idle":"idle"),n=count(f.id);
     const st=s==="run"?"searching":s==="ok"?"live":s==="arch"?"archive":s==="err"?"blocked":f.api?"live api":"archive";
     return `<button class="tile" type="button" data-id="${f.id}" data-s="${lastQ&&s!=="run"&&!n?"zero":s}" aria-pressed="${on[f.id]}"><b>${f.n}</b><span><span class="n">${lastQ?n:"–"}</span> <span class="st">${st}</span></span></button>`}).join("");
   const L=urls(); $("out").value=L.join(", ");
   $("osum").textContent=`${L.length} URLs`;
   const r=Object.values(state).filter(x=>x.s==="run").length;
-  $("sum").textContent=r?`Searching… ${r} pending`:lastQ?`${results.length} found · ${ALL.filter(f=>on[f.id]).length} forges included`:"41 forges · click a tile to include or exclude it";
+  $("sum").textContent=r?`Searching… ${r} pending`:lastQ?`${results.length} found · ${ALL.filter(f=>on[f.id]).length} forges included`:"41 forges";
 }
 async function search(q){
-  const id=++run; lastQ=q; results=[]; state={}; blocked=false; $("note").hidden=true;
+  const id=++run; lastQ=q; results=[]; state={}; blocked=false; manual={}; $("note").hidden=true;
   F.filter(f=>f.api).forEach(f=>state[f.id]={s:"run"}); state.other={s:"run"}; draw();
   let net=0; const total=F.filter(f=>f.api).length+1;
   const words=q.split(/\s+/).filter(Boolean), terms=words.map(w=>w.replace(/\*/g,"")).filter(Boolean);
@@ -199,9 +201,9 @@ async function search(q){
   if(id===run&&net>=total){ blocked=true; $("note").textContent="Network blocked in this viewer. Open the file in Chrome or Firefox."; $("note").hidden=false; draw(); }
 }
 $("f").addEventListener("submit",e=>{e.preventDefault();const q=$("q").value.trim();if(q)search(q)});
-$("tiles").addEventListener("click",e=>{const t=e.target.closest(".tile");if(!t)return;on[t.dataset.id]=!on[t.dataset.id];draw()});
+$("tiles").addEventListener("click",e=>{const t=e.target.closest(".tile");if(!t||!lastQ)return;const id=t.dataset.id;manual[id]=1;on[id]=!on[id];draw()});
 document.querySelector(".seg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
-  ALL.forEach(f=>on[f.id]=b.dataset.v==="on"?true:b.dataset.v==="off"?false:count(f.id)>0);draw()});
+  ALL.forEach(f=>{manual[f.id]=1;on[f.id]=b.dataset.v==="on"?true:b.dataset.v==="off"?false:count(f.id)>0;});draw()});
 $("copy").addEventListener("click",async()=>{const b=$("copy");try{await navigator.clipboard.writeText($("out").value);b.textContent="Copied"}catch{$("out").select();b.textContent="Selected"}setTimeout(()=>b.textContent="Copy",1500)});
 draw();
 </script>
