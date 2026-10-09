@@ -373,6 +373,17 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 .stage .tvclip iframe{position:absolute;left:-12%;top:-12%;width:124%;height:124%;border:0;pointer-events:none}
 .stage .tvclip::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.3) 0 1px,transparent 1px 3px),radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.6));pointer-events:none}
 @keyframes tvon{0%{transform:scaleY(.02);filter:brightness(4)}100%{transform:none}}
+
+/* the Kerema's die: once per tournament it sets the swing of the applicant's paddle */
+.stage .kdie{position:absolute;inset:0;z-index:7;display:grid;place-items:center;align-content:center;gap:6px;pointer-events:none;background:radial-gradient(closest-side,rgba(7,6,10,.78),rgba(7,6,10,0));opacity:0;transition:opacity .25s}
+.stage .kdie.on{opacity:1}
+.stage .kdie .d{font-size:clamp(64px,13vw,120px);line-height:1;color:#ffe08a;text-shadow:0 0 22px #c9a84c,0 3px 0 #000;transform:rotate(var(--r,0deg))}
+.stage .kdie .d.land{animation:kdland .5s ease-out}
+@keyframes kdland{0%{transform:scale(1.5) rotate(0)}45%{transform:scale(.92)}100%{transform:scale(1)}}
+.stage .kdie b{font:400 clamp(20px,3.6vw,34px)/1 "Bebas Neue",Impact,sans-serif;letter-spacing:.08em;color:#fff;text-shadow:0 0 14px #c9a84c,0 2px 0 #000;opacity:0;transition:opacity .3s}
+.stage .kdie i{font:normal 12px/1 "DM Mono",monospace;letter-spacing:.18em;color:#ffe08a;opacity:0;transition:opacity .3s}
+.stage .kdie.told b,.stage .kdie.told i{opacity:1}
+.score .kd{margin-right:6px;color:#ffe08a;text-shadow:0 0 8px rgba(201,168,76,.8);font-size:1.1em}
 /* in full screen the score comes inside the table */
 .stage .fsScore{display:none;position:absolute;top:6px;left:50%;transform:translateX(-50%);z-index:5;font:12px/1 "DM Mono",monospace;letter-spacing:.14em;color:#fff8ec;background:rgba(7,6,10,.6);padding:5px 10px;border:1px solid rgba(201,168,76,.35);pointer-events:none;white-space:nowrap}
 .stage:fullscreen .fsScore{display:block}
@@ -1352,8 +1363,18 @@ const spd=e=>Math.hypot(e.puck_vx||0,e.puck_vz||0);
 function jolt(n){const s=document.querySelector('.stage');if(!s)return;s.style.setProperty('--j',n+'px');s.classList.remove('jolt');void s.offsetWidth;s.classList.add('jolt');}
 function snap(e){return{px:e.puck_x,pz:e.puck_z,ox:e.opp_x,oz:e.opp_z,ax:e.pad_x,az:e.pad_z};}
 function hud(){$('sP').textContent=G.e.player_score;$('sO').textContent=G.e.opponent_score;}
+/* ---- the Kerema decides: once per tournament a die sets the applicant's swing, from -15 % (⚀) to +15 % (⚅) ---- */
+const KV=[.85,.91,.97,1.03,1.09,1.15];
+function kSwing(e,face){['up_lr_power','up_fb_power','down_lr_power','down_fb_power'].forEach(k=>{if(typeof e.p[k]==='number')e.p[k]=Math.round(e.p[k]*KV[face]);});
+  let kd=document.querySelector('.score .kd');if(!kd){kd=document.createElement('span');kd.className='kd';kd.setAttribute('aria-hidden','true');const w=document.querySelector('.score .who');if(w)w.parentNode.insertBefore(kd,w);}kd.textContent=DICE[face];kd.title=(KV[face]>1?'+':'')+Math.round((KV[face]-1)*100)+'%';}
+function kDie(face,done){const st=$('stage');let o=st.querySelector('.kdie');if(!o){o=document.createElement('div');o.className='kdie';o.innerHTML='<span class="d"></span><b>The Kerema decides!</b><i></i>';st.appendChild(o);}
+  const d=o.querySelector('.d'),pc=o.querySelector('i');o.classList.remove('told');o.classList.add('on');$('msg').style.visibility='hidden';const RMk=matchMedia('(prefers-reduced-motion:reduce)').matches;let n=0;const N=RMk?1:13;
+  const iv=setInterval(()=>{const f=++n>=N?face:Math.floor(Math.random()*6);d.textContent=DICE[f];d.style.setProperty('--r',(n>=N?0:(Math.random()-.5)*80).toFixed(0)+'deg');if(AC&&sound)burst(1800+Math.random()*1600,'bandpass',.05,.035);
+    if(n>=N){clearInterval(iv);d.classList.remove('land');void d.offsetWidth;d.classList.add('land');if(AC&&sound){burst(260,'lowpass',.22,.09);tone(196,.08,'triangle',.05);setTimeout(()=>{tone(523,.09,'square',.04);tone(784,.12,'square',.035,0,.09);},260);}
+      pc.textContent=(KV[face]>1?'+':'')+Math.round((KV[face]-1)*100)+' %';setTimeout(()=>o.classList.add('told'),220);setTimeout(()=>{o.classList.remove('on','told');$('msg').style.visibility='';done&&done();},2600);}},70+n*6);}
 function startMatch(i,rank){rollRoom(R[i].id);loadSheet(R[i]);if(RUN&&RUN.order[RUN.idx+1])loadSheet(R.find(q=>q.id===RUN.order[RUN.idx+1]));const r=R[i],e=new FaunaEngine(Object.assign({tick_hz:25},r.p,{max_score:rank==null?15:11}),r.sig);card(r);G_trail=[];
   G={i,r,e,prev:snap(e),cur:snap(e),t:0,face:0,faceT:0,blinkT:2,hitT:0,flash:0,started:false,drawn:[0,0],stroke:0,ang:0,spin:0,tv:0,krew:null};
+  {let face,fresh;if(RUN){if(RUN.kv==null){RUN.kv=Math.floor(Math.random()*6);fresh=true;saveRun();}face=RUN.kv;}else{face=Math.floor(Math.random()*6);fresh=true;}kSwing(e,face);if(fresh)setTimeout(()=>{if(G&&G.e===e)kDie(face);},450);}
   if(RUN&&RUN.krew){const q=R.find(x=>x.id===RUN.krew);if(q){const n=parseInt(q.glow.slice(1),16);G.krew=[n>>16,n>>8&255,n&255];}}
   $('mRun').textContent=RUN?`${tr('runof')} ${RUN.idx+1} / 18`:'';$('count').hidden=true;$('oName').textContent=r.name.toUpperCase();$('mName').textContent=r.name.toUpperCase();$('mMotto').textContent='N° '+String(r.n).padStart(2,'0')+(r.motto?' · « '+r.motto+' »':'');$('msg').style.setProperty('--c',r.glow);hud();$('over').hidden=true;$('msg').hidden=false;show('game');}
 function toMenu(){letGo();G=null;buildLobby();show('select');}
