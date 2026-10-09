@@ -20,7 +20,7 @@
 - **N° 10 Silent Pact** (STR 7, DEX 6, INT 8, WIS 9, CHA 5, CON 8): Oath's Oil Shroud. At the table: Makes no sound on his half of the table; his paddle is nearly invisible.
 - **N° 11 Maiden Call** (STR 5, DEX 7, INT 6, WIS 8, CHA 10, CON 6): « I'll come if you come » Siren's Oil Lure. At the table: Answers the rotary phone mid-rally and lets go of the paddle; while it rings, her call pulls your paddle toward the centre.
 - **N° 12 Plague of Justinian** (STR 7, DEX 6, INT 8, WIS 5, CHA 10, CON 8): « In contagion strength » Plague's Oil Miasma. At the table: Every exchange speeds the puck up, and a miasma spreads down the table.
-- **N° 13 Poisoned Well** (STR 4, DEX 6, INT 9, WIS 10, CHA 8, CON 5): « Words are venom » Venom's Oil Whisper. At the table: Alternates soft bait returns with sudden hard ones.
+- **N° 13 Poisoned Well** (STR 4, DEX 6, INT 9, WIS 10, CHA 8, CON 5): « Words are venom. Honey is the pus of the real » Venom's Oil Whisper. At the table: Alternates soft bait returns with sudden hard ones.
 - **N° 14 Cadaver Synod** (STR 8, DEX 7, INT 7, WIS 8, CHA 9, CON 6): « Judgement is stronger than death! » Synod's Oil Verdict. At the table: Hits harder the further you lead.
 - **N° 15 Truce** (STR 6, DEX 8, INT 8, WIS 7, CHA 8, CON 6): « Do we have an agreement? » Scales' Oil Equilibrium. At the table: Two mirrored paddles, one grey and one yellow.
 - **N° 16 Auvergne** (STR 7, DEX 6, INT 8, WIS 9, CHA 9, CON 6): « Men become equal by covenant and right » Lyre's Oil Resonance. At the table: Hums before each strike: a low note means left, a high note means right.
