@@ -102,3 +102,4 @@
 /* [IK] the whole name of each Mask, never cut */
 #bb-grid .bb-label{width:150px;overflow:visible}
 #bb-grid{max-width:520px}
+:where(.kg-layer) .kb-tab{font-size:22px;letter-spacing:0;line-height:1;min-width:46px;min-height:40px;padding:6px 10px}

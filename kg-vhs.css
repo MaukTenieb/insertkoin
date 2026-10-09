@@ -862,9 +862,10 @@
   backdrop-filter: blur(1.6px) saturate(1.7) brightness(1.18);
   -webkit-backdrop-filter: blur(1.6px) saturate(1.7) brightness(1.18);
   background: repeating-linear-gradient(0deg, rgba(255,255,255,.10) 0 1px, transparent 1px 4px);
-  animation: vhs-band 11s linear infinite;
+  animation: vhs-band 47s linear infinite;
 }
-@keyframes vhs-band { 0% { top: 105%; } 100% { top: -10%; } }
+/* the tracking band passes rarely: once every forty-odd seconds, in two seconds */
+@keyframes vhs-band { 0%, 95% { top: 105%; } 100% { top: -10%; } }
 .vhs-head {
   position: absolute; left: 0; right: 0; bottom: 0; height: 3.2%;
   backdrop-filter: blur(2.2px) hue-rotate(-14deg) brightness(1.2);

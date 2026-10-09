@@ -173,7 +173,7 @@
 
       // Tracking band drifting upwards.
       float bandC = fract(uTime * 0.035 + 0.35);
-      float band  = smoothstep(0.07, 0.0, abs(p.y - bandC));
+      float band  = smoothstep(0.07, 0.0, abs(p.y - bandC)) * smoothstep(0.84, 0.88, fract(uTime * 0.021)) * (1.0 - smoothstep(0.97, 1.0, fract(uTime * 0.021)));
       dx += (rnd(line, t25, 2.0) - 0.5) * 0.05 * band * k;
       dx += band * 0.02 * k * sin(p.y * 80.0 + uTime * 5.0);
 
@@ -890,7 +890,7 @@
       last = now;
       for (let i = 0; i < d.length; i += 4) { const v = Math.random() * 255 | 0; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; }
       c.putImageData(img, 0, 0);
-      if (Math.random() < 0.012) {
+      if (Math.random() < 0.003) {
         const sc = s.root.querySelector("[data-vhs-screen]");
         if (sc) { sc.classList.remove("is-wobble"); void sc.offsetWidth; sc.classList.add("is-wobble"); }
       }
