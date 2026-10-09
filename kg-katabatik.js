@@ -955,21 +955,24 @@ var HANG_ROWS=['ÖÜÓ','QWERTZUIOPŐÚ','ASDFGHJKLÉÁŰ','ÍYXCVBNM'];
 var HANG_JA=[['Nincsen apám, se anyám,','se istenem, se hazám,','se bölcsőm, se szemfedőm,','se csókom, se szeretőm.'],
  ['Harmadnapja nem eszek,','se sokat, se keveset.','Húsz esztendőm hatalom,','húsz esztendőm eladom.'],
  ['Hogyha nem kell senkinek,','hát az ördög veszi meg.','Tiszta szívvel betörök,','ha kell, embert is ölök.'],
- ['Elfognak és felkötnek,','áldott földdel befödnek','s halált hozó fű terem','gyönyörűszép szívemen.']];
+ ['Elfognak és felkötnek,','áldott földdel elfödnek','s halált hozó fű terem','gyönyörűszép szívemen.']];
 var HANG_GIFT=[
  {who:'Tarr Béla',c:[/* the author's quotations: 'text', 'text' … */],u:'https://hu.wikipedia.org/wiki/Tarr_B%C3%A9la',l:'Wikipédia',k:{en:'film',fr:'film'},w:[['Kárhozat',1988],['Sátántangó',1994],['Werckmeister harmóniák',2000],['A torinói ló',2011]]},
  {who:'Krasznahorkai László',c:[/* the author's quotations: 'text', 'text' … */],u:'https://hu.wikipedia.org/wiki/Krasznahorkai_L%C3%A1szl%C3%B3',l:'Wikipédia',k:{en:'novel',fr:'roman'},w:[['Sátántangó',1985],['Az ellenállás melankóliája',1989],['Háború és háború',1999],['Báró Wenckheim hazatér',2016]]},
  {who:'Ligeti György',c:[/* the author's quotations: 'text', 'text' … */],u:'https://hu.wikipedia.org/wiki/Ligeti_Gy%C3%B6rgy',l:'Wikipédia',k:{en:'music',fr:'musique'},w:[['Atmosphères',1961],['Lux aeterna',1966],['Lontano',1967],['Le Grand Macabre',1978]]},
  {who:'Lukács György',c:[/* the author's quotations: 'text', 'text' … */],u:'https://en.wikiquote.org/wiki/Gy%C3%B6rgy_Luk%C3%A1cs',l:'Wikiquote',k:{en:'essay',fr:'essai'},w:[['A lélek és a formák',1910],['Die Theorie des Romans',1916],['Geschichte und Klassenbewusstsein',1923]]}];
+/* József Attila's poems up to 1928 (public domain), from the ELTE Poetry Corpus (MEK edition): kg-hang-ja.json, loaded on the first win */
+var HANG_POOL=null;
+function hangPool(cb){if(HANG_POOL)return cb(HANG_POOL);try{fetch('kg-hang-ja.json').then(function(r){return r.json();}).then(function(d){HANG_POOL=d&&d.length?d:[HANG_JA];cb(HANG_POOL);}).catch(function(){cb([HANG_JA]);});}catch(e){cb([HANG_JA]);}}
 function hangGift(){
-  /* one voice at a time, its origin kept hidden: a few of József Attila's stanzas, taken at random, or one of the author's own quotations (c:[ ] above) */
+  /* one voice at a time, its origin kept hidden: a few stanzas of one poem, taken at random, or one of the author's own quotations (c:[ ] above) */
   var g=document.getElementById('hang-gift');if(!g)return;
   var esc=function(t){return String(t).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
-  var pool=[null].concat(HANG_GIFT.filter(function(a){return a.c&&a.c.length;})),a=pool[Math.floor(Math.random()*pool.length)],body;
-  if(!a){var idx=[0,1,2,3].sort(function(){return Math.random()-.5;}).slice(0,2+Math.floor(Math.random()*2)).sort();
-    body=idx.map(function(i){return HANG_JA[i].map(esc).join('<br>');}).join('</p><p>');}
-  else body=esc(a.c[Math.floor(Math.random()*a.c.length)]);
-  g.innerHTML='<p>„'+body+'”</p>';g.style.display='block';
+  var show=function(body){g.innerHTML='<p>„'+body+'”</p>';g.style.display='block';};
+  var others=HANG_GIFT.filter(function(a){return a.c&&a.c.length;}),k=Math.floor(Math.random()*(others.length+1));
+  if(k<others.length){var a=others[k];show(esc(a.c[Math.floor(Math.random()*a.c.length)]));return;}
+  hangPool(function(P){var poem=P[Math.floor(Math.random()*P.length)],n=Math.min(poem.length,2+Math.floor(Math.random()*2)),i=Math.floor(Math.random()*(poem.length-n+1));
+    show(poem.slice(i,i+n).map(function(st){return st.map(esc).join('<br>');}).join('</p><p>'));});
 }
 window.hangGift=hangGift;
 var HANG_MAX=6;

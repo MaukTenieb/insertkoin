@@ -100,6 +100,7 @@ Everything sits at the top level, no folders (except `tor/` and `.github/`), so 
 | `mask-*.webp` | the Masks' portraits (Photofauna, the paintings of the room) |
 | `thumb-*.jpg` | the cabinets (`thumb-bio-*.jpg`: the Bio cabinet draws one of the eighteen Masks) |
 | `poster*.{jpg,webp}`, `room.webp` | the painting and the pixel room |
+| `kg-hang-ja.json` | Akasztófa's stanzas |
 | `kg-*` | the Korhogo games, loaded on demand (`kg-loader.js`, `kg-core.*`, `kg-chess.*`, `kg-erratic.*`, `kg-faunarratics.*`, `kg-katabatik.*`, `kg-kapture.*`); `kg-faces.json` their portraits |
 | `kg-vhs.*`, `kg-vhs-library.js`, `kg-vhs-recorder.js`, `kg-vhs-scrape.js` | VHS: the deck, the cassette library, the shelf and REC bay, the in-page recorder |
 | `fotofauna.html` | Photofauna |
@@ -132,6 +133,7 @@ No reproduction or reuse without written permission, including for training or u
 Third-party components:
 - Puck You! runs on a JavaScript port of [PuffleHuck](https://github.com/iconidentify/pufflehuck) (MIT, see `LICENSE`).
 - FaunaTor's Tor clients: webtor-rs by privacy-ethereum and by andrewtheguy (MIT, see `TOR-LICENSES.txt`).
+- Akasztófa's stanzas: József Attila's poems up to 1928 (public domain), taken from the [ELTE Poetry Corpus](https://github.com/ELTE-DH/poetry-corpus) (MEK edition) → `kg-hang-ja.json`.
 - Skoporhogo uses [three.js](https://threejs.org) r128 (MIT).
 - Fonts: Bebas Neue, DM Mono, Press Start 2P, Archivo (SIL Open Font License), served from the site.
 
