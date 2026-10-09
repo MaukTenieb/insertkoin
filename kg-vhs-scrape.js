@@ -339,15 +339,44 @@
       return m ? parseInt(m[1].replace(/[^\d]/g, ""), 10) || 0 : 0;
     }).catch(function () { return 0; });
   }
+  /* the whole uploads playlist: its page gives the first hundred, then a watch page inside the playlist hands its side panel (the next hundred or so), again and again */
+  function panelOf(data) {
+    try { return (data.contents.twoColumnWatchNextResults.playlist.playlist.contents || []).map(function (c) { var r = c.playlistPanelVideoRenderer; return r && r.videoId ? { id: r.videoId, title: txt(r.title) || r.videoId, duration: r.lengthText ? String(txt(r.lengthText)).split(":").reduce(function (a, x) { return a * 60 + (+x || 0); }, 0) : 0 } : null; }).filter(Boolean); } catch (e) { return []; }
+  }
+  function uploadsAll(id, want, prog, stop) {
+    var L = "UU" + id.slice(2), out = [], seen = {};
+    function add(v) { if (v && v.id && !seen[v.id]) { seen[v.id] = 1; out.push(v); return 1; } return 0; }
+    return jina("https://www.youtube.com/playlist?list=" + L, 60000).then(function (h) {
+      videosIn(initialData(h)).forEach(add); prog(out.length);
+      function step(n) {
+        if (stop() || out.length >= want || n > 12 || !out.length) return out;
+        var last = out[out.length - 1].id;
+        return jina("https://www.youtube.com/watch?v=" + last + "&list=" + L + "&index=" + out.length, 60000).then(function (w) {
+          var k = 0; panelOf(initialData(w)).forEach(function (v) { k += add(v); }); prog(out.length);
+          return k ? step(n + 1) : out;
+        }, function () { return out; });
+      }
+      return step(0);
+    });
+  }
   function publicRoads(url, prog, stop, live) {
-    var exp = null;
+    var exp = null, cid = null;
     return resolve(url).catch(function (e) { why("resolve", e); throw e; }).then(function (c) {
       if (stop()) throw new Error("cancelled");
-      if (c.id) exp = expected(c.id);
+      if (c.id) { exp = expected(c.id); cid = c.id; }
       return publicRoad(c, url, prog, stop, live);
     }).then(function (tape) {
       if (!exp) return tape;
-      return Promise.race([exp, new Promise(function (r) { setTimeout(function () { r(0); }, 9000); })]).then(function (n) { if (n) tape.expected = n; return tape; });
+      return Promise.race([exp, new Promise(function (r) { setTimeout(function () { r(0); }, 9000); })]).then(function (n) {
+        if (n) tape.expected = n;
+        /* fewer than the channel holds: complete from the uploads playlist, page after page */
+        if (!n || tape.tracks.length >= n || !cid || stop()) return tape;
+        return uploadsAll(cid, n, function (k) { prog(Math.max(k, tape.tracks.length), tape.channel); }, stop).then(function (u) {
+          var have = {}; tape.tracks.forEach(function (t) { have[t.id] = 1; });
+          u.forEach(function (v) { if (!have[v.id]) { have[v.id] = 1; tape.tracks.push(v); } });
+          return tape;
+        }, function () { return tape; });
+      });
     });
   }
   function publicRoad(c, url, prog, stop, live) {

@@ -361,6 +361,15 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 @keyframes turnfade{0%,78%{opacity:1}100%{opacity:0}}
 @media (pointer:coarse) and (orientation:portrait){.stage .turn{display:grid}}
 .stage:fullscreen .turn{display:none}
+/* any game on a low landscape screen (phone on its side, small window): the header steps aside, the game takes the whole height */
+@media (orientation:landscape) and (max-height:520px){
+  body.on-calque .bar{display:none}
+  body.on-calque main,body.on-calque .wrap{padding-top:4px}
+  body.on-calque .cbar{gap:8px;margin:0 0 4px}
+  body.on-calque .cbar .btn{padding:3px 8px;font-size:10px}
+  body.on-calque .cframe{min-height:0;height:calc(100svh - 44px)}
+  body.on-calque{overflow:hidden;overscroll-behavior:none}
+}
 /* phone on its side: the table takes the whole height, the header steps aside */
 @media (pointer:coarse) and (orientation:landscape) and (max-height:520px){
   body.playing .bar{display:none}
@@ -407,7 +416,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
     <div class="dock">
       <span class="koins" id="koins" title="Koins"><i>◉</i> <b id="kn">3</b></span>
       <button class="dk kap" id="kapture" type="button" title="Kapture"><i class="rec">●</i> KAPTURE</button>
-      <button class="dk kal" id="kal" type="button" hidden>3615Koins</button>
+      <button class="dk kal" id="kal" type="button" hidden>3615 KOINS</button>
       <button class="dk fx" id="snd" type="button" aria-pressed="true">FX ON</button>
       <button class="dk lang" id="lang" type="button" aria-label="Français / English">FR</button>
     </div>
@@ -457,7 +466,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
   </section>
 
   <section id="select" hidden>
-    <div class="selbar"><button class="btn" type="button" data-back data-i18n="back">← BACK</button><button class="btn hot" id="run2" type="button" hidden></button><span id="pick" data-i18n="pick">◉ 1</span><span id="tally"></span></div>
+    <div class="selbar"><button class="btn" type="button" data-back data-i18n="back">← BACK</button><button class="btn hot" id="run2" type="button" hidden></button><button class="btn" id="run" type="button" title="18 Masks">KOMPETE!</button><span id="pick" data-i18n="pick">◉ 1</span><span id="tally"></span></div>
     <div class="lobby" id="lobby"><img id="lobbyImg" src="room.webp" width="512" height="382" loading="lazy" decoding="async" alt="Pixel-art motel room with the eighteen Fauna: click one to challenge them"></div>
   </section>
 
@@ -1618,7 +1627,7 @@ function go(k){ac();
   if(k==='puck'){buildLobby();show('select');setTimeout(lobbyHint,250);return;}
   if(k==='room'){buildLobby();show('select');return;}
   if(k==='terminal'){try{localStorage.setItem('vdx.lang',LANG);}catch(e){}calqueSrc('/3615/').then(function(s){openCalque(s+'?svc=korhogo','3615');},function(){openCalque('3615-local.html','3615');});return;}
-  if(k==='kal'){try{localStorage.setItem('vdx.lang',LANG);}catch(e){}calqueSrc('/3615/').then(function(s){openCalque(s+(s.indexOf('?')<0?'?svc=koins':'&svc=koins'),'3615Koins');},function(){openCalque('3615-local.html?svc=koins','3615Koins');});return;}
+  if(k==='kal'){try{localStorage.setItem('vdx.lang',LANG);}catch(e){}calqueSrc('/3615/').then(function(s){openCalque(s+(s.indexOf('?')<0?'?svc=koins':'&svc=koins'),'3615 KOINS');},function(){openCalque('3615-local.html?svc=koins','3615 KOINS');});return;}
   if(k==='visit'){calqueSrc('/katabase/').then(function(s){openCalque(s,'DIVE!');kataLang();});return;}
   if(k==='photo'){photoLang();return openCalque('fotofauna.html','Photofauna');}
   if(k==='repo')return openCalque('reporhogo.html','Reporhogo');
@@ -1786,7 +1795,7 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
     ['ch',[908,452,1034,500],()=>go('chess'),'Fauna Chess'],
     ['cd',[742,596,822,630],()=>go('erratic'),'Erratik'],
     ['mk',[714,338,770,426],()=>go('puck'),'Puck You!'],
-    ['kc',[592,486,646,512],()=>go('kal'),'3615 Koins'],
+    ['kc',[592,486,646,512],()=>go('kal'),'3615 KOINS'],
     ['ly',[712,222,788,282],()=>{const m=document.querySelector('.motel-bar');if(m)m.click();},'Motel Sound'],
     ['wn',[392,88,600,128],()=>go('tor'),'FaunaTor'],
     ['bx',[928,756,1138,896],()=>go('katabatik'),'Katabatik']];
