@@ -28,6 +28,17 @@ function shelf(op, val) {
   });
 }
 
+/* what Tor last said — shown, small, under a rejection */
+const TRAIL = [];
+function note(where, x) {
+  let t = '';
+  try { t = typeof x === 'string' ? x : (x && (x.message || x.code || (x.toString && x.toString()))) || JSON.stringify(x); } catch (e) { t = String(x); }
+  t = String(t).replace(/\s+/g, ' ').slice(0, 160);
+  if (!t) return;
+  TRAIL.push(where + ': ' + t); if (TRAIL.length > 30) TRAIL.shift();
+}
+export function lastWords() { return TRAIL.slice(-2).join(' · '); }
+function within(p, ms, what) { return Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error(what + ' timeout ' + Math.round(ms / 1000) + 's')), ms))]); }
 let webP = null, onionP = null;
 export function web() {
   if (!webP) {
@@ -35,13 +46,14 @@ export function web() {
       let m;
       if (await has('tor-web.js')) { m = await import(here('tor-web.js')); await m.default({ module_or_path: here('tor-web_bg.wasm') }); }
       else { m = await import(CDN_WEB); await m.default(); }
+      try { m.setLogCallback((a, b) => { const t = String(b === undefined ? a : a + ' ' + b); if (/error|fail|timeout|refus|denied|closed/i.test(t)) note('web', t); }); } catch (e) {}
       let o = m.TorClientOptions.snowflakeWebRtc();
-      try { o = o.withCreateCircuitEarly(true); } catch (e) {}
-      const c = await new m.TorClient(o);
-      try { await c.waitForCircuit(); } catch (e) {}
+      try { o = o.withCreateCircuitEarly(true).withConnectionTimeout(90000).withCircuitTimeout(120000); } catch (e) {}
+      const c = await within(new m.TorClient(o), 150000, 'web bootstrap');
+      try { await within(c.waitForCircuit(), 120000, 'web circuit'); } catch (e) { note('web', e); }
       return c;
     })();
-    webP.catch(() => { webP = null; });
+    webP.catch((e) => { note('web', e); webP = null; });
   }
   return webP;
 }
@@ -51,13 +63,13 @@ export function onion() {
       if (!(await has('tor-onion.js'))) throw new Error('no onion client');
       const m = await import(here('tor-onion.js'));
       await m.default({ module_or_path: here('tor-onion_bg.wasm') });
-      const opts = { log: false, onDirectoryChange: (s) => { shelf('put', s); } };
+      const opts = { onLog: (msg, lvl) => { if (lvl === 'error' || lvl === 'warn') note('onion', msg); }, onDirectoryChange: (s) => { shelf('put', s); } };
       const old = await shelf('get');
       if (old && old.v && Date.now() - old.t < 2.5 * 3600e3) opts.directorySeed = old.v;
       try { return await m.WebtorClient.create(opts); }
       catch (e) { if (opts.directorySeed) { delete opts.directorySeed; return await m.WebtorClient.create(opts); } throw e; }
     })();
-    onionP.catch(() => { onionP = null; });
+    onionP.catch((e) => { note('onion', e); onionP = null; });
   }
   return onionP;
 }
@@ -73,13 +85,17 @@ function asText(r) {
 export async function get(url, onionToo) {
   const isOnion = /\.onion(:\d+)?(\/|$)/i.test(new URL(url).host + '/');
   if (isOnion) {
-    const c = await onion();
-    const r = await c.fetch(url.replace(/^https:/i, 'http:'), { headers: { Accept: 'text/html,*/*' } });
-    return { status: r.status, text: r.text(), url };
+    try {
+      const c = await onion();
+      const r = await c.fetch(url.replace(/^https:/i, 'http:'), { headers: { Accept: 'text/html,*/*' } });
+      return { status: r.status, text: r.text(), url };
+    } catch (e) { note('onion', e); throw e; }
   }
-  const c = await web();
-  const r = await c.fetch(url);
-  return { status: r.status, text: await asText(r), url: r.url || url };
+  try {
+    const c = await web();
+    const r = await within(c.fetch(url), 90000, 'web fetch');
+    return { status: r.status, text: await asText(r), url: r.url || url };
+  } catch (e) { note('web', e); throw e; }
 }
 /* bytes, for the images of an onion page */
 export async function bytes(url) {

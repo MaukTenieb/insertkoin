@@ -175,7 +175,7 @@ function torGet(u){return torReady.then(function(m){if(!m)throw new Error('no to
 /* every road at once — the relays answer fast, Tor answers what they refuse — then the reader */
 function fetchVia(u){return any([fetchRaw(u),torGet(u)]).catch(function(){return timed(readerUrl(u),20000);});}
 /* the rejection, the only failure FaunaTor ever speaks */
-function rejected(href){showNotice(L('Ton Kalabass a été rejeté.','Your Kalabass was rejected.'),L('Postule plus tard.','Apply later.'),href?'↗':null,href,'');status('');}
+function rejected(href){var w='';try{w=TOR&&TOR.lastWords?TOR.lastWords():'';}catch(e){}showNotice(L('Ton Kalabass a été rejeté.','Your Kalabass was rejected.'),L('Postule plus tard.','Apply later.'),href?'↗':null,href,w);status('');}
 
 /* ---- a page, read: scripts out, links and forms kept inside FaunaTor ---- */
 var SHIM='<script>(function(){function up(h){try{return new URL(h,document.baseURI).href;}catch(e){return null;}}'
