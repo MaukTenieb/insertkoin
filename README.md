@@ -98,7 +98,7 @@ Everything sits at the top level, no folders (except `tor/` and `.github/`), so 
 | `fauna-*.html`, `fauna-*.webp` | one page per member of the Fauna |
 | `sprite-*.webp` | the Masks of Puck You! (8 expressions each) |
 | `mask-*.webp` | the Masks' portraits (Photofauna, the paintings of the room) |
-| `thumb-*.jpg` | the cabinets |
+| `thumb-*.jpg` | the cabinets (`thumb-bio-*.jpg`: the Bio cabinet draws one of the eighteen Masks) |
 | `poster*.{jpg,webp}`, `room.webp` | the painting and the pixel room |
 | `kg-*` | the Korhogo games, loaded on demand (`kg-loader.js`, `kg-core.*`, `kg-chess.*`, `kg-erratic.*`, `kg-faunarratics.*`, `kg-katabatik.*`, `kg-kapture.*`); `kg-faces.json` their portraits |
 | `kg-vhs.*`, `kg-vhs-library.js`, `kg-vhs-recorder.js`, `kg-vhs-scrape.js` | VHS: the deck, the cassette library, the shelf and REC bay, the in-page recorder |

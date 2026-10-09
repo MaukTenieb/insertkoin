@@ -445,6 +445,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
       <a href="https://korhogo.threadless.com" target="_blank" rel="noopener" style="--mc:#ff7043">TL</a>
       <a href="https://www.instagram.com/mauktenieb" target="_blank" rel="noopener" style="--mc:#f48fb1">IG</a>
     </nav>
+    <script>/* the Bio cabinet shows one of the eighteen Masks, each as likely as the others */(function(){const M=['aube','auvergne','c7h5n3o6','cadaver_synod','croisiere_noire','dogxim','grand_colonel','hatra_loves','honey_buzzard','maiden_call','malika','naphta','plague_of_justinian','poisoned_well','silent_pact','truce','tsui_pen','unkle_maukie'],c=document.querySelector('.cab[data-swap="bio"]');if(c)c.style.setProperty('--th','url(thumb-bio-'+M[Math.floor(Math.random()*M.length)]+'.jpg)');})();</script>
     <script>/* each visit draws which of these stand as big cabinets and which shrink to chips; rows always full */
     (function(){var home=document.getElementById('home'),grid=home.querySelector('.cabinets'),sw=['repo','bio','dive','faunarratics','erratic'];
       var fixed=grid.querySelectorAll('.cab:not([data-swap])').length,ks=[1,2,3,4,5].filter(function(k){return (fixed+k)%3===0;}),k=ks[Math.floor(Math.random()*ks.length)];
