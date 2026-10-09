@@ -604,9 +604,9 @@ function c4Init(){
   for(var r=0;r<ROWS;r++){grid.push([]);for(var c=0;c<COLS;c++)grid[r].push(0);}
 
   // Difficulty pick: shown until a level is clicked, then the board starts.
-  var levelNames=['Beginner','Intermediate','Expert'];
+  var levelNames=['Easy','Medium','Hard'];
   var levelDepths=[1,4,7];
-  var levelIndex=1; // default: Intermediate
+  var levelIndex=1; // default: Medium
 
   var state={
     grid:grid,COLS:COLS,ROWS:ROWS,CW:CW,W:W,H:H,
@@ -736,7 +736,7 @@ function c4Init(){
   function drop(col){
     if(state.over||state.turn!==1) return;
     // Level strip: the top area picks the difficulty until the game starts.
-    // Three labels over seven columns: 0-1 Beginner, 2-4 Intermediate, 5-6 Expert.
+    // Three labels over seven columns: 0-1 Easy, 2-4 Medium, 5-6 Hard.
     if(!state.levelPicked){
       state.levelIndex=col<2?0:(col<5?1:2);
       state.levelPicked=true;
