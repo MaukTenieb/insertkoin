@@ -530,7 +530,10 @@
   }
 
   /* [IK] exports of a cassette recorded in the page, made right here */
-  function rows(tape) { return (tape.tracks || []).map(function (x, i) { return { n: i + 1, title: x.title || x.id, id: x.id, url: "https://www.youtube.com/watch?v=" + x.id }; }); }
+  function hms(sec) { sec = +sec || 0; if (!sec) return ""; var h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), s2 = sec % 60; return (h ? h + ":" + (m < 10 ? "0" : "") : "") + m + ":" + (s2 < 10 ? "0" : "") + s2; }
+  function rows(tape) { return (tape.tracks || []).map(function (x, i) { return { n: i + 1, title: x.title || x.id, id: x.id, url: "https://www.youtube.com/watch?v=" + x.id,
+    date: x.date || "", duration: hms(x.duration), seconds: +x.duration || 0, views: +x.views || 0, likes: +x.likes || 0, comments: +x.comments || 0 }; }); }
+  var COLS = ["n", "title", "id", "url", "date", "duration", "views", "likes", "comments"];
   function slug(s) { return String(s || "cassette").replace(/[^\w\u00C0-\u024F-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "cassette"; }
   function csvCell(v) { v = String(v); return /[",\n;]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
   function crc32(u8) { var c, t = crc32.t; if (!t) { t = crc32.t = []; for (var n = 0; n < 256; n++) { c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } }
@@ -551,8 +554,8 @@
   }
   function xml(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
   function xlsx(tape) {
-    var R = [["#", "Title", "Video", "URL"]].concat(rows(tape).map(function (r) { return [r.n, r.title, r.id, r.url]; }));
-    var col = function (i) { return "ABCD".charAt(i); };
+    var R = [["#", "Title", "Video", "URL", "Published", "Duration", "Views", "Likes", "Comments"]].concat(rows(tape).map(function (r) { return COLS.map(function (k) { return r[k] === 0 && k !== "n" ? "" : r[k]; }); }));
+    var col = function (i) { return "ABCDEFGHI".charAt(i); };
     var sheet = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>' +
       R.map(function (row, ri) { return '<row r="' + (ri + 1) + '">' + row.map(function (v, ci) { var ref = col(ci) + (ri + 1);
         return typeof v === "number" ? '<c r="' + ref + '"><v>' + v + '</v></c>' : '<c r="' + ref + '" t="inlineStr"><is><t>' + xml(v) + '</t></is></c>'; }).join("") + '</row>'; }).join("") +
@@ -568,11 +571,11 @@
   function localExports(tape) {
     var r = rows(tape), url = tape.channel_url || "";
     return {
-      csv: new Blob(["\uFEFF#,title,video_id,url\n" + r.map(function (x) { return [x.n, x.title, x.id, x.url].map(csvCell).join(","); }).join("\n")], { type: "text/csv" }),
-      json: new Blob([JSON.stringify({ channel: tape.channel, channel_url: url, count: r.length, videos: r.map(function (x) { return { video_id: x.id, title: x.title, url: x.url }; }) }, null, 1)], { type: "application/json" }),
+      csv: new Blob(["\uFEFF#,title,video_id,url,published,duration,views,likes,comments\n" + r.map(function (x) { return COLS.map(function (k) { return csvCell(x[k] === 0 ? "" : x[k]); }).join(","); }).join("\n")], { type: "text/csv" }),
+      json: new Blob([JSON.stringify({ channel: tape.channel, channel_url: url, count: r.length, videos: r.map(function (x) { var o = { video_id: x.id, title: x.title, url: x.url }; if (x.date) o.published = x.date; if (x.seconds) o.duration = x.seconds; if (x.views) o.views = x.views; if (x.likes) o.likes = x.likes; if (x.comments) o.comments = x.comments; return o; }) }, null, 1)], { type: "application/json" }),
       xlsx: xlsx(tape),
-      txt: new Blob([tape.channel + (url ? "\n" + url : "") + "\n\n" + r.map(function (x) { return x.n + ". " + x.title + "  " + x.url; }).join("\n")], { type: "text/plain" }),
-      md: new Blob(["# " + tape.channel + "\n\n" + (url ? url + "\n\n" : "") + r.map(function (x) { return x.n + ". [" + x.title.replace(/[\[\]]/g, "") + "](" + x.url + ")"; }).join("\n") + "\n"], { type: "text/markdown" })
+      txt: new Blob([tape.channel + (url ? "\n" + url : "") + "\n\n" + r.map(function (x) { return x.n + ". " + x.title + "  " + x.url + (x.date ? "  " + x.date : "") + (x.duration ? "  " + x.duration : ""); }).join("\n")], { type: "text/plain" }),
+      md: new Blob(["# " + tape.channel + "\n\n" + (url ? url + "\n\n" : "") + r.map(function (x) { return x.n + ". [" + x.title.replace(/[\[\]]/g, "") + "](" + x.url + ")" + (x.date ? " · " + x.date : "") + (x.duration ? " · " + x.duration : ""); }).join("\n") + "\n"], { type: "text/markdown" })
     };
   }
 
