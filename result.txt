@@ -1,0 +1,13 @@
+REC {
+ "ok": true,
+ "count": 244,
+ "expected": 189,
+ "channel": "Mauk Tenieb",
+ "secs": 20,
+ "steps": "0",
+ "sample": [
+  "krZ274AtymA MAUK TENIEB - Condotta Condottiere 495",
+  "iU4mgp0LHGM MAUK TENIEB - Yellow Dragon over Qin (De 1312",
+  "bb1Ts93QCIg MAUK TENIEB - Esiön (full album) 2694"
+ ]
+}
