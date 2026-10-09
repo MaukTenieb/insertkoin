@@ -323,6 +323,28 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
   .hud{grid-template-columns:auto 1fr auto}
   .msg{top:6%;padding:6px 14px 8px;gap:4px}.msg .big{font-size:24px}.msg .stats{display:none}
 }
+
+/* Puck You!: the entry card sits on the near side of the table, the Mask stays in sight */
+.msg{top:auto!important;bottom:5%}
+@media (max-width:560px),(max-height:520px){.msg{bottom:3%}}
+/* phone held upright: a big phone turns over the table, then fades and leaves the small sign */
+.stage .turn{display:none;position:absolute;inset:0;z-index:4;place-items:center;pointer-events:none;background:rgba(7,6,10,.55);animation:turnfade 5.5s ease-in forwards}
+.stage .turn i{display:block;width:30px;height:52px;border:3px solid var(--gold2);border-radius:7px;box-shadow:0 0 18px rgba(255,224,138,.45),inset 0 -6px 0 -3px var(--gold2);animation:turnph 2.2s ease-in-out infinite}
+@keyframes turnph{0%,18%{transform:rotate(0)}42%,78%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
+@keyframes turnfade{0%,78%{opacity:1}100%{opacity:0}}
+@media (pointer:coarse) and (orientation:portrait){.stage .turn{display:grid}}
+.stage:fullscreen .turn{display:none}
+/* phone on its side: the table takes the whole height, the header steps aside */
+@media (pointer:coarse) and (orientation:landscape) and (max-height:520px){
+  body.playing .bar{display:none}
+  body.playing main,body.playing .wrap{padding-top:4px}
+  .game{--sw:min(100%,1024px,calc((100svh - 44px) * 1.4927));gap:4px}
+  .hud .btn{padding:4px 8px;font-size:10px}
+}
+/* in full screen the score comes inside the table */
+.stage .fsScore{display:none;position:absolute;top:6px;left:50%;transform:translateX(-50%);z-index:5;font:12px/1 "DM Mono",monospace;letter-spacing:.14em;color:#fff8ec;background:rgba(7,6,10,.6);padding:5px 10px;border:1px solid rgba(201,168,76,.35);pointer-events:none;white-space:nowrap}
+.stage:fullscreen .fsScore{display:block}
+@media (prefers-reduced-motion:reduce){.stage .turn,.stage .turn i{animation:none}.stage .turn{display:none!important}}
 </style>
 </head>
 <body>
@@ -387,7 +409,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
       <div class="score" aria-live="polite"><span class="who" data-i18n="you">APPLICANT</span><span id="sP">0</span><span style="color:var(--dim)">-</span><span id="sO">0</span><span class="who" id="oName"></span><span class="sig" id="oSig" aria-hidden="true"></span></div>
       <span class="hudr"></span>
     </div>
-    <div class="stage" id="stage"><span class="rot" aria-hidden="true">⟳</span>
+    <div class="stage" id="stage"><span class="rot" aria-hidden="true">⟳</span><span class="turn" aria-hidden="true"><i></i></span><span class="fsScore" id="fsScore" aria-hidden="true"></span>
       <canvas id="cv" width="1024" height="686" aria-label="Table"></canvas>
       <div class="msg" id="msg"><span class="sm" id="mRun"></span><span class="big" id="mName"></span><span class="sm" id="mMotto"></span><span class="stats" id="mStats"></span><span class="blink" data-i18n="serve">▶</span></div>
       <div class="count" id="count" hidden></div>
@@ -1604,6 +1626,9 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
   function go2(){if(busy||$('home').hidden||document.hidden){return later();}busy=true;morph(A,B,()=>setTimeout(()=>morph(B,A,()=>{busy=false;later();}),1700+Math.random()*1400));}
   function later(){setTimeout(go2,38000+Math.random()*60000);}later();
   const T=document.title;document.addEventListener('visibilitychange',()=>{document.title=document.hidden?'Intersektion':T;});})();
+/* full screen: the score follows inside the table */
+(function fsScore(){const f=$('fsScore'),a=$('sP'),b=$('sO'),n=$('oName');if(!f||!a||!b)return;const up=()=>{f.textContent=a.textContent+' — '+b.textContent+(n&&n.textContent?'  '+n.textContent:'');};
+  try{new MutationObserver(up).observe(a,{childList:true,characterData:true,subtree:true});new MutationObserver(up).observe(b,{childList:true,characterData:true,subtree:true});if(n)new MutationObserver(up).observe(n,{childList:true,characterData:true,subtree:true});}catch(e){}up();})();
 /* ---- the motel lives: the hour outside, the television, a storm at the window, the cigarette, the scarab, Plague's cloud, a beetle, and the picture wearing out the longer one stays ---- */
 (function life(){const hero=document.querySelector('.hero'),im=hero&&hero.querySelector('img');if(!im)return;
   const RM=matchMedia('(prefers-reduced-motion:reduce)').matches,NW=1200,NH=896;
