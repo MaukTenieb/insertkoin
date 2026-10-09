@@ -66,8 +66,16 @@ export function onion() {
       const opts = { onLog: (msg, lvl) => { if (lvl === 'error' || lvl === 'warn') note('onion', msg); }, onDirectoryChange: (s) => { shelf('put', s); } };
       const old = await shelf('get');
       if (old && old.v && Date.now() - old.t < 2.5 * 3600e3) opts.directorySeed = old.v;
-      try { return await m.WebtorClient.create(opts); }
-      catch (e) { if (opts.directorySeed) { delete opts.directorySeed; return await m.WebtorClient.create(opts); } throw e; }
+      const create = (o) => within(m.WebtorClient.create(o), 120000, 'onion bootstrap');
+      /* the direct WebSocket road to Snowflake first, then the brokered WebRTC road */
+      try { return await create(opts); }
+      catch (e) {
+        note('onion ws', e);
+        if (opts.directorySeed) { try { const o = Object.assign({}, opts); delete o.directorySeed; return await create(o); } catch (e2) { note('onion ws', e2); } }
+        const o3 = Object.assign({}, opts, { bridge: 'webrtc', stunUrls: ['stun:stun.l.google.com:19302', 'stun:stun.antisip.com:3478'], rtcPeerConnection: window.RTCPeerConnection });
+        delete o3.directorySeed;
+        try { return await create(o3); } catch (e3) { note('onion rtc', e3); throw e3; }
+      }
     })();
     onionP.catch((e) => { note('onion', e); onionP = null; });
   }
@@ -87,7 +95,7 @@ export async function get(url, onionToo) {
   if (isOnion) {
     try {
       const c = await onion();
-      const r = await c.fetch(url.replace(/^https:/i, 'http:'), { headers: { Accept: 'text/html,*/*' } });
+      const r = await within(c.fetch(url.replace(/^https:/i, 'http:'), { headers: { Accept: 'text/html,*/*' } }), 240000, 'onion fetch');
       return { status: r.status, text: r.text(), url };
     } catch (e) { note('onion', e); throw e; }
   }
