@@ -324,11 +324,26 @@
   }
 
   /* record(url, {onProgress(n, name), isCancelled()}) -> Promise<tape> */
+  /* road 0: KorhoTube, Mauk Tenieb's own Worker (github.com/MaukTenieb/korhotube): the whole channel straight from YouTube, no third party */
+  var KORHOTUBE = "https://korhotube.mauktenieb.workers.dev/";
+  function korhotube(url, prog) {
+    if (/[?&]list=/.test(url)) return Promise.reject(new Error("playlist"));
+    return timed(KORHOTUBE + "?channel=" + enc(url), 45000, false).then(function (x) {
+      var d = JSON.parse(x); if (!d || !d.videos || !d.videos.length) throw new Error(d && d.error || "empty");
+      prog(d.videos.length, d.channel.name);
+      return { channel: d.channel.name || d.channel.id, channel_url: d.channel.url, expected: d.count, tracks: d.videos.map(function (v) {
+        var y = { id: v.id, title: v.title || v.id }, vw = /([\d.,]+)\s*([KMB]?)\s*views/i.exec(v.info || "");
+        if (v.published) y.date = v.published.slice(0, 10);
+        if (v.length) y.duration = v.length;
+        if (vw) y.views = Math.round(parseFloat(vw[1].replace(/,/g, "")) * ({ K: 1e3, M: 1e6, B: 1e9 }[vw[2].toUpperCase()] || 1));
+        return y; }) };
+    });
+  }
   function record(url, o) {
     o = o || {};
     var prog = o.onProgress || function () {}, stop = o.isCancelled || function () { return false; };
     WHY = [];
-    return api(url, prog, stop).catch(function (e) { why("api", e); if (stop()) throw e; return Promise.all([liveInstances(), livePiped()]).then(function (l) { return publicRoads(url, prog, stop, { inv: l[0], piped: l[1] }); }); })
+    return korhotube(url, prog).catch(function (e) { why("korhotube", e); if (stop()) throw e; return api(url, prog, stop); }).catch(function (e) { why("api", e); if (stop()) throw e; return Promise.all([liveInstances(), livePiped()]).then(function (l) { return publicRoads(url, prog, stop, { inv: l[0], piped: l[1] }); }); })
       .then(function (tape) { tape.count = tape.tracks.length; return tape; })
       .catch(function (e) { var err = new Error(WHY.join(" · ") || (e && e.message) || "failed"); err.why = WHY.slice(); throw err; });
   }
