@@ -1771,21 +1771,22 @@ window.addEventListener('keydown',e=>{if($('home').hidden||e.target.closest('inp
 const FC=R.map(r=>r.glow).filter(c=>!/^#(1|0)/.test(c));
 (function hero(){const hero=document.querySelector('.hero');if(!hero)return;
   const cv2=document.createElement('canvas');cv2.className='heroFx';hero.appendChild(cv2);const x=cv2.getContext('2d');
-  let w=0,h=0,dpr=1,px=-1,py=-1,tx=.5,ty=.45,hx=.5,hy=.45,col=modeColor(),last=0,idle=0,sparks=[];
+  let w=0,h=0,dpr=1,px=-1,py=-1,tx=.5,ty=.45,hx=.5,hy=.45,col=modeColor(),last=0,idle=9,sparks=[],act=0;
   const fit=()=>{const r=hero.getBoundingClientRect();dpr=Math.min(2,devicePixelRatio||1);w=r.width;h=r.height;cv2.width=w*dpr;cv2.height=h*dpr;};fit();addEventListener('resize',fit);try{new ResizeObserver(fit).observe(hero);}catch(e){}const im=hero.querySelector('img');if(im&&!im.complete)im.addEventListener('load',fit);
   hero.addEventListener('pointermove',e=>{const r=hero.getBoundingClientRect();tx=(e.clientX-r.left)/r.width;ty=(e.clientY-r.top)/r.height;idle=0;});
   hero.addEventListener('pointerdown',e=>{const r=hero.getBoundingClientRect();col=FC[Math.floor(Math.random()*FC.length)];for(let i=0;i<40;i++)sparks.push(spark(e.clientX-r.left,e.clientY-r.top,col,5));if(AC&&sound){const k=Math.floor(Math.random()*8);blip(k,.05);blip(k+2,.03);}});
   function spark(sx,sy,c,s){const a=Math.random()*TAU,v=.5+Math.random()*s;return{x:sx,y:sy,vx:Math.cos(a)*v,vy:Math.sin(a)*v-1,l:1,c,r:.6+Math.random()*1.8};}
   const slow=(navigator.hardwareConcurrency||8)<=4||(navigator.deviceMemory||8)<=4;let fr=0;
   function step(t){requestAnimationFrame(step);if($('home').hidden||document.hidden)return;fr++;if((idle>3||slow)&&fr%2)return;const dt=Math.min(.05,(t-last)/1000||0);last=t;idle+=dt;
-    if(idle>3){tx=.5+.38*Math.sin(t/3100)+.08*Math.sin(t/900);ty=.45+.25*Math.sin(t/2300+1);}
-    hx+=(tx-hx)*.08;hy+=(ty-hy)*.08;if(Math.random()<.004)col=modeColor();
+    /* the coloured light only follows a moving pointer, and fades when the hand rests (no more drifting aurora) */
+    act+=((idle<1.5?1:0)-act)*Math.min(1,dt*(idle<1.5?3:.8));
+    hx+=(tx-hx)*.08;hy+=(ty-hy)*.08;if(Math.random()<.0015)col=modeColor();
     x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,w,h);
-    const cx=hx*w,cy=hy*h,rad=Math.max(w,h)*.22;
-    x.globalCompositeOperation='source-over';const g=x.createRadialGradient(cx,cy,0,cx,cy,rad);g.addColorStop(0,hexA(col,.7));g.addColorStop(.5,hexA(col,.25));g.addColorStop(1,hexA(col,0));x.fillStyle=g;x.fillRect(0,0,w,h);
+    const cx=hx*w,cy=hy*h,rad=Math.max(w,h)*.17;
+    x.globalCompositeOperation='source-over';const g=x.createRadialGradient(cx,cy,0,cx,cy,rad);if(act>.01){g.addColorStop(0,hexA(col,.3*act));g.addColorStop(.5,hexA(col,.1*act));g.addColorStop(1,hexA(col,0));x.fillStyle=g;x.fillRect(0,0,w,h);}
     /* now and then a Fauna shows its colour: a random bioluminescent pulse somewhere in the picture */
-    if(Math.random()<.02)sparks.push(spark(Math.random()*w,h*(.2+Math.random()*.6),FC[Math.floor(Math.random()*FC.length)],1.2));
-    if(Math.random()<.35)sparks.push(spark(cx+(Math.random()-.5)*rad,cy+(Math.random()-.5)*rad,col,.6));
+    if(Math.random()<.008)sparks.push(spark(Math.random()*w,h*(.2+Math.random()*.6),FC[Math.floor(Math.random()*FC.length)],1.2));
+    if(Math.random()<.18*act)sparks.push(spark(cx+(Math.random()-.5)*rad,cy+(Math.random()-.5)*rad,col,.6));
     x.globalCompositeOperation='lighter';
     sparks=sparks.filter(s=>(s.l-=dt*.55)>0);for(const s of sparks){s.x+=s.vx;s.y+=s.vy;s.vy-=.01;s.vx*=.985;const gg=x.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*6);gg.addColorStop(0,hexA(s.c,.9*s.l));gg.addColorStop(1,hexA(s.c,0));x.fillStyle=gg;x.fillRect(s.x-s.r*6,s.y-s.r*6,s.r*12,s.r*12);}}
   requestAnimationFrame(step);})();
