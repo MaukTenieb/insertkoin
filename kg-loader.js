@@ -1,18 +1,11 @@
 /*
- * =============================================================================
- * COPYRIGHT NOTICE AND INTELLECTUAL PROPERTY DECLARATION
- * =============================================================================
- *
- * Copyright © 2024 Mauk Tenieb & Korhogo.
- * ALL RIGHTS RESERVED.
- *
- * The games loaded by this file (Fauna Chess, Erratic, Faunarratics, Katabatik,
- * Kapture) are the exclusive intellectual property of Mauk Tenieb. See the full
- * COPYRIGHT NOTICE reproduced at the top of every file in this folder.
- *
- * For licensing inquiries, permissions, or commercial arrangements, contact:
- * mauktenieb@gmail.com
- * =============================================================================
+ * Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna
+ * Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related
+ * material — including characters, names, symbols, rules, lore and texts, in any form or
+ * medium — are the exclusive property of Korhogo™. The source code of this site is
+ * published for reading, reflections, additions, requests, etc. - the lore, names, marks
+ * and works remain the property of the author. No use for training artificial
+ * intelligence. Contact: mauktenieb@gmail.com
  */
 
 /* KG -- lazy loader for the Korhogo games.
@@ -38,7 +31,7 @@
   if(window.KG&&window.KG.__kg)return;
   var cur=document.currentScript;
   var BASE=((cur&&cur.src)?cur.src.replace(/[^\/?#]*([?#].*)?$/,''):'')+'kg-';
-  var FONTS='https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Archivo:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap';
+  var FONTS=BASE.replace(/kg-$/,'')+'fonts.css'; /* [IK] fonts served by the site */
   var FACES=["00-honey-buzzard.jpg","01-c7h5n3o6.jpg","02-silent-pact.jpg","03-poisoned-well.jpg","04-hatra-loves.jpg","05-plague-of-justinian.jpg","06-maiden-call.jpg","07-truce.jpg","08-ts-ui-pen.jpg","09-aube.jpg","10-grand-colonel.jpg","11-malika.jpg","12-auvergne.jpg","13-cadaver-synod.jpg","14-croisiere-noire.jpg","15-naphta.jpg","16-unkle-maukie.jpg","17-dogxim.jpg"];
 
   // module = one css + one html fragment + one js file, loaded in this order
@@ -56,7 +49,8 @@
     chess:       {mods:['chess'],             roots:['chess'],                          entry:function(){window.openChess();}},
     erratic:     {mods:['erratic'],           roots:['mem'],                            entry:function(){window.openMem();}},
     faunarratics:{mods:['faunarratics'],      roots:['konklave-panel'],                 entry:function(){window.openFaunarratics();}},
-    katabatik:   {mods:['katabatik'],         roots:['c4-panel','bb-panel','hang-panel','mm-panel'], entry:function(){window.chRandomMask();}},
+    // the arcade's die picks one of the four games (window.__ikKata); Connect 4 when nothing was rolled
+    katabatik:   {mods:['katabatik'],         roots:['c4-panel','bb-panel','hang-panel','mm-panel'], entry:function(){window.chRandomMask();var g=window.__ikKata;window.__ikKata=null;if(g&&g!=='c4'&&window.kbShow)window.kbShow(g);}},
     // what a click on #kapture-btn does in the original (mousedown+mouseup without drag -> kaptureStart)
     kapture:     {mods:['kapture'],           roots:['kapture-overlay'],                entry:function(){window.kaptureStart();}},
     // VHS deck: library + recorder warm up in the background, the deck opens on the scrapes
@@ -64,6 +58,7 @@
   };
 
   var KG={__kg:1,onclose:null,onwin:null,base:BASE,games:Object.keys(GAMES),stats:{}};
+  KG.win=function(name,detail){win(name,detail);};
   var cache={};           // url -> promise
   var modDone={};         // module -> promise
   var sessions={};        // game -> {seen,timer,t0}
@@ -106,9 +101,7 @@
     return layer;
   }
   function ensureFonts(){
-    var links=document.querySelectorAll('link[href*="fonts.googleapis.com"]'),all='';
-    for(var i=0;i<links.length;i++)all+=links[i].href;
-    if(all.indexOf('Bebas+Neue')<0||all.indexOf('DM+Mono')<0||all.indexOf('Archivo')<0){
+    if(!document.querySelector('link[href$="fonts.css"]')){
       var l=document.createElement('link');l.rel='stylesheet';l.href=FONTS;l.setAttribute('data-kg','');document.head.appendChild(l);
     }
   }

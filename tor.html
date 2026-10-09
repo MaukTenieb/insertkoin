@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Faunator — Korhogo Fauna</title>
-<meta name="description" content="Faunator — recherche DuckDuckGo, web classique et .onion.">
+<title>FaunaTor — Korhogo Fauna</title>
+<meta name="description" content="FaunaTor — web and .onion, read through the motel.">
 <link rel="icon" href="favicon.png">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link href="fonts.css" rel="stylesheet">
 <style>
 :root{--gold:#c9a84c;--gold2:#ffe08a;--bg:#07060a;--dim:#8a8272}
 *{box-sizing:border-box}
@@ -15,6 +15,8 @@ body{margin:0;background:var(--bg);color:#fff;font-family:"DM Mono",monospace;di
 header{display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid rgba(201,168,76,.35);background:#0b0a08}
 .brand{font-family:"Bebas Neue",sans-serif;font-size:22px;letter-spacing:.14em;color:var(--gold2);text-shadow:0 1px 6px #000;padding:0 6px 0 2px;flex-shrink:0}
 .brand i{font-style:normal;color:#d32f2f}
+.brand small{font-size:.74em}
+body.home #url,body.home #go,body.home #tab,body.home #reload{display:none}
 .tbtn{font-family:"DM Mono",monospace;font-size:13px;color:rgba(201,168,76,.85);
   background:transparent;border:1px solid rgba(201,168,76,.4);border-radius:5px;padding:8px 10px;cursor:pointer;flex-shrink:0;min-width:38px}
 .tbtn:hover{border-color:var(--gold2);color:var(--gold2)}
@@ -38,19 +40,19 @@ main{flex:1;position:relative;background:#000}
 </head>
 <body>
 <header>
-  <span class="brand">FAUNATOR<i>●</i></span>
-  <button class="tbtn" id="back" data-l="◀ Retour|◀ Back" title="Retour">◀</button>
-  <button class="tbtn" id="fwd" data-l="▶ Avancer|▶ Forward" title="Avancer">▶</button>
-  <button class="tbtn" id="reload" data-l="⟳ Recharger|⟳ Reload" title="Recharger">⟳</button>
-  <button class="tbtn" id="home" data-l="⌂ Accueil|⌂ Home" title="Accueil">⌂</button>
+  <span class="brand">F<small>AUNA</small>T<small>OR</small><i>●</i></span>
+  <button class="tbtn" id="back" aria-label="back">◀</button>
+  <button class="tbtn" id="fwd" aria-label="forward">▶</button>
+  <button class="tbtn" id="reload" aria-label="reload">⟳</button>
+  <button class="tbtn" id="home" aria-label="home">⌂</button>
   <input id="url" spellcheck="false" autocomplete="off">
-  <button class="tbtn" id="go" data-l="ALLER|GO">ALLER</button>
-  <button class="tbtn" id="tab" data-l="↗ ONGLET|↗ TAB">↗</button>
-  <button class="tbtn" id="lang" title="Français / English">FR</button>
+  <button class="tbtn" id="go" aria-label="go">→</button>
+  <button class="tbtn" id="tab" aria-label="new tab">↗</button>
+  <button class="tbtn" id="lang" hidden>FR</button>
 </header>
 <div id="status"></div>
 <main>
-  <iframe id="view" title="Faunator" referrerpolicy="no-referrer"></iframe>
+  <iframe id="view" title="FaunaTor" referrerpolicy="no-referrer" sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin"></iframe>
   <div id="notice"><h1 id="ntitle"></h1><p id="ntext"></p><button class="tbtn" id="naction" style="display:none"></button>
     <span style="color:var(--dim);font-size:11px" id="nhint"></span></div>
 </main>
@@ -58,7 +60,7 @@ main{flex:1;position:relative;background:#000}
 (function(){
 'use strict';
 var LANG='fr';
-try{LANG=localStorage.getItem('tor.lang')||localStorage.getItem('vdx.lang')||'fr';if(LANG!=='en')LANG='fr';}catch(e){}
+try{LANG=localStorage.getItem('tor.lang')||localStorage.getItem('ik.lang')||'en';if(LANG!=='fr')LANG='en';}catch(e){}
 function L(fr,en){return LANG==='en'?en:fr;}
 function $(id){return document.getElementById(id);}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
@@ -66,7 +68,7 @@ function status(t){$('status').textContent=t||'';}
 function setLang(l){LANG=l==='en'?'en':'fr';try{localStorage.setItem('tor.lang',LANG);}catch(e){}
   document.documentElement.lang=LANG;
   document.querySelectorAll('[data-l]').forEach(function(el){var p=el.getAttribute('data-l').split('|');el.textContent=p[LANG==='en'?1:0];});
-  $('url').placeholder=L('recherche ou adresse — https, .onion','search or address — https, .onion');
+  $('url').placeholder='';
   $('url').setAttribute('aria-label',L('Recherche ou adresse','Search or address'));
   $('lang').textContent=LANG==='en'?'FR':'EN';}
 
@@ -90,33 +92,32 @@ function probeTor(u){
 }
 function nav(url,push){
   if(!url)return;
-  hideNotice();
+  hideNotice();document.body.classList.remove('home');
+  $('url').value=url;
+  reloadFn=function(){nav(url,false);};
   if(/\.onion/i.test(url)){
     var u=url.trim();
     $('tab').dataset.onion=u;
-    $('view').removeAttribute('srcdoc');
-    status(L('Sonde du réseau Tor…','Probing the Tor network…'));
-    probeTor(u).then(function(ok){
-      if(ok){
-        $('view').src=u;
-        status(L('.onion en direct — Tor actif.','.onion direct — Tor active.'));
-      }else{
-        showNotice(
-          L('.onion exige Tor','.onion needs Tor'),
-          L('Les passerelles tor2web n\'existent plus fiablement. Ouvre Tor Browser — depuis Tor, ce même Faunator affichera l\'adresse en direct, ici même.','No reliable tor2web gateways are left. Open Tor Browser — from Tor, this same Faunator will load the address directly, right here.'),
-          L('↗ OUVRIR DANS TOR','↗ OPEN IN TOR'), u,
-          L('Ou copie l\'adresse dans la barre de Tor Browser.','Or copy the address into the Tor Browser bar.'));
-      }
-    });
-    reloadFn=function(){nav(url,false);};
     if(push)mark('onion:'+url);
+    status(L('L’applicant doit être patient…','The applicant must be patient…'));
+    probeTor(u).then(function(ok){
+      if(ok){sandbox(false);$('view').removeAttribute('srcdoc');$('view').src=u;status('');return;}
+      var gates=onionGates(u);
+      torReady.then(function(m){if(!m)throw 0;return m.hasOnion().then(function(ok){if(!ok)throw 0;return m.get(u);});})
+        .then(function(r){if(!r||!r.text)throw 0;return onionInline(u,r.text).then(function(h){show(u,h,false);});})
+        .catch(function(){
+          return any(gates.map(function(g){return fetchRaw(g).then(function(h){return {g:g,h:h};});}))
+            .then(function(r){show(r.g,r.h,false);});
+        })
+        .catch(function(){rejected(u);});
+    });
     return;
   }
   $('tab').dataset.onion='';
-  $('view').removeAttribute('srcdoc');$('view').src=url;
-  status(L('Chargement… — si la page reste vide, le site refuse l\u2019encapsulation : ↗ ONGLET.','Loading… — if the page stays empty, the site refuses framing: ↗ TAB.'));
-  reloadFn=function(){nav(url,false);};
   if(push)mark(url);
+  /* the motel's own pages open as they are */
+  if(!/^https?:\/\//i.test(url)){sandbox(true);$('view').removeAttribute('srcdoc');$('view').src=url;status('');return;}
+  read(url).catch(function(){rejected(url);});
 }
 
 /* ---- page d'accueil : recherche DuckDuckGo (web classique) + Ahmia (.onion) ---- */
@@ -130,37 +131,116 @@ function searchPage(){
   +'button{background:#c9a84c;color:#0b0805;border:0;border-radius:6px;font:bold 12px "DM Mono",monospace;letter-spacing:.1em;padding:0 18px;cursor:pointer}'
   +'p{color:#8a8272;font-size:11px;text-align:center;max-width:52ch;line-height:1.7;margin:0}'
   +'</style></head><body>'
-  +'<h1>FAUNATOR<i>\u25CF</i></h1>'
-  +'<form id="f"><input id="q" autofocus placeholder="'+esc(L('mots-clés, adresse https ou .onion','keywords, https or .onion address'))+'"><button>'+esc(L('CHERCHER','SEARCH'))+'</button></form>'
-  +'<p>'+esc(L('DuckDuckGo pour le web classique, Ahmia pour les .onion — ou tape une adresse.','DuckDuckGo for the classic web, Ahmia for .onion — or type an address.'))+'<\/p>'
+  +'<form id="f"><input id="q" autofocus placeholder="'+esc(L('.onion, tags, mots-clés, URL — tape ce que tu veux.','.onion, tags, keywords, URL — type what you want.'))+'"><button aria-label="go">\u2192</button></form>'
   +'<script>document.getElementById("f").addEventListener("submit",function(e){e.preventDefault();var q=document.getElementById("q").value.trim();if(q&&parent.__torSearch)parent.__torSearch(q);});<\/script>'
   +'</body></html>';
-  $('view').src='about:blank';
+  sandbox(true);$('view').src='about:blank';
   $('view').srcdoc=h;
 }
-function home(){$('url').value='';status(L('Recherche DuckDuckGo — web classique et .onion.','DuckDuckGo search — classic web and .onion.'));hideNotice();searchPage();
+function home(){$('url').value='';status('');hideNotice();document.body.classList.add('home');searchPage();
   reloadFn=home;if(push0)mark('home');}
 var push0=false;
 
-/* ---- recherche : web via DuckDuckGo, .onion via Ahmia, par passereaux CORS ---- */
-var PROXIES=[
+/* ---- FaunaTor reads through relays: every public relay is raced, the first good answer wins.
+   A relay of your own (a free Cloudflare Worker, see faunator-worker.js) goes first when set:
+   localStorage 'tor.relay' = 'https://your-worker.workers.dev/?url=' ---- */
+var RELAY='';   /* ← your own relay, once deployed: 'https://faunator.<you>.workers.dev/?url=' */
+function own(){try{return localStorage.getItem('tor.relay')||RELAY;}catch(e){return RELAY;}}
+var RAW=[
+  function(u){var o=own();return o?o+encodeURIComponent(u):null;},
   function(u){return 'https://api.allorigins.win/raw?url='+encodeURIComponent(u);},
-  function(u){return 'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(u);},
-  /* lecteur CORS-friendly : rend du texte/markdown — les parseurs ont leur repli texte */
-  function(u){return 'https://r.jina.ai/'+u;}
+  function(u){return 'https://api.cors.lol/?url='+encodeURIComponent(u);},
+  function(u){return 'https://cors.x2u.in/'+u;},
+  function(u){return 'https://api.codetabs.com/v1/proxy/?quest='+encodeURIComponent(u);},
+  function(u){return 'https://thingproxy.freeboard.io/fetch/'+u;}
 ];
-function fetchVia(u){
-  var i=0,lastErr=null;
-  function tryNext(){
-    if(i>=PROXIES.length)return Promise.reject(lastErr||new Error('proxy'));
-    /* garde-fou : un passereau qui ne répond pas (12 s) bascule sur le suivant */
-    var ctl=typeof AbortController!=='undefined'?new AbortController():null;
-    var timer=ctl?setTimeout(function(){try{ctl.abort();}catch(e){}},12000):null;
-    var opts=ctl?{signal:ctl.signal}:{};
-    return fetch(PROXIES[i++](u),opts).then(function(r){if(timer)clearTimeout(timer);if(!r.ok)throw new Error('http '+r.status);return r.text();})
-      .catch(function(e){if(timer)clearTimeout(timer);lastErr=e;return tryNext();});
+var JSONP=[function(u){return 'https://api.allorigins.win/get?url='+encodeURIComponent(u);}];
+/* a reader that runs the page's own scripts on its side and returns the text: the last resort, and the best one for script-built pages */
+function readerUrl(u){return 'https://r.jina.ai/'+u;}
+function timed(url,ms,json){
+  var ctl=typeof AbortController!=='undefined'?new AbortController():null;
+  var t=ctl?setTimeout(function(){try{ctl.abort();}catch(e){}},ms):null;
+  return fetch(url,ctl?{signal:ctl.signal}:{}).then(function(r){if(t)clearTimeout(t);if(!r.ok)throw new Error('http '+r.status);return json?r.json().then(function(j){return j&&j.contents||'';}):r.text();})
+    .then(function(x){if(!x||x.length<120)throw new Error('empty');if(/^\s*(\{"error|<title>(4\d\d|5\d\d|error|access denied))/i.test(x))throw new Error('relay');return x;})
+    .catch(function(e){if(t)clearTimeout(t);throw e;});
+}
+function any(ps){return new Promise(function(res,rej){var n=ps.length,f=0;if(!n)rej(new Error('none'));ps.forEach(function(p){p.then(res,function(){if(++f===n)rej(new Error('all'));});});});}
+function fetchRaw(u){
+  var ps=RAW.map(function(f){var x=f(u);return x?timed(x,11000):Promise.reject(0);}).concat(JSONP.map(function(f){return timed(f(u),11000,true);}));
+  return any(ps);
+}
+/* Tor inside the page (faunator-tor.js): bootstraps as soon as FaunaTor opens */
+var TOR=null,torReady=import('./faunator-tor.js').then(function(m){TOR=m;try{m.warm();}catch(e){}return m;}).catch(function(){return null;});
+function torGet(u){return torReady.then(function(m){if(!m)throw new Error('no tor');return m.get(u);}).then(function(r){if(!r||r.status>=500||!r.text||r.text.length<60)throw new Error('tor '+(r&&r.status));return r.text;});}
+/* every road at once — the relays answer fast, Tor answers what they refuse — then the reader */
+function fetchVia(u){return any([fetchRaw(u),torGet(u)]).catch(function(){return timed(readerUrl(u),20000);});}
+/* the rejection, the only failure FaunaTor ever speaks */
+function rejected(href){showNotice(L('Ton Kalabass a été rejeté.','Your Kalabass was rejected.'),L('Postule plus tard.','Apply later.'),href?'↗':null,href,'');status('');}
+
+/* ---- a page, read: scripts out, links and forms kept inside FaunaTor ---- */
+var SHIM='<script>(function(){function up(h){try{return new URL(h,document.baseURI).href;}catch(e){return null;}}'
+ +'document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[href]");if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)==="#")return;var u=up(h);if(!u||!/^https?:/i.test(u))return;e.preventDefault();parent.postMessage({torGo:u},"*");},true);'
+ +'document.addEventListener("submit",function(e){var f=e.target;if((f.method||"get").toLowerCase()!=="get")return;e.preventDefault();var u=new URL(f.getAttribute("action")||location.href,document.baseURI);new FormData(f).forEach(function(v,k){u.searchParams.set(k,v);});parent.postMessage({torGo:u.href},"*");},true);})();<\/script>';
+function mdToHtml(md){
+  var out=[],list=false;
+  md.split(/\n/).forEach(function(l){
+    var t=esc(l).replace(/!\[([^\]]*)\]\((https?:[^)\s]+)\)/g,'<img alt="$1" src="$2">').replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g,'<a href="$2">$1</a>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');
+    var m=/^(#{1,6})\s+(.*)/.exec(l);
+    if(/^\s*[-*]\s+/.test(l)){if(!list){out.push('<ul>');list=true;}out.push('<li>'+t.replace(/^\s*[-*]\s+/,'')+'</li>');return;}
+    if(list){out.push('</ul>');list=false;}
+    if(m){out.push('<h'+m[1].length+'>'+esc(m[2])+'</h'+m[1].length+'>');return;}
+    if(/^\s*$/.test(l))return;
+    out.push('<p>'+t+'</p>');
+  });
+  if(list)out.push('</ul>');return out.join('');
+}
+var READCSS='<style>body{margin:0;padding:24px 5vw 60px;background:#07060a;color:#e9e1d0;font:14px/1.7 "DM Mono",monospace;max-width:900px}a{color:#ffe08a}img{max-width:100%;height:auto}h1,h2,h3{font-family:"Bebas Neue",sans-serif;font-weight:400;letter-spacing:.06em;color:#ffe08a}</style>';
+function show(url,html,md){
+  var doc;
+  if(md){var body=html.replace(/^[\s\S]*?Markdown Content:\s*/,'');doc='<!DOCTYPE html><html><head><meta charset="utf-8"><base href="'+esc(url)+'">'+READCSS+'</head><body>'+mdToHtml(body)+SHIM+'</body></html>';}
+  else{
+    var d=new DOMParser().parseFromString(html,'text/html');
+    d.querySelectorAll('script,iframe,object,embed,meta[http-equiv],link[rel=preload],link[rel=modulepreload]').forEach(function(n){n.remove();});
+    d.querySelectorAll('noscript').forEach(function(n){var s=d.createElement('div');s.innerHTML=n.textContent;n.replaceWith(s);});
+    d.querySelectorAll('img[data-src]').forEach(function(i){if(!i.getAttribute('src'))i.setAttribute('src',i.getAttribute('data-src'));});
+    d.querySelectorAll('*').forEach(function(n){for(var i=n.attributes.length-1;i>=0;i--){var at=n.attributes[i],nm=at.name.toLowerCase();if(nm.indexOf('on')===0||((nm==='href'||nm==='src'||nm==='action'||nm==='formaction'||nm==='xlink:href')&&/^\s*javascript:/i.test(at.value)))n.removeAttribute(at.name);}});
+    var bs=d.querySelector('base');if(bs)bs.remove();
+    var base=d.createElement('base');base.href=url;d.head.insertBefore(base,d.head.firstChild);
+    var df=d.createElement('style');df.textContent='html{background:#fff;color:#111}';d.head.insertBefore(df,d.head.firstChild);
+    var mc=d.createElement('meta');mc.setAttribute('charset','utf-8');d.head.insertBefore(mc,d.head.firstChild);
+    doc='<!DOCTYPE html>'+d.documentElement.outerHTML.replace(/<\/body>/i,SHIM+'</body>');
+    if(!/<\/body>/i.test(doc))doc+=SHIM;
   }
-  return tryNext();
+  sandbox(false);$('view').removeAttribute('src');$('view').srcdoc=doc;status('');
+}
+function sandbox(trusted){$('view').setAttribute('sandbox',trusted?'allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin':'allow-scripts allow-popups allow-popups-to-escape-sandbox');}
+window.addEventListener('message',function(e){if(e.source!==$('view').contentWindow||!e.data||typeof e.data.torGo!=='string')return;if(/^https?:/i.test(e.data.torGo))go(e.data.torGo,true);});
+function onionInline(base,html){
+  var d=new DOMParser().parseFromString(html,'text/html'),jobs=[],n=0;
+  function abs(x){try{return new URL(x,base).href;}catch(e){return null;}}
+  function b64(u8){var s='',i,c=0x8000;for(i=0;i<u8.length;i+=c)s+=String.fromCharCode.apply(null,u8.subarray(i,i+c));return btoa(s);}
+  d.querySelectorAll('img[src]').forEach(function(im){var u=abs(im.getAttribute('src'));if(!u||!/\.onion/i.test(u)||n++>=16)return;
+    jobs.push(TOR.bytes(u).then(function(b){im.setAttribute('src','data:'+(b.type||'image/*')+';base64,'+b64(b.data));}).catch(function(){}));});
+  d.querySelectorAll('link[rel~=stylesheet][href]').forEach(function(l){var u=abs(l.getAttribute('href'));if(!u||!/\.onion/i.test(u))return;
+    jobs.push(TOR.get(u).then(function(r){var st=d.createElement('style');st.textContent=r.text;l.replaceWith(st);}).catch(function(){}));});
+  return Promise.all(jobs).then(function(){return '<!DOCTYPE html>'+d.documentElement.outerHTML;});
+}
+function textLen(html){try{var d=new DOMParser().parseFromString(html,'text/html');d.querySelectorAll('script,style,noscript').forEach(function(n){n.remove();});return (d.body&&d.body.textContent||'').replace(/\s+/g,' ').length;}catch(e){return 0;}}
+function read(url){
+  status(L('L’applicant doit être patient…','The applicant must be patient…'));
+  return any([fetchRaw(url),torGet(url)]).then(function(h){
+    if(textLen(h)>400){show(url,h,false);return;}
+    /* a page built by its scripts: the reader runs them */
+    return timed(readerUrl(url),20000).then(function(t){show(url,t,true);},function(){show(url,h,false);});
+  },function(){
+    return timed(readerUrl(url),20000).then(function(t){show(url,t,true);});
+  });
+}
+/* .onion: Tor first (inside Tor Browser it opens as is), then the public gateways, through the relays */
+function onionGates(u){
+  var m=/^(?:https?:\/\/)?([a-z2-7]{16,56})\.onion(\/.*)?$/i.exec(u.trim());if(!m)return [];
+  var h=m[1].toLowerCase(),p=m[2]||'/';
+  return ['onion.ly','onion.pet','onion.ps','onion.ws'].map(function(g){return 'https://'+h+'.'+g+p;});
 }
 function ddgUrl(q){return 'https://html.duckduckgo.com/html/?q='+encodeURIComponent(q);}
 function ahmiaUrl(q){return 'https://ahmia.fi/search/?q='+encodeURIComponent(q);}
@@ -232,25 +312,25 @@ function resultsPage(q,web,onion,errWeb,errOnion){
   +section(L('.ONION — AHMIA','.ONION — AHMIA'),onion,errOnion)
   +'<script>document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[data-u]");if(a){e.preventDefault();if(parent.__torGo)parent.__torGo(a.getAttribute("data-u"));}});<\/script>'
   +'</body></html>';
-  $('view').srcdoc=h;
+  sandbox(true);$('view').srcdoc=h;
 }
 window.__torGo=function(u){go(u,true);};
 window.__torSearch=function(q){
   q=String(q||'').trim();if(!q)return;
   if(/^https?:\/\//i.test(q)||/\.onion/i.test(q)){go(q,true);return;}
   if(/^[\w.-]+\.[a-z]{2,}(\/|$)/i.test(q)){go('https://'+q,true);return;}
-  $('url').value=q;
-  status(L('Recherche — web et .onion…','Searching — web and .onion…'));
+  $('url').value=q;document.body.classList.remove('home');
+  status(L('L\u2019applicant doit être patient…','The applicant must be patient…'));
   hideNotice();$('tab').dataset.onion='';
   var done=0,web=[],onion=[],errWeb=null,errOnion=null;
   function fin(){done++;if(done<2)return;
     mark('search:'+q);refreshBtns();
-    if(!web.length&&!onion.length&&!errWeb&&!errOnion)errWeb=L('Aucun résultat.','No results.');
+    if(!web.length&&!onion.length){rejected(null);reloadFn=function(){__torSearch(q);};return;}
     resultsPage(q,web,onion,errWeb,errOnion);
     reloadFn=function(){__torSearch(q);};
-    status(L('Résultats — DuckDuckGo (web) et Ahmia (.onion).','Results — DuckDuckGo (web) and Ahmia (.onion).'));}
-  fetchVia(ddgUrl(q)).then(function(t){web=parseDdg(t);}).catch(function(){errWeb=L('Web injoignable (passereau).','Web unreachable (proxy).');}).then(fin);
-  fetchVia(ahmiaUrl(q)).then(function(t){onion=parseAhmia(t);}).catch(function(){errOnion=L('.onion injoignable (passereau).','.onion unreachable (proxy).');}).then(fin);
+    status('');}
+  fetchVia(ddgUrl(q)).then(function(t){web=parseDdg(t);}).catch(function(){errWeb=' ';}).then(fin);
+  fetchVia(ahmiaUrl(q)).then(function(t){onion=parseAhmia(t);}).catch(function(){errOnion=' ';}).then(fin);
 };
 
 /* ---- barre d'adresse ---- */

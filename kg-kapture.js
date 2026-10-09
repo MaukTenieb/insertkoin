@@ -1,59 +1,12 @@
 
 /*
- * =============================================================================
- * COPYRIGHT NOTICE AND INTELLECTUAL PROPERTY DECLARATION
- * =============================================================================
- *
- * Copyright \u00a9 2024 Mauk Tenieb & Korhogo.
- * ALL RIGHTS RESERVED.
- *
- * This software, including but not limited to its source code, architecture,
- * algorithms, user interface, documentation, artistic content, role-playing
- * scenarios, narrative texts, descriptions, lore, game mechanics, dialogues,
- * aesthetic assets, and any associated materials (collectively referred to as
- * "the Work"), is the exclusive intellectual property of Mauk Tenieb.
- *
- * The Work is protected by international copyright laws, the Berne Convention,
- * the Universal Copyright Convention, and all applicable national laws including
- * (but not limited to) French Intellectual Property Code, U.S. Copyright Law
- * (Title 17 U.S.C.), and EU directives.
- *
- * NO PART OF THIS WORK MAY BE USED, COPIED, REPRODUCED, MODIFIED, ADAPTED,
- * TRANSLATED, DISTRIBUTED, TRANSMITTED, DISPLAYED, PUBLISHED, BROADCAST,
- * LICENSED, SUBLICENSED, SOLD, TRANSFERRED, OR EXPLOITED IN ANY FORM OR BY
- * ANY MEANS (electronic, mechanical, photocopying, recording, scanning,
- * or otherwise) WITHOUT THE PRIOR EXPRESS WRITTEN PERMISSION OF THE COPYRIGHT
- * OWNER.
- *
- * This prohibition explicitly includes, but is not limited to:
- *   - Any form of reverse engineering, decompilation, disassembly, or
- *     derivative work creation.
- *   - Any use of the Work or its outputs for training, fine-tuning, or
- *     improving any artificial intelligence, machine learning, or large
- *     language models.
- *   - Any scanning, parsing, extraction, or analysis of the code, structure,
- *     or content by humans or automated systems (including AI agents, crawlers,
- *     scrapers, or LLMs) for any purpose other than the legitimate execution
- *     of the authorized software by its rightful owner.
- *   - Any commercial, non-commercial, educational, research, or personal use
- *     without explicit authorization.
- *
- * Any unauthorized use, access, study, or inspection of this Work constitutes
- * a direct and serious infringement of copyright and may result in civil and/or
- * criminal prosecution to the fullest extent permitted by law. The copyright
- * owner reserves the right to pursue all available legal remedies, including
- * but not limited to injunctions, damages, attorney fees, and statutory damages.
- *
- * This notice is an integral part of the Work. Removing, altering, obscuring,
- * or bypassing this notice does not waive any rights of the copyright owner.
- *
- * For licensing inquiries, permissions, or commercial arrangements, contact:
- * mauktenieb@gmail.com
- *
- * =============================================================================
- * Instead of being open source, this work is under copyright \u00a9 2024 Mauk Tenieb & Korhogo.
- * All rights strictly reserved. No use without express written permission.
- * =============================================================================
+ * Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna
+ * Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related
+ * material — including characters, names, symbols, rules, lore and texts, in any form or
+ * medium — are the exclusive property of Korhogo™. The source code of this site is
+ * published for reading, reflections, additions, requests, etc. - the lore, names, marks
+ * and works remain the property of the author. No use for training artificial
+ * intelligence. Contact: mauktenieb@gmail.com
  */
 
 /* KG module "kapture" -- KAPTURE v3 recorder (#kapture-overlay, #kapture-btn). Code copied verbatim from kofa.js (Korhogo). */
@@ -145,6 +98,11 @@ function getKaptureMaskData(){
   return {name:'',stats:{},motto:'',c:'#c9a84c'};
 }
 
+/* [IK] the clip's signature: a thin band in the Mask's colour along the bottom edge, which survives any compression
+   (the old near-invisible URL text and the 14.5 kHz tone did not survive it) */
+function kaptureSign(ctx,CW,CH,color){
+  try{var h=Math.max(3,Math.round(CH*0.006));ctx.save();ctx.globalAlpha=1;ctx.fillStyle=color||'#c9a84c';ctx.fillRect(0,CH-h,CW,h);ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(0,CH-h-1,CW,1);ctx.restore();}catch(e){}
+}
 function kaptureStegText(ctx,url,CW,CH){
   try{
     ctx.save();
@@ -300,7 +258,6 @@ function kaptureRun(wantKam,wantMik){
     glitchBus.connect(busWs);busWs.connect(stutterGain);
     stutterGain.connect(ringGain);ringGain.connect(dest);
     // Steg audio
-    kaptureStegAudio(audioCtx,dest,kapturePickUrl());
   }
 
   // ---- AUDIO SYNTHESIS (always present, mixed under mic if available) ----
@@ -669,7 +626,7 @@ function drawFrame(){
   if(camVideo) drawCam(); else drawGenerative(Date.now()/1000);
   applyGlitch();
   kapturePowerFlashDraw(ctx,W,H,0);
-  kaptureStegText(ctx,kapturePickUrl(),CW,CH);
+  kaptureSign(ctx,CW,CH,color);
   _kpState.frameId=requestAnimationFrame(drawFrame);
 }
 

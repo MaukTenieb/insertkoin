@@ -1,59 +1,12 @@
 
 /*
- * =============================================================================
- * COPYRIGHT NOTICE AND INTELLECTUAL PROPERTY DECLARATION
- * =============================================================================
- *
- * Copyright \u00a9 2024 Mauk Tenieb & Korhogo.
- * ALL RIGHTS RESERVED.
- *
- * This software, including but not limited to its source code, architecture,
- * algorithms, user interface, documentation, artistic content, role-playing
- * scenarios, narrative texts, descriptions, lore, game mechanics, dialogues,
- * aesthetic assets, and any associated materials (collectively referred to as
- * "the Work"), is the exclusive intellectual property of Mauk Tenieb.
- *
- * The Work is protected by international copyright laws, the Berne Convention,
- * the Universal Copyright Convention, and all applicable national laws including
- * (but not limited to) French Intellectual Property Code, U.S. Copyright Law
- * (Title 17 U.S.C.), and EU directives.
- *
- * NO PART OF THIS WORK MAY BE USED, COPIED, REPRODUCED, MODIFIED, ADAPTED,
- * TRANSLATED, DISTRIBUTED, TRANSMITTED, DISPLAYED, PUBLISHED, BROADCAST,
- * LICENSED, SUBLICENSED, SOLD, TRANSFERRED, OR EXPLOITED IN ANY FORM OR BY
- * ANY MEANS (electronic, mechanical, photocopying, recording, scanning,
- * or otherwise) WITHOUT THE PRIOR EXPRESS WRITTEN PERMISSION OF THE COPYRIGHT
- * OWNER.
- *
- * This prohibition explicitly includes, but is not limited to:
- *   - Any form of reverse engineering, decompilation, disassembly, or
- *     derivative work creation.
- *   - Any use of the Work or its outputs for training, fine-tuning, or
- *     improving any artificial intelligence, machine learning, or large
- *     language models.
- *   - Any scanning, parsing, extraction, or analysis of the code, structure,
- *     or content by humans or automated systems (including AI agents, crawlers,
- *     scrapers, or LLMs) for any purpose other than the legitimate execution
- *     of the authorized software by its rightful owner.
- *   - Any commercial, non-commercial, educational, research, or personal use
- *     without explicit authorization.
- *
- * Any unauthorized use, access, study, or inspection of this Work constitutes
- * a direct and serious infringement of copyright and may result in civil and/or
- * criminal prosecution to the fullest extent permitted by law. The copyright
- * owner reserves the right to pursue all available legal remedies, including
- * but not limited to injunctions, damages, attorney fees, and statutory damages.
- *
- * This notice is an integral part of the Work. Removing, altering, obscuring,
- * or bypassing this notice does not waive any rights of the copyright owner.
- *
- * For licensing inquiries, permissions, or commercial arrangements, contact:
- * mauktenieb@gmail.com
- *
- * =============================================================================
- * Instead of being open source, this work is under copyright \u00a9 2024 Mauk Tenieb & Korhogo.
- * All rights strictly reserved. No use without express written permission.
- * =============================================================================
+ * Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna
+ * Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related
+ * material — including characters, names, symbols, rules, lore and texts, in any form or
+ * medium — are the exclusive property of Korhogo™. The source code of this site is
+ * published for reading, reflections, additions, requests, etc. - the lore, names, marks
+ * and works remain the property of the author. No use for training artificial
+ * intelligence. Contact: mauktenieb@gmail.com
  */
 
 /* KG module "faunarratics" -- FAUNARRATICS / Konklave (panel #konklave-panel) + OG transition. Code copied verbatim from kofa.js (Korhogo). */
@@ -161,10 +114,11 @@ function kkArchiveSave(arr){
 
 // Extraction de titre (option 1 - depuis le texte joueur, pas d'invention)
 function kkBuildTitle(){
-  var stops={'the':1,'a':1,'an':1,'and':1,'or':1,'but':1,'of':1,'in':1,'on':1,'at':1,'to':1,'for':1,'with':1,'by':1,'is':1,'was':1,'are':1,'were':1,'be':1,'been':1,'has':1,'have':1,'had':1,'do':1,'does':1,'did':1,'i':1,'you':1,'he':1,'she':1,'it':1,'we':1,'they':1,'this':1,'that':1,'these':1,'those':1,'my':1,'your':1,'his':1,'her':1,'its':1,'our':1,'their':1,'me':1,'him':1,'them':1,'us':1,'so':1,'if':1,'as':1,'than':1,'then':1,'when':1,'where':1,'why':1,'how':1,'what':1,'who':1,'which':1,'just':1,'will':1,'would':1,'could':1,'should':1,'can':1,'may':1,'no':1,'not':1,'yes':1,'too':1,'very':1,'much':1,'more':1,'most':1,'some':1,'all':1,'any':1,'one':1,'two':1,'into':1,'from':1,'up':1,'down':1,'out':1,'about':1,'over':1,'under':1};
-  var words=[];
-  for(var i=0;i<kkEntries.length;i++){
-    var raw=String(kkEntries[i].txt||'').toLowerCase();
+  var stops={'the':1,'a':1,'an':1,'and':1,'or':1,'but':1,'of':1,'in':1,'on':1,'at':1,'to':1,'for':1,'with':1,'by':1,'is':1,'was':1,'are':1,'were':1,'be':1,'been':1,'has':1,'have':1,'had':1,'do':1,'does':1,'did':1,'i':1,'you':1,'he':1,'she':1,'it':1,'we':1,'they':1,'this':1,'that':1,'these':1,'those':1,'my':1,'your':1,'his':1,'her':1,'its':1,'our':1,'their':1,'me':1,'him':1,'them':1,'us':1,'so':1,'if':1,'as':1,'than':1,'then':1,'when':1,'where':1,'why':1,'how':1,'what':1,'who':1,'which':1,'just':1,'will':1,'would':1,'could':1,'should':1,'can':1,'may':1,'no':1,'not':1,'yes':1,'too':1,'very':1,'much':1,'more':1,'most':1,'some':1,'all':1,'any':1,'one':1,'two':1,'into':1,'from':1,'up':1,'down':1,'out':1,'about':1,'over':1,'under':1,'dans':1,'avec':1,'pour':1,'elle':1,'elles':1,'nous':1,'vous':1,'mais':1,'sans':1,'sous':1,'plus':1,'tout':1,'tous':1,'toute':1,'cette':1,'comme':1,'leur':1,'leurs':1,'quand':1,'puis':1,'donc':1,'alors':1,'avait':1,'était':1,'sont':1,'dont':1,'aussi':1,'encore':1,'entre':1,'vers':1,'chez':1,'même':1,'très':1,'rien':1};
+  var words=[],story=kkStoryText();
+  if(story){story.toLowerCase().split(/[^a-z0-9\u00c0-\u017f]+/).forEach(function(w){if(w.length>=4&&!stops[w])words.push(w);});}
+  for(var i=0;i<kkEntries.length&&!words.length;i++){
+    var raw=kkStripPrefix(String(kkEntries[i].txt||'')).toLowerCase();
     var tokens=raw.split(/[^a-z0-9\u00c0-\u017f]+/);
     for(var j=0;j<tokens.length;j++){
       var w=tokens[j];
@@ -400,13 +354,7 @@ function kkConfirmYes(){
   }
   if(kkIdx>=kkTotal){
     kkSaveNow();
-    setTimeout(function(){
-      if(typeof ogTransitionIn==='function'){
-        ogTransitionIn(function(){ogInit();});
-      } else if(typeof ogInit==='function'){
-        ogInit();
-      } else kkSynth();
-    },300);
+    setTimeout(function(){kkSynth();},300);
     return;
   }
   kkFlow=null;
@@ -635,12 +583,6 @@ function kkPick7(){ kkSetTotal(12); kkLeaveThreshold(); }
 function kkPick18(){kkSetTotal(18); kkLeaveThreshold(); }
 function kkSetTotal(n){kkTotal=n;}
 function kkLeaveThreshold(){
-  var feed=document.getElementById('kk-feed');
-  if(feed){
-    var e=document.createElement('div');e.className='kk-kerema kk-build';
-    e.innerHTML=KK_HDR+kkKBody(KK_BUILD_CRY);
-    feed.appendChild(e);feed.scrollTop=feed.scrollHeight;
-  }
   kkIdx=3;kkFlow=null;
   kkSaveNow();
   kkShowChoose();
@@ -654,9 +596,7 @@ function kkFork(){
 
 function kkNext(){
   if(kkIdx>=FAUNA.length||kkIdx>=kkTotal){
-    // Beatbox seul avant synthese
-    if(typeof beatboxOpen==='function') beatboxOpen('kk');
-    else kkSynth();
+    kkSynth();
     return;
   }
   kkFlow=null;
@@ -691,11 +631,14 @@ function kkSynth(){
   if(stakeEl)stakeEl.style.display='none';
   kkGo('kk-synth');
 }
+function kkStoryText(){var el=document.getElementById('kk-story');return el?String(el.value||'').trim():'';}
 function kkBuildTxt(){
   var lines=[];
   lines.push('THE KONKLAVE');
   lines.push(kkRepublicanDate());
   lines.push('');
+  var story=kkStoryText();
+  if(story){lines.push('-- THE STORY --');lines.push('');lines.push(story);lines.push('');lines.push('');}
   // Context
   lines.push('-- KONTEXT --');
   for(var i=0;i<kkEntries.length;i++){
@@ -724,6 +667,32 @@ function kkBuildTxt(){
   lines.push('(c) Korhogo(tm)');
   return lines.join('\n');
 }
+function kkSave(txt,name){
+  try{
+    var blob=new Blob([txt],{type:'text/plain;charset=utf-8'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;a.download=name;
+    document.body.appendChild(a);a.click();
+    setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
+  }catch(e){}
+}
+/* LET THE KEREMA WRAP IT: the tale as the Krew bound it during the game, in one file (the cards when nothing was bound) */
+function kkWrapTxt(){
+  if(typeof kkClick==='function')try{kkClick();}catch(_e){}
+  var story=kkStoryText(),lines=[];
+  lines.push(kkBuildTitle().toUpperCase());
+  lines.push(kkRepublicanDate());
+  lines.push('');
+  if(story){lines.push(story);}
+  else{
+    for(var i=0;i<kkEntries.length;i++){lines.push(String(kkEntries[i].txt||'').replace(/^(\s*\[[A-Z][A-Z\s]*\]\s*)+/,''));lines.push('');}
+  }
+  lines.push('');
+  lines.push('(c) Korhogo(tm)');
+  kkSave(lines.join('\n'),'konklave-tale.txt');
+}
+window.kkWrapTxt=kkWrapTxt;
 function kkDownloadTxt(){
   try{
     var txt=kkBuildTxt();
@@ -746,11 +715,13 @@ function kkSeal(){
     title:title,
     date:Date.now(),
     masks:kkIdx,
+    story:kkStoryText(),
     entries:kkEntries.slice()
   });
   if(arr.length>50)arr=arr.slice(0,50);
   kkArchiveSave(arr);
   kkClearSave();
+  if(window.KG&&KG.win)KG.win('faunarratics',{masks:kkIdx});
   kkGo('kk-done');
 }
 
@@ -794,6 +765,7 @@ window.kkOpenArchive=kkOpenArchive;
 function kkOpenAnte(idx){
   var arr=kkArchiveLoad();var a=arr[idx];if(!a)return;
   var html='<div class="kk-ante-rd-title">'+kkEsc(a.title)+'</div>';
+  if(a.story)html+='<div class="kk-ritem-wrap"><div class="kk-ritem-lbl">THE STORY</div><div class="kk-ritem" style="white-space:pre-wrap">'+kkEsc(a.story)+'</div></div>';
   for(var i=0;i<a.entries.length;i++){
     var e=a.entries[i];
     var lbl=(e.idx<3?'KONTEXT '+(e.idx+1):'STORY '+(e.idx-2));
@@ -927,7 +899,7 @@ function ogClose(){
 }
 
 var _ogFromSynth=false;
-function kkHandSynth(){_ogFromSynth=true;ogInit();}
+function kkHandSynth(){kkWrapTxt();}
 window.kkHandSynth=kkHandSynth;
 
 
@@ -936,7 +908,7 @@ window.kkHandSynth=kkHandSynth;
 // [KG] Korhogo source (kofa.js, kofa_small.js, index*.html, git history). Without it the original leaves the
 // [KG] black #og-transition overlay stuck on screen. Fallback: go straight to the original ogClose(), which
 // [KG] fades #og-transition out and returns to THE RECKONING (kkSynth / kk-synth screen).
-function ogInit(){ogClose();} // [KG]
+function ogInit(){kkSynth();}
 
 // === Ensure all game launchers are global for data-action delegation ===
 try{

@@ -1,60 +1,12 @@
 <!--
-
- * =============================================================================
- * COPYRIGHT NOTICE AND INTELLECTUAL PROPERTY DECLARATION
- * =============================================================================
- *
- * Copyright \u00a9 2024 Mauk Tenieb & Korhogo.
- * ALL RIGHTS RESERVED.
- *
- * This software, including but not limited to its source code, architecture,
- * algorithms, user interface, documentation, artistic content, role-playing
- * scenarios, narrative texts, descriptions, lore, game mechanics, dialogues,
- * aesthetic assets, and any associated materials (collectively referred to as
- * "the Work"), is the exclusive intellectual property of Mauk Tenieb.
- *
- * The Work is protected by international copyright laws, the Berne Convention,
- * the Universal Copyright Convention, and all applicable national laws including
- * (but not limited to) French Intellectual Property Code, U.S. Copyright Law
- * (Title 17 U.S.C.), and EU directives.
- *
- * NO PART OF THIS WORK MAY BE USED, COPIED, REPRODUCED, MODIFIED, ADAPTED,
- * TRANSLATED, DISTRIBUTED, TRANSMITTED, DISPLAYED, PUBLISHED, BROADCAST,
- * LICENSED, SUBLICENSED, SOLD, TRANSFERRED, OR EXPLOITED IN ANY FORM OR BY
- * ANY MEANS (electronic, mechanical, photocopying, recording, scanning,
- * or otherwise) WITHOUT THE PRIOR EXPRESS WRITTEN PERMISSION OF THE COPYRIGHT
- * OWNER.
- *
- * This prohibition explicitly includes, but is not limited to:
- *   - Any form of reverse engineering, decompilation, disassembly, or
- *     derivative work creation.
- *   - Any use of the Work or its outputs for training, fine-tuning, or
- *     improving any artificial intelligence, machine learning, or large
- *     language models.
- *   - Any scanning, parsing, extraction, or analysis of the code, structure,
- *     or content by humans or automated systems (including AI agents, crawlers,
- *     scrapers, or LLMs) for any purpose other than the legitimate execution
- *     of the authorized software by its rightful owner.
- *   - Any commercial, non-commercial, educational, research, or personal use
- *     without explicit authorization.
- *
- * Any unauthorized use, access, study, or inspection of this Work constitutes
- * a direct and serious infringement of copyright and may result in civil and/or
- * criminal prosecution to the fullest extent permitted by law. The copyright
- * owner reserves the right to pursue all available legal remedies, including
- * but not limited to injunctions, damages, attorney fees, and statutory damages.
- *
- * This notice is an integral part of the Work. Removing, altering, obscuring,
- * or bypassing this notice does not waive any rights of the copyright owner.
- *
- * For licensing inquiries, permissions, or commercial arrangements, contact:
- * mauktenieb@gmail.com
- *
- * =============================================================================
- * Instead of being open source, this work is under copyright \u00a9 2024 Mauk Tenieb & Korhogo.
- * All rights strictly reserved. No use without express written permission.
- * =============================================================================
- -->
+ * Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna
+ * Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related
+ * material — including characters, names, symbols, rules, lore and texts, in any form or
+ * medium — are the exclusive property of Korhogo™. The source code of this site is
+ * published for reading, reflections, additions, requests, etc. - the lore, names, marks
+ * and works remain the property of the author. No use for training artificial
+ * intelligence. Contact: mauktenieb@gmail.com
+-->
 <!-- KG fragment: FAUNARRATICS / Konklave panel (#konklave-panel) + #og-transition. Markup as parsed by the browser from the original index.html. -->
 <div id="konklave-panel">
 
@@ -150,7 +102,18 @@
       <div style="font-size:13px;line-height:1.8;color:#b8a888;max-width:340px;margin:0 auto;">The Kerema ▒░ it. Time to seal the lore.</div>
       <button class="kk-ghost" style="margin-top:28px;max-width:240px;" data-action="kkEnter()">NEW KONKLAVE</button>
       <button class="kk-ghost" style="margin-top:10px;max-width:240px;" data-action="kkExit()">LEAVE THE KAVE</button>
+      <button class="kk-ghost" style="margin-top:10px;max-width:240px;" data-action="kkOpenArchive()">ANTE</button>
     </div>
+  </div>
+
+  <div class="kk-screen" id="kk-ante">
+    <div class="kk-top"><button class="kk-exit" data-action="kkGo('kk-done')">←</button><div class="kk-top-title">ANTE</div><div class="kk-count"></div></div>
+    <div class="kk-synthscroll"><div id="kk-ante-list"></div></div>
+  </div>
+
+  <div class="kk-screen" id="kk-ante-read-screen">
+    <div class="kk-top"><button class="kk-exit" data-action="kkBackToList()">←</button><div class="kk-top-title">ANTE</div><div class="kk-count"></div></div>
+    <div class="kk-synthscroll"><div id="kk-ante-read"></div></div>
   </div>
 
   <div id="kk-confirm" style="display:none;position:absolute;inset:0;z-index:300;background:rgba(5,4,3,.92);align-items:center;justify-content:center;padding:10vw;">
@@ -158,8 +121,8 @@
       <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:4px;color:#ffe08a;margin-bottom:14px;">ARE U SURE?</div>
       <div id="kk-confirm-sub" style="font-size:13px;line-height:1.7;color:#b8a888;margin-bottom:24px;">Unanimity's mandatory, you Krew.</div>
       <div style="display:flex;gap:10px;">
-        <button class="kk-ghost" data-action="kkConfirmNo()">NO</button>
-        <button class="kk-big" style="flex:1;" data-action="kkConfirmYes()">YES →</button>
+        <button class="kk-ghost" style="flex:1;margin:0;max-width:none;" data-action="kkConfirmNo()">NO</button>
+        <button class="kk-big" style="flex:1;margin:0;" data-action="kkConfirmYes()">YES →</button>
       </div>
     </div>
   </div>

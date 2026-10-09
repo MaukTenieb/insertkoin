@@ -1,19 +1,20 @@
-<div id="vhs" class="vhs" data-vhs-root tabindex="-1" role="region" aria-label="VHS">
+<!--
+ * Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna
+ * Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related
+ * material — including characters, names, symbols, rules, lore and texts, in any form or
+ * medium — are the exclusive property of Korhogo™. The source code of this site is
+ * published for reading, reflections, additions, requests, etc. - the lore, names, marks
+ * and works remain the property of the author. No use for training artificial
+ * intelligence. Contact: mauktenieb@gmail.com
+-->
+<div id="vhs" class="vhs" data-vhs-root data-atelier="off" tabindex="-1" role="region" aria-label="VHS">
   <div class="vhs-shell">
 
-    <div class="vhs-topline">
-      <div class="vhs-brand">VHS</div>
-      <div class="vhs-status" data-vhs-status role="status">Stop</div>
-      <button type="button" class="vhs-eject" data-vhs-action="eject"
-              data-vhs-i18n-aria="Eject" aria-label="Eject"><span aria-hidden="true">&#x23CF;</span> <span data-vhs-i18n="EJECT">EJECT</span></button>
-    </div>
-
-    <!-- One screen, two sources. Catalogue: the untouched YouTube player.
-         Files: <video> (hidden, decoded) -> WebGL2 canvas (visible). -->
-    <div class="vhs-screen-wrap">
-      <div class="vhs-screen" data-vhs-screen>
-        <!-- Cassette boot: random snow, then the tape slides in (skippable). -->
-        <div class="vhs-boot" data-vhs-boot aria-hidden="true">
+    <!-- The television: the tube, a mute key under it. -->
+    <div class="vhs-tv">
+      <div class="vhs-screen-wrap">
+        <div class="vhs-screen" data-vhs-screen>
+          <div class="vhs-boot" data-vhs-boot aria-hidden="true">
           <div class="vhs-boot-snow"></div>
           <div class="vhs-boot-flap"></div>
           <svg class="vhs-boot-tape" viewBox="0 0 120 78" xmlns="http://www.w3.org/2000/svg">
@@ -27,42 +28,48 @@
             <rect x="52" y="49" width="16" height="6" rx="1.5" fill="#0f0f0f" stroke="#3a3a3a"/>
             <rect x="8" y="8" width="104" height="2.5" rx="1" fill="#b9d84a" opacity="0.55"/>
           </svg>
-          <div class="vhs-boot-load">LOADING &#x25B8;&#x25B8;</div>
+          
         </div>
-        <!-- Picture search (REW / FFW): horizontal noise bars over the picture. -->
-        <div class="vhs-scan" data-vhs-scan hidden aria-hidden="true"></div>
-        <div class="vhs-youtube" data-vhs-youtube></div>
-        <video class="vhs-video" data-vhs-video playsinline preload="metadata"></video>
-        <canvas class="vhs-canvas" data-vhs-canvas aria-hidden="true"></canvas>
+          <div class="vhs-scan" data-vhs-scan hidden aria-hidden="true"></div>
+          <div class="vhs-youtube" data-vhs-youtube></div>
+          <video class="vhs-video" data-vhs-video playsinline preload="metadata"></video>
+          <canvas class="vhs-canvas" data-vhs-canvas aria-hidden="true"></canvas>
+          <!-- Tape wear over the YouTube catalogue (its pixels cannot reach the shader). -->
+          <div class="vhs-wear" aria-hidden="true"><canvas class="vhs-grain" width="320" height="240"></canvas><i class="vhs-band"></i><i class="vhs-head"></i></div>
+        </div>
+      </div>
+      <div class="vhs-tv-foot">
+        <span class="vhs-tv-led" aria-hidden="true"></span>
+        <button type="button" class="vhs-tv-key" data-vhs-action="mute" data-vhs-i18n-aria="Mute / unmute" aria-label="Mute / unmute" aria-pressed="false">MUTE</button>
       </div>
     </div>
 
-    <div class="vhs-osd">
-      <span data-vhs-osd-state>Stop</span>
-      <span data-vhs-osd-counter>00:00:00</span>
-      <span data-vhs-osd-track aria-live="polite">&mdash;</span>
-    </div>
-
-    <div class="vhs-transport" data-vhs-transport>
-      <input type="range" class="vhs-seek" data-vhs-seek min="0" max="1000" step="1" value="0"
-             data-vhs-i18n-aria="Position" aria-label="Position">
-    </div>
-
-    <div class="vhs-controls" data-vhs-controls>
-      <button type="button" data-vhs-action="prev" data-vhs-i18n-aria="Rewind 5 seconds" aria-label="Rewind 5 seconds"><span aria-hidden="true">&#x25C0;&#x25C0;</span><span data-vhs-i18n="REW">REW</span></button>
-      <button type="button" data-vhs-action="play" data-vhs-i18n-aria="Play / pause" aria-label="Play / pause"><span data-vhs-play-label>&#x25B6;</span></button>
-      <button type="button" data-vhs-action="next" data-vhs-i18n-aria="Forward 5 seconds" aria-label="Forward 5 seconds"><span aria-hidden="true">&#x25B6;&#x25B6;</span><span data-vhs-i18n="FFW">FFW</span></button>
-      <button type="button" data-vhs-action="random" data-vhs-i18n-aria="Random" aria-label="Random">RND</button>
-      <button type="button" data-vhs-action="mute" data-vhs-i18n-aria="Mute / unmute" aria-label="Mute / unmute" aria-pressed="false">MUTE</button>
+    <!-- The deck: cassette slot, display, keys. -->
+    <div class="vhs-deck">
+      <div class="vhs-slot">
+        <div class="vhs-flap" aria-hidden="true"></div>
+        <div class="vhs-label" data-vhs-osd-track aria-live="polite">&mdash;</div>
+      </div>
+      <div class="vhs-vfd" role="status">
+        <span class="vhs-vfd-state" data-vhs-osd-state>Stop</span>
+        <span class="vhs-vfd-counter" data-vhs-osd-counter>00:00:00</span>
+        <span class="vhs-vfd-status" data-vhs-status hidden>Stop</span>
+        <div class="vhs-transport" data-vhs-transport>
+          <input type="range" class="vhs-seek" data-vhs-seek min="0" max="1000" step="1" value="0" data-vhs-i18n-aria="Position" aria-label="Position">
+        </div>
+      </div>
+      <div class="vhs-keys" data-vhs-controls>
+        <button type="button" class="vhs-key vhs-key-eject" data-vhs-action="eject" data-vhs-i18n-aria="Eject" aria-label="Eject">&#x23CF;</button>
+        <button type="button" class="vhs-key" data-vhs-action="prev" data-vhs-i18n-aria="Rewind 5 seconds" aria-label="Rewind 5 seconds">&#x25C0;&#x25C0;</button>
+        <button type="button" class="vhs-key vhs-key-play" data-vhs-action="play" data-vhs-i18n-aria="Play / pause" aria-label="Play / pause"><span data-vhs-play-label>&#x25B6;</span></button>
+        <button type="button" class="vhs-key" data-vhs-action="next" data-vhs-i18n-aria="Forward 5 seconds" aria-label="Forward 5 seconds">&#x25B6;&#x25B6;</button>
+        <button type="button" class="vhs-key vhs-key-small" data-vhs-action="random" data-vhs-i18n-aria="Random" aria-label="Random">&#x292E;</button>
+      </div>
     </div>
 
     <div class="vhs-source-tabs" role="tablist" data-vhs-i18n-aria="Source" aria-label="Source">
-      <button type="button" class="vhs-tab is-active" data-vhs-source="youtube" role="tab"
-              id="vhs-tab-catalogue" aria-controls="vhs-panel-catalogue" aria-selected="true"
-              data-vhs-i18n="CATALOGUE">CATALOGUE</button>
-      <button type="button" class="vhs-tab" data-vhs-source="local" role="tab"
-              id="vhs-tab-local" aria-controls="vhs-panel-local" aria-selected="false"
-              data-vhs-i18n="FILES">FILES</button>
+      <button type="button" class="vhs-tab is-active" data-vhs-source="youtube" role="tab" id="vhs-tab-catalogue" aria-controls="vhs-panel-catalogue" aria-selected="true" data-vhs-i18n="CATALOGUE">CATALOGUE</button>
+      <button type="button" class="vhs-tab" data-vhs-source="local" role="tab" id="vhs-tab-local" aria-controls="vhs-panel-local" aria-selected="false" data-vhs-i18n="FILES" hidden>FILES</button>
     </div>
 
     <div class="vhs-catalogue" data-vhs-catalogue id="vhs-panel-catalogue" role="tabpanel" aria-labelledby="vhs-tab-catalogue">
@@ -97,7 +104,7 @@
 
       <!-- Finder: live filter over the deck's tracklist (Explorer). -->
       <div class="vhs-find" data-vhs-find>
-        <input type="search" class="vhs-find-input" data-vhs-find-input
+        <span class="vhs-find-glass" aria-hidden="true">&#x2315;</span><input type="search" class="vhs-find-input" data-vhs-find-input placeholder="&#x2315;"
                data-vhs-i18n-aria="Find a track in the deck"
                aria-label="Find a track in the deck"
                spellcheck="false" autocomplete="off">

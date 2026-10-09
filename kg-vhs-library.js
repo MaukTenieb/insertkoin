@@ -1,3 +1,12 @@
+/*
+ * Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna
+ * Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related
+ * material — including characters, names, symbols, rules, lore and texts, in any form or
+ * medium — are the exclusive property of Korhogo™. The source code of this site is
+ * published for reading, reflections, additions, requests, etc. - the lore, names, marks
+ * and works remain the property of the author. No use for training artificial
+ * intelligence. Contact: mauktenieb@gmail.com
+ */
 /*!
  * KG-VHS Library — tape adapter between CHANNEL.SCRAPE (YouTube scraper) and the VHS cabinet.
  *
@@ -175,7 +184,13 @@
     return fetch(url);
   }
 
+  /* [IK] CHANNEL.SCRAPE is the author's workshop: only probed when the arcade runs on his own machine */
+  function atelier() {
+    try { var h = global.location && global.location.hostname; return h === "localhost" || h === "127.0.0.1" || h === "" || global.location.protocol === "file:"; }
+    catch (_e) { return false; }
+  }
   function fetchBackend() {
+    if (!atelier()) return Promise.reject(new Error("no workshop here"));
     // GET {apiUrl}/videos/all — aggregate across every scraped channel: one
     // request gives both the flat video list (tracks) and per-channel
     // metadata (tapes). (/history excludes the heavy `videos` field, so it
