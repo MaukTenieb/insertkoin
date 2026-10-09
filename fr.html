@@ -249,7 +249,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 #home{position:relative}
 /* the guide arrives shining in its own colour, then twinkles now and then */
 .guide::before,.guide::after{content:"✦";position:absolute;font-size:16px;line-height:1;color:var(--gc);text-shadow:0 0 8px var(--gc),0 0 16px var(--gc);opacity:0;pointer-events:none}
-.guide::before{left:-8px;top:10%}.guide::after{right:-6px;top:38%;font-size:12px}
+.guide::before{left:-9px;top:10%;font-size:18px}.guide::after{right:-7px;top:38%;font-size:14px}
 .guide.shine{animation:gshine .55s steps(2) 8,gbob 1.6s ease-in-out infinite}
 .guide.shine::before{animation:gspark .7s ease-in-out 6}.guide.shine::after{animation:gspark .7s ease-in-out .35s 6}
 .guide.twink::before{animation:gspark .8s ease-in-out 2}.guide.twink::after{animation:gspark .8s ease-in-out .4s 2}
@@ -1863,7 +1863,7 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
   const g=document.createElement('div');g.className='guide gone';g.setAttribute('role','button');g.setAttribute('aria-label','Guide');g.tabIndex=0;home.appendChild(g);
   const tip=document.createElement('div');tip.className='gtip';home.appendChild(tip);
   let who=null,fw=0,sc=1,frame=0,touring=false,idleT=0,blinkT=0,away=true;
-  const H=touchDev?70:92;
+  const H=touchDev?80:106;
   function dress(){who=WHO[Math.floor(Math.random()*WHO.length)];const S=SH[who],r=R.find(x=>x.id===who);fw=S.w*(S.k||1);sc=H/(S.h*(S.k||1));
     g.style.setProperty('--gw',Math.round(fw*sc)+'px');g.style.setProperty('--gh',H+'px');g.style.backgroundImage=`url(${S.src})`;g.style.backgroundSize=`${Math.round(fw*8*sc)}px ${H}px`;const gc=({honey_buzzard:'#ff2a3a',c7h5n3o6:'#3aa0ff',tsui_pen:'#ff9a1a'})[who]||(r?r.glow:'#c9a84c');g.style.setProperty('--gc',gc);tip.style.setProperty('--gc',gc);face(0);}
   function face(f){frame=f;g.style.backgroundPosition=`${-Math.round(f*fw*sc)}px 0`;}
