@@ -235,6 +235,18 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 .copy b{font-weight:400;color:var(--gold2);text-shadow:0 0 10px rgba(255,224,138,.4)}
 @media (max-width:560px){.cab b{font-size:.8rem;letter-spacing:.03em}}
 @media (prefers-reduced-motion:reduce){.cab,.crt,.cab.lit b,.cab.boot{animation:none;transition:none;transform:none}.hero .heroFx{display:none}}
+
+/* the guide: a Mask in miniature who walks the cabinets when touched */
+.guide{position:absolute;z-index:40;width:var(--gw);height:var(--gh);cursor:pointer;background-repeat:no-repeat;filter:drop-shadow(0 6px 8px rgba(0,0,0,.7));transition:left .9s cubic-bezier(.45,.05,.4,1),top .9s cubic-bezier(.45,.05,.4,1),opacity .5s;animation:gbob 1.6s ease-in-out infinite;-webkit-tap-highlight-color:transparent}
+.guide.walk{animation:gwalk .32s ease-in-out infinite}
+@keyframes gbob{50%{transform:translateY(-3px)}}
+@keyframes gwalk{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+.guide.gone{opacity:0;pointer-events:none}
+.gtip{position:absolute;z-index:41;max-width:min(320px,70vw);padding:8px 11px 9px;background:rgba(7,6,10,.92);border:1px solid var(--gc,#c9a84c);box-shadow:0 0 18px color-mix(in srgb,var(--gc,#c9a84c) 40%,transparent);font:12px/1.5 "DM Mono",monospace;color:#e8e0c8;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .25s,transform .25s}
+.gtip.on{opacity:1;transform:none}
+.gtip b{display:block;font:400 18px/1 "Bebas Neue",Impact,sans-serif;letter-spacing:.06em;color:var(--gc,#c9a84c);margin-bottom:3px}
+#home{position:relative}
+@media (prefers-reduced-motion:reduce){.guide,.guide.walk{animation:none;transition:opacity .3s}}
 /* the arcade breathes: a light passes over a cabinet, a neon falters, a device calls */
 .menu a,.menu button{position:relative;overflow:hidden}
 .menu .gleam{position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 30%,color-mix(in srgb,var(--mc,#c9a84c) 45%,transparent) 44%,rgba(255,250,235,.7) 50%,color-mix(in srgb,var(--mc,#c9a84c) 45%,transparent) 56%,transparent 70%);transform:translateX(-130%);opacity:0;mix-blend-mode:screen}
@@ -1831,6 +1843,52 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
       if(ds.length){const d=ds[Math.floor(Math.random()*ds.length)];d.classList.remove('ping');void d.offsetWidth;d.classList.add('ping');d.addEventListener('animationend',e=>{if(e.animationName==='ping')d.classList.remove('ping');});}}
     call();},rnd(touchDev?9000:16000,touchDev?20000:38000));})();
 })();
+/* ---- the guide: now and then a Mask in miniature (C7H5N3O6, Honey Buzzard, Croisière Noire or Ts'ui Pên) wanders by; touched, it walks every cabinet ---- */
+(function guide(){const home=$('home');if(!home)return;const RMg=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const WHO=['c7h5n3o6','honey_buzzard','croisiere_noire','tsui_pen'];
+  /* only words already in the site (its FAQ), nothing invented */
+  const SAY={en:{puck:'An air-puck match in the tradition of Shufflepuck Café (Brøderbund, 1988) against the eighteen Masks of the Fauna.\nMove your paddle with the mouse, a finger or the arrow keys.',katabatik:'Launches a mini-game at random.',terminal:'The Minitel terminal.'},
+    fr:{puck:'Un match de palet dans la tradition de Shufflepuck Café (Brøderbund, 1988) contre les dix-huit Masks de la Fauna.\nDéplace ta raquette à la souris, au doigt ou aux flèches.',katabatik:'Lance un mini-jeu au hasard.',terminal:'Le terminal Minitel.'}};
+  const g=document.createElement('div');g.className='guide gone';g.setAttribute('role','button');g.setAttribute('aria-label','Guide');g.tabIndex=0;home.appendChild(g);
+  const tip=document.createElement('div');tip.className='gtip';home.appendChild(tip);
+  let who=null,fw=0,sc=1,frame=0,touring=false,idleT=0,blinkT=0,away=true;
+  const H=touchDev?70:92;
+  function dress(){who=WHO[Math.floor(Math.random()*WHO.length)];const S=SH[who],r=R.find(x=>x.id===who);fw=S.w*(S.k||1);sc=H/(S.h*(S.k||1));
+    g.style.setProperty('--gw',Math.round(fw*sc)+'px');g.style.setProperty('--gh',H+'px');g.style.backgroundImage=`url(${S.src})`;g.style.backgroundSize=`${Math.round(fw*8*sc)}px ${H}px`;g.style.setProperty('--gc',r?r.glow:'#c9a84c');tip.style.setProperty('--gc',r?r.glow:'#c9a84c');face(0);}
+  function face(f){frame=f;g.style.backgroundPosition=`${-Math.round(f*fw*sc)}px 0`;}
+  function homeXY(el){const a=el.getBoundingClientRect(),b=home.getBoundingClientRect();return{x:a.left-b.left,y:a.top-b.top,w:a.width,h:a.height};}
+  function place(x,y){g.style.left=x+'px';g.style.top=y+'px';}
+  function spot(){/* somewhere along the edge of the cabinets */const c=home.querySelector('.cabinets');const r=homeXY(c),gw=parseFloat(g.style.getPropertyValue('--gw'))||60;
+    return Math.random()<.5?{x:r.x+Math.random()*(r.w-gw),y:r.y-H+8}:{x:Math.random()<.5?r.x-gw*.3:r.x+r.w-gw*.7,y:r.y+Math.random()*(r.h-H)};}
+  function arrive(){if(touring||$('home').hidden||document.hidden){return later();}dress();const p=spot(),side=Math.random()<.5?-1:1;
+    g.style.transition='none';place(p.x+side*160,p.y);void g.offsetWidth;g.style.transition='';g.classList.remove('gone');g.classList.add('walk');face(side>0?2:3);place(p.x,p.y);away=false;
+    setTimeout(()=>{if(!touring){g.classList.remove('walk');face(0);}},950);idleT=performance.now()+12000+Math.random()*14000;}
+  function leave(){if(touring)return;g.classList.add('walk');face(Math.random()<.5?2:3);g.classList.add('gone');away=true;setTimeout(()=>g.classList.remove('walk'),600);later();}
+  function later(){setTimeout(arrive,(touring?4000:9000)+Math.random()*22000);}
+  /* blinks, glances, and goes away after a while */
+  setInterval(()=>{if(away||touring)return;const t=performance.now();if(t>idleT){leave();return;}
+    if(Math.random()<.18){face(1);setTimeout(()=>{if(!touring&&frame===1)face(0);},140);}else if(Math.random()<.06){const f=Math.random()<.5?2:3;face(f);setTimeout(()=>{if(!touring&&frame===f)face(0);},900);}},700);
+  function say(el,name,text){const r=homeXY(el),gx=parseFloat(g.style.left),gw=parseFloat(g.style.getPropertyValue('--gw'))||60,W=home.clientWidth;
+    tip.innerHTML='';const b=document.createElement('b');b.textContent=name;tip.appendChild(b);if(text)text.split('\n').forEach(l=>{const d=document.createElement('div');d.textContent=l;tip.appendChild(d);});
+    const right=gx+gw+10+320<W;tip.style.left=(right?gx+gw+6:Math.max(4,gx-Math.min(320,W*.7)-6))+'px';tip.style.top=(parseFloat(g.style.top)+8)+'px';tip.classList.add('on');}
+  async function tour(){if(touring)return;touring=true;idleT=Infinity;ac();const W=ms=>new Promise(r=>setTimeout(r,ms));
+    const cabs=[...home.querySelectorAll('.cabinets .cab')],chips=[...home.querySelectorAll('.menu a,.menu button')];
+    const first=cabs.filter(c=>c.querySelector('[data-go="puck"]')),rest=cabs.filter(c=>!first.includes(c)).sort(()=>Math.random()-.5),stops=first.concat(rest,chips.sort(()=>Math.random()-.5));
+    const L=SAY[LANG]||SAY.en;
+    for(const el of stops){if(!touring)break;const isCab=el.classList.contains('cab');const go=(el.querySelector('[data-go]')||el).dataset.go||'';
+      el.scrollIntoView({block:'center',behavior:RMg?'auto':'smooth'});await W(RMg?60:420);if(!touring)break;
+      const r=homeXY(el),gw=parseFloat(g.style.getPropertyValue('--gw'))||60;g.classList.add('walk');face(r.x<parseFloat(g.style.left)?2:3);
+      place(isCab?r.x+r.w-gw-6:r.x+r.w/2-gw/2,isCab?r.y+r.h-H-4:r.y-H+6);tip.classList.remove('on');await W(950);if(!touring)break;g.classList.remove('walk');face(4);
+      if(isCab){el.classList.remove('lit','sweep');void el.offsetWidth;el.classList.add('lit','sweep');}else{el.classList.remove('sweep');void el.offsetWidth;el.classList.add('sweep');}
+      if(AC&&sound){const n=drawNote();tone(330*Math.pow(2,n/12),.09,'triangle',.035);tone(660*Math.pow(2,n/12),.05,'sine',.017,0,.03);}
+      const nm=(el.querySelector('b')||el).textContent.trim();say(el,nm,L[go]||'');await W(L[go]?3600:1500);if(isCab)el.classList.remove('lit');face(0);}
+    stop();}
+  function stop(){if(!touring)return;touring=false;tip.classList.remove('on');home.querySelectorAll('.cab.lit').forEach(c=>c.classList.remove('lit'));idleT=performance.now()+5000;}
+  g.addEventListener('click',e=>{e.stopPropagation();touring?stop():tour();});g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();touring?stop():tour();}});
+  document.addEventListener('click',e=>{if(touring&&!g.contains(e.target))stop();},true);
+  addEventListener('keydown',e=>{if(e.key==='Escape')stop();});
+  later();
+  window.__guide={go:()=>{arrive();setTimeout(tour,1200);}};})();
 /* ---- a Koin earned anywhere (here, or in 3615) falls into the counter ---- */
 function koinOut(){const k=$('koins');if(!k||matchMedia('(prefers-reduced-motion:reduce)').matches)return;const r=k.getBoundingClientRect(),c=document.createElement('span');c.className='kdrop';c.textContent='◉';c.style.left=(r.left+4)+'px';c.style.top=r.top+'px';document.body.appendChild(c);
   const a=c.animate([{transform:'translate(0,0) rotateY(0)',opacity:1},{transform:'translate(-6px,-26px) rotateY(540deg)',opacity:1,offset:.4},{transform:'translate(-14px,60px) rotateY(1080deg)',opacity:0}],{duration:700,easing:'cubic-bezier(.3,.6,.6,1)',fill:'both'});a.onfinish=()=>c.remove();}
