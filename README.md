@@ -18,7 +18,7 @@ The home screen is the motel painting, then the cabinets. Every visit draws its 
 | **Fauna Chess** | Fairy chess against the Fauna. |
 | **Erratik** | The memory game. |
 | **Faunarratik** | A tale built with the Masks; *Let the Kerema wrap it* saves it as a text file. English only. |
-| **Katabatik** | A die is thrown on the cabinet: Konnect4, Sampler, the Hungarian hangman or Mastermind. |
+| **Katabatik** | A die is thrown on the cabinet: Konnect4, Sampler, Akasztófa (the Hungarian hangman: a Hungarian keyboard, and a win brings József Attila, Tarr, Krasznahorkai, Ligeti or Lukács) or Mastermind. |
 | **3615** | The K Terminal, a Minitel emulator: https://mauktenieb.github.io/3615/ |
 | **VHS** | A television on a tape deck: Motel Sound and your own YouTube tapes. |
 | **Photofauna** | The pocket photo app: take or open a photo, edit it through 44 looks. |

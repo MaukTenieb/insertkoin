@@ -12,7 +12,7 @@
   <div id="kb-menu">
     <button class="kb-tab on" data-action="kbShow('c4')" title="Konnect4" aria-label="Konnect4">⚀</button>
     <button class="kb-tab" data-action="kbShow('bb')" title="Sampler" aria-label="Sampler">⚁</button>
-    <button class="kb-tab" data-action="kbShow('hang')" title="Hangman" aria-label="Hangman">⚂</button>
+    <button class="kb-tab" data-action="kbShow('hang')" title="Akasztófa" aria-label="Akasztófa">⚂</button>
     <button class="kb-tab" data-action="kbShow('mm')" title="Mastermind" aria-label="Mastermind">⚃</button>
   </div>
   <canvas id="c4-canvas" style="display:block;touch-action:none;"></canvas>
@@ -35,6 +35,7 @@
 </div>
 <div id="hang-panel" style="display:none;position:fixed;inset:0;z-index:9200;background:rgba(3,2,1,.97);flex-direction:column;align-items:center;justify-content:flex-start;gap:12px;overflow-y:auto;padding:18px 12px;">
   <div id="hang-head">
+    <div id="hang-title">AKASZTÓFA</div>
     <div id="hang-mask">PLAGUE OF JUSTINIAN</div>
     <div id="hang-motto">In contagion strength</div>
   </div>
@@ -44,6 +45,7 @@
   <div id="hang-misses"></div>
   <div id="hang-status"></div>
   <div id="hang-tr"></div>
+  <div id="hang-gift" style="display:none"></div>
   <div id="hang-keys"></div>
   <button id="hang-again" data-action="hangNew()" style="display:none;">ANOTHER WORD →</button>
   <div class="kb-foot">

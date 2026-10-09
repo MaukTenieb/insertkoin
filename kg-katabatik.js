@@ -948,6 +948,28 @@ var HANG_WORDS={
   verb:['futni','enni','inni','aludni','olvasni','írni','énekelni','táncolni','mosni','főzni','látni','beszélni','gondolkodni','vinni']
 };
 var HANG_KEYS='AÁBCDEÉFGHIÍJKLMNOÓÖŐPQRSTUÚÜŰVWXYZ';
+/* the keys sit as on a Hungarian keyboard (QWERTZ: Ö Ü Ó on the number row, Ő Ú and É Á Ű on the right, Í before Y) */
+var HANG_ROWS=['ÖÜÓ','QWERTZUIOPŐÚ','ASDFGHJKLÉÁŰ','ÍYXCVBNM'];
+/* a win brings a few lines: József Attila's own stanzas (Tiszta szívvel, 1925), or one work of Tarr, Krasznahorkai, Ligeti or Lukács */
+var HANG_JA=[['Nincsen apám, se anyám,','se istenem, se hazám,','se bölcsőm, se szemfedőm,','se csókom, se szeretőm.'],
+ ['Harmadnapja nem eszek,','se sokat, se keveset.','Húsz esztendőm hatalom,','húsz esztendőm eladom.'],
+ ['Hogyha nem kell senkinek,','hát az ördög veszi meg.','Tiszta szívvel betörök,','ha kell, embert is ölök.'],
+ ['Elfognak és felkötnek,','áldott földdel befödnek','s halált hozó fű terem','gyönyörűszép szívemen.']];
+var HANG_GIFT=[
+ {who:'Tarr Béla',k:{en:'film',fr:'film'},w:[['Kárhozat',1988],['Sátántangó',1994],['Werckmeister harmóniák',2000],['A torinói ló',2011]]},
+ {who:'Krasznahorkai László',k:{en:'novel',fr:'roman'},w:[['Sátántangó',1985],['Az ellenállás melankóliája',1989],['Háború és háború',1999],['Báró Wenckheim hazatér',2016]]},
+ {who:'Ligeti György',k:{en:'music',fr:'musique'},w:[['Atmosphères',1961],['Lux aeterna',1966],['Lontano',1967],['Le Grand Macabre',1978]]},
+ {who:'Lukács György',k:{en:'essay',fr:'essai'},w:[['A lélek és a formák',1910],['Die Theorie des Romans',1916],['Geschichte und Klassenbewusstsein',1923]]}];
+function hangGift(){
+  var g=document.getElementById('hang-gift');if(!g)return;
+  var lg=(document.documentElement.lang||'en')==='fr'?'fr':'en',pick=Math.floor(Math.random()*5),esc=function(t){return String(t).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
+  if(pick===0){var i=Math.floor(Math.random()*3),st=HANG_JA.slice(i,i+2);
+    g.innerHTML=st.map(function(v){return '<p>'+v.map(esc).join('<br>')+'</p>';}).join('')+'<cite>József Attila — Tiszta szívvel (1925)</cite>';}
+  else{var a=HANG_GIFT[pick-1],w=a.w[Math.floor(Math.random()*a.w.length)];
+    g.innerHTML='<p class="hang-work"><i>'+esc(w[0])+'</i></p><cite>'+esc(a.who)+' — '+a.k[lg]+', '+w[1]+'</cite>';}
+  g.style.display='block';
+}
+window.hangGift=hangGift;
 var HANG_MAX=6;
 /* sens des mots, révélé à la fin de la partie — FR puis EN */
 var HANG_TR={
@@ -979,6 +1001,7 @@ function hangNew(){
   _hangPartAt=0;
   var again=document.getElementById('hang-again');
   if(again)again.style.display='none';
+  var gf=document.getElementById('hang-gift');if(gf){gf.style.display='none';gf.innerHTML='';}
   hangDraw();
 }
 function hangDraw(){
@@ -1000,10 +1023,10 @@ function hangDraw(){
   mEl.innerHTML=m;
   if(kEl){
     var kh='';
-    for(var k2=0;k2<HANG_KEYS.length;k2++)(function(L){
+    for(var r2=0;r2<HANG_ROWS.length;r2++){kh+='<div class="hang-row">';for(var k2=0;k2<HANG_ROWS[r2].length;k2++)(function(L){
       var used=_hang.guessed[L]!==undefined||_hang.over;
       kh+='<button class="hang-key'+(used?' hang-used':'')+'"'+(used?' disabled':'')+' data-action="hangGuess(\''+L+'\')">'+L+'</button>';
-    })(HANG_KEYS[k2]);
+    })(HANG_ROWS[r2][k2]);kh+='</div>';}
     kEl.innerHTML=kh;
   }
   if(sEl){
@@ -1028,7 +1051,7 @@ function hangGuess(L){
   var done=true;
   for(var i=0;i<_hang.word.length;i++)if(!_hang.guessed[_hang.word[i]]){done=false;break;}
   if(done){
-    _hang.over=true;_hang.won=true;if(window.KG&&KG.win)KG.win('katabatik',{game:'hang'});
+    _hang.over=true;_hang.won=true;if(window.KG&&KG.win)KG.win('katabatik',{game:'hang'});hangGift();
     var again=document.getElementById('hang-again');if(again)again.style.display='inline-block';
     hangArp(true);
   } else if(_hang.miss>=HANG_MAX){
@@ -1330,3 +1353,7 @@ function hangFall(L){
     a.onfinish=function(){c.remove();};
   }catch(_e){}
 }
+
+/* the hangman also answers the physical keyboard (a Hungarian one types Ő, Ű… directly) */
+document.addEventListener('keydown',function(e){var p=document.getElementById('hang-panel');if(!p||p.style.display==='none'||!_hang||_hang.over||e.ctrlKey||e.metaKey||e.altKey)return;
+  var L=String(e.key||'').toUpperCase();if(L.length===1&&HANG_KEYS.indexOf(L)>=0){e.preventDefault();hangGuess(L);}});
