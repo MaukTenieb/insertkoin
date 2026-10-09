@@ -105,11 +105,7 @@ function nav(url,push){
       var gates=onionGates(u);
       torReady.then(function(m){if(!m){torWhy='tor: not loaded';throw 0;}return m.hasOnion().then(function(ok){if(!ok){torWhy='tor: no onion client';throw 0;}return m.get(u);});})
         .then(function(r){if(!r||!r.text)throw 0;return onionInline(u,r.text).then(function(h){show(u,h,false);});})
-        .catch(function(){
-          return any(gates.map(function(g){return fetchRaw(g).then(function(h){return {g:g,h:h};});}))
-            .then(function(r){show(r.g,r.h,false);});
-        })
-        .catch(function(){rejected(u);});
+        .catch(function(){rejected(u);});   /* the public tor2web gateways are dead or parked: Tor or nothing */
     });
     return;
   }
