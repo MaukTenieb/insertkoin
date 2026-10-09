@@ -185,8 +185,25 @@
   }
 
   /* [IK] CHANNEL.SCRAPE is the author's workshop: only probed when the arcade runs on his own machine */
+  /* [IK] …or on the online site, once this browser has been marked with ?atelier (unmarked with ?atelier=0):
+     only the author's browser knocks on 127.0.0.1, visitors are never asked about their local network */
+  (function () {
+    try {
+      var m = /[?#&]atelier(?:=([^&#]*))?/.exec(String(global.location.search) + String(global.location.hash));
+      if (m) {
+        if (m[1] === "0") global.localStorage.removeItem("kg.atelier");
+        else global.localStorage.setItem("kg.atelier", m[1] && /^https?:/i.test(decodeURIComponent(m[1])) ? decodeURIComponent(m[1]) : "1");
+      }
+      var a = global.localStorage.getItem("kg.atelier");
+      if (a && a !== "1") DEFAULTS.apiUrl = config.apiUrl = a.replace(/\/+$/, "");
+    } catch (_e) {}
+  })();
   function atelier() {
-    try { var h = global.location && global.location.hostname; return h === "localhost" || h === "127.0.0.1" || h === "" || global.location.protocol === "file:"; }
+    try {
+      var h = global.location && global.location.hostname;
+      if (h === "localhost" || h === "127.0.0.1" || h === "" || global.location.protocol === "file:") return true;
+      return !!global.localStorage.getItem("kg.atelier");
+    }
     catch (_e) { return false; }
   }
   function fetchBackend() {

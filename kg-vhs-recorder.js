@@ -320,6 +320,7 @@
     }).catch(function (e) {
       var cancelled = rec.abort; rec.local = false;
       finishRecording(root, false, "", 0, cancelled ? "Recording cancelled." : "Recording failed.");
+      if (!cancelled && e && e.message) { var pg = q(root, "[data-vhs-rec-progress]"); if (pg) { var sm = global.document.createElement("small"); sm.style.cssText = "display:block;opacity:.6;font-size:10px;margin-top:4px"; sm.textContent = e.message; pg.appendChild(sm); } }
     });
   }
 

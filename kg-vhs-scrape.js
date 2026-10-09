@@ -25,6 +25,11 @@
     function (u) { return "https://cors.x2u.in/" + u; },
     function (u) { return "https://thingproxy.freeboard.io/fetch/" + u; }
   ];
+  /* YouTube's own API (free, a key restricted to the site). Put the key here once it exists: */
+  var YT_KEY = "";
+  function ytKey() { try { return g.KG_YT_KEY || localStorage.getItem("vhs.ytkey") || YT_KEY; } catch (e) { return YT_KEY; } }
+  var WHY = [];
+  function why(road, e) { WHY.push(road + ": " + String((e && (e.message || e)) || "no answer").slice(0, 60)); }
   var INVIDIOUS = ["inv.nadeko.net", "invidious.nerdvpn.de", "yewtu.be", "invidious.f5.si", "iv.melmac.space", "invidious.privacyredirect.com", "invidious.materialio.us", "inv.tux.pizza"];
 
   function timed(url, ms, json) {
@@ -76,9 +81,41 @@
     return n ? unesc(n.replace(/&amp;/g, "&").replace(/&#39;/g, "'").replace(/&quot;/g, '"')) : "";
   }
 
+  /* road 0: the YouTube Data API — channel id from a handle, then the uploads playlist, 50 at a time */
+  function api(url, prog, stop) {
+    var key = ytKey(); if (!key) return Promise.reject(new Error("no key"));
+    var A = "https://www.googleapis.com/youtube/v3/";
+    url = String(url).trim();
+    var pl = /[?&]list=([\w-]{10,})/i.exec(url), ch = /channel\/(UC[\w-]{22})/i.exec(url), h = /@([\w.\-\u00C0-\u024F]+)/.exec(url);
+    var q = pl ? Promise.resolve({ list: pl[1], name: "" })
+      : timed(A + "channels?part=snippet,contentDetails&key=" + key + (ch ? "&id=" + ch[1] : h ? "&forHandle=" + enc("@" + h[1]) : "&forUsername=" + enc(url.replace(/^.*\//, ""))), 15000, true)
+          .then(function (d) { var it = d.items && d.items[0]; if (!it) throw new Error("channel not found");
+            return { list: it.contentDetails.relatedPlaylists.uploads, name: it.snippet.title }; });
+    return q.then(function (c) {
+      var out = [], name = c.name;
+      function page(tok, n) {
+        if (stop()) throw new Error("cancelled");
+        return timed(A + "playlistItems?part=snippet&maxResults=50&playlistId=" + c.list + "&key=" + key + (tok ? "&pageToken=" + tok : ""), 15000, true).then(function (d) {
+          (d.items || []).forEach(function (it) { var sn = it.snippet || {}, id = sn.resourceId && sn.resourceId.videoId;
+            if (id && sn.title !== "Private video" && sn.title !== "Deleted video") out.push({ id: id, title: sn.title }); if (!name) name = sn.channelTitle || ""; });
+          prog(out.length, name);
+          return d.nextPageToken && n < 60 ? page(d.nextPageToken, n + 1) : out;
+        });
+      }
+      return page("", 0).then(function (t) { if (!t.length) throw new Error("empty"); return { channel: name || c.list, channel_url: url, tracks: t }; });
+    });
+  }
+
+  /* the live list of Invidious instances that open their API to other sites */
+  function liveInstances() {
+    return timed("https://api.invidious.io/instances.json?sort_by=health", 8000, true).then(function (a) {
+      return a.filter(function (x) { var m = x[1] || {}; return m.type === "https" && m.api && m.cors; }).map(function (x) { return x[0]; });
+    }).catch(function () { return []; });
+  }
+
   /* road 1: Invidious, every page */
-  function invidious(id, prog, stop) {
-    var hosts = INVIDIOUS.slice().sort(function () { return Math.random() - 0.5; });
+  function invidious(id, prog, stop, live) {
+    var hosts = (live || []).concat(INVIDIOUS.filter(function (h) { return (live || []).indexOf(h) < 0; }).sort(function () { return Math.random() - 0.5; }));
     function from(host) {
       var out = [], seen = {};
       function next(cont, n) {
@@ -95,7 +132,7 @@
       }
       return next("", 0);
     }
-    return any(hosts.slice(0, 4).map(from)).catch(function () { return any(hosts.slice(4).map(from)); });
+    return any(hosts.slice(0, 5).map(from)).catch(function () { return any(hosts.slice(5, 14).map(from)); });
   }
   /* road 2: the uploads playlist page */
   function playlist(listId, prog) {
@@ -128,7 +165,13 @@
   function record(url, o) {
     o = o || {};
     var prog = o.onProgress || function () {}, stop = o.isCancelled || function () { return false; };
-    return resolve(url).then(function (c) {
+    WHY = [];
+    return api(url, prog, stop).catch(function (e) { why("api", e); if (stop()) throw e; return liveInstances().then(function (live) { return publicRoads(url, prog, stop, live); }); })
+      .then(function (tape) { tape.count = tape.tracks.length; return tape; })
+      .catch(function (e) { var err = new Error(WHY.join(" · ") || (e && e.message) || "failed"); err.why = WHY.slice(); throw err; });
+  }
+  function publicRoads(url, prog, stop, live) {
+    return resolve(url).catch(function (e) { why("resolve", e); throw e; }).then(function (c) {
       if (stop()) throw new Error("cancelled");
       if (c.playlist) {
         return playlist(c.playlist, function (n) { prog(n, ""); }).then(function (p) {
@@ -137,21 +180,20 @@
       }
       var name = c.name || "";
       prog(0, name);
-      return invidious(c.id, function (n) { prog(n, name); }, stop).then(function (t) {
+      return invidious(c.id, function (n) { prog(n, name); }, stop, live).then(function (t) {
         return { channel: name || (t[0] && t[0].author) || c.id, channel_url: c.url, tracks: t.map(function (x) { return { id: x.id, title: x.title }; }) };
       }).catch(function (e) {
+        why("invidious", e);
         if (stop()) throw e;
         return playlist("UU" + c.id.slice(2), function (n) { prog(n, name); }).then(function (p) {
           return { channel: name || c.id, channel_url: c.url, tracks: p.tracks };
-        }).catch(function () {
+        }).catch(function (e2) {
+          why("playlist", e2);
           return rss(c.id, function (n) { prog(n, name); }).then(function (r) {
             return { channel: name || r.name || c.id, channel_url: c.url, tracks: r.tracks };
-          });
+          }).catch(function (e3) { why("rss", e3); throw e3; });
         });
       });
-    }).then(function (tape) {
-      tape.count = tape.tracks.length;
-      return tape;
     });
   }
   g.KGVHSScrape = { record: record, resolve: resolve };
