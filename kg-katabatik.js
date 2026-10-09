@@ -971,8 +971,15 @@ function hangGift(){
   var show=function(body){g.innerHTML='<p>„'+body+'”</p>';g.style.display='block';};
   var others=HANG_GIFT.filter(function(a){return a.c&&a.c.length;}),k=Math.floor(Math.random()*(others.length+1));
   if(k<others.length){var a=others[k];show(esc(a.c[Math.floor(Math.random()*a.c.length)]));return;}
-  hangPool(function(P){var poem=P[Math.floor(Math.random()*P.length)],n=Math.min(poem.length,2+Math.floor(Math.random()*2)),i=Math.floor(Math.random()*(poem.length-n+1));
-    show(poem.slice(i,i+n).map(function(st){if(st.length>12){var j=Math.floor(Math.random()*(st.length-9));st=st.slice(j,j+10);}return st.map(esc).join('<br>');}).join('</p><p>'));});
+  hangPool(function(P){
+    /* a short quotation: two to four sentences, fewer when they run long */
+    for(var tries=0;tries<12;tries++){var poem=P[Math.floor(Math.random()*P.length)],txt=poem.map(function(st){return st.join('\n');}).join('\n'),
+        sen=txt.match(/[^.!?…]+(?:[.!?…]+[»”"’)]*|$)/g)||[];sen=sen.filter(function(x){return x.replace(/[\s\W]/g,'').length>2;});
+      if(sen.length<2)continue;var i=Math.floor(Math.random()*(sen.length-1)),out=[sen[i],sen[i+1]];
+      for(var j=i+2;j<sen.length&&out.length<4&&(out.join('').length+sen[j].length)<=240;j++)out.push(sen[j]);
+      var q=out.join('').replace(/[ \t]*\n\s*/g,'\n').trim();if(q.length>320)continue;
+      show(esc(q).replace(/\n/g,'<br>'));return;}
+    show(esc(P[0][0].join('\n')).replace(/\n/g,'<br>'));});
 }
 window.hangGift=hangGift;
 var HANG_MAX=6;
