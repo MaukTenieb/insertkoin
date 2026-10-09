@@ -402,6 +402,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
       <a href="https://github.com/MaukTenieb" target="_blank" rel="noopener" style="--mc:#66bb6a">BIO</a>
       <button type="button" id="refresh" style="--mc:#ffa726">INSERT KOIN</button>
       <button type="button" data-go="repo" style="--mc:#b9d84a" aria-label="Reporhogo">REPO<span style="color:#c9a84c;text-shadow:0 0 10px rgba(201,168,76,.6)">RHOGO</span></button>
+      <button type="button" data-go="skopo" style="--mc:#4fc3f7" aria-label="Skoporhogo">SKOPO<span style="color:#c9a84c;text-shadow:0 0 10px rgba(201,168,76,.6)">RHOGO</span></button>
       <a href="https://korhogo.threadless.com" target="_blank" rel="noopener" style="--mc:#ff7043">TL</a>
       <a href="https://www.instagram.com/mauktenieb" target="_blank" rel="noopener" style="--mc:#f48fb1">IG</a>
     </nav>
@@ -1531,6 +1532,7 @@ function go(k){ac();
   if(k==='visit'){calqueSrc('/katabase/').then(function(s){openCalque(s,'DIVE!');kataLang();});return;}
   if(k==='photo'){photoLang();return openCalque('fotofauna.html','Photofauna');}
   if(k==='repo')return openCalque('reporhogo.html','Reporhogo');
+  if(k==='skopo')return openCalque('skoporhogo.html','Skoporhogo');
   if(k==='tor'){try{localStorage.setItem('tor.lang',LANG);}catch(e){}return openCalque('tor.html','FaunaTor',null,true);}
   const t={chess:'FAUNA CHESS',erratic:'ERRATIK',faunarratics:'FAUNARRATIK',katabatik:'KATABATIK',kapture:'KAPTURE',vhs:'VHS'}[k];
   if(k==='katabatik'){const d=document.querySelector('.cab.dice b'),f=d?Math.max(0,DICE.indexOf(d.dataset.d)):Math.floor(Math.random()*6);window.__ikKata=['c4','bb','hang','mm'][f%4];}
