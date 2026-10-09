@@ -376,11 +376,12 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 /* the Kerema's die: once per tournament it sets the swing of the applicant's paddle */
 .stage .kdie{position:absolute;inset:0;z-index:7;display:grid;place-items:center;align-content:center;gap:6px;pointer-events:none;background:radial-gradient(closest-side,rgba(7,6,10,.78),rgba(7,6,10,0));opacity:0;transition:opacity .25s}
 .stage .kdie.on{opacity:1}
-.stage .kdie .d{font-size:clamp(64px,13vw,120px);line-height:1;color:#ffe08a;text-shadow:0 0 22px #c9a84c,0 3px 0 #000;transform:rotate(var(--r,0deg))}
+.stage .kdie.ghost{background:none}.stage .kdie.ghost.on{opacity:.5}.stage .kdie.ghost .d{font-size:clamp(48px,9vw,90px)}
+.stage .kdie .d{font-size:clamp(64px,13vw,120px);line-height:1;color:var(--kc,#ffe08a);text-shadow:0 0 22px var(--kc,#c9a84c),0 3px 0 #000;transform:rotate(var(--r,0deg))}
 .stage .kdie .d.land{animation:kdland .5s ease-out}
 @keyframes kdland{0%{transform:scale(1.5) rotate(0)}45%{transform:scale(.92)}100%{transform:scale(1)}}
-.stage .kdie b{font:400 clamp(20px,3.6vw,34px)/1 "Bebas Neue",Impact,sans-serif;letter-spacing:.08em;color:#fff;text-shadow:0 0 14px #c9a84c,0 2px 0 #000;opacity:0;transition:opacity .3s}
-.stage .kdie i{font:normal 12px/1 "DM Mono",monospace;letter-spacing:.18em;color:#ffe08a;opacity:0;transition:opacity .3s}
+.stage .kdie b{font:400 clamp(20px,3.6vw,34px)/1 "Bebas Neue",Impact,sans-serif;letter-spacing:.08em;color:#fff;text-shadow:0 0 14px var(--kc,#c9a84c),0 2px 0 #000;opacity:0;transition:opacity .3s}
+.stage .kdie i{font:normal 12px/1 "DM Mono",monospace;letter-spacing:.18em;color:var(--kc,#ffe08a);opacity:0;transition:opacity .3s}
 .stage .kdie.told b,.stage .kdie.told i{opacity:1}
 .score .kd{margin-right:6px;color:#ffe08a;text-shadow:0 0 8px rgba(201,168,76,.8);font-size:1.1em}
 /* in full screen the score comes inside the table */
@@ -1363,17 +1364,20 @@ function jolt(n){const s=document.querySelector('.stage');if(!s)return;s.style.s
 function snap(e){return{px:e.puck_x,pz:e.puck_z,ox:e.opp_x,oz:e.opp_z,ax:e.pad_x,az:e.pad_z};}
 function hud(){$('sP').textContent=G.e.player_score;$('sO').textContent=G.e.opponent_score;}
 /* ---- the Kerema decides: once per tournament a die sets the applicant's swing, from -15 % (⚀) to +15 % (⚅) ---- */
-const KV=[.85,.91,.97,1.03,1.09,1.15];
-function kSwing(e,face){['up_lr_power','up_fb_power','down_lr_power','down_fb_power'].forEach(k=>{if(typeof e.p[k]==='number')e.p[k]=Math.round(e.p[k]*KV[face]);});
+const KV=[.85,.91,.97,1.03,1.09,1.15],KDC=['#ffe08a','#ff5a5a','#4fc3f7','#7fdc8a','#ab47bc','#ff9a1a','#f48fb1','#e8e0c8'];
+/* the Kerema weighs your Koins: with few it leans to the high faces, with many to the low ones */
+function kThrow(){const b=Math.max(-1,Math.min(1,(Math.log2((typeof koins==='number'?koins:3)+1)-3)/5));const w=[0,1,2,3,4,5].map(f=>Math.exp(-b*(f-2.5)*.55));let t=Math.random()*w.reduce((a,x)=>a+x,0);for(let f=0;f<6;f++){if((t-=w[f])<=0)return f;}return 5;}
+function kSwing(e,face){const K=['up_lr_power','up_fb_power','down_lr_power','down_fb_power'];if(!e._kb){e._kb={};K.forEach(k=>e._kb[k]=e.p[k]);}K.forEach(k=>{if(typeof e._kb[k]==='number')e.p[k]=Math.round(e._kb[k]*KV[face]);});
   let kd=document.querySelector('.score .kd');if(!kd){kd=document.createElement('span');kd.className='kd';kd.setAttribute('aria-hidden','true');const w=document.querySelector('.score .who');if(w)w.parentNode.insertBefore(kd,w);}kd.textContent=DICE[face];kd.title=(KV[face]>1?'+':'')+Math.round((KV[face]-1)*100)+'%';}
-function kDie(face,done){const st=$('stage');let o=st.querySelector('.kdie');if(!o){o=document.createElement('div');o.className='kdie';o.innerHTML='<span class="d"></span><b>The Kerema decides!</b><i></i>';st.appendChild(o);}
-  const d=o.querySelector('.d'),pc=o.querySelector('i');o.classList.remove('told');o.classList.add('on');$('msg').style.visibility='hidden';const RMk=matchMedia('(prefers-reduced-motion:reduce)').matches;let n=0;const N=RMk?1:13;
+function kDie(face,done,ghost){const st=$('stage');let o=st.querySelector('.kdie');if(!o){o=document.createElement('div');o.className='kdie';o.innerHTML='<span class="d"></span><b>The Kerema decides!</b><i></i>';st.appendChild(o);}
+  const d=o.querySelector('.d'),pc=o.querySelector('i');o.classList.remove('told');o.classList.toggle('ghost',!!ghost);o.style.setProperty('--kc',KDC[Math.floor(Math.random()*KDC.length)]);o.classList.add('on');if(!ghost)$('msg').style.visibility='hidden';const RMk=matchMedia('(prefers-reduced-motion:reduce)').matches;let n=0;const N=RMk?1:13;
   const iv=setInterval(()=>{const f=++n>=N?face:Math.floor(Math.random()*6);d.textContent=DICE[f];d.style.setProperty('--r',(n>=N?0:(Math.random()-.5)*80).toFixed(0)+'deg');if(AC&&sound)burst(1800+Math.random()*1600,'bandpass',.05,.035);
     if(n>=N){clearInterval(iv);d.classList.remove('land');void d.offsetWidth;d.classList.add('land');if(AC&&sound){burst(260,'lowpass',.22,.09);tone(196,.08,'triangle',.05);setTimeout(()=>{tone(523,.09,'square',.04);tone(784,.12,'square',.035,0,.09);},260);}
-      pc.textContent=(KV[face]>1?'+':'')+Math.round((KV[face]-1)*100)+' %';setTimeout(()=>o.classList.add('told'),220);setTimeout(()=>{o.classList.remove('on','told');$('msg').style.visibility='';done&&done();},2600);}},70+n*6);}
+      pc.textContent=(KV[face]>1?'+':'')+Math.round((KV[face]-1)*100)+' %';setTimeout(()=>o.classList.add('told'),220);setTimeout(()=>{o.classList.remove('on','told');if(!ghost)$('msg').style.visibility='';done&&done();},ghost?2000:2600);}},70+n*6);}
+function kAgain(){if(!G||(G.kRe||0)>=2||Math.random()>.12)return;G.kRe=(G.kRe||0)+1;const e=G.e,f=kThrow();kSwing(e,f);kDie(f,null,true);}
 function startMatch(i,rank){rollRoom(R[i].id);loadSheet(R[i]);if(RUN&&RUN.order[RUN.idx+1])loadSheet(R.find(q=>q.id===RUN.order[RUN.idx+1]));const r=R[i],e=new FaunaEngine(Object.assign({tick_hz:25},r.p,{max_score:rank==null?15:11}),r.sig);card(r);G_trail=[];
   G={i,r,e,prev:snap(e),cur:snap(e),t:0,face:0,faceT:0,blinkT:2,hitT:0,flash:0,started:false,drawn:[0,0],stroke:0,ang:0,spin:0,tv:0,krew:null};
-  {let face,fresh;if(RUN){if(RUN.kv==null){RUN.kv=Math.floor(Math.random()*6);fresh=true;saveRun();}face=RUN.kv;}else{face=Math.floor(Math.random()*6);fresh=true;}kSwing(e,face);if(fresh)setTimeout(()=>{if(G&&G.e===e)kDie(face);},450);}
+  {let face,fresh;if(RUN){if(RUN.kv==null){RUN.kv=kThrow();fresh=true;saveRun();}face=RUN.kv;}else{face=kThrow();fresh=true;}kSwing(e,face);G.kRe=0;if(fresh)setTimeout(()=>{if(G&&G.e===e)kDie(face);},450);}
   if(RUN&&RUN.krew){const q=R.find(x=>x.id===RUN.krew);if(q){const n=parseInt(q.glow.slice(1),16);G.krew=[n>>16,n>>8&255,n&255];}}
   $('mRun').textContent=RUN?`${tr('runof')} ${RUN.idx+1} / 18`:'';$('count').hidden=true;$('oName').textContent=r.name.toUpperCase();$('mName').textContent=r.name.toUpperCase();$('mMotto').textContent='N° '+String(r.n).padStart(2,'0')+(r.motto?' · « '+r.motto+' »':'');$('msg').style.setProperty('--c',r.glow);hud();$('over').hidden=true;$('msg').hidden=false;show('game');}
 function toMenu(){letGo();G=null;buildLobby();show('select');}
@@ -1388,8 +1392,8 @@ function tick(){const e=G.e;G.prev=G.cur;e.tick(mouse,btn);G.cur=snap(e);
     if(ev.startsWith('count')){const n=+ev.slice(5);$('count').hidden=!n;$('count').textContent=n||'';$('count').style.setProperty('--c',G.r.glow);if(n)tone(660,.08,'square',.04);continue;}
     if(ev==='opphit'){G.hitT=.18;sigPulse();if(spd(e)>150)stopT=.05;if(G.r.sig==='endless'){const n=1+(Math.random()<.55);G.dr=Array.from({length:n},(_,i)=>(i?-1:1)*(Math.random()<.5?-1:1)*(70+Math.random()*110));}if(G.r.sig==='armour'){G.trailT=.9;G.trailKind='prism';}else if(G.r.sig==='grit'){G.trailT=.9;G.trailKind='ember';}G.spin+=(e.puck_vx*.004)+(Math.random()-.5)*.12;}
     else if(ev==='playerhit'){buzz(14);const f=spd(e);if(f>120){stopT=Math.min(.09,f/2600);jolt(Math.min(4,f/70));}G.spin+=(e.puck_vx*.004)+(Math.random()-.5)*.12;if(Math.hypot(e.puck_vx,e.puck_vz)>90&&G.faceT<=0)setFace(7,.5);}
-    else if(ev==='oppscore'){buzz(60);jolt(3);setFace(4,1.8);G.tv++;}
-    else if(ev==='playerscore'){const lead=e.player_score-e.opponent_score;setFace((e.lastSpeed||0)>70||lead>=4?7:5,1.8);G.tv++;}
+    else if(ev==='oppscore'){buzz(60);jolt(3);setFace(4,1.8);G.tv++;kAgain();}
+    else if(ev==='playerscore'){const lead=e.player_score-e.opponent_score;setFace((e.lastSpeed||0)>70||lead>=4?7:5,1.8);G.tv++;kAgain();}
     else if(ev==='fork'){sigPulse();burst(2600,'bandpass',.07,.1);}else if(ev==='flash'){G.flash=.2;SND.flash();}else if(ev==='blaze'||ev==='jet'){G.trailT=1.1;G.trailKind='fire';G.flash=.08;burst(300,'lowpass',.3,.4);}else if(SND[ev]){SND[ev]();if(ev==='slash'||ev==='bank'||ev==='gavel')sigPulse();}}
   if(e.events.length)hud();if(e.events.includes('over'))endMatch();e.events=[];}
 
