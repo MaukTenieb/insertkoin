@@ -47,11 +47,19 @@ export function web() {
       if (await has('tor-web.js')) { m = await import(here('tor-web.js')); await m.default({ module_or_path: here('tor-web_bg.wasm') }); }
       else { m = await import(CDN_WEB); await m.default(); }
       try { m.setLogCallback((a, b) => { const t = String(b === undefined ? a : a + ' ' + b); if (/error|fail|timeout|refus|denied|closed/i.test(t)) note('web', t); }); } catch (e) {}
-      let o = m.TorClientOptions.snowflakeWebRtc();
-      try { o = o.withCreateCircuitEarly(true).withConnectionTimeout(90000).withCircuitTimeout(120000); } catch (e) {}
-      const c = await within(new m.TorClient(o), 150000, 'web bootstrap');
-      try { await within(c.waitForCircuit(), 120000, 'web circuit'); } catch (e) { note('web', e); }
-      return c;
+      /* roads to the Tor network, one after the other: Snowflake's own WebSocket bridges, then the WebRTC volunteers */
+      const roads = [() => new m.TorClientOptions('wss://snowflake.torproject.net/'), () => new m.TorClientOptions('wss://snowflake.bamsoftware.com/'), () => m.TorClientOptions.snowflakeWebRtc()];
+      let last;
+      for (const mk of roads) {
+        try {
+          let o = mk();
+          try { o = o.withCreateCircuitEarly(true).withConnectionTimeout(60000).withCircuitTimeout(90000); } catch (e) {}
+          const c = await within(new m.TorClient(o), 120000, 'web bootstrap');
+          await within(c.waitForCircuit(), 100000, 'web circuit');
+          return c;
+        } catch (e) { last = e; note('web', e); }
+      }
+      throw last || new Error('no road to Tor');
     })();
     webP.catch((e) => { note('web', e); webP = null; });
   }
