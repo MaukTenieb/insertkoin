@@ -1,5 +1,5 @@
 /* Insert Koin: pages and code from the network first (the cache only when offline); images, fonts and wasm from the cache, then refreshed */
-const C='ik-202610100405';
+const C='ik-202610100202';
 self.addEventListener('install',e=>self.skipWaiting());
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(e.request.method!=='GET'||u.origin!==location.origin)return;
