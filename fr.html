@@ -1072,7 +1072,7 @@ $('export-pl').addEventListener('click',function(){exportPlaylist();});
 const DICE='⚀⚁⚂⚃⚄⚅';
 /* ---------- screens ---------- */
 function show(id){for(const s of['home','select','game','calque'])$(s).hidden=s!==id;document.body.className='on-'+id+(id==='game'?' playing':'');window.scrollTo(0,0);}
-function buildLobby(){const lb=$('lobby');lb.querySelectorAll('.spot').forEach(e=>e.remove());
+function buildLobby(){roomLoad();const lb=$('lobby');lb.querySelectorAll('.spot').forEach(e=>e.remove());
   const order=R.map((r,i)=>i).sort((a,b)=>{const A=R[a].box,B=R[b].box;return (B[2]-B[0])*(B[3]-B[1])-(A[2]-A[0])*(A[3]-A[1]);});
   for(const i of order){const r=R[i],[x0,y0,x1,y1]=r.box,b=document.createElement('button');b.type='button';b.className='spot'+(beaten.includes(r.id)?' won':'');b.setAttribute('aria-label',r.name);b.style.setProperty('--c',r.glow);
     Object.assign(b.style,{left:x0/12+'%',top:y0/8.96+'%',width:(x1-x0)/12+'%',height:(y1-y0)/8.96+'%'});
@@ -1175,7 +1175,7 @@ function paintFloor(c,tex){for(let sy=Math.floor(30+RF*576/(RZ+576));sy<H;sy+=.5
   const xl=(0-255)*k,xr=(W-255)*k;c.drawImage(tex,(xl+RX)*FT,ty,(xr-xl)*FT,1,0,sy,W,.5);}}
 /* ---- static layer, rebuilt when the night moves on ---- */
 let bgKey=-1;
-function buildRoom(){const c=bg;c.imageSmoothingEnabled=true;c.clearRect(0,0,W,H);const sc=G?[G.e.player_score,G.e.opponent_score]:[0,0],p=prog();
+function buildRoom(){roomLoad();const c=bg;c.imageSmoothingEnabled=true;c.clearRect(0,0,W,H);const sc=G?[G.e.player_score,G.e.opponent_score]:[0,0],p=prog();
   /* back wall, frontal */
   const[bx0,by0]=P3(-RX,RC,RZ),[bx1,by1]=P3(RX,RF,RZ),bw=Math.round(bx1-bx0),bh=Math.round(by1-by0);
   const[bk,b]=cnv(bw*2,bh*2);paintPaper(b,bw*2,bh*2,2*RX);const u=bw*2/(2*RX),Bx=x=>(x+RX)*u,By=y=>(y-RC)*u;
@@ -1279,7 +1279,9 @@ function buildRoom(){const c=bg;c.imageSmoothingEnabled=true;c.clearRect(0,0,W,H
       c.setTransform(2*ta,2*tb,2*tc,2*td,2*(A[0]-ta*u0*SW),2*(A[1]-tb*u0*SW));c.drawImage(BD,u0*SW,0,sw+.6,SH,u0*SW,0,sw+.6,SH);}
     c.restore();}
   c.imageSmoothingEnabled=false;bgKey=sc[0]*100+sc[1];}
-const ROOMPIC=new Image();ROOMPIC.decoding='async';ROOMPIC.onload=()=>{bgKey=-1;};ROOMPIC.src='room-puck.webp';
+const ROOMPIC=new Image();ROOMPIC.decoding='async';ROOMPIC.onload=()=>{bgKey=-1;};
+/* the painted room is fetched only when Puck You! opens, not with the title screen */
+function roomLoad(){if(!ROOMPIC.getAttribute('src'))ROOMPIC.src='room-puck.webp';}
 /* ---- live layer ---- */
 /* ---- the television on the wall: the Mask's motto, the match, and the Kerema's asides, at random ---- */
 const TVT={en:{run:'RUN',duel:'DUEL',rally:'RALLY',best:'LONGEST',serve:'SERVE',koins:'KOINS',to:'FIRST TO',you:'YOU',now:'NOW'},fr:{run:'PARTIE',duel:'DUEL',rally:'ÉCHANGE',best:'RECORD',serve:'SERVICE',koins:'KOINS',to:'EN',you:'TOI',now:'EN COURS'}};
