@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Detour, three judges for one outline · Insert Koin notes</title>
+<meta name="description" content="How Detour cuts a Midjourney sheet of eight portraits into a transparent sprite strip: two matting networks and a backdrop model vote on every pixel, and each correction answers a failure seen on a sheet.">
+<meta name="author" content="Mauk Tenieb">
+<meta name="robots" content="index, follow, noimageindex, noai, noimageai">
+<link rel="canonical" href="https://mauktenieb.github.io/insertkoin/notes/detour.html">
+<meta property="og:type" content="article"><meta property="og:title" content="Detour, three judges for one outline"><meta property="og:description" content="How Detour cuts a Midjourney sheet of eight portraits into a transparent sprite strip: two matting networks and a backdrop model vote on every pixel, and each correction answers a failure seen on a sheet."><meta property="og:url" content="https://mauktenieb.github.io/insertkoin/notes/detour.html">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Detour, three judges for one outline", "alternativeHeadline": "Detour, trois juges pour un contour", "description": "How Detour cuts a Midjourney sheet of eight portraits into a transparent sprite strip: two matting networks and a backdrop model vote on every pixel, and each correction answers a failure seen on a sheet.", "datePublished": "2026-10-10", "dateModified": "2026-10-10", "inLanguage": ["en", "fr"], "url": "https://mauktenieb.github.io/insertkoin/notes/detour.html", "author": {"@type": "Person", "@id": "https://mauktenieb.github.io/#person", "name": "Mauk Tenieb", "url": "https://github.com/MaukTenieb", "sameAs": ["https://orcid.org/0009-0007-9096-8267", "https://www.wikidata.org/wiki/Q141544315", "https://mauktenieb.github.io/"]}, "publisher": {"@type": "Person", "@id": "https://mauktenieb.github.io/#person", "name": "Mauk Tenieb", "url": "https://github.com/MaukTenieb", "sameAs": ["https://orcid.org/0009-0007-9096-8267", "https://www.wikidata.org/wiki/Q141544315", "https://mauktenieb.github.io/"]}, "isPartOf": {"@type": "WebSite", "name": "Insert Koin", "url": "https://mauktenieb.github.io/insertkoin/"}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono&display=swap" rel="stylesheet">
+<style>:root{--bg:#07060a;--fg:#e8e0c8;--dim:#9a917e;--ac:#c9a84c;--ac2:#ffe08a;--ln:rgba(201,168,76,.3)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{font:17px/1.65 Georgia,'Times New Roman',serif;padding:0 16px}
+main{max-width:46rem;margin:0 auto;padding:28px 0 56px}
+.top{font:12px/1.4 'DM Mono',ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);display:flex;gap:12px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--ln);padding:14px 0}
+.top a{color:var(--ac2);text-decoration:none}
+h1{font:400 clamp(30px,6vw,46px)/1.05 'Bebas Neue',Impact,sans-serif;letter-spacing:.03em;color:var(--ac2);margin:26px 0 8px}
+h2{font:400 26px/1.1 'Bebas Neue',Impact,sans-serif;letter-spacing:.04em;color:var(--ac);margin:40px 0 8px;border-top:1px solid var(--ln);padding-top:22px}
+.meta{font:13px/1.5 'DM Mono',ui-monospace,monospace;color:var(--dim);margin-bottom:22px}
+.links{font:14px/1.6 'DM Mono',ui-monospace,monospace;margin:28px 0 0;padding-top:14px;border-top:1px solid var(--ln)}
+a{color:var(--ac2)}p{margin:0 0 1em}
+footer{font:12px/1.5 'DM Mono',ui-monospace,monospace;color:var(--dim);max-width:46rem;margin:0 auto;padding:18px 0 40px;border-top:1px solid var(--ln)}
+ul.notes{list-style:none;padding:0}ul.notes li{margin:0 0 18px}ul.notes .d{font:12px 'DM Mono',monospace;color:var(--dim)}</style>
+</head>
+<body>
+<main>
+<div class="top"><a href="../">Insert Koin</a><span>·</span><a href="./">Notes</a></div>
+<article>
+<h1>Detour, three judges for one outline</h1>
+<div class="meta">19 vendémiaire an 235 · 2026-10-10 · Mauk Tenieb</div>
+<p>Insert Koin draws its eighteen Masks from Midjourney sheets: one character, eight expressions, a 4 × 2 grid on a painted backdrop. Detour, a Python program by Mauk Tenieb, cuts each sheet into a transparent strip of eight sprites, in about 20 seconds per sheet on a two-core cloud processor, with the same settings for every sheet.</p>
+<p>Three judges vote on every pixel. Two matting networks, U²-Net and IS-Net, each draw a figure mask; the third judge models the painted backdrop as a smooth field and claims a backdrop region only where that region reaches the edges of the panel. A majority of two votes decides, and two corrections follow.</p>
+<p>The matting networks learn from photographs of people, and they drop drawn accessories: wings, a cloud in place of a head, a telephone receiver. Where the backdrop judge sees texture, Detour keeps those areas in the figure. Detour also removes from the figure any smooth backdrop that an arm or the legs enclose, even where both networks keep it: the pocket rule.</p>
+<p>In its first version, the pocket rule removes a hoof of Croisière Noire, a bull whose hoof shares the brightness of the backdrop. A hue test now spares every pocket whose colour departs from the local backdrop by more than 2.8 on the a–b plane of OpenCV's Lab space: the beige hoof runs warmer than the beige floor.</p>
+<p>In panel 7 of the test sheets, the character leans on a table. Detour samples the colour of the wood where the networks mark wood, cuts the table at its top edge and keeps the hands resting on it. On sheets with hand-drawn panel borders, Detour steps past the dark border lines, on the top and the sides, before it measures the backdrop.</p>
+<p>Within four pixels of the outline, each pixel joins the side whose local colour it matches: the figure's or the backdrop's. Detour removes painted drop shadows and keeps ink lines and the pixels both networks hold with confidence. Detour then turns the outline into a distance field, scales it to the final size and antialiases it there, so the edge carries the figure's own colours. Each row of the sheet matches the first on the silhouette of head and shoulders, and the top of every head sits on one line.</p>
+<p>Detour writes a proof with every run: each frame at full size on magenta and on white, a yellow outline around any area where one frame disagrees with the seven others, and a report that counts these doubts.</p>
+<p>Detour ends with a blind test. Mauk Tenieb makes four new sheets in Midjourney, outside the set the rules come from, and they go through Detour with the same settings: long loose red hair on pale cream; a lit candle held in hand and a black tuxedo on a dark backdrop; a wide figure touching the panel sides, inside hand-drawn borders, on a gradient; a yellow oilskin and a white beard on grey. On all four, the hands resting on the table stay and the wood goes.</p>
+<section lang="fr">
+<h2>Detour, trois juges pour un contour</h2>
+<p>Insert Koin tire ses dix-huit Masks de planches Midjourney : un personnage, huit expressions, une grille de 4 × 2 sur un fond peint. Detour, un programme Python de Mauk Tenieb, découpe chaque planche en une bande transparente de huit sprites, en vingt secondes environ par planche sur un processeur de serveur à deux cœurs, avec les mêmes réglages pour toutes les planches.</p>
+<p>Trois juges votent sur chaque pixel. Deux réseaux de détourage, U²-Net et IS-Net, dessinent chacun un masque de silhouette ; le troisième juge modélise le fond peint comme un champ lisse et revendique une zone de fond seulement là où cette zone touche les bords de la case. Une majorité de deux voix tranche, puis deux corrections suivent.</p>
+<p>Les réseaux de détourage apprennent sur des photographies de personnes et perdent les accessoires dessinés : des ailes, un nuage à la place d'une tête, un combiné de téléphone. Là où le juge du fond voit de la texture, Detour garde ces zones dans la silhouette. Detour retire aussi de la silhouette tout fond lisse qu'un bras ou les jambes enferment, même quand les deux réseaux le gardent : la règle des poches.</p>
+<p>Dans sa première version, la règle des poches retire un sabot de Croisière Noire, un taureau au sabot aussi clair que le fond. Un test de teinte épargne désormais toute poche dont la couleur s'écarte du fond local de plus de 2,8 sur le plan a–b de l'espace Lab d'OpenCV : le sabot beige tire vers le chaud, le sol beige vers le froid.</p>
+<p>Dans la case 7 des planches de test, le personnage s'appuie sur une table. Detour échantillonne la couleur du bois là où les réseaux marquent du bois, coupe la table à son bord supérieur et garde les mains posées dessus. Sur les planches aux bordures dessinées à la main, Detour enjambe les traits sombres du haut et des côtés avant de mesurer le fond.</p>
+<p>À moins de quatre pixels du contour, chaque pixel rejoint le côté dont il partage la couleur locale : la silhouette ou le fond. Detour retire les ombres portées peintes et garde les traits d'encre et les pixels sûrs pour les deux réseaux. Detour convertit ensuite le contour en champ de distance, le met à l'échelle finale puis l'anticrénèle à cette taille, et le bord garde les couleurs propres de la silhouette. Chaque rangée de la planche s'aligne sur la première d'après la silhouette de la tête et des épaules, et le sommet de chaque tête tient sur une seule ligne.</p>
+<p>Detour écrit une épreuve à chaque passage : chaque image en taille réelle sur magenta et sur blanc, un contour jaune autour de toute zone où une image contredit les sept autres, et un rapport qui compte ces doutes.</p>
+<p>Detour finit par un test à l'aveugle. Mauk Tenieb crée quatre nouvelles planches dans Midjourney, hors du jeu d'où viennent les règles, et elles passent dans Detour avec les mêmes réglages : de longs cheveux roux défaits sur un fond crème pâle ; une bougie allumée tenue en main et un smoking noir sur un fond sombre ; une large silhouette qui touche les côtés de la case, dans des bordures dessinées, sur un dégradé ; un ciré jaune et une barbe blanche sur du gris. Sur les quatre, les mains posées sur la table restent et le bois part.</p>
+</section>
+<div class="links"><p><a href="https://github.com/MaukTenieb/detour">Detour on GitHub</a> · <a href="catchlight.html">Catchlight, the next step</a> · <a href="../">Insert Koin</a></p></div>
+</article>
+</main>
+<footer>Copyright © Mauk Tenieb &amp; Korhogo. All rights reserved. No use for training artificial intelligence. · <a href="../">Insert Koin</a> · <a href="https://mauktenieb.github.io/">mauktenieb.github.io</a></footer>
+</body>
+</html>

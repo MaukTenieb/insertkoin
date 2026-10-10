@@ -123,6 +123,15 @@ Everything sits at the top level, no folders (except `tor/` and `.github/`), so 
 
 Edit, then commit to `main`: GitHub Pages publishes within a minute or two. After any change to `index.html`, run `python3 build-fr.py` so the French page follows, and bump the cache name at the top of `sw.js` so returning visitors get the new code.
 
+## Notes
+
+How Insert Koin gets made, in English and French: https://mauktenieb.github.io/insertkoin/notes/
+
+- [Catchlight, lights in the eyes of eighteen Masks](https://mauktenieb.github.io/insertkoin/notes/catchlight.html)
+- [Detour, three judges for one outline](https://mauktenieb.github.io/insertkoin/notes/detour.html)
+
+The notes follow house rules checked by `tools/prose-lint.py`: facts, present tense, affirmations, active voice.
+
 <!-- network:start -->
 ## Korhogo Fauna
 
