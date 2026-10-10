@@ -2025,8 +2025,8 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
   let TQ=[],TI=0;
   async function tour(resume){if(touring)return;touring=true;idleT=Infinity;ac();const W=ms=>new Promise(r=>setTimeout(r,ms));
     const cabs=[...home.querySelectorAll('.cabinets .cab')],chips=[...home.querySelectorAll('.menu a,.menu button')];
-    /* every visit starts on any tile or menu, at random, then goes on in order */
-    let stops;if(resume&&resume.length)stops=resume;else{const all=cabs.concat(chips,[document.getElementById('radio-toggle')||document.querySelector('.motel-bar'),$('kapture')].filter(Boolean)),k=Math.floor(Math.random()*all.length);stops=all.slice(k).concat(all.slice(0,k));}
+    /* every visit goes through the tiles and menus in a random order */
+    let stops;if(resume&&resume.length)stops=resume;else{stops=cabs.concat(chips,[document.getElementById('radio-toggle')||document.querySelector('.motel-bar'),$('kapture')].filter(Boolean));for(let i=stops.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[stops[i],stops[j]]=[stops[j],stops[i]];}}
     TQ=stops;
     const L=SAY[LANG]||SAY.en;
     for(let i=0;i<stops.length;i++){const el=stops[i];TI=i;if(!touring)break;const isCab=el.classList.contains('cab');const hr=(el.getAttribute('href')||(el.querySelector('a')||{}).href||'')+'';const go=(el.querySelector('[data-go]')||el).dataset.go||(el.id==='kapture'?'kapture':(el.id==='radio-toggle'||el.classList.contains('motel-bar'))?'motel':el.id==='refresh'?'refresh':/substack/.test(hr)?'lore':/threadless/.test(hr)?'tl':/instagram/.test(hr)?'ig':/github\.com\/MaukTenieb/.test(hr)?'bio':'');
