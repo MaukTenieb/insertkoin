@@ -57,6 +57,12 @@ RULES += [
  ('tense', r"\b(was|were|had|did|will|would|shall|used to)\b"),
  ('temps-fr', r"\b(a|ai|as|avons|avez|ont|avait|avaient|aura|auront)\s+(\w+ment\s+)?\w+(é|ée|és|ées|is|it|u|us|ert)\b|\b([ée]tait|[ée]taient|fut|furent|sera|seront)\b|\b\w{3,}(erai|eras|erons|erez|eront|irai|iront)\b"),
 ]
+
+# --- dramatised framing: metaphors that stage a technical fact (Mauk Tenieb, 10 Oct 2026: "trois juges pour un contour") ---
+RULES += [
+ ('drama', r"\b(judges?|verdict|votes?|battle|journey|dance|symphony|recipe|magic|secret sauce|anatomy of|the art of|quest|tale of|story of|meets?|when \w+ meets)\b|\b(one|two|three|four|five) \w+ for (one|a single)\b"),
+ ('drame-fr', r"\b(juges?|verdict|votent|bataille|voyage|danse|symphonie|recette|magie|anatomie d|l'art de|qu[êe]te|r[ée]cit de|rencontre)\b|\b(un|deux|trois|quatre|cinq) \w+ pour un\b"),
+]
 # words of the copula avoided ("serves as" for "is"), only in English
 RULES.append(('copula-dodge', r'\b(serves|functions|operates|stands) as (a|an|the)\b|\bboasts (a|an)\b'))
 
