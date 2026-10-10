@@ -40,7 +40,7 @@ A few seconds after the title screen opens, then now and then, a guide wanders a
 ## Puck You!
 
 - Move the paddle with the mouse, a finger or the arrow keys. Pull back, then drive through the puck to hit hard; hold the button or Space to catch it. The whole back line is the goal.
-- The mouse stays inside the table while playing; a double-click or Enter lets it go.
+- The mouse stays inside the table while playing; Enter or Esc lets it go.
 - Each Mask plays by its Korhogo stats (STR power, DEX speed, INT precision, WIS reading, CHA placing, CON stamina) and a signature move, and keeps its own fixed level.
 - **Duel**: click a Mask in the room, first to 15. **Kompete!** starts a tournament against the eighteen Masks, first to 11 each time; **Continue** picks a saved one up where it stopped.
 - The room is a painted motel room; its two paintings show Fauna drawn at random for each match, and the board on the left wall keeps the score. The CRT on the dresser switches at random and on every point between the Mask's motto, the score, its stats, the rally, its signature, your Koins, the hour, Motel Sound, test cards, snow and a few seconds of a Mauk Tenieb clip.
@@ -51,7 +51,7 @@ A few seconds after the title screen opens, then now and then, a guide wanders a
 ## Koins
 
 - One Koin opens a game (a Puck You! duel or run, a Korhogo game). The machines (3615, VHS, Photofauna, FaunaTor, Skoporhogo, Reporhogo) and Motel Sound are free.
-- **Every win doubles the total.** A win rains Koins on the screen.
+- **Every win, in any game, brings one Koin.** A win rains Koins on the screen.
 - In the 3615: **1 Koin per connection to 3615 KOINS**; 1 per Fauna profile read to its last page; 1 per message sent (5 a day). No ceiling.
 - At 0, one Koin comes back after 30 seconds.
 - The balance is shared with the 3615 (same address, `ik.koins` in the browser).
