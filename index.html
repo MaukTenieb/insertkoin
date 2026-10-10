@@ -208,7 +208,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 #radio-toggle{border:1px solid rgba(255,224,138,.55);background:rgba(201,168,76,.14);padding:4px 12px 4px 9px;box-shadow:0 0 14px rgba(201,168,76,.25)}
 #radio-toggle:hover,#radio-toggle:focus-visible{background:rgba(201,168,76,.28);outline:none}
 #radio-toggle #radio-note{color:var(--gold2)!important;text-shadow:0 0 10px rgba(255,224,138,.8)}
-#radio-note .jbx{display:block;overflow:visible;filter:drop-shadow(0 0 4px rgba(255,224,138,.55))}#radio-note.on .jbw{animation:jbw 1.6s ease-in-out infinite}#radio-note.on .jbt{animation:jbt 2.4s linear infinite}@keyframes jbw{0%,100%{opacity:.35}50%{opacity:.85}}@keyframes jbt{0%{stroke:#ffe08a}33%{stroke:#ff6a4a}66%{stroke:#b87fff}100%{stroke:#ffe08a}}@media (prefers-reduced-motion:reduce){#radio-note.on .jbw,#radio-note.on .jbt{animation:none}}
+#radio-note .jbx{display:block;overflow:visible}#radio-toggle #radio-note{text-shadow:none!important;filter:none!important}
 #radio-toggle .motel-l{color:var(--gold2)!important;font-size:clamp(.62rem,.95vw,.74rem)!important}
 @media (max-width:760px){
 }
@@ -1055,7 +1055,7 @@ function toggleRadio(){
   var steal=document.getElementById('export-pl');
   radioOn=!radioOn;
   if(radioOn){
-    if(note){note.classList.add('on');note.style.color='#c9a84c';note.style.filter='drop-shadow(0 0 8px rgba(201,168,76,.8))';}
+    if(note){note.classList.add('on');note.style.color='#c9a84c';}
     if(steal){steal.style.display='block';steal.style.animation='stealFade .6s ease';}
     jukeStart();
   } else {
