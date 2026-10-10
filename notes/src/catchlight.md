@@ -1,7 +1,7 @@
 ---
 slug: catchlight
-title: Catchlight, lights in the eyes of eighteen Masks
-title_fr: Catchlight, des lumières dans les yeux de dix-huit Masks
+title: Catchlight: placing eye lights on sprite frames
+title_fr: Catchlight : poser des lumières dans les yeux des sprites
 date: 2026-10-10
 rep: 19 vendémiaire an 235
 description: How Insert Koin places the lights in the eyes of drawn characters on a sprite strip, with MediaPipe Face Mesh, a relative eyelid test and template tracking for beaks and muzzles.

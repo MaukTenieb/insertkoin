@@ -95,4 +95,4 @@ Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fau
 
 ## Français
 - [Insert Koin en français](https://mauktenieb.github.io/insertkoin/fr.html)
-- [Notes: how Insert Koin gets made](https://mauktenieb.github.io/insertkoin/notes/): Catchlight (lights in the eyes of drawn characters), Detour (three judges for one outline)
+- [Notes: how Insert Koin gets made](https://mauktenieb.github.io/insertkoin/notes/): Catchlight (eye lights on sprite frames with MediaPipe), Detour (cutting Midjourney portrait sheets into sprites)
