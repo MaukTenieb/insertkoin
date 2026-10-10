@@ -1435,7 +1435,7 @@ function kDraw(c){const f=G.fl;if(!f)return;const bob=Math.sin(f.age*2.4)*5,[sx,
   const a=Math.min(1,f.age*2,(f.life-f.age))*.62;if(a<=0)return;c.save();c.globalAlpha=a;c.textAlign='center';c.textBaseline='middle';c.shadowColor=f.kc;c.shadowBlur=10;c.fillStyle=f.kc;
   c.font=Math.round(sz)+'px "DejaVu Sans","Segoe UI Symbol",sans-serif';c.fillText(DICE[f.f],sx,sy);c.shadowBlur=6;c.fillStyle='#fff';c.font='400 '+Math.max(9,Math.round(sz*.42))+'px "Bebas Neue",Impact,sans-serif';c.fillText(f.ask,sx,sy-sz*.78);c.restore();}
 /* now and then, once the score has shown, the Kerema's sarcasm comes on the TV */
-const KSAY={en:["Factualists want to liquifie you!","For us, you'll always remain an applicant.","Lasciate ogne speranza, voi ch'intrate.","A Kave is a hive. Honey, you're the bee.","Born to bee wild?","@'s Krews are the best.","(Ho)ney obliviscaris."],
+const KSAY={en:["Factualists want to liquefy you!","For us, you'll always remain an applicant.","Lasciate ogne speranza, voi ch'intrate.","A Kave is a hive. Honey, you're the bee.","Born to bee wild?","@'s Krews are the best.","(Ho)ney obliviscaris."],
  fr:["Les Divisionistes le font par zéro !","Si tu es perdu(e), perds-toi dans le Lore.","Croire, c'est subir.","Lasciate ogne speranza, voi ch'intrate.","Tu es ruche de tes acquis.","Eat the ruche.","Kave la bouche ouverte !","Miel de fleur ? Bah. De pétrole.","T'as du poten(m)iel hein !","Miel, mon mardi !","(Ho)ney obliviscaris."]};
 let kSaidAt=-1e9,kLast='';
 function kSay(force){if(!G||G.e.isOver()||$("game").hidden)return;const now=performance.now();if(!force&&(now-kSaidAt<11000||(G.kSaid||0)>=10||Math.random()>.35||G.fl))return;
