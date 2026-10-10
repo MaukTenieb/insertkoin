@@ -46,8 +46,8 @@ button:hover,button:focus-visible{background:rgba(127,220,138,.28);outline:none}
 var LANG='en';try{LANG=localStorage.getItem('ik.lang')||localStorage.getItem('vdx.lang')||'en';}catch(e){}
 if(LANG!=='fr')LANG='en';
 var T={
- en:{ready:'3615  READY',balance:function(n){return 'Truce checks your balance: '+n+'.';},won:'You won 1 Koin!',menu:'1  KOINS   2  KORHOGO',cmd:'Code or n° ?',offline:'MINITEL: not wired here (local).',bad:'UNKNOWN CODE',hint:'3615 KOINS · 3615 KORHOGO',korhogo:'KORHOGO  https://mauktenieb.github.io/korhogo'},
- fr:{ready:'3615  PRÊT',balance:function(n){return 'Truce vérifie ton solde : '+n+'.';},won:'Tu gagnes 1 Koin !',menu:'1  KOINS   2  KORHOGO',cmd:'Code ou n° ?',offline:'MINITEL : non câblé ici (local).',bad:'CODE INCONNU',hint:'3615 KOINS · 3615 KORHOGO',korhogo:'KORHOGO  https://mauktenieb.github.io/korhogo'}};
+ en:{ready:'3615  READY',balance:function(n){return 'Truce checks your balance: '+n+'.';},won:'You won 1 Koin!',menu:'1  KOINS   2  KORHOGO',cmd:'Code or n° ?',offline:'MINITEL: not wired here (local).',bad:'UNKNOWN CODE',hint:'3615 KOINS · 3615 KORHOGO',korhogo:'KORHOGO  https://mauktenieb.github.io/insertkoin'},
+ fr:{ready:'3615  PRÊT',balance:function(n){return 'Truce vérifie ton solde : '+n+'.';},won:'Tu gagnes 1 Koin !',menu:'1  KOINS   2  KORHOGO',cmd:'Code ou n° ?',offline:'MINITEL : non câblé ici (local).',bad:'CODE INCONNU',hint:'3615 KOINS · 3615 KORHOGO',korhogo:'KORHOGO  https://mauktenieb.github.io/insertkoin'}};
 function t(k){return T[LANG][k];}
 var out=document.getElementById('out'),cmd=document.getElementById('cmd');
 function line(html){var d=document.createElement('div');d.innerHTML=html;out.appendChild(d);}
