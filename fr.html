@@ -2030,7 +2030,14 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
     tip.style.left=(gx+gw+10+260<W?gx+gw+6:Math.max(4,gx-266))+'px';tip.style.top=(parseFloat(g.style.top)+8)+'px';tip.classList.add('on');clearTimeout(tip._q);tip._q=setTimeout(()=>{if(!touring)tip.classList.remove('on');},1800);}
   function lay(x,y){const gw=parseFloat(g.style.getPropertyValue('--gw'))||60,k=document.createElement('button');k.type='button';k.className='gkoin';k.setAttribute('aria-label','Koin');k.textContent='◉';
     k.style.left=(x+gw/2-14)+'px';k.style.top=(y+H-30)+'px';home.appendChild(k);if(AC&&sound){tone(1320,.08,'square',.03);tone(1760,.12,'square',.025,0,.08);}
-    let got=false;const take=()=>{if(got)return;got=true;koins=Math.min(Number.MAX_SAFE_INTEGER,koins+1);saveKoins();koinFx();if(typeof koinDrop==='function')koinDrop(1);if(AC&&sound)tone(1046,.1,'triangle',.04);k.classList.add('got');setTimeout(()=>k.remove(),500);};
+    /* the Koin flies up to the counter at the top of the screen; the balance goes up when it lands */
+    let got=false;const credit=()=>{koins=Math.min(Number.MAX_SAFE_INTEGER,koins+1);saveKoins();koinFx();if(AC&&sound)tone(1046,.1,'triangle',.04);};
+    const take=()=>{if(got)return;got=true;const dst=$('koins');if(!dst||RMg||!k.animate){credit();k.classList.add('got');setTimeout(()=>k.remove(),500);return;}
+      const a=k.getBoundingClientRect(),b=(dst.querySelector('i')||dst).getBoundingClientRect();
+      k.style.animation='none';k.style.position='fixed';k.style.left=a.left+'px';k.style.top=a.top+'px';k.style.zIndex=9999;k.style.pointerEvents='none';document.body.appendChild(k);
+      const dx=b.left+b.width/2-(a.left+a.width/2),dy=b.top+b.height/2-(a.top+a.height/2),lift=-Math.min(160,Math.abs(dx)*.35+60);
+      const an=k.animate([{transform:'translate(0,0) scale(1)'},{transform:`translate(${dx*.45}px,${dy*.45+lift}px) scale(1.15)`,offset:.45},{transform:`translate(${dx}px,${dy}px) scale(.45)`,opacity:.9}],{duration:950,easing:'cubic-bezier(.45,.05,.55,.95)',fill:'forwards'});
+      an.onfinish=()=>{k.remove();credit();};};
     /* it goes to the counter by itself; a touch only hurries it */
     k.addEventListener('click',e=>{e.stopPropagation();take();});setTimeout(take,1100);}
   function fly(){if(!fl)return;const t=performance.now(),dt=Math.min(.05,(t-fl.t)/1000);fl.t=t;const B=bounds();
@@ -2058,7 +2065,7 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
   addEventListener('keydown',e=>{if(e.key==='Escape')stop();});
   /* the first guide comes soon after the title screen opens */
   setTimeout(arrive,2500+Math.random()*3500);
-  window.__guide={go:()=>{arrive();setTimeout(tour,1200);}};})();
+  window.__guide={go:()=>{arrive();setTimeout(tour,1200);},lay:(x,y)=>lay(x,y)};})();
 /* ---- a Koin earned anywhere (here, or in 3615) falls into the counter ---- */
 function koinOut(){const k=$('koins');if(!k||matchMedia('(prefers-reduced-motion:reduce)').matches)return;const r=k.getBoundingClientRect(),c=document.createElement('span');c.className='kdrop';c.textContent='◉';c.style.left=(r.left+4)+'px';c.style.top=r.top+'px';document.body.appendChild(c);
   const a=c.animate([{transform:'translate(0,0) rotateY(0)',opacity:1},{transform:'translate(-6px,-26px) rotateY(540deg)',opacity:1,offset:.4},{transform:'translate(-14px,60px) rotateY(1080deg)',opacity:0}],{duration:700,easing:'cubic-bezier(.3,.6,.6,1)',fill:'both'});a.onfinish=()=>c.remove();}
