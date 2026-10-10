@@ -133,7 +133,7 @@ How Insert Koin gets made, in English and French: https://mauktenieb.github.io/i
 The notes follow house rules checked by `tools/prose-lint.py`: facts, present tense, affirmations, active voice.
 
 <!-- network:start -->
-## Korhogo Fauna
+## Korhogo
 
 Mauk Tenieb's transmedia world. [Katabase](https://mauktenieb.github.io/katabase): concept albums, the 18 Masks, the lore · [3615 KORHOGO](https://mauktenieb.github.io/3615/): the Minitel terminal.
 
