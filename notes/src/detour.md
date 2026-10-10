@@ -1,17 +1,17 @@
 ---
 slug: detour
-title: Detour, three judges for one outline
-title_fr: Detour, trois juges pour un contour
+title: Detour: cutting Midjourney portrait sheets into sprite strips
+title_fr: Detour : découper des planches de portraits Midjourney en sprites
 date: 2026-10-10
 rep: 19 vendémiaire an 235
-description: How Detour cuts a Midjourney sheet of eight portraits into a transparent sprite strip: two matting networks and a backdrop model vote on every pixel, and each correction answers a failure seen on a sheet.
-links: [Detour on GitHub](https://github.com/MaukTenieb/detour) · [Catchlight, the next step](catchlight.html) · [Insert Koin](../)
+description: How Detour cuts a Midjourney sheet of eight portraits into a transparent sprite strip: two matting networks and a model of the backdrop each estimate the figure, a pixel stays when two of the three estimates keep it, and each correction answers a failure seen on a sheet.
+links: [Detour on GitHub](https://github.com/MaukTenieb/detour) · [Catchlight, the eye lights](catchlight.html) · [Insert Koin](../)
 ---
 Insert Koin draws its eighteen Masks from Midjourney sheets: one character, eight expressions, a 4 × 2 grid on a painted backdrop. Detour, a Python program by Mauk Tenieb, cuts each sheet into a transparent strip of eight sprites, in about 20 seconds per sheet on a two-core cloud processor, with the same settings for every sheet.
 
-Three judges vote on every pixel. Two matting networks, U²-Net and IS-Net, each draw a figure mask; the third judge models the painted backdrop as a smooth field and claims a backdrop region only where that region reaches the edges of the panel. A majority of two votes decides, and two corrections follow.
+Detour makes three estimates of the figure for every panel. Two matting networks, U²-Net and IS-Net, each draw a figure mask. The third estimate models the painted backdrop as a smooth field and marks a backdrop region only where that region reaches the edges of the panel. A pixel belongs to the figure when two of the three estimates put it there, and two corrections follow.
 
-The matting networks learn from photographs of people, and they drop drawn accessories: wings, a cloud in place of a head, a telephone receiver. Where the backdrop judge sees texture, Detour keeps those areas in the figure. Detour also removes from the figure any smooth backdrop that an arm or the legs enclose, even where both networks keep it: the pocket rule.
+The matting networks learn from photographs of people, and they drop drawn accessories: wings, a cloud in place of a head, a telephone receiver. Where the backdrop model sees texture, Detour keeps those areas in the figure. Detour also removes from the figure any smooth backdrop that an arm or the legs enclose, even where both networks keep it: the pocket rule.
 
 In its first version, the pocket rule removes a hoof of Croisière Noire, a bull whose hoof shares the brightness of the backdrop. A hue test now spares every pocket whose colour departs from the local backdrop by more than 2.8 on the a–b plane of OpenCV's Lab space: the beige hoof runs warmer than the beige floor.
 
@@ -27,9 +27,9 @@ Detour ends with a blind test. Mauk Tenieb makes four new sheets in Midjourney, 
 
 Insert Koin tire ses dix-huit Masks de planches Midjourney : un personnage, huit expressions, une grille de 4 × 2 sur un fond peint. Detour, un programme Python de Mauk Tenieb, découpe chaque planche en une bande transparente de huit sprites, en vingt secondes environ par planche sur un processeur de serveur à deux cœurs, avec les mêmes réglages pour toutes les planches.
 
-Trois juges votent sur chaque pixel. Deux réseaux de détourage, U²-Net et IS-Net, dessinent chacun un masque de silhouette ; le troisième juge modélise le fond peint comme un champ lisse et revendique une zone de fond seulement là où cette zone touche les bords de la case. Une majorité de deux voix tranche, puis deux corrections suivent.
+Detour établit trois estimations de la silhouette pour chaque case. Deux réseaux de détourage, U²-Net et IS-Net, dessinent chacun un masque de silhouette. La troisième estimation modélise le fond peint comme un champ lisse et marque une zone de fond seulement là où cette zone touche les bords de la case. Un pixel appartient à la silhouette quand deux des trois estimations l'y placent, puis deux corrections suivent.
 
-Les réseaux de détourage apprennent sur des photographies de personnes et perdent les accessoires dessinés : des ailes, un nuage à la place d'une tête, un combiné de téléphone. Là où le juge du fond voit de la texture, Detour garde ces zones dans la silhouette. Detour retire aussi de la silhouette tout fond lisse qu'un bras ou les jambes enferment, même quand les deux réseaux le gardent : la règle des poches.
+Les réseaux de détourage apprennent sur des photographies de personnes et perdent les accessoires dessinés : des ailes, un nuage à la place d'une tête, un combiné de téléphone. Là où le modèle du fond voit de la texture, Detour garde ces zones dans la silhouette. Detour retire aussi de la silhouette tout fond lisse qu'un bras ou les jambes enferment, même quand les deux réseaux le gardent : la règle des poches.
 
 Dans sa première version, la règle des poches retire un sabot de Croisière Noire, un taureau au sabot aussi clair que le fond. Un test de teinte épargne désormais toute poche dont la couleur s'écarte du fond local de plus de 2,8 sur le plan a–b de l'espace Lab d'OpenCV : le sabot beige tire vers le chaud, le sol beige vers le froid.
 

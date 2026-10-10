@@ -127,8 +127,8 @@ Edit, then commit to `main`: GitHub Pages publishes within a minute or two. Afte
 
 How Insert Koin gets made, in English and French: https://mauktenieb.github.io/insertkoin/notes/
 
-- [Catchlight, lights in the eyes of eighteen Masks](https://mauktenieb.github.io/insertkoin/notes/catchlight.html)
-- [Detour, three judges for one outline](https://mauktenieb.github.io/insertkoin/notes/detour.html)
+- [Catchlight: placing eye lights on sprite frames](https://mauktenieb.github.io/insertkoin/notes/catchlight.html)
+- [Detour: cutting Midjourney portrait sheets into sprite strips](https://mauktenieb.github.io/insertkoin/notes/detour.html)
 
 The notes follow house rules checked by `tools/prose-lint.py`: facts, present tense, affirmations, active voice.
 
