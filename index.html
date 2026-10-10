@@ -131,7 +131,7 @@ a{color:inherit}
 #kg-root .ch-sel-label{font-size:11px!important;color:#c9c1ad!important;opacity:1!important}
 #kg-root .ch-sel-btn{font-size:12px!important;color:#ece4d2!important;border-color:rgba(201,168,76,.5)!important}
 #kg-root #ch-kerema-btn{font-size:11px!important;color:#e6d9b0!important}
-#kg-root #chess-log{font-size:11px!important}
+#kg-root #chess-log{font-size:11px!important;width:min(100%,560px,66vh)!important;max-width:100%!important}
 </style>
 <style>
 *{box-sizing:border-box}html,body{margin:0}
@@ -208,6 +208,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 #radio-toggle{border:1px solid rgba(255,224,138,.55);background:rgba(201,168,76,.14);padding:4px 12px 4px 9px;box-shadow:0 0 14px rgba(201,168,76,.25)}
 #radio-toggle:hover,#radio-toggle:focus-visible{background:rgba(201,168,76,.28);outline:none}
 #radio-toggle #radio-note{color:var(--gold2)!important;text-shadow:0 0 10px rgba(255,224,138,.8)}
+#radio-note .jbx{display:block;overflow:visible;filter:drop-shadow(0 0 4px rgba(255,224,138,.55))}#radio-note.on .jbw{animation:jbw 1.6s ease-in-out infinite}#radio-note.on .jbt{animation:jbt 2.4s linear infinite}@keyframes jbw{0%,100%{opacity:.35}50%{opacity:.85}}@keyframes jbt{0%{stroke:#ffe08a}33%{stroke:#ff6a4a}66%{stroke:#b87fff}100%{stroke:#ffe08a}}@media (prefers-reduced-motion:reduce){#radio-note.on .jbw,#radio-note.on .jbt{animation:none}}
 #radio-toggle .motel-l{color:var(--gold2)!important;font-size:clamp(.62rem,.95vw,.74rem)!important}
 @media (max-width:760px){
 }
@@ -299,10 +300,10 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 .info,.foot{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0);clip-path:inset(50%);margin:-1px!important;padding:0!important;border:0!important}
 #kg-root{position:absolute;inset:0;transform:translateZ(0);overflow:hidden;background:#080604}
 #kg-root[hidden]{display:none}
-#kg-root #chess-board{width:min(100%,420px,62vh)!important;max-width:100%!important;grid-template-columns:repeat(8,minmax(0,1fr))!important}
-#kg-root #chess-board .piece{font-size:clamp(1rem,min(5.4vw,5.4vh),2.6rem)!important}
+#kg-root #chess-board{width:min(100%,560px,66vh)!important;max-width:100%!important;grid-template-columns:repeat(8,minmax(0,1fr))!important;container-type:inline-size}
+#kg-root #chess-board .piece{font-size:10.4cqw!important;line-height:1!important;text-shadow:0 0 1px currentColor,0 0 6px rgba(0,0,0,.9),0 0 10px color-mix(in srgb,currentColor 45%,transparent)}
 #kg-root #chess{overflow-x:hidden}
-#kg-root #chess-players{width:min(100%,420px,62vh)!important;max-width:100%!important;box-sizing:border-box}
+#kg-root #chess-players{width:min(100%,560px,66vh)!important;max-width:100%!important;box-sizing:border-box}
 /* the Korhogo panels are made for the whole window: inside the frame they take the frame's size */
 #kg-root :is(#chess,#mem,#konklave-panel,#c4-panel,#pair-panel,#bb-panel,#hang-panel,#mm-panel,#kapture-overlay,#og-transition){width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;overflow-y:auto}
 .cframe.loading::after{content:"";position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px;border-radius:50%;border:2px solid rgba(201,168,76,.2);border-top-color:var(--gold2);animation:spin .8s linear infinite;z-index:5}
@@ -421,7 +422,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
     <button class="brand" id="brand" type="button" title="Insert Koin">INSERT KOIN</button>
     <div class="dock">
       <div id="radio-toggle" role="button" tabindex="0" aria-label="Jukebox" style="display:flex;align-items:center;gap:.5rem;cursor:pointer;touch-action:auto;user-select:none">
-        <div id="radio-note" style="font-size:1.3rem;line-height:1;color:rgba(201,168,76,.35);transition:all .3s">♪</div>
+        <div id="radio-note" style="line-height:0;color:rgba(201,168,76,.35);transition:all .3s"><svg class="jbx" viewBox="0 0 16 20" width="17" height="21" aria-hidden="true"><path d="M1.5 19V7.5a6.5 6.5 0 0 1 13 0V19z" fill="none" stroke="currentColor" stroke-width="1.3"/><path class="jbw" d="M4 10V7.8a4 4 0 0 1 8 0V10z" fill="currentColor" opacity=".35"/><path class="jbt" d="M3 9v8.5M13 9v8.5" stroke="currentColor" stroke-width=".9" opacity=".6"/><path d="M5 12.6h6M5 14.4h6M5 16.2h6" stroke="currentColor" stroke-width=".8"/><path d="M.5 19.4h15" stroke="currentColor" stroke-width="1"/></svg></div>
         <span class="motel-l" style="font-family:'DM Mono',monospace;font-size:clamp(.54rem,.8vw,.64rem);letter-spacing:.2em;color:rgba(201,168,76,.75);transition:color .3s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:min(34vw,26ch)">MOTEL SOUND</span>
       </div>
       <div id="export-pl" style="font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.18em;color:rgba(201,168,76,.5);cursor:pointer;touch-action:auto;user-select:none;display:none;text-shadow:0 1px 4px rgba(0,0,0,.9);" title="Jack the box">&#8623; JACK THE BOX</div>
@@ -1054,11 +1055,11 @@ function toggleRadio(){
   var steal=document.getElementById('export-pl');
   radioOn=!radioOn;
   if(radioOn){
-    if(note){note.textContent='\u266a';note.style.color='#c9a84c';note.style.filter='drop-shadow(0 0 8px rgba(201,168,76,.8))';}
+    if(note){note.classList.add('on');note.style.color='#c9a84c';note.style.filter='drop-shadow(0 0 8px rgba(201,168,76,.8))';}
     if(steal){steal.style.display='block';steal.style.animation='stealFade .6s ease';}
     jukeStart();
   } else {
-    if(note){note.textContent='\u266a';note.style.color='rgba(201,168,76,.3)';note.style.filter='none';}
+    if(note){note.classList.remove('on');note.style.color='rgba(201,168,76,.3)';note.style.filter='none';}
     if(steal)steal.style.display='none';
     jukeStop();
   }
@@ -1996,7 +1997,7 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
 (function guide(){const home=$('home');if(!home)return;const RMg=matchMedia('(prefers-reduced-motion:reduce)').matches;
   const WHO=['c7h5n3o6','honey_buzzard','croisiere_noire','tsui_pen'];
   /* the title, then one plain line with a simple verb */
-  const SAY={"en": {"puck": "Challenge the 18 Masks in a shufflepuck tournament.", "chess": "Play fairy chess against the Fauna. (The Kerema can help.)", "erratic": "Find the pairs.", "faunarratics": "Build your own tale with the Masks.", "katabatik": "Roll the die for a random mini-game.", "terminal": "Surf the Minitel and earn Koins.", "vhs": "Watch your own YouTube tapes.", "photo": "Shoot and edit photos.", "tor": "Browse .onion websites.", "skopo": "Watch us.", "repo": "Find any repo on anything!", "bio": "Meet Mauk Tenieb.", "visit": "Dive into Korhogo Fauna.", "lore": "Lore you to death? Here is the Substack… Always spreading.", "refresh": "Refresh!", "tl": "Wear us.", "ig": "Artist's IG.", "kapture": "Kapture us! (If you can.)", "motel": "This is how the Kave sounds."}, "fr": {"puck": "Défie les 18 Masks dans un tournoi de shufflepuck.", "chess": "Tente ces échecs alternatifs, tiens.", "erratic": "Trouve les clones.", "faunarratics": "Picore tout, ici, et construis l’histoire à plusieurs.", "katabatik": "Jette le dé, joue à des mini-jeux.", "terminal": "Consulte ce bon vieux Minitel. Gagne des Koins!", "vhs": "Visionne tes programmes YouTube.", "photo": "Prends tes photos, retouche-les dans la foulée.", "tor": "Parcours tes sites .onion.", "skopo": "Tu nous vois ?", "repo": "Toutes les ressources sur… tout. Dans les forges.", "bio": "Biographie, tiens.", "visit": "Plonge-toi dans ce qui s’anime, s’affiche, s’écoute… Porte d’entrée, d’accord ?", "lore": "Lis le lore.", "refresh": "Rafraîchis tout ça.", "tl": "Revêts-nous. (Si tu peux.)", "ig": "IG de l’artiste.", "kapture": "Conserver le son et l’image... un peu.", "motel": "Voici le Juke Box. Il est gratuit en Koins."}};
+  const SAY={"en": {"puck": "Challenge the 18 Masks in a shufflepuck tournament.", "chess": "Play fairy chess against the Fauna. (The Kerema can help.)", "erratic": "Find the pairs.", "faunarratics": "Build your own tale with the Masks.", "katabatik": "Roll the die for a random mini-game.", "terminal": "Surf the Minitel and earn Koins.", "vhs": "Watch your own YouTube tapes.", "photo": "Shoot and edit photos.", "tor": "Browse .onion websites.", "skopo": "Watch us.", "repo": "Find any repo on anything!", "bio": "Meet Mauk Tenieb.", "visit": "Dive into Korhogo Fauna.", "lore": "Lore you to death? Here is the Substack… Always spreading.", "refresh": "Refresh!", "tl": "Wear us.", "ig": "Artist's IG.", "kapture": "Kapture us! (If you can.)", "motel": "This is what the Kave sounds like."}, "fr": {"puck": "Défie les 18 Masks dans un tournoi de shufflepuck.", "chess": "Tente ces échecs alternatifs, tiens.", "erratic": "Trouve les clones.", "faunarratics": "Picore tout, ici, et construis l’histoire à plusieurs.", "katabatik": "Jette le dé, joue à des mini-jeux.", "terminal": "Consulte ce bon vieux Minitel. Gagne des Koins!", "vhs": "Visionne tes programmes YouTube.", "photo": "Prends tes photos, retouche-les dans la foulée.", "tor": "Parcours tes sites .onion.", "skopo": "Tu nous vois ?", "repo": "Toutes les ressources sur… tout. Dans les forges.", "bio": "Biographie, tiens.", "visit": "Plonge-toi dans ce qui s’anime, s’affiche, s’écoute… Porte d’entrée, d’accord ?", "lore": "Lis le lore.", "refresh": "Rafraîchis tout ça.", "tl": "Revêts-nous. (Si tu peux.)", "ig": "IG de l’artiste.", "kapture": "Conserver le son et l’image... un peu.", "motel": "Voici le Juke Box. Il est gratuit en Koins."}};
   const g=document.createElement('div');g.className='guide gone';g.setAttribute('role','button');g.setAttribute('aria-label','Guide');g.tabIndex=0;home.appendChild(g);
   const tip=document.createElement('div');tip.className='gtip';home.appendChild(tip);
   let who=null,fw=0,sc=1,frame=0,touring=false,idleT=0,blinkT=0,away=true;
