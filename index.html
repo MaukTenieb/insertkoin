@@ -2002,8 +2002,8 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
   function arrive(){if(touring||$('home').hidden||document.hidden){return later();}dress();const p=spot(),side=Math.random()<.5?-1:1;
     g.style.transition='none';place(p.x+side*160,p.y);void g.offsetWidth;g.style.transition='';g.classList.remove('gone');g.classList.add('walk');face(side>0?2:3);place(p.x,p.y);away=false;
     g.classList.remove('shine','twink');void g.offsetWidth;g.classList.add('shine');setTimeout(()=>g.classList.remove('shine'),4600);setTimeout(()=>{if(!touring){g.classList.remove('walk');face(0);}},950);idleT=performance.now()+12000+Math.random()*14000;
-    /* every visit: it shows up, waits a few seconds, then names three or four stops; the full tour waits for a touch */
-    clearTimeout(g._tourT);g._tourT=setTimeout(()=>{if(!touring&&!away&&!g._drag&&!g.classList.contains('fling')&&!$('home').hidden&&!document.hidden)tour(null,true);},2600+Math.random()*2200);}
+    /* every visit: it shows up, waits a few seconds, then starts its full tour, stops in a random order */
+    clearTimeout(g._tourT);g._tourT=setTimeout(()=>{if(!touring&&!away&&!g._drag&&!g.classList.contains('fling')&&!$('home').hidden&&!document.hidden)tour();},2600+Math.random()*2200);}
   function leave(){if(touring)return;g.classList.add('walk');face(Math.random()<.5?2:3);g.classList.add('gone');away=true;setTimeout(()=>g.classList.remove('walk'),600);later();}
   function later(){setTimeout(arrive,(touring?4000:9000)+Math.random()*22000);}
   /* blinks, glances, and goes away after a while */
@@ -2013,10 +2013,10 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
     tip.innerHTML='';if(name){const b=document.createElement('b');b.textContent=name;tip.appendChild(b);}if(text)text.split('\n').forEach(l=>{const d=document.createElement('div');d.textContent=l;tip.appendChild(d);});
     const right=gx+gw+10+320<W;tip.style.left=(right?gx+gw+6:Math.max(4,gx-Math.min(320,W*.7)-6))+'px';tip.style.top=(parseFloat(g.style.top)+8)+'px';tip.classList.add('on');}
   let TQ=[],TI=0;
-  async function tour(resume,short){if(touring)return;touring=true;idleT=Infinity;ac();const W=ms=>new Promise(r=>setTimeout(r,ms));
+  async function tour(resume){if(touring)return;touring=true;idleT=Infinity;ac();const W=ms=>new Promise(r=>setTimeout(r,ms));
     const cabs=[...home.querySelectorAll('.cabinets .cab')],chips=[...home.querySelectorAll('.menu a,.menu button')];
     /* every visit goes through the tiles and menus in a random order */
-    let stops;if(resume&&resume.length)stops=resume;else{stops=cabs.concat(chips,[document.getElementById('radio-toggle')||document.querySelector('.motel-bar'),$('kapture')].filter(Boolean));for(let i=stops.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[stops[i],stops[j]]=[stops[j],stops[i]];}if(short)stops=stops.slice(0,3+(Math.random()<.5));}
+    let stops;if(resume&&resume.length)stops=resume;else{stops=cabs.concat(chips,[document.getElementById('radio-toggle')||document.querySelector('.motel-bar'),$('kapture')].filter(Boolean));for(let i=stops.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[stops[i],stops[j]]=[stops[j],stops[i]];}}
     TQ=stops;
     const L=SAY[LANG]||SAY.en;
     for(let i=0;i<stops.length;i++){const el=stops[i];TI=i;if(!touring)break;const isCab=el.classList.contains('cab');const hr=(el.getAttribute('href')||(el.querySelector('a')||{}).href||'')+'';const go=(el.querySelector('[data-go]')||el).dataset.go||(el.id==='kapture'?'kapture':(el.id==='radio-toggle'||el.classList.contains('motel-bar'))?'motel':el.id==='refresh'?'refresh':/substack/.test(hr)?'lore':/threadless/.test(hr)?'tl':/instagram/.test(hr)?'ig':/github\.com\/MaukTenieb/.test(hr)?'bio':'');
