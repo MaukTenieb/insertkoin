@@ -69,7 +69,7 @@ Korhogo is a superb city in Ivory Coast. But before its octopus centrality in th
 
 
 ## Rights
-Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related material — including characters, names, symbols, rules, lore and texts, in any form or medium — are the exclusive property of Korhogo™. The source code of this site is published for reading, reflections, additions, requests, etc. - the lore, names, marks and works remain the property of the author.
+Copyright © Mauk Tenieb & Korhogo. Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related material — including characters, names, symbols, rules, lore and texts, in any form or medium — are the exclusive property of Korhogo™, all rights reserved. The source code of this site is free to reuse under the MIT licence (see LICENSE); the lore, names, marks, characters, images, music and texts stay out of that licence and remain the property of the author.
 
 ## Fauna pages
 - [Unkle Maukie](https://mauktenieb.github.io/insertkoin/fauna-unkle_maukie.html)

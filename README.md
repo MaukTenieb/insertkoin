@@ -146,9 +146,9 @@ Start here: https://mauktenieb.github.io/
 
 ## Rights
 
-Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related material — including characters, names, symbols, rules, lore and texts, in any form or medium — are the exclusive property of Korhogo™. The source code of this site is published for reading, reflections, additions, requests, etc. — the lore, names, marks and works remain the property of the author.
+Copyright © Mauk Tenieb & Korhogo. Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related material — including characters, names, symbols, rules, lore and texts, in any form or medium — are the exclusive property of Korhogo™, all rights reserved. The source code of this site is free to reuse under the MIT licence (see `LICENSE`); the lore, names, marks, characters, images, music and texts stay out of that licence and remain the property of the author.
 
-No reproduction or reuse without written permission, including for training or use by artificial-intelligence systems.
+The code is MIT: take it, change it, redistribute it, keep the notice. The Korhogo material (characters, names, marks, lore, texts, images, music) requires written permission for any reproduction or reuse, including training or use by artificial-intelligence systems. Whoever reuses the code replaces that material with their own. Details: `LICENSE`.
 
 Third-party components:
 - Puck You! runs on a JavaScript port of [PuffleHuck](https://github.com/iconidentify/pufflehuck) (MIT, see `LICENSE`).

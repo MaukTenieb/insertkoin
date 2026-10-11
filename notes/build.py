@@ -21,7 +21,7 @@ a{color:var(--ac2)}p{margin:0 0 1em}
 footer{font:12px/1.5 'DM Mono',ui-monospace,monospace;color:var(--dim);max-width:46rem;margin:0 auto;padding:18px 0 40px;border-top:1px solid var(--ln)}
 ul.notes{list-style:none;padding:0}ul.notes li{margin:0 0 18px}ul.notes .d{font:12px 'DM Mono',monospace;color:var(--dim)}"""
 FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono&display=swap" rel="stylesheet">'
-FOOT = '<footer>Copyright © Mauk Tenieb &amp; Korhogo. All rights reserved. No use for training artificial intelligence. · <a href="../">Insert Koin</a> · <a href="https://mauktenieb.github.io/">mauktenieb.github.io</a></footer>'
+FOOT = '<footer>Code MIT · Korhogo material © Mauk Tenieb &amp; Korhogo, all rights reserved, no use for training artificial intelligence. · <a href="../">Insert Koin</a> · <a href="https://mauktenieb.github.io/">mauktenieb.github.io</a></footer>'
 
 def parse(path):
     raw = open(path, encoding='utf-8').read()
