@@ -1588,8 +1588,8 @@ function puck(c,x,z){const r=G.e.p.puck_size,col=G.r.glow,dark=col==='#141418'||
   c.strokeStyle=dark?'rgba(200,190,230,.55)':col;c.lineWidth=Math.max(1,rx*.18);c.beginPath();c.ellipse(cx,cy-h,rx*.8,ry*.8,0,0,TAU);c.stroke();
   c.strokeStyle='rgba(255,246,228,.75)';c.lineWidth=Math.max(.5,rx*.08);c.beginPath();c.ellipse(cx,cy-h,rx,ry,0,Math.PI*1.05,Math.PI*1.95);c.stroke();
   c.fillStyle='rgba(255,255,255,.5)';c.fillRect(cx-rx*.35,cy-h-ry*.45,Math.max(.5,rx*.3),.5);}
-function smoke(c){const p=prog();c.fillStyle=`rgba(190,180,160,${.03+p*.1})`;c.fillRect(0,0,W,H);
-  c.fillStyle=`rgba(210,200,185,${.04+p*.08})`;for(let i=0;i<5;i++){const x=((G.t*6+i*113)%(W+120))-60,y=40+i*14+Math.sin(G.t*.6+i)*6;c.beginPath();c.ellipse(x,y,50,5,0,0,TAU);c.fill();}}
+/* the night's haze thickens as the match goes on: an even veil, with nothing drifting across the room */
+function smoke(c){const p=prog();c.fillStyle=`rgba(190,180,160,${.03+p*.1})`;c.fillRect(0,0,W,H);}
 function render(a,dt){const c=ctx,e=G.e,p=G.prev,q=G.cur,L=(u,v)=>u+(v-u)*a;
   room(c);c.drawImage(ctL,0,0,W,H);
   const cl=(v,lo,hi)=>v<lo?lo:(v>hi?hi:v),sck=e.p.puck_size,pdk=e.p.pad_size,bdk=e.p.back_pad_size;
