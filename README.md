@@ -46,7 +46,7 @@ A few seconds after the title screen opens, then now and then, a guide wanders a
 - The room is a painted motel room; its two paintings show Fauna drawn at random for each match, and the board on the left wall keeps the score. The CRT on the dresser switches at random and on every point between the Mask's motto, the score, its stats, the rally, its signature, your Koins, the hour, Motel Sound, test cards, snow and a few seconds of a Mauk Tenieb clip.
 - **The Kerema decides!** One tournament in two opens with a die that sets the applicant's swing, from −15% (⚀) to +15% (⚅); the face stays by the score. One match in two, a translucent die floats over the table once or twice (*Puck a boo!* — *On est joueur ?*, *Koquinette ou Koquinou ?*): touch it with the paddle to take the throw, or let it drift away. The Kerema leans toward those who earned their Koins: the more Koins, the higher the faces (about 7 Koins: even).
 - Now and then, after a point, the Kerema's sarcasm comes on the TV, in the visitor's language.
-- On a phone held upright, a phone sign turns over the table; on its side, the table takes the whole height; in full screen the score follows inside the table.
+- On a phone held upright, a phone sign turns over the table; on its side, the table takes the whole height; the score stays on the CRT and the board on the wall.
 
 ## Koins
 

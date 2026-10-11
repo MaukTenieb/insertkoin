@@ -411,8 +411,6 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 .stage .kdie.told b,.stage .kdie.told i{opacity:1}
 .score .kd{margin-right:6px;color:#ffe08a;text-shadow:0 0 8px rgba(201,168,76,.8);font-size:1.1em}
 /* in full screen the score comes inside the table */
-.stage .fsScore{display:none;position:absolute;top:6px;left:50%;transform:translateX(-50%);z-index:5;font:12px/1 "DM Mono",monospace;letter-spacing:.14em;color:#fff8ec;background:rgba(7,6,10,.6);padding:5px 10px;border:1px solid rgba(201,168,76,.35);pointer-events:none;white-space:nowrap}
-.stage:fullscreen .fsScore{display:block}
 @media (prefers-reduced-motion:reduce){.stage .turn,.stage .turn i{animation:none}.stage .turn{display:none!important}}
 </style>
 </head>
@@ -493,7 +491,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
       <div class="score" aria-live="polite"><span class="who" data-i18n="you">APPLICANT</span><span id="sP">0</span><span style="color:var(--dim)">-</span><span id="sO">0</span><span class="who" id="oName"></span><span class="sig" id="oSig" aria-hidden="true"></span></div>
       <span class="hudr"></span>
     </div>
-    <div class="stage" id="stage"><span class="rot" aria-hidden="true">⟳</span><span class="turn" aria-hidden="true"><i></i></span><span class="fsScore" id="fsScore" aria-hidden="true"></span>
+    <div class="stage" id="stage"><span class="rot" aria-hidden="true">⟳</span><span class="turn" aria-hidden="true"><i></i></span>
       <canvas id="cv" width="1024" height="686" aria-label="Table"></canvas>
       <div class="msg" id="msg"><span class="sm" id="mRun"></span><span class="big" id="mName"></span><span class="sm" id="mMotto"></span><span class="stats" id="mStats"></span><span class="blink" data-i18n="serve">▶</span></div>
       <div class="count" id="count" hidden></div>
@@ -1865,8 +1863,6 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
   function later(){setTimeout(go2,38000+Math.random()*60000);}later();
   const T=document.title;document.addEventListener('visibilitychange',()=>{document.title=document.hidden?(Math.random()<.5?'Intersektio':'Noirinsekt'):T;});})();
 /* full screen: the score follows inside the table */
-(function fsScore(){const f=$('fsScore'),a=$('sP'),b=$('sO'),n=$('oName');if(!f||!a||!b)return;const up=()=>{f.textContent=a.textContent+' — '+b.textContent+(n&&n.textContent?'  '+n.textContent:'');};
-  try{new MutationObserver(up).observe(a,{childList:true,characterData:true,subtree:true});new MutationObserver(up).observe(b,{childList:true,characterData:true,subtree:true});if(n)new MutationObserver(up).observe(n,{childList:true,characterData:true,subtree:true});}catch(e){}up();})();
 /* ---- the motel lives: the hour outside, the television, a storm at the window, the cigarette, the scarab, Plague's cloud, a beetle, and the picture wearing out the longer one stays ---- */
 (function life(){const hero=document.querySelector('.hero'),im=hero&&hero.querySelector('img');if(!im)return;
   const RM=matchMedia('(prefers-reduced-motion:reduce)').matches,NW=1200,NH=896;
