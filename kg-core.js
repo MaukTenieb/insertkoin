@@ -1,12 +1,12 @@
 
 /*
- * Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna
- * Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related
- * material — including characters, names, symbols, rules, lore and texts, in any form or
- * medium — are the exclusive property of Korhogo™. The source code of this site is
- * published for reading, reflections, additions, requests, etc. - the lore, names, marks
- * and works remain the property of the author. No use for training artificial
- * intelligence. Contact: mauktenieb@gmail.com
+ * Code: MIT licence, Copyright (c) 2026 Mauk Tenieb (see LICENSE).
+ * Korhogo material: Copyright © Mauk Tenieb & Korhogo, all rights reserved. Korhogo™,
+ * Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™,
+ * Puck You!™ and any related material — characters, names, symbols, rules, lore, texts,
+ * images and music, in any form or medium, including inside this file — stay out of the
+ * MIT licence and remain the property of the author. No use of that material for
+ * training artificial intelligence. Contact: mauktenieb@gmail.com
  */
 
 /* KG core -- shared code extracted verbatim from kofa.js (Korhogo) for the KG lazy game loader.
