@@ -10,7 +10,7 @@ No account, no installation, no server of ours. Desktop and phone, upright or on
 
 ## The arcade
 
-The home screen is the motel painting, then the cabinets. Every visit draws its own arrangement: Reporhogo, Bio, Dive!, Faunarratik and Erratik stand either as big cabinets or as small chips under them, and the rows always come out full.
+The home screen is the motel painting, then the cabinets. Every visit draws its own arrangement: Reporhogo, Bio, Burrows, Faunarratik and Erratik stand either as big cabinets or as small chips under them, and the rows always come out full.
 
 | Cabinet | What it is |
 |---|---|
@@ -25,7 +25,7 @@ The home screen is the motel painting, then the cabinets. Every visit draws its 
 | **FaunaTor** | A browser that carries Tor inside the page, `.onion` included. |
 | **Skoporhogo** | The Fauna living in an isometric hotel room. |
 | **Reporhogo** | One topic searched across the code forges at once; every related repository's URL is collected. |
-| Bio · Dive! · Lore · TL · IG | Mauk Tenieb on GitHub · Korhogo Fauna (katabase) · the Substack · the Threadless store · Instagram. |
+| Bio · Burrows · Lore · TL · IG | Mauk Tenieb on GitHub · Korhogo Fauna (katabase) · the Substack · the Threadless store · Instagram. |
 
 Always there, on every screen: **Motel Sound** (the Korhogo jukebox, free), **Kapture** (camera and microphone recorder), **Baku Boom** (back to the menu), **FX** on/off (remembered), **FR/EN**.
 
