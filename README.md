@@ -21,10 +21,10 @@ The home screen is the motel painting, then the cabinets. Every visit draws its 
 | **Katabatik** | A die is thrown on the cabinet: Konnect4, Sampler, Akasztófa (the Hungarian hangman, on a Hungarian keyboard; a vowel counts with or without its accents; a win brings a short unsigned quotation to guess) or Mastermind. |
 | **3615** | The K Terminal, a Minitel emulator: https://mauktenieb.github.io/3615/ |
 | **VHS** | A television on a tape deck: Motel Sound and your own YouTube tapes. |
-| **Photofauna** | Photofauna, the photo editor of Insert Koin: take or open a photo, edit it through 44 looks. |
-| **FaunaTor** | FaunaTor opens web pages and v3 .onion sites through Tor clients that run in the page. |
+| **Photofauna** | The photo editor: takes or opens a photo and applies 44 looks. |
+| **FaunaTor** | Opens web pages and v3 .onion sites through Tor clients that run in the page. |
 | **Skoporhogo** | The Fauna living in an isometric hotel room. |
-| **Reporhogo** | One topic searched across the code forges at once; every related repository's URL is collected. |
+| **Reporhogo** | Reporhogo searches forty-one code forges for a topic and collects the URLs of the repositories it finds. |
 | Bio · Burrows · Lore · TL · IG | Mauk Tenieb on GitHub · Korhogo Fauna (katabase) · the Substack · the Threadless store · Instagram. |
 
 Always there, on every screen: **Motel Sound** (the Korhogo jukebox, open to every visitor), **Kapture** (camera and microphone recorder), **Baku Boom** (back to the menu), **FX** on/off (remembered), **FR/EN**.
@@ -69,7 +69,7 @@ Refused pages are asked again before giving up; a cassette that could not be rea
 
 ## FaunaTor and Tor
 
-FaunaTor runs Tor inside the page: two Tor clients compiled to WebAssembly reach the network through Snowflake, the Tor Project's own bridges (WebSocket first, WebRTC last); the page connects to Snowflake directly.
+FaunaTor runs Tor inside the page: two Tor clients compiled to WebAssembly reach the network through Snowflake, the Tor Project's own bridges (WebSocket first, WebRTC last); the page reaches Tor through the Snowflake broker and its volunteer proxies.
 
 - the web, through Tor exits: [privacy-ethereum/webtor-rs](https://github.com/privacy-ethereum/webtor-rs) (MIT) → `tor-web.js`, `tor-web_bg.wasm`
 - `.onion` (v3): [andrewtheguy/webtor-rs](https://github.com/andrewtheguy/webtor-rs) (MIT) → `tor-onion.js`, `tor-onion_bg.wasm`
