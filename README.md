@@ -1,6 +1,6 @@
 # Insert Koin
 
-Insert Koin is a browser arcade by Mauk Tenieb, set in the Korhogo universe.
+Insert Koin, Mauk Tenieb's Korhogo world, games and machines in a browser.
 
 **Play: https://mauktenieb.github.io/insertkoin/** · in French: https://mauktenieb.github.io/insertkoin/fr.html
 
