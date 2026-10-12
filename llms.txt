@@ -1,8 +1,8 @@
 # Insert Koin
 
-> Insert Koin is a browser arcade by Mauk Tenieb, set in the Korhogo universe: Puck You!, an air-puck game against the eighteen Masks of the Fauna, each playing by their Korhogo stats and oil power; Fauna Chess; Erratik; Faunarratik; Katabatik; 3615, the Minitel terminal; VHS, the Korhogo tape deck; Photofauna, the photo editor of Insert Koin; and FaunaTor, a Tor reader for web and .onion pages. Motel Sound jukebox, Kapture, FR/EN.
+> Insert Koin, Mauk Tenieb's Korhogo world, games and machines in a browser: Puck You!, an air-puck game against the eighteen Masks of the Fauna, each playing by their Korhogo stats and oil power; Fauna Chess; Erratik; Faunarratik; Katabatik; 3615, the Minitel terminal; VHS, the Korhogo tape deck; Photofauna, the photo editor of Insert Koin; and FaunaTor, a Tor reader for web and .onion pages. Motel Sound jukebox, Kapture, FR/EN.
 
-> FR : Insert Koin est une salle d'arcade dans le navigateur, de Mauk Tenieb, dans l’univers de Korhogo : Puck You!, un jeu de palet contre les dix-huit Masks de la Fauna, chacun selon ses caractéristiques et son pouvoir d’Oil de Korhogo ; Fauna Chess; Erratik; Faunarratik; Katabatik; 3615, le terminal Minitel ; VHS, le magnétoscope de Korhogo ; Photofauna, l’éditeur photo d’Insert Koin ; et FaunaTor, un lecteur Tor pour les pages web et .onion. Jukebox Motel Sound, Kapture, FR/EN.
+> FR : Insert Koin, le monde Korhogo de Mauk Tenieb, ses jeux et ses machines dans un navigateur : Puck You!, un jeu de palet contre les dix-huit Masks de la Fauna, chacun selon ses caractéristiques et son pouvoir d’Oil de Korhogo ; Fauna Chess; Erratik; Faunarratik; Katabatik; 3615, le terminal Minitel ; VHS, le magnétoscope de Korhogo ; Photofauna, l’éditeur photo d’Insert Koin ; et FaunaTor, un lecteur Tor pour les pages web et .onion. Jukebox Motel Sound, Kapture, FR/EN.
 
 > The artist's wish: an artistic, playful and technical layer, like a portable, multitasking and narrative fictional OS.
 
