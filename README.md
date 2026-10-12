@@ -1,10 +1,10 @@
 # Insert Koin
 
-An arcade ritual in the browser, by Mauk Tenieb, from the Korhogo universe.
+Insert Koin is a browser arcade by Mauk Tenieb, set in the Korhogo universe.
 
 **Play: https://mauktenieb.github.io/insertkoin/** · in French: https://mauktenieb.github.io/insertkoin/fr.html
 
-No account, no installation, no server of ours. Desktop and phone, upright or on its side. English and French.
+Insert Koin runs in the visitor's browser on desktop and phone, held upright or on its side, in English and French.
 
 ---
 
@@ -21,15 +21,15 @@ The home screen is the motel painting, then the cabinets. Every visit draws its 
 | **Katabatik** | A die is thrown on the cabinet: Konnect4, Sampler, Akasztófa (the Hungarian hangman, on a Hungarian keyboard; a vowel counts with or without its accents; a win brings a short unsigned quotation to guess) or Mastermind. |
 | **3615** | The K Terminal, a Minitel emulator: https://mauktenieb.github.io/3615/ |
 | **VHS** | A television on a tape deck: Motel Sound and your own YouTube tapes. |
-| **Photofauna** | The pocket photo app: take or open a photo, edit it through 44 looks. |
-| **FaunaTor** | A browser that carries Tor inside the page, `.onion` included. |
+| **Photofauna** | Photofauna, the photo editor of Insert Koin: take or open a photo, edit it through 44 looks. |
+| **FaunaTor** | FaunaTor opens web pages and v3 .onion sites through Tor clients that run in the page. |
 | **Skoporhogo** | The Fauna living in an isometric hotel room. |
 | **Reporhogo** | One topic searched across the code forges at once; every related repository's URL is collected. |
 | Bio · Burrows · Lore · TL · IG | Mauk Tenieb on GitHub · Korhogo Fauna (katabase) · the Substack · the Threadless store · Instagram. |
 
-Always there, on every screen: **Motel Sound** (the Korhogo jukebox, free), **Kapture** (camera and microphone recorder), **Baku Boom** (back to the menu), **FX** on/off (remembered), **FR/EN**.
+Always there, on every screen: **Motel Sound** (the Korhogo jukebox, open to every visitor), **Kapture** (camera and microphone recorder), **Baku Boom** (back to the menu), **FX** on/off (remembered), **FR/EN**.
 
-### The living home
+### The home screen
 The painting takes the visitor's hour (bluish night, pink dawn, orange evening). The television is never steady and changes channel in the snow; some visits bring a storm behind the window, with thunder when FX are on; Plague of Justinian's cloud rumbles; the scarab breathes; Aube's hands glint pink, Maiden Call's telephone blue, Auvergne's eyes green; the cigarette smokes; a beetle sometimes crosses the picture; the longer one stays, the more the picture wears (grain, tape tears, scratches). A light runs over the cabinets now and then, or one flickers; the neons of the chips falter; the devices of the motel call (the television leads to VHS, the telephone to 3615, the chessboard to Fauna Chess, the cards to Erratik, Unkle Maukie to Puck You!, the Koins on the floor to 3615 KOINS, the lyre to Motel Sound, the window to FaunaTor, the boxes to Katabatik). Now and then, the sign slips from INSERT KOIN to INTERSEKTIO or NOIRINSEKT. Each time the title screen opens, it takes the faint colour of one Mask drawn at random: a soft wash over the picture, its lines and golds leaning a little toward it.
 
 ### The guide
@@ -58,7 +58,7 @@ A few seconds after the title screen opens, then now and then, a guide wanders a
 
 ## VHS — REC
 
-Paste a YouTube channel (or playlist) link and press REC: the page records it onto a cassette by itself, with no server (`kg-vhs-scrape.js`). Several roads are tried, the first that answers wins:
+Paste a YouTube channel (or playlist) link and press REC: the page records it onto a cassette inside the visitor's browser (`kg-vhs-scrape.js`). Several roads are tried, the first that answers wins:
 
 1. YouTube's own Data API, when a key is set in `YT_KEY` (whole channel, with dates, durations, views, likes, comments);
 2. Piped (api.piped.private.coffee first) and Invidious, raced: the whole channel, page after page, its shorts and streams, and an artist's playlists when the uploads are few;
@@ -69,7 +69,7 @@ Refused pages are asked again before giving up; a cassette that could not be rea
 
 ## FaunaTor and Tor
 
-FaunaTor carries Tor inside the page: two Tor clients compiled to WebAssembly reach the network through Snowflake, the Tor Project's own bridges (WebSocket first, WebRTC last), with no server of ours.
+FaunaTor runs Tor inside the page: two Tor clients compiled to WebAssembly reach the network through Snowflake, the Tor Project's own bridges (WebSocket first, WebRTC last); the page connects to Snowflake directly.
 
 - the web, through Tor exits: [privacy-ethereum/webtor-rs](https://github.com/privacy-ethereum/webtor-rs) (MIT) → `tor-web.js`, `tor-web_bg.wasm`
 - `.onion` (v3): [andrewtheguy/webtor-rs](https://github.com/andrewtheguy/webtor-rs) (MIT) → `tor-onion.js`, `tor-onion_bg.wasm`
@@ -79,7 +79,7 @@ When a page cannot be reached: *Your Kalabass was rejected. Apply later.* — wi
 
 ## Photofauna
 
-A pocket photo app honouring the photo apps of 2008–2019: 44 looks (simulated film, toy cameras, historical processes, instants, glitch, painting, shapes…), an editor with adjustments, recipes kept inside the saved PNG, GIF export, deterministic renders. The camera opens on a Mask drawn at random. Every shot is saved at once, untouched. Looks pile up: **Keep** fixes the current look into the picture and the next one goes on top; **Undo** steps back, last look first, then last layer. The saved PNG carries the fixed layers in its recipe. One self-contained file: `fotofauna.html`.
+Photofauna, the photo editor of Insert Koin, honours the photo apps of 2008–2019: 44 looks (simulated film, toy cameras, historical processes, instants, glitch, painting, shapes…), an editor with adjustments, recipes kept inside the saved PNG, GIF export, deterministic renders. The camera opens on a Mask drawn at random. Every shot is saved at once, untouched. Looks pile up: **Keep** fixes the current look into the picture and the next one goes on top; **Undo** steps back, last look first, then last layer. The saved PNG carries the fixed layers in its recipe. The file `fotofauna.html` holds the whole app.
 
 ## Saved files
 
@@ -139,7 +139,7 @@ Mauk Tenieb's transmedia world. [Katabase](https://mauktenieb.github.io/katabase
 
 [Bandcamp](https://mauktenieb.bandcamp.com): music and sales · [Substack](https://korhogo.substack.com): the journal · [YouTube](https://www.youtube.com/@mauktenieb): clips and mini-films.
 
-Start here: https://mauktenieb.github.io/
+Index of Mauk Tenieb's sites: https://mauktenieb.github.io/
 <!-- network:end -->
 
 ---
