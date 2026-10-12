@@ -6,8 +6,8 @@ def sub(s,a,b,n=1,label=''):
     return s.replace(a,b)
 D=os.path.dirname(os.path.abspath(__file__))+'/'
 s=open(D+'index.html',encoding='utf8').read()
-EN_DESC='Insert Koin, an arcade ritual in the browser, by Mauk Tenieb. Puck You! against the eighteen Masks of the Fauna, Fauna Chess, Erratik, Faunarratik, Katabatik, 3615.'
-FR_DESC='Insert Koin, un rituel d&#x27;arcade dans le navigateur, de Mauk Tenieb. Puck You! contre les dix-huit Masks de la Fauna, Fauna Chess, Erratik, Faunarratik, Katabatik, 3615.'
+EN_DESC='Insert Koin is a browser arcade by Mauk Tenieb, set in the Korhogo universe: Puck You! against the eighteen Masks of the Fauna, Fauna Chess, Erratik, Faunarratik, Katabatik, 3615.'
+FR_DESC='Insert Koin est une salle d&#x27;arcade dans le navigateur, de Mauk Tenieb, dans l’univers de Korhogo : Puck You! contre les dix-huit Masks de la Fauna, Fauna Chess, Erratik, Faunarratik, Katabatik, 3615.'
 s=sub(s,'<html lang="en">','<html lang="fr">',1,'lang')
 s=sub(s,'<meta charset="utf-8">','<meta charset="utf-8">\n<script>window.IK_LANG="fr"</script>',1,'iklang')
 s=sub(s,f'<meta name="description" content="{EN_DESC}">',f'<meta name="description" content="{FR_DESC}">',1,'desc')
