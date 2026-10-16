@@ -1452,7 +1452,7 @@ OPS.thermal=function(im,p,ctx){var w=im.w,h=im.h,u=U(im),n=w*h,d=im.d,i,x,y;
  /* chaud et froid */
  var mark=function(ii,col,lab){var mx=ii%w,my=(ii/w)|0,s=u*0.028;g2.fillStyle=col;g2.strokeStyle='#000';g2.lineWidth=lw*0.5;g2.beginPath();g2.moveTo(mx,my-s*0.2);g2.lineTo(mx-s*0.6,my-s*1.2);g2.lineTo(mx+s*0.6,my-s*1.2);g2.closePath();g2.fill();g2.stroke();txt(lab,mx+s*0.8,my-s*1.1);};
  mark(iMax,'#ff3020','▲ '+degOf(hi).toFixed(1));mark(iMin,'#30a0ff','▼ '+degOf(lo).toFixed(1));
- txt('°C',u*0.05,u*0.06);txt('ε 0.95',u*0.05,u*0.06+fs*1.3);txt((p.palette||'ironbow').toUpperCase(),u*0.05,h-u*0.06);
+ txt('°C',u*0.05,u*0.15);txt('ε 0.95',u*0.05,u*0.15+fs*1.3);txt((p.palette||'ironbow').toUpperCase(),u*0.05,h-u*0.06);
  var o=fromCanvas(c);im.d.set(o.d);return im;};
 
 /* --- trames et traits : lignes fines, trame de lignes, croisée, hachures, gravure, mezzotinte, points --- */
@@ -1610,7 +1610,7 @@ var LOOKS=[
 {f:'anciens',id:'sale',fr:'Papier salé',en:'Salted paper',r:{ops:[{op:'histo',w:BLUE,curve:[[0,0.1],[0.3,0.3],[0.7,0.74],[1,0.96]],tones:[[0,'#3a1f14'],[0.35,'#6e3f26'],[0.7,'#c4996f'],[1,'#ecdcc0']],paper:'fibre',paperAmt:0.8,fade:0.2,yellow:0.35,fadeEdge:0.45,fox:0.3,soft:0.3,edge:'card',card:'#e8ddc4',rule:'#c9b48d'}]}},
 {f:'anciens',id:'albumine',fr:'Tirage albuminé',en:'Albumen print',r:{ops:[{op:'histo',w:[0.04,0.24,0.72],curve:[[0,0.03],[0.3,0.22],[0.7,0.76],[1,0.97]],tones:[[0,'#24161a'],[0.35,'#5b3a3a'],[0.7,'#b9937a'],[1,'#efe2c4']],cracks:0.7,yellow:0.55,fadeEdge:0.3,silver:0.45,fox:0.2,soft:0.3,vign:0.2,edge:'card',card:'#e9dfc6',rule:'#b08a3e'}]}},
 {f:'anciens',id:'ambrotype',fr:'Ambrotype',en:'Ambrotype',r:{ops:[{op:'histo',flip:true,w:BLUE,curve:[[0,0],[0.3,0.12],[0.7,0.66],[1,0.9]],tones:[[0,'#0d0c0b'],[0.5,'#6b6458'],[1,'#e2d8c2']],soft:0.6,swirl:0.4,specks:0.3,scratch:0.2,vign:0.35,edge:'oval',brass:'#a98443'}]}},
-{f:'anciens',id:'ferrotype',fr:'Ferrotype',en:'Tintype',r:{ops:[{op:'histo',flip:true,w:[0.03,0.2,0.77],curve:[[0,0],[0.3,0.11],[0.7,0.6],[1,0.9]],tones:[[0,'#0f0c09'],[0.45,'#4d4232'],[0.8,'#b3a587'],[1,'#d9ceb4']],swirl:0.6,soft:0.35,vign:0.55,scratch:0.4,specks:0.35,paper:'plate',paperAmt:0.45,edge:'plate',edgeColor:'#0c0a08',inset1:0.035}]}},
+{f:'anciens',id:'ferrotype',fr:'Ferrotype',en:'Tintype',r:{ops:[{op:'histo',flip:true,w:[0.03,0.2,0.77],curve:[[0,0],[0.3,0.15],[0.7,0.67],[1,0.94]],tones:[[0,'#0f0c09'],[0.45,'#4d4232'],[0.8,'#b3a587'],[1,'#d9ceb4']],swirl:0.6,soft:0.35,vign:0.5,scratch:0.2,specks:0.18,paper:'plate',paperAmt:0.45,edge:'plate',edgeColor:'#0c0a08',inset1:0.035}]}},
 {f:'anciens',id:'etain',fr:'Ferrotype à l\'œil net',en:'Sharp-eyed tintype',r:{"version": 1, "seed": 1866, "ops": [{"op": "plate", "process": "ferrotype", "tone": "classic", "pour": 0.08, "edges": 0.4, "grain": 0.3, "eyeGlow": 0.25, "ringBlur": 0.32}, {"op": "border", "style": "ragged", "thickness": 0.035, "color": "#1a120c"}]}},
 {f:'anciens',id:'collodion',fr:'Plaque au collodion',en:'Collodion plate',r:{ops:[{op:'histo',flip:true,w:BLUE,curve:[[0,0],[0.3,0.14],[0.7,0.68],[1,0.94]],tones:[[0,'#0e0d0c'],[0.5,'#67625a'],[1,'#e9e3d6']],soft:0.4,swirl:0.35,vign:0.3,specks:0.4,mottle:0.3,edge:'pour',edgeColor:'#0b0a09',inset1:0.05}]}},
 {f:'anciens',id:'verseplaque',fr:'Collodion versé',en:'Poured collodion',r:{"version": 1, "seed": 1851, "ops": [{"op": "plate", "process": "collodion", "pour": 0.65, "edges": 0.6, "density": 0.5}]}},
@@ -1761,18 +1761,18 @@ var LOOKS=[
 {f:'glitch',id:'pli',fr:'Pli Récursif',en:'Recursive Fold',r:{ops:[{op:'mirror',axis:'both'},{op:'kaleido',segments:4,recursion:2,zoom:1.2}]}},
 {f:'glitch',id:'cartouche',fr:'Cartouche Sale',en:'Dirty Cartridge',r:{ops:[{op:'lowres',width:160,upscale:true},{op:'quantize',palette:'cga1',dither:'bayer4'},{op:'texture',kind:'grit',opacity:0.35}]}},
 {f:'glitch',id:'phase',fr:'Rayon de Phase',en:'Phase Beam',r:{ops:[{op:'falseColor',mode:'rotate'},{op:'channelShift',pair:'RG',distance:0.03,angle:30},{op:'scan',mode:'wave',amplitude:0.03,frequency:12}]}},
-{f:'glitch',id:'tripixels',fr:'Tri de pixels',en:'Pixel sorting',r:{ops:[{op:'pixelSort',mode:'threshold',direction:'v',low:0.12,high:0.92,maxLength:1}]}},
+{f:'glitch',id:'tripixels',fr:'Tri de pixels',en:'Pixel sorting',r:{ops:[{op:'pixelSort',mode:'threshold',direction:'v',low:0.04,high:0.98,maxLength:1}]}},
 {f:'glitch',id:'datamosh',fr:'Datamosh',en:'Datamosh',r:{ops:[{op:'datamosh',mode:'bloom',iterations:16,strength:0.9}]}},
 {f:'glitch',id:'fente',fr:'Fente temporelle',en:'Slit-scan',r:{ops:[{op:'scan',mode:'slitscan',amount:0.9,amplitude:0.12}]}},
 {f:'glitch',id:'anaglyphe',fr:'Anaglyphe 3D',en:'3D anaglyph',r:{ops:[{op:'channelShift',pair:'R',distance:0.028,angle:180},{op:'channelShift',pair:'GB',distance:0.008,angle:0}]}},
 {f:'glitch',id:'vhs',fr:'Bande VHS',en:'VHS tape',r:{ops:[{op:'videoSignal',noise:0.65,tracking:0.85,chromaBleed:0.9,scanlines:0.55,wobble:0.6,headSwitch:0.8},{op:'dateStamp',format:"MM DD 'YY",color:'#f2f2f2'}]}},
-{f:'glitch',id:'ascii',fr:'ASCII',en:'ASCII',r:{ops:[{op:'primitives',kind:'ascii',size:0.018,bg:'#0a0a0a',ink:'#3dff6e'}]}},
+{f:'glitch',id:'ascii',fr:'ASCII',en:'ASCII',r:{ops:[{op:'curves',exposure:0.5,contrast:0.2},{op:'primitives',kind:'ascii',size:0.018,bg:'#0a0a0a',ink:'#3dff6e'}]}},
 /* ---------- Écrans ---------- */
 {f:'ecrans',id:'pochegris',fr:'Poche Quatre Gris',en:'Four-Grey Pocket',r:{"version": 1, "seed": 1998, "ops": [{"op": "lowres", "preset": "128x112"}, {"op": "localContrast", "amount": 0.5, "radius": 0.05}, {"op": "dither", "algo": "bayer4", "mode": "palette", "palette": "gb4", "contrast": 0.2}]}},
 {f:'ecrans',id:'unbit',fr:'Un Bit',en:'One Bit',r:{"version": 1, "seed": 1, "ops": [{"op": "lowres", "width": 480}, {"op": "dither", "algo": "atkinson", "mode": "mono", "contrast": 0.1}]}},
 {f:'ecrans',id:'camescope',fr:'Caméscope 85',en:'Camcorder 85',r:{"version": 1, "seed": 1985, "crop": "4:3", "ops": [{"op": "lowres", "width": 480}, {"op": "videoSignal", "noise": 0.35, "tracking": 0.35, "chromaBleed": 0.6, "interlace": 0.3}, {"op": "dateStamp", "format": "MM DD 'YY", "color": "#f2f2f2", "size": 0.045, "position": "bl", "glow": 0.5, "date": "1985-07-14"}]}},
 {f:'ecrans',id:'superhuit',fr:'Film de Famille',en:'Home Movie',r:{"version": 1, "seed": 1965, "crop": "4:3", "ops": [{"op": "curves", "rgb": [[0, 0.08], [1, 0.92]], "sat": -0.1}, {"op": "filmSim", "format": "super8", "sprocket": false}]}},
-{f:'ecrans',id:'videotex',fr:'Vidéotex 3615',en:'Videotex 3615',r:{ops:[{op:'pixelate',size:0.02},{op:'quantize',palette:'teletext',dither:'none'},{op:'videoSignal',noise:0.1,scanlines:0.6,tracking:0,wobble:0,headSwitch:0,interlace:0.2}]}},
+{f:'ecrans',id:'videotex',fr:'Vidéotex 3615',en:'Videotex 3615',r:{ops:[{op:'curves',exposure:0.6,contrast:0.25,sat:0.7},{op:'pixelate',size:0.02},{op:'quantize',palette:'teletext',dither:'none'},{op:'videoSignal',noise:0.1,scanlines:0.6,tracking:0,wobble:0,headSwitch:0,interlace:0.2}]}},
 {f:'ecrans',id:'console',fr:'Console 8 bits',en:'8-bit console',r:{ops:[{op:'lowres',width:192,upscale:true},{op:'quantize',palette:'micro16',dither:'bayer4'}]}},
 {f:'ecrans',id:'cga',fr:'Écran CGA',en:'CGA screen',r:{ops:[{op:'lowres',width:256,upscale:true},{op:'quantize',palette:'cga2',dither:'floyd'}]}},
 {f:'ecrans',id:'ambre',fr:'Moniteur ambre',en:'Amber monitor',r:{ops:[{op:'lowres',width:320,upscale:true},{op:'quantize',palette:'amber',dither:'bayer8'},{op:'videoSignal',scanlines:0.5,noise:0.05,tracking:0,headSwitch:0}]}},
@@ -1922,7 +1922,7 @@ $("bSave").onclick=async()=>{
 /* ---------- image de départ : un Masque tiré au hasard ---------- */
 const MASKS=['unkle_maukie','dogxim','c7h5n3o6','naphta','tsui_pen','honey_buzzard','hatra_loves','croisiere_noire','aube','silent_pact','maiden_call','plague_of_justinian','poisoned_well','cadaver_synod','truce','auvergne','grand_colonel','malika'];
 function demo(){const c=document.createElement("canvas");c.width=900;c.height=1200;const g=c.getContext("2d"),gr=g.createLinearGradient(0,0,900,1200);gr.addColorStop(0,"#2b2420");gr.addColorStop(1,"#c9a84c");g.fillStyle=gr;g.fillRect(0,0,900,1200);return g.getImageData(0,0,900,1200)}
-async function startImage(){const u=window.__pfStart||("mask-"+MASKS[Math.floor(Math.random()*MASKS.length)]+".webp");
+async function startImage(){const u="mask-"+MASKS[Math.floor(Math.random()*MASKS.length)]+".webp";
  try{const im=new Image();im.src=u;await im.decode();const c=document.createElement("canvas");c.width=im.naturalWidth;c.height=im.naturalHeight;const g=c.getContext("2d");g.drawImage(im,0,0);return g.getImageData(0,0,c.width,c.height)}catch{return demo()}}
 
 /* ---------- statut ---------- */
