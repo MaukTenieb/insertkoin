@@ -6,8 +6,8 @@ def sub(s,a,b,n=1,label=''):
     return s.replace(a,b)
 D=os.path.dirname(os.path.abspath(__file__))+'/'
 s=open(D+'index.html',encoding='utf8').read()
-EN_DESC="Insert Koin, Mauk Tenieb's Korhogo world, games and machines in a browser: Puck You! against the eighteen Masks of the Fauna, Fauna Chess, Erratik, Faunarratik, Katabatik, 3615."
-FR_DESC='Insert Koin, le monde Korhogo de Mauk Tenieb, ses jeux et ses machines dans un navigateur : Puck You! contre les dix-huit Masks de la Fauna, Fauna Chess, Erratik, Faunarratik, Katabatik, 3615.'
+EN_DESC="Insert Koin, Mauk Tenieb's Korhogo world, games and machines in a browser: Korong against the eighteen Masks of the Fauna, Fauna Chess, Erratik, Faunarratik, Katabatik, 3615."
+FR_DESC='Insert Koin, le monde Korhogo de Mauk Tenieb, ses jeux et ses machines dans un navigateur : Korong contre les dix-huit Masks de la Fauna, Fauna Chess, Erratik, Faunarratik, Katabatik, 3615.'
 s=sub(s,'<html lang="en">','<html lang="fr">',1,'lang')
 s=sub(s,'<meta charset="utf-8">','<meta charset="utf-8">\n<script>window.IK_LANG="fr"</script>',1,'iklang')
 s=sub(s,f'<meta name="description" content="{EN_DESC}">',f'<meta name="description" content="{FR_DESC}">',1,'desc')

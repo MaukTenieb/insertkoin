@@ -1,8 +1,8 @@
 # Insert Koin
 
-> Insert Koin, Mauk Tenieb's Korhogo world, games and machines in a browser: Puck You!, an air-puck game against the eighteen Masks of the Fauna, each playing by their Korhogo stats and oil power; Fauna Chess; Erratik; Faunarratik; Katabatik; 3615, the Minitel terminal; VHS, the Korhogo tape deck; Photofauna, the photo editor of Insert Koin; and FaunaTor, a Tor reader for web and .onion pages. Motel Sound jukebox, Kapture, FR/EN.
+> Insert Koin, Mauk Tenieb's Korhogo world, games and machines in a browser: Korong, an air-puck game against the eighteen Masks of the Fauna, each playing by their Korhogo stats and oil power; Fauna Chess; Erratik; Faunarratik; Katabatik; 3615, the Minitel terminal; VHS, the Korhogo tape deck; Photofauna, the photo editor of Insert Koin; and FaunaTor, a Tor reader for web and .onion pages. Motel Sound jukebox, Kapture, FR/EN.
 
-> FR : Insert Koin, le monde Korhogo de Mauk Tenieb, ses jeux et ses machines dans un navigateur : Puck You!, un jeu de palet contre les dix-huit Masks de la Fauna, chacun selon ses caractéristiques et son pouvoir d’Oil de Korhogo ; Fauna Chess; Erratik; Faunarratik; Katabatik; 3615, le terminal Minitel ; VHS, le magnétoscope de Korhogo ; Photofauna, l’éditeur photo d’Insert Koin ; et FaunaTor, un lecteur Tor pour les pages web et .onion. Jukebox Motel Sound, Kapture, FR/EN.
+> FR : Insert Koin, le monde Korhogo de Mauk Tenieb, ses jeux et ses machines dans un navigateur : Korong, un jeu de palet contre les dix-huit Masks de la Fauna, chacun selon ses caractéristiques et son pouvoir d’Oil de Korhogo ; Fauna Chess; Erratik; Faunarratik; Katabatik; 3615, le terminal Minitel ; VHS, le magnétoscope de Korhogo ; Photofauna, l’éditeur photo d’Insert Koin ; et FaunaTor, un lecteur Tor pour les pages web et .onion. Jukebox Motel Sound, Kapture, FR/EN.
 
 > The artist's wish: an artistic, playful and technical layer, like a portable, multitasking and narrative fictional OS.
 
@@ -11,7 +11,7 @@
 > Insert Koin is a browser art-game by Mauk Tenieb; it has nothing to do with Koin, the Kotlin dependency-injection library (io.insert-koin). Korhogo is Mauk Tenieb's fictional world; the Korhogo Fauna, aka the Masks, are its 18 inhabitants. Korhogo also names a city in Ivory Coast and a Senufo cloth; Mauk Tenieb's Korhogo stands apart from both.
 
 ## The arcade
-- [Insert Koin](https://mauktenieb.github.io/insertkoin/): Puck You! (air-puck against the Fauna), Fauna Chess, Erratik, Faunarratik, Katabatik (a mini-game at random), 3615 (Minitel terminal), VHS (the tape deck), Photofauna (the photo editor of Insert Koin), FaunaTor (a Tor reader for web and .onion pages). Jukebox (Motel Sound), Kapture, Baku Boom, Koins.
+- [Insert Koin](https://mauktenieb.github.io/insertkoin/): Korong (air-puck against the Fauna), Fauna Chess, Erratik, Faunarratik, Katabatik (a mini-game at random), 3615 (Minitel terminal), VHS (the tape deck), Photofauna (the photo editor of Insert Koin), FaunaTor (a Tor reader for web and .onion pages). Jukebox (Motel Sound), Kapture, Baku Boom, Koins.
 
 ## The Fauna (canonical order)
 - **N° 01 Unkle Maukie** (STR 7, DEX 7, INT 9, WIS 9, CHA 9, CON 7): « Decide from the dance floor of things » Panther's Crude Roar. At the table: Strikes only on the beat of a drum that quickens as the match goes on. The reigning champion.
@@ -71,7 +71,7 @@ Korhogo is a superb city in Ivory Coast. But before its octopus centrality in th
 
 
 ## Rights
-Copyright © Mauk Tenieb & Korhogo. Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Puck You!™ and any related material — including characters, names, symbols, rules, lore and texts, in any form or medium — are the exclusive property of Korhogo™, all rights reserved. The source code of this site is free to reuse under the MIT licence (see LICENSE); the lore, names, marks, characters, images, music and texts stay out of that licence and remain the property of the author.
+Copyright © Mauk Tenieb & Korhogo. Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Korong™ and any related material — including characters, names, symbols, rules, lore and texts, in any form or medium — are the exclusive property of Korhogo™, all rights reserved. The source code of this site is free to reuse under the MIT licence (see LICENSE); the lore, names, marks, characters, images, music and texts stay out of that licence and remain the property of the author.
 
 ## Fauna pages
 - [Unkle Maukie](https://mauktenieb.github.io/insertkoin/fauna-unkle_maukie.html)
