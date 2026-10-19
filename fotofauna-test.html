@@ -41,20 +41,22 @@ h1 span{color:var(--cyan)}
 .search{display:flex;gap:6px}
 #q{flex:1;min-width:0;background:var(--fosse);border:1px solid var(--trait);padding:8px 10px;color:var(--papier);border-radius:0}
 #q::placeholder{color:#6f93b0}
-.fams{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
-.fams::-webkit-scrollbar{display:none}
-.fam{flex:0 0 auto;display:flex;align-items:baseline;gap:6px;background:none;border:0;border-bottom:2px solid transparent;padding:4px 6px;cursor:pointer;text-align:left;color:var(--cyan)}
-.fam span{font:400 21px/1 var(--titre);letter-spacing:.03em}
-.fam small{font:400 11px var(--chiffre);color:#6f93b0}
-.fam:hover{color:var(--papier)}
-.fam[aria-pressed="true"]{color:var(--papier);border-color:var(--or)}
-@media (min-width:1100px){.fams{flex-direction:column;overflow:visible;gap:0}.fam{border-bottom:0;border-left:2px solid transparent;padding:5px 10px;justify-content:space-between}.fam[aria-pressed="true"]{border-left-color:var(--or);background:rgba(255,255,255,.04)}}
-.count{font:400 11px var(--chiffre);color:#6f93b0;margin:0}
+.fams{display:flex;flex-wrap:wrap;gap:5px}
+.fam{flex:0 0 auto;display:flex;align-items:baseline;gap:6px;background:none;border:1px solid var(--trait);padding:6px 9px;cursor:pointer;text-align:left;color:var(--cyan)}
+.fam span{font:500 14px/1.15 var(--sans)}
+.fam small{font:300 12px var(--sans);color:#7b9cb8}
+.fam:hover{color:var(--papier);border-color:var(--cyan)}
+.fam[aria-pressed="true"]{color:var(--encre);background:var(--papier);border-color:var(--papier)}
+.fam[aria-pressed="true"] small{color:#4a5a6e}
+@media (min-width:1100px){.fams{flex-direction:column;flex-wrap:nowrap;gap:0}.fam{border:0;border-left:2px solid transparent;padding:7px 10px;justify-content:space-between}.fam[aria-pressed="true"]{border-left-color:var(--or);background:rgba(238,232,218,.07);color:var(--papier)}.fam[aria-pressed="true"] small{color:var(--cyan)}}
+.count{font:italic 300 12.5px var(--sans);color:#7b9cb8;margin:0}
 .rand{background:none;border:1px dashed var(--trait);color:var(--cyan);padding:7px 10px;cursor:pointer;text-align:left}
 .rand:hover{border-color:var(--or);color:var(--papier)}
 /* scène : la planche */
-.stage{grid-area:stage;position:relative;background:var(--fosse);border:1px solid var(--trait);display:grid;place-items:center;min-height:260px;max-height:74vh;overflow:hidden;touch-action:none;user-select:none;cursor:crosshair}
+.stage{grid-area:stage;position:relative;background:var(--fosse);border:1px solid var(--trait);display:grid;place-items:center;min-height:200px;max-height:74vh;overflow:hidden;touch-action:none;user-select:none;cursor:crosshair}
 .stage canvas,.stage video{display:block;max-width:100%;max-height:74vh;width:auto;height:auto}
+/* téléphone : la planche reste en haut pendant qu'on parcourt les spécimens */
+@media (max-width:1099px){.stage{position:sticky;top:0;z-index:4;max-height:46vh;box-shadow:0 8px 18px rgba(4,14,26,.55)}.stage canvas,.stage video{max-height:46vh}}
 .stage video{position:absolute;inset:0;margin:auto;background:#000}
 .stage #cmpOrig,.stage #cropOv{position:absolute;inset:0;margin:auto;pointer-events:none}
 .stage #cmpBar{position:absolute;top:0;bottom:0;width:2px;background:var(--or);pointer-events:none}
@@ -78,7 +80,7 @@ h1 span{color:var(--cyan)}
 /* outils et FaunAI */
 .ask{grid-area:ask;display:flex;flex-direction:column;gap:8px;min-width:0}
 .tools{display:flex;gap:6px}.tools .btn{flex:1 1 0}.tools .btn.labo{flex:0 0 auto}
-.btn{font:400 21px/1 var(--titre);letter-spacing:.05em;border:1px solid var(--trait);background:var(--prusse2);color:var(--papier);padding:11px 8px;cursor:pointer;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn{font:600 14px/1.1 var(--sans);border:1px solid var(--trait);background:var(--prusse2);color:var(--papier);padding:11px 8px;cursor:pointer;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .btn:hover{border-color:var(--cyan)}
 .btn.main{background:var(--papier);color:var(--encre);border-color:var(--papier)}
 .btn.labo{background:none;border-color:var(--or);color:var(--or);padding-inline:14px}
@@ -92,33 +94,34 @@ h1 span{color:var(--cyan)}
 .status{min-height:18px;font-size:12.5px;color:var(--cyan);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .status.err{color:var(--err)} .status.ok{color:var(--ok)}
 #stopAi{background:none;border:1px solid var(--trait);color:var(--papier);padding:3px 8px;cursor:pointer}
-@media (max-width:600px){.label{left:8px;bottom:8px;padding:5px 8px}.label .ln{font-size:19px}.label .lf,.label .ls{font-size:10.5px}.tools{flex-wrap:wrap}.tools .btn{flex:1 1 22%}.tools .btn.labo{flex:1 1 100%}.btn{font-size:16px;padding:10px 2px;letter-spacing:.03em}.row{flex-wrap:wrap}#prompt{flex-basis:100%}.row .btn{flex:1 1 0}}
+@media (max-width:600px){.label{left:8px;bottom:8px;padding:5px 8px}.label .ln{font-size:19px}.label .lf,.label .ls{font-size:10.5px}.tools{flex-wrap:wrap}.tools .btn{flex:1 1 22%}.tools .btn.labo{flex:1 1 100%}.btn{font-size:13px;padding:11px 2px}.row{flex-wrap:wrap}#prompt{flex-basis:100%}.row .btn{flex:1 1 0}}
 /* spécimens */
 .specs{grid-area:specs;display:flex;flex-direction:column;gap:10px;min-width:0}
 @media (min-width:1100px){.specs{position:sticky;top:12px;max-height:calc(100vh - 24px)}}
-.gtitle{margin:0;font:400 30px/1 var(--titre);letter-spacing:.03em;color:var(--papier)}
+.gtitle{margin:0;font:600 20px/1.15 var(--sans);color:var(--papier)}
 p.gtitle{font:italic 300 15px/1.3 var(--sans);color:var(--cyan)}
 .gchips{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
-@media (max-width:1099px){.gchips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}}
 .gchip{flex:0 0 auto;background:none;border:1px solid var(--trait);color:var(--cyan);padding:5px 9px;cursor:pointer;font-size:12.5px}
-.gchip small{font:400 10.5px var(--chiffre);opacity:.7}
+.gchip small{font:300 11.5px var(--sans);opacity:.75}
 .gchip:hover{color:var(--papier)}
 .gchip[aria-pressed="true"]{background:var(--papier);color:var(--encre);border-color:var(--papier)}
-.grid{display:grid;grid-auto-flow:column;grid-auto-columns:112px;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
-@media (min-width:1100px){.grid{grid-auto-flow:row;grid-template-columns:repeat(3,1fr);grid-auto-columns:auto;overflow-y:auto;overflow-x:hidden;padding-right:4px}}
-.spec{display:flex;flex-direction:column;gap:3px;background:none;border:0;padding:0;cursor:pointer;text-align:left;min-width:0;color:var(--papier)}
-.spec img,.spec .ph{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:var(--prusse2);border:1px solid var(--trait)}
-.spec:hover img{border-color:var(--cyan)}
-.spec[aria-pressed="true"] img,.spec[aria-pressed="true"] .ph{outline:2px solid var(--or);outline-offset:2px}
-.spec b{font:600 12px/1.25 var(--sans);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.spec i{font:italic 300 11px/1.25 var(--sans);color:var(--cyan)}
+/* chaque spécimen : vignette collée sur une fiche de papier, nom à l'encre */
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-content:start}
+@media (min-width:640px) and (max-width:1099px){.grid{grid-template-columns:repeat(auto-fill,minmax(132px,1fr))}}
+@media (min-width:1100px){.grid{overflow-y:auto;overflow-x:hidden;padding:2px 6px 8px 2px;scrollbar-width:thin}}
+.spec{display:flex;flex-direction:column;gap:4px;background:var(--papier);border:0;padding:5px 5px 7px;cursor:pointer;text-align:left;min-width:0;color:var(--encre);box-shadow:0 1px 0 rgba(0,0,0,.3),0 3px 10px rgba(0,0,0,.25)}
+.spec img,.spec .ph{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#d9d2c2}
+.spec:hover{background:#fff8ea}
+.spec[aria-pressed="true"]{outline:3px solid var(--or);outline-offset:2px}
+.spec b{font:600 11.5px/1.25 var(--sans);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.spec i{font:italic 300 10.5px/1.25 var(--sans);color:#4a5a6e;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 /* Labo */
 .labo{grid-area:labo;border:1px solid var(--or);background:rgba(8,28,48,.6)}
 .labo nav{display:flex;border-bottom:1px solid var(--trait);overflow-x:auto}
-.labo nav button{flex:1 0 auto;background:none;border:0;border-right:1px solid var(--trait);padding:10px 12px;cursor:pointer;color:var(--cyan);font:400 18px/1 var(--titre);letter-spacing:.05em}
+.labo nav button{flex:1 0 auto;background:none;border:0;border-right:1px solid var(--trait);padding:10px 12px;cursor:pointer;color:var(--cyan);font:600 13.5px/1 var(--sans)}
 .labo nav button[aria-selected="true"]{background:var(--or);color:var(--encre)}
 .labo .body{padding:14px;display:flex;flex-direction:column;gap:12px}
-.labo h3{margin:4px 0 0;font:400 20px/1 var(--titre);letter-spacing:.04em;color:var(--or)}
+.labo h3{margin:4px 0 0;font:600 15px/1.2 var(--sans);color:var(--or)}
 .labo .slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px 14px}
 .labo .sl{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--cyan)}
 .labo select,.labo input[type=text]{font-size:13px;color:var(--papier);background:var(--fosse);border:1px solid var(--trait);padding:7px 8px;border-radius:0;width:100%}
@@ -126,7 +129,7 @@ p.gtitle{font:italic 300 15px/1.3 var(--sans);color:var(--cyan)}
 .labo .rg{display:flex;flex-direction:column;gap:1px;font-size:12px;color:var(--cyan)}
 .labo .rg input{width:100%;accent-color:var(--or)}
 .labo .row{flex-wrap:wrap}
-.labo .btn.sm{font-size:17px;padding:8px 12px}
+.labo .btn.sm{font-size:13px;padding:8px 12px}
 .chip{background:none;border:1px solid var(--trait);color:var(--papier);padding:6px 9px;cursor:pointer;font-size:12.5px}
 .chip[aria-pressed="true"]{background:var(--or);color:var(--encre);border-color:var(--or)}
 .labo .hsl{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
@@ -140,7 +143,7 @@ p.gtitle{font:italic 300 15px/1.3 var(--sans);color:var(--cyan)}
 #keysForm a{color:var(--or)} #keysForm p{font-size:12.5px;color:var(--cyan);margin:6px 0}
 /* pellicule FaunAI */
 .reel{grid-area:reel;display:flex;flex-direction:column;gap:6px}
-.reel h2{margin:0;font:400 22px/1 var(--titre);letter-spacing:.04em;color:var(--cyan)}
+.reel h2{margin:0;font:600 15px/1.2 var(--sans);color:var(--cyan)}
 .film{display:grid;grid-auto-flow:column;grid-auto-columns:88px;gap:6px;overflow-x:auto;padding-bottom:4px}
 .film .it{position:relative;border:1px solid var(--trait);background:#000;cursor:pointer;padding:0;aspect-ratio:1;overflow:hidden}
 .film .it img,.film .it video{width:100%;height:100%;object-fit:cover;display:block}
@@ -1874,6 +1877,60 @@ var LEGACY=[
    l'étape s et {swap,E,w,h,ctx,cur} ; swap(nom,uniformes,textures) applique un shader à l'image courante. */
 "use strict";
 const GPU_EXT_FS={
+/* Procédés historiques (portage sur carte graphique de l'opération « histo ») : sensibilité spectrale, courbe, virage,
+   support, défauts, miroir et ternissure du daguerréotype ; le bord suit dans « hedge » */
+histo:`uniform sampler2D A;uniform sampler2D CV;uniform int flip,neg,keep,paperK,TN;uniform vec3 Wt;uniform vec3 TC[6];uniform float TP[6];
+uniform float irVeg,irSky,hal,fade,mottle,streak,grain,gsize,paperAmt,yellow,fadeEdge,silver,mirror,tarnish,cracks,fox,vign,soft,swirl,diffuse;
+float ed(vec2 px){return min(min(px.x,R.x-px.x),min(px.y,R.y-px.y));}
+void main(){vec2 uv=flip==1?vec2(1.-v.x,v.y):v;float u=U();vec2 px=v*R;vec2 pu=px/u;
+ vec3 c=texture(A,uv).rgb;
+ if(diffuse>0.)c=mix(c,textureLod(A,uv,log2(max(1.,u*diffuse))+1.).rgb,.75);
+ if(soft>0.||swirl>0.){vec2 d=(uv-.5)*R;float r=length(d)/length(R*.5);float k=smoothstep(.22,1.,r);vec2 t=normalize(vec2(-d.y,d.x)+1e-5);vec3 s2=vec3(0);float off=swirl*.02*k*k;
+  for(int i=0;i<5;i++){float o=(float(i)/4.-.5)*2.*off;s2+=textureLod(A,uv+t*o*u/R,log2(max(1.,u*.003*(1.+soft*4.)))).rgb;}c=mix(c,s2/5.,min(1.,k*(soft*.9+swirl*.8)));}
+ float L0=dot(c,Wt)/max(Wt.x+Wt.y+Wt.z,1e-3);
+ if(irVeg>0.){float veg=max(0.,c.g-max(c.r,c.b))*3.+max(0.,c.g-c.b)*.5;L0+=irVeg*veg*(.5+c.g);}
+ if(irSky>0.)L0-=irSky*max(0.,c.b-max(c.r,c.g))*2.2;
+ if(hal>0.){vec3 hb=textureLod(A,uv,log2(max(1.,u*.012))+1.).rgb;L0+=smoothstep(.62,1.,dot(hb,Wt)/max(Wt.x+Wt.y+Wt.z,1e-3))*hal*.7;}
+ float L=clamp(L0,0.,1.);if(neg==1)L=1.-L;
+ L=texture(CV,vec2(L*255./256.+.5/256.,.5)).a;if(fade>0.)L=fade*.2+L*(1.-fade*.38);
+ if(mottle>0.)L=clamp(L+(fbm(pu*4.+SEED)-.5)*mottle*.35,0.,1.);
+ if(streak>0.)L=clamp(L+(vn(vec2(pu.x*40.,.5+SEED))-.5)*streak*.18*(.6+.4*v.y),0.,1.);
+ if(grain>0.){float gn=gsize<=1.05?h12(px+SEED):vn(px/gsize+SEED)*.75+h12(px+SEED*2.)*.25;L=clamp(L+(gn-.5)*grain*(.35+2.6*L*(1.-L)),0.,1.);}
+ vec3 col=TC[0];for(int i=1;i<6;i++){if(i>=TN)break;float a=TP[i-1],b=TP[i];if(L>=a){col=mix(TC[i-1],TC[i],clamp((L-a)/max(b-a,1e-4),0.,1.));}}
+ if(keep==1)col=c;
+ if(paperK>0&&paperAmt>0.){float pv=fbm(pu*(paperK==3?22.:70.)/4.+SEED)-.5;
+  if(paperK==1)pv=pv*.6+(vn(vec2(pu.x*420.,pu.y*30.)+SEED)-.5)*.5+(h12(px)-.5)*.15;
+  else if(paperK==2)pv=pv*.3+(vn(vec2(pu.x*6.,pu.y*700.)+SEED)-.5)*.35+(h12(px)-.5)*.2;
+  else if(paperK==3)pv=pv*1.2+(h12(px)-.5)*.2;else if(paperK==5)pv*=.2;
+  col*=1.+paperAmt*pv*(.25+.6*L);}
+ if(yellow>0.){float yk=yellow*pow(L,1.4);col.g*=1.-.07*yk;col.b*=1.-.3*yk;}
+ if(fadeEdge>0.){float ek=clamp(fadeEdge*(1.-smoothstep(0.,u*.22,ed(px)))*(.6+.8*vn(pu*5.+SEED)),0.,1.);col=mix(col,TC[TN-1],ek);}
+ if(silver>0.){float sk=clamp(silver*pow(1.-L,2.)*(1.-smoothstep(0.,u*.2,ed(px)))*(.5+vn(pu*12.+SEED)),0.,.85);col=mix(col,vec3(.59,.63,.69),sk);}
+ if(mirror>0.){float g=clamp(.25+.75*(v.x*.6+(1.-v.y)*.4),0.,1.);col=mix(col,vec3(.77,.78,.8),mirror*pow(1.-L,1.3)*g);}
+ if(tarnish>0.){float e2=ed(px)/u;float tk=1.-smoothstep(.02,.2+.06*vn(pu*4.+SEED),e2);vec3 hc=hsv2rgb(vec3(.08+.62*(1.-tk)+.05*vn(pu*9.+SEED),.65,.9));col=mix(col,hc,tarnish*tk*.7);}
+ if(cracks>0.){float a1=fbm(pu*3.2+SEED),a2=fbm(pu*7.5+SEED*1.3);float cl=max(max(1.-abs(a1-.5)/.006,1.-abs(a2-.5)/.004),0.);col*=1.-cl*cracks*.35;}
+ if(fox>0.){float f=fbm(pu*18.+SEED*2.);float sp=smoothstep(.86-fox*.08,.9-fox*.08,f);col=mix(col,col*vec3(.75,.55,.32),sp*.7);}
+ if(vign>0.){col*=1.-vign*smoothstep(.42,1.05,length(px-R*.5)/length(R*.5));}
+ o=vec4(clamp(col,0.,1.),1.);}`,
+/* bords des procédés : couchage au pinceau, collodion versé, plaque, ovale de laiton, carton, barbes, feuille */
+hedge:`uniform sampler2D A;uniform int Ek;uniform float in1,in2;uniform vec3 dark,paper,ecol,brass,card,rule,mount;
+float sdR(vec2 px,float ins){vec2 p=px-R*.5,b=R*.5-ins;vec2 q=abs(p)-b;return length(max(q,0.))+min(max(q.x,q.y),0.);}
+float sdRR(vec2 px,float ins,float rad){vec2 p=px-R*.5,b=R*.5-ins-rad;vec2 q=abs(p)-b;return length(max(q,0.))+min(max(q.x,q.y),0.)-rad;}
+void main(){float u=U();vec2 px=v*R,pu=px/u;vec3 c=texture(A,v).rgb;
+ if(Ek==1){bool hor=min(px.y,R.y-px.y)<min(px.x,R.x-px.x);float s1=sdR(px,u*in1)+(vn(pu*30.+SEED)-.5)*u*.004;float br=hor?vn(vec2(pu.x*2.5,pu.y*120.)+SEED):vn(vec2(pu.x*120.,pu.y*2.5)+SEED);
+  float wob=(vn(pu*3.+SEED*1.7)-.5)*u*.03;float s2=sdR(px,u*in2)+wob+(br-.5)*u*.03;float mI=1.-smoothstep(-u*.002,u*.002,s1),mC=1.-smoothstep(-u*.004,u*.004,s2);
+  vec3 cc=mix(paper,dark,mC*clamp(.75+.5*(br-.5),0.,1.));c=mix(cc,c,mI);}
+ else if(Ek==2||Ek==3){float pl=sdRR(px,u*.006,u*.02);if(pl>0.){o=vec4(vec3(.03),1.);return;}
+  float s=Ek==2?sdR(px,u*in1)+(fbm(pu*3.+SEED)-.5)*u*.09:sdRR(px,u*in1,u*.03);float mIn=1.-smoothstep(-u*.006,u*.006,s);
+  float rim=Ek==2?exp(-pow(s/(u*.004),2.))*.55:0.;float fl=(Ek==2&&s>-u*.08&&s<0.)?sin(s/u*260.+vn(pu*8.+SEED)*6.)*.12*(1.+s/(u*.08)):0.;
+  vec3 lac=ecol*(.85+.3*h12(px));c=mix(lac,c,mIn);c=c*(1.+fl)+rim*vec3(.63,.59,.51);}
+ else if(Ek==4){vec2 ax=R*vec2(.455,.465);float q=length((px-R*.5)/ax),s3=(q-1.)*min(ax.x,ax.y),mI=1.-smoothstep(-u*.003,u*.003,s3);
+  float an=atan(px.y-R.y*.5,px.x-R.x*.5);float bev=(s3>0.&&s3<u*.022)?cos(an+2.3)*.4:0.;float eng=(abs(s3-u*.04)<u*.0025||abs(s3-u*.052)<u*.0018)?-.4:0.;
+  float tx=(h12(px)-.5)*.05+(vn(pu*7.+SEED)-.5)*.14+(vn(vec2(pu.x*90.,pu.y*3.))-.5)*.06+cos(an*2.+1.)*.08;c=mix(clamp(brass*(1.+bev+eng+tx),0.,1.),c,mI);}
+ else if(Ek==5){float s4=sdRR(px,u*.075,u*.012);if(s4>=-.5){float tx=1.+(vn(pu*60.+SEED)-.5)*.06,sh=s4<u*.006?.82:1.;vec3 cc=abs(s4-u*.02)<u*.0015?rule:card;c=mix(c,cc*tx*sh,smoothstep(-.5,.5,s4));}}
+ else if(Ek==6){float s5=sdR(px,u*.04)+(fbm(pu*14.+SEED)-.5)*u*.035;float m5=smoothstep(-u*.002,u*.002,s5);float fib=(s5<0.&&s5>-u*.01)?.15:0.;c=mix(c,mount,m5)+fib*vec3(.16,.14,.12);}
+ else if(Ek==7){vec2 X=(px-R*.5)/(R*vec2(.47,.49));float rr=abs(X.x)/(pow(max(0.,1.-X.y*X.y),.9)*(.82+.18*X.y)+1e-6)+(vn(pu*30.+SEED)-.5)*.04;c=mix(c,mount,smoothstep(.97,1.,rr));}
+ o=vec4(clamp(c,0.,1.),1.);}`,
 /* Contraste tonal à trois bandes (Snapseed Tonal Contrast, HDR Scape, Drama ; Camera+ Clarity) :
    détail = différences entre niveaux de flou, dosé séparément dans les tons bas, moyens et hauts */
 tonal:`uniform sampler2D A;uniform float lo,mi,hi,amt,sat,bright,lod0,lift,warm;
@@ -1894,8 +1951,9 @@ void main(){vec2 asp=vec2(R.x/U(),R.y/U());vec2 d=(v-C)*asp;float r=length(d)/ra
  o=vec4(textureLod(A,clamp(uv,0.,1.),0.).rgb,1.);}`,
 /* Briques à tenons (Lunapic Lego Style) */
 lego:`uniform sampler2D A;uniform float cell;
+const vec3 LP[24]=vec3[24](vec3(0.957,0.957,0.957),vec3(0.106,0.165,0.204),vec3(0.706,0.000,0.000),vec3(0.118,0.353,0.659),vec3(0.980,0.784,0.039),vec3(0.000,0.522,0.169),vec3(0.894,0.804,0.620),vec3(0.584,0.541,0.451),vec3(0.627,0.647,0.663),vec3(0.392,0.392,0.392),vec3(0.373,0.192,0.035),vec3(0.839,0.475,0.137),vec3(0.098,0.196,0.353),vec3(0.212,0.682,0.749),vec3(0.647,0.792,0.094),vec3(0.447,0.000,0.071),vec3(0.973,0.733,0.239),vec3(0.094,0.275,0.196),vec3(0.439,0.557,0.718),vec3(0.667,0.490,0.333),vec3(0.965,0.843,0.702),vec3(0.565,0.122,0.463),vec3(0.894,0.678,0.784),vec3(0.424,0.431,0.408));
 void main(){vec2 px=v*R;vec2 id=floor(px/cell);vec2 f=fract(px/cell)-.5;vec3 c=textureLod(A,(id+.5)*cell/R,log2(cell)).rgb;
- c=floor(c*5.+.5)/5.;c=mix(c,c*1.15,.3);
+ {float bd=1e9;vec3 b=c;for(int k=0;k<24;k++){vec3 q=LP[k];vec3 d=c-q;float rm=(c.r+q.r)*.5;float e=(2.+rm)*d.r*d.r+4.*d.g*d.g+(3.-rm)*d.b*d.b;if(e<bd){bd=e;b=q;}}c=b;}
  float rs=length(f);float stud=smoothstep(.31,.29,rs);float rim=smoothstep(.33,.31,rs)-stud;
  float sh=dot(normalize(f+1e-4),vec2(-.7,-.7))*.5+.5;
  vec3 col=c*(.92+.08*(f.x-f.y));col=mix(col,c*(.75+.5*sh),rim);col=mix(col,c*1.08+.04,stud*(.6+.4*(1.-sh)));
@@ -2003,13 +2061,24 @@ void main(){vec3 c=texture(A,v).rgb;vec2 px=v*R;
  o=vec4(clamp(c,0.,1.),1.);}`,
 /* Collodion versé (Koloid) : masque de chimie calculé à part (R développé, G temps de contact) */
 pour:`uniform sampler2D A;uniform sampler2D M;uniform float amt,warm;
-void main(){vec3 c=texture(A,v).rgb;float l=dot(c,vec3(.08,.32,.6));l=clamp((l-.04)*1.25,0.,1.);
- vec4 m=texture(M,v);float dev=smoothstep(.3,.42,m.r);float burn=smoothstep(.45,1.,m.g);
- vec2 e=1./vec2(textureSize(M,0));float gx=texture(M,v+vec2(e.x,0)).r-texture(M,v-vec2(e.x,0)).r,gy=texture(M,v+vec2(0,e.y)).r-texture(M,v-vec2(0,e.y)).r;float rim=smoothstep(.02,.12,length(vec2(gx,gy)));
- float str=fbm(vec2(v.x*3.,v.y*40.)+m.ba*6.+SEED)*.25;
- vec3 silver=mix(vec3(.05,.045,.04),vec3(.93,.9,.82),pow(l,1.15));silver*=1.-burn*.55;silver+=(str-.12)*.18;
- vec3 raw=mix(vec3(.62,.56,.42),vec3(.78,.72,.56),fbm(v*8.+SEED));raw*=.85+.15*fbm(v*30.);
- vec3 r=mix(raw,silver,dev);r=mix(r,r*vec3(.55,.45,.32),rim*.7);r=mix(r,r*vec3(1.05,1.,.9),warm);
+/* Koloid : M.r = temps de contact du révélateur (0 → 1), M.g = passage du liquide, M.ba = sens d'écoulement.
+   Passage bref : image pâle et laiteuse ; contact moyen : image pleine ; contact long : la plaque brûle jusqu'au brun noir. */
+void main(){vec4 m=texture(M,v);vec2 e=1./vec2(textureSize(M,0));
+ float cov=smoothstep(.04,.2,m.g);float tm=m.r;vec2 fd=m.ba*2.-1.;if(dot(fd,fd)<.01)fd=vec2(0,1);fd=normalize(fd);
+ float gx=texture(M,v+vec2(e.x,0)).g-texture(M,v-vec2(e.x,0)).g,gy=texture(M,v+vec2(0,e.y)).g-texture(M,v-vec2(0,e.y)).g;vec2 gr=vec2(gx,gy);
+ vec2 uv=v-gr*.004;                                                        /* le bord de la nappe agit comme une lentille */
+ vec3 c=texture(A,uv).rgb;float l=dot(c,vec3(.08,.32,.6));l=clamp((l-.04)*1.25,0.,1.);
+ /* stries dans le sens du courant, lignes de marée où le liquide a séché */
+ vec2 q=vec2(dot(v*R/U(),vec2(-fd.y,fd.x)),dot(v*R/U(),fd));float st=fbm(vec2(q.x*55.,q.y*4.)+SEED)-.5;
+ float tide=smoothstep(.85,1.,sin(m.g*38.+fbm(v*9.+SEED)*6.))*cov*(1.-tm);
+ float dev=smoothstep(.0,.42,tm);
+ vec3 silver=mix(vec3(.06,.05,.045),vec3(.93,.9,.82),pow(l,1.1));
+ vec3 pale=mix(vec3(.66,.62,.52),silver,.38);                              /* développement faible : image laiteuse, peu dense */
+ vec3 img=mix(pale,silver,dev)+st*(.06+.1*cov);
+ float burn=smoothstep(.55,.97,tm);float bub=fbm(v*R/U()*22.+SEED*3.);
+ vec3 burnt=mix(vec3(.24,.13,.05),vec3(.03,.02,.015),smoothstep(.75,1.,tm)+bub*.3);img=mix(img,burnt*(.7+.6*l),burn*(.75+.25*bub));
+ vec3 raw=mix(vec3(.6,.55,.42),vec3(.74,.68,.53),fbm(v*7.+SEED));raw*=.9+.1*fbm(v*40.);
+ vec3 r=mix(raw,img,cov);r=mix(r,r*vec3(.55,.42,.28),clamp(length(gr)*9.,0.,1.)*.75);r*=1.-tide*.25;r=mix(r,r*vec3(1.06,1.,.88),warm);
  o=vec4(mix(c,clamp(r,0.,1.),amt),1.);}`
 };
 
@@ -2025,23 +2094,33 @@ const GPU_EXT=(()=>{
  const WM={swirl:0,implode:1,explode:2};
  /* masque de chimie : particules de révélateur qui coulent selon l'inclinaison, puis s'arrêtent */
  const pourCache=new Map();
- /* masque de chimie (Koloid) : le révélateur part du point touché et balaie la plaque en trois ou quatre inclinaisons ;
-    le champ cumulé, bruité, donne la zone développée ; les premiers passages, plus longs, donnent les brûlures */
- function pourMask(seed,x,y,qty,w,h){const k=[seed,x.toFixed(3),y.toFixed(3),qty,(w/h).toFixed(2)].join('|');if(pourCache.has(k))return pourCache.get(k);
-  const W=192,H=Math.max(16,Math.round(192*h/w)),cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');
-  let s=seed>>>0||1;const R=()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296};
-  const pts=[];let px=x*W,py=y*H,a=Math.atan2(.5-y,.5-x)+(R()-.5)*1.5;const sweeps=3+Math.floor(R()*2),steps=Math.round(18+qty*1.6);
-  for(let sw=0;sw<sweeps;sw++){for(let i=0;i<steps;i++){a+=(R()-.5)*.5;px+=Math.cos(a)*W*.018;py+=Math.sin(a)*H*.018;if(px<0||px>W){a=Math.PI-a;px=Math.max(0,Math.min(W,px))}if(py<0||py>H){a=-a;py=Math.max(0,Math.min(H,py))}pts.push([px,py,sw,i])}a+=Math.PI*(.5+R())}
-  const sig=W*(.1+qty*.006),acc=new Float32Array(W*H),tim=new Float32Array(W*H);
-  for(const [qx,qy,sw,i] of pts){const r=sig*2.6,x0=Math.max(0,Math.floor(qx-r)),x1=Math.min(W-1,Math.ceil(qx+r)),y0=Math.max(0,Math.floor(qy-r)),y1=Math.min(H-1,Math.ceil(qy+r)),tw=sw===0?Math.max(0,1-i/steps*1.6):0;
-   for(let yy=y0;yy<=y1;yy++)for(let xx=x0;xx<=x1;xx++){const d2=((xx-qx)**2+(yy-qy)**2)/(sig*sig);if(d2>6.8)continue;const f=Math.exp(-d2*.5);const o=yy*W+xx;acc[o]+=f;tim[o]+=f*tw}}
-  let mx=0;for(const v of acc)mx=Math.max(mx,v);let mt=0;for(const v of tim)mt=Math.max(mt,v);
-  const nz=(x,y)=>{let v=0,a=.5,f=1;for(let o=0;o<4;o++){const X=x*f,Y=y*f,ix=Math.floor(X),iy=Math.floor(Y),fx=X-ix,fy=Y-iy,hh=(a,b)=>{let t=Math.sin(a*127.1+b*311.7+seed*.013)*43758.5453;return t-Math.floor(t)};
-   const v00=hh(ix,iy),v10=hh(ix+1,iy),v01=hh(ix,iy+1),v11=hh(ix+1,iy+1),sx=fx*fx*(3-2*fx),sy=fy*fy*(3-2*fy);v+=a*((v00*(1-sx)+v10*sx)*(1-sy)+(v01*(1-sx)+v11*sx)*sy);a*=.5;f*=2}return v};
-  const im=g.createImageData(W,H);for(let yy=0;yy<H;yy++)for(let xx=0;xx<W;xx++){const o=yy*W+xx;const v=Math.min(1,Math.pow(acc[o]/mx,.45)+(nz(xx/18,yy/18)-.5)*.35);
-   im.data[o*4]=Math.max(0,Math.min(255,v*255));im.data[o*4+1]=Math.min(255,(tim[o]/(mt||1))*255);im.data[o*4+2]=Math.round(xx/W*255);im.data[o*4+3]=255}
-  g.putImageData(im,0,0);pourCache.set(k,cv);if(pourCache.size>12)pourCache.delete(pourCache.keys().next().value);return cv}
+ /* masque de chimie (Koloid) : la nappe de révélateur suit un chemin (le doigt, l'inclinaison, ou un tirage au hasard) ;
+    chaque échantillon du chemin dépose du temps de contact ; un arrêt au même endroit accumule et brûle */
+ function pourPath(seed,x,y,qty){let s=seed>>>0||1;const R=()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296};const pts=[];let px=x,py=y,a=Math.atan2(.5-y,.5-x)+(R()-.5)*1.2;
+  /* segments : coulée normale, coulée rapide, arrêt (le liquide stagne) ; la quantité de révélateur allonge le parcours */
+  const segs=Math.round(7+qty*.35);for(let k=0;k<segs;k++){const r=R(),sp=r<.18?.0012:r<.55?.012:.026,n=sp<.002?22+Math.floor(R()*18):18+Math.floor(R()*22);
+   for(let i=0;i<n;i++){a+=(R()-.5)*.35;px+=Math.cos(a)*sp;py+=Math.sin(a)*sp;if(px<.05||px>.95){a=Math.PI-a;px=Math.max(.05,Math.min(.95,px))}if(py<.05||py>.95){a=-a;py=Math.max(.05,Math.min(.95,py))}pts.push([px,py])}a+=(R()-.5)*2.2}
+  return pts}
+ function pourMask(pts,qty,w,h,seed){const k=seed+'|'+qty+'|'+(w/h).toFixed(2)+'|'+pts.length+'|'+(pts.length?pts[pts.length-1].join(','):'');if(pourCache.has(k))return pourCache.get(k);
+  const W=200,H=Math.max(16,Math.round(200*h/w)),cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');
+  const tim=new Float32Array(W*H),cov=new Float32Array(W*H),fx=new Float32Array(W*H),fy=new Float32Array(W*H);const sig=W*(.085+qty*.0018);
+  let ppx=null,ppy=null;
+  for(const [nx,ny] of pts){const qx=nx*W,qy=ny*H;let dx=0,dy=0;if(ppx!=null){dx=qx-ppx;dy=qy-ppy}ppx=qx;ppy=qy;const r=sig*2.4,x0=Math.max(0,Math.floor(qx-r)),x1=Math.min(W-1,Math.ceil(qx+r)),y0=Math.max(0,Math.floor(qy-r)),y1=Math.min(H-1,Math.ceil(qy+r));const dl=Math.hypot(dx,dy)||1;
+   for(let yy=y0;yy<=y1;yy++)for(let xx=x0;xx<=x1;xx++){const d2=((xx-qx)**2+(yy-qy)**2)/(sig*sig);if(d2>5.8)continue;const f=Math.exp(-d2*.5);const o=yy*W+xx;tim[o]+=f;cov[o]=Math.max(cov[o],f);fx[o]+=dx/dl*f;fy[o]+=dy/dl*f}}
+  /* bruit de bord : la nappe s'arrête sur une ligne irrégulière */
+  const hh=(a,b)=>{let t=Math.sin(a*127.1+b*311.7+seed*.0131)*43758.5453;return t-Math.floor(t)};const nz=(x,y)=>{let v=0,a=.5,f=1;for(let o=0;o<4;o++){const X=x*f,Y=y*f,ix=Math.floor(X),iy=Math.floor(Y),tx=X-ix,ty=Y-iy,sx=tx*tx*(3-2*tx),sy=ty*ty*(3-2*ty);v+=a*((hh(ix,iy)*(1-sx)+hh(ix+1,iy)*sx)*(1-sy)+(hh(ix,iy+1)*(1-sx)+hh(ix+1,iy+1)*sx)*sy);a*=.5;f*=2}return v};
+  const ref=15;
+  const im=g.createImageData(W,H);for(let yy=0;yy<H;yy++)for(let xx=0;xx<W;xx++){const o=yy*W+xx;const n=nz(xx/16,yy/16)-.5;
+   const t=1-Math.exp(-tim[o]/ref);const cv2=Math.max(0,Math.min(1,cov[o]*1.15+n*.45));const fl=Math.hypot(fx[o],fy[o])||1;
+   im.data[o*4]=Math.max(0,Math.min(255,(t+n*.12)*255));im.data[o*4+1]=cv2*255;im.data[o*4+2]=(fx[o]/fl*.5+.5)*255;im.data[o*4+3]=(fy[o]/fl*.5+.5)*255}
+  pourCache.set(k,im);if(pourCache.size>6)pourCache.delete(pourCache.keys().next().value);return im}
  const T={
+  histo(s,{swap,E,cur}){E.mip(cur());const T=(s.tones||[[0,'#000000'],[1,'#ffffff']]).slice(0,6);const TC=new Float32Array(18),TP=new Float32Array(6);T.forEach(([p,c],i)=>{const v=hexv(c);TC.set(v,i*3);TP[i]=p});
+   E.setCurves({rgb:s.curve||null});const PK={none:0,fibre:1,plate:2,rough:3,smooth:4,glass:5};
+   swap('histo',{flip:s.flip?1:0,neg:s.negative?1:0,keep:s.keepColor?1:0,paperK:PK[s.paper||'none']||0,TN:T.length,Wt:s.w||[.2126,.7152,.0722],TC,TP,irVeg:s.irVeg||0,irSky:s.irSky||0,hal:s.halation||0,fade:s.fade||0,mottle:s.mottle||0,streak:s.streak||0,grain:s.grain||0,gsize:s.grainSize||1.2,
+    paperAmt:s.paperAmt??.5,yellow:s.yellow||0,fadeEdge:s.fadeEdge||0,silver:s.silver||0,mirror:s.mirror||0,tarnish:s.tarnish||0,cracks:s.cracks||0,fox:s.fox||0,vign:s.vign||0,soft:s.soft||0,swirl:s.swirl||0,diffuse:s.diffuse||0},{CV:E.curveTex})},
+  hedge(s,{swap}){const K={brush:1,pour:2,plate:3,oval:4,card:5,deckle:6,leaf:7};const T=s.tones||[[0,'#000'],[1,'#fff']];
+   swap('hedge',{Ek:K[s.edge]||0,in1:s.inset1||(s.edge==='brush'?.07:.045),in2:s.inset2||.035,dark:hexv(s.edgeDark||T[0][1]),paper:hexv(s.edgePaper||T[T.length-1][1]),ecol:hexv(s.edgeColor||'#0d0b09'),brass:hexv(s.brass||'#b8924e'),card:hexv(s.card||'#e6dcc3'),rule:hexv(s.rule||'#a8823c'),mount:hexv(s.mount||'#1b1916')})},
   tonal(s,{swap,E,w,h,cur}){E.mip(cur());swap('tonal',{lo:s.lo??.5,mi:s.mi??.5,hi:s.hi??.5,amt:s.amt??1,sat:s.sat||0,bright:s.bright||0,lod0:lodOf(w,h,s.radius||.004),lift:s.lift||0,warm:s.warm||0})},
   warp(s,{swap}){swap('warp',{M:WM[s.mode||'swirl'],C:[s.x??.5,s.y??.5],rad:s.rad??.45,amt:s.amt??1})},
   lego(s,{swap,E,w,h,cur}){E.mip(cur());swap('lego',{cell:Math.max(6,(s.cell||.035)*Math.min(w,h))})},
@@ -2051,7 +2130,7 @@ const GPU_EXT=(()=>{
   tangent(s,{swap}){swap('tangent',{SH:SH[s.shape||'circle'],PT:PT[s.pattern||'solid'],BM:BM[s.blend||'normal'],C:[s.x??.5,s.y??.5],size:s.size??.32,rot:(s.rot||0)*Math.PI/180,prot:(s.prot||0)*Math.PI/180,pscale:s.pscale??1,inv:s.invert?1:0,op:s.opa??.85,soft:s.soft??.004,col:hexv(s.color||'#ffffff'),col2:hexv(s.color2||'#000000')})},
   matter(s,{swap,E,cur,ctx}){E.mip(cur());swap('matter',{SH:MSH[s.shape||'sphere'],MT:MMT[s.mat||'glass'],C:[s.x??.5,s.y??.55],size:s.size??.22,ang:(s.ang??.6)+(ctx.t||0)*.39,shadow:s.shadow??.8,col:hexv(s.color||'#d9d4c8')})},
   ovl(s,{swap}){swap('ovl',{M:OV[s.mode||'rain'],amt:s.amt??.8})},
-  pour(s,{swap,E,w,h,ctx}){const m=pourMask((ctx.seed||1974)+(s.seed||0),s.x??.5,s.y??.25,s.qty??15,w,h);const t=E.texFrom(m,{mipmap:false});swap('pour',{amt:s.amt??1,warm:s.warm??.3},{M:t});E.del(t)}
+  pour(s,{swap,E,w,h,ctx}){const seed=(ctx.seed||1974)+(s.seed||0);const pts=(s.pts&&s.pts.length)?s.pts:pourPath(seed,s.x??.5,s.y??.25,s.qty??15);const m=pourMask(pts,s.qty??15,w,h,seed);const t=E.texFrom(m,{mipmap:false});swap('pour',{amt:s.amt??1,warm:s.warm??.3},{M:t});E.del(t)}
  };
  return T})();
 
@@ -2294,7 +2373,7 @@ function make(canvas){
   for(const [k,u] of Object.entries(P.u)){
    if(u.type===gl.SAMPLER_2D||u.type===gl.SAMPLER_3D){const t=T3[k];gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(u.type===gl.SAMPLER_3D?gl.TEXTURE_3D:gl.TEXTURE_2D,t||(u.type===gl.SAMPLER_3D?blankLut:noiseTex));gl.uniform1i(u.loc,unit);unit++;continue}
    let val=all[k];if(val===undefined)val=0;
-   if(u.type===gl.FLOAT)gl.uniform1f(u.loc,+val);else if(u.type===gl.INT)gl.uniform1i(u.loc,val|0);else if(u.type===gl.FLOAT_VEC2)gl.uniform2fv(u.loc,val.length?val:[0,0]);
+   if(u.type===gl.FLOAT){if(u.size>1)gl.uniform1fv(u.loc,val.length?val:new Float32Array(u.size));else gl.uniform1f(u.loc,+val)}else if(u.type===gl.INT)gl.uniform1i(u.loc,val|0);else if(u.type===gl.FLOAT_VEC2)gl.uniform2fv(u.loc,val.length?val:[0,0]);
    else if(u.type===gl.FLOAT_VEC3){if(u.size>1)gl.uniform3fv(u.loc,val.length?val:new Float32Array(u.size*3));else gl.uniform3fv(u.loc,val.length?val:[0,0,0]);}}
   gl.bindVertexArray(vao);gl.drawArrays(gl.TRIANGLES,0,3)}
  let whiteT=null;const white=()=>{if(whiteT)return whiteT;whiteT=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,whiteT);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA8,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([255,255,255,255]));gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);return whiteT};
@@ -2335,7 +2414,7 @@ async function run(E,srcTex,w,h,steps,ctx){
    swap('tex',{B:BLEND[s.blend||(isDust?'dustLight':'multiply')],amt:s.amt??.6,scale:s.scale??(isDust?1:1.1),relief:s.relief??.5,rot:s.rot??(isDust?Math.floor(R()*4)*1.5708:R()*6.28),invert:s.invert?1:0,tintC:hexv(s.tint||'#ffffff'),off:[R(),R()]},{X})}
   else if(op==='vign'){swap('vign',{amt:s.amt??.6,rad:s.rad??.45,feather:s.feather??.6,round_:s.round??1,col:hexv(s.color||'#000000'),C:[s.x??.5,s.y??.5]})}
   else if(op==='flash'){swap('flash',{amt:s.amt??.6,fall:s.fall??.45,col:hexv(s.color||'#fff1d8'),C:[s.x??.5,s.y??.45]})}
-  else if(op==='paint'){let rad=(s.radius??.006)*Math.min(w,h);const k=rad>14?14/rad:1,W2=Math.max(8,Math.round(w*k)),H2=Math.max(8,Math.round(h*k));rad=Math.min(16,Math.max(2,rad*k));
+  else if(op==='paint'){let rad=(s.radius??.006)*Math.min(w,h);const k=rad>8?8/rad:1,W2=Math.max(8,Math.round(w*k)),H2=Math.max(8,Math.round(h*k));rad=Math.min(16,Math.max(2,rad*k));
    let a=cur,own=false;if(k<1){E.mip(cur);a=E.target(W2,H2);E.draw('copy',a,{},{A:cur.tex});own=true}
    const ts=E.target(W2,H2),t2=E.target(W2,H2);E.draw('tensor',ts,base,{A:a.tex});E.draw('tblur',t2,{dir:[3,0]},{A:ts.tex});E.draw('tblur',ts,{dir:[0,3]},{A:t2.tex});E.release(t2);
    for(let p=0;p<(s.passes||1);p++){const n=E.target(W2,H2);E.draw('kuwa',n,Object.assign({},base,{rad,q:s.q??8,alpha:1}),{A:a.tex,TS:ts.tex});if(own)E.release(a);a=n;own=true}E.release(ts);
@@ -2503,6 +2582,8 @@ const {mk,n1f,paper,cover,rrect}=FRAMES.util;
 const rng=s=>{s=(s>>>0)||1;return()=>{s=(s+0x6D2B79F5)|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}};
 const toCv=img=>{const c=mk(img.width,img.height);c.getContext('2d').putImageData(img,0,0);return c};
 const toImg=c=>c.getContext('2d',{willReadFrequently:true}).getImageData(0,0,c.width,c.height);
+/* niveaux automatiques : chaque canal étiré entre ses centiles bas et haut */
+const autoLevels=(im,q)=>{const a=im.data,n=a.length/4;for(let ch=0;ch<3;ch++){const h=new Uint32Array(256);for(let i=ch;i<a.length;i+=4)h[a[i]]++;let lo=0,hi=255,acc=0;while(lo<255&&(acc+=h[lo])<n*q)lo++;acc=0;while(hi>0&&(acc+=h[hi])<n*q)hi--;const k=255/Math.max(8,hi-lo);for(let i=ch;i<a.length;i+=4)a[i]=(a[i]-lo)*k}return im};
 function shrink(img,max){const k=Math.min(1,max/Math.max(img.width,img.height));const c=mk(img.width*k,img.height*k),g=c.getContext('2d');g.imageSmoothingQuality='high';g.drawImage(toCv(img),0,0,c.width,c.height);return toImg(c)}
 const lum=(d,i)=>(d[i]*.2126+d[i+1]*.7152+d[i+2]*.0722)/255;
 /* images intégrales : moyenne d'un rectangle en temps constant */
@@ -2710,10 +2791,10 @@ const OPS={
   return toImg(c)},
 
  /* Decim8 Brainfeed3r (« rétroaction : l'image s'écho et chaque écho se superpose au reste », Kris Collins, 2012) */
- feedback(img,p,seed){const r=rng(seed),c=toCv(img),g=c.getContext('2d'),W=c.width,H=c.height,n=p.n||7;const modes=['difference','screen','exclusion','lighter','difference'];
+ feedback(img,p,seed){const r=rng(seed),c=toCv(img),g=c.getContext('2d'),W=c.width,H=c.height,n=p.n||7;const modes=['screen','difference','screen','exclusion'];
   for(let k=0;k<n;k++){const prev=mk(W,H);prev.getContext('2d').drawImage(c,0,0);const s=1+(p.zoom??.06)*(1+r()),a=(r()-.5)*(p.rot??.08),dx=(r()-.5)*W*.04,dy=(r()-.5)*H*.04;
-   g.save();g.globalCompositeOperation=modes[k%modes.length];g.globalAlpha=p.alpha??.55;g.translate(W/2+dx,H/2+dy);g.rotate(a);g.scale(s,s);g.drawImage(prev,-W/2,-H/2);g.restore()}
-  return toImg(c)},
+   g.save();g.globalCompositeOperation=modes[k%modes.length];g.globalAlpha=p.alpha??.42;g.translate(W/2+dx,H/2+dy);g.rotate(a);g.scale(s,s);g.drawImage(prev,-W/2,-H/2);g.restore()}
+  return autoLevels(toImg(c),.01)},
  /* Decim8 Fold 4 Rap 5 (« miroir récursif qui plie et enroule l'image ») */
  fold(img,p,seed){const r=rng(seed),src=toCv(img),W=src.width,H=src.height,c=mk(W,H),g=c.getContext('2d');g.drawImage(src,0,0);
   const rec=(x,y,w,h,d)=>{if(d<=0||w<8||h<8)return;const horiz=(d+(r()<.5?0:1))%2===0;const tmp=mk(w,h);tmp.getContext('2d').drawImage(c,x,y,w,h,0,0,w,h);
@@ -2729,18 +2810,27 @@ const OPS={
   const GW=10,GH=13,gc=mk(GW*set.length,GH),gg=gc.getContext('2d');gg.fillStyle='#fff';gg.font=`${GH}px "DM Mono",monospace`;gg.textBaseline='top';[...set].forEach((ch,i)=>{gg.save();gg.translate(i*GW,0);gg.scale(GW/(GH*.6),1);gg.fillText(ch,0,0);gg.restore()});const gd=gg.getImageData(0,0,GW*set.length,GH).data;
   const mass=[...set].map((ch,i)=>{let s=0;for(let y=0;y<GH;y++)for(let x=0;x<GW;x++)s+=gd[(y*GW*set.length+i*GW+x)*4+3];return s/(GW*GH*255)});const mx=Math.max(...mass)||1;const order=[...set].map((ch,i)=>[i,mass[i]/mx]).sort((a,b)=>a[1]-b[1]);
   const sm=mk(cols,rows),sg=sm.getContext('2d');sg.imageSmoothingQuality='high';sg.drawImage(toCv(img),0,0,cols,rows);const a=sg.getImageData(0,0,cols,rows).data;
-  const near=v=>{let b=0,bd=1e9;for(let k=0;k<pal.length;k++){const q=pal[k],e=(v[0]-q[0])**2+(v[1]-q[1])**2+(v[2]-q[2])**2;if(e<bd){bd=e;b=k}}return pal[b]};
+  const near=v=>{const m=(v[0]+v[1]+v[2])/3;v=v.map(x=>m+(x-m)*1.7);let b=0,bd=1e9;for(let k=0;k<pal.length;k++){const q=pal[k],rm=(v[0]+q[0])/2,e=(2+rm/256)*(v[0]-q[0])**2+4*(v[1]-q[1])**2+(3-rm/256)*(v[2]-q[2])**2;if(e<bd){bd=e;b=k}}return pal[b]};
   /* chaque case : fond = couleur sombre de la palette la plus proche, encre = couleur claire ; glyphe choisi par sa masse */
   const c=mk(W,H),g=c.getContext('2d');g.imageSmoothingEnabled=false;
   for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){const i=(y*cols+x)*4,l=lum(a,i);let gi=order[0][0];for(const [k,m] of order)if(m<=l*1.1)gi=k;
-   const ink=near([a[i]*1.25+20,a[i+1]*1.25+20,a[i+2]*1.25+20]),bg=near([a[i]*.35,a[i+1]*.35,a[i+2]*.35]);g.fillStyle=`rgb(${bg})`;g.fillRect(x*cw,y*chh,cw+1,chh+1);
+   const ink=near([a[i]*1.25+20,a[i+1]*1.25+20,a[i+2]*1.25+20]),bg=near([a[i]*.6,a[i+1]*.6,a[i+2]*.6]).map(x=>x*.4);g.fillStyle=`rgb(${bg})`;g.fillRect(x*cw,y*chh,cw+1,chh+1);
    const t=mk(GW,GH),tg=t.getContext('2d');tg.drawImage(gc,gi*GW,0,GW,GH,0,0,GW,GH);tg.globalCompositeOperation='source-in';tg.fillStyle=`rgb(${ink})`;tg.fillRect(0,0,GW,GH);g.drawImage(t,x*cw,y*chh,cw,chh)}
   return toImg(c)},
  /* Decim8 Oirectine (« remappe la palette harmoniquement pour pousser les couleurs vers des zones intenses ») */
- harmonic(img,p,seed){const r=rng(seed),W=img.width,H=img.height,o=new Uint8ClampedArray(img.data),n=p.n||5,shift=r()*360,base=p.base??(r()*60);
-  for(let i=0;i<o.length;i+=4){const [h,s,l]=rgb2hsl(o[i],o[i+1],o[i+2]);const hh=Math.round((h+shift)/(360/n))*(360/n)+base;const ss=s>.08?Math.min(1,.65+s*.6):s*.5;const ll=Math.round(l*(p.levels||6))/(p.levels||6);const q=hsl2rgb(hh,ss,Math.max(.06,Math.min(.94,ll)));o[i]=q[0];o[i+1]=q[1];o[i+2]=q[2]}
+ harmonic(img,p,seed){const r=rng(seed),W=img.width,H=img.height,o=new Uint8ClampedArray(img.data),n=p.n||8,base=p.base??(-8-r()*10);
+  for(let i=0;i<o.length;i+=4){const [h,s,l]=rgb2hsl(o[i],o[i+1],o[i+2]);const hh=Math.round(h/(360/n))*(360/n)+base;const ss=s>.08?Math.min(1,.65+s*.6):s*.5;const ll=Math.round(l*(p.levels||6))/(p.levels||6);const q=hsl2rgb(hh,ss,Math.max(.06,Math.min(.94,ll)));o[i]=q[0];o[i+1]=q[1];o[i+2]=q[2]}
   return new ImageData(o,W,H)},
- /* Decim8 L225 (« motifs récursifs fractals à partir d'images simples ») */
+ /* Decim8 L225 : l'image se contient elle-même ; transformation de Droste (logarithme complexe, spirale d'Escher) */
+ droste(img,p,seed){const W=img.width,H=img.height,a=img.data,o=new Uint8ClampedArray(a.length),cx=W*(p.cx??.5),cy=H*(p.cy??.5),r2=Math.min(W,H)*.5,k=p.ratio??.32,r1=r2*k,f=Math.log(1/k),al=Math.atan(f/(2*Math.PI)),ca=Math.cos(al),sa=Math.sin(al),lr1=Math.log(r1);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const dx=x-cx,dy=y-cy,lr=Math.log(Math.hypot(dx,dy)+1e-6),th=Math.atan2(dy,dx);
+   let u=(lr*ca+th*sa)/ca,w=(th*ca-lr*sa)/ca;u=lr1+((u-lr1)%f+f)%f;const R=Math.exp(u),cw=Math.cos(w),sw=Math.sin(w);
+   /* fondu sur le dernier cinquième de l'anneau : le bord extérieur rejoint le bord intérieur, la spirale n'a plus de couture */
+   const t=Math.max(0,Math.min(1,((u-lr1)/f-.8)/.2)),bl=t*t*(3-2*t),R2=R*k;
+   const sx=Math.min(W-1,Math.max(0,Math.round(cx+R*cw))),sy=Math.min(H-1,Math.max(0,Math.round(cy+R*sw))),tx=Math.round(cx+R2*cw),ty=Math.round(cy+R2*sw);
+   const i=(y*W+x)*4,j=(sy*W+sx)*4,m=(ty*W+tx)*4;for(let q=0;q<3;q++)o[i+q]=a[j+q]*(1-bl)+a[m+q]*bl;o[i+3]=255}
+  return new ImageData(o,W,H)},
+ /* Decim8 L225 (ancienne version) (« motifs récursifs fractals à partir d'images simples ») */
  recurse(img,p,seed){const r=rng(seed),c=toCv(img),g=c.getContext('2d'),W=c.width,H=c.height,n=p.n||9,s=p.scale??.72,a=(p.rot??.35)*(r()<.5?-1:1);
   for(let k=0;k<n;k++){const prev=mk(W,H);prev.getContext('2d').drawImage(c,0,0);g.save();g.globalCompositeOperation=k%2?'difference':'source-over';g.globalAlpha=k%2?.9:.85;g.translate(W*(p.cx??.5),H*(p.cy??.5));g.rotate(a);g.scale(s,s);g.drawImage(prev,-W*(p.cx??.5),-H*(p.cy??.5));g.restore()}
   return toImg(c)},
@@ -2909,6 +2999,11 @@ function buildLegacy(){const o=[];for(const L of LEGACY){if(DROP.has(L.id))conti
  const ops=JSON.parse(JSON.stringify(L.r.ops||[]));const up=UPGRADE[L.id]||{};
  /* le papier procédural laisse la place à la texture réelle */
  if(up.matter)ops.forEach(x=>{if(x.op==='histo'){x.paper='none';x.specks=0}});if(up.dust)ops.forEach(x=>{if(x.op==='histo')x.specks=0;});
+ /* procédés historiques à opération unique : portés sur carte graphique (histo + hedge), poussières réelles à la place des points dessinés */
+ if(ops.length===1&&ops[0].op==='histo'&&!L.r.crop){const h=JSON.parse(JSON.stringify((L.r.ops||[])[0]));const dust=h.specks||h.scratch?(h.scratch>.25?'d2':'s1'):null;h.specks=0;h.scratch=0;if(up.matter)h.paperAmt=0;
+  const c=Object.assign({fx:[Object.assign({},h,{op:'histo'})].concat(h.edge&&h.edge!=='none'?[Object.assign({},h,{op:'hedge'})]:[])},up);if(dust&&!c.dust)c.dust=dust;
+  /* l'ordre du moteur pose matière et poussière après les effets : le bord doit venir après la matière, on le place dans un second passage */
+  if(c.fx.length>1){c.post=[c.fx.pop()]}o.push({id:'lg-'+L.id,f:fam,fr:L.fr,en:L.en,c,legacy:1});continue}
  o.push({id:'lg-'+L.id,f:fam,fr:L.fr,en:L.en,c:Object.assign({cpu:{ops,crop:L.r.crop,seed:L.r.seed}},up),legacy:1})}return o}
 
 const LOOKS_ALL=()=>TAXON.build([...buildAppareils(),...buildFilms(),...buildSlots(),...HAND,...buildLegacy()]);
@@ -2923,6 +3018,7 @@ function stepsOf(c,user){const s=[];const add=x=>{if(x)s.push(...[].concat(x).ma
   if(u.clarity)s.push({op:'clarity',amt:u.clarity});if(u.sharpen)s.push({op:'clarity',amt:u.sharpen,radius:.0015});}
  if(c.glow)s.push(Object.assign({op:'glow'},c.glow));
  add(slot('light',c.light));add(slot('grain',c.grain));add(slot('matter',c.matter));add(slot('dust',c.dust));add(slot('vign',c.vign));
+ add(c.post);
  if(user&&user.grainAdd)s.push({op:'grain',amt:user.grainAdd*.6,size:1.5});
  if(user&&user.vignAdd)s.push({op:'vign',amt:Math.abs(user.vignAdd),rad:.4,feather:.7,color:user.vignAdd<0?'#ffffff':'#000000'});
  return s}
@@ -2977,7 +3073,7 @@ tt('dark','Ferrotype sombre','Dark tintype',{mono:1,exposure:-.35,contrast:.35,t
 tt('warm','Ferrotype aux tons chauds','Warm-tone tintype',{mono:1,tone:{sh:'#1c1006',hi:'#f6dcae',amt:.7},contrast:.1});
 add('anciens','plaques','newton','Ferrotype net','Sharp tintype',{film:'rollei-rollei-ortho-25',tone:{mono:1,contrast:.25,tone:{sh:'#100c08',hi:'#e4d6ba',amt:.6}},matter:'metal',dust:'d2',vign:'natural',frame:'tinplate'},{src:'Tintype'});
 for(const [id,fr,en,qty,warm] of [['k15','Collodion versé, révélateur 15','Poured collodion, developer 15',15,.3],['k7','Collodion versé, peu de révélateur','Poured collodion, little developer',7,.25],['k30','Collodion versé, plaque noyée','Poured collodion, flooded plate',32,.5]])
- add('anciens','plaques','koloid-'+id,fr,en,{fx:[{op:'pour',at:'spot',qty,warm}],dust:'d7',vign:'natural',frame:'koloid'},{spot:1,src:'Koloid'});
+ add('anciens','plaques','koloid-'+id,fr,en,{fx:[{op:'pour',at:'spot',qty,warm}],dust:'d7',vign:'natural',frame:'koloid'},{pour:1,src:'Koloid'});
 
 /* ---- Peinture : touches (Glaze ; méthode du brevet US 9767582) ---- */
 const canvasTex=[{op:'tex',name:'canvas',blend:'relief',amt:.4,relief:.45,scale:1.4}];
@@ -3033,11 +3129,11 @@ sg('jpeg','jb-shift','Tronçons du flux JPEG recopiés','Copied JPEG stream chun
 sg('jpeg','jb-dqt','Tables de quantification altérées','Altered quantisation tables',{cv:[{op:'jpegbend',dqt:.35,hits:1,q:.8}]},'Decim8');
 sg('jpeg','crush','Compression JPEG extrême','Extreme JPEG compression',{cv:[{op:'jpegcrush',passes:4,q:.02,scale:.45}]},'Glitchr');
 sg('jpeg','crush2','Compression extrême, gros blocs','Extreme compression, big blocks',{cv:[{op:'jpegcrush',passes:3,q:.01,scale:.2}]},'Glitchr');
-sg('donnees','brainfeed','Brainfeed3r, échos superposés','Brainfeed3r, stacked echoes',{cv:[{op:'feedback',n:7}]},'Decim8');
+sg('donnees','brainfeed','Brainfeed3r, échos superposés','Brainfeed3r, stacked echoes',{cv:[{op:'feedback',n:4}]},'Decim8');
 sg('donnees','fold','Fold 4 Rap 5, miroir récursif','Fold 4 Rap 5, recursive mirror',{cv:[{op:'fold',depth:5}]},'Decim8');
 sg('donnees','xexox','XEXOX, photocopieuse détraquée','XEXOX, broken copier',{cv:[{op:'smear',rate:.45,len:.9}],tone:{mono:1,contrast:.6}},'Decim8');
 sg('donnees','fingerblib','Fingerblib, fracture par la lumière','Fingerblib, light-driven fracture',{cv:[{op:'fracture',block:.018,bands:8,amt:.3}]},'Decim8');
-sg('donnees','l225','L225, récursion fractale','L225, fractal recursion',{cv:[{op:'recurse',n:9}]},'Decim8');
+sg('donnees','l225','L225, récursion fractale','L225, fractal recursion',{cv:[{op:'droste'}]},'Decim8');
 sg('donnees','smear','Traînées de lignes','Line smears',{cv:[{op:'smear',rate:.6,len:.5}]},'Decim8');
 sg('donnees','blocks','Blocs recopiés et inversés','Copied and inverted blocks',{cv:[{op:'blocks',n:70}]},'Decim8');
 sg('pixels','bitboy','BitBoy, tramage 1 bit','BitBoy, 1-bit dither',{cv:[{op:'bitboy',cell:.004}]},'Decim8');
@@ -3074,7 +3170,7 @@ for(const [id,fr,en,w] of [['red','Filtre rouge','Red filter',[.8,.2,0]],['orang
 for(const [sh,hi,fr,en] of [['#2a1a0c','#f0d9b0','Virage brun','Brown tone'],['#0c1a2a','#d0e4ff','Virage bleu','Blue tone'],['#1a0c22','#f4d0ff','Virage violet','Violet tone'],['#0c2216','#d6ffe0','Virage vert','Green tone']])rt('nb','v-'+sh.slice(1),fr,en,{tone:{mono:1,tone:{sh,hi,amt:.85}},grain:'fin'},'Analog Film');
 
 /* ---- Pellicules : étalonnages de cinéma (Camera+ Hollywood FX, Lunapic) ---- */
-add('pellicules','cinema','neo','Neo, vert machine','Neo, machine green',{tone:{contrast:.35,sat:-.5,tone:{sh:'#001a06',hi:'#c4ffb6',amt:.75}},glow:{diffuse:.2,th:.6},frame:'cinema'},{src:'Camera+'});
+add('pellicules','cinema','neo','Neo, vert machine','Neo, machine green',{tone:{contrast:.55,mono:1,tone:{sh:'#002a08',hi:'#a6ff86',amt:1}},glow:{diffuse:.25,th:.55},grain:{amt:.18,size:1.2},vign:{amt:.45},frame:'cinema'},{src:'Camera+'});
 add('pellicules','cinema','silent','Film muet','Silent movie',{film:'kodak-kodak-tri-x-400',tone:{contrast:.3,fade:.08,tone:{sh:'#14110d',hi:'#efe5cf',amt:.4}},grain:'gros',dust:'d5',vign:'toy',frame:'super8'},{src:'Camera+'});
 add('pellicules','cinema','gotham','Gotham, nuit désaturée','Gotham, desaturated night',{tone:{sat:-.65,contrast:.45,temp:-.2,exposure:-.15},fx:[{op:'tonal',lo:.6,mi:.6,hi:.3,radius:.008}],vign:'toy'},{src:'Camera+'});
 
@@ -3103,7 +3199,7 @@ const LG={daguerre:'anciens/plaques',ambrotype:'anciens/plaques',ferrotype:'anci
  pochegris:'signal/pixels',unbit:'signal/pixels',console:null,cga:null,camescope:'signal/video',videotex:'signal/video',ambre:'signal/video',
  labyrinthe:'geometrie/miroirs',miroir:'geometrie/miroirs',planete:'geometrie/miroirs',eclats:'geometrie/formes',formes:null,motifs:null,objet:null,objetchrome:null,reflet:null,clones:'geometrie/montage',fantome:'geometrie/montage',fisheye:null,
  pointillisme:'peinture/styles',nocturne:'peinture/styles',fauve:'peinture/styles'};
-const LGSRC={optique:'Moldiv',vesperale:'Moldiv',myrtille:'Moldiv',mat:'Moldiv',oculaire:'Decim8',nuit:'Lunapic'};
+const LGSRC={};
 const HANDMAP={hie:'capteurs/infrarouge',rir:'capteurs/infrarouge',ortho:'pellicules/nb',huile:'peinture/huile',huile2:'peinture/huile',couteau:'peinture/huile',gouache:'peinture/huile',aqua:'peinture/eau',aquawashi:'peinture/eau',lavis:'peinture/eau',sepialavis:'peinture/eau',pastel:'peinture/dessin',
  rosette:'trames/demiteinte',rosette2:'trames/demiteinte',journal:'trames/demiteinte',comics:'trames/demiteinte',crt:'signal/video',tv80:'signal/video',vhsg:null,dramenb:'retouche/nb',cinestill:'retouche/lueurs',promist:'retouche/lueurs'};
 const SLIDE=/velvia|provia|astia|ektachrome|kodachrome|elite-chrome|sensia|e-100|x-pro-slide|polachrome|elite-100-xpro|superia-200-xpro/;
@@ -3117,13 +3213,59 @@ function place(L){const id=L.id;
  if(id.startsWith('ca-'))return 'supports/'+(FRAMEKIND[id.slice(3)]||'tirages');
  if(id.startsWith('lg-')){const k=id.slice(3);return k in LG?LG[k]:'retouche/couleurs'}
  if(id in HANDMAP)return HANDMAP[id];return null}
+/* ---------- élagage : un spécimen par effet nettement distinct ----------
+   Pellicules et boîtiers : liste choisie (les variantes chaude et froide restent accessibles en retouchant le spécimen).
+   Le reste : doublons écartés après comparaison des rendus sur trois images d'essai. */
+const KEEPFILM=new Set('kodak-kodak-portra-160 kodak-kodak-portra-400 kodak-kodak-portra-800 kodak-kodak-ektar-100 fuji-fuji-superia-400 fuji-fuji-400h agfa-agfa-vista-200 lomography-lomography-redscale-100 fuji-fuji-velvia-50 fuji-fuji-astia-100f kodak-kodak-ektachrome-100-vs kodak-kodak-kodachrome-64 kodak-kodak-elite-100-xpro lomography-lomography-x-pro-slide-200 polaroid-polaroid-px-680 polaroid-polaroid-669 polaroid-polaroid-time-zero-expired polaroid-polaroid-polachrome fuji-fuji-fp-100c fuji-fuji-fp-3000b polaroid-polaroid-665 kodak-kodak-tri-x-400 ilford-ilford-hp5-plus-400 ilford-ilford-delta-3200 ilford-ilford-pan-f-plus-50 kodak-kodak-t-max-100 fuji-fuji-neopan-acros-100 rollei-rollei-ortho-25 rollei-rollei-retro-80s creativepack-1-anime creativepack-1-bleachbypass2 creativepack-1-horrorblue creativepack-1-latesunset creativepack-1-moonlight creativepack-1-tealorange'.split(' '));
+const KEEPAP=new Set('plast-kodak-kodak-portra-400 jouet-kodak-kodak-portra-160 sov-lomography-lomography-x-pro-slide-200 jetable-fuji-fuji-superia-400 c90-fuji-fuji-superia-200 reflex-kodak-kodak-kodachrome-64 tlr-kodak-kodak-tri-x-400 chambre-kodak-kodak-ektar-100 box-rollei-rollei-ortho-25 petz-ilford-ilford-hp5-plus-400 inst-polaroid-polaroid-px-680 sx-polaroid-polaroid-time-zero-expired peel-fuji-fuji-fp-100c mini-fuji-fuji-superia-400 s8-kodak-kodak-kodachrome-64 nuit-kodak-kodak-portra-800'.split(' ').map(x=>'ap-'+x));
+const DROPID=new Set(['ortho','ap-mini-fuji-fuji-superia-400','ap-c90-fuji-fuji-superia-200','ap-nuit-kodak-kodak-portra-800','lg-carre','lg-superhuit','ob-petzval2','ob-vaseline','lg-flouobj','ob-bokehhex','ob-lomo','ob-ca','ob-split','li-leakmag','li-leakblue','li-sunc','li-bokehc','li-leakgold','li-haze','ca-instaxSquare','ca-spectra','x-pm-spectra','x-pm-polaroidBlack','lg-scotch','ca-instaxWide','lg-froisse','ca-film35neg','ca-ina82','ca-holga','lg-contours','lg-relief','rosette2','lg-quadri','lg-vhs','x-mix','tv80','x-f-green','x-f-blue','lg-etain','x-newton','x-tt-warm','x-tt-dark','lg-verseplaque','x-tt-sepia','lg-collodion','lg-ortho','lg-irise','lg-sarcelle','lg-pastel','lg-brume','lg-fantome','lg-couleurlignes','lg-points','lg-ondes','x-lowpoly2','lg-warhol4','lg-riso2','x-jb-many','x-crush2','lg-glitchretro','lg-xerox','x-ri-pond','x-w-explode','x-w-implode','lg-labyrinthe','x-bitboy2','lg-pochegris','lg-cartouche','x-wf-mono','x-tg2','x-tg5','x-tg9','x-tg4','x-tg7','du-d3','du-d2','x-ov-carbon','x-kk-helga-bkbw-none','x-kk-americana-rock-none','x-kf-rock','x-k-buckhorst','x-kf-bkbw','x-kf-dreamcanvas','x-kk-jamesm-us1776-none','x-kx-cherry','x-gz-long','x-pc-treble','x-pc-overprint','x-pc-rings','x-pc-charmed','x-m-torus-glass','x-m-octa-opaque','x-m-hexprism-opaque','x-m-beads-glass','x-m-cube-opaque','x-tonalh','x-drama-b','lg-rockbw','lg-patriote','lg-grainnoir','lg-optique','lg-creme','lg-diapo','lg-quotidien','lg-drame','lg-drame2','lg-unbit','x-3d','x-sténopé-cp','x-hdr-people','x-hdr-fine','x-glam-n','x-v-1a0c22','x-v-0c2216','ob-holga',
+ 'x-k-johns','x-k-jane','x-k-jamesm','x-kf-ina82','x-kx-standard','x-kk-jimmy-kodot-none','x-kk-kaimal-ina82-none','x-kk-jamesm-rock-none','x-kk-johns-bksg-standard',
+ 'x-m-sphere-frosted','x-m-cube-glass','x-m-torus-chrome','x-m-octa-glass','x-m-twist-frosted','x-m-hexprism-glass','x-m-beads-opaque','x-m-column-chrome','x-tg10','x-tg11','x-tg3','x-wf-gold','x-pc-evap','x-du-d4','du-d4','du-d5']);
+/* noms : ce que fait le rendu ; l'appli et son réglage d'origine passent en mention */
+const RN={'film-creativepack-1-bleachbypass2':['Sans blanchiment','Bleach bypass'],
+ 'lg-bocal':['Verts passés, coins sombres','Faded greens, dark corners'],'lg-etefane':['Couleurs d\'été passées, bord blanc','Faded summer colours, white border'],'lg-reportage':['Reportage noir et blanc contrasté','Contrasty B&W reportage'],
+ 'lg-carre':['Carré chaud délavé','Washed warm square'],'lg-muetchaud':['Noir et blanc viré chaud','Warm-toned black and white'],'lg-superhuit':['Film de famille en Super 8','Super 8 home movie'],
+ 'lg-vesperale':['Crépuscule violet et lueur','Violet dusk with glow'],'lg-myrtille':['Ombres myrtille','Blueberry shadows'],'lg-mat':['Noirs relevés, rendu mat','Lifted blacks, matte'],'lg-pastel':['Pastel délavé','Washed pastel'],
+ 'lg-menthe':['Ombres vert menthe','Mint shadows'],'lg-peche':['Hautes lumières pêche','Peach highlights'],'lg-brume':['Brume lumineuse','Luminous haze'],'lg-sarcelle':['Sarcelle et orange','Teal and orange'],'lg-nuitneon':['Néons de nuit','Neon night'],'lg-vieuxrose':['Vieux rose','Dusty rose'],
+ 'lg-nbciel':['Noir et blanc, ciel assombri','B&W, darkened sky'],'lg-grainfilm':['Grain de film appuyé','Heavy film grain'],'lg-double':['Double exposition en superposition claire','Screen double exposure'],
+ 'lg-illustre':['Illustré jauni, trame quadri','Yellowed comic, CMYK screen'],'lg-quadri':['Trame quadri','CMYK screen'],'lg-ascii':['Caractères ASCII','ASCII characters'],
+ 'lg-secouemoi':['Instantané laiteux, bord blanc','Milky instant, white border'],'lg-vingtquatre':['Jetable à vingt-quatre poses, date incrustée','24-shot disposable, date stamp'],'lg-marge':['Instantané à marge, légende tapée','Instant with typed caption'],
+ 'lg-cabine':['Photomaton, visages déformés','Photo booth, warped faces'],'lg-collage':['Planche de collage','Collage board'],
+ 'lg-octet':['Octets cassés, blocs permutés','Broken bytes, swapped blocks'],'lg-glitchretro':['Données corrompues','Corrupted data'],'lg-datamosh':['Datamosh, blocs qui fleurissent','Datamosh, blooming blocks'],'lg-echo':['Lignes répétées, canaux décalés','Repeated rows, shifted channels'],
+ 'lg-fente':['Fente temporelle','Slit-scan'],'lg-phase':['Couleurs tournantes, ondulation','Rotating colours, ripple'],'lg-anaglyphe':['Anaglyphe rouge et cyan','Red and cyan anaglyph'],'lg-xerox':['Pixels triés par seuil, contrastés','Threshold pixel sort, contrasty'],
+ 'lg-tripixels':['Tri de pixels','Pixel sorting'],'lg-pli':['Plis en miroir, kaléidoscope','Mirror folds, kaleidoscope'],'lg-cartouche':['Cartouche sale, couleurs réduites','Dirty cartridge, reduced colours'],'lg-pochegris':['Quatre gris de console de poche','Four handheld greys'],
+ 'lg-camescope':['Caméscope 1985, date incrustée','1985 camcorder, date stamp'],'lg-videotex':['Vidéotex 3615','Videotex 3615'],'lg-ambre':['Moniteur ambre','Amber monitor'],'lg-labyrinthe':['Labyrinthe de miroirs','Hall of mirrors'],'lg-eclats':['Éclats de prisme','Prism shards'],
+ 'lg-fantome':['Double fantôme','Ghost double'],'lg-nocturne':['Tourbillons nocturnes','Nocturne swirls'],'lg-fauve':['Couleurs fauves','Fauve colours'],'lg-neon':['Contours néon','Neon outlines'],
+ 'x-pc-circles':['Cercles sur fond noir','Circles on black','Percolator, Circles'],'x-pc-gel':['Cercles translucides sur blanc','Translucent circles on white','Percolator, Color Gel'],'x-pc-charmed':['Cercles irréguliers sur havane','Irregular circles on tan','Percolator, Charmed'],
+ 'x-pc-ishihara':['Cercles fins en demi-teintes','Fine mid-tone circles','Percolator, Ishihara'],'x-pc-rings':['Cercles à anneau','Ringed circles','Percolator, Rings'],'x-pc-treble':['Cercles à trois anneaux','Triple-ring circles','Percolator, Treble'],
+ 'x-pc-trip':['Anneaux décentrés colorés','Off-centre coloured rings','Percolator, Tripstamatic'],'x-pc-overprint':['Deux tirages de cercles superposés','Two overprinted circle layers','Percolator, Overprint'],'x-pc-rays':['Rayons dans chaque cercle','Rays inside each circle','Percolator, Ray Ray'],
+ 'x-pc-stars':['Étoiles dans des cercles noirs','Stars in black circles','Percolator, Full of Stars'],'x-pc-biggest':['Très gros cercles saturés','Huge saturated circles','Percolator, Biggest et Saturate'],'x-pc-inky':['Cercles cernés d\'encre','Ink-rimmed circles','Percolator, Inky Edges'],
+ 'x-wf-classic':['Mots en couleur sur noir','Coloured words on black','WordFoto, Classic Color'],'x-wf-howling':['Mots bleutés à empattements','Bluish serif words','WordFoto, Howling'],
+ 'x-brainfeed':['Échos superposés en rétroaction','Feedback echoes','Decim8, Brainfeed3r'],'x-fold':['Plis en miroirs récursifs','Recursive mirror folds','Decim8, Fold 4 Rap 5'],'x-xexox':['Photocopieuse détraquée','Broken photocopier','Decim8, XEXOX'],
+ 'x-fingerblib':['Fracture par niveaux de lumière','Light-level fracture','Decim8, Fingerblib'],'x-l225':['Tunnel en spirale infinie','Infinite spiral tunnel','Decim8, L225'],'x-bitboy':['Tramage un bit','One-bit dither','Decim8, BitBoy'],'x-bitboy2':['Tramage un bit posé sur la photo','One-bit dither over the photo','Decim8, BitBoy'],
+ 'x-ti994x':['Écran de caractères','Character screen','Decim8, TI994X'],'x-ocular':['Couleurs qui dérivent','Drifting colours','Decim8, Doctor Ocular'],'x-oirectine':['Palette remappée par harmoniques','Harmonic palette remap','Decim8, Oirectine'],
+ 'x-neo':['Vert machine','Machine green','Camera+, Neo'],'x-silent':['Film muet','Silent film','Camera+, Silent Movie'],'x-gotham':['Nuit désaturée','Desaturated night','Camera+, Gotham'],
+ 'x-clarity':['Clarté en une touche','One-tap clarity','Camera+, Clarity'],'x-clarity2':['Clarté forte, halos','Strong clarity, halos','Camera+, Clarity'],'x-tonal':['Contraste tonal','Tonal contrast','Snapseed, Tonal Contrast'],'x-tonalh':['Contraste tonal, hautes lumières poussées','Tonal contrast, high tones up','Snapseed, Tonal Contrast'],
+ 'x-hdr-nature':['Contraste local fort, coloré','Strong local contrast, colourful','Snapseed, HDR Scape Nature'],'x-hdr-strong':['Contraste local extrême','Extreme local contrast','Snapseed, HDR Scape Strong'],
+ 'x-drama-n':['Drame désaturé','Desaturated drama','Snapseed, Drama'],'x-drama-b':['Drame désaturé clair','Bright desaturated drama','Snapseed, Drama'],'x-drama-d':['Drame désaturé sombre','Dark desaturated drama','Snapseed, Drama'],
+ 'x-glam-w':['Lueur chaude','Warm glow','Snapseed, Glamour Glow'],'x-glam-c':['Lueur froide','Cool glow','Snapseed, Glamour Glow'],'x-noir':['Noir et blanc à lavis sombre','B&W with dark wash','Snapseed, Noir'],'x-retrolux':['Rayures et fuites de lumière','Scratches and light leaks','Snapseed, Retrolux'],'x-vintage':['Vintage à vignette centrée','Vintage, centred vignette','Snapseed, Vintage'],'x-grunge':['Grunge','Grunge','Snapseed, Grunge']};
+const HLD={johns:['net','sharp'],jimmy:['jaune voilé','veiled yellow'],kaimal:['rose, doux contraste','pink, low contrast'],buckhorst:['jaune chaud','warm yellow'],jane:['neutre','neutral'],helga:['bleu-vert adouci','soft blue-green'],roboto:['bleu, lueur centrale','blue, central glow'],jamesm:['chaud, grain léger','warm, light grain'],americana:['deux zones floues','two blurred zones']};
+const HFD={blanko:['bord blanc','white border'],ina69:['coins ronds','round corners'],kodot:['bord brossé','brushed border'],ina82:['bord blanc carré','square white border'],bkbw:['presque noir et blanc','near black and white'],bksg:['noir et blanc granuleux','grainy black and white'],rock:['noir et blanc surexposé','overexposed black and white'],us1776:['noir et blanc sombre et abîmé','dark damaged black and white'],dreamcanvas:['sur toile','on canvas']};
+const HXD={standard:['flash doré','golden flash'],dreampop:['fuites colorées','coloured leaks'],cherry:['flash chaud','warm flash']};
+const HIP={johns:'John S',jimmy:'Jimmy',kaimal:'Kaimal Mark II',buckhorst:'Buckhorst H1',jane:'Jane',helga:'Helga Viking',roboto:'Roboto Glitter',jamesm:'James M',americana:'Americana',blanko:'Blanko',ina69:'Ina\'s 1969',kodot:'Kodot XGrizzled',ina82:'Ina\'s 1982',bkbw:'BlacKeys B+W',bksg:'BlacKeys SuperGrain',rock:'Rock BW-11',us1776:'US1776',dreamcanvas:'DreamCanvas',standard:'Standard',dreampop:'Dreampop',cherry:'Cherry Shine'};
+function kitName(o){const m=o.id.match(/^x-(k|kf|kx|kk)-(.+)$/);if(!m)return;let l='johns',f='blanko',x=null;const p=m[2].split('-');
+ if(m[1]==='k')l=p[0];else if(m[1]==='kf')f=p[0];else if(m[1]==='kx'){l='jane';x=p[0]}else{l=p[0];f=p[1];x=p[2]==='none'?null:p[2]}
+ const fr=[HLD[l][0],HFD[f][0]].concat(x?[HXD[x][0]]:[]),en=[HLD[l][1],HFD[f][1]].concat(x?[HXD[x][1]]:[]);o.fr=fr.join(', ');o.fr=o.fr[0].toUpperCase()+o.fr.slice(1);o.en=en.join(', ');o.en=o.en[0].toUpperCase()+o.en.slice(1);o.src='Hipstamatic, '+[HIP[l],HIP[f]].concat(x?[HIP[x]]:[]).join(', ')}
 function build(base){const out=[];
- for(const L of base){const p=place(L);if(!p)continue;const [f,s]=p.split('/');const o=Object.assign({},L,{f,s});if(L.id.startsWith('lg-')&&LGSRC[L.id.slice(3)])o.src=LGSRC[L.id.slice(3)];
+ for(const L of base){if(L.id.startsWith('film-')&&!KEEPFILM.has(L.id.slice(5)))continue;if(L.id.startsWith('ap-')&&!KEEPAP.has(L.id))continue;if(DROPID.has(L.id))continue;
+  const p=place(L);if(!p)continue;const [f,s]=p.split('/');const o=Object.assign({},L,{f,s});if(L.id.startsWith('lg-')&&LGSRC[L.id.slice(3)])o.src=LGSRC[L.id.slice(3)];
   if(L.id.startsWith('ob-')||L.id.startsWith('li-'))o.c=Object.assign({},L.c);out.push(o)}
  /* matières seules : papiers, plaques, poussières */
  for(const [id,fr,en] of SLOTS.matter.slice(1))out.push({id:'mt-'+id,f:'supports',s:'matieres',fr,en,c:{matter:id,film:P4,filmAmt:.6,grain:'fin'}});
  for(const [id,fr,en] of SLOTS.dust.slice(1,6))out.push({id:'du-'+id,f:'supports',s:'matieres',fr,en,c:{dust:id,film:'ilford-ilford-hp5-plus-400',grain:'moyen'}});
- return out.concat(X)}
+ for(const o of X){if(DROPID.has(o.id))continue;out.push(o)}
+ for(const o of out){if(RN[o.id]){o.fr=RN[o.id][0];o.en=RN[o.id][1];if(RN[o.id][2])o.src=RN[o.id][2]}kitName(o)}
+ return out.filter(o=>!DROPID.has(o.id))}
 return {build,X}})();
 
 /* ==== GIF89a animé : palette commune par coupe médiane, tramage Floyd-Steinberg léger, LZW ==== */
@@ -3191,7 +3333,7 @@ fr:{ph:"Décris une image, ou le mouvement de la vidéo",open:"Ouvrir",shoot:"Pr
  exFmt:"Format",exSize:"Taille",exOrig:"Originale",exPhoto:"Enregistrer la photo",exAnim:"Animation de pellicule",exGif:"GIF animé",exVid:"Vidéo 4 s",exAnimTxt:"Le grain, la poussière, les fuites de lumière et la bande VHS bougent d'une image à l'autre.",encoding:"Encodage…",
  keys_txt:"Pollinations et AI Horde fabriquent les images sans clé. Pour la vidéo, Puter fonctionne avec un compte Puter gratuit : un clic sur Continue la première fois, 3 vidéos de 5 secondes par mois. Les Spaces vidéo de Hugging Face tournent sur ZeroGPU, qui accorde zéro seconde de GPU aux appels anonymes : un jeton Hugging Face gratuit leur ouvre un quota quotidien. Chaque clé reste dans ce navigateur et part seulement vers son service.",
  eng_sum:"{n} moteurs · {v} pour la vidéo · recensement du {d}",census:"Recenser les moteurs",census_run:"Recensement… {x}",census_done:"{n} moteurs.",puter_left:"Puter : {c} crédits restants ce mois-ci, soit {v} vidéo(s) de 5 s.",puter_none:"Puter : compte relié à la première vidéo.",
- camErr:"La caméra reste fermée : le navigateur refuse l'accès. Choisis une photo avec Ouvrir.",shutter:"Déclencher",camOff:"Fermer la caméra",count:"{n} spécimens",all:"Tout",found:"{n} spécimens pour « {q} »",after:"d'après {a}",taxonOrig:"Photo d'origine",wordsHint2:"Les mots viennent de Labo, Outils",search:"Chercher un procédé",random:"Au hasard",
+ camErr:"La caméra reste fermée : le navigateur refuse l'accès. Choisis une photo avec Ouvrir.",shutter:"Déclencher",camOff:"Fermer la caméra",count:"{n} spécimens",all:"Tout",found:"{n} spécimens pour « {q} »",after:"d'après {a}",taxonOrig:"Photo d'origine",wordsHint2:"Les mots viennent de Labo, Outils",pourHint:"Appuie sur l'image et promène le doigt pour verser le révélateur ; reste au même endroit et la plaque brûle. Sur téléphone, incline l'appareil.",search:"Chercher un procédé",random:"Au hasard",
  foot:"Code MIT. Photofauna + FaunAI, le photomaton d'Insert Koin",credits:"Pellicules : RawTherapee Film Simulation Collection (Pat David, Pavlov Dmitry, Michael Ezra), CC BY-SA 4.0. Poussières : scans de Daniela Ivanova (FilmDamageSimulator), licence MIT. Noms de pellicules cités à titre descriptif."},
 en:{ph:"Describe an image, or the motion of the video",open:"Open",shoot:"Shoot",undo:"Undo",save:"Save",img:"Image",vid:"Video",stop:"Stop",labo:"Lab",
  orig:"Original",variant:"Tap again for a variant",spot:"Tap the image to move the measuring spot",need:"Write a sentence for the image first.",working:"working",queue:"in queue",done:"Done in",stopped:"Stopped.",
@@ -3209,7 +3351,7 @@ en:{ph:"Describe an image, or the motion of the video",open:"Open",shoot:"Shoot"
  exFmt:"Format",exSize:"Size",exOrig:"Original",exPhoto:"Save the photo",exAnim:"Film animation",exGif:"Animated GIF",exVid:"4 s video",exAnimTxt:"Grain, dust, light leaks and the VHS tape move from frame to frame.",encoding:"Encoding…",
  keys_txt:"Pollinations and AI Horde make images without a key. For video, Puter runs on a free Puter account: one click on Continue the first time, 3 five-second videos a month. The Hugging Face video Spaces run on ZeroGPU, which gives anonymous callers zero GPU seconds: a free Hugging Face token opens a daily quota. Each key stays in this browser and goes only to its own service.",
  eng_sum:"{n} engines · {v} for video · census {d}",census:"Census of engines",census_run:"Census… {x}",census_done:"{n} engines.",puter_left:"Puter: {c} credits left this month, that is {v} five-second video(s).",puter_none:"Puter: account linked at the first video.",
- camErr:"The camera stays closed: the browser refuses access. Choose a photo with Open.",shutter:"Shutter",camOff:"Close the camera",count:"{n} specimens",all:"All",found:"{n} specimens for “{q}”",after:"after {a}",taxonOrig:"Original photo",wordsHint2:"Words come from Lab, Tools",search:"Search a process",random:"Random",
+ camErr:"The camera stays closed: the browser refuses access. Choose a photo with Open.",shutter:"Shutter",camOff:"Close the camera",count:"{n} specimens",all:"All",found:"{n} specimens for “{q}”",after:"after {a}",taxonOrig:"Original photo",wordsHint2:"Words come from Lab, Tools",pourHint:"Press the image and move your finger to pour the developer; stay in one place and the plate burns. On a phone, tilt the device.",search:"Search a process",random:"Random",
  foot:"MIT code. Photofauna + FaunAI, the photo booth of Insert Koin",credits:"Films: RawTherapee Film Simulation Collection (Pat David, Pavlov Dmitry, Michael Ezra), CC BY-SA 4.0. Dust: scans by Daniela Ivanova (FilmDamageSimulator), MIT licence. Film names used descriptively."}};
 let LANG=LS.get("pf_lang",null)||((navigator.language||"").toLowerCase().startsWith("fr")?"fr":"en");
 const t=(k,v)=>{let s=W[LANG][k]??W.fr[k]??k;if(v)for(const[a,b] of Object.entries(v))s=s.split("{"+a+"}").join(b);return s};
@@ -3233,7 +3375,7 @@ const S={src:null,prev:null,tiny:null,ver:0,look:null,seed:1974,labo:{},user:USE
 const ALL=LOOKS_ALL();const byId=id=>ALL.find(l=>l.id===id)||MINE().find(l=>l.id===id);
 const MINE=()=>LS.get("pf_mine",[]).map(m=>({id:m.id,f:"mes",fr:m.name,en:m.name,c:m.c,user:m.user}));
 function combo(){const L=byId(S.look);const c=Object.assign({},L?L.c:{});for(const[k,v] of Object.entries(S.labo))if(v!==undefined)c[k]=v;if(S.dbl.on)c.dbl=1;return c}
-function snapshot(){return JSON.parse(JSON.stringify({look:S.look,seed:S.seed,labo:S.labo,user:S.user,spot:S.spot,caption:S.caption,words:S.words,font:S.font,dbl:S.dbl,ver:S.ver}))}
+function snapshot(){return JSON.parse(JSON.stringify({look:S.look,seed:S.seed,labo:S.labo,user:S.user,spot:S.spot,caption:S.caption,words:S.words,font:S.font,dbl:S.dbl,ver:S.ver,pour:S.pour}))}
 function pushHist(){const h=snapshot();h.src=S.src;S.hist.push(h);if(S.hist.length>50)S.hist.shift()}
 function scaleTo(img,max){const k=Math.min(1,max/Math.max(img.width,img.height));if(k>=1)return img;const c=document.createElement("canvas");c.width=Math.max(1,Math.round(img.width*k));c.height=Math.max(1,Math.round(img.height*k));
  const t0=document.createElement("canvas");t0.width=img.width;t0.height=img.height;t0.getContext("2d").putImageData(img,0,0);const g=c.getContext("2d");g.imageSmoothingQuality="high";g.drawImage(t0,0,0,c.width,c.height);return g.getImageData(0,0,c.width,c.height)}
@@ -3261,7 +3403,7 @@ async function renderLevel(level,opts={}){const c=opts.combo||combo();const base
  const user=opts.thumb?null:S.user;const steps=stepsOf(c,user&&isUserActive()?Object.assign({},user,{active:true}):null);
  if(c.dbl&&S.secondTex&&!opts.thumb)steps.push(Object.assign({op:"dbl"},S.dbl));
  for(const s of steps)if(s.op==="tex"&&s.name==="dust")s.name="dust1";
- steps.forEach(s=>{if(s.at==="spot"){const sp=opts.thumb?{x:.5,y:.38}:S.spot;s.x=sp.x;s.y=sp.y}});
+ steps.forEach(s=>{if(s.op==="pour"&&!opts.thumb&&S.pour&&S.pour.pts.length)s.pts=S.pour.pts;if(s.at==="spot"){const sp=opts.thumb?{x:.5,y:.38}:S.spot;s.x=sp.x;s.y=sp.y}});
  const mk=!opts.thumb&&S.mask?maskFor(level,w,h):null;const str=opts.thumb?1:S.user.strength;
  const out=await GPU.run(E,tex,w,h,steps,{asset:gctx.asset,lut:gctx.lut,seed:S.seed+(opts.frameT||0)*7919,t:opts.frameT||0,second:S.secondTex,mask:mk||(str<1?E.white():null),maskAmt:(mk||str<1)?str:null});
  GLC.width=w;GLC.height=h;E.draw("out",null,{SEED:S.seed%97},{A:out.tex});E.release(out);if(tmp)E.del(tmp);
@@ -3300,7 +3442,7 @@ function drawGrid(){drawGenres();const box=$("grid");box.textContent="";thumbQ=[
   b.onclick=()=>pickLook(id);box.appendChild(b)};
  card(null);const list=S.q?searchLooks(S.q):looksIn(S.fam,S.sub);for(const L of list)card(L)}
 const drawStrip=drawGrid;
-function setLabel(){const L=byId(S.look);$("lbFam").textContent=L?genreName(L):t("taxonOrig");$("lbName").textContent=L?lname(L):t("orig");$("lbSrc").textContent=L&&L.src?t("after",{a:L.src}):"";$("lbHint").textContent=L&&L.spot?t("spotHint"):L&&L.words?t("wordsHint2"):""}
+function setLabel(){const L=byId(S.look);$("lbFam").textContent=L?genreName(L):t("taxonOrig");$("lbName").textContent=L?lname(L):t("orig");$("lbSrc").textContent=L&&L.src?t("after",{a:L.src}):"";$("lbHint").textContent=L&&L.pour?t("pourHint"):L&&L.spot?t("spotHint"):L&&L.words?t("wordsHint2"):""}
 function randomLook(){const L=ALL[Math.floor(Math.random()*ALL.length)];S.fam=L.f;S.sub=L.s;S.q="";$("q").value="";drawFams();drawGrid();pickLook(L.id);const el=$("grid").querySelector(`[data-id="${L.id}"]`);if(el)el.scrollIntoView({block:"nearest",inline:"nearest"})}
 const STRIPIO=new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting&&e.target._q){thumbQ.push([...e.target._q,e.target]);e.target._q=null;STRIPIO.unobserve(e.target)}pumpThumbs()},{root:null,rootMargin:"200px"});
 async function pumpThumbs(){if(thumbBusy||!S.tiny)return;thumbBusy=true;
@@ -3310,8 +3452,8 @@ async function pumpThumbs(){if(thumbBusy||!S.tiny)return;thumbBusy=true;
   await sleep(0)}
  thumbBusy=false}
 function pickLook(id){pushHist();const L=byId(id);
- if(id&&id===S.look){if(L&&L.film&&L.film.v.length>1){const cur=S.labo.fv!=null?S.labo.fv:L.film.d;S.labo.fv=(cur+1)%L.film.v.length}else S.seed=Math.floor(Math.random()*99999)}
- else{S.look=id;S.seed=1974;S.labo={};if(L&&L.user)S.user=Object.assign(USER0(),JSON.parse(JSON.stringify(L.user)))}
+ if(id&&id===S.look){S.pour=null;if(L&&L.film&&L.film.v.length>1){const cur=S.labo.fv!=null?S.labo.fv:L.film.d;S.labo.fv=(cur+1)%L.film.v.length}else S.seed=Math.floor(Math.random()*99999)}
+ else{S.look=id;S.seed=1974;S.labo={};S.pour=null;if(L&&L.user)S.user=Object.assign(USER0(),JSON.parse(JSON.stringify(L.user)))}
  [...$("grid").children].forEach(b=>b.setAttribute("aria-pressed",String((b.dataset.id||"")===(id||""))));closeVideo();setLabel();render()}
 
 /* ---------- scène : avant / après, point de mesure, pinceau, recadrage ---------- */
@@ -3326,14 +3468,24 @@ stage.addEventListener("pointerdown",e=>{if(e.target.closest("button")||!$("play
  if(TOOL.mode==="brush"){drag="brush";brushAt(p);return}if(TOOL.mode==="crop"){drag={crop:1,x:e.clientX,y:e.clientY,ox:CROP.ox,oy:CROP.oy};return}
  if(S.cmp!=null){drag="cmp";S.cmp=p.x;drawCompare();return}
  const L=byId(S.look);if(L&&(L.c.cpu&&JSON.stringify(L.c.cpu).includes('"thermal"'))){S.spot=p;setThermalSpot(p);return}
+ if(L&&L.pour){pushHist();startPour(p);drag="pour";return}
  if(L&&L.spot){pushHist();S.spot={x:p.x,y:p.y};render();return}
  drag={hold:setTimeout(()=>{if(!S.prev)return;const v=$("view");const c=document.createElement("canvas");c.width=S.prev.width;c.height=S.prev.height;c.getContext("2d").putImageData(S.prev,0,0);v.getContext("2d").drawImage(c,0,0,v.width,v.height);$("lbName").textContent=t("orig");drag.shown=1},220)}});
-stage.addEventListener("pointermove",e=>{if(!drag)return;const p=stagePos(e);if(drag==="brush")brushAt(p);else if(drag==="cmp"){S.cmp=p.x;drawCompare()}else if(drag.crop){const r=p.r;CROP.ox=drag.ox+(e.clientX-drag.x)/r.width;CROP.oy=drag.oy+(e.clientY-drag.y)/r.height;drawCrop()}});
-const up=()=>{if(drag&&drag.hold){clearTimeout(drag.hold);if(drag.shown&&S.lastView){const v=$("view");v.getContext("2d").drawImage(S.lastView,0,0);setLabel()}}if(drag==="brush"){S.maskDirty=true;render()}drag=null};
+stage.addEventListener("pointermove",e=>{if(!drag)return;const p=stagePos(e);if(drag==="pour"){POUR.target=p;return};if(drag==="brush")brushAt(p);else if(drag==="cmp"){S.cmp=p.x;drawCompare()}else if(drag.crop){const r=p.r;CROP.ox=drag.ox+(e.clientX-drag.x)/r.width;CROP.oy=drag.oy+(e.clientY-drag.y)/r.height;drawCrop()}});
+const up=()=>{if(drag==="pour"){stopPour();drag=null;return}if(drag&&drag.hold){clearTimeout(drag.hold);if(drag.shown&&S.lastView){const v=$("view");v.getContext("2d").drawImage(S.lastView,0,0);setLabel()}}if(drag==="brush"){S.maskDirty=true;render()}drag=null};
 stage.addEventListener("pointerup",up);stage.addEventListener("pointercancel",up);
 function setThermalSpot(p){const L=byId(S.look);const ops=JSON.parse(JSON.stringify(L.c.cpu.ops));ops.forEach(o=>{if(o.op==="thermal"){o.x=p.x;o.y=p.y}});S.labo.cpu=Object.assign({},L.c.cpu,{ops});render()}
 $("cmpBtn").onclick=()=>{S.cmp=S.cmp==null?.5:null;$("cmpBtn").setAttribute("aria-pressed",String(S.cmp!=null));drawCompare()};
 
+/* ---------- Koloid : verser le révélateur au doigt ; sur téléphone, l'inclinaison fait couler la nappe ---------- */
+const POUR={timer:0,head:null,target:null,tilt:null,last:0};
+addEventListener("deviceorientation",e=>{if(e.beta==null)return;POUR.tilt=[Math.max(-1,Math.min(1,(e.gamma||0)/35)),Math.max(-1,Math.min(1,((e.beta||0)-35)/35))]});
+function startPour(p){if(!S.pour)S.pour={pts:[]};POUR.head={x:p.x,y:p.y};POUR.target=p;
+ try{if(typeof DeviceOrientationEvent!=="undefined"&&DeviceOrientationEvent.requestPermission)DeviceOrientationEvent.requestPermission().catch(()=>{})}catch{}
+ clearInterval(POUR.timer);POUR.timer=setInterval(()=>{const h=POUR.head;if(POUR.tilt&&matchMedia("(pointer:coarse)").matches){h.x+=POUR.tilt[0]*.012;h.y+=POUR.tilt[1]*.012}else{h.x+=(POUR.target.x-h.x)*.35;h.y+=(POUR.target.y-h.y)*.35}
+  h.x=Math.max(.02,Math.min(.98,h.x));h.y=Math.max(.02,Math.min(.98,h.y));S.pour.pts.push([h.x,h.y]);if(S.pour.pts.length>1400)S.pour.pts.shift();
+  if(performance.now()-POUR.last>140){POUR.last=performance.now();render()}},40)}
+function stopPour(){clearInterval(POUR.timer);POUR.timer=0;render()}
 /* ---------- pinceau : masque peint à la résolution d'aperçu ---------- */
 const TOOL={mode:null,brush:.06,erase:true};
 function ensureMask(){if(S.mask)return;const c=document.createElement("canvas");c.width=S.prev.width;c.height=S.prev.height;const g=c.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,c.width,c.height);S.mask=c}
@@ -3360,7 +3512,7 @@ async function loadFile(f){if(!f)return;try{pushHist();const img=await readFile(
 $("bOpen").onclick=()=>$("fOpen").click();$("fOpen").onchange=()=>{loadFile($("fOpen").files[0]);$("fOpen").value=""};$("fShoot").onchange=()=>{loadFile($("fShoot").files[0]);$("fShoot").value=""};
 document.addEventListener("paste",e=>{const f=[...(e.clipboardData?.files||[])].find(x=>/^image\//.test(x.type));if(f){e.preventDefault();loadFile(f)}});
 document.addEventListener("dragover",e=>e.preventDefault());document.addEventListener("drop",e=>{e.preventDefault();const f=[...e.dataTransfer.files].find(x=>/^image\//.test(x.type));if(f)loadFile(f)});
-$("bUndo").onclick=()=>{const h=S.hist.pop();if(!h)return;Object.assign(S,{look:h.look,seed:h.seed,labo:h.labo,user:h.user,spot:h.spot,caption:h.caption,words:h.words,font:h.font,dbl:h.dbl});if(h.ver!==S.ver){S.src=h.src;S.prev=scaleTo(S.src,1600);S.tiny=scaleTo(S.src,240);S.ver=h.ver;THUMBS.clear();CPUC.clear()}drawStrip();drawLabo();closeVideo();render()};
+$("bUndo").onclick=()=>{const h=S.hist.pop();if(!h)return;Object.assign(S,{look:h.look,seed:h.seed,labo:h.labo,user:h.user,spot:h.spot,caption:h.caption,words:h.words,font:h.font,dbl:h.dbl,pour:h.pour});if(h.ver!==S.ver){S.src=h.src;S.prev=scaleTo(S.src,1600);S.tiny=scaleTo(S.src,240);S.ver=h.ver;THUMBS.clear();CPUC.clear()}drawStrip();drawLabo();closeVideo();render()};
 function download(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)}
 const EX={fmt:LS.get("pf_exfmt","jpeg"),size:LS.get("pf_exsize",0)};
 async function savePhoto(){if(!$("player").hidden&&CUR_VID){const ext=(CUR_VID.blob?.type||"video/mp4").split("/")[1].replace("quicktime","mov");if(CUR_VID.blob)download(CUR_VID.blob,ikName("faunai",ext));else window.open(CUR_VID.url,"_blank","noopener");return}
