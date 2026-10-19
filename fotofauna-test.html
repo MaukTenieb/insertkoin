@@ -4,149 +4,173 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Photofauna + FaunAI — Insert Koin</title>
-<meta name="description" content="Photofauna + FaunAI, the photo booth of Insert Koin by Mauk Tenieb: more than 1,000 looks: 131 measured film stocks, lenses, flashes, light leaks, papers, frames, 19th-century processes, thermal cameras, painting, print shops from 19th-century processes to thermal cameras, glitch and print shops, plus free AI images and videos.">
+<meta name="description" content="Photofauna + FaunAI, the photo booth of Insert Koin by Mauk Tenieb: a taxonomy of photographic processes — film stocks, cameras, 19th-century plates and prints, sensors, painting, print shops, mosaics, data glitches, retouching — applied to your photo, plus free AI images and videos.">
 <meta name="robots" content="index,follow,noai,noimageai">
 <meta name="author" content="Mauk Tenieb">
+<meta name="theme-color" content="#0e2a45">
 <link rel="icon" href="favicon.png">
 <link rel="stylesheet" href="fonts.css">
 <!--
  Photofauna + FaunAI — code under the MIT License. The names Photofauna, FaunAI, Insert Koin, Korhogo and Korhogo Fauna, the marks and every Korhogo image remain the property of Mauk Tenieb & Korhogo.
+ Direction artistique : herbier au cyanotype (Anna Atkins, Photographs of British Algae, 1843) — fond bleu de Prusse, étiquettes de papier, spécimens rangés par famille et genre.
 -->
 <style>
-:root{--bg:#07060a;--panel:#0f0d12;--panel2:#17141b;--fg:#efe6cf;--muted:#9a9078;--line:#2c2720;--accent:#c9a84c;--lime:#b9d84a;--ok:#7fdc8a;--err:#e5786c;
- --mono:"DM Mono",ui-monospace,Menlo,Consolas,monospace;--display:"Bebas Neue",Impact,"Arial Narrow",sans-serif;color-scheme:dark}
+:root{
+ --prusse:#0e2a45;--prusse2:#12365a;--fosse:#081c30;--trait:#2a5179;--cyan:#9cc0da;--papier:#eee8da;--encre:#16202e;--or:#d6b057;--vert:#b9d84a;--ok:#9be3a8;--err:#ffb0a0;
+ --sans:"Archivo","Helvetica Neue",Arial,sans-serif;--titre:"Bebas Neue",Impact,"Arial Narrow",sans-serif;--chiffre:"DM Mono",ui-monospace,Menlo,monospace;color-scheme:dark}
 *{box-sizing:border-box}
-html,body{background:var(--bg);margin:0;height:100%}
-body{color:var(--fg);font:14px/1.45 var(--mono);padding:0 max(12px,env(safe-area-inset-right,0px)) 0 max(12px,env(safe-area-inset-left,0px))}
-button{font:inherit;color:inherit}
-:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+html,body{margin:0;background:var(--prusse)}
+body{color:var(--papier);font:400 14px/1.45 var(--sans);min-height:100vh;
+ background:var(--prusse) radial-gradient(120% 80% at 70% 0%,#15406a 0%,var(--prusse) 55%,#0a223a 100%) fixed}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--or);outline-offset:2px}
 [hidden]{display:none!important}
-.app{max-width:1280px;margin:0 auto;padding-block:max(10px,env(safe-area-inset-top,0px)) 40px;display:grid;gap:12px;grid-template-columns:1fr;grid-template-areas:"head" "stage" "ask" "looks" "labo" "reel"}
-@media (min-width:980px){.app{grid-template-columns:minmax(0,1fr) 420px;grid-template-areas:"head head" "stage looks" "ask looks" "labo looks" "reel looks";align-items:start}}
-header{grid-area:head;display:flex;align-items:center;justify-content:space-between;gap:10px}
-h1{margin:0;font:400 clamp(30px,6vw,46px)/1 var(--display);letter-spacing:.08em;color:var(--fg)}
-h1 b{font-weight:400;color:var(--lime)} h1 i{font-style:normal;color:var(--accent)}
-.hd{display:flex;gap:6px}
-.ghost{font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);background:transparent;padding:8px 11px;cursor:pointer}
-.ghost:hover{border-color:var(--fg)}
-/* scène */
-.stage{grid-area:stage;position:relative;background:#000;border:1px solid var(--line);display:grid;place-items:center;min-height:240px;max-height:72vh;overflow:hidden;touch-action:none;user-select:none}
-.stage canvas,.stage video{display:block;max-width:100%;max-height:72vh;width:auto;height:auto}
+.app{display:grid;gap:14px 18px;max-width:1500px;margin:0 auto;padding:max(10px,env(safe-area-inset-top,0px)) max(14px,env(safe-area-inset-right,0px)) 40px max(14px,env(safe-area-inset-left,0px));
+ grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "stage" "ask" "index" "specs" "labo" "reel" "foot"}
+@media (min-width:1100px){.app{grid-template-columns:210px minmax(0,1fr) 380px;grid-template-areas:"head head head" "index stage specs" "index ask specs" "index labo specs" "index reel specs" "foot foot foot";align-items:start}}
+/* en-tête */
+header{grid-area:head;display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-bottom:1px solid var(--trait);padding-bottom:8px}
+h1{margin:0;font:400 clamp(30px,4.6vw,48px)/.9 var(--titre);letter-spacing:.04em;color:var(--papier)}
+h1 span{color:var(--cyan)}
+.hd{display:flex;gap:8px;align-items:center}
+.lnk{background:none;border:1px solid var(--trait);padding:6px 10px;cursor:pointer;color:var(--cyan);font-size:12px}
+.lnk:hover{border-color:var(--cyan);color:var(--papier)}
+/* index taxonomique */
+.index{grid-area:index;display:flex;flex-direction:column;gap:10px;min-width:0}
+@media (min-width:1100px){.index{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;scrollbar-width:thin}}
+.search{display:flex;gap:6px}
+#q{flex:1;min-width:0;background:var(--fosse);border:1px solid var(--trait);padding:8px 10px;color:var(--papier);border-radius:0}
+#q::placeholder{color:#6f93b0}
+.fams{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.fams::-webkit-scrollbar{display:none}
+.fam{flex:0 0 auto;display:flex;align-items:baseline;gap:6px;background:none;border:0;border-bottom:2px solid transparent;padding:4px 6px;cursor:pointer;text-align:left;color:var(--cyan)}
+.fam span{font:400 21px/1 var(--titre);letter-spacing:.03em}
+.fam small{font:400 11px var(--chiffre);color:#6f93b0}
+.fam:hover{color:var(--papier)}
+.fam[aria-pressed="true"]{color:var(--papier);border-color:var(--or)}
+@media (min-width:1100px){.fams{flex-direction:column;overflow:visible;gap:0}.fam{border-bottom:0;border-left:2px solid transparent;padding:5px 10px;justify-content:space-between}.fam[aria-pressed="true"]{border-left-color:var(--or);background:rgba(255,255,255,.04)}}
+.count{font:400 11px var(--chiffre);color:#6f93b0;margin:0}
+.rand{background:none;border:1px dashed var(--trait);color:var(--cyan);padding:7px 10px;cursor:pointer;text-align:left}
+.rand:hover{border-color:var(--or);color:var(--papier)}
+/* scène : la planche */
+.stage{grid-area:stage;position:relative;background:var(--fosse);border:1px solid var(--trait);display:grid;place-items:center;min-height:260px;max-height:74vh;overflow:hidden;touch-action:none;user-select:none;cursor:crosshair}
+.stage canvas,.stage video{display:block;max-width:100%;max-height:74vh;width:auto;height:auto}
 .stage video{position:absolute;inset:0;margin:auto;background:#000}
-.stage .busy{position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--line);overflow:hidden}
-.stage .busy i{position:absolute;inset:0 auto 0 0;width:30%;background:var(--accent)}
-@media (prefers-reduced-motion:no-preference){.stage .busy i{animation:sl 1s ease-in-out infinite}}
-@keyframes sl{from{left:-30%}to{left:100%}}
-.stage .tag{position:absolute;left:8px;top:8px;font:600 11px var(--mono);letter-spacing:.06em;background:rgba(7,6,10,.7);padding:3px 7px;text-transform:uppercase}
-.stage .vx{position:absolute;right:8px;top:8px}
-.tools{display:flex;gap:6px;flex-wrap:wrap}
-.btn{flex:1 1 0;min-width:0;font:400 22px/1 var(--display);letter-spacing:.08em;border:1px solid var(--line);background:var(--panel);padding:12px 8px;cursor:pointer;text-align:center}
-.btn:hover{border-color:var(--fg)}
-.btn.main{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.btn.vid{background:var(--accent);color:var(--bg);border-color:var(--accent)}
-.btn[disabled]{opacity:.35;cursor:default}
-.ask{grid-area:ask;display:flex;flex-direction:column;gap:8px}
-.ask .row{display:flex;gap:6px}
-#prompt{flex:1 1 auto;min-width:0;font:500 15px var(--mono);color:var(--fg);background:var(--panel);border:1px solid var(--line);padding:10px 12px;border-radius:0}
-#prompt::placeholder{color:var(--muted)}
-.ask .row .btn{flex:0 0 auto;padding:10px 16px}
-.status{min-height:20px;font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.status.err{color:var(--err)} .status.ok{color:var(--ok)}
-#stopAi{padding:3px 8px}
-/* rendus */
-.looks{grid-area:looks;display:flex;flex-direction:column;gap:8px;min-width:0}
-.fams{display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin;padding-bottom:2px}
-.fams button{flex:0 0 auto;font:600 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:transparent;padding:7px 9px;cursor:pointer;white-space:nowrap;color:var(--muted)}
-.fams button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-.strip{display:grid;grid-auto-flow:column;grid-auto-columns:96px;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
-@media (min-width:980px){.strip{grid-auto-flow:row;grid-template-columns:repeat(4,1fr);grid-auto-columns:auto;max-height:calc(100vh - 150px);overflow-y:auto;overflow-x:hidden}}
-.lk{display:flex;flex-direction:column;gap:3px;border:1px solid var(--line);background:var(--panel);padding:3px;cursor:pointer;text-align:left;min-width:0}
-.lk:hover{border-color:var(--muted)}
-.lk[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
-.lk img,.lk .ph{width:100%;aspect-ratio:1;object-fit:cover;background:#16131a;display:block}
-.lk span{font-size:10.5px;line-height:1.2;color:var(--fg);min-height:2.4em;overflow:hidden}
-/* réglages */
-.adj{grid-area:adj;border:1px solid var(--line);background:var(--panel)}
-.adj summary{cursor:pointer;padding:9px 12px;font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.sl{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px 16px;padding:4px 12px 12px}
-.sl label{display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--muted)}
-.sl input{width:100%;accent-color:var(--accent)}
-/* pellicule */
-.reel{grid-area:reel;display:flex;flex-direction:column;gap:6px}
-.reel h2{margin:0;font:400 20px/1 var(--display);letter-spacing:.08em;color:var(--muted)}
-.film{display:grid;grid-auto-flow:column;grid-auto-columns:88px;gap:6px;overflow-x:auto;padding-bottom:4px}
-.film .it{position:relative;border:1px solid var(--line);background:#000;cursor:pointer;padding:0;aspect-ratio:1;overflow:hidden}
-.film .it img,.film .it video{width:100%;height:100%;object-fit:cover;display:block}
-.film .it b{position:absolute;left:3px;bottom:3px;font:600 9px var(--mono);background:rgba(0,0,0,.7);padding:1px 4px;text-transform:uppercase}
-.film .it .x{position:absolute;right:2px;top:2px;font-size:11px;background:rgba(0,0,0,.7);border:0;padding:1px 5px;cursor:pointer}
-/* clés */
-dialog{background:var(--panel);color:var(--fg);border:1px solid var(--line);padding:16px;max-width:560px;width:calc(100% - 24px)}
-dialog::backdrop{background:rgba(0,0,0,.7)}
-dialog h2{margin:0 0 8px;font:400 24px/1 var(--display);letter-spacing:.08em}
-dialog p{font-size:12px;color:var(--muted);margin:6px 0}
-dialog label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted);margin:8px 0}
-dialog input{font:500 14px var(--mono);padding:8px 10px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:0}
-dialog a{color:var(--accent)}
-.dlgrow{display:flex;gap:6px;justify-content:space-between;align-items:center;margin-top:10px;flex-wrap:wrap}
-footer{grid-column:1/-1;font-size:11px;color:var(--muted)}
-footer a{color:var(--muted)}
-
-.stage{cursor:crosshair}
-@media (max-width:979px){.app{grid-template-columns:minmax(0,1fr)}}.app>*{min-width:0}
-@media (max-width:600px){.btn{font-size:17px;letter-spacing:.03em;padding:11px 2px;overflow:hidden}.ask .row{flex-wrap:wrap}#prompt{flex-basis:100%}.ask .row .btn{flex:1 1 0}h1{font-size:30px}}
-.stage #cmpOrig,.stage #cropOv{position:absolute;inset:0;margin:auto;max-width:100%;max-height:72vh;pointer-events:none}
-.stage #cmpBar{position:absolute;top:0;bottom:0;width:2px;background:var(--fg);pointer-events:none;box-shadow:0 0 0 1px #000}
-.stage .sh{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);width:64px;height:64px;border-radius:50%;border:4px solid var(--fg);background:rgba(239,230,207,.25);cursor:pointer}
-.stage .flashFx{position:absolute;inset:0;background:#fff;transition:opacity .3s;pointer-events:none}
-.stage .side{position:absolute;right:8px;bottom:10px;display:flex;gap:4px}
+.stage #cmpOrig,.stage #cropOv{position:absolute;inset:0;margin:auto;pointer-events:none}
+.stage #cmpBar{position:absolute;top:0;bottom:0;width:2px;background:var(--or);pointer-events:none}
+.busy{position:absolute;left:0;right:0;bottom:0;height:3px;overflow:hidden;background:transparent}
+.busy i{position:absolute;inset:0 auto 0 0;width:28%;background:var(--or)}
+@media (prefers-reduced-motion:no-preference){.busy i{animation:sl 1.1s ease-in-out infinite}}
+@keyframes sl{from{left:-28%}to{left:100%}}
+/* étiquette d'herbier : papier, encre, posée sur la planche */
+.label{position:absolute;left:12px;bottom:12px;max-width:min(340px,70%);background:var(--papier);color:var(--encre);padding:7px 11px 8px;box-shadow:0 1px 0 rgba(0,0,0,.25),0 6px 18px rgba(0,0,0,.35);pointer-events:none;transform:rotate(-.6deg)}
+.label p{margin:0}
+.label .lf{font:italic 300 11.5px/1.3 var(--sans);color:#3a4a5e}
+.label .ln{font:400 25px/1 var(--titre);letter-spacing:.02em;margin-top:2px}
+.label .ls{font:italic 400 12px/1.3 var(--sans);color:#3a4a5e}
+.label .lh{font:400 11.5px/1.3 var(--sans);color:#7a5a12;margin-top:3px}
+.stage .corner{position:absolute;right:10px;top:10px;display:flex;gap:6px}
+.stage .corner button{background:rgba(8,28,48,.82);border:1px solid var(--trait);color:var(--papier);padding:6px 10px;cursor:pointer;font-size:12.5px}
+.stage .corner button[aria-pressed="true"]{border-color:var(--or);color:var(--or)}
+.sh{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);width:66px;height:66px;border-radius:50%;border:4px solid var(--papier);background:rgba(238,232,218,.2);cursor:pointer}
+.flashFx{position:absolute;inset:0;background:#fff;transition:opacity .3s;pointer-events:none}
 #gl,#cam{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-9px;top:-9px}
-.fams button i{font-style:normal;opacity:.6;margin-left:3px}
-.fams .sep{flex:0 0 auto;align-self:center;font:600 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--accent);padding:0 4px 0 10px;border-left:1px solid var(--line);margin-left:4px}
-@media (min-width:980px){.fams{flex-wrap:wrap;overflow:visible}}
-.lbar{display:flex;gap:6px;align-items:center;justify-content:space-between}
-.lbar small{color:var(--muted);font-size:11px}
-.labo{grid-area:labo;border:1px solid var(--line);background:var(--panel)}
-.labo nav{display:flex;border-bottom:1px solid var(--line);overflow-x:auto}
-.labo nav button{flex:1 0 auto;font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;background:transparent;border:0;border-right:1px solid var(--line);padding:10px 12px;cursor:pointer;color:var(--muted)}
-.labo nav button[aria-selected="true"]{background:var(--fg);color:var(--bg)}
-.labo .body{padding:12px;display:flex;flex-direction:column;gap:10px}
-.labo h3{margin:6px 0 0;font:400 18px/1 var(--display);letter-spacing:.08em;color:var(--accent)}
+/* outils et FaunAI */
+.ask{grid-area:ask;display:flex;flex-direction:column;gap:8px;min-width:0}
+.tools{display:flex;gap:6px}.tools .btn{flex:1 1 0}.tools .btn.labo{flex:0 0 auto}
+.btn{font:400 21px/1 var(--titre);letter-spacing:.05em;border:1px solid var(--trait);background:var(--prusse2);color:var(--papier);padding:11px 8px;cursor:pointer;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn:hover{border-color:var(--cyan)}
+.btn.main{background:var(--papier);color:var(--encre);border-color:var(--papier)}
+.btn.labo{background:none;border-color:var(--or);color:var(--or);padding-inline:14px}
+.btn.labo[aria-expanded="true"]{background:var(--or);color:var(--encre)}
+.btn.vid{background:var(--vert);color:#17210a;border-color:var(--vert)}
+.btn[disabled]{opacity:.35;cursor:default}
+.row{display:flex;gap:6px}
+#prompt{flex:1;min-width:0;background:var(--fosse);border:1px solid var(--trait);padding:10px 12px;color:var(--papier);border-radius:0}
+#prompt::placeholder{color:#6f93b0}
+.row .btn{flex:0 0 auto;padding-inline:16px}
+.status{min-height:18px;font-size:12.5px;color:var(--cyan);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.status.err{color:var(--err)} .status.ok{color:var(--ok)}
+#stopAi{background:none;border:1px solid var(--trait);color:var(--papier);padding:3px 8px;cursor:pointer}
+@media (max-width:600px){.label{left:8px;bottom:8px;padding:5px 8px}.label .ln{font-size:19px}.label .lf,.label .ls{font-size:10.5px}.tools{flex-wrap:wrap}.tools .btn{flex:1 1 22%}.tools .btn.labo{flex:1 1 100%}.btn{font-size:16px;padding:10px 2px;letter-spacing:.03em}.row{flex-wrap:wrap}#prompt{flex-basis:100%}.row .btn{flex:1 1 0}}
+/* spécimens */
+.specs{grid-area:specs;display:flex;flex-direction:column;gap:10px;min-width:0}
+@media (min-width:1100px){.specs{position:sticky;top:12px;max-height:calc(100vh - 24px)}}
+.gtitle{margin:0;font:400 30px/1 var(--titre);letter-spacing:.03em;color:var(--papier)}
+p.gtitle{font:italic 300 15px/1.3 var(--sans);color:var(--cyan)}
+.gchips{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+@media (max-width:1099px){.gchips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}}
+.gchip{flex:0 0 auto;background:none;border:1px solid var(--trait);color:var(--cyan);padding:5px 9px;cursor:pointer;font-size:12.5px}
+.gchip small{font:400 10.5px var(--chiffre);opacity:.7}
+.gchip:hover{color:var(--papier)}
+.gchip[aria-pressed="true"]{background:var(--papier);color:var(--encre);border-color:var(--papier)}
+.grid{display:grid;grid-auto-flow:column;grid-auto-columns:112px;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+@media (min-width:1100px){.grid{grid-auto-flow:row;grid-template-columns:repeat(3,1fr);grid-auto-columns:auto;overflow-y:auto;overflow-x:hidden;padding-right:4px}}
+.spec{display:flex;flex-direction:column;gap:3px;background:none;border:0;padding:0;cursor:pointer;text-align:left;min-width:0;color:var(--papier)}
+.spec img,.spec .ph{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:var(--prusse2);border:1px solid var(--trait)}
+.spec:hover img{border-color:var(--cyan)}
+.spec[aria-pressed="true"] img,.spec[aria-pressed="true"] .ph{outline:2px solid var(--or);outline-offset:2px}
+.spec b{font:600 12px/1.25 var(--sans);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.spec i{font:italic 300 11px/1.25 var(--sans);color:var(--cyan)}
+/* Labo */
+.labo{grid-area:labo;border:1px solid var(--or);background:rgba(8,28,48,.6)}
+.labo nav{display:flex;border-bottom:1px solid var(--trait);overflow-x:auto}
+.labo nav button{flex:1 0 auto;background:none;border:0;border-right:1px solid var(--trait);padding:10px 12px;cursor:pointer;color:var(--cyan);font:400 18px/1 var(--titre);letter-spacing:.05em}
+.labo nav button[aria-selected="true"]{background:var(--or);color:var(--encre)}
+.labo .body{padding:14px;display:flex;flex-direction:column;gap:12px}
+.labo h3{margin:4px 0 0;font:400 20px/1 var(--titre);letter-spacing:.04em;color:var(--or)}
 .labo .slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px 14px}
-.labo .sl{display:flex;flex-direction:column;gap:3px;font-size:11.5px;color:var(--muted)}
-.labo select,.labo input[type=text]{font:500 13px var(--mono);color:var(--fg);background:var(--bg);border:1px solid var(--line);padding:7px 8px;border-radius:0;width:100%}
+.labo .sl{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--cyan)}
+.labo select,.labo input[type=text]{font-size:13px;color:var(--papier);background:var(--fosse);border:1px solid var(--trait);padding:7px 8px;border-radius:0;width:100%}
 .labo .sls{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:6px 16px}
-.labo .rg{display:flex;flex-direction:column;gap:1px;font-size:11.5px;color:var(--muted)}
-.labo .rg input{width:100%;accent-color:var(--accent)}
-.labo .row{display:flex;gap:6px;flex-wrap:wrap}
-.labo .btn.sm{flex:0 1 auto;font-size:17px;padding:9px 12px}
-.chip{font:600 11px var(--mono);border:1px solid var(--line);background:transparent;padding:6px 9px;cursor:pointer;color:var(--fg)}
-.chip[aria-pressed="true"]{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.labo .rg{display:flex;flex-direction:column;gap:1px;font-size:12px;color:var(--cyan)}
+.labo .rg input{width:100%;accent-color:var(--or)}
+.labo .row{flex-wrap:wrap}
+.labo .btn.sm{font-size:17px;padding:8px 12px}
+.chip{background:none;border:1px solid var(--trait);color:var(--papier);padding:6px 9px;cursor:pointer;font-size:12.5px}
+.chip[aria-pressed="true"]{background:var(--or);color:var(--encre);border-color:var(--or)}
 .labo .hsl{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.labo .hc b{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600}
+.labo .hc b{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
 .labo .hc b::before{content:"";width:10px;height:10px;background:var(--c)}
-.labo .curves canvas{width:min(100%,320px);aspect-ratio:1;border:1px solid var(--line);touch-action:none;cursor:crosshair;margin-top:6px}
-.labo .tool{border-top:1px solid var(--line);padding-top:6px;display:flex;flex-direction:column;gap:8px}
-.hint{font-size:11.5px;color:var(--muted);margin:0}
-#keysForm label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted);margin:6px 0}
-#keysForm input{font:500 14px var(--mono);padding:8px 10px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:0}
-#keysForm a{color:var(--accent)} #keysForm p{font-size:12px;color:var(--muted);margin:6px 0}
+.labo .curves canvas{width:min(100%,320px);aspect-ratio:1;border:1px solid var(--trait);touch-action:none;cursor:crosshair;margin-top:6px}
+.labo .tool{border-top:1px solid var(--trait);padding-top:8px;display:flex;flex-direction:column;gap:8px}
+.hint{font-size:12.5px;color:var(--cyan);margin:0;max-width:72ch}
+#keysForm label{display:flex;flex-direction:column;gap:3px;font-size:12.5px;color:var(--cyan);margin:6px 0}
+#keysForm input{padding:8px 10px;background:var(--fosse);color:var(--papier);border:1px solid var(--trait);border-radius:0}
+#keysForm a{color:var(--or)} #keysForm p{font-size:12.5px;color:var(--cyan);margin:6px 0}
+/* pellicule FaunAI */
+.reel{grid-area:reel;display:flex;flex-direction:column;gap:6px}
+.reel h2{margin:0;font:400 22px/1 var(--titre);letter-spacing:.04em;color:var(--cyan)}
+.film{display:grid;grid-auto-flow:column;grid-auto-columns:88px;gap:6px;overflow-x:auto;padding-bottom:4px}
+.film .it{position:relative;border:1px solid var(--trait);background:#000;cursor:pointer;padding:0;aspect-ratio:1;overflow:hidden}
+.film .it img,.film .it video{width:100%;height:100%;object-fit:cover;display:block}
+.film .it b{position:absolute;left:3px;bottom:3px;font-size:10px;background:rgba(8,28,48,.85);padding:1px 4px}
+.film .it .x{position:absolute;right:2px;top:2px;font-size:11px;background:rgba(8,28,48,.85);border:0;padding:1px 5px;cursor:pointer;color:var(--papier)}
+footer{grid-area:foot;font-size:12px;color:#6f93b0;border-top:1px solid var(--trait);padding-top:10px}
+footer a{color:var(--cyan)}
 </style>
 </head>
 <body>
 <div class="app">
  <header>
-  <h1>Photo<b>fauna</b> <i>+ FaunAI</i></h1>
-  <div class="hd"><button class="ghost" id="lang" type="button">EN</button></div>
+  <h1>Photofauna <span>+ FaunAI</span></h1>
+  <div class="hd"><button class="lnk" id="lang" type="button">EN</button></div>
  </header>
+
+ <aside class="index" aria-label="Index">
+  <div class="search"><input id="q" type="search" data-ph="search" autocomplete="off" aria-label="Search"></div>
+  <nav class="fams" id="fams"></nav>
+  <button class="rand" id="bRand" type="button" data-i="random"></button>
+  <p class="count" id="count"></p>
+ </aside>
 
  <section class="stage" id="stage" aria-label="Photo">
   <canvas id="view"></canvas>
   <canvas id="cmpOrig" hidden></canvas><div id="cmpBar" hidden></div>
   <canvas id="cropOv" hidden></canvas>
   <video id="player" hidden controls loop playsinline></video>
-  <span class="tag" id="tag"></span>
-  <div class="side"><button class="ghost" id="cmpBtn" type="button" aria-pressed="false" data-i="compare"></button></div>
-  <button class="ghost vx" id="closeVid" type="button" hidden>✕</button>
+  <div class="label" id="label"><p class="lf" id="lbFam"></p><p class="ln" id="lbName"></p><p class="ls" id="lbSrc"></p><p class="lh" id="lbHint"></p></div>
+  <div class="corner"><button id="cmpBtn" type="button" aria-pressed="false" data-i="compare"></button><button id="closeVid" type="button" hidden>✕</button></div>
   <button class="sh" id="shutter" type="button" hidden aria-label="Shutter"></button>
   <div class="flashFx" id="flashFx" hidden></div>
   <div class="busy" id="busy" hidden><i></i></div>
@@ -158,19 +182,19 @@ footer a{color:var(--muted)}
    <button class="btn" id="bShoot" type="button" data-i="shoot"></button>
    <button class="btn" id="bUndo" type="button" data-i="undo"></button>
    <button class="btn main" id="bSave" type="button" data-i="save"></button>
+   <button class="btn labo" id="laboBtn" type="button" aria-expanded="false" data-i="labo"></button>
   </div>
   <div class="row">
    <input id="prompt" type="text" data-ph="ph" autocomplete="off" aria-label="Prompt">
-   <button class="btn main" id="goImg" type="button" data-i="img"></button>
+   <button class="btn" id="goImg" type="button" data-i="img"></button>
    <button class="btn vid" id="goVid" type="button" data-i="vid"></button>
   </div>
-  <div class="status" id="status" aria-live="polite"><span id="stText"></span><button class="ghost" id="stopAi" type="button" hidden data-i="stop"></button></div>
+  <div class="status" id="status" aria-live="polite"><span id="stText"></span><button id="stopAi" type="button" hidden data-i="stop"></button></div>
  </section>
 
- <section class="looks" aria-label="Looks">
-  <div class="lbar"><button class="ghost" id="laboBtn" type="button" aria-expanded="false" data-i="labo"></button><small id="count"></small></div>
-  <nav class="fams" id="fams"></nav>
-  <div class="strip" id="strip"></div>
+ <section class="specs" aria-label="Specimens">
+  <div id="genres"></div>
+  <div class="grid" id="grid"></div>
  </section>
 
  <section class="labo" id="labo" hidden>
@@ -1955,7 +1979,7 @@ vec3 nrm(vec3 p){vec2 e=vec2(.002,0);return normalize(vec3(map(p+e.xyy)-map(p-e.
 vec3 env(vec3 d,float lod){vec2 uv=clamp(.5+vec2(d.x,-d.y)*.5/(1.2-d.z*.4),0.,1.);return textureLod(A,uv,lod).rgb;}
 void main(){vec2 asp=vec2(R.x/U(),R.y/U());vec2 q=(v-C)*asp/size;vec3 c=texture(A,v).rgb;
  /* ombre portée au sol, sous l'objet */
- vec2 sp=(v-C)*asp/size-vec2(.25,1.15);float sh=exp(-dot(sp*vec2(.8,2.6),sp*vec2(.8,2.6))*1.6);c*=1.-sh*shadow*.6;
+ vec2 sp=(v-C)*asp/size-vec2(.3,1.05);float sh=exp(-dot(sp*vec2(.75,2.4),sp*vec2(.75,2.4))*1.2);c*=1.-sh*shadow*.82;
  vec3 ro=vec3(q*1.,4.),rd=vec3(0,0,-1);ro=vec3(0,0,4);rd=normalize(vec3(q.x,-q.y,-3.2));
  float t=0.,d;bool hit=false;for(int i=0;i<96;i++){d=map(ro+rd*t);if(d<.001){hit=true;break;}t+=d;if(t>8.)break;}
  if(!hit){o=vec4(c,1.);return;}
@@ -1980,7 +2004,7 @@ void main(){vec3 c=texture(A,v).rgb;vec2 px=v*R;
 /* Collodion versé (Koloid) : masque de chimie calculé à part (R développé, G temps de contact) */
 pour:`uniform sampler2D A;uniform sampler2D M;uniform float amt,warm;
 void main(){vec3 c=texture(A,v).rgb;float l=dot(c,vec3(.08,.32,.6));l=clamp((l-.04)*1.25,0.,1.);
- vec4 m=texture(M,v);float dev=smoothstep(.18,.42,m.r);float burn=smoothstep(.55,1.,m.g);
+ vec4 m=texture(M,v);float dev=smoothstep(.3,.42,m.r);float burn=smoothstep(.45,1.,m.g);
  vec2 e=1./vec2(textureSize(M,0));float gx=texture(M,v+vec2(e.x,0)).r-texture(M,v-vec2(e.x,0)).r,gy=texture(M,v+vec2(0,e.y)).r-texture(M,v-vec2(0,e.y)).r;float rim=smoothstep(.02,.12,length(vec2(gx,gy)));
  float str=fbm(vec2(v.x*3.,v.y*40.)+m.ba*6.+SEED)*.25;
  vec3 silver=mix(vec3(.05,.045,.04),vec3(.93,.9,.82),pow(l,1.15));silver*=1.-burn*.55;silver+=(str-.12)*.18;
@@ -2001,20 +2025,22 @@ const GPU_EXT=(()=>{
  const WM={swirl:0,implode:1,explode:2};
  /* masque de chimie : particules de révélateur qui coulent selon l'inclinaison, puis s'arrêtent */
  const pourCache=new Map();
- function pourMask(seed,x,y,qty,w,h){const k=[seed,x.toFixed(3),y.toFixed(3),qty,w>h?1:0].join('|');if(pourCache.has(k))return pourCache.get(k);
-  const W=256,H=Math.round(256*h/w)||256,cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');g.fillStyle='#000';g.fillRect(0,0,W,H);
+ /* masque de chimie (Koloid) : le révélateur part du point touché et balaie la plaque en trois ou quatre inclinaisons ;
+    le champ cumulé, bruité, donne la zone développée ; les premiers passages, plus longs, donnent les brûlures */
+ function pourMask(seed,x,y,qty,w,h){const k=[seed,x.toFixed(3),y.toFixed(3),qty,(w/h).toFixed(2)].join('|');if(pourCache.has(k))return pourCache.get(k);
+  const W=192,H=Math.max(16,Math.round(192*h/w)),cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');
   let s=seed>>>0||1;const R=()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296};
-  const N=Math.round(45+qty*10);const tilts=[];let a=Math.atan2(.5-y,.5-x)+(R()-.5)*1.2;for(let i=0;i<5;i++){tilts.push([Math.cos(a),Math.sin(a)]);a+=(R()-.5)*2.6}
-  const acc=new Float32Array(W*H),tim=new Float32Array(W*H);
-  for(let p=0;p<N;p++){let px=x*W+(R()-.5)*W*.15,py=y*H+(R()-.5)*H*.15;const rad=W*(.09+R()*.08);let vol=1;let vx=0,vy=0;
-   for(let st=0;st<320&&vol>.03;st++){const tl=tilts[Math.min(4,Math.floor(st/64))];vx=vx*.85+tl[0]*W*.004+(R()-.5)*W*.006;vy=vy*.85+tl[1]*H*.004+(R()-.5)*H*.006;px+=vx;py+=vy;
-    if(px<rad*.4){px=rad*.4;vx=-vx*.3}if(py<rad*.4){py=rad*.4;vy=-vy*.3}if(px>W-rad*.4){px=W-rad*.4;vx=-vx*.3}if(py>H-rad*.4){py=H-rad*.4;vy=-vy*.3}
-    const r=rad*(.55+.45*vol),r2=r*r;const x0=Math.max(0,Math.floor(px-r)),x1=Math.min(W-1,Math.ceil(px+r)),y0=Math.max(0,Math.floor(py-r)),y1=Math.min(H-1,Math.ceil(py+r));
-    for(let yy=y0;yy<=y1;yy++)for(let xx=x0;xx<=x1;xx++){const d2=(xx-px)**2+(yy-py)**2;if(d2>r2)continue;const f=(1-d2/r2);const i=yy*W+xx;acc[i]+=f*.035*vol;tim[i]+=f*.012*(st<50?2:1)}
-    vol*=.993}}
-  const im=g.createImageData(W,H);for(let i=0;i<W*H;i++){im.data[i*4]=Math.min(255,acc[i]*255);im.data[i*4+1]=Math.min(255,tim[i]*90);im.data[i*4+2]=Math.round((i%W)/W*255);im.data[i*4+3]=255}
-  g.putImageData(im,0,0);g.filter='blur(1.2px)';g.drawImage(cv,0,0);g.filter='none';
-  pourCache.set(k,cv);if(pourCache.size>12)pourCache.delete(pourCache.keys().next().value);return cv}
+  const pts=[];let px=x*W,py=y*H,a=Math.atan2(.5-y,.5-x)+(R()-.5)*1.5;const sweeps=3+Math.floor(R()*2),steps=Math.round(18+qty*1.6);
+  for(let sw=0;sw<sweeps;sw++){for(let i=0;i<steps;i++){a+=(R()-.5)*.5;px+=Math.cos(a)*W*.018;py+=Math.sin(a)*H*.018;if(px<0||px>W){a=Math.PI-a;px=Math.max(0,Math.min(W,px))}if(py<0||py>H){a=-a;py=Math.max(0,Math.min(H,py))}pts.push([px,py,sw,i])}a+=Math.PI*(.5+R())}
+  const sig=W*(.1+qty*.006),acc=new Float32Array(W*H),tim=new Float32Array(W*H);
+  for(const [qx,qy,sw,i] of pts){const r=sig*2.6,x0=Math.max(0,Math.floor(qx-r)),x1=Math.min(W-1,Math.ceil(qx+r)),y0=Math.max(0,Math.floor(qy-r)),y1=Math.min(H-1,Math.ceil(qy+r)),tw=sw===0?Math.max(0,1-i/steps*1.6):0;
+   for(let yy=y0;yy<=y1;yy++)for(let xx=x0;xx<=x1;xx++){const d2=((xx-qx)**2+(yy-qy)**2)/(sig*sig);if(d2>6.8)continue;const f=Math.exp(-d2*.5);const o=yy*W+xx;acc[o]+=f;tim[o]+=f*tw}}
+  let mx=0;for(const v of acc)mx=Math.max(mx,v);let mt=0;for(const v of tim)mt=Math.max(mt,v);
+  const nz=(x,y)=>{let v=0,a=.5,f=1;for(let o=0;o<4;o++){const X=x*f,Y=y*f,ix=Math.floor(X),iy=Math.floor(Y),fx=X-ix,fy=Y-iy,hh=(a,b)=>{let t=Math.sin(a*127.1+b*311.7+seed*.013)*43758.5453;return t-Math.floor(t)};
+   const v00=hh(ix,iy),v10=hh(ix+1,iy),v01=hh(ix,iy+1),v11=hh(ix+1,iy+1),sx=fx*fx*(3-2*fx),sy=fy*fy*(3-2*fy);v+=a*((v00*(1-sx)+v10*sx)*(1-sy)+(v01*(1-sx)+v11*sx)*sy);a*=.5;f*=2}return v};
+  const im=g.createImageData(W,H);for(let yy=0;yy<H;yy++)for(let xx=0;xx<W;xx++){const o=yy*W+xx;const v=Math.min(1,Math.pow(acc[o]/mx,.45)+(nz(xx/18,yy/18)-.5)*.35);
+   im.data[o*4]=Math.max(0,Math.min(255,v*255));im.data[o*4+1]=Math.min(255,(tim[o]/(mt||1))*255);im.data[o*4+2]=Math.round(xx/W*255);im.data[o*4+3]=255}
+  g.putImageData(im,0,0);pourCache.set(k,cv);if(pourCache.size>12)pourCache.delete(pourCache.keys().next().value);return cv}
  const T={
   tonal(s,{swap,E,w,h,cur}){E.mip(cur());swap('tonal',{lo:s.lo??.5,mi:s.mi??.5,hi:s.hi??.5,amt:s.amt??1,sat:s.sat||0,bright:s.bright||0,lod0:lodOf(w,h,s.radius||.004),lift:s.lift||0,warm:s.warm||0})},
   warp(s,{swap}){swap('warp',{M:WM[s.mode||'swirl'],C:[s.x??.5,s.y??.5],rad:s.rad??.45,amt:s.amt??1})},
@@ -2311,7 +2337,7 @@ async function run(E,srcTex,w,h,steps,ctx){
   else if(op==='flash'){swap('flash',{amt:s.amt??.6,fall:s.fall??.45,col:hexv(s.color||'#fff1d8'),C:[s.x??.5,s.y??.45]})}
   else if(op==='paint'){let rad=(s.radius??.006)*Math.min(w,h);const k=rad>14?14/rad:1,W2=Math.max(8,Math.round(w*k)),H2=Math.max(8,Math.round(h*k));rad=Math.min(16,Math.max(2,rad*k));
    let a=cur,own=false;if(k<1){E.mip(cur);a=E.target(W2,H2);E.draw('copy',a,{},{A:cur.tex});own=true}
-   const ts=E.target(W2,H2),t2=E.target(W2,H2);E.draw('tensor',ts,base,{A:a.tex});E.draw('tblur',t2,{dir:[2,0]},{A:ts.tex});E.draw('tblur',ts,{dir:[0,2]},{A:t2.tex});E.release(t2);
+   const ts=E.target(W2,H2),t2=E.target(W2,H2);E.draw('tensor',ts,base,{A:a.tex});E.draw('tblur',t2,{dir:[3,0]},{A:ts.tex});E.draw('tblur',ts,{dir:[0,3]},{A:t2.tex});E.release(t2);
    for(let p=0;p<(s.passes||1);p++){const n=E.target(W2,H2);E.draw('kuwa',n,Object.assign({},base,{rad,q:s.q??8,alpha:1}),{A:a.tex,TS:ts.tex});if(own)E.release(a);a=n;own=true}E.release(ts);
    if(k<1){const n=E.target(w,h);E.draw('copy',n,{},{A:a.tex});E.release(a);a=n}
    if(!first)E.release(cur);first=false;cur=a;if(s.impasto)swap('impasto',{amt:s.impasto})}
@@ -2534,6 +2560,41 @@ const PAL={gameboy:['#0f380f','#306230','#8bac0f','#9bbc0f'],ti99:['#000000','#2
  cga:['#000000','#55ffff','#ff55ff','#ffffff'],nes:['#000000','#fcfcfc','#bcbcbc','#7c7c7c','#a80020','#f83800','#fca044','#f8b800','#00a800','#58d854','#0058f8','#3cbcfc','#6844fc','#d800cc','#f878f8','#503000']};
 const hexRGB=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
 const BAYER=[0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5];
+
+/* ---------- Percolator : rendu des cercles selon Grind, Brew, Serve (tutoriel The App Whisperer, 2016) ---------- */
+function hsl2rgb(h,s,l){h=((h%360)+360)%360/360;const f=n=>{const k=(n+h*12)%12,a=s*Math.min(l,1-l);return l-a*Math.max(-1,Math.min(k-3,9-k,1))};return [f(0)*255,f(8)*255,f(4)*255]}
+function rgb2hsl(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2;let h=0,s=0;if(mx!==mn){const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);h=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4;h*=60}return [h,s,l]}
+function percRender(img,out,W,p,seed,C,A){const r=rng(seed+11),k=img.width/W,c=mk(img.width,img.height),g=c.getContext('2d');
+ /* Serve : fond */
+ const serve=p.serve||'black';if(serve==='stirred'){const sm=mk(8,8),sg=sm.getContext('2d');sg.drawImage(toCv(A),0,0,8,8);g.imageSmoothingQuality='high';g.filter='blur('+Math.round(img.width/30)+'px)';g.drawImage(sm,0,0,c.width,c.height);g.filter='none'}
+ else{g.fillStyle={black:'#0b0907',sweet:'#f8f5ee',soy:'#c9a77c'}[serve]||serve;g.fillRect(0,0,c.width,c.height)}
+ /* Pic : part de la photo d'origine sous les cercles */
+ if(p.pic){g.globalAlpha=p.pic;g.drawImage(toCv(img),0,0);g.globalAlpha=1}
+ const brew=p.brew||'circles',grind=p.effect||'none',maxR=Math.max(...out.map(o=>o[2]));const tone=v=>{let [R,G,B]=v;
+  if(grind==='saturate'||grind==='auto'){const m=(R+G+B)/3,f=grind==='saturate'?1.7:1.25;R=m+(R-m)*f;G=m+(G-m)*f;B=m+(B-m)*f}
+  if(grind==='contrast'){R=(R-128)*1.45+128;G=(G-128)*1.45+128;B=(B-128)*1.45+128}
+  if(grind==='woodblock'){R=Math.round(R/64)*64;G=Math.round(G/64)*64;B=Math.round(B/64)*64}
+  if(brew==='ishihara'){const m=(R+G+B)/3;R=128+(R-m)*1.1+(m-128)*.35;G=128+(G-m)*1.1+(m-128)*.35;B=128+(B-m)*1.1+(m-128)*.35}
+  return [R,G,B].map(x=>Math.round(Math.max(0,Math.min(255,x))))};
+ const col=(x,y,rr)=>tone(C(x-rr*.6,y-rr*.6,x+rr*.6,y+rr*.6));const rgb=a=>`rgb(${a})`;
+ const alphaOf=rr=>{const b=p.blend??1;if(b==='evaporate')return 1-.75*(rr/maxR);if(b==='condense')return .25+.75*(rr/maxR);return b};
+ const disc=(X,Y,R0,fill,wob)=>{g.fillStyle=fill;g.beginPath();if(wob){const n=14;for(let i=0;i<=n;i++){const a=i/n*6.283,rr=R0*(1+(r()-.5)*wob);i?g.lineTo(X+Math.cos(a)*rr,Y+Math.sin(a)*rr):g.moveTo(X+Math.cos(a)*rr,Y+Math.sin(a)*rr)}g.closePath()}else g.arc(X,Y,R0,0,6.283);g.fill()};
+ const star=(X,Y,R0,fill)=>{g.fillStyle=fill;g.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?R0*.42:R0;g.lineTo(X+Math.cos(a)*rr,Y+Math.sin(a)*rr)}g.closePath();g.fill()};
+ const pass=list=>{for(const [x,y,rr] of list){const X=x*k,Y=y*k,R0=rr*k*.94,cc=col(x,y,rr),lb=(cc[0]+cc[1]+cc[2])/765;let a=alphaOf(rr);
+  if(p.blend==='lightest')a=.25+.75*lb;if(p.blend==='darkest')a=.25+.75*(1-lb);g.globalAlpha=a;
+  if(brew==='gel'){g.globalAlpha=a*.55;disc(X,Y,R0,rgb(cc))}
+  else if(brew==='charmed')disc(X,Y,R0,rgb(cc),.22);
+  else if(brew==='rings'||brew==='treble'||brew==='trip'){const lv=brew==='rings'?2:3;for(let q=0;q<lv;q++){const f=1-q*.36,ox=brew==='trip'&&q?(r()-.5)*R0*.3:0,oy=brew==='trip'&&q?(r()-.5)*R0*.3:0;let c2=col(x+ox/k,y+oy/k,rr*f*.5);
+    if(brew==='trip'&&q){const h=rgb2hsl(...c2);c2=hsl2rgb(h[0]+(r()-.5)*90,Math.min(1,h[1]*1.3+.1),h[2]).map(Math.round)}if(brew==='treble'&&q===2&&r()<.5)g.globalAlpha=a*.5;disc(X+ox,Y+oy,R0*f,rgb(c2))}}
+  else if(brew==='rays'){disc(X,Y,R0,rgb(cc));const n=8+Math.floor(r()*10),h=rgb2hsl(...cc);for(let q=0;q<n;q++){const a0=r()*6.283,w=.05+r()*.12;g.fillStyle=rgb(hsl2rgb(h[0]+(r()-.5)*120,Math.min(1,h[1]+.3),Math.min(.9,h[2]+.15)).map(Math.round));g.beginPath();g.moveTo(X,Y);g.arc(X,Y,R0,a0,a0+w);g.closePath();g.fill()}}
+  else if(brew==='stars'){g.globalAlpha=.62;disc(X,Y,R0,'#000');g.globalAlpha=1;star(X,Y,R0*.32,'#fff')}
+  else if(brew==='superstar'){star(X,Y,R0*.5,'#000')}
+  else disc(X,Y,R0,rgb(cc));
+  if(grind==='inky'&&brew!=='stars'){g.globalAlpha=.85;g.strokeStyle='#0c0a08';g.lineWidth=Math.max(.8,R0*.09);g.beginPath();g.arc(X,Y,R0,0,6.283);g.stroke()}}};
+ pass(out);if(brew==='overprint'){g.globalCompositeOperation='multiply';g.globalAlpha=.6;const off=out.map(([x,y,rr])=>[x+rr*.45,y-rr*.3,rr*.8]);pass(off);g.globalCompositeOperation='source-over'}
+ g.globalAlpha=1;return toImg(c)}
+/* tramage d'Atkinson sur un canal de luminance */
+function atkinson(L,W,H,th){const o=new Uint8Array(W*H);for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x,old=L[i],nw=old>th?1:0;o[i]=nw;const e=(old-nw)/8;for(const [dx,dy] of [[1,0],[2,0],[-1,1],[0,1],[1,1],[0,2]]){const xx=x+dx,yy=y+dy;if(xx>=0&&xx<W&&yy<H)L[yy*W+xx]+=e}}return o}
 const OPS={
  /* Decim8, Glitchr : vraie corruption de JPEG — octets de l'entropie modifiés, tables de quantification altérées, puis décodage par le navigateur */
  async jpegbend(img,p,seed){const cv=toCv(img),r=rng(seed);const g=cv.getContext('2d');
@@ -2545,7 +2606,7 @@ const OPS={
    for(let h=0;h<(p.hits||0);h++){const pos=sos+Math.floor((from+r()*(1-from))*span);if(pos>=end||b[pos]===0xFF||b[pos-1]===0xFF)continue;let v=Math.floor(r()*254);b[pos]=v}
    for(let h=0;h<(p.shifts||0);h++){const L=Math.floor(16+r()*span*.004),a=sos+Math.floor((from+r()*(1-from))*span),d=sos+Math.floor((from+r()*(1-from))*span);if(a+L>=end||d+L>=end)continue;
     for(let q=0;q<L;q++){const v=b[a+q];b[d+q]=v===0xFF?0xFE:v}if(b[d+L-1]===0xFF)b[d+L-1]=0xFE;if(b[d-1]===0xFF)b[d-1]=0xFE}
-   try{const bm=await createImageBitmap(new Blob([b],{type:'image/jpeg'}));g.drawImage(bm,0,0,cv.width,cv.height);bm.close&&bm.close()}catch(e){}}
+   try{const bm=await createImageBitmap(new Blob([b],{type:'image/jpeg'}));g.drawImage(bm,0,0,cv.width,cv.height);bm.close&&bm.close()}catch(e){/* décodeur intolérant (certains navigateurs) : repli sur une fracture des blocs */const f=OPS.fracture(toImg(cv),{block:.02,bands:6,amt:.3},seed+k);g.putImageData(f,0,0)}}
   return toImg(cv)},
  /* compression JPEG extrême répétée (Glitchr « extreme JPEG ») */
  async jpegcrush(img,p,seed){let cv=toCv(img);const W=cv.width,H=cv.height;
@@ -2575,7 +2636,7 @@ const OPS={
  /* pixels et palettes de machines (Decim8 Bitboy et TI99X, Glitchr consoles), tramage de Bayer */
  pixel(img,p,seed){const W=img.width,H=img.height,cell=Math.max(1,Math.round(Math.min(W,H)*(p.cell??.012))),w=Math.ceil(W/cell),h=Math.ceil(H/cell);
   const sm=mk(w,h),g=sm.getContext('2d');g.imageSmoothingQuality='high';g.drawImage(toCv(img),0,0,w,h);const d=g.getImageData(0,0,w,h),a=d.data,pal=(PAL[p.pal]||PAL.ti99).map(hexRGB),dz=p.dither??.6;
-  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=(y*w+x)*4,t=(BAYER[(y&3)*4+(x&3)]/16-.5)*dz*64;let best=0,bd=1e9;for(let k=0;k<pal.length;k++){const q=pal[k],e=(a[i]+t-q[0])**2*.3+(a[i+1]+t-q[1])**2*.59+(a[i+2]+t-q[2])**2*.11;if(e<bd){bd=e;best=k}}a[i]=pal[best][0];a[i+1]=pal[best][1];a[i+2]=pal[best][2]}
+  if(p.pal!=='none')for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=(y*w+x)*4,t=(BAYER[(y&3)*4+(x&3)]/16-.5)*dz*64;let best=0,bd=1e9;for(let k=0;k<pal.length;k++){const q=pal[k],e=(a[i]+t-q[0])**2*.3+(a[i+1]+t-q[1])**2*.59+(a[i+2]+t-q[2])**2*.11;if(e<bd){bd=e;best=k}}a[i]=pal[best][0];a[i+1]=pal[best][1];a[i+2]=pal[best][2]}
   g.putImageData(d,0,0);const c=mk(W,H),g2=c.getContext('2d');g2.imageSmoothingEnabled=false;g2.drawImage(sm,0,0,w*cell,h*cell);return toImg(c)},
  /* cercles tassés (Percolator) : du plus grand cercle possible au plus petit, dans l'espace encore libre ;
     un cercle reste dans une zone de couleur à peu près uniforme */
@@ -2589,20 +2650,15 @@ const OPS={
     const col=C(x-rad*.6,y-rad*.6,x+rad*.6,y+rad*.6);out.push([x,y,rad,col]);
     const R2=Math.ceil(rad*2.2);for(let yy=Math.max(0,yi-R2);yy<Math.min(H,yi+R2);yy++)for(let xx=Math.max(0,xi-R2);xx<Math.min(W,xi+R2);xx++){const dd=Math.hypot(xx-x,yy-y)-rad;const k=yy*W+xx;if(dd<dist[k])dist[k]=dd}}
    rad*=p.ratio??.82}
-  const c=mk(img.width,img.height),g=c.getContext('2d'),k=img.width/W;g.fillStyle=p.bg||'#0e0b09';g.fillRect(0,0,c.width,c.height);
-  const sat=p.sat??1.35;for(const [x,y,rr,col] of out){const m=(col[0]+col[1]+col[2])/3;let cc=col.map(v=>Math.max(0,Math.min(255,m+(v-m)*sat)));const X=x*k,Y=y*k,RR=rr*k*(p.fill??.94);
-   if(p.style==='rays'){for(let q=4;q>0;q--){const f=q/4,hue=(q*67+seed%360)%360;g.fillStyle=q===1?`rgb(${cc.map(Math.round)})`:`hsla(${hue},85%,${40+cc[1]/9}%,.9)`;g.beginPath();g.arc(X,Y,RR*f,0,6.283);g.fill()}continue}
-   if(p.style==='shade'){const gr=g.createRadialGradient(X-RR*.35,Y-RR*.35,RR*.1,X,Y,RR);gr.addColorStop(0,`rgb(${cc.map(v=>Math.round(Math.min(255,v*1.25+18)))})`);gr.addColorStop(1,`rgb(${cc.map(v=>Math.round(v*.72))})`);g.fillStyle=gr}else g.fillStyle=`rgb(${cc.map(Math.round)})`;
-   g.beginPath();g.arc(X,Y,RR,0,6.283);g.fill();if(p.ring){g.strokeStyle=`rgba(0,0,0,${p.ring})`;g.lineWidth=Math.max(.5,RR*.06);g.stroke()}}
-  return toImg(c)},
+  return percRender(img,out,W,p,seed,C,A)},
  /* mots qui remplissent l'image (WordFoto) : l'algorithme cherche l'espace libre et le remplit de mots, du plus grand au plus petit ;
     un mot ne franchit pas un contour net ; la photo, virée entre couleur d'ombre et couleur de haute lumière, apparaît à travers les lettres */
  words(img,p,seed){const r=rng(seed),A=shrink(img,p.work||460),W=A.width,H=A.height,d=A.data,G=gradients(A,1);
   const words=(p.words&&p.words.length?p.words:['KORHOGO','FAUNA']).map(w=>p.upper===false?w:w.toUpperCase());const font=p.font||'"Bebas Neue",Impact,"Arial Narrow",sans-serif';
   const Lm=new Float32Array(W*H);for(let i=0;i<W*H;i++)Lm[i]=lum(d,i*4);const Li=integral1(Lm,W,H);const Ei=integral1(G.mag,W,H);
-  const free=new Uint8Array(W*H);for(let y=0;y<H;y++)for(let x=0;x<W;x++)free[y*W+x]=Li(x-1,y-1,x+2,y+2)>(p.dark??.1)?1:0;
-  const tmp=mk(10,10).getContext('2d'),out=[];let size=Math.min(W,H)*(p.big??.09);const smin=Math.max(4,Math.min(W,H)*(p.small??.011));
-  while(size>=smin){const tries=Math.round((W*H)/(size*size)*(p.dens??9));tmp.font=`${size}px ${font}`;
+  const free=new Uint8Array(W*H);for(let y=0;y<H;y++)for(let x=0;x<W;x++)free[y*W+x]=Li(x-1,y-1,x+2,y+2)>(p.dark??.025)?1:0;
+  const tmp=mk(10,10).getContext('2d'),out=[];let size=Math.min(W,H)*(p.big??.075);const smin=Math.max(4,Math.min(W,H)*(p.small??.0085));
+  while(size>=smin){const tries=Math.round((W*H)/(size*size)*(p.dens??12));tmp.font=`${size}px ${font}`;
    for(let t=0;t<tries;t++){const w=words[Math.floor(r()*words.length)],tw=tmp.measureText(w).width,th=size*.74,vert=r()<(p.vert??.18),bw=vert?th:tw,bh=vert?tw:th;
     const x0=Math.floor(r()*(W-bw)),y0=Math.floor(r()*(H-bh));if(x0<0||y0<0)continue;
     if(size>smin*1.6&&Ei(x0,y0,x0+bw,y0+bh)>(p.edge??.16))continue;
@@ -2652,6 +2708,42 @@ const OPS={
    const sh=1+((b[0]-a[0])*(d[1]-a[1])-(b[1]-a[1])*(d[0]-a[0])>0?1:-1)*0;const cs=`rgb(${col.map(v=>Math.round(v*sh))})`;g.fillStyle=cs;g.strokeStyle=cs;g.lineWidth=1;g.beginPath();g.moveTo(a[0]*k,a[1]*k);g.lineTo(b[0]*k,b[1]*k);g.lineTo(d[0]*k,d[1]*k);g.closePath();g.fill();g.stroke()}
   if(p.lines){g.strokeStyle=`rgba(255,255,255,${p.lines})`;g.lineWidth=Math.max(.5,k*.4);for(const t of tris){if(t.some(i=>i>=Nn))continue;const [a,b,d]=t.map(i=>P[i]);g.beginPath();g.moveTo(a[0]*k,a[1]*k);g.lineTo(b[0]*k,b[1]*k);g.lineTo(d[0]*k,d[1]*k);g.closePath();g.stroke()}}
   return toImg(c)},
+
+ /* Decim8 Brainfeed3r (« rétroaction : l'image s'écho et chaque écho se superpose au reste », Kris Collins, 2012) */
+ feedback(img,p,seed){const r=rng(seed),c=toCv(img),g=c.getContext('2d'),W=c.width,H=c.height,n=p.n||7;const modes=['difference','screen','exclusion','lighter','difference'];
+  for(let k=0;k<n;k++){const prev=mk(W,H);prev.getContext('2d').drawImage(c,0,0);const s=1+(p.zoom??.06)*(1+r()),a=(r()-.5)*(p.rot??.08),dx=(r()-.5)*W*.04,dy=(r()-.5)*H*.04;
+   g.save();g.globalCompositeOperation=modes[k%modes.length];g.globalAlpha=p.alpha??.55;g.translate(W/2+dx,H/2+dy);g.rotate(a);g.scale(s,s);g.drawImage(prev,-W/2,-H/2);g.restore()}
+  return toImg(c)},
+ /* Decim8 Fold 4 Rap 5 (« miroir récursif qui plie et enroule l'image ») */
+ fold(img,p,seed){const r=rng(seed),src=toCv(img),W=src.width,H=src.height,c=mk(W,H),g=c.getContext('2d');g.drawImage(src,0,0);
+  const rec=(x,y,w,h,d)=>{if(d<=0||w<8||h<8)return;const horiz=(d+(r()<.5?0:1))%2===0;const tmp=mk(w,h);tmp.getContext('2d').drawImage(c,x,y,w,h,0,0,w,h);
+   g.save();if(horiz){g.translate(x+w,y);g.scale(-1,1);g.drawImage(tmp,0,0,w/2,h,0,0,w/2,h)}else{g.translate(x,y+h);g.scale(1,-1);g.drawImage(tmp,0,0,w,h/2,0,0,w,h/2)}g.restore();
+   const fx=Math.floor(w*(.3+r()*.4)),fy=Math.floor(h*(.3+r()*.4));if(r()<.7)rec(x,y,fx,fy,d-1);if(r()<.6)rec(x+fx,y+fy,w-fx,h-fy,d-1);if(r()<.4)rec(x+fx,y,w-fx,fy,d-1)};
+  rec(0,0,W,H,p.depth||5);return toImg(c)},
+ /* Decim8 BitBoy (« tramage 1 bit qui écrase l'image, parfois posé sur l'original ») */
+ bitboy(img,p,seed){const W=img.width,H=img.height,cell=Math.max(1,Math.round(Math.min(W,H)*(p.cell??.004))),w=Math.ceil(W/cell),h=Math.ceil(H/cell);const sm=mk(w,h),g=sm.getContext('2d');g.drawImage(toCv(img),0,0,w,h);const d=g.getImageData(0,0,w,h),a=d.data;
+  const L=new Float32Array(w*h);for(let i=0;i<w*h;i++)L[i]=Math.pow(lum(a,i*4),p.gamma??.9);const o=atkinson(L,w,h,.5);const on=hexRGB(p.on||'#f2f0e6'),off=hexRGB(p.off||'#111111');
+  for(let i=0;i<w*h;i++){const q=o[i]?on:off;a[i*4]=q[0];a[i*4+1]=q[1];a[i*4+2]=q[2]}g.putImageData(d,0,0);const c=toCv(img),g2=c.getContext('2d');g2.imageSmoothingEnabled=false;g2.globalAlpha=p.over??1;if(p.mode)g2.globalCompositeOperation=p.mode;g2.drawImage(sm,0,0,w*cell,h*cell);return toImg(c)},
+ /* Decim8 TI994X (« version basse résolution en affichage de caractères, comme une cartouche sale ») : chaque case reçoit le caractère dont la masse colle à sa luminance */
+ chars(img,p,seed){const W=img.width,H=img.height,cols=p.cols||60,cw=W/cols,chh=cw*1.25,rows=Math.ceil(H/chh);const set=p.set||' .,:;-=+*o%#@';const pal=(PAL[p.pal]||PAL.ti99).map(hexRGB);
+  const GW=10,GH=13,gc=mk(GW*set.length,GH),gg=gc.getContext('2d');gg.fillStyle='#fff';gg.font=`${GH}px "DM Mono",monospace`;gg.textBaseline='top';[...set].forEach((ch,i)=>{gg.save();gg.translate(i*GW,0);gg.scale(GW/(GH*.6),1);gg.fillText(ch,0,0);gg.restore()});const gd=gg.getImageData(0,0,GW*set.length,GH).data;
+  const mass=[...set].map((ch,i)=>{let s=0;for(let y=0;y<GH;y++)for(let x=0;x<GW;x++)s+=gd[(y*GW*set.length+i*GW+x)*4+3];return s/(GW*GH*255)});const mx=Math.max(...mass)||1;const order=[...set].map((ch,i)=>[i,mass[i]/mx]).sort((a,b)=>a[1]-b[1]);
+  const sm=mk(cols,rows),sg=sm.getContext('2d');sg.imageSmoothingQuality='high';sg.drawImage(toCv(img),0,0,cols,rows);const a=sg.getImageData(0,0,cols,rows).data;
+  const near=v=>{let b=0,bd=1e9;for(let k=0;k<pal.length;k++){const q=pal[k],e=(v[0]-q[0])**2+(v[1]-q[1])**2+(v[2]-q[2])**2;if(e<bd){bd=e;b=k}}return pal[b]};
+  /* chaque case : fond = couleur sombre de la palette la plus proche, encre = couleur claire ; glyphe choisi par sa masse */
+  const c=mk(W,H),g=c.getContext('2d');g.imageSmoothingEnabled=false;
+  for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){const i=(y*cols+x)*4,l=lum(a,i);let gi=order[0][0];for(const [k,m] of order)if(m<=l*1.1)gi=k;
+   const ink=near([a[i]*1.25+20,a[i+1]*1.25+20,a[i+2]*1.25+20]),bg=near([a[i]*.35,a[i+1]*.35,a[i+2]*.35]);g.fillStyle=`rgb(${bg})`;g.fillRect(x*cw,y*chh,cw+1,chh+1);
+   const t=mk(GW,GH),tg=t.getContext('2d');tg.drawImage(gc,gi*GW,0,GW,GH,0,0,GW,GH);tg.globalCompositeOperation='source-in';tg.fillStyle=`rgb(${ink})`;tg.fillRect(0,0,GW,GH);g.drawImage(t,x*cw,y*chh,cw,chh)}
+  return toImg(c)},
+ /* Decim8 Oirectine (« remappe la palette harmoniquement pour pousser les couleurs vers des zones intenses ») */
+ harmonic(img,p,seed){const r=rng(seed),W=img.width,H=img.height,o=new Uint8ClampedArray(img.data),n=p.n||5,shift=r()*360,base=p.base??(r()*60);
+  for(let i=0;i<o.length;i+=4){const [h,s,l]=rgb2hsl(o[i],o[i+1],o[i+2]);const hh=Math.round((h+shift)/(360/n))*(360/n)+base;const ss=s>.08?Math.min(1,.65+s*.6):s*.5;const ll=Math.round(l*(p.levels||6))/(p.levels||6);const q=hsl2rgb(hh,ss,Math.max(.06,Math.min(.94,ll)));o[i]=q[0];o[i+1]=q[1];o[i+2]=q[2]}
+  return new ImageData(o,W,H)},
+ /* Decim8 L225 (« motifs récursifs fractals à partir d'images simples ») */
+ recurse(img,p,seed){const r=rng(seed),c=toCv(img),g=c.getContext('2d'),W=c.width,H=c.height,n=p.n||9,s=p.scale??.72,a=(p.rot??.35)*(r()<.5?-1:1);
+  for(let k=0;k<n;k++){const prev=mk(W,H);prev.getContext('2d').drawImage(c,0,0);g.save();g.globalCompositeOperation=k%2?'difference':'source-over';g.globalAlpha=k%2?.9:.85;g.translate(W*(p.cx??.5),H*(p.cy??.5));g.rotate(a);g.scale(s,s);g.drawImage(prev,-W*(p.cx??.5),-H*(p.cy??.5));g.restore()}
+  return toImg(c)},
  /* censure de gag (Nudifier) : teinte de peau posée sur la zone, puis mosaïque */
  censor(img,p,seed){const W=img.width,H=img.height,c=toCv(img),g=c.getContext('2d'),u=Math.min(W,H),x=(p.x??.5)*W,y=(p.y??.6)*H,rw=u*(p.w??.34),rh=u*(p.h??.42),cell=Math.max(3,Math.round(u*(p.cell??.035)));
   g.save();g.beginPath();g.ellipse(x,y,rw/2,rh/2,0,0,6.283);g.clip();g.globalAlpha=p.skinAmt??.5;g.fillStyle=p.skin||'#e0ac8a';g.fillRect(x-rw,y-rh,rw*2,rh*2);g.restore();
@@ -2659,211 +2751,7 @@ const OPS={
   g.save();g.beginPath();g.ellipse(x,y,rw/2,rh/2,0,0,6.283);g.clip();g.imageSmoothingEnabled=false;g.drawImage(s,0,0,s.width,s.height,x-rw/2-cell,y-rh/2-cell,s.width*cell,s.height*cell);g.restore();return toImg(c)}
 };
 
-/* ---------- familles et rendus ---------- */
-const FAMS=[['hipstamatic','Hipstamatic','Hipstamatic'],['tintype','TinType, Tintype, Koloid','TinType, Tintype, Koloid'],['decim8','Decim8','Decim8'],['glitchr','Glitchr','Glitchr'],['cameraplus','Camera+','Camera+'],
- ['pixlr','Pixlr-o-matic','Pixlr-o-matic'],['snapseed','Snapseed','Snapseed'],['percolator','Percolator','Percolator'],['wordfoto','WordFoto','WordFoto'],['glaze','Glaze','Glaze'],['matter','Matter','Matter'],['tangent','Tangent','Tangent'],
- ['lotogram','Reflection, Splitter','Reflection, Splitter'],['camly','Camly','Camly'],['lunapic','Lunapic','Lunapic'],['polamatic','Polamatic','Polamatic'],['moldiv','Moldiv','Moldiv'],['analog','Analog Film','Analog Film'],['nudifier','Nudifier','Nudifier']];
-const L=[];const add=(f,id,fr,en,c,x)=>L.push(Object.assign({id:'x-'+f+'-'+id,f,fr,en,c},x||{}));
-const lg=id=>{const o=LEGACY.find(l=>l.id===id);return o?{cpu:{ops:JSON.parse(JSON.stringify(o.r.ops||[])),crop:o.r.crop,seed:o.r.seed}}:{}};
-const P4='kodak-kodak-portra-400';
-
-/* Hipstamatic : objectif × pellicule × flash, d'après la description de chaque élément (sspai) */
-const HL=[['johns','John S','John S',{tone:{contrast:.12,sat:.05}}],['jimmy','Jimmy','Jimmy',{tone:{temp:.28,tint:.04,fade:.06},glow:{bloom:.35,th:.7,radius:.02}}],
- ['kaimal','Kaimal Mark II','Kaimal Mark II',{tone:{contrast:-.28,tint:.2,temp:.06}}],['buckhorst','Buckhorst H1','Buckhorst H1',{tone:{temp:.38,sat:.12}}],['jane','Jane','Jane',{tone:{contrast:.04}}],
- ['helga','Helga Viking','Helga Viking',{lens:'soft',tone:{exposure:.18,temp:-.3,tint:-.1}}],['roboto','Roboto Glitter','Roboto Glitter',{lens:'soft',tone:{temp:-.35},glow:{bloom:.65,diffuse:.45,th:.5,radius:.03}}],
- ['jamesm','James M','James M',{tone:{temp:.22,sat:-.06},grain:'fin'}],['americana','Americana','Americana',{fx:[{op:'lens',type:'tilt',amt:1.5,y:.5,w:.3,angle:62}]}]];
-const HF=[['blanko','Blanko','Blanko',{frame:'print70'}],['ina69','Ina\'s 1969','Ina\'s 1969',{frame:'ina69'}],['kodot','Kodot XGrizzled','Kodot XGrizzled',{frame:'brushed'}],['ina82','Ina\'s 1982','Ina\'s 1982',{frame:'ina82'}],
- ['bkbw','BlacKeys B+W','BlacKeys B+W',{tone2:{sat:-.88},frame:'holga'}],['bksg','BlacKeys SuperGrain','BlacKeys SuperGrain',{tone2:{mono:1,contrast:.45},grain:'enorme',vign:'tunnel'}],
- ['rock','Rock BW-11','Rock BW-11',{tone2:{mono:1,exposure:.3,contrast:.4},grain:'gros',frame:'holga',dust:'d10'}],['us1776','US1776','US1776',{tone2:{mono:1,exposure:-.25,contrast:-.2},grain:'enorme',frame:'brushed',dust:'d4'}],
- ['dreamcanvas','DreamCanvas','DreamCanvas',{matter:'canvas',frame:'print70'}]];
-const HX=[['none','',''],['standard','Standard','Standard',{flash:'warm',tone3:{contrast:.15}}],['dreampop','Dreampop','Dreampop',{light:'leakmag',tone3:{exposure:-.15,contrast:-.1}}],['cherry','Cherry Shine','Cherry Shine',{flash:'warm',tone3:{temp:.32,sat:.1}}]];
-function hipsta(l,f,x){const c={film:P4,filmAmt:.55,grain:'fin',vign:'natural'};const tone={};for(const o of [l[3],f[3],x[3]||{}]){for(const [k,v] of Object.entries(o)){if(k==='tone'||k==='tone2'||k==='tone3')Object.assign(tone,v);else if(k==='fx')c.fx=(c.fx||[]).concat(v);else c[k]=v}}c.tone=tone;if(tone.mono){c.film='ilford-ilford-hp5-plus-400';c.filmAmt=1}return c}
-for(const l of HL)add('hipstamatic','l-'+l[0],l[1]+' · Blanko',l[2]+' · Blanko',hipsta(l,HF[0],HX[0]));
-for(const f of HF.slice(1))add('hipstamatic','f-'+f[0],'John S · '+f[1],'John S · '+f[2],hipsta(HL[0],f,HX[0]));
-for(const x of HX.slice(1))add('hipstamatic','x-'+x[0],'Jane · Blanko · '+x[1],'Jane · Blanko · '+x[2],hipsta(HL[4],HF[0],x));
-for(const [a,b,cc] of [[1,2,0],[5,4,0],[6,0,2],[2,3,0],[8,6,0],[3,1,3],[7,7,0],[0,5,1]]){const l=HL[a],f=HF[b],x=HX[cc];add('hipstamatic','k-'+l[0]+'-'+f[0]+'-'+x[0],[l[1],f[1],x[1]].filter(Boolean).join(' · '),[l[2],f[2],x[2]].filter(Boolean).join(' · '),hipsta(l,f,x))}
-
-/* TinType (Hipstamatic, 2014) : plan de netteté sur les yeux (point touché), plaques collodion ; Tintype (Newton, 2013) ; Koloid (2013) */
-const tt=(fr,en,id,tone,x)=>add('tintype',id,fr,en,Object.assign({film:'rollei-rollei-ortho-25',tone,fx:[{op:'bokeh',at:'spot',amt:1.45,focus:.13,boost:.2}],matter:'metal',dust:'d1',vign:'oval',frame:'tinplate'},x),{spot:1});
-tt('Plaque collodion, netteté sur les yeux','Collodion plate, eyes in focus','mono',{mono:1,contrast:.2,tone:{sh:'#120d08',hi:'#e9dcc0',amt:.55}});
-tt('Plaque couleur peinte à la main','Hand-tinted colour plate','color',{sat:-.55,temp:.18,fade:.08,contrast:.1},{film:'kodak-kodak-portra-160',filmAmt:.6});
-tt('Plaque sépia','Sepia plate','sepia',{mono:1,tone:{sh:'#2a1a0c',hi:'#f0d9b0',amt:.85},contrast:.15});
-tt('Plaque sombre','Dark plate','dark',{mono:1,exposure:-.35,contrast:.35,tone:{sh:'#0a0806',hi:'#d8ccb4',amt:.5}});
-tt('Plaque aux tons chauds','Warm-tone plate','warm',{mono:1,tone:{sh:'#1c1006',hi:'#f6dcae',amt:.7},contrast:.1});
-add('tintype','newton','Ferrotype fidèle, sans flou','Faithful tintype, no blur',{film:'rollei-rollei-ortho-25',tone:{mono:1,contrast:.25,tone:{sh:'#100c08',hi:'#e4d6ba',amt:.6}},matter:'metal',dust:'d2',vign:'natural',frame:'tinplate'});
-const ko=(id,fr,en,qty,warm)=>add('tintype',id,fr,en,{fx:[{op:'pour',at:'spot',qty,warm}],dust:'d7',vign:'natural',frame:'koloid'},{spot:1});
-ko('koloid','Collodion versé, révélateur 15','Poured collodion, developer 15',15,.3);ko('koloid8','Collodion versé, peu de révélateur','Poured collodion, little developer',7,.3);ko('koloid30','Collodion versé, plaque noyée','Poured collodion, flooded plate',32,.5);
-
-/* Decim8 : opérations sur les données de l'image, combinables, intensité tirée à chaque passage */
-const d8=(id,fr,en,cv,x)=>add('decim8',id,fr,en,Object.assign({cv},x||{}));
-d8('brainfeed','Brainfeed3r','Brainfeed3r',[{op:'jpegbend',hits:9,passes:2,q:.75}]);
-d8('ocular','Doctor Ocular','Doctor Ocular',[{op:'jpegbend',dqt:.35,hits:2,q:.8},{op:'channels',dx:.02,jitter:.02}]);
-d8('xexox','Xexox','Xexox',[{op:'smear',rate:.45,len:.9}],{tone:{mono:1,contrast:.6}});
-d8('fold','Fold 4 Rap 5','Fold 4 Rap 5',[{op:'fracture',block:.06,bands:4,amt:.5,vert:1}]);
-d8('bitboy','Bitboy','Bitboy',[{op:'pixel',pal:'gameboy',cell:.012,dither:.8}]);
-d8('ti99x','TI99X','TI99X',[{op:'pixel',pal:'ti99',cell:.01,dither:.5}]);
-d8('fingerblib','Fingerblib','Fingerblib',[{op:'fracture',block:.018,bands:8,amt:.3}]);
-d8('graboid','Graboid','Graboid',[{op:'jpegbend',shifts:14,hits:2,q:.8}]);
-d8('m0t0r','M0T0R','M0T0R',[{op:'smear',rate:.6,len:.5}]);
-d8('blitbomb','Blitbomb','Blitbomb',[{op:'blocks',n:70}]);
-d8('vortron','Vortron','Vortron',[{op:'jpegbend',hits:4,q:.7}],{fx:[{op:'warp',mode:'swirl',rad:.55,amt:.8}]});
-d8('polybomb','POLYBOMB','POLYBOMB',[{op:'lowpoly',n:500,edge:.7},{op:'jpegbend',hits:2,q:.8,from:.35}]);
-d8('kal1d0','KAL1D0','KAL1D0',[{op:'jpegbend',dqt:.25,hits:3}],Object.assign({},lg('labyrinthe')));
-d8('stack','Trois effets empilés','Three stacked effects',[{op:'fracture',block:.03,bands:6,amt:.25},{op:'jpegbend',hits:2,dqt:.08,from:.3},{op:'channels',dx:.012}]);
-
-/* Glitchr : databending, JPEG extrême, VHS, consoles, 3D, triangles */
-const gl=(id,fr,en,c)=>add('glitchr',id,fr,en,c);
-gl('databend','Databending','Databending',{cv:[{op:'jpegbend',hits:24,passes:1,q:.85,from:.02}]});
-gl('jpeg','JPEG extrême','Extreme JPEG',{cv:[{op:'jpegcrush',passes:4,q:.02,scale:.45}]});
-gl('jpeg2','JPEG extrême, gros blocs','Extreme JPEG, big blocks',{cv:[{op:'jpegcrush',passes:3,q:.01,scale:.2}]});
-gl('vhs','VHS','VHS',{fx:[{op:'vhs',amt:1.4}],grain:'moyenc'});
-gl('3d','3D','3D',{cv:[{op:'channels',dx:.022,jitter:0}]});
-gl('triangle','Triangles','Triangles',{cv:[{op:'lowpoly',n:700,edge:.8}]});
-gl('nes','Console 8 bits','8-bit console',{cv:[{op:'pixel',pal:'nes',cell:.008,dither:.45}]});
-gl('gb','Console de poche','Handheld console',{cv:[{op:'pixel',pal:'gameboy',cell:.009,dither:.9}]});
-gl('cga','Carte CGA','CGA card',{cv:[{op:'pixel',pal:'cga',cell:.006,dither:1}]});
-gl('mix','Databending et VHS','Databending and VHS',{cv:[{op:'jpegbend',hits:10,q:.8}],fx:[{op:'vhs',amt:1}]});
-
-/* Camera+ : Clarity (une touche, équilibre local des lumières), sténopé, pack Hollywood FX */
-const cp=(id,fr,en,c)=>add('cameraplus',id,fr,en,c);
-cp('clarity','Clarity','Clarity',{fx:[{op:'tonal',lo:.7,mi:.5,hi:.25,lift:.55,sat:.15,radius:.006}]});
-cp('clarity2','Clarity forte, halos','Strong Clarity, halos',{fx:[{op:'tonal',lo:1.1,mi:.9,hi:.5,lift:.7,sat:.22,radius:.012}]});
-cp('pinhole','Sténopé','Pinhole',{film:P4,filmAmt:.7,lens:'pinhole',vign:'tunnel',grain:'moyen'});
-cp('neo','Neo','Neo',{tone:{contrast:.35,sat:-.5,tone:{sh:'#001a06',hi:'#c4ffb6',amt:.75}},glow:{diffuse:.2,th:.6},frame:'cinema'});
-cp('silent','Silent Movie','Silent Movie',{film:'kodak-kodak-tri-x-400',tone:{contrast:.3,fade:.08,tone:{sh:'#14110d',hi:'#efe5cf',amt:.4}},grain:'gros',dust:'d5',vign:'toy',frame:'super8'});
-cp('enterprise','Enterprise','Enterprise',{film:'creativepack-1-tealorange2',glow:{bloom:.45,th:.62,radius:.02},light:'streak'});
-cp('gotham','Gotham','Gotham',{tone:{sat:-.65,contrast:.45,temp:-.2,exposure:-.15},fx:[{op:'tonal',lo:.6,mi:.6,hi:.3,radius:.008}],vign:'toy'});
-
-/* Pixlr-o-matic : trois couches, effet → lumière → cadre ; paquets Vintage, Unicolor, Creative ; lumières Rain, Carbon, Metal, Burn, Focal ; cadres Nolaroid, Hassel, White, Grunge */
-const PXE=[['vintage1','Vintage chaud','Warm vintage',{film:'kodak-kodak-portra-160-vc',tone:{fade:.12,temp:.2}}],['vintage2','Vintage délavé','Faded vintage',{film:'agfa-agfa-vista-200',tone:{fade:.22,sat:-.15}}],
- ['uni1','Unicolor bleu','Unicolor blue',{tone:{mono:1,tone:{sh:'#0c1830',hi:'#bfd8ff',amt:.9}}}],['uni2','Unicolor rouge','Unicolor red',{tone:{mono:1,tone:{sh:'#2a0606',hi:'#ffc7b8',amt:.9}}}],['creative1','Creative croisé','Creative cross',{film:'fuji-fuji-superia-200-xpro'}]];
-const PXL=[['none','',''],['rain','Rain','Rain',{fx:[{op:'ovl',mode:'rain',amt:.9}]}],['carbon','Carbon','Carbon',{fx:[{op:'ovl',mode:'carbon',amt:.8}]}],['metal','Metal','Metal',{fx:[{op:'ovl',mode:'metal',amt:.8}]}],['burn','Burn','Burn',{light:'burn'}],['focal','Focal','Focal',{lens:'diana'}]];
-const PXF=[['nolaroid','Nolaroid','Nolaroid','polaroid'],['hassel','Hassel','Hassel','film120'],['white','White','White','mat'],['grunge','Grunge','Grunge','brushed']];
-let pi=0;for(const e of PXE)for(const l of PXL)for(const f of PXF){if((pi++)%3)continue;const c=Object.assign({grain:'fin'},JSON.parse(JSON.stringify(e[3])));const lx=l[3]||{};if(lx.fx)c.fx=lx.fx;if(lx.light)c.light=lx.light;if(lx.lens)c.lens=lx.lens;c.frame=f[3];
- add('pixlr',e[0]+'-'+l[0]+'-'+f[0],[e[1],l[1],f[1]].filter(Boolean).join(' · '),[e[2],l[2],f[2]].filter(Boolean).join(' · '),c)}
-
-/* Snapseed : filtres et réglages documentés par l'aide Google et The App Whisperer */
-const sn=(id,fr,en,c)=>add('snapseed',id,fr,en,c);
-sn('tonal','Contraste tonal','Tonal Contrast',{fx:[{op:'tonal',lo:.8,mi:.8,hi:.8,radius:.005}]});
-sn('tonalh','Contraste tonal, hautes lumières à 100','Tonal Contrast, high tones 100',{fx:[{op:'tonal',lo:.4,mi:.6,hi:1.6,radius:.008}]});
-for(const [id,fr,lo,mi,hi,sat,rad] of [['nature','Nature',1,1.1,.8,.3,.01],['people','People',.6,.7,.5,.1,.006],['fine','Fine',.7,.9,.6,.15,.004],['strong','Strong',1.6,1.7,1.2,.35,.016]])sn('hdr-'+id,'HDR Scape, '+fr,'HDR Scape, '+fr,{fx:[{op:'tonal',lo,mi,hi,sat,radius:rad,lift:.4}]});
-for(const [id,fr,en,br] of [['n1','Drama, Normal 1','Drama, Normal 1',0],['b1','Drama, Bright 1','Drama, Bright 1',.18],['d1','Drama, Dark 1','Drama, Dark 1',-.2]])sn('drama-'+id,fr,en,{fx:[{op:'tonal',lo:1.5,mi:1.5,hi:1.1,sat:-.45,radius:.012,bright:br}]});
-for(const [id,fr,col] of [['w','Glamour Glow, chaud','#ffcf9a'],['c','Glamour Glow, froid','#a8c8ff'],['n','Glamour Glow, neutre','#ffffff']])sn('glam-'+id,fr,fr.replace('chaud','warm').replace('froid','cool').replace('neutre','neutral'),{glow:{diffuse:.85,bloom:.3,th:.45,radius:.025,halColor:col},tone:{sat:.1,temp:col==='#ffcf9a'?.15:col==='#a8c8ff'?-.15:0}});
-sn('grunge','Grunge','Grunge',Object.assign(lg('grunge'),{matter:'kraft',dust:'d8'}));
-sn('vintage','Vintage','Vintage',{film:'kodak-kodak-elite-color-200',tone:{fade:.15,temp:.15},vign:'toy'});
-sn('retrolux','Retrolux, rayures et fuites','Retrolux, scratches and leaks',{film:'agfa-agfa-precisa-100',tone:{contrast:-.15,fade:.12},dust:'d9',light:'leakred',grain:'moyenc'});
-sn('noir','Noir, lavis sombre','Noir, dark wash',{film:'ilford-ilford-delta-400',tone:{contrast:.3,tone:{sh:'#0d0d12',hi:'#f0ece2',amt:.4}},glow:{diffuse:.35,th:.5,radius:.03},grain:'moyen',vign:'toy'});
-sn('grainy','Grainy Film','Grainy Film',{film:'fuji-fuji-superia-800',grain:'gros'});
-sn('nb-red','Noir et blanc, filtre rouge','Black & white, red filter',{tone:{mono:1,monoW:[.8,.2,0],contrast:.25}});
-sn('nb-green','Noir et blanc, filtre vert','Black & white, green filter',{tone:{mono:1,monoW:[.15,.8,.05],contrast:.15}});
-add('snapseed','lensblur','Flou d\'objectif elliptique','Elliptical lens blur',{fx:[{op:'bokeh',at:'spot',amt:1.6,focus:.18}]},{spot:1});
-sn('frame-w','Cadre blanc','White frame',{frame:'mat'});
-
-/* Percolator : brews */
-const pc=(id,fr,en,cv,x)=>add('percolator',id,fr,en,Object.assign({cv},x||{}));
-pc('classic','Infusion classique','Classic brew',[{op:'circles',style:'flat'}]);
-pc('shade','Gouttes bombées','Domed drops',[{op:'circles',style:'shade',bg:'#1a120c'}]);
-pc('cream','Sur crème','On cream',[{op:'circles',style:'flat',bg:'#efe6cf',ring:.25}]);
-pc('fine','Mouture fine','Fine grind',[{op:'circles',style:'shade',big:.05,small:.003,tol:.6}]);
-pc('coarse','Mouture grosse','Coarse grind',[{op:'circles',style:'flat',big:.18,small:.012,tol:1.6}]);
-pc('rayray','Ray Ray, cercles prismatiques','Ray Ray, prismatic circles',[{op:'circles',style:'rays',big:.09,small:.006}]);
-
-/* WordFoto : huit styles */
-const wf=(id,fr,en,p)=>add('wordfoto',id,fr,en,{cv:[Object.assign({op:'words'},p)]},{words:1});
-wf('classic','Classic Color','Classic Color',{shadow:'#0f0f14',high:'#ffffff',sat:.9});
-wf('howling','Howling','Howling',{shadow:'#08101e',high:'#bcd8ff',sat:.2,font:'Georgia,serif'});
-wf('mono','Blanc sur noir','White on black',{shadow:'#000000',high:'#ffffff',sat:0});
-wf('ink','Encre sur papier','Ink on paper',{shadow:'#efe8d8',high:'#000000',sat:0,bright:.25});
-wf('gold','Or sur brun','Gold on brown',{shadow:'#1c120a',high:'#ffd27a',sat:.3});
-wf('neon','Néon','Neon',{shadow:'#05030a',high:'#ff5ad6',sat:1.4,bright:1.5});
-wf('typewriter','Machine à écrire','Typewriter',{shadow:'#f2ecdc',high:'#1a1a1a',sat:.1,bright:.3,font:'"Courier New",Courier,monospace',upper:false});
-wf('dense','Mots serrés','Dense words',{shadow:'#101015',high:'#ffffff',sat:1,small:.014,dens:5,pad:.04});
-
-/* Glaze : styles mutés (re-toucher le rendu tire une nouvelle mutation) */
-const gz=(id,fr,en,p,x)=>add('glaze',id,fr,en,Object.assign({cv:[Object.assign({op:'strokes'},p)],fx:[{op:'tex',name:'canvas',blend:'relief',amt:.4,relief:.45,scale:1.4}]},x||{}));
-gz('classic','Glaze, touches classiques','Glaze, classic strokes',{});
-gz('fine','Touches fines','Fine strokes',{base:.05,min:.0035,detail:9000,len:2});
-gz('broad','Grosses touches','Broad strokes',{base:.11,min:.012,detail:2500,len:2.8,alpha:.8});
-gz('long','Touches longues','Long strokes',{len:4.2,wobble:.1});
-gz('abstract','Abstrait, sans détail','Abstract, no detail',{base:.12,min:.02,detail:0,len:3,cjit:.2,wobble:.6});
-gz('pastel','Pastel lumineux','Bright pastel',{alpha:.55,cjit:.12},{tone:{fade:.15,exposure:.1},fx:[{op:'tex',name:'paper-cold',blend:'relief',amt:.5,relief:.5}]});
-
-/* Matter : objets × matières, posés au point touché ; l'animation les fait tourner */
-const MSH=[['sphere','Sphère','Sphere'],['cube','Cube','Cube'],['torus','Tore','Torus'],['octa','Octaèdre','Octahedron'],['twist','Colonne torse','Twisted column'],['hexprism','Prisme hexagonal','Hexagonal prism'],['beads','Couronne de perles','Ring of beads'],['column','Colonne cannelée','Fluted column']];
-const MMT=[['glass','verre','glass'],['chrome','chrome','chrome'],['frosted','verre dépoli','frosted glass'],['opaque','plâtre','plaster']];
-MSH.forEach((s,i)=>{for(let j=0;j<2;j++){const m=MMT[(i+j*2)%4];add('matter',s[0]+'-'+m[0],s[1]+', '+m[1],s[2]+', '+m[2],{fx:[{op:'matter',at:'spot',shape:s[0],mat:m[0],size:.24,color:m[0]==='opaque'?'#e9e4da':'#dfe6ea'}]},{spot:1})}});
-
-/* Tangent : forme × motif × couleur × fusion */
-const TG=[['circle','dots','#ff4f7a','normal','Cercle à pois rose','Pink dotted circle'],['triangle','stripes','#ffffff','difference','Triangle rayé en différence','Striped triangle, difference'],['hexagon','solid','#2de0c8','dodge','Hexagone densité couleur','Hexagon, colour dodge'],
- ['ring','rays','#ffd23a','lighten','Anneau à rayons','Rayed ring'],['band','chevron','#ff6a2a','darken','Bande à chevrons','Chevron band'],['diamond','grid','#7a6aff','burn','Losange quadrillé','Gridded diamond'],
- ['circle','rings','#ffffff','black','Cercle sur fond noir','Circle on black'],['half','stripes','#3ad0ff','normal','Moitié rayée','Striped half'],['star','solid','#ffea6a','difference','Étoile en différence','Star, difference'],
- ['square','checker','#ff3a3a','lighten','Carré en damier','Checkered square'],['triangle','solid','#ffffff','black','Triangle sur fond noir','Triangle on black'],['circle','solid','#ff2a6a','burn','Disque brûlé','Burnt disc']];
-TG.forEach(([shape,pattern,color,blend,fr,en],i)=>add('tangent','t'+i,fr,en,{fx:[{op:'tangent',at:'spot',shape,pattern,color,blend,size:shape==='band'||shape==='half'?.3:.34,rot:shape==='half'?-30:0,prot:i*15,opa:.85,invert:0}]},{spot:1}));
-
-/* Reflection et Splitter (Lotogram) */
-const lt=(id,fr,en,c,x)=>add('lotogram',id,fr,en,c,x);
-lt('calm','Lac calme','Calm lake',{fx:[{op:'ripple',hy:.55,wave:.4,tint:.2}]});
-lt('wind','Eau ridée par le vent','Wind-rippled water',{fx:[{op:'ripple',hy:.55,wave:1.4,tint:.35}]});
-lt('night','Eau de nuit','Night water',{fx:[{op:'ripple',hy:.58,wave:.8,tint:.6,water:'#050c18'}],tone:{exposure:-.2,temp:-.2}});
-lt('mud','Mare','Pond',{fx:[{op:'ripple',hy:.52,wave:.9,tint:.5,water:'#2a2a12'}]});
-lt('clones','Clones','Clones',lg('clones'));lt('ghost','Fantôme','Ghost',lg('fantome'));lt('mirror','Miroir','Mirror',lg('miroir'));
-lt('split','Objectif divisé','Split lens',{lens:'split',film:P4});
-
-/* Camly */
-const cm=(id,fr,en,c)=>add('camly',id,fr,en,c);
-cm('lowpoly','Low Poly','Low Poly',{cv:[{op:'lowpoly',n:1100,edge:.85}]});
-cm('lowpoly2','Low Poly à arêtes','Low Poly with edges',{cv:[{op:'lowpoly',n:700,edge:.8,lines:.18}]});
-cm('prism','Prisme','Prism',{lens:'prism',film:P4});
-cm('anaglyph','Anaglyphe 3D','3D anaglyph',lg('anaglyphe'));
-cm('studio','Lumière de studio','Studio light',{fx:[{op:'relight',at:'spot',amt:.9,spec:.4}]});
-cm('tilt','Tilt-shift','Tilt-shift',{lens:'tilt',film:P4,tone:{sat:.2}});
-cm('fisheye','Fisheye','Fisheye',{lens:'fisheye',film:P4});
-cm('leaks','Pack Light Leaks','Light Leaks pack',{film:'kodak-kodak-portra-160',light:'leakgold',grain:'fin'});
-
-/* Lunapic : menus Effects, Filters, Animation */
-const lp=(id,fr,en,c,x)=>add('lunapic',id,fr,en,c,x);
-lp('swirl','Swirl','Swirl',{fx:[{op:'warp',at:'spot',mode:'swirl',rad:.5,amt:1}]},{spot:1});
-lp('implode','Implode','Implode',{fx:[{op:'warp',at:'spot',mode:'implode',rad:.5,amt:1}]},{spot:1});
-lp('explode','Explode','Explode',{fx:[{op:'warp',at:'spot',mode:'explode',rad:.5,amt:1}]},{spot:1});
-lp('lego','Lego Style','Lego Style',{fx:[{op:'lego',cell:.035}]});
-lp('night','Night Vision','Night Vision',{fx:[{op:'nv'}]});
-lp('bars','Color Bars','Color Bars',{fx:[{op:'ovl',mode:'bars',amt:.75}]});
-lp('iris','Thermal Iridescence','Thermal Iridescence',{fx:[{op:'ovl',mode:'iris',amt:.8}]});
-lp('glitched','Glitched','Glitched',{cv:[{op:'jpegbend',hits:8,q:.75}]});
-lp('colorglitch','Color Glitch','Color Glitch',{cv:[{op:'channels',dx:.018,jitter:.08}]});
-lp('hdr','HDR Lighting','HDR Lighting',{fx:[{op:'tonal',lo:1,mi:1,hi:.8,sat:.2,radius:.012,lift:.4}]});
-lp('harsh','Harsh Lighting','Harsh Lighting',{fx:[{op:'tonal',lo:1.8,mi:1.6,hi:1.4,sat:.1,radius:.02}],tone:{contrast:.3}});
-lp('soft','Soft Lighting','Soft Lighting',{glow:{diffuse:.7,th:.4,radius:.03}});
-lp('water','Reflecting Water','Reflecting Water',{fx:[{op:'ripple',hy:.6,wave:1,tint:.3}]});
-lp('oldmovie','Old Movie Effect','Old Movie Effect',{film:'kodak-kodak-tri-x-400',tone:{fade:.1},dust:'d6',grain:'gros',vign:'toy'});
-lp('pixelate','Pixelate','Pixelate',{cv:[{op:'pixel',pal:'nes',cell:.025,dither:0}]});
-for(const id of ['neon','fusain','crayon','crayoncouleur','encre','coloriage','relief','warhol','lignesfines','pointcroix'])lp('lg-'+id,(LEGACY.find(l=>l.id===id)||{}).fr||id,(LEGACY.find(l=>l.id===id)||{}).en||id,lg(id));
-
-/* Polamatic : cadres d'instantanés et légende manuscrite (police au choix dans Outils) */
-for(const [fid,fr,en,film] of [['polaroid','Cadre 600, PX 680','600 frame, PX 680','polaroid-polaroid-px-680'],['sx70','Cadre SX-70, Time Zero','SX-70 frame, Time Zero','polaroid-polaroid-time-zero-expired'],['polaroidBlack','Cadre noir, PX 70','Black frame, PX 70','polaroid-polaroid-px-70'],['spectra','Cadre Spectra, 690','Spectra frame, 690','polaroid-polaroid-690'],['polaroid','Cadre 600, 669 froid','600 frame, cold 669','polaroid-polaroid-669-cold'],['sx70','Cadre SX-70, PX 100 chaud','SX-70 frame, warm PX 100','polaroid-polaroid-px-100uv-warm']])
- add('polamatic',fid+'-'+film,fr,en,{film,frame:fid,flash:'standard',vign:'natural',grain:'fin'},{caption:1});
-
-/* Moldiv : OPTIQUE, VESPER, BLUEBERRY, MATT (repris), cadres de film, effets split, textures, fuites */
-for(const [id,nm] of [['optique','OPTIQUE'],['vesperale','VESPER'],['myrtille','BLUEBERRY'],['mat','MATT']])add('moldiv',id,nm,nm,lg(id));
-add('moldiv','filmframe','Cadre de film','Film frame',{film:'kodak-kodak-portra-400',frame:'film35'});
-add('moldiv','split','Effet split','Split effect',{lens:'split',film:'fuji-fuji-400h'});
-add('moldiv','texture','Texture','Texture',{film:'agfa-agfa-vista-200',matter:'kraft',dust:'d3'});
-add('moldiv','leak','Fuite vintage','Vintage leak',{film:'kodak-kodak-portra-160',light:'leak',grain:'fin'});
-
-/* Analog Film : catégories numérotées comme dans l'appli (Negative, Slide, Instant, B&W High Contrast, Color Tone, Color Filter) */
-const AF=[['Negative','kodak-kodak-portra-160 kodak-kodak-portra-400 kodak-kodak-portra-800 kodak-kodak-ektar-100 fuji-fuji-superia-200 fuji-fuji-superia-400 fuji-fuji-400h agfa-agfa-vista-200'],
- ['Slide','fuji-fuji-velvia-50 fuji-fuji-provia-100f kodak-kodak-ektachrome-100-vs kodak-kodak-kodachrome-64 fuji-fuji-astia-100f kodak-kodak-elite-chrome-200'],
- ['Instant','polaroid-polaroid-px-680 polaroid-polaroid-690 polaroid-polaroid-669 fuji-fuji-fp-100c polaroid-polaroid-time-zero-expired'],
- ['B&W High Contrast','kodak-kodak-tri-x-400 ilford-ilford-hp5-plus-400 ilford-ilford-delta-3200 kodak-kodak-tmax-3200']];
-for(const [cat,ids] of AF)ids.split(' ').forEach((fid,i)=>{if(!FILMS.find(f=>f.id===fid))return;add('analog',cat.replace(/\W+/g,'')+i,cat+' '+String(i+1).padStart(2,'0'),cat+' '+String(i+1).padStart(2,'0'),{film:fid,tone:cat.startsWith('B&W')?{contrast:.35}:{},grain:'fin'})});
-[['#2a1a0c','#f0d9b0'],['#0c1a2a','#d0e4ff'],['#1a0c22','#f4d0ff'],['#0c2216','#d6ffe0']].forEach(([sh,hi],i)=>add('analog','tone'+i,'B&W Color Tone '+String(i+1).padStart(2,'0'),'B&W Color Tone '+String(i+1).padStart(2,'0'),{tone:{mono:1,tone:{sh,hi,amt:.85}},grain:'fin'}));
-[[.8,.2,0],[.6,.4,0],[.1,.8,.1],[0,.3,.7]].forEach((w,i)=>add('analog','filter'+i,'B&W Color Filter '+String(i+1).padStart(2,'0'),'B&W Color Filter '+String(i+1).padStart(2,'0'),{tone:{mono:1,monoW:w,contrast:.2},grain:'fin'}));
-
-/* Nudifier : teinte de peau puis mosaïque de censure, à l'endroit touché ; aucune nudité */
-for(const [id,fr,en,skin] of [['light','Censure, peau claire','Censored, light skin','#eec1a2'],['mid','Censure, peau mate','Censored, medium skin','#c68a62'],['dark','Censure, peau foncée','Censored, dark skin','#7a4a30'],['bar','Bandeau de censure','Censor bar','']])
- add('nudifier',id,fr,en,{cv:[id==='bar'?{op:'censor',at:'spot',w:.5,h:.12,cell:.03,skinAmt:0}:{op:'censor',at:'spot',skin,skinAmt:.55}]},{spot:1});
-
-return {OPS,FAMS,LOOKS:L}})();
+return {OPS}})();
 
 /* ==== Photofauna + FaunAI : bibliothèques des emplacements et rendus composés ====
    Un rendu = un « combo » : {cpu, lens, flash, film, tone, fx, glow, light, grain, matter, dust, vign, frame}.
@@ -3023,8 +2911,7 @@ function buildLegacy(){const o=[];for(const L of LEGACY){if(DROP.has(L.id))conti
  if(up.matter)ops.forEach(x=>{if(x.op==='histo'){x.paper='none';x.specks=0}});if(up.dust)ops.forEach(x=>{if(x.op==='histo')x.specks=0;});
  o.push({id:'lg-'+L.id,f:fam,fr:L.fr,en:L.en,c:Object.assign({cpu:{ops,crop:L.r.crop,seed:L.r.seed}},up),legacy:1})}return o}
 
-const LOOKS_ALL=()=>[...buildAppareils(),...buildFilms(),...buildSlots(),...HAND,...buildLegacy(),...APPS.LOOKS];
-FAMILIES.splice(FAMILIES.length-1,0,['|','Applis','Apps'],...APPS.FAMS);
+const LOOKS_ALL=()=>TAXON.build([...buildAppareils(),...buildFilms(),...buildSlots(),...HAND,...buildLegacy()]);
 
 /* ---------- assemblage d'un combo en étapes du moteur ---------- */
 function stepsOf(c,user){const s=[];const add=x=>{if(x)s.push(...[].concat(x).map(y=>JSON.parse(JSON.stringify(y))))};
@@ -3039,6 +2926,205 @@ function stepsOf(c,user){const s=[];const add=x=>{if(x)s.push(...[].concat(x).ma
  if(user&&user.grainAdd)s.push({op:'grain',amt:user.grainAdd*.6,size:1.5});
  if(user&&user.vignAdd)s.push({op:'vign',amt:Math.abs(user.vignAdd),rad:.4,feather:.7,color:user.vignAdd<0?'#ffffff':'#000000'});
  return s}
+
+/* ==== Photofauna + FaunAI : taxonomie de la méta-application ====
+   Un rendu se range par procédé, jamais par appli : famille → genre. L'appli d'origine reste une mention (src).
+   Chaque rendu apparaît une seule fois ; les doublons entre anciennes et nouvelles versions sont écartés. */
+"use strict";
+const TAXO=[
+ {id:'pellicules',fr:'Pellicules',en:'Film stocks',subs:[['negatif','Négatif couleur','Colour negative'],['diapo','Inversible','Slide'],['instant','Instantané','Instant'],['nb','Noir et blanc','Black and white'],['cinema','Cinéma','Cinema']]},
+ {id:'appareils',fr:'Appareils',en:'Cameras',subs:[['boitiers','Boîtiers','Bodies'],['kits','Objectif, pellicule, flash','Lens, film, flash'],['objectifs','Objectifs et flous','Lenses and blur'],['lumiere','Flash et lumière','Flash and light']]},
+ {id:'anciens',fr:'Procédés anciens',en:'Historic processes',subs:[['plaques','Plaques','Plates'],['sels','Sels de fer et d\'argent','Iron and silver salts'],['pigments','Pigments et encres','Pigments and inks'],['labo','Chambre noire','Darkroom'],['sansappareil','Sans appareil, transferts','Cameraless, transfers']]},
+ {id:'capteurs',fr:'Capteurs',en:'Sensors',subs:[['infrarouge','Infrarouge','Infrared'],['thermique','Thermique','Thermal'],['nocturne','Vision nocturne','Night vision']]},
+ {id:'peinture',fr:'Peinture et dessin',en:'Painting and drawing',subs:[['huile','Huile et gouache','Oil and gouache'],['eau','Aquarelle et lavis','Watercolour and wash'],['touches','Touches de pinceau','Brush strokes'],['dessin','Crayon, fusain, encre','Pencil, charcoal, ink'],['styles','Styles de peintre','Painters\' styles']]},
+ {id:'trames',fr:'Trames et imprimerie',en:'Screens and print',subs:[['demiteinte','Demi-teinte','Halftone'],['gravure','Gravure et lignes','Engraving and lines'],['atelier','Atelier d\'impression','Print shop'],['typo','Lettres et mots','Letters and words']]},
+ {id:'geometrie',fr:'Mosaïques et géométrie',en:'Mosaics and geometry',subs:[['cercles','Cercles','Circles'],['tesselles','Tesselles et polygones','Tiles and polygons'],['formes','Formes et motifs','Shapes and patterns'],['objets','Objets en volume','3D objects'],['miroirs','Miroirs, reflets, déformations','Mirrors, reflections, warps'],['montage','Montage','Montage']]},
+ {id:'signal',fr:'Données et signal',en:'Data and signal',subs:[['jpeg','Fichier JPEG','JPEG file'],['donnees','Données bousculées','Shuffled data'],['pixels','Pixels et palettes','Pixels and palettes'],['couleurs','Couleurs dérivées','Drifting colours'],['video','Bande vidéo et écrans','Tape and screens']]},
+ {id:'retouche',fr:'Retouche',en:'Retouch',subs:[['contraste','Contraste local','Local contrast'],['lueurs','Lueurs et éclairage','Glow and lighting'],['couleurs','Couleurs','Colour grades'],['nb','Noir et blanc','Black and white'],['vieillissement','Vieillissement','Ageing']]},
+ {id:'supports',fr:'Supports et cadres',en:'Supports and frames',subs:[['instantanes','Instantanés','Instants'],['bandes','Bandes et négatifs','Strips and negatives'],['tirages','Tirages et montages','Prints and mounts'],['matieres','Matières','Materials']]},
+ {id:'mes',fr:'Mes rendus',en:'My looks',subs:[]}];
+
+const TAXON=(()=>{
+const P4='kodak-kodak-portra-400';
+const X=[];const add=(f,s,id,fr,en,c,x)=>X.push(Object.assign({id:'x-'+id,f,s,fr,en,c},x||{}));
+const lgc=id=>{const o=LEGACY.find(l=>l.id===id);return o?{cpu:{ops:JSON.parse(JSON.stringify(o.r.ops||[])),crop:o.r.crop,seed:o.r.seed}}:{}};
+
+/* ---- Appareils : objectif × pellicule × flash d'après le guide Hipstamatic (sspai) ---- */
+const HL=[['johns','John S','John S',{tone:{contrast:.12,sat:.05}}],['jimmy','Jimmy','Jimmy',{tone:{temp:.28,tint:.04,fade:.06},glow:{bloom:.35,th:.7,radius:.02}}],
+ ['kaimal','Kaimal Mark II','Kaimal Mark II',{tone:{contrast:-.28,tint:.2,temp:.06}}],['buckhorst','Buckhorst H1','Buckhorst H1',{tone:{temp:.38,sat:.12}}],['jane','Jane','Jane',{tone:{contrast:.04}}],
+ ['helga','Helga Viking','Helga Viking',{lens:'soft',tone:{exposure:.18,temp:-.3,tint:-.1}}],['roboto','Roboto Glitter','Roboto Glitter',{lens:'soft',tone:{temp:-.35},glow:{bloom:.65,diffuse:.45,th:.5,radius:.03}}],
+ ['jamesm','James M','James M',{tone:{temp:.22,sat:-.06},grain:'fin'}],['americana','Americana','Americana',{fx:[{op:'lens',type:'tilt',amt:1.5,y:.5,w:.3,angle:62}]}]];
+const HF=[['blanko','Blanko','Blanko',{frame:'print70'}],['ina69','Ina\'s 1969','Ina\'s 1969',{frame:'ina69'}],['kodot','Kodot XGrizzled','Kodot XGrizzled',{frame:'brushed'}],['ina82','Ina\'s 1982','Ina\'s 1982',{frame:'ina82'}],
+ ['bkbw','BlacKeys B+W','BlacKeys B+W',{tone2:{sat:-.88},frame:'holga'}],['bksg','BlacKeys SuperGrain','BlacKeys SuperGrain',{tone2:{mono:1,contrast:.45},grain:'enorme',vign:'tunnel'}],
+ ['rock','Rock BW-11','Rock BW-11',{tone2:{mono:1,exposure:.3,contrast:.4},grain:'gros',frame:'holga',dust:'d10'}],['us1776','US1776','US1776',{tone2:{mono:1,exposure:-.25,contrast:-.2},grain:'enorme',frame:'brushed',dust:'d4'}],
+ ['dreamcanvas','DreamCanvas','DreamCanvas',{matter:'canvas',frame:'print70'}]];
+const HX=[['none','',''],['standard','Standard','Standard',{flash:'warm',tone3:{contrast:.15}}],['dreampop','Dreampop','Dreampop',{light:'leakmag',tone3:{exposure:-.15,contrast:-.1}}],['cherry','Cherry Shine','Cherry Shine',{flash:'warm',tone3:{temp:.32,sat:.1}}]];
+function kit(l,f,x){const c={film:P4,filmAmt:.55,grain:'fin',vign:'natural'};const tone={};for(const o of [l[3],f[3],x[3]||{}])for(const [k,v] of Object.entries(o)){if(/^tone/.test(k))Object.assign(tone,v);else if(k==='fx')c.fx=(c.fx||[]).concat(v);else c[k]=v}c.tone=tone;if(tone.mono){c.film='ilford-ilford-hp5-plus-400';c.filmAmt=1}return c}
+const kn=(l,f,x,lang)=>[l[lang],f[lang],x[lang]].filter(Boolean).join(' · ');
+for(const l of HL)add('appareils','kits','k-'+l[0],kn(l,HF[0],HX[0],1),kn(l,HF[0],HX[0],2),kit(l,HF[0],HX[0]),{src:'Hipstamatic'});
+for(const f of HF.slice(1))add('appareils','kits','kf-'+f[0],kn(HL[0],f,HX[0],1),kn(HL[0],f,HX[0],2),kit(HL[0],f,HX[0]),{src:'Hipstamatic'});
+for(const x of HX.slice(1))add('appareils','kits','kx-'+x[0],kn(HL[4],HF[0],x,1),kn(HL[4],HF[0],x,2),kit(HL[4],HF[0],x),{src:'Hipstamatic'});
+for(const [a,b,cc] of [[1,2,0],[5,4,0],[6,0,2],[2,3,0],[8,6,0],[3,1,3],[7,7,0],[0,5,1]]){const l=HL[a],f=HF[b],x=HX[cc];add('appareils','kits','kk-'+l[0]+'-'+f[0]+'-'+x[0],kn(l,f,x,1),kn(l,f,x,2),kit(l,f,x),{src:'Hipstamatic'})}
+add('appareils','objectifs','sténopé-cp','Sténopé à vignette serrée','Tight-vignette pinhole',{film:P4,filmAmt:.7,lens:'pinhole',vign:'tunnel',grain:'moyen'},{src:'Camera+'});
+add('appareils','objectifs','lensblur','Flou d\'objectif autour du point touché','Lens blur around the tapped point',{fx:[{op:'bokeh',at:'spot',amt:1.6,focus:.18}]},{spot:1,src:'Snapseed'});
+
+/* ---- Procédés anciens : plaques ---- */
+const tt=(id,fr,en,tone,x)=>add('anciens','plaques','tt-'+id,fr,en,Object.assign({film:'rollei-rollei-ortho-25',tone,fx:[{op:'bokeh',at:'spot',amt:1.45,focus:.13,boost:.2}],matter:'metal',dust:'d1',vign:'oval',frame:'tinplate'},x&&x.c),{spot:1,src:'TinType'});
+tt('mono','Ferrotype, netteté sur les yeux','Tintype, eyes in focus',{mono:1,contrast:.2,tone:{sh:'#120d08',hi:'#e9dcc0',amt:.55}});
+tt('color','Ferrotype rehaussé à la main','Hand-tinted tintype',{sat:-.55,temp:.18,fade:.08,contrast:.1},{c:{film:'kodak-kodak-portra-160',filmAmt:.6}});
+tt('sepia','Ferrotype sépia','Sepia tintype',{mono:1,tone:{sh:'#2a1a0c',hi:'#f0d9b0',amt:.85},contrast:.15});
+tt('dark','Ferrotype sombre','Dark tintype',{mono:1,exposure:-.35,contrast:.35,tone:{sh:'#0a0806',hi:'#d8ccb4',amt:.5}});
+tt('warm','Ferrotype aux tons chauds','Warm-tone tintype',{mono:1,tone:{sh:'#1c1006',hi:'#f6dcae',amt:.7},contrast:.1});
+add('anciens','plaques','newton','Ferrotype net','Sharp tintype',{film:'rollei-rollei-ortho-25',tone:{mono:1,contrast:.25,tone:{sh:'#100c08',hi:'#e4d6ba',amt:.6}},matter:'metal',dust:'d2',vign:'natural',frame:'tinplate'},{src:'Tintype'});
+for(const [id,fr,en,qty,warm] of [['k15','Collodion versé, révélateur 15','Poured collodion, developer 15',15,.3],['k7','Collodion versé, peu de révélateur','Poured collodion, little developer',7,.25],['k30','Collodion versé, plaque noyée','Poured collodion, flooded plate',32,.5]])
+ add('anciens','plaques','koloid-'+id,fr,en,{fx:[{op:'pour',at:'spot',qty,warm}],dust:'d7',vign:'natural',frame:'koloid'},{spot:1,src:'Koloid'});
+
+/* ---- Peinture : touches (Glaze ; méthode du brevet US 9767582) ---- */
+const canvasTex=[{op:'tex',name:'canvas',blend:'relief',amt:.4,relief:.45,scale:1.4}];
+for(const [id,fr,en,p,x] of [['classic','Touches posées par importance','Strokes placed by importance',{}],['fine','Touches fines','Fine strokes',{base:.05,min:.0035,detail:9000,len:2}],['broad','Grosses touches','Broad strokes',{base:.11,min:.012,detail:2500,len:2.8,alpha:.8}],
+ ['long','Touches longues','Long strokes',{len:4.2,wobble:.1}],['abstract','Touches sans détail','Strokes without detail',{base:.12,min:.02,detail:0,len:3,cjit:.2,wobble:.6}],['pastel','Touches claires sur papier','Light strokes on paper',{alpha:.55,cjit:.12},{tone:{fade:.15,exposure:.1},fx:[{op:'tex',name:'paper-cold',blend:'relief',amt:.5,relief:.5}]}]])
+ add('peinture','touches','gz-'+id,fr,en,Object.assign({cv:[Object.assign({op:'strokes'},p)],fx:canvasTex},x||{}),{src:'Glaze'});
+
+/* ---- Trames : lettres et mots (WordFoto) ---- */
+for(const [id,fr,en,p,src] of [['classic','Classic Color','Classic Color',{shadow:'#0f0f14',high:'#ffffff',sat:.9},'WordFoto'],['howling','Howling','Howling',{shadow:'#08101e',high:'#bcd8ff',sat:.2,font:'Georgia,serif'},'WordFoto'],
+ ['mono','Mots blancs sur noir','White words on black',{shadow:'#000000',high:'#ffffff',sat:0}],['ink','Mots d\'encre sur papier','Ink words on paper',{shadow:'#efe8d8',high:'#000000',sat:0,bright:.35,contrast:2.2}],
+ ['gold','Mots d\'or sur brun','Gold words on brown',{shadow:'#1c120a',high:'#ffd27a',sat:.3}],['typewriter','Mots tapés à la machine','Typewritten words',{shadow:'#f2ecdc',high:'#1a1a1a',sat:.1,bright:.35,contrast:2.2,font:'"Courier New",Courier,monospace',upper:false}]])
+ add('trames','typo','wf-'+id,fr,en,{cv:[Object.assign({op:'words'},p)]},{words:1,src:src||'WordFoto'});
+
+/* ---- Géométrie : cercles (Percolator : Grind, Brew, Serve) ---- */
+const pc=(id,fr,en,p,x)=>add('geometrie','cercles','pc-'+id,fr,en,{cv:[Object.assign({op:'circles'},p)]},Object.assign({src:'Percolator'},x));
+pc('circles','Circles, fond Black','Circles, Black serve',{brew:'circles'});
+pc('gel','Color Gel, fond Light & Sweet','Color Gel, Light & Sweet serve',{brew:'gel',serve:'sweet'});
+pc('charmed','Charmed, fond Soy','Charmed, Soy serve',{brew:'charmed',serve:'soy'});
+pc('ishihara','Ishihara, mouture Tiny','Ishihara, Tiny grind',{brew:'ishihara',big:.04,small:.003,tol:.5,serve:'sweet'});
+pc('rings','Rings','Rings',{brew:'rings'});
+pc('treble','Treble','Treble',{brew:'treble'});
+pc('trip','Tripstamatic','Tripstamatic',{brew:'trip'});
+pc('overprint','Overprint','Overprint',{brew:'overprint',serve:'sweet'});
+pc('rays','Ray Ray','Ray Ray',{brew:'rays'});
+pc('stars','Full of Stars','Full of Stars',{brew:'stars',pic:1,big:.07});
+pc('biggest','Mouture Biggest, Saturate','Biggest grind, Saturate',{big:.2,small:.02,tol:2.2,effect:'saturate'});
+pc('inky','Inky Edges, fond Stirred','Inky Edges, Stirred serve',{effect:'inky',serve:'stirred'});
+pc('evap','Blend Evaporate, Pic ½','Evaporate blend, half Pic',{blend:'evaporate',pic:.5});
+
+/* ---- Géométrie : tesselles, formes, objets, miroirs ---- */
+add('geometrie','tesselles','lowpoly','Triangles de Delaunay','Delaunay triangles',{cv:[{op:'lowpoly',n:1100,edge:.85}]},{src:'Camly'});
+add('geometrie','tesselles','lowpoly2','Triangles à arêtes claires','Triangles with light edges',{cv:[{op:'lowpoly',n:700,edge:.8,lines:.18}]},{src:'Camly'});
+add('geometrie','tesselles','lego','Briques à tenons','Studded bricks',{fx:[{op:'lego',cell:.03}]},{src:'Lunapic'});
+const TG=[['circle','dots','#ff4f7a','normal','Disque à pois','Dotted disc'],['triangle','stripes','#ffffff','difference','Triangle rayé, différence','Striped triangle, difference'],['hexagon','solid','#2de0c8','dodge','Hexagone, densité couleur','Hexagon, colour dodge'],
+ ['ring','rays','#ffd23a','lighten','Anneau à rayons, éclaircir','Rayed ring, lighten'],['band','chevron','#ff6a2a','darken','Bande à chevrons, assombrir','Chevron band, darken'],['diamond','grid','#7a6aff','burn','Losange quadrillé, densité','Gridded diamond, burn'],
+ ['circle','rings','#ffffff','black','Cercle sur fond noir','Circle on black'],['half','stripes','#3ad0ff','normal','Moitié rayée','Striped half'],['star','solid','#ffea6a','difference','Étoile, différence','Star, difference'],
+ ['square','checker','#ff3a3a','lighten','Carré en damier','Checkered square'],['triangle','solid','#ffffff','black','Triangle sur fond noir','Triangle on black'],['circle','solid','#ff2a6a','burn','Disque, densité','Disc, burn']];
+TG.forEach(([shape,pattern,color,blend,fr,en],i)=>add('geometrie','formes','tg'+i,fr,en,{fx:[{op:'tangent',at:'spot',shape,pattern,color,blend,size:shape==='band'||shape==='half'?.3:.34,rot:shape==='half'?-30:0,prot:i*15,opa:.85}]},{spot:1,src:'Tangent'}));
+const MSH=[['sphere','Sphère','Sphere'],['cube','Cube','Cube'],['torus','Tore','Torus'],['octa','Octaèdre','Octahedron'],['twist','Colonne torse','Twisted column'],['hexprism','Prisme hexagonal','Hexagonal prism'],['beads','Couronne de perles','Ring of beads'],['column','Colonne cannelée','Fluted column']];
+const MMT=[['glass','verre','glass'],['chrome','chrome','chrome'],['frosted','verre dépoli','frosted glass'],['opaque','plâtre','plaster']];
+MSH.forEach((s,i)=>{for(let j=0;j<2;j++){const m=MMT[(i+j*2)%4];add('geometrie','objets','m-'+s[0]+'-'+m[0],s[1]+', '+m[1],s[2]+', '+m[2],{fx:[{op:'matter',at:'spot',shape:s[0],mat:m[0],size:.24,color:m[0]==='opaque'?'#e9e4da':'#dfe6ea'}]},{spot:1,src:'Matter'})}});
+for(const [id,fr,en,p,x] of [['calm','Lac calme','Calm lake',{hy:.55,wave:.4,tint:.2}],['wind','Eau ridée par le vent','Wind-rippled water',{hy:.55,wave:1.4,tint:.35}],['night','Eau de nuit','Night water',{hy:.58,wave:.8,tint:.6,water:'#050c18'},{tone:{exposure:-.2,temp:-.2}}],['pond','Mare','Pond',{hy:.52,wave:.9,tint:.5,water:'#2a2a12'}]])
+ add('geometrie','miroirs','ri-'+id,fr,en,Object.assign({fx:[Object.assign({op:'ripple'},p)]},x||{}),{src:'Reflection'});
+for(const [m,fr,en] of [['swirl','Tourbillon','Swirl'],['implode','Implosion','Implode'],['explode','Explosion','Explode']])add('geometrie','miroirs','w-'+m,fr,en,{fx:[{op:'warp',at:'spot',mode:m,rad:.5,amt:1}]},{spot:1,src:'Lunapic'});
+add('geometrie','montage','censor','Censure à la mosaïque','Mosaic censorship',{cv:[{op:'censor',at:'spot',skin:'#e0ac8a',skinAmt:.5}]},{spot:1,src:'Nudifier'});
+add('geometrie','montage','censorbar','Bandeau de censure','Censor bar',{cv:[{op:'censor',at:'spot',w:.5,h:.12,cell:.03,skinAmt:0}]},{spot:1,src:'Nudifier'});
+
+/* ---- Données et signal (Decim8 : descriptions de l'auteur ; Glitchr) ---- */
+const sg=(s,id,fr,en,c,src)=>add('signal',s,id,fr,en,c,{src});
+sg('jpeg','jb-bytes','Octets du flux JPEG modifiés','Modified JPEG stream bytes',{cv:[{op:'jpegbend',hits:9,passes:2,q:.75}]},'Glitchr');
+sg('jpeg','jb-many','Flux JPEG très abîmé','Heavily damaged JPEG stream',{cv:[{op:'jpegbend',hits:24,q:.85,from:.02}]},'Glitchr');
+sg('jpeg','jb-shift','Tronçons du flux JPEG recopiés','Copied JPEG stream chunks',{cv:[{op:'jpegbend',shifts:14,hits:2,q:.8}]},'Decim8');
+sg('jpeg','jb-dqt','Tables de quantification altérées','Altered quantisation tables',{cv:[{op:'jpegbend',dqt:.35,hits:1,q:.8}]},'Decim8');
+sg('jpeg','crush','Compression JPEG extrême','Extreme JPEG compression',{cv:[{op:'jpegcrush',passes:4,q:.02,scale:.45}]},'Glitchr');
+sg('jpeg','crush2','Compression extrême, gros blocs','Extreme compression, big blocks',{cv:[{op:'jpegcrush',passes:3,q:.01,scale:.2}]},'Glitchr');
+sg('donnees','brainfeed','Brainfeed3r, échos superposés','Brainfeed3r, stacked echoes',{cv:[{op:'feedback',n:7}]},'Decim8');
+sg('donnees','fold','Fold 4 Rap 5, miroir récursif','Fold 4 Rap 5, recursive mirror',{cv:[{op:'fold',depth:5}]},'Decim8');
+sg('donnees','xexox','XEXOX, photocopieuse détraquée','XEXOX, broken copier',{cv:[{op:'smear',rate:.45,len:.9}],tone:{mono:1,contrast:.6}},'Decim8');
+sg('donnees','fingerblib','Fingerblib, fracture par la lumière','Fingerblib, light-driven fracture',{cv:[{op:'fracture',block:.018,bands:8,amt:.3}]},'Decim8');
+sg('donnees','l225','L225, récursion fractale','L225, fractal recursion',{cv:[{op:'recurse',n:9}]},'Decim8');
+sg('donnees','smear','Traînées de lignes','Line smears',{cv:[{op:'smear',rate:.6,len:.5}]},'Decim8');
+sg('donnees','blocks','Blocs recopiés et inversés','Copied and inverted blocks',{cv:[{op:'blocks',n:70}]},'Decim8');
+sg('pixels','bitboy','BitBoy, tramage 1 bit','BitBoy, 1-bit dither',{cv:[{op:'bitboy',cell:.004}]},'Decim8');
+sg('pixels','bitboy2','BitBoy posé sur l\'original','BitBoy over the original',{cv:[{op:'bitboy',cell:.006,over:.6,mode:'multiply'}]},'Decim8');
+sg('pixels','ti994x','TI994X, écran de caractères','TI994X, character screen',{cv:[{op:'chars',cols:72,pal:'ti99'}],dust:'d3'},'Decim8');
+sg('pixels','nes','Console 8 bits','8-bit console',{cv:[{op:'pixel',pal:'nes',cell:.008,dither:.45}]},'Glitchr');
+sg('pixels','gb','Console de poche, quatre verts','Handheld console, four greens',{cv:[{op:'pixel',pal:'gameboy',cell:.009,dither:.9}]},'Glitchr');
+sg('pixels','cga','Carte CGA','CGA card',{cv:[{op:'pixel',pal:'cga',cell:.006,dither:1}]},'Glitchr');
+sg('pixels','pix','Gros pixels','Big pixels',{cv:[{op:'pixel',pal:'none',cell:.022}]},'Lunapic');
+sg('couleurs','ocular','Doctor Ocular, couleurs qui dérivent','Doctor Ocular, drifting colours',{cv:[{op:'jpegbend',dqt:.2,hits:0,q:.85},{op:'channels',dx:.02,jitter:.02}]},'Decim8');
+sg('couleurs','oirectine','Oirectine, palette remappée','Oirectine, remapped palette',{cv:[{op:'harmonic',n:5}]},'Decim8');
+sg('couleurs','3d','Canaux décalés en relief','Offset 3D channels',{cv:[{op:'channels',dx:.022}]},'Glitchr');
+sg('video','vhs','Bande VHS','VHS tape',{fx:[{op:'vhs',amt:1.4}],grain:'moyenc'},'Glitchr');
+sg('video','bars','Barres de couleur','Colour bars',{fx:[{op:'ovl',mode:'bars',amt:.75}]},'Lunapic');
+sg('video','mix','Flux abîmé et bande VHS','Damaged stream and VHS tape',{cv:[{op:'jpegbend',hits:6,q:.8}],fx:[{op:'vhs',amt:1}]},'Glitchr');
+sg('pixels','triangles','Triangles corrompus','Corrupted triangles',{cv:[{op:'lowpoly',n:500,edge:.7},{op:'jpegbend',hits:2,q:.8,from:.35}]},'Decim8');
+
+/* ---- Retouche (Snapseed, Camera+) ---- */
+const rt=(s,id,fr,en,c,src)=>add('retouche',s,id,fr,en,c,{src});
+rt('contraste','clarity','Clarity, une touche','One-tap Clarity',{fx:[{op:'tonal',lo:.7,mi:.5,hi:.25,lift:.55,sat:.15,radius:.006}]},'Camera+');
+rt('contraste','clarity2','Clarity forte, halos','Strong Clarity, halos',{fx:[{op:'tonal',lo:1.1,mi:.9,hi:.5,lift:.7,sat:.22,radius:.012}]},'Camera+');
+rt('contraste','tonal','Contraste tonal','Tonal Contrast',{fx:[{op:'tonal',lo:.8,mi:.8,hi:.8,radius:.005}]},'Snapseed');
+rt('contraste','tonalh','Contraste tonal, hautes lumières poussées','Tonal Contrast, high tones up',{fx:[{op:'tonal',lo:.4,mi:.6,hi:1.6,radius:.008}]},'Snapseed');
+for(const [id,fr,lo,mi,hi,sat,rad] of [['nature','Nature',1,1.1,.8,.3,.01],['people','People',.6,.7,.5,.1,.006],['fine','Fine',.7,.9,.6,.15,.004],['strong','Strong',1.6,1.7,1.2,.35,.016]])rt('contraste','hdr-'+id,'HDR Scape '+fr,'HDR Scape '+fr,{fx:[{op:'tonal',lo,mi,hi,sat,radius:rad,lift:.4}]},'Snapseed');
+for(const [id,fr,br] of [['n','Drama, normal',0],['b','Drama, clair',.18],['d','Drama, sombre',-.2]])rt('contraste','drama-'+id,fr,fr.replace('clair','bright').replace('sombre','dark'),{fx:[{op:'tonal',lo:1.5,mi:1.5,hi:1.1,sat:-.45,radius:.012,bright:br}]},'Snapseed');
+for(const [id,fr,en,col,tp] of [['w','Lueur glamour chaude','Warm glamour glow','#ffcf9a',.15],['c','Lueur glamour froide','Cool glamour glow','#a8c8ff',-.15],['n','Lueur glamour neutre','Neutral glamour glow','#ffffff',0]])rt('lueurs','glam-'+id,fr,en,{glow:{diffuse:.85,bloom:.3,th:.45,radius:.025,halColor:col},tone:{sat:.1,temp:tp}},'Snapseed');
+rt('lueurs','studio','Lumière de studio au point touché','Studio light from the tapped point',{fx:[{op:'relight',at:'spot',amt:.9,spec:.4}]},'Camly');X[X.length-1].spot=1;
+rt('lueurs','iris','Irisation','Iridescence',{fx:[{op:'ovl',mode:'iris',amt:.8}]},'Lunapic');
+rt('vieillissement','vintage','Vintage à vignette centrée','Vintage, centred vignette',{film:'kodak-kodak-elite-color-200',tone:{fade:.15,temp:.15},vign:'toy'},'Snapseed');
+rt('vieillissement','retrolux','Rayures et fuites de lumière','Scratches and light leaks',{film:'agfa-agfa-precisa-100',tone:{contrast:-.15,fade:.12},dust:'d9',light:'leakred',grain:'moyenc'},'Snapseed');
+rt('vieillissement','grunge','Grunge','Grunge',Object.assign(lgc('grunge'),{matter:'kraft',dust:'d8'}),'Snapseed');
+rt('nb','noir','Noir, lavis sombre','Noir, dark wash',{film:'ilford-ilford-delta-400',tone:{contrast:.3,tone:{sh:'#0d0d12',hi:'#f0ece2',amt:.4}},glow:{diffuse:.35,th:.5,radius:.03},grain:'moyen',vign:'toy'},'Snapseed');
+for(const [id,fr,en,w] of [['red','Filtre rouge','Red filter',[.8,.2,0]],['orange','Filtre orange','Orange filter',[.6,.4,0]],['green','Filtre vert','Green filter',[.1,.8,.1]],['blue','Filtre bleu','Blue filter',[0,.3,.7]]])rt('nb','f-'+id,fr,en,{tone:{mono:1,monoW:w,contrast:.2},grain:'fin'},'Snapseed');
+for(const [sh,hi,fr,en] of [['#2a1a0c','#f0d9b0','Virage brun','Brown tone'],['#0c1a2a','#d0e4ff','Virage bleu','Blue tone'],['#1a0c22','#f4d0ff','Virage violet','Violet tone'],['#0c2216','#d6ffe0','Virage vert','Green tone']])rt('nb','v-'+sh.slice(1),fr,en,{tone:{mono:1,tone:{sh,hi,amt:.85}},grain:'fin'},'Analog Film');
+
+/* ---- Pellicules : étalonnages de cinéma (Camera+ Hollywood FX, Lunapic) ---- */
+add('pellicules','cinema','neo','Neo, vert machine','Neo, machine green',{tone:{contrast:.35,sat:-.5,tone:{sh:'#001a06',hi:'#c4ffb6',amt:.75}},glow:{diffuse:.2,th:.6},frame:'cinema'},{src:'Camera+'});
+add('pellicules','cinema','silent','Film muet','Silent movie',{film:'kodak-kodak-tri-x-400',tone:{contrast:.3,fade:.08,tone:{sh:'#14110d',hi:'#efe5cf',amt:.4}},grain:'gros',dust:'d5',vign:'toy',frame:'super8'},{src:'Camera+'});
+add('pellicules','cinema','gotham','Gotham, nuit désaturée','Gotham, desaturated night',{tone:{sat:-.65,contrast:.45,temp:-.2,exposure:-.15},fx:[{op:'tonal',lo:.6,mi:.6,hi:.3,radius:.008}],vign:'toy'},{src:'Camera+'});
+
+/* ---- Capteurs, supports ---- */
+add('capteurs','nocturne','nv','Intensificateur au phosphore vert','Green phosphor intensifier',{fx:[{op:'nv'}]},{src:'Lunapic'});
+for(const [fid,fr,en,film] of [['polaroid','Cadre 600, PX 680, légende','600 frame, PX 680, caption','polaroid-polaroid-px-680'],['sx70','Cadre SX-70, Time Zero, légende','SX-70 frame, Time Zero, caption','polaroid-polaroid-time-zero-expired'],['polaroidBlack','Cadre noir, PX 70, légende','Black frame, PX 70, caption','polaroid-polaroid-px-70'],['spectra','Cadre Spectra, 690, légende','Spectra frame, 690, caption','polaroid-polaroid-690']])
+ add('supports','instantanes','pm-'+fid,fr,en,{film,frame:fid,flash:'standard',vign:'natural',grain:'fin'},{caption:1,src:'Polamatic'});
+for(const [id,fr,en,mode] of [['rain','Pluie','Rain','rain'],['carbon','Carbone','Carbon','carbon'],['metal','Métal brossé','Brushed metal','metal']])add('supports','matieres','ov-'+id,fr,en,{film:P4,filmAmt:.6,fx:[{op:'ovl',mode,amt:.85}],grain:'fin'},{src:'Pixlr-o-matic'});
+
+/* ---------- rangement des rendus de base ---------- */
+const LG={daguerre:'anciens/plaques',ambrotype:'anciens/plaques',ferrotype:'anciens/plaques',etain:'anciens/plaques',collodion:'anciens/plaques',verseplaque:'anciens/plaques',
+ calotype:'anciens/sels',sale:'anciens/sels',albumine:'anciens/sels',cyanotype:'anciens/sels',herbier:'anciens/sels',vandyke:'anciens/sels',kallitype:'anciens/sels',platine:'anciens/sels',
+ gomme:'anciens/pigments',charbon:'anciens/pigments',bromoil:'anciens/pigments',anthotype:'anciens/pigments',chlorophylle:'anciens/pigments',autochrome:'anciens/pigments',gravure:'anciens/pigments',
+ caffenol:'anciens/labo',mordancage:'anciens/labo',lith:'anciens/labo',sabattier:'anciens/labo',sepia:'anciens/labo',selenium:'anciens/labo',bleufer:'anciens/labo',baryte:'anciens/labo',ortho:'anciens/labo',
+ photogramme:'anciens/sansappareil',clicheverre:'anciens/sansappareil',transfert:'anciens/sansappareil',emulsion:'anciens/sansappareil',
+ aerochrome:'capteurs/infrarouge',thermique:'capteurs/thermique',thermarc:'capteurs/thermique',thermblanc:'capteurs/thermique',thermlave:'capteurs/thermique',irise:'capteurs/thermique',nuit:'capteurs/nocturne',
+ bocal:'appareils/boitiers',etefane:'appareils/boitiers',reportage:'appareils/boitiers',carre:'appareils/boitiers',muetchaud:'appareils/boitiers',grainnoir:'appareils/boitiers',rockbw:'appareils/boitiers',patriote:'appareils/boitiers',superhuit:'appareils/boitiers',
+ optique:'retouche/couleurs',vesperale:'retouche/couleurs',myrtille:'retouche/couleurs',mat:'retouche/couleurs',pastel:'retouche/couleurs',creme:'retouche/couleurs',menthe:'retouche/couleurs',peche:'retouche/couleurs',brume:'retouche/couleurs',sarcelle:'retouche/couleurs',diapo:'retouche/couleurs',quotidien:'retouche/couleurs',nuitneon:'retouche/couleurs',vieuxrose:'retouche/couleurs',
+ drame:'retouche/contraste',drame2:'retouche/contraste',tonal:null,hdr:null,glamour:null,grunge:null,vintage:null,retrolux:null,noir:null,nbciel:'retouche/nb',flouobj:'appareils/objectifs',double:'geometrie/montage',grainfilm:'retouche/vieillissement',
+ lignesfines:'trames/gravure',tramelignes:'trames/gravure',tramecroisee:'trames/gravure',hachures:'trames/gravure',burin:'trames/gravure',mezzotinte:'trames/gravure',points:'trames/gravure',ondes:'trames/gravure',cercles:'trames/gravure',couleurlignes:'trames/gravure',
+ crayon:'peinture/dessin',crayoncouleur:'peinture/dessin',fusain:'peinture/dessin',encre:'peinture/dessin',coloriage:'peinture/dessin',neon:'peinture/dessin',contours:'peinture/dessin',relief:'peinture/dessin',
+ illustre:'trames/demiteinte',quadri:'trames/demiteinte',ascii:'trames/typo',cafetiere:null,motpourmot:null,pointcroix:'geometrie/tesselles',vitrail:'geometrie/tesselles',briques:'geometrie/tesselles',
+ photocopie:'trames/atelier',riso:'trames/atelier',riso2:'trames/atelier',lino:'trames/atelier',estampe:'trames/atelier',warhol:'trames/atelier',warhol4:'trames/atelier',serigraphie:'trames/atelier',
+ secouemoi:'supports/instantanes',vingtquatre:'supports/instantanes',marge:'supports/instantanes',froisse:'supports/instantanes',scotch:'supports/instantanes',cabine:'supports/instantanes',collage:'geometrie/montage',
+ octet:'signal/jpeg',glitchretro:'signal/jpeg',datamosh:'signal/jpeg',echo:'signal/video',fente:'signal/video',oculaire:null,phase:'signal/couleurs',anaglyphe:'signal/couleurs',xerox:'signal/donnees',tripixels:'signal/donnees',pli:'geometrie/miroirs',cartouche:'signal/pixels',vhs:'signal/video',
+ pochegris:'signal/pixels',unbit:'signal/pixels',console:null,cga:null,camescope:'signal/video',videotex:'signal/video',ambre:'signal/video',
+ labyrinthe:'geometrie/miroirs',miroir:'geometrie/miroirs',planete:'geometrie/miroirs',eclats:'geometrie/formes',formes:null,motifs:null,objet:null,objetchrome:null,reflet:null,clones:'geometrie/montage',fantome:'geometrie/montage',fisheye:null,
+ pointillisme:'peinture/styles',nocturne:'peinture/styles',fauve:'peinture/styles'};
+const LGSRC={optique:'Moldiv',vesperale:'Moldiv',myrtille:'Moldiv',mat:'Moldiv',oculaire:'Decim8',nuit:'Lunapic'};
+const HANDMAP={hie:'capteurs/infrarouge',rir:'capteurs/infrarouge',ortho:'pellicules/nb',huile:'peinture/huile',huile2:'peinture/huile',couteau:'peinture/huile',gouache:'peinture/huile',aqua:'peinture/eau',aquawashi:'peinture/eau',lavis:'peinture/eau',sepialavis:'peinture/eau',pastel:'peinture/dessin',
+ rosette:'trames/demiteinte',rosette2:'trames/demiteinte',journal:'trames/demiteinte',comics:'trames/demiteinte',crt:'signal/video',tv80:'signal/video',vhsg:null,dramenb:'retouche/nb',cinestill:'retouche/lueurs',promist:'retouche/lueurs'};
+const SLIDE=/velvia|provia|astia|ektachrome|kodachrome|elite-chrome|sensia|e-100|x-pro-slide|polachrome|elite-100-xpro|superia-200-xpro/;
+const FRAMEKIND={polaroid:'instantanes',sx70:'instantanes',polaroidBlack:'instantanes',spectra:'instantanes',instaxMini:'instantanes',instaxSquare:'instantanes',instaxWide:'instantanes',peelapart:'instantanes',
+ film35:'bandes',film35neg:'bandes',contact35:'bandes',film120:'bandes',carrier:'bandes',slide:'bandes',cinema:'bandes',super8:'bandes'};
+function place(L){const id=L.id;
+ if(id.startsWith('film-')){const f=L.film;if(f.fam==='cine')return 'pellicules/cinema';if(/^(kodak-kodak-hie|rollei-rollei-ir)/.test(f.id))return 'capteurs/infrarouge';if(f.fam==='polaroid'||/fp-/.test(f.id))return 'pellicules/instant';if(f.kind==='bw')return 'pellicules/nb';if(SLIDE.test(f.id))return 'pellicules/diapo';return 'pellicules/negatif'}
+ if(id.startsWith('ap-'))return 'appareils/boitiers';
+ if(id.startsWith('ob-'))return id==='ob-split'||id==='ob-prism'?'appareils/objectifs':'appareils/objectifs';
+ if(id.startsWith('li-'))return 'appareils/lumiere';
+ if(id.startsWith('ca-'))return 'supports/'+(FRAMEKIND[id.slice(3)]||'tirages');
+ if(id.startsWith('lg-')){const k=id.slice(3);return k in LG?LG[k]:'retouche/couleurs'}
+ if(id in HANDMAP)return HANDMAP[id];return null}
+function build(base){const out=[];
+ for(const L of base){const p=place(L);if(!p)continue;const [f,s]=p.split('/');const o=Object.assign({},L,{f,s});if(L.id.startsWith('lg-')&&LGSRC[L.id.slice(3)])o.src=LGSRC[L.id.slice(3)];
+  if(L.id.startsWith('ob-')||L.id.startsWith('li-'))o.c=Object.assign({},L.c);out.push(o)}
+ /* matières seules : papiers, plaques, poussières */
+ for(const [id,fr,en] of SLOTS.matter.slice(1))out.push({id:'mt-'+id,f:'supports',s:'matieres',fr,en,c:{matter:id,film:P4,filmAmt:.6,grain:'fin'}});
+ for(const [id,fr,en] of SLOTS.dust.slice(1,6))out.push({id:'du-'+id,f:'supports',s:'matieres',fr,en,c:{dust:id,film:'ilford-ilford-hp5-plus-400',grain:'moyen'}});
+ return out.concat(X)}
+return {build,X}})();
 
 /* ==== GIF89a animé : palette commune par coupe médiane, tramage Floyd-Steinberg léger, LZW ==== */
 const GIF=(()=>{
@@ -3105,7 +3191,7 @@ fr:{ph:"Décris une image, ou le mouvement de la vidéo",open:"Ouvrir",shoot:"Pr
  exFmt:"Format",exSize:"Taille",exOrig:"Originale",exPhoto:"Enregistrer la photo",exAnim:"Animation de pellicule",exGif:"GIF animé",exVid:"Vidéo 4 s",exAnimTxt:"Le grain, la poussière, les fuites de lumière et la bande VHS bougent d'une image à l'autre.",encoding:"Encodage…",
  keys_txt:"Pollinations et AI Horde fabriquent les images sans clé. Pour la vidéo, Puter fonctionne avec un compte Puter gratuit : un clic sur Continue la première fois, 3 vidéos de 5 secondes par mois. Les Spaces vidéo de Hugging Face tournent sur ZeroGPU, qui accorde zéro seconde de GPU aux appels anonymes : un jeton Hugging Face gratuit leur ouvre un quota quotidien. Chaque clé reste dans ce navigateur et part seulement vers son service.",
  eng_sum:"{n} moteurs · {v} pour la vidéo · recensement du {d}",census:"Recenser les moteurs",census_run:"Recensement… {x}",census_done:"{n} moteurs.",puter_left:"Puter : {c} crédits restants ce mois-ci, soit {v} vidéo(s) de 5 s.",puter_none:"Puter : compte relié à la première vidéo.",
- camErr:"La caméra reste fermée : le navigateur refuse l'accès. Choisis une photo avec Ouvrir.",shutter:"Déclencher",camOff:"Fermer la caméra",count:"{n} rendus",
+ camErr:"La caméra reste fermée : le navigateur refuse l'accès. Choisis une photo avec Ouvrir.",shutter:"Déclencher",camOff:"Fermer la caméra",count:"{n} spécimens",all:"Tout",found:"{n} spécimens pour « {q} »",after:"d'après {a}",taxonOrig:"Photo d'origine",wordsHint2:"Les mots viennent de Labo, Outils",search:"Chercher un procédé",random:"Au hasard",
  foot:"Code MIT. Photofauna + FaunAI, le photomaton d'Insert Koin",credits:"Pellicules : RawTherapee Film Simulation Collection (Pat David, Pavlov Dmitry, Michael Ezra), CC BY-SA 4.0. Poussières : scans de Daniela Ivanova (FilmDamageSimulator), licence MIT. Noms de pellicules cités à titre descriptif."},
 en:{ph:"Describe an image, or the motion of the video",open:"Open",shoot:"Shoot",undo:"Undo",save:"Save",img:"Image",vid:"Video",stop:"Stop",labo:"Lab",
  orig:"Original",variant:"Tap again for a variant",spot:"Tap the image to move the measuring spot",need:"Write a sentence for the image first.",working:"working",queue:"in queue",done:"Done in",stopped:"Stopped.",
@@ -3123,7 +3209,7 @@ en:{ph:"Describe an image, or the motion of the video",open:"Open",shoot:"Shoot"
  exFmt:"Format",exSize:"Size",exOrig:"Original",exPhoto:"Save the photo",exAnim:"Film animation",exGif:"Animated GIF",exVid:"4 s video",exAnimTxt:"Grain, dust, light leaks and the VHS tape move from frame to frame.",encoding:"Encoding…",
  keys_txt:"Pollinations and AI Horde make images without a key. For video, Puter runs on a free Puter account: one click on Continue the first time, 3 five-second videos a month. The Hugging Face video Spaces run on ZeroGPU, which gives anonymous callers zero GPU seconds: a free Hugging Face token opens a daily quota. Each key stays in this browser and goes only to its own service.",
  eng_sum:"{n} engines · {v} for video · census {d}",census:"Census of engines",census_run:"Census… {x}",census_done:"{n} engines.",puter_left:"Puter: {c} credits left this month, that is {v} five-second video(s).",puter_none:"Puter: account linked at the first video.",
- camErr:"The camera stays closed: the browser refuses access. Choose a photo with Open.",shutter:"Shutter",camOff:"Close the camera",count:"{n} looks",
+ camErr:"The camera stays closed: the browser refuses access. Choose a photo with Open.",shutter:"Shutter",camOff:"Close the camera",count:"{n} specimens",all:"All",found:"{n} specimens for “{q}”",after:"after {a}",taxonOrig:"Original photo",wordsHint2:"Words come from Lab, Tools",search:"Search a process",random:"Random",
  foot:"MIT code. Photofauna + FaunAI, the photo booth of Insert Koin",credits:"Films: RawTherapee Film Simulation Collection (Pat David, Pavlov Dmitry, Michael Ezra), CC BY-SA 4.0. Dust: scans by Daniela Ivanova (FilmDamageSimulator), MIT licence. Film names used descriptively."}};
 let LANG=LS.get("pf_lang",null)||((navigator.language||"").toLowerCase().startsWith("fr")?"fr":"en");
 const t=(k,v)=>{let s=W[LANG][k]??W.fr[k]??k;if(v)for(const[a,b] of Object.entries(v))s=s.split("{"+a+"}").join(b);return s};
@@ -3143,7 +3229,7 @@ async function texImages(){for(const n of ["paper-smooth","paper-cold","paper-kr
 
 /* ---------- état ---------- */
 const USER0=()=>({active:false,exposure:0,contrast:0,highlights:0,shadows:0,whites:0,blacks:0,temp:0,tint:0,vibrance:0,sat:0,fade:0,clarity:0,sharpen:0,grainAdd:0,vignAdd:0,curves:{rgb:null,r:null,g:null,b:null},hsl:[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],split:null,strength:1});
-const S={src:null,prev:null,tiny:null,ver:0,look:null,seed:1974,labo:{},user:USER0(),spot:{x:.5,y:.38},fam:LS.get("pf_fam","appareils"),hist:[],own:false,caption:"",second:null,secondTex:null,dbl:{mode:"screen",amt:.65,scale:1,lkey:0},mask:null,maskTex:null,maskDirty:false};
+const S={src:null,prev:null,tiny:null,ver:0,look:null,seed:1974,labo:{},user:USER0(),spot:{x:.5,y:.38},fam:LS.get("pf_fam","pellicules"),sub:null,q:"",hist:[],own:false,caption:"",second:null,secondTex:null,dbl:{mode:"screen",amt:.65,scale:1,lkey:0},mask:null,maskTex:null,maskDirty:false};
 const ALL=LOOKS_ALL();const byId=id=>ALL.find(l=>l.id===id)||MINE().find(l=>l.id===id);
 const MINE=()=>LS.get("pf_mine",[]).map(m=>({id:m.id,f:"mes",fr:m.name,en:m.name,c:m.c,user:m.user}));
 function combo(){const L=byId(S.look);const c=Object.assign({},L?L.c:{});for(const[k,v] of Object.entries(S.labo))if(v!==undefined)c[k]=v;if(S.dbl.on)c.dbl=1;return c}
@@ -3189,19 +3275,33 @@ async function render(){if(!S.prev||LIVE.on)return;if(rBusy){rAgain=true;return}
  try{const cv=await renderLevel("prev");const v=$("view");v.width=cv.width;v.height=cv.height;v.getContext("2d").drawImage(cv,0,0);S.lastView=cv;drawCompare()}
  catch(e){setStatus(String(e.message||e).slice(0,160),"err");console.error(e)}
  finally{rBusy=false;$("busy").hidden=true;if(rAgain){rAgain=false;render()}}
- const L=byId(S.look);$("tag").textContent=L?lname(L)+(L.spot?" · "+t("spotHint"):""):t("orig");drawLabo(true)}
+ setLabel();drawLabo(true)}
 
-/* ---------- familles et vignettes ---------- */
+/* ---------- taxonomie : familles, genres, spécimens ---------- */
 const THUMBS=new Map();let thumbQ=[],thumbBusy=false;
-function looksOf(f){return f==="mes"?MINE():ALL.filter(l=>l.f===f)}
-function drawFams(){const nav=$("fams");nav.textContent="";for(const [k,fr,en] of FAMILIES){if(k==="|"){const sp=document.createElement("span");sp.className="sep";sp.textContent=LANG==="fr"?fr:en;nav.appendChild(sp);continue}const n=looksOf(k).length;if(!n&&k!=="mes")continue;const b=document.createElement("button");b.type="button";b.innerHTML=`${esc(LANG==="fr"?fr:en)} <i>${n}</i>`;b.setAttribute("aria-pressed",String(k===S.fam));b.onclick=()=>{S.fam=k;LS.set("pf_fam",k);drawFams();drawStrip();$("strip").scrollTop=0};nav.appendChild(b)}
- const on=nav.querySelector('[aria-pressed="true"]');if(on&&nav.scrollWidth>nav.clientWidth)nav.scrollLeft=Math.max(0,on.offsetLeft-nav.offsetLeft-12);
- $("count").textContent=t("count",{n:ALL.length+MINE().length})}
-function drawStrip(){const box=$("strip");box.textContent="";thumbQ=[];const io=STRIPIO;io.disconnect();
- const mk=(L)=>{const id=L?L.id:null,b=document.createElement("button");b.type="button";b.className="lk";b.dataset.id=id||"";b.setAttribute("aria-pressed",String((S.look||"")===(id||"")));
-  const key=(id||"orig")+"|"+S.ver,u=THUMBS.get(key);b.innerHTML=(u?`<img alt="" src="${u}">`:`<div class="ph"></div>`)+`<span>${esc(L?lname(L):t("orig"))}</span>`;if(!u){b._q=[id,key];io.observe(b)}
+const famOf=id=>TAXO.find(f=>f.id===id)||TAXO[0];
+function looksIn(f,s){if(f==="mes")return MINE();const F=famOf(f),ix=g=>F.subs.findIndex(x=>x[0]===g);return ALL.filter(l=>l.f===f&&(!s||l.s===s)).map((l,i)=>[l,i]).sort((a,b)=>ix(a[0].s)-ix(b[0].s)||a[1]-b[1]).map(x=>x[0])}
+const norm=x=>String(x||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+function searchLooks(q){const n=norm(q);return ALL.concat(MINE()).filter(l=>norm(l.fr+" "+l.en+" "+(l.src||"")+" "+genreName(l)).includes(n))}
+function genreName(L){const F=famOf(L.f),G=(F.subs||[]).find(g=>g[0]===L.s);return (LANG==="fr"?F.fr:F.en)+(G?" › "+(LANG==="fr"?G[1]:G[2]):"")}
+function drawFams(){const nav=$("fams");nav.textContent="";
+ for(const F of TAXO){const n=F.id==="mes"?MINE().length:ALL.filter(l=>l.f===F.id).length;if(!n&&F.id==="mes")continue;const b=document.createElement("button");b.type="button";b.className="fam";
+  b.innerHTML=`<span>${esc(LANG==="fr"?F.fr:F.en)}</span><small>${n}</small>`;b.setAttribute("aria-pressed",String(!S.q&&F.id===S.fam));
+  b.onclick=()=>{S.fam=F.id;S.sub=null;S.q="";$("q").value="";LS.set("pf_fam",F.id);drawFams();drawGrid();$("grid").scrollTop=0};nav.appendChild(b)}
+ const on=nav.querySelector('[aria-pressed="true"]');if(on&&nav.scrollWidth>nav.clientWidth+4)nav.scrollLeft=Math.max(0,on.offsetLeft-nav.offsetLeft-12);
+ $("count").textContent=t("count",{n:ALL.length})}
+function drawGenres(){const box=$("genres");box.textContent="";if(S.q){const h=document.createElement("p");h.className="gtitle";h.textContent=t("found",{n:searchLooks(S.q).length,q:S.q});box.appendChild(h);return}
+ const F=famOf(S.fam);const h=document.createElement("h2");h.className="gtitle";h.textContent=LANG==="fr"?F.fr:F.en;box.appendChild(h);if(!F.subs.length)return;
+ const row=document.createElement("div");row.className="gchips";const mk=(id,label,n)=>{const b=document.createElement("button");b.type="button";b.className="gchip";b.innerHTML=`${esc(label)} <small>${n}</small>`;b.setAttribute("aria-pressed",String((S.sub||null)===id));b.onclick=()=>{S.sub=id;drawGrid();$("grid").scrollTop=0};row.appendChild(b)};
+ mk(null,t("all"),looksIn(F.id).length);for(const [id,fr,en] of F.subs){const n=looksIn(F.id,id).length;if(n)mk(id,LANG==="fr"?fr:en,n)}box.appendChild(row)}
+function drawGrid(){drawGenres();const box=$("grid");box.textContent="";thumbQ=[];const io=STRIPIO;io.disconnect();
+ const card=(L)=>{const id=L?L.id:null,b=document.createElement("button");b.type="button";b.className="spec";b.dataset.id=id||"";b.setAttribute("aria-pressed",String((S.look||"")===(id||"")));
+  const key=(id||"orig")+"|"+S.ver,u=THUMBS.get(key);b.innerHTML=(u?`<img alt="" src="${u}">`:`<div class="ph"></div>`)+`<b>${esc(L?lname(L):t("orig"))}</b>`+(L&&L.src?`<i>${esc(t("after",{a:L.src}))}</i>`:L&&(S.q||!S.sub)&&L.s?`<i>${esc((famOf(L.f).subs.find(g=>g[0]===L.s)||[,"",""])[LANG==="fr"?1:2])}</i>`:"");if(!u){b._q=[id,key];io.observe(b)}
   b.onclick=()=>pickLook(id);box.appendChild(b)};
- mk(null);for(const L of looksOf(S.fam))mk(L)}
+ card(null);const list=S.q?searchLooks(S.q):looksIn(S.fam,S.sub);for(const L of list)card(L)}
+const drawStrip=drawGrid;
+function setLabel(){const L=byId(S.look);$("lbFam").textContent=L?genreName(L):t("taxonOrig");$("lbName").textContent=L?lname(L):t("orig");$("lbSrc").textContent=L&&L.src?t("after",{a:L.src}):"";$("lbHint").textContent=L&&L.spot?t("spotHint"):L&&L.words?t("wordsHint2"):""}
+function randomLook(){const L=ALL[Math.floor(Math.random()*ALL.length)];S.fam=L.f;S.sub=L.s;S.q="";$("q").value="";drawFams();drawGrid();pickLook(L.id);const el=$("grid").querySelector(`[data-id="${L.id}"]`);if(el)el.scrollIntoView({block:"nearest",inline:"nearest"})}
 const STRIPIO=new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting&&e.target._q){thumbQ.push([...e.target._q,e.target]);e.target._q=null;STRIPIO.unobserve(e.target)}pumpThumbs()},{root:null,rootMargin:"200px"});
 async function pumpThumbs(){if(thumbBusy||!S.tiny)return;thumbBusy=true;
  while(thumbQ.length){if(LIVE.on){await sleep(300);continue}const [id,key,b]=thumbQ.shift();if(THUMBS.has(key))continue;
@@ -3212,7 +3312,7 @@ async function pumpThumbs(){if(thumbBusy||!S.tiny)return;thumbBusy=true;
 function pickLook(id){pushHist();const L=byId(id);
  if(id&&id===S.look){if(L&&L.film&&L.film.v.length>1){const cur=S.labo.fv!=null?S.labo.fv:L.film.d;S.labo.fv=(cur+1)%L.film.v.length}else S.seed=Math.floor(Math.random()*99999)}
  else{S.look=id;S.seed=1974;S.labo={};if(L&&L.user)S.user=Object.assign(USER0(),JSON.parse(JSON.stringify(L.user)))}
- [...$("strip").children].forEach(b=>b.setAttribute("aria-pressed",String((b.dataset.id||"")===(id||""))));closeVideo();render()}
+ [...$("grid").children].forEach(b=>b.setAttribute("aria-pressed",String((b.dataset.id||"")===(id||""))));closeVideo();setLabel();render()}
 
 /* ---------- scène : avant / après, point de mesure, pinceau, recadrage ---------- */
 let cmp=null;
@@ -3227,9 +3327,9 @@ stage.addEventListener("pointerdown",e=>{if(e.target.closest("button")||!$("play
  if(S.cmp!=null){drag="cmp";S.cmp=p.x;drawCompare();return}
  const L=byId(S.look);if(L&&(L.c.cpu&&JSON.stringify(L.c.cpu).includes('"thermal"'))){S.spot=p;setThermalSpot(p);return}
  if(L&&L.spot){pushHist();S.spot={x:p.x,y:p.y};render();return}
- drag={hold:setTimeout(()=>{if(!S.prev)return;const v=$("view");const c=document.createElement("canvas");c.width=S.prev.width;c.height=S.prev.height;c.getContext("2d").putImageData(S.prev,0,0);v.getContext("2d").drawImage(c,0,0,v.width,v.height);$("tag").textContent=t("orig");drag.shown=1},220)}});
+ drag={hold:setTimeout(()=>{if(!S.prev)return;const v=$("view");const c=document.createElement("canvas");c.width=S.prev.width;c.height=S.prev.height;c.getContext("2d").putImageData(S.prev,0,0);v.getContext("2d").drawImage(c,0,0,v.width,v.height);$("lbName").textContent=t("orig");drag.shown=1},220)}});
 stage.addEventListener("pointermove",e=>{if(!drag)return;const p=stagePos(e);if(drag==="brush")brushAt(p);else if(drag==="cmp"){S.cmp=p.x;drawCompare()}else if(drag.crop){const r=p.r;CROP.ox=drag.ox+(e.clientX-drag.x)/r.width;CROP.oy=drag.oy+(e.clientY-drag.y)/r.height;drawCrop()}});
-const up=()=>{if(drag&&drag.hold){clearTimeout(drag.hold);if(drag.shown&&S.lastView){const v=$("view");v.getContext("2d").drawImage(S.lastView,0,0);const L=byId(S.look);$("tag").textContent=L?lname(L):t("orig")}}if(drag==="brush"){S.maskDirty=true;render()}drag=null};
+const up=()=>{if(drag&&drag.hold){clearTimeout(drag.hold);if(drag.shown&&S.lastView){const v=$("view");v.getContext("2d").drawImage(S.lastView,0,0);setLabel()}}if(drag==="brush"){S.maskDirty=true;render()}drag=null};
 stage.addEventListener("pointerup",up);stage.addEventListener("pointercancel",up);
 function setThermalSpot(p){const L=byId(S.look);const ops=JSON.parse(JSON.stringify(L.c.cpu.ops));ops.forEach(o=>{if(o.op==="thermal"){o.x=p.x;o.y=p.y}});S.labo.cpu=Object.assign({},L.c.cpu,{ops});render()}
 $("cmpBtn").onclick=()=>{S.cmp=S.cmp==null?.5:null;$("cmpBtn").setAttribute("aria-pressed",String(S.cmp!=null));drawCompare()};
@@ -3298,7 +3398,7 @@ function rng(id,label,min,max,step,val,on,dbl){const i=el("input",{type:"range",
  return el("label",{className:"rg"},el("span",{},label),i)}
 function paneCompose(box){const c=combo();const L=byId(S.look);
  const film=c.film&&FILMS.find(f=>f.id===c.film);
- const fopts=[["",t("inherit")],["none","—"],...FAMILIES.filter(f=>["kodak","fuji","polaroid","autres","cine"].includes(f[0])).flatMap(([k,fr,en])=>FILMS.filter(f=>f.fam===k).map(f=>[f.id,(LANG==="fr"?fr:en)+" · "+(LANG==="fr"?f.fr:f.en)]))];
+ const FAMN={kodak:"Kodak",fuji:"Fuji",polaroid:"Polaroid",autres:"Agfa, Ilford, Rollei, Lomography",cine:LANG==="fr"?"Cinéma":"Cinema"};const fopts=[["",t("inherit")],["none","—"],...["kodak","fuji","polaroid","autres","cine"].flatMap(k=>FILMS.filter(f=>f.fam===k).map(f=>[f.id,FAMN[k]+", "+(LANG==="fr"?f.fr:f.en)]))];
  const grid=el("div",{className:"slots"});
  const slotRow=(key,label,opts,cur)=>grid.append(el("label",{className:"sl"},el("span",{},label),sel("s_"+key,opts,cur,v=>{pushHist();if(v==="")delete S.labo[key];else S.labo[key]=v==="none"&&key==="film"?null:v;if(key==="film")delete S.labo.fv;render();drawLabo()})));
  slotRow("film",t("s_film"),fopts,S.labo.film===null?"none":S.labo.film??"");
@@ -3559,8 +3659,8 @@ function drawReel(){const box=$("film");box.textContent="";$("reel").hidden=!REE
   b.onclick=async e=>{if(e.target.classList.contains("x")){await DB.del(it.id);REEL=REEL.filter(x=>x!==it);if(CUR_VID===it)closeVideo();drawReel();return}
    if(it.type==="video")showVideo(it);else if(it.blob){pushHist();setSource(await readFile(new File([it.blob],"p.jpg",{type:it.blob.type})),true);closeVideo()}};
   box.appendChild(b)}}
-function showVideo(it){CUR_VID=it;const v=$("player");v.src=srcOf(it);v.hidden=false;$("closeVid").hidden=false;$("tag").textContent=t("video");v.play().catch(()=>{})}
-function closeVideo(){const v=$("player");if(v.hidden)return;v.pause();v.hidden=true;$("closeVid").hidden=true;CUR_VID=null;const L=byId(S.look);$("tag").textContent=L?lname(L):t("orig")}
+function showVideo(it){CUR_VID=it;const v=$("player");v.src=srcOf(it);v.hidden=false;$("closeVid").hidden=false;$("lbName").textContent=t("video");v.play().catch(()=>{})}
+function closeVideo(){const v=$("player");if(v.hidden)return;v.pause();v.hidden=true;$("closeVid").hidden=true;CUR_VID=null;setLabel()}
 $("closeVid").onclick=closeVideo;
 
 /* ---------- clés, recensement des moteurs ---------- */
@@ -3592,8 +3692,10 @@ async function faunaiStart(){CENSUS=(await DB.get("census"))||null;REEL=((await 
 /* ---------- langue, démarrage ---------- */
 function i18n(){document.documentElement.lang=LANG;$("lang").textContent=LANG==="fr"?"EN":"FR";
  document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));document.querySelectorAll("[data-ph]").forEach(e=>e.placeholder=t(e.dataset.ph));
- drawFams();drawStrip();drawReel();drawEngines();drawLabo();const L=byId(S.look);$("tag").textContent=L?lname(L):t("orig")}
+ drawFams();drawGrid();drawReel();drawEngines();drawLabo();setLabel()}
 $("lang").onclick=()=>{LANG=LANG==="fr"?"en":"fr";LS.set("pf_lang",LANG);i18n()};
+let qT=0;$("q").addEventListener("input",e=>{clearTimeout(qT);qT=setTimeout(()=>{S.q=e.target.value.trim();drawFams();drawGrid()},160)});
+$("bRand").onclick=randomLook;
 (async()=>{i18n();setSource(await startImage(),false);await faunaiStart();window.__pfReady=true})();
 </script>
 </body>
