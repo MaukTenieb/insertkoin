@@ -183,6 +183,10 @@
       // The library module (kg-vhs-library.js) ships the KGI18N bridge and
       // reads CHANNEL.SCRAPE in the background; the recorder wires the shelf.
       if(window.KGVHSLibrary&&typeof window.KGVHSLibrary.ready==='function')window.KGVHSLibrary.ready();
+      /* [IK] rubrique KURATION : cassettes livrées chaque semaine dans kg-vhs-curations.js */
+      if(!window.KG_VHS_LIBRARY_SNAPSHOT&&!document.querySelector('script[data-vhs-kur]')){var ks=document.createElement('script');ks.src=BASE+'vhs-curations.js';ks.setAttribute('data-vhs-kur','1');
+        ks.onload=function(){var L=window.KGVHSLibrary;if(!L)return;L.invalidate();L.ready().then(function(){if(window.KGVHSRecorder&&window.KGVHSRecorder.refresh)window.KGVHSRecorder.refresh();});};
+        document.head.appendChild(ks);}
     }
   };
   // ---------------------------------------------------------------------------------------------

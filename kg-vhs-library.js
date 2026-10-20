@@ -142,7 +142,19 @@
         channel: src.channel || src.label || "Unknown",
         channel_url: src.channel_url || "",
         count: src.count || tracks.length,
-        tracks: tracks
+        tracks: tracks,
+        /* [IK] rubrique (ex. « Kuration »), étiquette au feutre (genre, date républicaine, encre) et critères */
+        shelf: src.shelf || "",
+        label: src.label || "",
+        label_en: src.label_en || "",
+        kind: src.kind || "",
+        genre: src.genre || "",
+        date: src.date || "",
+        rep: src.rep || "",
+        rep_en: src.rep_en || "",
+        ink: src.ink || "",
+        criteria: src.criteria || "",
+        criteria_en: src.criteria_en || ""
       });
     }
     return out;
@@ -289,14 +301,26 @@
     readLocal().forEach(function (t) { if (t && t.channel && !have[t.channel]) { have[t.channel] = 1; out.push(t); } });
     return out;
   }
+  /* [IK] cassettes livrées par un instantané (rubrique KURATION) : elles s'ajoutent à l'étagère,
+     jamais au programme par défaut du magnétoscope, qui reste le catalogue du site */
+  var snapTapes = [];
+  function withSnapshot(tapes) {
+    var have = {}, out = (tapes || []).slice();
+    out.forEach(function (t) { have[t.channel] = 1; });
+    snapTapes.forEach(function (t) { if (!have[t.channel]) { have[t.channel] = 1; out.push(t); } });
+    return out;
+  }
   function publish(tapes, fromBackend, fromCache) {
-    tapes = withLocal(tapes);
-    var tracks = [];
+    var own = withLocal(tapes);
+    tapes = withSnapshot(own);
+    var tracks = [], all = 0;
     for (var i = 0; i < tapes.length; i++) {
-      tracks = tracks.concat((tapes[i] && tapes[i].tracks) || []);
+      var tt = (tapes[i] && tapes[i].tracks) || [];
+      all += tt.length;
+      if (!tapes[i].shelf) tracks = tracks.concat(tt);
     }
     tracks = uniqByVideoId(tracks).slice(0, config.maxTracks);
-    if (!tracks.length) return false;
+    if (!all) return false;
 
     global.KG_VHS_TRACKS = tracks;
     if (config.mirrorToJukebox) global.JUKE_TRACKS = tracks;
@@ -306,7 +330,7 @@
     state.loadedAt = Date.now();
     state.fromBackend = !!fromBackend;
     state.fromCache = !!fromCache;
-    if (fromBackend) writeCache(tracks, tapes);
+    if (fromBackend) writeCache(tracks, own);
     log("published", tracks.length, "tracks /", tapes.length, "tapes",
       fromBackend ? "(backend)" : fromCache ? "(cache)" : "(snapshot)");
     return true;
@@ -317,9 +341,7 @@
     state.status = "loading";
     state.error = null;
 
-    var trySnapshot = function () {
-      return publish(normaliseSnapshot(global[config.snapshotKey]), false, false);
-    };
+    snapTapes = normaliseSnapshot(global[config.snapshotKey]);
 
     var tryBackend = function () {
       return fetchBackend().then(function (data) {
@@ -345,22 +367,13 @@
       log(state.error);
     };
 
-    var seq;
-    if (global[config.snapshotKey]) {
-      seq = Promise.resolve(trySnapshot()).then(function (ok) {
-        if (ok) return;
-        return tryBackend().catch(function (e) {
-          log("backend failed:", e);
-          return tryCache();
-        });
-      });
-    } else {
-      seq = tryBackend().catch(function (e) {
-        log("backend failed:", e);
-        state.lastFailureAt = Date.now();
-        return tryCache();
-      });
-    }
+    var seq = tryBackend().catch(function (e) {
+      log("backend failed:", e);
+      if (!snapTapes.length) state.lastFailureAt = Date.now();
+      return tryCache();
+    }).then(function (ok) {
+      return ok || (snapTapes.length ? publish([], false, false) : false);
+    });
 
     state.loadPromise = Promise.resolve(seq).then(finish, finish);
     return state.loadPromise;

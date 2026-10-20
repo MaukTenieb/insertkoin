@@ -101,16 +101,39 @@
     var hint = q(root, "[data-vhs-rec-hint]");
     if (hint) hint.textContent = t("Load a cassette and record a new channel over it: the tape is erased and rewound with fresh tracks.");
 
-    tapes.forEach(function (tape) {
+    /* [IK] cassettes sans rubrique d'abord, puis chaque rubrique (KURATION…) sous son titre */
+    var en = ((global.document.documentElement.lang || "en").slice(0, 2).toLowerCase() !== "fr");
+    var plain = tapes.filter(function (x) { return !x.shelf; });
+    var shelves = [];
+    tapes.forEach(function (x) { if (x.shelf && shelves.indexOf(x.shelf) < 0) shelves.push(x.shelf); });
+    var ordered = plain.slice();
+    shelves.forEach(function (s) { ordered = ordered.concat(tapes.filter(function (x) { return x.shelf === s; })); });
+    var lastShelf = "";
+    ordered.forEach(function (tape) {
+      if (tape.shelf && tape.shelf !== lastShelf) {
+        lastShelf = tape.shelf;
+        var h = global.document.createElement("div");
+        h.className = "vhs-shelf-rubric";
+        h.textContent = tape.shelf.toUpperCase();
+        row.appendChild(h);
+      }
       var b = global.document.createElement("button");
       b.type = "button";
-      b.className = "vhs-tape";
+      b.className = "vhs-tape" + (tape.shelf ? " vhs-tape-k" : "");
       b.setAttribute("data-vhs-tape", tape.channel);
 
       var name = global.document.createElement("span");
       name.className = "vhs-tape-name";
-      name.textContent = tape.channel + (isFresh(tape.channel) ? " \u25CF" : "");
+      var shown = tape.shelf ? ((en && tape.label_en) || tape.label || tape.channel) : tape.channel;
+      name.textContent = shown + (isFresh(tape.channel) ? " \u25CF" : "");
+      if (tape.shelf) {
+        if (tape.ink) b.style.color = tape.ink;
+        var crit = (en && tape.criteria_en) || tape.criteria;
+        if (crit) b.title = crit;
+      }
       b.appendChild(name);
+      var when = tape.shelf ? ((en && tape.rep_en) || tape.rep) : "";
+      if (when) { var rp = global.document.createElement("span"); rp.className = "vhs-tape-rep"; rp.textContent = when; b.appendChild(rp); }
 
       var count = global.document.createElement("span");
       count.className = "vhs-tape-count";
@@ -579,7 +602,60 @@
     };
   }
 
+  /* [IK] KURATION : exports détaillés par critères et listes de lecture YouTube (50 vidéos par liste, limite de YouTube) */
+  function kurPlaylists(tape) {
+    var ids = (tape.tracks || []).map(function (x) { return x.id; }), out = [];
+    for (var i = 0; i < ids.length; i += 50) out.push("https://www.youtube.com/watch_videos?video_ids=" + ids.slice(i, i + 50).join(","));
+    return out;
+  }
+  function kurExports(tape) {
+    var en = ((global.document.documentElement.lang || "en").slice(0, 2).toLowerCase() !== "fr");
+    var r = rows(tape), lists = kurPlaylists(tape);
+    var name = (en && tape.label_en) || tape.label || tape.channel;
+    var when = (en && tape.rep_en) || tape.rep || "";
+    var crit = (en && tape.criteria_en) || tape.criteria || "";
+    var head = name + (when ? " — " + when : "") + (tape.date ? " (" + tape.date + ")" : "");
+    var ex = localExports({ channel: head, channel_url: lists[0] || "", tracks: tape.tracks });
+    ex.json = new Blob([JSON.stringify({
+      cassette: name, genre: tape.genre || name, kind: tape.kind || "", date: tape.date || "",
+      republican_date: tape.rep || "", criteria: crit, count: r.length, youtube_playlists: lists,
+      tracks: r.map(function (x) { return { n: x.n, title: x.title, video_id: x.id, url: x.url }; })
+    }, null, 1)], { type: "application/json" });
+    ex.txt = new Blob([head + "\n" + crit + "\n" + lists.join("\n") + "\n\n" +
+      r.map(function (x) { return x.n + ". " + x.title + "  " + x.url; }).join("\n") + "\n"], { type: "text/plain" });
+    ex.md = new Blob(["# " + head + "\n\n" + crit + "\n\n" +
+      lists.map(function (u, i) { return "[YouTube " + (i + 1) + "](" + u + ")"; }).join(" · ") + "\n\n" +
+      r.map(function (x) { return x.n + ". [" + x.title.replace(/[\[\]]/g, "") + "](" + x.url + ")"; }).join("\n") + "\n"], { type: "text/markdown" });
+    return { ex: ex, lists: lists, head: head };
+  }
+  function showKurTools(root, bar, selection) {
+    var k = kurExports(selection);
+    bar.hidden = false;
+    var name = q(root, "[data-vhs-tapetools-name]");
+    if (name) name.textContent = k.head + " (" + selection.count + " " + t("tracks") + ")";
+    ["csv", "json", "xlsx", "txt", "md"].forEach(function (fmt) {
+      var a = q(root, "[data-vhs-tapetools-" + fmt + "]");
+      if (!a) return;
+      if (a.__blob) try { URL.revokeObjectURL(a.__blob); } catch (e) {}
+      a.__blob = URL.createObjectURL(k.ex[fmt]); a.href = a.__blob; a.setAttribute("download", "kuration." + fmt);
+      a.onclick = function () { if (window.ikName) a.setAttribute("download", window.ikName("kuration", fmt)); };
+    });
+    var yt = q(root, "[data-vhs-tapetools-yt]");
+    if (yt) {
+      yt.hidden = !k.lists.length; yt.href = k.lists[0] || "#";
+      yt.textContent = k.lists.length > 1 ? "YOUTUBE 1/" + k.lists.length : "YOUTUBE";
+    }
+    var eb = q(root, "[data-vhs-tapetools-eject]");
+    if (eb) eb.hidden = true;
+  }
   function showTools(root, selection) {
+    if (selection && selection.shelf) {
+      var kb = q(root, "[data-vhs-tapetools]");
+      if (kb) { tools.channel = selection.channel; showKurTools(root, kb, selection); }
+      return;
+    }
+    var yt0 = q(root, "[data-vhs-tapetools-yt]"); if (yt0) yt0.hidden = true;
+    var eb0 = q(root, "[data-vhs-tapetools-eject]"); if (eb0) eb0.hidden = false;
     var bar = q(root, "[data-vhs-tapetools]");
     if (!bar) return;
     var L = lib();
