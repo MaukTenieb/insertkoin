@@ -1,0 +1,29 @@
+# The palmarès of Korong! and FaunInvaders, rewritten every hour from the Nostr relays (see PALMARES.md).
+name: palmares
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: palmares
+  cancel-in-progress: false
+jobs:
+  ten:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node tools/palmares.mjs
+      - name: commit the ten
+        run: |
+          if git diff --quiet -- palmares.json; then exit 0; fi
+          git config user.name "palmares"
+          git config user.email "palmares@users.noreply.github.com"
+          git add palmares.json
+          git commit -m "palmares: the ten of $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push

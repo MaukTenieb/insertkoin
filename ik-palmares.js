@@ -2,26 +2,35 @@
  * Code: MIT licence, Copyright (c) 2026 Mauk Tenieb (see LICENSE).
  * Korhogo material: Copyright © Mauk Tenieb & Korhogo, all rights reserved. No use for training artificial intelligence.
  */
-/* IKP — the palmarès of Korong! and FaunInvaders: the ten best, kept by the "palmares" worker (palmares-worker.js).
-   IKP.top(game)                         → Promise<[{ini,a,b,t}]>  ([] when the worker is out of reach)
-   IKP.enters(game,a,b,top)              → true when (a,b) takes a place among the ten
-   IKP.record(game,{a,b,run},cb)         → asks the three initials once per run when the entry qualifies, sends it,
-                                           then cb(top,rank); a refused write (one a minute per address) is retried
-   IKP.html(game,top,rank)               → the list, ready for an element
-   IKP.line(rank)                        → "#3 — 3615 PALMARÈS" (the full list lives in the Minitel: 3615 KORHOGO, 5)
-   korong: a = Masks beaten in the run, b = goals conceded; fauninvaders: a = score, b = wave */
+/* IKP — the palmarès of Korong! and FaunInvaders, carried by the open Nostr network (the Minitel's own transport):
+   rules in palmares-rules.js, method in PALMARES.md; the official ten, rewritten every hour by the routine of this
+   repository, sit in palmares.json.
+   IKP.top(game)                 → Promise<[{ini,a,b,t}]>: palmares.json merged with what the relays hold right now
+   IKP.record(game,{a,b,run},cb) → asks the three initials once per run when the entry takes a place, signs it with
+                                   the Minitel's key and sends it to the relays, then cb(top,rank)
+   IKP.line(rank)                → "#3 — 3615 PALMARÈS" (the full list lives in the Minitel: 3615 KORHOGO, 5)
+   korong: a = Masks beaten in the run, b = goals let in; fauninvaders: a = score, b = wave */
 (function(){
-  var URL_='https://palmares.mauktenieb.workers.dev',INI={};
-  var better={korong:function(x,y){return x.a-y.a||y.b-x.b;},fauninvaders:function(x,y){return x.a-y.a||x.b-y.b;}};
+  var INI={},R=null,NT=null,LIVE=[];
   function fr(){try{return localStorage.getItem('ik.lang')==='fr';}catch(e){return false;}}
   function lastIni(){try{return localStorage.getItem('ik.ini')||'AAA';}catch(e){return 'AAA';}}
-  function top(game){return fetch(URL_+'/top?game='+game,{cache:'no-store'}).then(function(r){return r.ok?r.json():[];}).catch(function(){return [];});}
-  function enters(game,a,b,t){if(a<=0)return false;if(!t||t.length<10)return true;return better[game]({a:a,b:b},t[t.length-1])>0;}
-  function send(game,e,cb,tries){
-    fetch(URL_+'/score',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({game:game,ini:e.ini,a:e.a,b:e.b,run:e.run})})
-      .then(function(r){if(r.status===429&&(tries||0)<5){setTimeout(function(){send(game,e,cb,(tries||0)+1);},61000);return null;}return r.ok?r.json():null;})
-      .then(function(d){if(d&&cb)cb(d.top,d.rank);}).catch(function(){});
-  }
+  function load(src){return new Promise(function(ok,ko){var s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=ko;document.head.appendChild(s);});}
+  function libs(){if(R&&NT)return Promise.resolve();return Promise.all([window.IKPR?0:load('palmares-rules.js'),window.NostrTools?0:load('nostr-tools.js')]).then(function(){R=window.IKPR;NT=window.NostrTools;});}
+  /* the browser's key, shared with the Minitel (same site, same storage) */
+  function key(){var h=null;try{h=JSON.parse(localStorage.getItem('vdx.nostr.sk'));}catch(e){}
+    if(!h||!/^[0-9a-f]{64}$/.test(h)){var b=NT.generateSecretKey();h=Array.prototype.map.call(b,function(x){return('0'+x.toString(16)).slice(-2);}).join('');try{localStorage.setItem('vdx.nostr.sk',JSON.stringify(h));}catch(e){}}
+    var u=new Uint8Array(32);for(var i=0;i<32;i++)u[i]=parseInt(h.substr(i*2,2),16);return u;}
+  function official(){return fetch('palmares.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():{};}).catch(function(){return {};});}
+  function relays(){var pool=new NT.SimplePool();
+    return pool.querySync(R.RELAYS,{kinds:[R.KIND],'#t':[R.TAG],since:R.SINCE,limit:500},{maxWait:4000})
+      .then(function(evs){try{pool.close(R.RELAYS);}catch(e){}return evs.filter(function(e){try{return NT.verifyEvent(e);}catch(x){return false;}}).map(R.entry).filter(Boolean);})
+      .catch(function(){return [];});}
+  function top(game){return libs().then(function(){return Promise.all([official(),relays()]);}).then(function(r){
+    var off=(r[0][game]||[]).map(function(x){return Object.assign({game:game},x);});LIVE=r[1];
+    return R.top(off.concat(LIVE),game);}).catch(function(){return [];});}
+  function send(game,e){var sk=key(),ev=NT.finalizeEvent({kind:R.KIND,created_at:Math.floor(Date.now()/1000),content:'',
+      tags:[['d',R.TAG+':'+game+':'+e.run],['t',R.TAG],['game',game],['ini',e.ini],['a',String(e.a)],['b',String(e.b)]]},sk);
+    var pool=new NT.SimplePool();return Promise.allSettled(pool.publish(R.RELAYS,ev)).then(function(){try{pool.close(R.RELAYS);}catch(x){}return R.entry(ev);});}
   /* three letters, arcade style: ▲ ▼ on each slot, or type them */
   function ask(cb){
     var o=document.createElement('div'),L=lastIni().split(''),A='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',k=0;
@@ -42,8 +51,10 @@
   }
   function record(game,e,cb){
     top(game).then(function(t){
-      if(!enters(game,e.a,e.b,t)){if(cb)cb(t,0);return;}
-      var go=function(ini){INI[e.run]=ini;send(game,{ini:ini,a:e.a,b:e.b,run:e.run},cb);};
+      if(!R||!R.enters(game,e.a,e.b,t)){if(cb)cb(t,0);return;}
+      var go=function(ini){INI[e.run]=ini;send(game,{ini:ini,a:e.a,b:e.b,run:e.run}).then(function(x){
+        var all=t.map(function(y){return Object.assign({game:game},y);}).concat(x?[x]:[]),nt=R.top(all,game),rank=0;
+        nt.forEach(function(y,i){if(x&&y.run===x.run&&y.who===x.who)rank=i+1;});if(cb)cb(nt,rank);});};
       if(INI[e.run])go(INI[e.run]);else ask(go);
     });
   }
@@ -65,7 +76,7 @@
     '.ikp-top caption{font-family:"Press Start 2P",monospace;font-size:9px;letter-spacing:.2em;color:#c9a84c;padding-bottom:6px}'+
     '.ikp-top th{font-weight:400;color:rgba(236,228,210,.5);font-size:9px;padding:2px 8px}.ikp-top td{padding:2px 8px;text-align:right}.ikp-top td:nth-child(2){text-align:left;letter-spacing:.2em}.ikp-top tr.me td{color:#c9a84c}';
   document.head.appendChild(css);
-  window.IKP={top:top,enters:enters,record:record,html:html,line:line};
+  window.IKP={top:top,record:record,html:html,line:line};
 })();
 
 /* ikp line style */

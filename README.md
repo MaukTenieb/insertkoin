@@ -48,6 +48,10 @@ A few seconds after the title screen opens, then now and then, a guide wanders a
 - Now and then, after a point, the Kerema's sarcasm comes on the TV, in the visitor's language.
 - On a phone held upright, a phone sign turns over the table; on its side, the table takes the whole height; the score stays on the CRT and the board on the wall.
 
+## Palmarès
+
+The ten best of Korong! and of FaunInvaders, shown by the 3615 Minitel (3615 KORHOGO, menu 5). Entries travel on the open Nostr network, the Minitel's own transport; the routine of this repository rewrites [`palmares.json`](palmares.json) every hour. Rules, transport and checks: [PALMARES.md](PALMARES.md).
+
 ## Koins
 
 - One Koin opens a game (a Korong! duel or run, a Korhogo game). The machines (3615, VHS, Photofauna, FaunaTor, Skoporhogo, Reporhogo) and Motel Sound are free.
