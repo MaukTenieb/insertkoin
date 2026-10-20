@@ -2,7 +2,7 @@
  * Code: MIT licence, Copyright (c) 2026 Mauk Tenieb (see LICENSE).
  * Korhogo material: Copyright © Mauk Tenieb & Korhogo, all rights reserved. Korhogo™,
  * Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™,
- * Korong™ and any related material — characters, names, symbols, rules, lore, texts,
+ * Korong!™ and any related material — characters, names, symbols, rules, lore, texts,
  * images and music, in any form or medium, including inside this file — stay out of the
  * MIT licence and remain the property of the author. No use of that material for
  * training artificial intelligence. Contact: mauktenieb@gmail.com
@@ -18,7 +18,7 @@
  *   KG.onwin       = null       [KG] Set to function(name,detail){...}; called once per win:
  *                               'chess'     player beats the AI (takes the King)      detail {winner,level,moves}
  *                               'erratic'   all pairs found (original mWin)           detail {pairs,moves,time}
- *                               'katabatik' player wins Connect 4                    detail {game:'c4',ctx}
+ *                               'katabatik' player wins Connect 4 / Hangman / Mastermind, or clears a FaunInvaders wave  detail {game,...}
  *                               (Sampler / Hangman / Mastermind have no win hook; the original Beat Box never fired.)
  *   KG.isOpen(name)             true while a game opened with KG.open is on screen.
  *   KG.stats                    bytes fetched per file (for diagnostics).
@@ -49,9 +49,9 @@
     chess:       {mods:['chess'],             roots:['chess'],                          entry:function(){window.openChess();}},
     erratic:     {mods:['erratic'],           roots:['mem'],                            entry:function(){window.openMem();}},
     faunarratics:{mods:['faunarratics'],      roots:['konklave-panel'],                 entry:function(){window.openFaunarratics();}},
-    // the arcade's die picks one of the four games (window.__ikKata); Connect 4 when nothing was rolled
-    katabatik:   {mods:['katabatik'],         roots:['c4-panel','bb-panel','hang-panel','mm-panel'], entry:function(){window.chRandomMask();var g=window.__ikKata;window.__ikKata=null;if(g&&g!=='c4'&&window.kbShow)window.kbShow(g);}},
-    // what a click on #kapture-btn does in the original (mousedown+mouseup without drag -> kaptureStart)
+    // the arcade's die picks one of the five games (window.__ikKata); Connect 4 when nothing was rolled
+    katabatik:   {mods:['katabatik'],         roots:['c4-panel','bb-panel','hang-panel','mm-panel','fi-panel'], entry:function(){window.chRandomMask();var g=window.__ikKata;window.__ikKata=null;if(g&&g!=='c4'&&window.kbShow)window.kbShow(g);}},
+    // KAM: the camera opens at once; SKREEN is taken by the host page, without this module
     kapture:     {mods:['kapture'],           roots:['kapture-overlay'],                entry:function(){window.kaptureStart();}},
     // VHS deck: library + recorder warm up in the background, the deck opens on the scrapes
     vhs:         {mods:['vhs'],               roots:['vhs'],                            entry:function(){window.kgVhsOpen();}}

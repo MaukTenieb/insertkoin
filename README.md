@@ -14,7 +14,7 @@ The home screen is the motel painting, then the cabinets. Every visit draws its 
 
 | Cabinet | What it is |
 |---|---|
-| **Korong** | Air-puck against the eighteen Masks of the Fauna, in the tradition of Shufflepuck Café (Brøderbund, 1988). |
+| **Korong!** | Air-puck against the eighteen Masks of the Fauna, in the tradition of Shufflepuck Café (Brøderbund, 1988). |
 | **Fauna Chess** | Fairy chess against the Fauna. |
 | **Erratik** | The memory game. |
 | **Faunarratik** | A tale built with the Masks; *Let the Kerema wrap it* saves it as a text file. English only. |
@@ -30,14 +30,14 @@ The home screen is the motel painting, then the cabinets. Every visit draws its 
 Always there, on every screen: **Motel Sound** (the Korhogo jukebox, open to every visitor), **Kapture** (camera and microphone recorder), **Baku Boom** (back to the menu), **FX** on/off (remembered), **FR/EN**.
 
 ### The home screen
-The painting takes the visitor's hour (bluish night, pink dawn, orange evening). The television is never steady and changes channel in the snow; some visits bring a storm behind the window, with thunder when FX are on; Plague of Justinian's cloud rumbles; the scarab breathes; Aube's hands glint pink, Maiden Call's telephone blue, Auvergne's eyes green; the cigarette smokes; a beetle sometimes crosses the picture; the longer one stays, the more the picture wears (grain, tape tears, scratches). A light runs over the cabinets now and then, or one flickers; the neons of the chips falter; the devices of the motel call (the television leads to VHS, the telephone to 3615, the chessboard to Fauna Chess, the cards to Erratik, Unkle Maukie to Korong, the Koins on the floor to 3615 KOINS, the lyre to Motel Sound, the window to FaunaTor, the boxes to Katabatik). Now and then, the sign slips from INSERT KOIN to INTERSEKTIO or NOIRINSEKT. Each time the title screen opens, it takes the faint colour of one Mask drawn at random: a soft wash over the picture, its lines and golds leaning a little toward it.
+The painting takes the visitor's hour (bluish night, pink dawn, orange evening). The television is never steady and changes channel in the snow; some visits bring a storm behind the window, with thunder when FX are on; Plague of Justinian's cloud rumbles; the scarab breathes; Aube's hands glint pink, Maiden Call's telephone blue, Auvergne's eyes green; the cigarette smokes; a beetle sometimes crosses the picture; the longer one stays, the more the picture wears (grain, tape tears, scratches). A light runs over the cabinets now and then, or one flickers; the neons of the chips falter; the devices of the motel call (the television leads to VHS, the telephone to 3615, the chessboard to Fauna Chess, the cards to Erratik, Unkle Maukie to Korong!, the Koins on the floor to 3615 KOINS, the lyre to Motel Sound, the window to FaunaTor, the boxes to Katabatik). Now and then, the sign slips from INSERT KOIN to INTERSEKTIO or NOIRINSEKT. Each time the title screen opens, it takes the faint colour of one Mask drawn at random: a soft wash over the picture, its lines and golds leaning a little toward it.
 
 ### The guide
-A few seconds after the title screen opens, then now and then, a guide wanders along the cabinets, shining in its colour when it arrives: C7H5N3O6 (blue), Honey Buzzard (red), Ts'ui Pên (orange) or Croisière Noire (its own grey), drawn from their Korong sprites. Touched, it walks every cabinet and chip, then Motel Sound and Kapture, lights each one and names it with one line. A click elsewhere, or Escape, stops it. It can also be grabbed with the mouse or a finger and thrown: it slides and bounces off the edges like the Korong puck, silent, lighting up at each impact; after one or two impacts it lays a Koin that goes to the counter by itself (one or two Koins at most per visit, however long one plays). Now and then, hitting an edge, it swears. Thrown in the middle of a visit, it takes it up again a few seconds later. Every visit starts on any tile or menu, at random.
+A few seconds after the title screen opens, then now and then, a guide wanders along the cabinets, shining in its colour when it arrives: C7H5N3O6 (blue), Honey Buzzard (red), Ts'ui Pên (orange) or Croisière Noire (its own grey), drawn from their Korong! sprites. Touched, it walks every cabinet and chip, then Motel Sound and Kapture, lights each one and names it with one line. A click elsewhere, or Escape, stops it. It can also be grabbed with the mouse or a finger and thrown: it slides and bounces off the edges like the Korong! puck, silent, lighting up at each impact; after one or two impacts it lays a Koin that goes to the counter by itself (one or two Koins at most per visit, however long one plays). Now and then, hitting an edge, it swears. Thrown in the middle of a visit, it takes it up again a few seconds later. Every visit starts on any tile or menu, at random.
 
 ---
 
-## Korong
+## Korong!
 
 - Move the paddle with the mouse, a finger or the arrow keys. Pull back, then drive through the puck to hit hard; hold the button or Space to catch it. The whole back line is the goal.
 - The mouse stays inside the table while playing; Enter or Esc lets it go.
@@ -50,7 +50,7 @@ A few seconds after the title screen opens, then now and then, a guide wanders a
 
 ## Koins
 
-- One Koin opens a game (a Korong duel or run, a Korhogo game). The machines (3615, VHS, Photofauna, FaunaTor, Skoporhogo, Reporhogo) and Motel Sound are free.
+- One Koin opens a game (a Korong! duel or run, a Korhogo game). The machines (3615, VHS, Photofauna, FaunaTor, Skoporhogo, Reporhogo) and Motel Sound are free.
 - **Every win, in any game, brings one Koin.** A win rains Koins on the screen.
 - In the 3615: **1 Koin per connection to 3615 KOINS**; 1 per Fauna profile read to its last page; 1 per message sent (5 a day). No ceiling.
 - At 0, one Koin comes back after 30 seconds.
@@ -96,11 +96,11 @@ Everything sits at the top level, no folders (except `tor/` and `.github/`), so 
 | `index.html` | the site |
 | `fr.html` | the same page opening in French — **generated**: edit `index.html`, then run `python3 build-fr.py` |
 | `fauna-*.html`, `fauna-*.webp` | one page per member of the Fauna |
-| `sprite-*.webp` | the Masks of Korong (8 expressions each) |
+| `sprite-*.webp` | the Masks of Korong! (8 expressions each) |
 | `mask-*.webp` | the Masks' portraits (Photofauna, the paintings of the room) |
 | `thumb-*.jpg` | the cabinets (`thumb-bio-*.jpg`: the Bio cabinet draws one of the eighteen Masks) |
 | `poster*.{jpg,webp}`, `room.webp` | the painting and the pixel room |
-| `room-puck.webp` | the painted motel room of Korong (the table, the Mask, the window's sky, the TV, the portraits and the score board are laid over it by the game) |
+| `room-puck.webp` | the painted motel room of Korong! (the table, the Mask, the window's sky, the TV, the portraits and the score board are laid over it by the game) |
 | `kg-hang-ja.json` | Akasztófa's stanzas |
 | `kg-*` | the Korhogo games, loaded on demand (`kg-loader.js`, `kg-core.*`, `kg-chess.*`, `kg-erratic.*`, `kg-faunarratics.*`, `kg-katabatik.*`, `kg-kapture.*`); `kg-faces.json` their portraits |
 | `kg-vhs.*`, `kg-vhs-library.js`, `kg-vhs-recorder.js`, `kg-vhs-scrape.js` | VHS: the deck, the cassette library, the shelf and REC bay, the in-page recorder |
@@ -146,12 +146,12 @@ Index of Mauk Tenieb's sites: https://mauktenieb.github.io/
 
 ## Rights
 
-Copyright © Mauk Tenieb & Korhogo. Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Korong™ and any related material — including characters, names, symbols, rules, lore and texts, in any form or medium — are the exclusive property of Korhogo™, all rights reserved. The source code of this site is free to reuse under the MIT licence (see `LICENSE`); the lore, names, marks, characters, images, music and texts stay out of that licence and remain the property of the author.
+Copyright © Mauk Tenieb & Korhogo. Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Korong!™ and any related material — including characters, names, symbols, rules, lore and texts, in any form or medium — are the exclusive property of Korhogo™, all rights reserved. The source code of this site is free to reuse under the MIT licence (see `LICENSE`); the lore, names, marks, characters, images, music and texts stay out of that licence and remain the property of the author.
 
 The code is MIT: take it, change it, redistribute it, keep the notice. The Korhogo material (characters, names, marks, lore, texts, images, music) requires written permission for any reproduction or reuse, including training or use by artificial-intelligence systems. Whoever reuses the code replaces that material with their own. Details: `LICENSE`.
 
 Third-party components:
-- Korong runs on a JavaScript port of [PuffleHuck](https://github.com/iconidentify/pufflehuck) (MIT, see `LICENSE`).
+- Korong! runs on a JavaScript port of [PuffleHuck](https://github.com/iconidentify/pufflehuck) (MIT, see `LICENSE`).
 - FaunaTor's Tor clients: webtor-rs by privacy-ethereum and by andrewtheguy (MIT, see `TOR-LICENSES.txt`).
 - Akasztófa's stanzas: József Attila's poems up to 1928, in verse and in prose (public domain), taken from the [ELTE Poetry Corpus](https://github.com/ELTE-DH/poetry-corpus) (MEK edition) → `kg-hang-ja.json`.
 - Skoporhogo uses [three.js](https://threejs.org) r128 (MIT).

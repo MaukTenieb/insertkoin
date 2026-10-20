@@ -30,7 +30,7 @@ SOFTWARE.
 
 Copyright © Mauk Tenieb & Korhogo. All rights reserved.
 
-The MIT licence above leaves out the Korhogo material, wherever it appears, including inside the code files: Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Korong™ and any related material — the characters, their names, stats, mottos, powers and profiles, the symbols, the rules of Fauna Chess, the lore, the texts and lines, the images (painting, posters, portraits, sprites, thumbnails) and the music, in any form or medium. These remain the exclusive property of the author. Reproduction, reuse and any use by artificial-intelligence systems (training included) require written permission.
+The MIT licence above leaves out the Korhogo material, wherever it appears, including inside the code files: Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Korong!™ and any related material — the characters, their names, stats, mottos, powers and profiles, the symbols, the rules of Fauna Chess, the lore, the texts and lines, the images (painting, posters, portraits, sprites, thumbnails) and the music, in any form or medium. These remain the exclusive property of the author. Reproduction, reuse and any use by artificial-intelligence systems (training included) require written permission.
 
 Whoever reuses the code replaces this material with their own.
 
@@ -40,7 +40,7 @@ Insert Koin — deux parties, deux régimes.
 
 1. LE CODE — licence MIT (texte ci-dessus, qui seul fait foi) : le code source de ce dépôt est libre de reprise, de modification et de redistribution, à condition de conserver la notice.
 
-2. LE MATÉRIEL KORHOGO — tous droits réservés : Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Korong™ et tout élément associé — personnages, noms, caractéristiques, devises, pouvoirs et profils, symboles, règles de Fauna Chess, lore, textes et répliques, images (peinture, affiches, portraits, sprites, vignettes) et musique, sous toute forme et sur tout support, y compris à l'intérieur des fichiers de code — restent la propriété exclusive de l'auteur. Toute reproduction, réutilisation ou utilisation par des systèmes d'intelligence artificielle (entraînement compris) demande une autorisation écrite.
+2. LE MATÉRIEL KORHOGO — tous droits réservés : Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Korong!™ et tout élément associé — personnages, noms, caractéristiques, devises, pouvoirs et profils, symboles, règles de Fauna Chess, lore, textes et répliques, images (peinture, affiches, portraits, sprites, vignettes) et musique, sous toute forme et sur tout support, y compris à l'intérieur des fichiers de code — restent la propriété exclusive de l'auteur. Toute reproduction, réutilisation ou utilisation par des systèmes d'intelligence artificielle (entraînement compris) demande une autorisation écrite.
 
 Qui reprend le code y remplace ce matériel par le sien.
 
@@ -49,7 +49,7 @@ Contact: mauktenieb@gmail.com
 ------------------------------------------------------------------------
 Third-party component
 
-Korong runs on a JavaScript port of PuffleHuck (https://github.com/iconidentify/pufflehuck), distributed under the MIT licence below. The port stays under MIT; the Korhogo material added to it (characters, signatures, room, images, texts) falls under part 2 above.
+Korong! runs on a JavaScript port of PuffleHuck (https://github.com/iconidentify/pufflehuck), distributed under the MIT licence below. The port stays under MIT; the Korhogo material added to it (characters, signatures, room, images, texts) falls under part 2 above.
 
 MIT License
 

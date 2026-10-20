@@ -7,7 +7,7 @@ rep: 19 vendémiaire an 235
 description: How Insert Koin places the lights in the eyes of drawn characters on a sprite strip, with MediaPipe Face Mesh, a relative eyelid test and template tracking for beaks and muzzles.
 links: [Detour on GitHub](https://github.com/MaukTenieb/detour) · [Catchlight, the page](https://github.com/MaukTenieb/detour/blob/main/catchlight.html) · [Detour, the cut-out](detour.html) · [Insert Koin](../)
 ---
-In Korong, the shufflepuck game of Insert Koin, each of the eighteen Masks of the Korhogo Fauna plays from a strip of eight portraits. A small glow sits on the eyes of six of them: Auvergne, dogXim, C7H5N3O6, Honey Buzzard, Croisière Noire and Cadaver Synod. On 10 October 2026 Mauk Tenieb spots catchlights on brows, noses and foreheads.
+In Korong!, the shufflepuck game of Insert Koin, each of the eighteen Masks of the Korhogo Fauna plays from a strip of eight portraits. A small glow sits on the eyes of six of them: Auvergne, dogXim, C7H5N3O6, Honey Buzzard, Croisière Noire and Cadaver Synod. On 10 October 2026 Mauk Tenieb spots catchlights on brows, noses and foreheads.
 
 Claude, the AI assistant that writes the code of Insert Koin with Mauk Tenieb, first places the lights by hand: it reads eye positions by sight on six-times enlargements of every face, over two rounds. That method sets the right-eye light of C7H5N3O6 6.5 cell units right of the pupil, and it switches off the lights of frame 2 of the same Mask, whose eyes stand open. A cell unit is one pixel of the sprite at game size.
 
@@ -27,7 +27,7 @@ On C7H5N3O6, the face model moves the right-eye light 6.5 cell units back onto t
 
 ## En français
 
-Dans Korong, le jeu de palet d'Insert Koin, chacun des dix-huit Masks de la Korhogo Fauna joue depuis une bande de huit portraits. Six d'entre eux portent une lueur dans les yeux : Auvergne, dogXim, C7H5N3O6, Honey Buzzard, Croisière Noire et Cadaver Synod. Le 10 octobre 2026, Mauk Tenieb repère des reflets sur des sourcils, des nez et des fronts.
+Dans Korong!, le jeu de palet d'Insert Koin, chacun des dix-huit Masks de la Korhogo Fauna joue depuis une bande de huit portraits. Six d'entre eux portent une lueur dans les yeux : Auvergne, dogXim, C7H5N3O6, Honey Buzzard, Croisière Noire et Cadaver Synod. Le 10 octobre 2026, Mauk Tenieb repère des reflets sur des sourcils, des nez et des fronts.
 
 Claude, l'assistant d'IA qui écrit le code d'Insert Koin avec Mauk Tenieb, place d'abord les lumières à la main : il lit à l'œil la position des yeux sur des agrandissements au sextuple, en deux passes. Cette méthode pose la lumière de l'œil droit de C7H5N3O6 à 6,5 unités de case à droite de la pupille et éteint l'image 2 du même Mask, aux yeux ouverts. Une unité de case vaut un pixel du sprite à la taille du jeu.
 

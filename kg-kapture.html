@@ -2,36 +2,20 @@
  * Code: MIT licence, Copyright (c) 2026 Mauk Tenieb (see LICENSE).
  * Korhogo material: Copyright © Mauk Tenieb & Korhogo, all rights reserved. Korhogo™,
  * Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™,
- * Korong™ and any related material — characters, names, symbols, rules, lore, texts,
+ * Korong!™ and any related material — characters, names, symbols, rules, lore, texts,
  * images and music, in any form or medium, including inside this file — stay out of the
  * MIT licence and remain the property of the author. No use of that material for
  * training artificial intelligence. Contact: mauktenieb@gmail.com
 -->
-<!-- KG fragment: KAPTURE button (#kapture-btn, shown by the loader only while Kapture is open) + #kapture-overlay. Markup as parsed by the browser from the original index.html. -->
-<button id="kapture-btn">KAPTURE!</button>
+<!-- KG fragment: KAPTURE camera (#kapture-overlay). The screenshot (SKREEN) is taken by the host page itself, without this module. -->
 <div id="kapture-overlay">
-  <canvas id="kapture-canvas"></canvas>
-  <!-- Screen 1: choose -->
-  <div id="kapture-choose">
-        <div id="kapture-choose-sub">Join the...</div>
-    <div id="kapture-choose-btns">
-      <button id="kap-btn-kam" class="kap-toggle" data-action="kaptureToggle('kam')">KAM</button>
-      <button id="kap-btn-mik" class="kap-toggle" data-action="kaptureToggle('mik')">MIK</button>
-    </div>
-    <button id="kap-btn-go" class="kap-go" data-action="kaptureGo()">GO →</button>
-    <button id="kap-btn-nope" class="kap-nope" data-action="kaptureNope()">Fuck u in Baku-Bayou!</button>
+  <video id="kapture-video" playsinline muted></video>
+  <canvas id="kapture-canvas" hidden></canvas>
+  <div id="kapture-msg"></div>
+  <div id="kapture-bar">
+    <button id="kapture-flip" type="button" data-action="kaptureFlip()" aria-label="Flip camera">⇄</button>
+    <button id="kapture-shoot" type="button" data-action="kaptureShoot()" aria-label="Kapture">●</button>
+    <button id="kapture-close" type="button" data-action="kaptureClose()" aria-label="Close">✕</button>
   </div>
-  <!-- Screen 2: recording -->
-  <div id="kapture-rec" style="display:none">
-    <div id="kapture-hud">
-      <div id="kapture-timer"></div>
-      <div id="kapture-label"></div>
-    </div>
-  </div>
-  <!-- Screen 3: done -->
-  <div id="kapture-done" style="display:none">
-    <div id="kapture-done-title"></div>
-    <a id="kapture-dl" download="kapture.webm" style="display:none;font-family:'DM Mono',monospace;font-size:13px;letter-spacing:.2em;padding:12px 28px;border:1px solid #c9a84c;border-radius:6px;color:#ffe08a;text-decoration:none;background:rgba(201,168,76,.12);">⬇ VIDEO</a>
-    <button id="kapture-close" data-action="kaptureClose()">✕</button>
-  </div>
+  <input id="kapture-file" type="file" accept="image/*" capture="environment" hidden>
 </div>

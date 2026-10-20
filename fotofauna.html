@@ -1962,6 +1962,8 @@ const TP=JSON.parse($('#testphotos').textContent);
 const IK_MASKS=['unkle_maukie','dogxim','c7h5n3o6','naphta','tsui_pen','honey_buzzard','hatra_loves','croisiere_noire','aube','silent_pact','maiden_call','plague_of_justinian','poisoned_well','cadaver_synod','truce','auvergne','grand_colonel','malika'];
 const ikMask=()=>'mask-'+IK_MASKS[Math.floor(Math.random()*IK_MASKS.length)]+'.webp';
 for(const k of Object.keys(TP))TP[k]=ikMask();
+/* [IK] Kapture hands its picture over here (screenshot or photo): it becomes the image being edited */
+window.__ikImport=async(blob,how)=>{try{await openFile(new File([blob],'kapture-'+(how||'kam')+(blob.type==='image/png'?'.png':'.jpg'),{type:blob.type||'image/jpeg'}));}catch(e){console.warn(e);}};
 window.__ffPoster=async()=>{if(S._own)return;const was=S.src;try{const im=await loadDataImg(ikMask());if(S.src===was&&!S._own){setSource(im,true);changed();}}catch(e){}};
 function loadDataImg(u){return new Promise((res,rej)=>{const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;c.getContext('2d').drawImage(im,0,0);res(c.getContext('2d').getImageData(0,0,c.width,c.height));};im.onerror=rej;im.src=u;});}
 function sig(img){const W=img.width,H=img.height,o=[];for(let gy=0;gy<4;gy++)for(let gx=0;gx<4;gx++){let r=0,g=0,b=0,n=0;for(let y=Math.floor(gy*H/4);y<Math.floor((gy+1)*H/4);y+=2)for(let x=Math.floor(gx*W/4);x<Math.floor((gx+1)*W/4);x+=2){const i=(y*W+x)*4;r+=img.data[i];g+=img.data[i+1];b+=img.data[i+2];n++;}o.push(Math.round(r/n),Math.round(g/n),Math.round(b/n));}return o;}
