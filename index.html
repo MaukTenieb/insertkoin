@@ -1769,7 +1769,7 @@ function playRun(){saveRun();const id=RUN.order[RUN.idx];startMatch(R.findIndex(
 function pickGuest(i){if(!pay())return;RUN=null;startMatch(i,null);}
 /* palmarès of the run: Masks beaten, then goals let in over the whole run (continues included) */
 function palmKorong(won){const P=$('palm');if(P)P.innerHTML='';if(!RUN||!window.IKP)return;if(!RUN.id)RUN.id=Date.now().toString(36)+Math.random().toString(36).slice(2,8);
-  RUN.ga=(RUN.ga||0)+G.e.opponent_score;const masks=won?RUN.idx+1:RUN.idx;IKP.record('korong',{a:masks,b:RUN.ga,run:RUN.id},(t,rank)=>{if(P)P.innerHTML=IKP.html('korong',t,rank);});}
+  RUN.ga=(RUN.ga||0)+G.e.opponent_score;const masks=won?RUN.idx+1:RUN.idx;IKP.record('korong',{a:masks,b:RUN.ga,run:RUN.id},(t,rank)=>{if(P)P.textContent=IKP.line(rank);});}
 function afterMatch(won){palmKorong(won);const last=RUN&&RUN.idx===RUN.order.length-1;if(RUN){if(won&&last){const done=RUN;RUN=null;saveRun();RUN=done;setTimeout(()=>champion(),900);}else if(won){RUN.krew=KREW[G.r.id]||null;RUN.idx++;saveRun();RUN.idx--;}}
   if(won)earn();
   $('ovT').textContent=won?(last?tr('champ'):tr('win')):tr('lose');

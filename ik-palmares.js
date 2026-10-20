@@ -8,6 +8,7 @@
    IKP.record(game,{a,b,run},cb)         → asks the three initials once per run when the entry qualifies, sends it,
                                            then cb(top,rank); a refused write (one a minute per address) is retried
    IKP.html(game,top,rank)               → the list, ready for an element
+   IKP.line(rank)                        → "#3 — 3615 PALMARÈS" (the full list lives in the Minitel: 3615 KORHOGO, 5)
    korong: a = Masks beaten in the run, b = goals conceded; fauninvaders: a = score, b = wave */
 (function(){
   var URL_='https://palmares.mauktenieb.workers.dev',INI={};
@@ -46,6 +47,8 @@
       if(INI[e.run])go(INI[e.run]);else ask(go);
     });
   }
+  /* in the games, a single line: the rank, and where the whole list lives (the Minitel) */
+  function line(rank){if(!rank)return '';return (fr()?(rank===1?'1er':rank+'e'):'#'+rank)+' \u2014 3615 PALMAR\u00c8S';}
   function html(game,t,rank){
     if(!t||!t.length)return '';
     var col=game==='korong'?(fr()?['MASKS','BUTS PRIS']:['MASKS','GOALS LET IN']):(fr()?['SCORE','VAGUE']:['SCORE','WAVE']);
@@ -62,5 +65,8 @@
     '.ikp-top caption{font-family:"Press Start 2P",monospace;font-size:9px;letter-spacing:.2em;color:#c9a84c;padding-bottom:6px}'+
     '.ikp-top th{font-weight:400;color:rgba(236,228,210,.5);font-size:9px;padding:2px 8px}.ikp-top td{padding:2px 8px;text-align:right}.ikp-top td:nth-child(2){text-align:left;letter-spacing:.2em}.ikp-top tr.me td{color:#c9a84c}';
   document.head.appendChild(css);
-  window.IKP={top:top,enters:enters,record:record,html:html};
+  window.IKP={top:top,enters:enters,record:record,html:html,line:line};
 })();
+
+/* ikp line style */
+(function(){var c=document.createElement('style');c.textContent='#palm{font-family:"Press Start 2P",monospace;font-size:10px;letter-spacing:.12em;color:#c9a84c;min-height:12px}';document.head.appendChild(c);})();
