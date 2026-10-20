@@ -82,6 +82,7 @@ h1 span{color:var(--cyan)}
 .ctl .cr input[type=range]{width:100%;accent-color:var(--or)}
 .ctl select{font-size:13px;color:var(--papier);background:var(--fosse);border:1px solid var(--trait);padding:5px 6px;border-radius:0;width:100%}
 .ctl .chip{flex:0 0 auto}
+.ctl .ctlmore{margin-top:6px}.ctl .ctlmore summary{cursor:pointer;font-size:12px;color:var(--cyan);padding:4px 10px}
 .ctl:empty{display:none}
 /* outils et FaunAI */
 .ask{grid-area:ask;display:flex;flex-direction:column;gap:8px;min-width:0}
@@ -1990,7 +1991,7 @@ void main(){if(v.y<hy){o=textureLod(A,v,0.);return;}
  float line=smoothstep(.004,0.,v.y-hy);c=mix(c,textureLod(A,vec2(v.x,hy-.002),0.).rgb*1.05,line*.6);
  o=vec4(clamp(c,0.,1.),1.);}`,
 /* Formes et motifs (Tangent, Pixite) : forme × motif × couleur × fusion, inversion, opacité */
-tangent:`uniform sampler2D A;uniform int SH,PT,BM;uniform vec2 C;uniform float size,rot,prot,pscale,inv,op,soft;uniform vec3 col;uniform vec3 col2;
+tangent:`uniform sampler2D A;uniform int SH,PT,BM;uniform vec2 C;uniform float size,rot,prot,pscale,inv,op,soft,pm,sop;uniform vec3 col;uniform vec3 col2;
 float sdf(vec2 p){float r=size;
  if(SH==0)return length(p)-r;
  if(SH==1){vec2 q=abs(p);return max(q.x,q.y)-r*.86;}
@@ -2001,6 +2002,9 @@ float sdf(vec2 p){float r=size;
  if(SH==6)return abs(p.y)-r*.35;
  if(SH==7)return p.y;
  if(SH==8){float a=atan(p.y,p.x);float k=cos(floor(.5+a/1.2566)*1.2566-a)*length(p);return k-r*(.55+.25*cos(5.*a));}
+ if(SH==9){vec2 q=abs(p);return abs(max(q.x,q.y)-r*.86)-r*.12;}
+ if(SH==10)return p.y*.25;
+ if(SH==11){vec2 f=fract(p/(r*.22))-.5;return length(f)*r*.22-r*.07*(1.-clamp(length(p)/(r*1.6),0.,1.));}
  return length(p)-r;}
 float pat(vec2 p){p=mat2(cos(prot),-sin(prot),sin(prot),cos(prot))*p/pscale;
  if(PT==0)return 1.;
@@ -2011,6 +2015,10 @@ float pat(vec2 p){p=mat2(cos(prot),-sin(prot),sin(prot),cos(prot))*p/pscale;
  if(PT==5)return step(.5,fract(atan(p.y,p.x)/6.283*24.));
  if(PT==6)return step(.5,fract(length(p)*12.));
  if(PT==7){vec2 f=floor(p*8.);return mod(f.x+f.y,2.);}
+ if(PT==8){vec2 f=fract(p*vec2(5.,10.));return step(.5,f.y)*step(.3,f.x);}
+ if(PT==9)return step(.85,fract(p.x*14.));
+ if(PT==10){float a=atan(p.y,p.x);return step(.55,fract(a/6.283*16.))*step(length(p),1.2+.3*sin(a*16.));}
+ if(PT==11)return step(.5,fbm(p*6.+3.));
  return 1.;}
 vec3 blendm(vec3 a,vec3 b){
  if(BM==1)return min(a/(1.-b+1e-3),vec3(1.));
@@ -2018,16 +2026,18 @@ vec3 blendm(vec3 a,vec3 b){
  if(BM==3)return min(a,b);
  if(BM==5)return abs(a-b);
  if(BM==6)return 1.-min((1.-a)/(b+1e-3),vec3(1.));
+ if(BM==7)return clamp((a-.5)*(1.+L(b)*1.5)+.5,0.,1.)*mix(vec3(1.),b*1.4,.35);
+ if(BM==8){float l=L(a);return mix(vec3(l),a,1.+L(b)*2.)*mix(vec3(1.),b,.25);}
  return b;}
 void main(){vec2 asp=vec2(R.x/U(),R.y/U());vec2 p=(v-C)*asp;p=mat2(cos(rot),-sin(rot),sin(rot),cos(rot))*p;
- float d=sdf(p);float m=1.-smoothstep(-soft,soft,d);if(inv>.5)m=1.-m;
+ float d=sdf(p);float m=1.-smoothstep(-soft,soft,d);if(SH==10)m=smoothstep(-.15,.15,-p.y);if(inv>.5)m=1.-m;m=mix(1.,m,sop);
  vec3 c=texture(A,v).rgb;float pa=pat(p);vec3 fill=mix(col2,col,pa);
- vec3 r=blendm(c,fill);if(PT>0&&BM!=0)r=mix(c,r,pa);
- vec3 outc=mix(c,r,m*op);if(BM==4)outc=mix(vec3(0.),mix(c,blendm(c,fill),op*.6),m);
+ vec3 r=blendm(c,fill);if(PT>0&&BM!=0)r=mix(c,r,pa*(pm>.5?1.:m));
+ float mc=pm>.5?m:1.;vec3 outc=mix(c,r,mc*op);if(BM==4)outc=mix(vec3(0.),mix(c,blendm(c,fill),op*.6),m);
  o=vec4(clamp(outc,0.,1.),1.);}`,
 /* Objets 3D posés dans la photo (Matter, Pixite) : lancer de rayons sur champs de distance,
    matières opaque, chrome, verre, verre dépoli ; la photo sert d'environnement ; ombre portée */
-matter:`uniform sampler2D A;uniform int SH,MT;uniform vec2 C;uniform float size,ang,shadow;uniform vec3 col;
+matter:`uniform sampler2D A;uniform int SH,MT;uniform vec2 C;uniform float size,ang,shadow,ior,shOn,floorY,shBlur,lightA;uniform vec3 col;
 mat3 rotm(float a,float b){float ca=cos(a),sa=sin(a),cb=cos(b),sb=sin(b);return mat3(ca,0.,-sa,0.,1.,0.,sa,0.,ca)*mat3(1.,0.,0.,0.,cb,sb,0.,-sb,cb);}
 float sdBox(vec3 p,vec3 b){vec3 q=abs(p)-b;return length(max(q,0.))+min(max(q.x,max(q.y,q.z)),0.);}
 float map(vec3 p){p=rotm(ang,ang*.63+.5)*p;
@@ -2044,16 +2054,21 @@ vec3 nrm(vec3 p){vec2 e=vec2(.002,0);return normalize(vec3(map(p+e.xyy)-map(p-e.
 vec3 env(vec3 d,float lod){vec2 uv=clamp(.5+vec2(d.x,-d.y)*.5/(1.2-d.z*.4),0.,1.);return textureLod(A,uv,lod).rgb;}
 void main(){vec2 asp=vec2(R.x/U(),R.y/U());vec2 q=(v-C)*asp/size;vec3 c=texture(A,v).rgb;
  /* ombre portée au sol, sous l'objet */
- vec2 sp=(v-C)*asp/size-vec2(.3,1.05);float sh=exp(-dot(sp*vec2(.75,2.4),sp*vec2(.75,2.4))*1.2);c*=1.-sh*shadow*.82;
+ vec2 ldir=vec2(cos(lightA),sin(lightA));vec2 sp=(v-C)*asp/size-vec2(-ldir.x*.45,.55+floorY)-vec2(0.,.0);float bw=1.+shBlur*3.;float sh=exp(-dot(sp*vec2(.75,2.4)/bw,sp*vec2(.75,2.4)/bw)*1.2);c*=1.-sh*shadow*.82*shOn;
  vec3 ro=vec3(q*1.,4.),rd=vec3(0,0,-1);ro=vec3(0,0,4);rd=normalize(vec3(q.x,-q.y,-3.2));
  float t=0.,d;bool hit=false;for(int i=0;i<96;i++){d=map(ro+rd*t);if(d<.001){hit=true;break;}t+=d;if(t>8.)break;}
  if(!hit){o=vec4(c,1.);return;}
- vec3 p=ro+rd*t,n=nrm(p);vec3 ld=normalize(vec3(-.5,.8,.6));float dif=max(dot(n,ld),0.);vec3 h=normalize(ld-rd);float spc=pow(max(dot(n,h),0.),60.);
+ vec3 p=ro+rd*t,n=nrm(p);vec3 ld=normalize(vec3(-cos(lightA)*.8,.8,.6));float dif=max(dot(n,ld),0.);vec3 h=normalize(ld-rd);float spc=pow(max(dot(n,h),0.),60.);
  float fr=.04+.96*pow(1.-max(dot(n,-rd),0.),5.);vec3 amb=textureLod(A,vec2(.5),9.).rgb;vec3 rf=env(reflect(rd,n),0.);vec3 res;
+ vec3 pw=rotm(ang,ang*.63+.5)*p;
+ if(MT==4){res=textureLod(A,clamp(.5+n.xy*vec2(.5,-.5)*1.4,0.,1.),0.).rgb*mix(vec3(1.),col,.3)*(.8+.2*dif)+spc*.5;o=vec4(clamp(res,0.,1.),1.);return;}
+ if(MT==5){vec3 g=abs(fract(pw*4.)-.5);float w=1.-smoothstep(.02,.05,min(g.x,min(g.y,g.z)));if(w<.01){o=vec4(c,1.);return;}o=vec4(mix(c,col*(.6+.4*dif)+spc,w),1.);return;}
+ if(MT==6){vec2 uvp=vec2(atan(pw.z,pw.x),pw.y)*vec2(3.,4.);float dt=1.-smoothstep(.18,.24,length(fract(uvp)-.5));if(dt<.01){o=vec4(c,1.);return;}o=vec4(mix(c,col*(.5+.5*dif)+spc,dt),1.);return;}
+ if(MT==7){float fa=smoothstep(-1.,1.,pw.y);res=col*(amb*.45+dif*.85)+spc*.35;o=vec4(mix(c,clamp(res,0.,1.),fa),1.);return;}
  if(MT==0){res=col*(amb*.45+dif*.85)+spc*.35+rf*fr*.25;}
  else if(MT==1){res=env(reflect(rd,n),0.)*mix(vec3(1.),col,.35)*(.75+.25*dif)+spc;}
- else{vec3 r1=refract(rd,n,1./1.45);vec3 pi=p+r1*.02;float ti=0.;for(int i=0;i<48;i++){float di=-map(pi+r1*ti);if(di<.001)break;ti+=max(di,.01);}
-  vec3 pe=pi+r1*ti;vec3 ne=-nrm(pe);vec3 r2=refract(r1,ne,1.45);if(dot(r2,r2)<.01)r2=reflect(r1,ne);
+ else{vec3 r1=refract(rd,n,1./ior);vec3 pi=p+r1*.02;float ti=0.;for(int i=0;i<48;i++){float di=-map(pi+r1*ti);if(di<.001)break;ti+=max(di,.01);}
+  vec3 pe=pi+r1*ti;vec3 ne=-nrm(pe);vec3 r2=refract(r1,ne,ior);if(dot(r2,r2)<.01)r2=reflect(r1,ne);
   vec3 tr=env(r2,MT==3?3.5:0.)*mix(vec3(1.),col,MT==3?.55:.25);res=mix(tr,rf,fr)+spc*.9;if(MT==3)res=res*.9+col*.1;}
  o=vec4(clamp(res,0.,1.),1.);}`,
 /* Motifs posés par-dessus (Pixlr-o-matic Rain, Carbon, Metal ; Lunapic Color Bars) */
@@ -2115,11 +2130,11 @@ void main(){vec4 m=texture(M,v);vec2 e=1./vec2(textureSize(M,0));
 const GPU_EXT=(()=>{
  const hexv=c=>{c=String(c||'#000').replace('#','');if(c.length===3)c=c[0]+c[0]+c[1]+c[1]+c[2]+c[2];return [parseInt(c.slice(0,2),16)/255,parseInt(c.slice(2,4),16)/255,parseInt(c.slice(4,6),16)/255]};
  const lodOf=(w,h,f)=>Math.max(.5,Math.log2(Math.min(w,h)*f));
- const SH={circle:0,square:1,triangle:2,hexagon:3,diamond:4,ring:5,band:6,half:7,star:8};
- const PT={solid:0,stripes:1,dots:2,grid:3,chevron:4,rays:5,rings:6,checker:7};
- const BM={normal:0,dodge:1,lighten:2,darken:3,black:4,difference:5,burn:6};
+ const SH={circle:0,square:1,triangle:2,hexagon:3,diamond:4,ring:5,band:6,half:7,star:8,frame:9,graduated:10,halftone:11};
+ const PT={solid:0,stripes:1,dots:2,grid:3,chevron:4,rays:5,rings:6,checker:7,dashes:8,lines:9,explosion:10,decay:11};
+ const BM={normal:0,dodge:1,lighten:2,darken:3,black:4,difference:5,burn:6,contrast:7,saturation:8};
  const MSH={sphere:0,cube:1,torus:2,octa:3,twist:4,hexprism:5,beads:6,column:7};
- const MMT={opaque:0,chrome:1,glass:2,frosted:3};
+ const MMT={opaque:0,chrome:1,glass:2,frosted:3,wrap:4,wire:5,dots:6,fade:7};
  const OV={rain:0,carbon:1,metal:2,bars:3,iris:4,sparkle:5,neon:6,smoke:7,tiedye:8,space:9,fireworks:10,snow:11,bubble:12,lightpaint:13,subtle:14,chemburn:15};
  const WM={swirl:0,implode:1,explode:2};
  /* masque de chimie : particules de révélateur qui coulent selon l'inclinaison, puis s'arrêtent */
@@ -2157,8 +2172,8 @@ const GPU_EXT=(()=>{
   nv(s,{swap}){swap('nv',{amt:s.amt??1})},
   relight(s,{swap,E,w,h,cur}){E.mip(cur());swap('relight',{C:[s.x??.3,s.y??.25],amt:s.amt??.8,lod0:lodOf(w,h,.003),spec:s.spec??.5})},
   ripple(s,{swap,E,cur}){E.mip(cur());swap('ripple',{hy:s.hy??.42,amt:s.amt??1,wave:s.wave??1,tint:s.tint??.3,W:hexv(s.water||'#1d3a4a')})},
-  tangent(s,{swap}){swap('tangent',{SH:SH[s.shape||'circle'],PT:PT[s.pattern||'solid'],BM:BM[s.blend||'normal'],C:[s.x??.5,s.y??.5],size:s.size??.32,rot:(s.rot||0)*Math.PI/180,prot:(s.prot||0)*Math.PI/180,pscale:s.pscale??1,inv:s.invert?1:0,op:s.opa??.85,soft:s.soft??.004,col:hexv(s.color||'#ffffff'),col2:hexv(s.color2||'#000000')})},
-  matter(s,{swap,E,cur,ctx}){E.mip(cur());swap('matter',{SH:MSH[s.shape||'sphere'],MT:MMT[s.mat||'glass'],C:[s.x??.5,s.y??.55],size:s.size??.22,ang:(s.ang??.6)+(ctx.t||0)*.39,shadow:s.shadow??.8,col:hexv(s.color||'#d9d4c8')})},
+  tangent(s,{swap}){swap('tangent',{SH:SH[s.shape||'circle'],PT:PT[s.pattern||'solid'],BM:BM[s.blend||'normal'],C:[s.x??.5,s.y??.5],size:s.size??.32,rot:(s.rot||0)*Math.PI/180,prot:(s.prot||0)*Math.PI/180,pscale:s.pscale??1,inv:s.invert?1:0,op:s.opa??.85,pm:s.pm??1,sop:s.sop??1,soft:s.soft??.004,col:hexv(s.color||'#ffffff'),col2:hexv(s.color2||'#000000')})},
+  matter(s,{swap,E,cur,ctx}){E.mip(cur());swap('matter',{SH:MSH[s.shape||'sphere'],MT:MMT[s.mat||'glass'],C:[s.x??.5,s.y??.55],size:s.size??.22,ang:(s.ang??.6)+(ctx.t||0)*.39*(s.spin??1),shadow:s.shadow??.7,ior:s.ior??1.45,shOn:s.shOn??1,floorY:s.floor??.5,shBlur:s.blur??.1,lightA:(s.light??-60)*Math.PI/180,col:hexv(s.color||'#d9d4c8')})},
   ovl(s,{swap}){swap('ovl',{M:OV[s.mode||'rain'],amt:s.amt??.8})},
   pour(s,{swap,E,w,h,ctx}){const seed=(ctx.seed||1974)+(s.seed||0);const pts=(s.pts&&s.pts.length)?s.pts:pourPath(seed,s.x??.5,s.y??.25,s.qty??15);const m=pourMask(pts,s.qty??15,w,h,seed);const t=E.texFrom(m,{mipmap:false});swap('pour',{amt:s.amt??1,warm:s.warm??.3},{M:t});E.del(t)}
  };
@@ -2352,8 +2367,16 @@ vhs:`uniform sampler2D A;uniform float amt;void main(){float y=v.y;float tr=step
 /* double exposition : seconde image, mode de fusion, décalage, masque de luminance */
 dbl:`uniform sampler2D A;uniform sampler2D B2;uniform int mode;uniform float amt,scale,lkey;uniform vec2 off;uniform vec2 ar;
 void main(){vec3 a=texture(A,v).rgb;vec2 q=(v-.5)/scale*ar+.5-off;vec3 b=texture(B2,clamp(q,0.,1.)).rgb;vec3 r=a;
- if(mode==0)r=screen(a,b);if(mode==1)r=a*b;if(mode==2)r=max(a,b);if(mode==3)r=min(a,b);if(mode==4)r=overlay(a,b);if(mode==5)r=abs(a-b);if(mode==6)r=softLight(a,b);
- float k=lkey>0.?smoothstep(lkey-.2,lkey+.2,L(a)):1.;o=vec4(mix(a,r,amt*k),1.);}`,
+ if(mode==0)r=screen(a,b);if(mode==1)r=a*b;if(mode==2)r=max(a,b);if(mode==3)r=min(a,b);if(mode==4)r=overlay(a,b);if(mode==5)r=abs(a-b);if(mode==6)r=softLight(a,b);if(mode==9)r=b;
+ float k=lkey>0.?smoothstep(lkey-.2,lkey+.2,L(a)):1.;
+ /* objectif divisé (Splitter Pro) : la seconde image d'un côté d'une ligne inclinée, raccord adouci */
+ if(mode==7){float sd=dot(v-vec2(.5),vec2(cos(lkey*6.283),sin(lkey*6.283)));float m=smoothstep(-.02-amt*.08,.02+amt*.08,sd);o=vec4(mix(a,b,m),1.);return;}
+ o=vec4(mix(a,r,amt*k),1.);}`,
+/* couches : le résultat d'une couche fondu sur l'état antérieur, intensité et mode de fusion (Decim8 5, Camera+ 3.9) */
+blendm:`uniform sampler2D A;uniform sampler2D B2;uniform int mode;uniform float amt;
+vec3 bm(vec3 a,vec3 b){if(mode==1)return a*b;if(mode==2)return screen(a,b);if(mode==3)return overlay(a,b);if(mode==4)return softLight(a,b);if(mode==5)return abs(a-b);if(mode==6)return max(a,b);if(mode==7)return min(a,b);
+ if(mode==8)return min(a+b,vec3(1.));if(mode==9)return min(a/(1.-b+1e-3),vec3(1.));if(mode==10)return 1.-min((1.-a)/(b+1e-3),vec3(1.));if(mode==11)return a+b-2.*a*b;if(mode==12)return overlay(b,a);return b;}
+void main(){vec3 a=texture(B2,v).rgb,b=texture(A,v).rgb;o=vec4(clamp(mix(a,bm(a,b),amt),0.,1.),1.);}`,
 /* retouche locale : mélange original / rendu selon le masque peint */
 mask:`uniform sampler2D A;uniform sampler2D O;uniform sampler2D M;uniform float amt;void main(){float m=texture(M,v).r;o=vec4(mix(texture(O,v).rgb,texture(A,v).rgb,m*amt),1.);}`,
 /* clarté et netteté : contraste local par différence avec une version floue */
@@ -2422,7 +2445,7 @@ const rnd=s=>{s=(s|0)||1;return ()=>{s=(s+0x6D2B79F5)|0;let t=Math.imul(s^s>>>15
 const LENS={none:0,toy:1,petzval:2,tilt:3,fisheye:4,pinhole:5,vaseline:6,zoom:7,prism:8,split:9};
 const LIGHT={leak:1,fog:2,rainbow:3,sun:4,bokeh:5,haze:6,rays:7,streak:8};
 const BLEND={multiply:0,soft:1,overlay:2,dustLight:3,dustDark:4,relief:5};
-const DBL={screen:0,multiply:1,lighten:2,darken:3,overlay:4,difference:5,soft:6};
+const DBL={split:7,normal:9,screen:0,multiply:1,lighten:2,darken:3,overlay:4,difference:5,soft:6};
 async function run(E,srcTex,w,h,steps,ctx){
  /* ctx : {assets(name)→Promise<tex>, lut(name)→Promise<tex>, seed, t, orig (texture originale pour le masque), mask, second} */
  const seed=ctx.seed||1974,t=ctx.t||0,base={SEED:(seed%997)+.37,T:t};
@@ -2456,6 +2479,8 @@ async function run(E,srcTex,w,h,steps,ctx){
   else if(op==='vhs'){E.mip(cur);swap('vhs',{amt:s.amt??1})}
   else if(op==='clarity'){E.mip(cur);swap('clar',{amt:(s.amt||0)*1.6,lod:Math.max(.5,Math.log2(Math.min(w,h)*(s.radius||.03)))})}
   else if(typeof GPU_EXT!=='undefined'&&GPU_EXT[op]){await GPU_EXT[op](s,{swap,E,w,h,ctx,cur:()=>cur})}
+  else if(op==='mark'){const m=E.target(w,h);E.draw('copy',m,{},{A:cur.tex});(ctx._marks=ctx._marks||[]).push(m)}
+  else if(op==='blendmark'){const m=(ctx._marks||[]).pop();if(m){swap('blendm',{mode:s.mode||0,amt:s.amt??1},{B2:m.tex});E.release(m)}}
   else if(op==='dbl'){if(!ctx.second)continue;const sw=ctx.second.w,sh=ctx.second.h;swap('dbl',{mode:DBL[s.mode||'screen'],amt:s.amt??.7,scale:s.scale??1,lkey:s.lkey||0,off:s.off||[0,0],ar:[(w/h)/(sw/sh)>1?1:(w/h)/(sw/sh),(w/h)/(sw/sh)>1?(sw/sh)/(w/h):1]},{B2:ctx.second.tex})}
  }
  if(ctx.mask&&ctx.maskAmt!=null){swap('mask',{amt:ctx.maskAmt},{O:ctx.orig||orig.tex,M:ctx.mask})}
@@ -2580,7 +2605,7 @@ holga(img,o){const s=Math.min(img.width,img.height),c=mk(s,s),g=c.getContext('2d
 /* sans cadre */
 none(img){return img}
 };
-function instant(img,o,d){const s=img.width/d.iw,ih=d.ih*s,W=d.fw*s,H=d.fh*s,c=mk(W,H),g=c.getContext('2d'),u=Math.min(W,H),r=R(o.seed),ix=(d.fw-d.iw)/2*s,iy=d.top*s;
+function instant(img,o,d){if(o.color)d=Object.assign({},d,{col:o.color});const s=img.width/d.iw,ih=d.ih*s,W=d.fw*s,H=d.fh*s,c=mk(W,H),g=c.getContext('2d'),u=Math.min(W,H),r=R(o.seed),ix=(d.fw-d.iw)/2*s,iy=d.top*s;
  g.save();if(d.round){rrect(g,0,0,W,H,d.round*s);g.clip()}paper(g,0,0,W,H,d.col,o.tex&&o.tex['paper-smooth'],d.tex??.32);
  g.save();g.shadowColor='rgba(0,0,0,.35)';g.shadowBlur=u*.006;g.fillStyle='#000';g.fillRect(ix,iy,d.iw*s,ih);g.restore();
  cover(g,img,ix,iy,d.iw*s,ih);instantEdge(g,ix,iy,d.iw*s,ih,r,u);
@@ -2651,7 +2676,7 @@ FRAMES.add('tinplate','Plaque de ferrotype','Tintype plate',(img,o)=>{const W=im
 FRAMES.add('koloid','Plaque versée à languette','Poured plate with tab',(img,o)=>{const W=img.width,H=img.height,u=Math.min(W,H),m=u*.05,mb=u*.13,c=mk(W+m*2,H+m+mb),g=c.getContext('2d'),r=rng(o.seed||3);
  g.fillStyle='#0d0b09';g.fillRect(0,0,c.width,c.height);g.fillStyle='#1d1914';g.beginPath();g.moveTo(m*.6,c.height-mb*.55);g.lineTo(m*.6+u*.22,c.height-mb*.55);g.lineTo(m*.6+u*.27,c.height-mb*.2);g.lineTo(m*.6,c.height-mb*.2);g.fill();
  g.save();g.beginPath();const f=[n1f(r),n1f(r),n1f(r),n1f(r)],j=u*.03,N=120;for(let i=0;i<=N;i++){const t=i/N;g.lineTo(m+t*W,m+j*f[0](t))}for(let i=0;i<=N;i++){const t=i/N;g.lineTo(m+W-j*f[1](t),m+t*H)}for(let i=0;i<=N;i++){const t=1-i/N;g.lineTo(m+t*W,m+H-j*f[2](t))}for(let i=0;i<=N;i++){const t=1-i/N;g.lineTo(m+j*f[3](t),m+t*H)}g.closePath();g.clip();g.drawImage(img,m,m);g.restore();
- const d=new Date();g.fillStyle='rgba(225,215,190,.75)';g.font=`${u*.032}px "DM Mono",monospace`;g.textBaseline='middle';g.textAlign='right';g.fillText(o.caption||d.toLocaleDateString('fr-FR'),c.width-m,c.height-mb*.45);return c});
+ const d=new Date();g.fillStyle='rgba(225,215,190,.75)';g.font=`${u*.032}px "DM Mono",monospace`;g.textBaseline='middle';g.textAlign='right';if(!o.nocap)g.fillText(o.caption||d.toLocaleDateString('fr-FR'),c.width-m,c.height-mb*.45);return c});
 /* tirage carré à bord blanc et coins arrondis années 1950-1960 */
 FRAMES.add('ina69','Tirage carré à coins ronds','Round-corner square print',(img,o)=>{const s=Math.min(img.width,img.height),u=s,m=u*.075,c=mk(s+m*2,s+m*2.6),g=c.getContext('2d');paper(g,0,0,c.width,c.height,'#f3eee2',o.tex&&o.tex['paper-smooth'],.4);
  g.save();rrect(g,m,m,s,s,u*.07);g.clip();cover(g,img,m,m,s,s);const vg=g.createRadialGradient(m+s/2,m+s/2,u*.35,m+s/2,m+s/2,u*.75);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(40,25,10,.28)');g.fillStyle=vg;g.fillRect(m,m,s,s);g.restore();
@@ -2932,7 +2957,7 @@ const OPS={
    for(let y=0;y<8;y++)for(let x=0;x<8;x++){const i=((by+y)*w+bx+x)*4,l=a[i]*.3+a[i+1]*.59+a[i+2]*.11;const t=LA===LB?.5:(l-LA)/(LB-LA);const q=t+(BAYER[(y&3)*4+(x&3)]/16-.47)>.5?B:A;a[i]=q[0];a[i+1]=q[1];a[i+2]=q[2]}}
   g.putImageData(d,0,0);const c=mk(W,H),g2=c.getContext('2d');g2.imageSmoothingEnabled=false;g2.drawImage(sm,0,0,W,H);return toImg(c)},
  /* Camly : déformation en trapèze (keystone) */
- keystone(img,p){const W=img.width,H=img.height,s=img.data,o=new Uint8ClampedArray(s.length),k=p.amt??.22;
+ keystone(img,p){const W=img.width,H=img.height,s=img.data,o=new Uint8ClampedArray(s.length),k=p.amt??.22;if(!k)return img;
   for(let y=0;y<H;y++){const f=1-k*(p.up?y/H:1-y/H);for(let x=0;x<W;x++){const sx=Math.round(W/2+(x-W/2)*f),i=(y*W+x)*4,j=(y*W+Math.min(W-1,Math.max(0,sx)))*4;o[i]=s[j];o[i+1]=s[j+1];o[i+2]=s[j+2];o[i+3]=255}}return new ImageData(o,W,H)},
  /* Splitter Pro (Lotogram) : Split Lens, Ghost, Mirror, Clone Yourself */
  splitter(img,p,seed){const W=img.width,H=img.height,src=toCv(img),c=mk(W,H),g=c.getContext('2d'),m=p.mode||'mirror';g.drawImage(src,0,0);
@@ -2945,12 +2970,16 @@ const OPS={
    tg.globalCompositeOperation='destination-in';tg.drawImage(mask,0,0);g.drawImage(t,0,0)}
   return toImg(c)},
  /* MOLDIV : mise en page partagée (collage), la même photo dans plusieurs cases, gouttière blanche */
- collage(img,p,seed){const W=img.width,H=img.height,src=toCv(img),c=mk(W,H),g=c.getContext('2d'),n=p.n||2,gu=Math.min(W,H)*(p.gutter??.025);g.fillStyle=p.bg||'#ffffff';g.fillRect(0,0,W,H);
-  const cells=n===2?[[0,0,.5,1],[.5,0,.5,1]]:n===3?[[0,0,.62,1],[.62,0,.38,.5],[.62,.5,.38,.5]]:[[0,0,.5,.5],[.5,0,.5,.5],[0,.5,.5,.5],[.5,.5,.5,.5]];
-  const zoom=[1,1.6,2.3,1.3],off=[[.5,.5],[.35,.35],[.65,.6],[.5,.7]];
-  cells.forEach(([x,y,w,h],k)=>{const X=x*W+gu/2,Y=y*H+gu/2,Ww=w*W-gu,Hh=h*H-gu;const z=zoom[k%4],sw=W/z,sh=H/z;const s=Math.max(Ww/sw,Hh/sh),cw=Ww/s,ch=Hh/s;const [ox,oy]=off[k%4];
-   g.drawImage(src,Math.max(0,Math.min(W-cw,W*ox-cw/2)),Math.max(0,Math.min(H-ch,H*oy-ch/2)),cw,ch,X,Y,Ww,Hh)});
-  g.strokeStyle=p.bg||'#ffffff';g.lineWidth=gu;g.strokeRect(gu/2,gu/2,W-gu,H-gu);return toImg(c)},
+ collage(img,p,seed){const W=img.width,H=img.height,src=toCv(img),c=mk(W,H),g=c.getContext('2d'),n=p.n||2,u=Math.min(W,H),gu=u*(p.gutter??.025);g.fillStyle=p.bg||'#ffffff';g.fillRect(0,0,W,H);
+  const grid=(cx,cy)=>{const a=[];for(let j=0;j<cy;j++)for(let i=0;i<cx;i++)a.push([i/cx,j/cy,1/cx,1/cy]);return a};
+  const cells=n===2?[[0,0,.5,1],[.5,0,.5,1]]:n===3?[[0,0,.62,1],[.62,0,.38,.5],[.62,.5,.38,.5]]:n===4?grid(2,2):n===6?grid(3,2):n===9?grid(3,3):n===-1?[[0,0,1,1/3],[0,1/3,1,1/3],[0,2/3,1,1/3]]:n===-2?[[0,0,1/3,1],[1/3,0,1/3,1],[2/3,0,1/3,1]]:grid(2,2);
+  const second=(typeof S!=='undefined'&&S.second)?toCv(S.second):null;const zoom=[1,1.6,2.3,1.3,1.9,1.1,2.6,1.45,2],off=[[.5,.5],[.35,.35],[.65,.6],[.5,.7],[.3,.5],[.7,.4],[.5,.3],[.4,.65],[.6,.55]];
+  const rr=(x,y,w,h,rad)=>{g.beginPath();g.moveTo(x+rad,y);g.arcTo(x+w,y,x+w,y+h,rad);g.arcTo(x+w,y+h,x,y+h,rad);g.arcTo(x,y+h,x,y,rad);g.arcTo(x,y,x+w,y,rad);g.closePath()};
+  cells.forEach(([x,y,w,h],k)=>{const X=x*W+gu/2+(x===0?gu/2:0),Y=y*H+gu/2+(y===0?gu/2:0),Ww=w*W-gu-(x===0?gu/2:0)-(x+w>=.999?gu/2:0),Hh=h*H-gu-(y===0?gu/2:0)-(y+h>=.999?gu/2:0);
+   const im=second&&k%2===1?second:src,IW=im.width,IH=im.height;const z=n<0?1:zoom[k%9],sw=IW/z,sh=IH/z;const s=Math.max(Ww/sw,Hh/sh),cw=Ww/s,ch=Hh/s;const [ox,oy]=n<0?[.5,[.25,.5,.75][k]]:off[k%9];
+   const rad=Math.min(Ww,Hh)*.5*(p.round||0);g.save();if(p.shadow){g.shadowColor=`rgba(0,0,0,${.55*p.shadow})`;g.shadowBlur=u*.02*p.shadow;g.shadowOffsetY=u*.006*p.shadow}rr(X,Y,Ww,Hh,rad);g.fillStyle=p.bg||'#fff';g.fill();g.shadowColor='transparent';g.clip();
+   g.drawImage(im,Math.max(0,Math.min(IW-cw,IW*ox-cw/2)),Math.max(0,Math.min(IH-ch,IH*oy-ch/2)),cw,ch,X,Y,Ww,Hh);g.restore()});
+  return toImg(c)},
  /* niveaux automatiques (Camera+ Auto) */
  autolevels(img,p){const a=new Uint8ClampedArray(img.data),n=a.length/4,q=p.q??.005;for(let ch=0;ch<3;ch++){const h=new Uint32Array(256);for(let i=ch;i<a.length;i+=4)h[a[i]]++;let lo=0,hi=255,acc=0;while(lo<255&&(acc+=h[lo])<n*q)lo++;acc=0;while(hi>0&&(acc+=h[hi])<n*q)hi--;const k=255/Math.max(8,hi-lo);for(let i=ch;i<a.length;i+=4)a[i]=(a[i]-lo)*k}return new ImageData(a,img.width,img.height)},
  /* Camera+ Text : document net, noir sur blanc */
@@ -3046,6 +3075,120 @@ A('af-07','Frame 07','Frame 07',(img,o)=>{const W=img.width,H=img.height,u=Math.
  const f=[n1f(r),n1f(r),n1f(r),n1f(r)],j=u*.07,N=200;g.moveTo(u*.1,u*.1);for(let i=0;i<=N;i++){const t=i/N;g.lineTo(u*.08+t*(W-u*.16),u*.08+j*f[0](t))}for(let i=0;i<=N;i++){const t=i/N;g.lineTo(W-u*.08-j*f[1](t),u*.08+t*(H-u*.16))}
  for(let i=0;i<=N;i++){const t=1-i/N;g.lineTo(u*.08+t*(W-u*.16),H-u*.08-j*f[2](t))}for(let i=0;i<=N;i++){const t=1-i/N;g.lineTo(u*.08+j*f[3](t),u*.08+t*(H-u*.16))}g.fill('evenodd');return c});
 A('af-black','Black','Black',(img,o)=>grit(img,o,true));
+/* Koloid : languette sans légende ; TinType : seconde plaque (le bouton Frame alterne les variantes) */
+A('koloid-nocap','Plaque versée sans légende','Poured plate, no caption',(img,o)=>FRAMES.draw('koloid',img,Object.assign({},o,{nocap:1})));
+A('tinplate2','Plaque de ferrotype oxydée','Oxidised tintype plate',(img,o)=>{const c=FRAMES.draw('tinplate',img,Object.assign({},o,{seed:(o.seed||7)+101})),g=c.getContext('2d'),W=c.width,H=c.height,u=Math.min(W,H),r=R((o.seed||7)+5);
+ g.save();g.globalCompositeOperation='multiply';for(const [x,y] of [[0,0],[W,0],[0,H],[W,H]]){const gr=g.createRadialGradient(x,y,0,x,y,u*(.35+r()*.2));gr.addColorStop(0,'rgba(70,38,12,.85)');gr.addColorStop(1,'rgba(70,38,12,0)');g.fillStyle=gr;g.fillRect(0,0,W,H)}
+ g.globalCompositeOperation='screen';g.strokeStyle='rgba(200,190,170,.25)';g.lineWidth=Math.max(1,u*.002);for(let i=0;i<40;i++){g.beginPath();const x=r()*W,y=r()*H;g.moveTo(x,y);g.lineTo(x+(r()-.5)*u*.2,y+(r()-.5)*u*.06);g.stroke()}g.restore();return c});
+/* Camera+, Hollywood FX : Poster (affiche verticale, bloc de générique) et DVD (image 2,39 dans un cadre 16:9, barre de chapitres) ; reconstitutions d'après le nom */
+A('hw-poster','Poster','Poster',(img,o)=>{const W=img.width,H=img.height,PW=Math.min(W,H*2/3),PH=PW*1.5,c=mk(PW,PH),g=c.getContext('2d');g.fillStyle='#050505';g.fillRect(0,0,PW,PH);
+ const ih=Math.min(H,PH*.8),iw=Math.min(W,ih*PW/(PH*.8));const sx=(W-iw)/2,sy=Math.max(0,Math.min(H-ih,H*.36-ih/2));g.drawImage(img,sx,sy,iw,ih,0,0,PW,PH*.8);
+ const gr=g.createLinearGradient(0,PH*.55,0,PH*.8);gr.addColorStop(0,'rgba(5,5,5,0)');gr.addColorStop(1,'rgba(5,5,5,1)');g.fillStyle=gr;g.fillRect(0,PH*.55,PW,PH*.25);
+ g.fillStyle='rgba(230,225,215,.95)';g.font=`${PW*.085}px "Bebas Neue",Impact,sans-serif`;g.textAlign='center';g.textBaseline='middle';g.fillText((o.caption||'SANS TITRE').toUpperCase(),PW/2,PH*.84);
+ g.fillStyle='rgba(200,195,185,.55)';const r=R(o.seed||3);for(let l=0;l<3;l++){let x=PW*.12;const y=PH*(.9+l*.022);while(x<PW*.88){const w=PW*(.02+r()*.07);g.fillRect(x,y,Math.min(w,PW*.88-x),PW*.008);x+=w+PW*.012}}return c});
+A('hw-dvd','DVD','DVD',(img,o)=>{const W=img.width,H=img.height,FH=W*9/16,c=mk(W,FH),g=c.getContext('2d');g.fillStyle='#000';g.fillRect(0,0,W,FH);const ih=W/2.39,sy=Math.max(0,Math.min(H-ih,H*.36-ih/2)),y=(FH-ih)/2;
+ g.drawImage(img,0,sy,W,Math.min(ih,H),0,y,W,ih);const u=W;g.fillStyle='rgba(255,255,255,.18)';g.fillRect(u*.08,FH-(FH-ih)/4-u*.003,u*.84,u*.006);g.fillStyle='rgba(255,255,255,.8)';g.fillRect(u*.08,FH-(FH-ih)/4-u*.003,u*.84*.37,u*.006);
+ g.font=`${u*.022}px "DM Mono",monospace`;g.textBaseline='middle';g.fillStyle='rgba(255,255,255,.7)';g.fillText('▶ 01:12:07',u*.08,(FH-ih)/4);return c});
+})();
+
+/* ==== Photofauna : effets Decim8 sans description publiée, reconstitués ====
+   Base : noms des effets, notes de version, titres que l'auteur (movax) donne à ses images de 2010 :
+   « Multipass Brightness Threshold Pixel Rounding », « Self-Sampling Recursion Artifact », « Floating Point Precision Artifacts »,
+   « Translated Repititionism », « Saturation Function of Position », « Probability Counterbalance », « Deallocation ».
+   Chaque opération suit le procédé que son nom désigne. */
+"use strict";
+(()=>{
+const {mk}=FRAMES.util;
+const rng=s=>{s=(s>>>0)||1;return()=>{s=(s+0x6D2B79F5)|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}};
+const toCv=img=>{const c=mk(img.width,img.height);c.getContext('2d').putImageData(img,0,0);return c};
+const toImg=c=>c.getContext('2d',{willReadFrequently:true}).getImageData(0,0,c.width,c.height);
+const L=(d,i)=>(d[i]*.2126+d[i+1]*.7152+d[i+2]*.0722)/255;
+const cl=(v,a,b)=>v<a?a:v>b?b:v;
+const OPS={
+ /* Multipass Brightness Threshold Pixel Rounding (Graboid, attribution déduite) : à chaque passe, les pixels au-dessus d'un seuil de lumière
+    sont arrondis à la moyenne d'un bloc plus grand */
+ thresholdRound(img,p,seed){const r=rng(seed),W=img.width,H=img.height,s=new Uint8ClampedArray(img.data),u=Math.min(W,H),n=p.passes??(3+Math.floor(r()*3));
+  for(let k=0;k<n;k++){const B=Math.max(2,Math.round(u*(p.block??.012)*(k+1))),th=(p.th??.35)+k*.12*(r()-.3);
+   for(let by=0;by<H;by+=B)for(let bx=0;bx<W;bx+=B){let R=0,G=0,Bb=0,c=0;for(let y=by;y<Math.min(H,by+B);y++)for(let x=bx;x<Math.min(W,bx+B);x++){const i=(y*W+x)*4;R+=s[i];G+=s[i+1];Bb+=s[i+2];c++}R/=c;G/=c;Bb/=c;
+    const l=(R*.2126+G*.7152+Bb*.0722)/255;if((l>th)!==(k%2===1))for(let y=by;y<Math.min(H,by+B);y++)for(let x=bx;x<Math.min(W,bx+B);x++){const i=(y*W+x)*4;s[i]=R;s[i+1]=G;s[i+2]=Bb}}}
+  return new ImageData(s,W,H)},
+ /* Self-Sampling Recursion Artifact (Veth, déduit) : chaque bloc se remplit d'une copie réduite de l'image, prise ailleurs dans l'image */
+ selfSample(img,p,seed){const r=rng(seed),W=img.width,H=img.height,src=toCv(img),c=mk(W,H),g=c.getContext('2d');g.drawImage(src,0,0);const u=Math.min(W,H),n=p.n??(18+Math.floor(r()*24));
+  for(let k=0;k<n;k++){const bw=u*(.06+r()*.22),bh=bw*(.4+r()*.9),x=r()*(W-bw),y=r()*(H-bh),sx=r()*W*.6,sy=r()*H*.6;g.globalAlpha=p.alpha??.92;g.drawImage(c,sx,sy,W*.4,H*.4,x,y,bw,bh)}
+  g.globalAlpha=1;return toImg(c)},
+ /* Floating Point Precision Artifacts (Sigstop, déduit) : coordonnées et valeurs calculées en faible précision ; marches et paliers */
+ fpPrecision(img,p,seed){const r=rng(seed),W=img.width,H=img.height,s=img.data,o=new Uint8ClampedArray(s.length),q=p.q??(6+Math.floor(r()*18)),lv=p.levels??(3+Math.floor(r()*5)),ph=r()*6.28;
+  for(let y=0;y<H;y++){const qy=Math.floor(y/q)*q;for(let x=0;x<W;x++){const f=1+.5*Math.sin(qy*.02+ph);const qx=cl(Math.floor(Math.floor(x*f/q)*q/f),0,W-1),j=(qy*W+qx)*4,i=(y*W+x)*4;
+   for(let c=0;c<3;c++){const v=s[j+c]/255;o[i+c]=Math.round(Math.pow(v,1+.4*Math.sin(c+ph))*lv)/lv*255}o[i+3]=255}}return new ImageData(o,W,H)},
+ /* Translated Repititionism (Agency, déduit) : une zone recopiée en série, chaque copie translatée */
+ repeatShift(img,p,seed){const r=rng(seed),W=img.width,H=img.height,src=toCv(img),c=mk(W,H),g=c.getContext('2d');g.drawImage(src,0,0);const u=Math.min(W,H),zones=p.zones??(2+Math.floor(r()*3));
+  for(let z=0;z<zones;z++){const w=u*(.15+r()*.35),h=u*(.1+r()*.3),x=r()*(W-w),y=r()*(H-h),dx=(r()-.5)*u*.08,dy=(r()-.5)*u*.08,n=p.copies??(6+Math.floor(r()*14));
+   for(let k=1;k<=n;k++)g.drawImage(src,x,y,w,h,x+dx*k,y+dy*k,w,h)}return toImg(c)},
+ /* Saturation Function of Position (Bunker, déduit) : saturation et teinte modulées par la position */
+ satPosition(img,p,seed){const r=rng(seed),W=img.width,H=img.height,s=img.data,o=new Uint8ClampedArray(s),fx=(1+r()*6)/W,fy=(1+r()*6)/H,a=p.amt??1.6,ph=r()*6.28;
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=(y*W+x)*4,m=(s[i]+s[i+1]+s[i+2])/3,k=1+a*Math.sin(x*fx*6.28+y*fy*6.28+ph);
+   for(let c=0;c<3;c++)o[i+c]=cl(m+(s[i+c]-m)*k+30*Math.sin(x*fx*12+c*2.1+ph)*(k-1)*.5,0,255)}return new ImageData(o,W,H)},
+ /* Probability Counterbalance (2600++, déduit) : chaque pixel s'échange avec un voisin selon une probabilité liée à sa lumière */
+ probSwap(img,p,seed){const r=rng(seed),W=img.width,H=img.height,s=img.data,o=new Uint8ClampedArray(s),rad=Math.max(2,Math.round(Math.min(W,H)*(p.rad??.03)));
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=(y*W+x)*4;if(r()<L(s,i)*(p.amt??.6)){const nx=cl(x+Math.round((r()-.5)*2*rad),0,W-1),ny=cl(y+Math.round((r()-.5)*rad*.5),0,H-1),j=(ny*W+nx)*4;o[i]=s[j];o[i+1]=s[j+1];o[i+2]=s[j+2]}}
+  return new ImageData(o,W,H)},
+ /* Deallocation (59.94, déduit) : des rangées reprennent le contenu périmé d'une mémoire libérée — fragments décalés et bruit */
+ dealloc(img,p,seed){const r=rng(seed),W=img.width,H=img.height,s=img.data,o=new Uint8ClampedArray(s),n=p.n??(8+Math.floor(r()*16));
+  for(let k=0;k<n;k++){const y0=Math.floor(r()*H),h=1+Math.floor(r()*H*.06),off=Math.floor(r()*s.length/4)*4,noise=r()<.3;
+   for(let y=y0;y<Math.min(H,y0+h);y++)for(let x=0;x<W;x++){const i=(y*W+x)*4;if(noise){const v=r()*255;o[i]=v;o[i+1]=v*r();o[i+2]=v}else{const j=(off+(y-y0)*W*4+x*4)%s.length;o[i]=s[j];o[i+1]=s[j+1];o[i+2]=s[j+2]}}}
+  return new ImageData(o,W,H)},
+ /* Precog1 : « vibration, résonance » — copies fantômes décalées sur un axe, couleurs séparées */
+ precog(img,p,seed){const r=rng(seed),W=img.width,H=img.height,src=toCv(img),u=Math.min(W,H),n=p.n??5,d=u*(p.dist??.02),ang=r()*6.28;
+  const tint=col=>{const t=mk(W,H),tg=t.getContext('2d');tg.drawImage(src,0,0);tg.globalCompositeOperation='multiply';tg.fillStyle=col;tg.fillRect(0,0,W,H);return t};const R1=tint('#ff0000'),C1=tint('#00ffff');
+  const c=mk(W,H),g=c.getContext('2d');g.fillStyle='#000';g.fillRect(0,0,W,H);g.globalCompositeOperation='lighter';
+  for(let k=n;k>=1;k--){const a=.55/k,ox=Math.cos(ang)*d*k,oy=Math.sin(ang)*d*k;g.globalAlpha=a;g.drawImage(R1,ox,oy);g.drawImage(C1,-ox,-oy)}
+  g.globalAlpha=1;g.globalCompositeOperation='source-over';const m=mk(W,H),mg=m.getContext('2d');mg.drawImage(c,0,0);g.globalAlpha=.55;g.drawImage(src,0,0);g.globalAlpha=1;
+  g.globalCompositeOperation='lighten';g.globalAlpha=.6;g.drawImage(m,0,0);g.globalAlpha=1;g.globalCompositeOperation='source-over';return toImg(c)},
+ /* Interface : trames entrelacées, une trame sur deux décalée (lecture d'un signal d'interface) */
+ interlace(img,p,seed){const r=rng(seed),W=img.width,H=img.height,s=img.data,o=new Uint8ClampedArray(s),sh=Math.round(W*(p.shift??(.01+r()*.05))),lh=Math.max(1,Math.round(H*(p.line??.004)));
+  for(let y=0;y<H;y++){if(Math.floor(y/lh)%2===0)continue;const d=sh+Math.round((r()-.5)*sh*.4);for(let x=0;x<W;x++){const i=(y*W+x)*4,j=(y*W+((x+d)%W+W)%W)*4;o[i]=s[j]*.9;o[i+1]=s[j+1];o[i+2]=s[j+2]*1.1}}
+  return new ImageData(o,W,H)},
+ /* Glass Dagger : éclats de verre en pointe ; chaque éclat déplace et éclaire l'image (souligne les angles) */
+ shards(img,p,seed){const r=rng(seed),W=img.width,H=img.height,src=toCv(img),c=mk(W,H),g=c.getContext('2d');g.drawImage(src,0,0);const u=Math.min(W,H),n=p.n??(10+Math.floor(r()*14));
+  for(let k=0;k<n;k++){const x=r()*W,y=r()*H,len=u*(.15+r()*.5),a=r()*6.28,w=len*(.06+r()*.1),dx=(r()-.5)*u*.06,dy=(r()-.5)*u*.06;g.save();g.beginPath();g.moveTo(x,y);
+   g.lineTo(x+Math.cos(a)*len,y+Math.sin(a)*len);g.lineTo(x+Math.cos(a+1.4)*w,y+Math.sin(a+1.4)*w);g.closePath();g.clip();g.drawImage(src,dx,dy);g.globalCompositeOperation='screen';g.fillStyle='rgba(255,255,255,.12)';g.fill();
+   g.globalCompositeOperation='source-over';g.strokeStyle='rgba(255,255,255,.5)';g.lineWidth=Math.max(1,u*.0015);g.stroke();g.restore()}return toImg(c)},
+ /* Broken Diamond : pavage de losanges, chaque losange décalé et réfléchi */
+ diamonds(img,p,seed){const r=rng(seed),W=img.width,H=img.height,src=toCv(img),c=mk(W,H),g=c.getContext('2d');g.drawImage(src,0,0);const s=Math.min(W,H)*(p.size??.09);
+  for(let y=-s;y<H+s;y+=s)for(let x=-s;x<W+s;x+=s){if(r()>(p.amt??.55))continue;const cx=x+((y/s)%2?s/2:0),cy=y;g.save();g.beginPath();g.moveTo(cx,cy-s/2);g.lineTo(cx+s/2,cy);g.lineTo(cx,cy+s/2);g.lineTo(cx-s/2,cy);g.closePath();g.clip();
+   g.translate(cx,cy);g.scale(r()<.5?-1:1,r()<.5?-1:1);g.drawImage(src,-cx+(r()-.5)*s*.8,-cy+(r()-.5)*s*.8);g.restore()}return toImg(c)},
+ /* « Spoif » (nom illisible sur les sources) : giclée de pixels projetés depuis des points d'impact */
+ spray(img,p,seed){const r=rng(seed),W=img.width,H=img.height,s=img.data,o=new Uint8ClampedArray(s),n=p.n??(3+Math.floor(r()*4)),u=Math.min(W,H);
+  for(let k=0;k<n;k++){const cx=r()*W,cy=r()*H,R=u*(.1+r()*.3),cnt=Math.round(R*R*.6);const j0=(Math.floor(cy)*W+Math.floor(cx))*4;
+   for(let t=0;t<cnt;t++){const a=r()*6.28,d=R*Math.pow(r(),.6),x=Math.floor(cx+Math.cos(a)*d),y=Math.floor(cy+Math.sin(a)*d);if(x<0||y<0||x>=W||y>=H)continue;const i=(y*W+x)*4,sx=Math.floor(cx+Math.cos(a)*d*.3),sy=Math.floor(cy+Math.sin(a)*d*.3),j=(cl(sy,0,H-1)*W+cl(sx,0,W-1))*4;o[i]=s[j];o[i+1]=s[j+1];o[i+2]=s[j+2]}}
+  return new ImageData(o,W,H)},
+ /* Atari 2600 (2600++) : 160 colonnes, palette NTSC de 128 couleurs, quatre couleurs au plus par ligne */
+ atari(img,p,seed){const W=img.width,H=img.height,w=160,h=Math.round(160*H/W*.6),sm=mk(w,h),g=sm.getContext('2d');g.imageSmoothingQuality='high';g.drawImage(toCv(img),0,0,w,h);const d=g.getImageData(0,0,w,h),a=d.data;
+  const pal=[];for(let hu=0;hu<16;hu++)for(let lu=0;lu<8;lu++){const l=.08+lu*.12,s=hu?0.55:0,ang=(hu-1)/15*6.28;pal.push([cl(255*(l+s*.6*Math.cos(ang)),0,255),cl(255*(l+s*.6*Math.cos(ang-2.1)),0,255),cl(255*(l+s*.6*Math.cos(ang+2.1)),0,255)])}
+  const near=(R,G,B,set)=>{let b=0,bd=1e9;for(const k of set){const q=pal[k],e=(R-q[0])**2+(G-q[1])**2+(B-q[2])**2;if(e<bd){bd=e;b=k}}return b};const all=pal.map((_,i)=>i);
+  for(let y=0;y<h;y++){const cnt=new Map();for(let x=0;x<w;x++){const i=(y*w+x)*4,k=near(a[i],a[i+1],a[i+2],all);cnt.set(k,(cnt.get(k)||0)+1)}const top=[...cnt].sort((A,B)=>B[1]-A[1]).slice(0,p.colors??4).map(x=>x[0]);
+   for(let x=0;x<w;x++){const i=(y*w+x)*4,q=pal[near(a[i],a[i+1],a[i+2],top)];a[i]=q[0];a[i+1]=q[1];a[i+2]=q[2]}}
+  g.putImageData(d,0,0);const c=mk(W,H),g2=c.getContext('2d');g2.imageSmoothingEnabled=false;g2.drawImage(sm,0,0,W,H);return toImg(c)},
+ /* 59.94 : champ NTSC (59,94 Hz) — trames paires et impaires décalées, chrominance qui bave, points de sous-porteuse */
+ ntsc(img,p,seed){const r=rng(seed),W=img.width,H=img.height,s=img.data,o=new Uint8ClampedArray(s.length),sh=Math.round(W*(p.shift??.006)),bleed=Math.max(1,Math.round(W*(p.bleed??.01)));
+  for(let y=0;y<H;y++){const off=(y%2?sh:0);let cr=0,cb=0;for(let x=0;x<W;x++){const j=(y*W+cl(x-off,0,W-1))*4,i=(y*W+x)*4;const Y=.299*s[j]+.587*s[j+1]+.114*s[j+2];const I=.596*s[j]-.274*s[j+1]-.322*s[j+2],Q=.211*s[j]-.523*s[j+1]+.312*s[j+2];
+    cr+=(I-cr)/bleed;cb+=(Q-cb)/bleed;const dot=Math.sin((x+y*.5)*2.2)*(p.dots??6);const y2=(Y+dot*(Math.abs(cr)+Math.abs(cb))/12)*(y%2?.86:1);o[i]=cl(y2+.956*cr+.621*cb,0,255);o[i+1]=cl(y2-.272*cr-.647*cb,0,255);o[i+2]=cl(y2-1.106*cr+1.703*cb,0,255);o[i+3]=255}}
+  return new ImageData(o,W,H)},
+ /* MXLHXLLXND : lecture de bande magnétique — pertes de signal (dropouts), lignes de suivi */
+ tape(img,p,seed){const r=rng(seed),W=img.width,H=img.height,s=img.data,o=new Uint8ClampedArray(s),n=p.n??(20+Math.floor(r()*60));
+  for(let k=0;k<n;k++){const y=Math.floor(r()*H),x0=Math.floor(r()*W),len=Math.floor(W*(.02+r()*.3));for(let x=x0;x<Math.min(W,x0+len);x++){const i=(y*W+x)*4;o[i]=o[i+1]=o[i+2]=230+r()*25}}
+  const ty=Math.floor(r()*H),th=Math.floor(H*(.02+r()*.05));for(let y=ty;y<Math.min(H,ty+th);y++){const d=Math.floor((r()-.3)*W*.08);for(let x=0;x<W;x++){const i=(y*W+x)*4,j=(y*W+cl(x+d,0,W-1))*4;const n2=r()*60;o[i]=s[j]*.7+n2;o[i+1]=s[j+1]*.7+n2;o[i+2]=s[j+2]*.7+n2}}
+  return new ImageData(o,W,H)},
+ /* ARECIBO : l'image codée en grille de bits colorés sur fond noir, comme le message d'Arecibo (73 × 23) */
+ arecibo(img,p,seed){const W=img.width,H=img.height,cols=p.cols??46,cw=W/cols,rows=Math.floor(H/cw),sm=mk(cols,rows),g=sm.getContext('2d');g.drawImage(toCv(img),0,0,cols,rows);const a=g.getImageData(0,0,cols,rows).data;
+  const c=mk(W,H),gg=c.getContext('2d');gg.fillStyle='#000';gg.fillRect(0,0,W,H);const pal=['#ffffff','#a020f0','#2fb7ff','#36e05a','#ff9a1f','#ff3a3a','#ffe23a'];
+  for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){const i=(y*cols+x)*4,l=L(a,i);if(l<(p.th??.45))continue;const hue=Math.floor(y/rows*pal.length);gg.fillStyle=pal[hue%pal.length];gg.fillRect(x*cw+cw*.1,y*cw+cw*.1,cw*.8,cw*.8)}
+  return toImg(c)},
+ /* YUBARI (nom seul) : sur-saturation jaune-orangé et halo, chair de melon de Yubari ; teinte poussée vers l'orange */
+ yubari(img,p,seed){const W=img.width,H=img.height,s=img.data,o=new Uint8ClampedArray(s.length),a=p.amt??.8;
+  for(let i=0;i<s.length;i+=4){const l=(s[i]*.3+s[i+1]*.59+s[i+2]*.11)/255;const t=[255*Math.min(1,l*1.4),255*Math.pow(l,1.1)*.8,255*Math.pow(l,2.2)*.35];for(let c=0;c<3;c++)o[i+c]=s[i+c]*(1-a)+t[c]*a;o[i+3]=255}return new ImageData(o,W,H)}
+};
+Object.assign(APPS.OPS,OPS);
 })();
 
 /* ==== Photofauna + FaunAI : bibliothèques des emplacements et rendus composés ====
@@ -3228,322 +3371,319 @@ function stepsOf(c,user){const s=[];const add=x=>{if(x)s.push(...[].concat(x).ma
  if(user&&user.vignAdd)s.push({op:'vign',amt:Math.abs(user.vignAdd),rad:.4,feather:.7,color:user.vignAdd<0?'#ffffff':'#000000'});
  return s}
 
-/* ==== Photofauna : catalogue tiré des seules applis du corpus ====
-   Corpus : Decim8, Glitchr, Camera+, Pixlr-o-matic, Analog Film, MOLDIV, Camly, Polamatic, TinType (Hipstamatic), Tintype (M. Newton),
-   Koloid, Glaze, WordFoto, Matter, Tangent, Reflection, Splitter Pro, Nüdifier.
-   Règle : un spécimen = un effet, un cadre ou un réglage attesté par une source d'époque (inventaire : re/inv_*.md),
-   sous son nom d'origine. Le rangement suit le procédé ; l'appli figure en mention. */
+/* ==== Photofauna : arbre fonctionnel des 17 applis du corpus ====
+   Corpus : Decim8, Glitchr, Camera+, Pixlr-o-matic (et Pixlr Express), Analog Film, MOLDIV, Camly, Polamatic, TinType (Hipstamatic),
+   Tintype (Michael Newton), Koloid, Glaze, WordFoto, Matter, Tangent, Reflection, Splitter Pro.
+   Méthode : inventaire de chaque appli (re/inv_*.md, re/fn_*.md), regroupement par fonction, doublons fusionnés.
+   Branche → nœud (une fonction, tous ses réglages) → préréglages (les effets nommés des applis, l'appli en mention).
+   Un nœud = un gabarit de recette + des réglages (chemin dans la recette) ; un préréglage = des valeurs de réglages. */
 "use strict";
-const TAXO=[
- {id:'couleurs',fr:'Couleurs',en:'Colour',subs:[['vintage','Vintage et délavé','Vintage and faded'],['vives','Couleurs poussées','Pushed colour'],['croise','Traitement croisé','Cross process'],['cinema','Cinéma','Cinema'],['instant','Instantanés','Instant film'],['scenes','Scènes','Scenes']]},
- {id:'nb',fr:'Noir et blanc, virages',en:'Black and white, toning',subs:[['nb','Noir et blanc','Black and white'],['virages','Virages','Toning']]},
- {id:'plaques',fr:'Plaques',en:'Plates',subs:[['collodion','Collodion versé','Poured collodion'],['ferrotype','Ferrotype','Tintype']]},
- {id:'optique',fr:'Optique',en:'Optics',subs:[['jouets','Appareils-jouets','Toy cameras'],['flou','Flou et bascule','Blur and tilt'],['deformation','Déformations','Distortion'],['prisme','Prisme, objectif divisé','Prism, split lens']]},
- {id:'lumiere',fr:'Lumière',en:'Light',subs:[['fuites','Fuites et brûlures','Leaks and burns'],['eclats','Éclats, bokeh, néon','Sparkle, bokeh, neon'],['meteo','Pluie, neige, fumée','Rain, snow, smoke'],['eclairage','Éclairage','Lighting']]},
- {id:'matieres',fr:'Matières et usure',en:'Texture and wear',subs:[['usure','Poussière et grain','Dust and grain'],['textures','Textures','Textures']]},
- {id:'signal',fr:'Données et signal',en:'Data and signal',subs:[['jpeg','Fichier JPEG','JPEG file'],['donnees','Données bousculées','Shuffled data'],['couleurs','Couleurs dérivées','Drifting colours'],['video','Bande vidéo','Tape']]},
- {id:'ecrans',fr:'Écrans et consoles',en:'Screens and consoles',subs:[['consoles','Consoles','Consoles'],['caracteres','Caractères','Characters']]},
- {id:'formes',fr:'Formes et volumes',en:'Shapes and volumes',subs:[['objets','Objets 3D','3D objects'],['formes','Formes et motifs','Shapes and patterns'],['polygones','Polygones','Polygons']]},
- {id:'peinture',fr:'Peinture et mots',en:'Paint and words',subs:[['touches','Touches','Brush strokes'],['mots','Mots','Words']]},
- {id:'montages',fr:'Reflets et montages',en:'Reflections and montage',subs:[['reflets','Reflets d\'eau','Water reflections'],['miroirs','Miroirs et clones','Mirrors and clones'],['collages','Collages','Collages'],['censure','Censure','Censorship']]},
- {id:'cadres',fr:'Cadres',en:'Frames',subs:[['instantanes','Instantanés','Instants'],['film','Film et cinéma','Film and cinema'],['tirages','Tirages et marges','Prints and mats']]},
- {id:'mes',fr:'Mes rendus',en:'My looks',subs:[]}];
+const TAXO=[];const NODES=[];
+const ARBRE=(()=>{
+const clone=o=>JSON.parse(JSON.stringify(o));
+function setP(o,path,v){const ks=path.split('.');let a=o;for(let i=0;i<ks.length-1;i++){const k=ks[i],nk=ks[i+1];if(a[k]==null)a[k]=/^\d+$/.test(nk)?[]:{};a=a[k]}a[ks[ks.length-1]]=v}
+function flat(o,pre,out){out=out||{};for(const [k,v] of Object.entries(o||{})){const p=pre?pre+'.'+k:k;if(v&&typeof v==='object'&&!Array.isArray(v))flat(v,p,out);else out[p]=v}return out}
+/* réglages */
+const R=(k,fr,en,path,min,max,step,def)=>({k,type:'range',fr,en,path,min,max,step,def});
+const S=(k,fr,en,path,opts,def)=>({k,type:'sel',fr,en,path,opts,def});
+const T=(k,fr,en,path,on,off)=>({k,type:'tog',fr,en,path,on,off});
+const B=(id,fr,en)=>{const b={id,fr,en,subs:[]};TAXO.push(b);return b};
+/* nœud : branche, id, noms, applis, gabarit, réglages, préréglages [id, nom, mention, valeurs, options] */
+function N(b,id,fr,en,apps,tpl,params,presets,note){b.subs.push([id,fr,en]);NODES.push({b:b.id,id,fr,en,apps,tpl,params,presets,note})}
+const P=(id,name,src,set,x)=>({id,name,src,set:set||{},x:x||{}});
+const G=(id,name,src,combo,x)=>({id,name,src,set:flat(combo),x:x||{}});            /* préréglage écrit comme une recette complète */
 
-const CORPUS=(()=>{
-const O=[];const L=(f,s,id,name,c,src,x)=>O.push(Object.assign({id:'c-'+id,f,s,fr:Array.isArray(name)?name[0]:name,en:Array.isArray(name)?name[1]:name,c,src},x||{}));
+/* ---------- listes partagées ---------- */
+const FILMSEL=[['','Aucune','None']].concat(['kodak-kodak-portra-160','kodak-kodak-portra-160-vc','kodak-kodak-portra-400','kodak-kodak-portra-400-uc','kodak-kodak-portra-800','kodak-kodak-ektar-100','kodak-kodak-elite-color-200','kodak-kodak-elite-100-xpro','kodak-kodak-kodachrome-64','kodak-kodak-ektachrome-100-vs','kodak-kodak-tri-x-400','fuji-fuji-400h','fuji-fuji-superia-400','fuji-fuji-velvia-50','fuji-fuji-provia-100f','fuji-fuji-fp-100c','agfa-agfa-vista-200','agfa-agfa-precisa-100','lomography-lomography-x-pro-slide-200','lomography-lomography-redscale-100','polaroid-polaroid-px-680','polaroid-polaroid-px-70','polaroid-polaroid-690','polaroid-polaroid-669','polaroid-polaroid-664','polaroid-polaroid-665','polaroid-polaroid-time-zero-expired','polaroid-polaroid-px-100uv-cold','ilford-ilford-hp5-plus-400','ilford-ilford-fp4-plus-125','ilford-ilford-delta-3200','rollei-rollei-ortho-25','creativepack-1-tealorange','creativepack-1-bleachbypass2','creativepack-1-moonlight','creativepack-1-latesunset'].map(id=>{const f=FILMS.find(x=>x.id===id);return [id,f?f.fr:id,f?f.en:id]}));
+const COL=[['#000000','Noir','Black'],['#ffffff','Blanc','White'],['#2b1a0b','Sépia sombre','Dark sepia'],['#f2dcb4','Sépia clair','Light sepia'],['#0b1f44','Bleu de Prusse','Prussian blue'],['#cfe0f2','Bleu pâle','Pale blue'],['#002a08','Vert sombre','Dark green'],['#a6ff86','Vert phosphore','Phosphor green'],
+ ['#3a2410','Brun','Brown'],['#f5dfb4','Crème','Cream'],['#0e1c34','Bleu nuit','Night blue'],['#e6edf2','Gris bleuté','Blue grey'],['#16110b','Noir chaud','Warm black'],['#f2e4c8','Ivoire','Ivory'],['#120d08','Noir de fer','Iron black'],['#e9dcc0','Ivoire de plaque','Plate ivory'],
+ ['#3a0a2a','Prune','Plum'],['#ffc6e0','Rose','Pink'],['#08303a','Sarcelle','Teal'],['#ffd27a','Or','Gold'],['#c8862a','Ambre','Amber'],['#7a6aff','Violet','Violet'],['#ff4f7a','Framboise','Raspberry'],['#2de0c8','Turquoise','Turquoise']];
+const MONOW=[[[.3,.59,.11],'Neutre','Neutral'],[[.85,.15,0],'Filtre rouge','Red filter'],[[.62,.33,.05],'Filtre orange','Orange filter'],[[.45,.5,.05],'Filtre jaune','Yellow filter'],[[.1,.8,.1],'Filtre vert','Green filter'],[[0,.3,.7],'Filtre bleu','Blue filter']];
+const LIGHTS=[['','Aucune','None'],['leak','Fuite orangée','Orange leak'],['leakred','Fuite rouge','Red leak'],['leakmag','Fuite magenta','Magenta leak'],['leakgold','Fuite dorée','Gold leak'],['leakblue','Fuite bleue','Blue leak'],['fog','Voile de bord','Edge fog'],['burn','Pellicule brûlée','Burnt film'],['rainbow','Arc','Rainbow'],['sun','Soleil','Sun'],['sunc','Soleil froid','Cold sun'],['bokeh','Bokeh chaud','Warm bokeh'],['bokehc','Bokeh froid','Cold bokeh'],['haze','Contre-jour','Backlight haze'],['rays','Rayons','Rays'],['streak','Traînée anamorphique','Anamorphic streak']];
+const LENS=[['','Aucun','None'],['toy','Plastique','Plastic'],['holga','Plastique 6 × 6','Plastic 6 × 6'],['diana','Flou de jouet','Toy blur'],['lomo','Compact soviétique','Soviet compact'],['soft','Flou doux','Soft focus'],['petzval','Petzval','Petzval'],['petzval2','Tourbillon (Helios)','Swirl (Helios)'],['pinhole','Sténopé','Pinhole'],['ca','Aberration','Aberration']];
+const FLASH=[['','Aucun','None'],['standard','Flash','Flash'],['warm','Flash chaud','Warm flash'],['cherry','Flash cerise','Cherry flash'],['cool','Flash froid','Cool flash'],['direct','Flash direct','Direct flash'],['ring','Flash annulaire','Ring flash']];
+const VIGN=[['','Aucune','None'],['natural','Naturelle','Natural'],['soft','Douce','Soft'],['toy','Jouet','Toy'],['tunnel','Tunnel','Tunnel'],['white','Claire','Light'],['oval','Ovale','Oval']];
+const GRAIN=[['','Aucun','None'],['fin','Fin','Fine'],['moyen','Moyen','Medium'],['gros','Gros','Coarse'],['enorme','Énorme','Huge'],['finc','Fin, couleur','Fine, colour'],['moyenc','Moyen, couleur','Medium, colour'],['grosc','Gros, couleur','Coarse, colour']];
+const DUST=[['','Aucune','None'],...[1,2,3,4,5,6,7,8,9,10].map(i=>['d'+i,'Poussière '+i,'Dust '+i]),['s1','Taches 1','Specks 1'],['s2','Taches 2','Specks 2']];
+const MATTER=[['','Aucune','None'],['cold','Papier aquarelle','Watercolour paper'],['smooth','Papier fibre','Fibre paper'],['washi','Washi','Washi'],['news','Papier journal','Newsprint'],['kraft','Kraft','Kraft'],['canvas','Toile','Canvas'],['metal','Plaque de métal','Metal plate'],['glass','Plaque de verre','Glass plate']];
 
-/* ================= Decim8 (Kris Collins, 2010–2022) — les 12 effets décrits par l'auteur ou les utilisateurs ================= */
-const D='Decim8';
-L('signal','donnees','d8-brainfeed3r','Brainfeed3r',{cv:[{op:'feedback',n:4}]},D);                         /* « l'image s'écho et chaque écho se superpose au reste » */
-L('signal','couleurs','d8-ocular','Doctor Ocular',{cv:[{op:'ocular'}]},D);                                  /* « décalage dissociatif des couleurs » */
-L('signal','donnees','d8-xexox','XEXOX',{cv:[{op:'smear',rate:.45,len:.9}],tone:{contrast:.2}},D);          /* « traînées mécaniques », photocopieuse détraquée */
-L('signal','donnees','d8-fold','Fold 4 Rap 5',{cv:[{op:'fold',depth:5}]},D);                                /* « miroir siamois récursif » */
-L('ecrans','consoles','d8-bitboy','Bitboy',{cv:[{op:'bitboy',cell:.004}]},D);                                /* tramage 1 bit qui écrase l'image */
-L('ecrans','caracteres','d8-ti994x','TI994X',{cv:[{op:'chars',cols:72,pal:'ti99'}],dust:'d3'},D);          /* « écran de caractères », « poussière dans la cartouche » */
-L('signal','couleurs','d8-0irectine','0Irectine',{cv:[{op:'harmonic',n:8}]},D);                             /* « Huephase Disruptor Beam », remappage harmonique */
-L('signal','donnees','d8-fingerblib','Fingerblib',{cv:[{op:'fracture',block:.018,bands:8,amt:.3}]},D);      /* « fracture les données selon les niveaux de luminosité » */
-L('signal','donnees','d8-komplaince','Komplaince',{cv:[{op:'komplaince'}]},D);                              /* grille ou rangées, chaque case retournée */
-L('signal','donnees','d8-motor','M0T0R',{cv:[{op:'motor'}]},D);                                             /* « déformation simple reposée sur l'original » */
-L('signal','donnees','d8-l225','L225',{cv:[{op:'droste'}]},D);                                              /* « motifs de récursion fractale » */
-L('signal','donnees','d8-beamrider','Beamrider',{cv:[{op:'beamrider'}]},D);                                 /* « glitchs en lignes horizontales » */
+/* réglages complets d'étalonnage : pellicule mesurée, lumière, couleur, noir et blanc, virage, lueur, optique, flash, fuite, vignette, grain, poussière */
+const GRADE=[S('film','Émulsion de base','Base emulsion','film',FILMSEL),R('filmAmt','Dose de l\'émulsion','Emulsion amount','filmAmt',0,1,.01,1),
+ R('exp','Exposition','Exposure','tone.exposure',-1,1,.01,0),R('con','Contraste','Contrast','tone.contrast',-1,1,.01,0),R('hi','Hautes lumières','Highlights','tone.highlights',-1,1,.01,0),R('sh','Ombres','Shadows','tone.shadows',-1,1,.01,0),
+ R('temp','Température','Temperature','tone.temp',-1,1,.01,0),R('tint','Teinte','Tint','tone.tint',-1,1,.01,0),R('sat','Saturation','Saturation','tone.sat',-1,1,.01,0),R('vib','Vibrance','Vibrance','tone.vibrance',-1,1,.01,0),R('fade','Délavé','Fade','tone.fade',0,1,.01,0),S('fadeC','Couleur du délavé','Fade colour','tone.fadeColor',COL,'#7a7470'),
+ T('mono','Noir et blanc','Black and white','tone.mono',1,0),S('monoW','Filtre coloré','Colour filter','tone.monoW',MONOW),
+ S('tSh','Virage des ombres','Shadow tone','tone.tone.sh',COL,'#000000'),S('tHi','Virage des clairs','Highlight tone','tone.tone.hi',COL,'#ffffff'),R('tAmt','Force du virage','Toning amount','tone.tone.amt',0,1,.01,0),T('tMap','Virage en dégradé','Gradient toning','tone.tone.map',1,0),
+ R('diff','Lueur diffuse','Diffuse glow','glow.diffuse',0,1,.01,0),R('bloom','Halo des clairs','Highlight bloom','glow.bloom',0,1,.01,0),
+ S('lens','Objectif','Lens','lens',LENS),S('flash','Flash','Flash','flash',FLASH),S('light','Lumière','Light','light',LIGHTS),S('vign','Vignette','Vignette','vign',VIGN),S('grain','Grain','Grain','grain',GRAIN),S('dust','Poussière','Dust','dust',DUST),S('matter','Matière','Texture','matter',MATTER)];
+const LOCAL=[R('lo','Basses fréquences','Low frequencies','fx.0.lo',0,2,.01,.7),R('mi','Moyennes fréquences','Mid frequencies','fx.0.mi',0,2,.01,.5),R('hiF','Hautes fréquences','High frequencies','fx.0.hi',0,2,.01,.25),R('rad','Rayon','Radius','fx.0.radius',.002,.03,.001,.006),R('lift','Ombres débouchées','Lifted shadows','fx.0.lift',0,1,.01,0),R('lsat','Saturation','Saturation','fx.0.sat',-1,1,.01,0)];
 
-/* ================= Glitchr (Apporio, Android, 2014–2018) — les 10 effets de la fiche Google Play ================= */
-const G='Glitchr';
-L('signal','video','gl-vhs','VHS Effect',{fx:[{op:'vhs',amt:2.4}],cv:[{op:'channels',dx:.006}],grain:'moyenc'},G);
-L('signal','jpeg','gl-glitchart','Glitch Art Effect',{cv:[{op:'jpegbend',hits:9,passes:2,q:.75},{op:'chanswap'}]},G);
-L('signal','jpeg','gl-jpeg','JPEG/Datamosh Effect',{cv:[{op:'jpegcrush',passes:4,q:.02,scale:.45},{op:'jpegbend',shifts:6,hits:1,q:.6}]},G);
-L('signal','couleurs','gl-3d','3D Anaglyph Effect',{cv:[{op:'channels',dx:.022}]},G);
-L('formes','polygones','gl-tri','Triangulation Effect',{cv:[{op:'lowpoly',n:900,edge:.8}]},G);
-L('ecrans','consoles','gl-gb','Original Gameboy Effect',{cv:[{op:'gbcam',cols:160,pal:'green'}]},G);
-L('ecrans','consoles','gl-gbcam','Gameboy Camera Effect',{cv:[{op:'gbcam',cols:128}]},G);
-L('ecrans','consoles','gl-nes','NES Effect',{cv:[{op:'pixel',pal:'nes',cell:.008,dither:.45}]},G);
-L('ecrans','caracteres','gl-ascii','ASCII Art Effect',{cv:[{op:'chars',cols:90,pal:'mono'}]},G);
-L('ecrans','consoles','gl-zx','ZX Spectrum Effect',{cv:[{op:'zx'}]},G);
+/* ================================================================ 1. Couleur et tonalité */
+const b1=B('couleur','Couleur et tonalité','Colour and tone');
+const C='Camera+',CA='Camera+, I ♥ Analog',CH='Camera+, Hollywood FX',CS='Camera+, Scenes',PX='Pixlr-o-matic',AF='Analog Film',PM='Polamatic',MO='MOLDIV',RF='Reflection';
+N(b1,'filtre','Filtres de couleur','Colour filters',[C,PX,AF,PM,MO,'Camly',RF,'Splitter Pro'],{},GRADE,[
+ G('cp-lomographic','Lomographic',C,{tone:{sat:.45,vibrance:.3,contrast:.35},vign:'toy'}),
+ G('cp-70s','70s',C,{film:'kodak-kodak-elite-color-200',tone:{temp:.25,tint:.06,fade:.2,sat:-.15},grain:'finc'}),
+ G('cp-magichour','Magic Hour',C,{tone:{temp:.45,tint:.1,exposure:.05,sat:.15},glow:{bloom:.25}}),
+ G('cp-tailfins','Tailfins',C,{film:'kodak-kodak-elite-color-200',tone:{fade:.15,sat:.1,tint:.08,temp:.1},vign:'soft'}),
+ G('cp-crossprocess','Cross Process',C,{film:'kodak-kodak-elite-100-xpro'}),G('cp-vibrant','Vibrant',C,{tone:{sat:.5,vibrance:.4}}),G('cp-faded','Faded',C,{tone:{fade:.35,contrast:-.2,sat:-.2}}),
+ G('cpa-nostalgia','Nostalgia',CA,{tone:{fade:.22,temp:.3,sat:-.1},vign:'soft',grain:'finc'}),G('cpa-expired','Expired',CA,{tone:{tint:.22,fade:.25,contrast:-.15,sat:-.1},light:'fog',grain:'moyenc'}),
+ G('cpa-xpro','XPRO C-41',CA,{film:'lomography-lomography-x-pro-slide-200',tone:{contrast:.2},vign:'natural'}),G('cpa-chromogenic','Chromogenic',CA,{film:'kodak-kodak-portra-160-vc',tone:{sat:.15,contrast:.12}}),
+ G('cph-action','Action',CH,{film:'creativepack-1-tealorange',tone:{contrast:.25}}),G('cph-enterprise','Enterprise',CH,{tone:{temp:-.35,sat:.35,contrast:.25},light:'streak'}),
+ G('cph-amelie','Amélie',CH,{tone:{temp:.3,tint:-.22,sat:.35,contrast:.2},vign:'soft'}),G('cph-dreamstate','Dreamstate',CH,{tone:{fade:.15,exposure:.08},glow:{diffuse:.9,bloom:.35}}),
+ G('cph-homemovie','Home Movie',CH,{film:'kodak-kodak-kodachrome-64',grain:'gros',dust:'d5',vign:'natural'}),G('cph-madison','Madison Ave',CH,{film:'kodak-kodak-ektachrome-100-vs',tone:{sat:.2,contrast:.15,temp:.08},vign:'soft'},{note:'nom seul'}),
+ G('px-antonio','Antonio',PX,{tone:{fade:.1,contrast:-.1},glow:{diffuse:.7},lens:'soft'}),G('px-josh','Josh',PX,{tone:{fade:.35,exposure:.15,sat:-.25,temp:.15,contrast:-.15}}),
+ G('px-ivan','Ivan',PX,{tone:{sat:-.6,temp:.4,tint:.05,fade:.1}}),G('px-sophia','Sophia',PX,{tone:{sat:.4,contrast:.12},vign:'toy'}),G('px-amber','Amber',PX,{tone:{temp:.8,tint:.15,fade:.18,fadeColor:'#c8862a',sat:.1}}),
+ G('pm-sepia','Sepia',PM,{film:'polaroid-polaroid-px-680',filmAmt:.5,tone:{sat:-.55,temp:.35,fade:.1}}),G('pm-rosy','Rosy',PM,{film:'polaroid-polaroid-px-680',filmAmt:.5,tone:{tint:.18,temp:.12,fade:.08}}),
+ G('pm-lomo','LOMO',PM,{film:'lomography-lomography-x-pro-slide-200',filmAmt:.7,vign:'toy'}),G('pm-chroma','Chroma',PM,{film:'polaroid-polaroid-polachrome',tone:{sat:.25}},{note:'nom seul'}),
+ G('pm-gelatin','Gelatin',PM,{film:'polaroid-polaroid-669',tone:{fade:.15,temp:.12},grain:'finc'},{note:'nom seul'}),G('pm-pyrophoric','Pyrophoric',PM,{tone:{temp:.5,contrast:.3,sat:.2},light:'burn'},{note:'nom seul'}),
+ G('pm-klab','K-Lab',PM,{film:'kodak-kodak-kodachrome-64',tone:{contrast:.15}},{note:'nom seul'}),
+ G('mo-vesper','VESPER',MO,{tone:{temp:-.28,tint:.18,sat:.35,contrast:.2,exposure:-.08},glow:{bloom:.5,diffuse:.2}}),G('mo-blueberry','BLUEBERRY',MO,{tone:{temp:-.2,tint:.12,fade:.12,sat:-.05}},{note:'nom seul'}),
+ G('mo-matt','MATT',MO,{tone:{fade:.3,contrast:-.15,sat:-.1}},{note:'nom seul'}),G('mo-optique','OPTIQUE',MO,{film:'fuji-fuji-400h',tone:{fade:.1,contrast:.08,temp:-.05}}),G('mo-tan','TAN',MO,{tone:{temp:.3,sat:-.05,fade:.08}},{note:'nom seul'}),
+ G('mo-blooming','BLOOMING',MO,{tone:{exposure:.1,fade:.1},glow:{bloom:.45,diffuse:.35}},{note:'nom seul'}),
+ G('rf-film','FILM',RF,{film:'agfa-agfa-vista-200',tone:{fade:.1},grain:'finc'})
+],'Strength / intensity of a filter: 0–100 % (Camera+, Pixlr Express Fade, Analog Film by 10 % steps, MOLDIV per filter).');
+/* Analog Film : catégories numérotées ; chaque numéro pousse un peu plus le réglage de sa catégorie */
+const afSeries=[['negportrait','Negative Portrait','kodak-kodak-portra-160',n=>({tone:{sat:-.05+n*.04,shadows:-n*.03,fade:.06}})],['negred','Negative Red','kodak-kodak-portra-400-uc',n=>({tone:{tint:.04+n*.03,temp:.06+n*.02,sat:.1+n*.03}})],
+ ['modern','Modern1','fuji-fuji-400h',n=>({tone:{contrast:.04+n*.03,fade:.05}})],['instant','Instant Classic 2','polaroid-polaroid-px-680',n=>({tone:{fade:.06+n*.03,temp:.02*n}})],['retro','Retro','agfa-agfa-vista-200',n=>({tone:{fade:.1+n*.03,temp:.1+n*.03,sat:-.04-n*.02},grain:'finc'})],
+ ['fade','Fade','',n=>({tone:{fade:.25+n*.05,shadows:.2+n*.03,contrast:-.15-n*.03,sat:-.1}})],['cafe','Café','kodak-kodak-portra-400',n=>({tone:{temp:.15+n*.03,fade:.12,contrast:-.05}})],['mood','Mood','creativepack-1-moonlight',n=>({filmAmt:.5+n*.08,tone:{fade:.1,contrast:.05*n}})],
+ ['slide','Slide','fuji-fuji-velvia-50',n=>({filmAmt:.6+n*.08,tone:{contrast:.04*n}})]];
+for(const [k,name,film,f] of afSeries)for(let n=1;n<=6;n++){const c=Object.assign({film,filmAmt:1},f(n));if(!film)delete c.film;NODES.find(x=>x.id==='filtre').presets.push(G('af-'+k+'-'+n,name+' 0'+n,AF,c))}
+N(b1,'nb','Noir et blanc et virages','Black and white and toning',[C,PX,AF,PM,'TinType'],{tone:{mono:1}},GRADE,[
+ G('cp-bw','Black and White',C,{tone:{mono:1,contrast:.12}}),G('cp-ansel','Ansel',C,{tone:{mono:1,monoW:[.62,.33,.05],contrast:.45}}),
+ G('cp-cyanotype','Cyanotype',C,{tone:{mono:1,tone:{map:1,sh:'#0b1f44',hi:'#cfe0f2',amt:.95}}}),G('cp-sepia','Sepia',C,{tone:{mono:1,tone:{map:1,sh:'#2b1a0b',hi:'#f2dcb4',amt:.85}}}),
+ G('cpa-silver','Silver Gelatin',CA,{film:'ilford-ilford-fp4-plus-125',tone:{contrast:.2,tone:{sh:'#121110',hi:'#efe9dc',amt:.35}},matter:'smooth',dust:'d1'}),
+ G('cph-gotham','Gotham',CH,{tone:{mono:1,contrast:.5,tone:{sh:'#05070c',hi:'#e8eef6',amt:.5}},vign:'natural'}),
+ G('cph-silent','Silent Movie',CH,{film:'kodak-kodak-tri-x-400',tone:{contrast:.3,fade:.08,tone:{map:1,sh:'#16110b',hi:'#f2e4c8',amt:.6}},grain:'gros',dust:'d5',vign:'toy'}),
+ G('cph-neo','Neo',CH,{tone:{contrast:.55,mono:1,tone:{map:1,sh:'#002a08',hi:'#a6ff86',amt:1}},glow:{diffuse:.25},grain:'fin',vign:'natural'}),
+ G('px-shaan','Shaan',PX,{tone:{mono:1,tone:{map:1,sh:'#3a2410',hi:'#f5dfb4',amt:.9},fade:.12,contrast:.1},grain:'fin'}),
+ G('af-bwhigh','B&W High Contrast',AF,{film:'kodak-kodak-tri-x-400',tone:{contrast:.55},grain:'moyen'}),G('af-bwtone','B&W Color Tone',AF,{tone:{mono:1,contrast:.15,tone:{map:1,sh:'#0e1c34',hi:'#e6edf2',amt:.85}}}),
+ ...MONOW.slice(1).map(([w,fr],i)=>G('af-bwfilter-'+i,'B&W Color Filter 0'+(i+1),AF,{tone:{mono:1,monoW:w,contrast:.25},glow:i===0?{bloom:.5,diffuse:.3}:{}})),
+ G('pm-mono','Monochrome',PM,{film:'polaroid-polaroid-px-100uv-cold'}),G('pm-yinyang','Yin Yang',PM,{tone:{mono:1,contrast:.7}}),G('pm-mono2','Mono',PM,{tone:{mono:1,contrast:.2,fade:.08}})]);
+N(b1,'reglages','Réglages','Adjustments',[C,AF,PM,'Camly',MO,PX],{},GRADE.slice(2,12).concat([R('vA','Vignette (force)','Vignette amount','fx.0.amt',0,1,.01,0),T('vL','Vignette claire','Light vignette','fx.0.color','#fbf7ee','#000000'),R('vR','Portée de la vignette','Vignette reach','fx.0.rad',.1,.7,.01,.4),
+  R('gr','Grain','Grain','fx.1.amt',0,1,.01,0),R('sharp','Netteté (négatif : flou)','Sharpness (negative: blur)','fx.2.amt',-1,1,.01,0)]),[
+ P('libre','Réglages libres','Analog Film, Camly, MOLDIV, Polamatic, Camera+ (The Lab)',{}),P('cpl-vignette','Vignette',C+', The Lab',{'fx.0.amt':.55,'fx.0.rad':.35}),P('cpl-vignettelight','Vignette, light',C+', The Lab',{'fx.0.amt':.5,'fx.0.color':'#fbf7ee'}),P('pxe-vignette','Vignette','Pixlr Express',{'fx.0.amt':.7,'fx.0.rad':.3}),P('cpl-sharpen','Sharpen',C+', The Lab',{'fx.2.amt':.6}),P('cpl-blur','Blur',C+', The Lab',{'fx.2.amt':-.8})],'Adjust panels: Analog Film 14 tools, Polamatic 5 twelve sliders + Reset, Camera+ The Lab, Camly, MOLDIV.');
+NODES[NODES.length-1].tpl={fx:[{op:'vign',amt:0,rad:.4,feather:.7,color:'#000000'},{op:'grain',amt:0,size:1.4},{op:'clarity',amt:0}]};
+N(b1,'scenes','Scènes','Scenes',[C],{},GRADE,[
+ G('cps-flash','Flash',CS,{tone:{exposure:.3,shadows:.4,contrast:-.05}}),G('cps-backlit','Backlit',CS,{tone:{shadows:.7,highlights:-.3}}),G('cps-darken','Darken',CS,{tone:{exposure:-.35,highlights:-.2}}),
+ G('cps-cloudy','Cloudy',CS,{tone:{temp:.2,sat:.1}}),G('cps-shade','Shade',CS,{tone:{temp:.32,tint:.04}}),G('cps-sunset','Sunset',CS,{tone:{temp:.35,tint:.12,sat:.3,contrast:.1}}),
+ G('cps-night','Night',CS,{tone:{exposure:.45,shadows:.6,contrast:-.1},grain:'moyenc'}),G('cps-portrait','Portrait',CS,{tone:{temp:.08,contrast:-.08},glow:{diffuse:.35}}),
+ G('cps-beach','Beach',CS,{tone:{exposure:.12,temp:-.06,sat:.2,highlights:-.2}}),G('cps-concert','Concert',CS,{tone:{sat:.3,contrast:.3,shadows:.2}}),G('cps-food','Food',CS,{tone:{temp:.18,sat:.3,contrast:.12}}),
+ G('cps-fluo','Fluorescent',CS,{tone:{tint:.2,temp:.08}}),G('cps-scenery','Scenery',CS,{tone:{sat:.25,vibrance:.2,contrast:.12}})]);
+N(b1,'document','Document','Document',[C],{cv:[{op:'textdoc'}]},[],[P('cps-text','Text',CS,{})]);
+N(b1,'contraste','Contraste local','Local contrast',[C,'Camly',MO],{fx:[{op:'tonal',lo:.7,mi:.5,hi:.25,radius:.006,sat:0,lift:0}]},LOCAL,[
+ P('cps-clarity','Clarity',CS,{'fx.0.lo':.6,'fx.0.mi':.5,'fx.0.hi':.25,'fx.0.sat':.15,'fx.0.radius':.004}),P('cpl-clarity','Clarity Pro',C+', The Lab',{'fx.0.lo':.8,'fx.0.mi':.7,'fx.0.hi':.35,'fx.0.sat':.3,'fx.0.radius':.006}),
+ P('cp-hdr','HDR',C,{'fx.0.lo':1.1,'fx.0.mi':1.2,'fx.0.hi':.8,'fx.0.sat':.3,'fx.0.radius':.012,'fx.0.lift':.4})]);
+N(b1,'auto','Correction automatique','Automatic correction',[C,PX],{cv:[{op:'autolevels',q:.005}]},[R('q','Écrêtage','Clipping','cv.0.q',0,.05,.001,.005)],[P('cps-auto','Auto',CS,{}),P('pxe-autofix','Auto Fix','Pixlr Express',{'cv.0.q':.01})]);
+N(b1,'teinte','Teinte et duotone','Tint and duotone',[C],{tone:{tone:{sh:'#000000',hi:'#ffffff',amt:.5}}},[S('tSh','Teinte des sombres','Darks tint','tone.tone.sh',COL),S('tHi','Teinte des clairs','Brights tint','tone.tone.hi',COL),R('tAmt','Intensité','Intensity','tone.tone.amt',0,1,.01,.5),R('des','Désaturation','Desaturation','tone.sat',-1,0,.01,0),T('tMap','Dégradé complet','Full gradient','tone.tone.map',1,0)],[
+ P('cpl-tint','Tint',C+', The Lab',{'tone.tone.sh':'#ffc6e0','tone.tone.hi':'#ffc6e0','tone.tone.amt':.45}),P('cpl-duotone','Duotone',C+', The Lab',{'tone.tone.sh':'#0e1c34','tone.tone.hi':'#ffd27a','tone.tone.amt':.8,'tone.sat':-.6})]);
+N(b1,'splash','Couleur sélective','Colour splash',['Pixlr Express'],{cpu:{ops:[{op:'selectiveColor',hue:10,range:40,softness:20,mode:'keep'}]}},[R('hue','Teinte gardée','Kept hue','cpu.ops.0.hue',0,359,1,10),R('range','Étendue','Range','cpu.ops.0.range',5,120,1,40),R('soft','Douceur','Softness','cpu.ops.0.softness',0,60,1,20)],[
+ P('pxe-splash','Color Splash','Pixlr Express',{})]);
 
-/* ================= Camera+ (tap tap tap, 2010–2013) ================= */
-const C='Camera+';
-L('optique','jouets','cp-soemo','So Emo',{tone:{temp:-.32,tint:-.04,contrast:.18,sat:-.12},lens:'toy',vign:'toy'},C);                         /* « appareil-jouet, tons froids, bonne vignette » */
-L('optique','jouets','cp-hipster','Hipster',{tone:{temp:.3,tint:.14,contrast:.12,fade:.06},flash:'warm',vign:'natural'},C);                    /* « ton rouge, chaleur, point chaud au centre » */
-L('couleurs','vives','cp-lomographic','Lomographic',{tone:{sat:.45,vibrance:.3,contrast:.35},vign:'toy'},C);                                  /* « pousse la vivacité des couleurs » */
-L('optique','jouets','cp-toycamera','Toy Camera',{film:'lomography-lomography-x-pro-slide-200',filmAmt:.6,lens:'toy',vign:'toy',tone:{contrast:.15}},C);
-L('nb','nb','cp-bw','Black and White',{tone:{mono:1,contrast:.12}},C);
-L('nb','nb','cp-ansel','Ansel',{tone:{mono:1,monoW:[.62,.33,.05],contrast:.45},fx:[{op:'tonal',lo:.5,mi:.6,hi:.3,radius:.008,sat:0}]},C);
-L('couleurs','vintage','cp-70s','70s',{film:'kodak-kodak-elite-color-200',tone:{temp:.25,tint:.06,fade:.2,sat:-.15},grain:'finc'},C);
-L('couleurs','vives','cp-magichour','Magic Hour',{tone:{temp:.45,tint:.1,exposure:.05,sat:.15},glow:{bloom:.25,th:.65,radius:.02}},C);
-L('couleurs','vintage','cp-tailfins','Tailfins',{film:'kodak-kodak-elite-color-200',tone:{fade:.15,sat:.1,tint:.08,temp:.1},vign:'soft'},C);
-L('nb','virages','cp-cyanotype','Cyanotype',{tone:{mono:1,tone:{map:1,sh:'#0b1f44',hi:'#cfe0f2',amt:.95}}},C);
-L('optique','flou','cp-dof','Depth of Field',{fx:[{op:'lens',type:'tilt',amt:1.3,y:.33,w:.34}]},C);
-L('optique','flou','cp-miniaturize','Miniaturize',{fx:[{op:'lens',type:'tilt',amt:1.6,y:.3,w:.2}],tone:{sat:.35,contrast:.2}},C);
-L('nb','virages','cp-sepia','Sepia',{tone:{mono:1,tone:{map:1,sh:'#2b1a0b',hi:'#f2dcb4',amt:.85}}},C);
-L('couleurs','vives','cp-hdr','HDR',{fx:[{op:'tonal',lo:1.1,mi:1.2,hi:.8,sat:.3,radius:.012,lift:.4}]},C);
-L('matieres','usure','cp-grunge','Grunge',{tone:{sat:-.4,contrast:.35},matter:'kraft',dust:'d8',vign:'natural'},C);
-L('couleurs','croise','cp-crossprocess','Cross Process',{film:'kodak-kodak-elite-100-xpro'},C);
-L('couleurs','vives','cp-vibrant','Vibrant',{tone:{sat:.5,vibrance:.4}},C);
-L('couleurs','vintage','cp-faded','Faded',{tone:{fade:.35,contrast:-.2,sat:-.2}},C);
-/* pack « I ♥ Analog » (décembre 2010) */
-const CA='Camera+, I ♥ Analog';
-L('optique','jouets','cpa-diana','Diana',{lens:'diana',vign:'soft',light:'leakgold',tone:{sat:.15,contrast:.1}},CA);
-L('nb','nb','cpa-silvergelatin','Silver Gelatin',{film:'ilford-ilford-fp4-plus-125',tone:{contrast:.2,tone:{sh:'#121110',hi:'#efe9dc',amt:.35}},matter:'smooth',dust:'d1'},CA);
-L('optique','flou','cpa-helios','Helios',{lens:'petzval2',tone:{contrast:.1}},CA);
-L('couleurs','vintage','cpa-nostalgia','Nostalgia',{tone:{fade:.22,temp:.3,sat:-.1},vign:'soft',grain:'finc'},CA);
-L('couleurs','vintage','cpa-expired','Expired',{tone:{tint:.22,fade:.25,contrast:-.15,sat:-.1},light:'fog',grain:'moyenc'},CA);
-L('couleurs','croise','cpa-xpro','XPRO C-41',{film:'lomography-lomography-x-pro-slide-200',tone:{contrast:.2},vign:'natural'},CA);
-L('optique','jouets','cpa-pinhole','Pinhole',{lens:'pinhole',vign:'tunnel',grain:'moyen',tone:{contrast:.1}},CA);
-L('couleurs','vives','cpa-chromogenic','Chromogenic',{film:'kodak-kodak-portra-160-vc',tone:{sat:.15,contrast:.12}},CA);
-/* pack Hollywood FX (juillet 2013) */
-const CH='Camera+, Hollywood FX';
-L('couleurs','cinema','cph-neo','Neo',{tone:{contrast:.55,mono:1,tone:{map:1,sh:'#002a08',hi:'#a6ff86',amt:1}},glow:{diffuse:.25,th:.55},grain:'fin',vign:'natural'},CH);
-L('couleurs','cinema','cph-action','Action',{film:'creativepack-1-tealorange',tone:{contrast:.25}},CH);
-L('couleurs','cinema','cph-enterprise','Enterprise',{tone:{temp:-.35,sat:.35,contrast:.25},light:'streak'},CH);                                /* « froid, saturé, façon Star Trek de J. J. Abrams, avec un reflet d'objectif » */
-L('couleurs','cinema','cph-amelie','Amélie',{tone:{temp:.3,tint:-.22,sat:.35,contrast:.2},vign:'soft'},CH);
-L('couleurs','cinema','cph-dreamstate','Dreamstate',{tone:{fade:.15,exposure:.08},glow:{diffuse:.9,bloom:.35,th:.45,radius:.03}},CH);
-L('couleurs','cinema','cph-homemovie','Home Movie',{film:'kodak-kodak-kodachrome-64',grain:'gros',dust:'d5',vign:'natural'},CH);
-L('nb','nb','cph-gotham','Gotham',{tone:{mono:1,contrast:.5,tone:{sh:'#05070c',hi:'#e8eef6',amt:.5}},vign:'natural'},CH);                       /* reprise du filtre Gotham d'Instagram */
-L('nb','virages','cph-silent','Silent Movie',{film:'kodak-kodak-tri-x-400',tone:{contrast:.3,fade:.08,tone:{map:1,sh:'#16110b',hi:'#f2e4c8',amt:.6}},grain:'gros',dust:'d5',vign:'toy'},CH);  /* « noir et blanc chaud » */
-for(const [id,n] of [['letterbox','Letterbox'],['vhs','VHS'],['crt','CRT'],['super8','Super 8'],['16mm','16 mm'],['super35','Super 35'],['hdtv','HDTV']])L('cadres','film','cphb-'+id,n,{frame:'hw-'+id},CH);
-/* scènes */
-const CS='Camera+, Scenes';
-L('couleurs','scenes','cps-clarity','Clarity',{fx:[{op:'tonal',lo:.6,mi:.5,hi:.25,sat:.15,radius:.004}]},CS);
-L('couleurs','scenes','cps-auto','Auto',{cv:[{op:'autolevels'}]},CS);
-L('couleurs','scenes','cps-flash','Flash',{tone:{exposure:.3,shadows:.4,contrast:-.05}},CS);
-L('couleurs','scenes','cps-backlit','Backlit',{tone:{shadows:.7,highlights:-.3}},CS);
-L('couleurs','scenes','cps-darken','Darken',{tone:{exposure:-.35,highlights:-.2}},CS);
-L('couleurs','scenes','cps-cloudy','Cloudy',{tone:{temp:.2,sat:.1}},CS);
-L('couleurs','scenes','cps-shade','Shade',{tone:{temp:.32,tint:.04}},CS);
-L('couleurs','scenes','cps-sunset','Sunset',{tone:{temp:.35,tint:.12,sat:.3,contrast:.1}},CS);
-L('couleurs','scenes','cps-night','Night',{tone:{exposure:.45,shadows:.6,contrast:-.1},grain:'moyenc'},CS);
-L('couleurs','scenes','cps-portrait','Portrait',{tone:{temp:.08,contrast:-.08},glow:{diffuse:.35,th:.6,radius:.012}},CS);
-L('couleurs','scenes','cps-beach','Beach',{tone:{exposure:.12,temp:-.06,sat:.2,highlights:-.2}},CS);
-L('couleurs','scenes','cps-scenery','Scenery',{tone:{sat:.25,vibrance:.2},fx:[{op:'tonal',lo:.4,mi:.4,hi:.2,radius:.006}]},CS);
-L('couleurs','scenes','cps-concert','Concert',{tone:{sat:.3,contrast:.3,shadows:.2}},CS);
-L('couleurs','scenes','cps-food','Food',{tone:{temp:.18,sat:.3,contrast:.12}},CS);
-L('couleurs','scenes','cps-fluorescent','Fluorescent',{tone:{tint:.2,temp:.08}},CS);
-L('nb','nb','cps-text','Text',{cv:[{op:'textdoc'}]},CS);
-/* bordures (2.0, 2.1) */
-const CB='Camera+, Borders';
-for(const [id,n] of [['lightmat','Light Mat'],['darkmat','Dark Mat'],['roundwhite','Round White'],['roundblack','Round Black'],['offset','Offset'],['lightgrit','Light Grit'],['darkgrit','Dark Grit'],['viewfinder','Viewfinder'],['sprockets','Sprockets'],['oldtimey','Old-Timey'],['vintage','Vintage']])
- L('cadres',['viewfinder','sprockets'].includes(id)?'film':'tirages','cpb-'+id,n,{frame:'cp-'+id},CB);
-L('cadres','film','cpb-film','Film',{frame:'film35'},CB);
-L('cadres','instantanes','cpb-instant','Instant',{frame:'polaroid'},CB);
+/* ================================================================ 2. Optique et géométrie */
+const b2=B('optique','Optique et géométrie','Optics and geometry');
+N(b2,'jouets','Appareils-jouets','Toy cameras',[C],{},GRADE,[
+ G('cp-soemo','So Emo',C,{tone:{temp:-.32,tint:-.04,contrast:.18,sat:-.12},lens:'toy',vign:'toy'}),G('cp-hipster','Hipster',C,{tone:{temp:.3,tint:.14,contrast:.12,fade:.06},flash:'warm',vign:'natural'}),
+ G('cp-toycamera','Toy Camera',C,{film:'lomography-lomography-x-pro-slide-200',filmAmt:.6,lens:'toy',vign:'toy',tone:{contrast:.15}}),G('cpa-diana','Diana',CA,{lens:'diana',vign:'soft',light:'leakgold',tone:{sat:.15,contrast:.1}}),
+ G('cpa-helios','Helios',CA,{lens:'petzval2',tone:{contrast:.1}}),G('cpa-pinhole','Pinhole',CA,{lens:'pinhole',vign:'tunnel',grain:'moyen',tone:{contrast:.1}}),
+ G('cpa-contessa','Contessa',CA,{lens:'soft',tone:{contrast:.1,fade:.1,temp:.1},vign:'natural'},{note:'nom seul'})]);
+N(b2,'flou','Flou sélectif','Selective blur',[C,'Camly',PX,MO,'TinType'],{fx:[{op:'lens',type:'tilt',amt:0,y:.33,w:.3,angle:0},{op:'bokeh',at:'spot',amt:0,focus:.16}],tone:{}},[
+ R('tAmt','Bascule : flou','Tilt: blur','fx.0.amt',0,2.5,.05,0),R('tY','Bascule : position','Tilt: position','fx.0.y',0,1,.01,.33),R('tW','Bascule : largeur nette','Tilt: sharp width','fx.0.w',.05,.8,.01,.3),R('tA','Bascule : angle','Tilt: angle','fx.0.angle',-90,90,1,0),
+ R('rAmt','Radial : flou','Radial: blur','fx.1.amt',0,3,.05,0),R('rF','Radial : zone nette','Radial: sharp zone','fx.1.focus',.03,.5,.01,.16),R('sat','Saturation','Saturation','tone.sat',-1,1,.01,0),R('con','Contraste','Contrast','tone.contrast',-1,1,.01,0)],[
+ P('cp-dof','Depth of Field',C,{'fx.0.amt':1.3,'fx.0.y':.33,'fx.0.w':.34}),P('cp-mini','Miniaturize',C,{'fx.0.amt':1.6,'fx.0.y':.3,'fx.0.w':.2,'tone.sat':.35,'tone.contrast':.2}),
+ P('ca-tiltshift','Tilt-Shift','Camly',{'fx.0.amt':1.4,'fx.0.w':.28}),P('ca-blur','Blur','Camly',{'fx.1.amt':1.5,'fx.1.focus':.16},{spot:1}),
+ P('pxo-focal','Focal',PX,{'fx.1.amt':1.3,'fx.1.focus':.2},{spot:1}),P('pxe-focal','Focal Blur','Pixlr Express',{'fx.1.amt':1.3,'fx.1.focus':.2},{spot:1}),P('mo-liveblur','Live Blur',MO,{'fx.1.amt':1,'fx.1.focus':.22},{spot:1})]);
+N(b2,'doux','Flou doux','Soft focus',[C,PX],{glow:{diffuse:.6,th:.4,radius:.02},lens:'soft'},[R('d','Diffusion','Diffusion','glow.diffuse',0,1,.01,.6),R('th','Seuil','Threshold','glow.th',.1,.9,.01,.4),S('lens','Objectif','Lens','lens',LENS)],[P('cpl-softfocus','Soft Focus',C+', The Lab',{})]);
+N(b2,'deformation','Déformations','Distortions',['Camly'],{fx:[{op:'lens',type:'none',dist:0}],cv:[{op:'keystone',amt:0,up:false}]},[
+ S('type','Projection','Projection','fx.0.type',[['none','Rectiligne','Rectilinear'],['fisheye','Fish-eye','Fisheye']]),R('dist','Barillet (+) / coussinet (−)','Barrel (+) / pincushion (−)','fx.0.dist',-.6,.6,.01,0),
+ R('key','Trapèze','Keystone','cv.0.amt',0,.5,.01,0),T('up','Trapèze vers le bas','Downward keystone','cv.0.up',true,false)],[
+ P('ca-fisheye','Fisheye','Camly',{'fx.0.type':'fisheye'}),P('ca-barrel','Barrel','Camly',{'fx.0.dist':.28}),P('ca-pincushion','Pincushion','Camly',{'fx.0.dist':-.22}),P('ca-keystone','Keystone','Camly',{'cv.0.amt':.22})]);
+N(b2,'prisme','Prisme et objectif divisé','Prism and split lens',['Camly','Splitter Pro'],{fx:[{op:'lens',type:'prism',amt:1}]},[R('amt','Dispersion','Dispersion','fx.0.amt',0,2,.01,1)],[P('ca-prism','Prism','Camly',{})]);
+N(b2,'recadrage','Recadrage et rotation','Crop and rotation',[C,PX,'WordFoto','TinType','Polamatic','Camly',RF],{},[],[],'Handled by the stage crop tool: Free, 1:1, 3:2, 4:3, 5:7, 8:10, 4:6, 16:9, 1.85:1, 2.39:1, golden; rotate 90°, flip, straighten (Camera+ 0.1° steps).');
 
-/* ================= Pixlr-o-matic (Autodesk, 2011–2014) : effet, lumière, cadre ================= */
-const P='Pixlr-o-matic';
-L('couleurs','vintage','px-antonio','Antonio',{tone:{fade:.1,contrast:-.1},glow:{diffuse:.7,th:.4,radius:.02},lens:'soft'},P);                 /* « aspect doux et flou » */
-L('couleurs','vintage','px-josh','Josh',{tone:{fade:.35,exposure:.15,sat:-.25,temp:.15,contrast:-.15}},P);                                     /* « carte postale vintage délavée » */
-L('couleurs','vintage','px-ivan','Ivan',{tone:{sat:-.6,temp:.4,tint:.05,fade:.1}},P);                                                           /* « ton sépia », tirage couleur vieilli */
-L('couleurs','vives','px-sophia','Sophia',{tone:{sat:.4,contrast:.12},vign:'toy'},P);                                                           /* « saturation et vignette » */
-L('nb','virages','px-shaan','Shaan',{tone:{mono:1,tone:{map:1,sh:'#3a2410',hi:'#f5dfb4',amt:.9},fade:.12,contrast:.1},grain:'fin'},P);                 /* « sépia de style rétro » */
-L('couleurs','vintage','px-amber','Amber',{tone:{temp:.8,tint:.15,fade:.18,fadeColor:'#c8862a',sat:.1}},P);
-const PL='Pixlr-o-matic, Overlays';
-L('lumiere','eclats','pxo-rainbow','Rainbow',{light:'rainbow',fx:[{op:'ovl',mode:'sparkle',amt:.6}]},PL);
-L('lumiere','eclats','pxo-twinkle','Twinkle',{fx:[{op:'ovl',mode:'sparkle',amt:.9}],glow:{bloom:.5,th:.7,radius:.012}},PL);
-L('lumiere','eclats','pxo-bubble','Bubble',{fx:[{op:'ovl',mode:'bubble',amt:.8}],glow:{bloom:.4,diffuse:.15,th:.6,radius:.015}},PL);
-L('lumiere','eclats','pxo-beep','Beep',{fx:[{op:'ovl',mode:'neon',amt:.9}],glow:{bloom:.7,diffuse:.2,th:.55,radius:.025}},PL);                                                               /* « lumière de néon » */
-L('lumiere','eclats','pxo-bocea','Bocea',{light:'bokeh'},PL);
-L('matieres','usure','pxo-subtle','Subtle',{fx:[{op:'ovl',mode:'subtle',amt:.9}],grain:'moyen'},PL);                                         /* « comme un négatif sale » */
-L('lumiere','meteo','pxo-rain','Rain',{fx:[{op:'ovl',mode:'rain',amt:.85}]},PL);
-L('matieres','textures','pxo-carbon','Carbon',{fx:[{op:'ovl',mode:'carbon',amt:.85}]},PL);
-L('matieres','textures','pxo-metal','Metal',{fx:[{op:'ovl',mode:'metal',amt:.85}]},PL);
-L('lumiere','fuites','pxo-burn','Burn',{light:'burn'},PL);
-L('optique','flou','pxo-focal','Focal',{fx:[{op:'bokeh',amt:1.3,focus:.2}],vign:'soft'},PL);
-const PX='Pixlr Express, Overlays';
-L('lumiere','eclats','pxe-bokeh','Bokeh',{light:'bokehc'},PX);
-L('matieres','textures','pxe-canvas','Canvas',{matter:'canvas'},PX);
-L('lumiere','fuites','pxe-chemburn','Chem Burn',{fx:[{op:'ovl',mode:'chemburn',amt:1}]},PX);
-L('lumiere','eclats','pxe-fireworks','Fireworks',{fx:[{op:'ovl',mode:'fireworks',amt:1}],tone:{exposure:-.15},glow:{bloom:.8,th:.55,radius:.02}},PX);
-L('matieres','textures','pxe-grunge','Grunge',{matter:'kraft',dust:'d9',tone:{contrast:.15}},PX);
-L('lumiere','fuites','pxe-leaks','Leaks',{light:'leak'},PX);
-L('lumiere','eclats','pxe-lightpaint','Light Paint',{fx:[{op:'ovl',mode:'lightpaint',amt:.9}],tone:{exposure:-.15},glow:{bloom:.7,th:.55,radius:.025}},PX);
-L('lumiere','eclats','pxe-neon','Neon',{fx:[{op:'ovl',mode:'neon',amt:1}],tone:{exposure:-.2},glow:{bloom:.75,diffuse:.2,th:.5,radius:.025}},PX);
-L('matieres','textures','pxe-paper','Paper',{matter:'cold'},PX);
-L('lumiere','meteo','pxe-smoke','Smoke',{fx:[{op:'ovl',mode:'smoke',amt:.9}]},PX);
-L('lumiere','meteo','pxe-space','Space',{fx:[{op:'ovl',mode:'space',amt:.9}]},PX);
-L('lumiere','eclats','pxe-tiedye','Tie Dye',{fx:[{op:'ovl',mode:'tiedye',amt:.3}]},PX);
-L('optique','flou','pxe-vignette','Vignette',{vign:'toy'},PX);
-const PB='Pixlr-o-matic, Borders';
-for(const [id,n,s] of [['nolaroid','Nolaroid','instantanes'],['hassel','Hassel','film'],['white','White','tirages'],['grunge','Grunge','tirages'],['film','Film','film'],['rounded','Rounded Corner','tirages'],['ripped','Ripped Paper','tirages'],['ink','Ink','tirages'],['pinstripe','Pinstripe','tirages'],['sand','Sand','tirages']])
- L('cadres',s,'pxb-'+id,n,{frame:'px-'+id},PB);
+/* ================================================================ 3. Lumière et matière */
+const b3=B('lumiere','Lumière et matière','Light and texture');
+const LK='Analog Film';
+N(b3,'fuites','Fuites et brûlures','Leaks and burns',[AF,PX,'Camly',MO,PM],{light:'leak',fx:[{op:'ovl',mode:'chemburn',amt:0}]},[
+ S('light','Fuite','Leak','light',LIGHTS),R('chem','Brûlure chimique','Chemical burn','fx.0.amt',0,1,.01,0)],[
+ ...Array.from({length:8},(_,i)=>P('af-leak1-'+(i+1),'Light Leaks 1 · 0'+(i+1),LK,{light:['leak','leakred','leakmag','leakgold','leakblue','fog','burn','haze'][i]})),
+ ...Array.from({length:6},(_,i)=>P('af-leak2-'+(i+1),'Light Leaks 2 · 0'+(i+1),LK,{light:['fog','burn','leakred','leakgold','rainbow','sunc'][i],'fx.0.amt':i===1?.4:0})),
+ P('pxe-leaks','Leaks','Pixlr Express',{light:'leak'}),P('pxo-burn','Burn',PX,{light:'burn'}),P('pxe-chemburn','Chem Burn','Pixlr Express',{light:'','fx.0.amt':1}),
+ P('ca-leaks','Light Leaks','Camly',{light:'leakgold'}),P('mo-leak','Light Leak',MO,{light:'leakmag'}),P('pm-leak','Chemical Leak',PM,{light:'fog','fx.0.amt':.5})]);
+N(b3,'eclats','Éclats, bokeh, néon','Sparkle, bokeh, neon',[PX,MO],{fx:[{op:'ovl',mode:'sparkle',amt:.9}],light:'',glow:{bloom:.5,th:.6,radius:.02},tone:{}},[
+ S('mode','Motif','Pattern','fx.0.mode',[['sparkle','Éclats','Sparkle'],['bubble','Bulles','Bubbles'],['neon','Néon','Neon'],['lightpaint','Lumière peinte','Light paint'],['fireworks','Feux d\'artifice','Fireworks'],['tiedye','Tie and dye','Tie dye']]),
+ R('amt','Intensité','Intensity','fx.0.amt',0,1.5,.01,.9),S('light','Lumière','Light','light',LIGHTS),R('bloom','Halo','Bloom','glow.bloom',0,1,.01,.5),R('exp','Exposition','Exposure','tone.exposure',-1,1,.01,0)],[
+ P('pxo-rainbow','Rainbow',PX,{light:'rainbow','fx.0.amt':.6}),P('pxo-twinkle','Twinkle',PX,{}),P('pxo-bubble','Bubble',PX,{'fx.0.mode':'bubble','fx.0.amt':.8,'glow.bloom':.4}),P('pxo-beep','Beep',PX,{'fx.0.mode':'neon','glow.bloom':.7}),
+ P('pxo-bocea','Bocea',PX,{'fx.0.amt':0,light:'bokeh','glow.bloom':0}),P('pxe-bokeh','Bokeh','Pixlr Express',{'fx.0.amt':0,light:'bokehc','glow.bloom':0}),P('pxe-fireworks','Fireworks','Pixlr Express',{'fx.0.mode':'fireworks','fx.0.amt':1,'tone.exposure':-.15,'glow.bloom':.8}),
+ P('pxe-lightpaint','Light Paint','Pixlr Express',{'fx.0.mode':'lightpaint','tone.exposure':-.15,'glow.bloom':.7}),P('pxe-neon','Neon','Pixlr Express',{'fx.0.mode':'neon','fx.0.amt':1,'tone.exposure':-.2,'glow.bloom':.75}),
+ P('pxe-tiedye','Tie Dye','Pixlr Express',{'fx.0.mode':'tiedye','fx.0.amt':.3,'glow.bloom':0}),P('mo-flare','Lens Flare',MO,{'fx.0.amt':0,light:'sun','glow.bloom':.2}),
+ P('pxo-shine','Shine',PX,{'fx.0.amt':.4,light:'haze'},{note:'nom seul'}),P('pxo-devine','Devine',PX,{'fx.0.amt':.5,light:'leakgold','glow.bloom':.6},{note:'nom seul'}),P('pxo-trails','Trails',PX,{'fx.0.mode':'lightpaint','fx.0.amt':.6})]);
+N(b3,'meteo','Pluie, neige, fumée, espace','Rain, snow, smoke, space',[PX,MO],{fx:[{op:'ovl',mode:'rain',amt:.85}],tone:{}},[
+ S('mode','Motif','Pattern','fx.0.mode',[['rain','Pluie','Rain'],['snow','Neige','Snow'],['smoke','Fumée','Smoke'],['space','Espace','Space']]),R('amt','Intensité','Intensity','fx.0.amt',0,1.5,.01,.85),R('exp','Exposition','Exposure','tone.exposure',-1,1,.01,0),R('temp','Température','Temperature','tone.temp',-1,1,.01,0)],[
+ P('pxo-rain','Rain',PX,{}),P('mo-rain','Rain',MO,{'fx.0.amt':1,'tone.exposure':-.1,'tone.temp':-.15}),P('mo-snow','Snow',MO,{'fx.0.mode':'snow','fx.0.amt':1}),P('pxe-smoke','Smoke','Pixlr Express',{'fx.0.mode':'smoke','fx.0.amt':.9}),
+ P('pxe-space','Space','Pixlr Express',{'fx.0.mode':'space','fx.0.amt':.9})]);
+N(b3,'usure','Poussière, rayures, grain','Dust, scratches, grain',[AF,PX,MO,C],{dust:'d2',grain:'',fx:[{op:'ovl',mode:'subtle',amt:0}],tone:{}},[
+ S('dust','Poussière et rayures','Dust and scratches','dust',DUST),S('grain','Grain','Grain','grain',GRAIN),R('subtle','Négatif sale','Dirty negative','fx.0.amt',0,1.2,.01,0),R('fade','Délavé','Fade','tone.fade',0,1,.01,0),R('sat','Saturation','Saturation','tone.sat',-1,1,.01,0),S('matter','Matière','Texture','matter',MATTER)],[
+ ...Array.from({length:10},(_,i)=>P('af-dust-'+(i+1),'Dust & Scratches '+String(i+1).padStart(2,'0'),AF,{dust:'d'+(i+1)})),
+ P('pxo-subtle','Subtle',PX,{dust:'','fx.0.amt':.9,grain:'moyen'}),P('mo-grain','Film Grain',MO,{dust:'',grain:'gros','tone.fade':.08}),P('cpl-grain','Film Grain',C+', The Lab',{dust:'',grain:'moyen'}),
+ P('cp-grunge','Grunge',C,{dust:'d8','tone.sat':-.4,matter:'kraft'})]);
+N(b3,'textures','Textures','Textures',[PX,'Tangent'],{matter:'canvas',fx:[{op:'ovl',mode:'carbon',amt:0}]},[
+ S('matter','Papier, toile, plaque','Paper, canvas, plate','matter',MATTER),S('mode','Motif','Pattern','fx.0.mode',[['carbon','Carbone','Carbon'],['metal','Métal brossé','Brushed metal']]),R('amt','Intensité du motif','Pattern intensity','fx.0.amt',0,1.2,.01,0)],[
+ P('pxe-canvas','Canvas','Pixlr Express',{}),P('pxe-paper','Paper','Pixlr Express',{matter:'cold'}),P('pxe-grunge','Grunge','Pixlr Express',{matter:'kraft'}),P('pxo-carbon','Carbon',PX,{matter:'','fx.0.amt':.85}),
+ P('pxo-metal','Metal',PX,{matter:'','fx.0.mode':'metal','fx.0.amt':.85}),P('pxe-retroposter','Retro Poster','Pixlr Express',{matter:'news'}),P('tg-urbandecay','Urban Decay','Tangent',{matter:'kraft','fx.0.mode':'metal','fx.0.amt':.3})]);
+N(b3,'eclairage','Lumière de studio','Studio light',['Camly',MO],{fx:[{op:'relight',at:'spot',amt:.9,spec:.4}]},[R('amt','Lumière','Light','fx.0.amt',0,1.5,.01,.9),R('spec','Brillance','Shine','fx.0.spec',0,1,.01,.4)],[P('ca-studio','Studio Light','Camly',{},{spot:1})]);
 
-/* ================= Analog Film (ordinaryfactory, 2013–2016) : catégories attestées ================= */
-const AF='Analog Film';
-L('couleurs','vintage','af-negportrait','Negative Portrait',{film:'kodak-kodak-portra-160',tone:{fade:.06,sat:-.05}},AF);
-L('couleurs','vives','af-negred','Negative Red',{film:'kodak-kodak-portra-400-uc',tone:{tint:.1,temp:.12,sat:.2}},AF);
-L('couleurs','vintage','af-modern','Modern1',{film:'fuji-fuji-400h',tone:{contrast:.08,fade:.05}},AF);
-L('couleurs','instant','af-instantclassic','Instant Classic 2',{film:'polaroid-polaroid-px-680',tone:{fade:.1}},AF);
-L('couleurs','vintage','af-retro','Retro',{film:'agfa-agfa-vista-200',tone:{fade:.15,temp:.18,sat:-.08},grain:'finc'},AF);
-L('couleurs','vintage','af-fade','Fade',{tone:{fade:.45,shadows:.3,contrast:-.25,sat:-.12}},AF);                                                  /* « trop délavé » quand les ombres remontent */
-L('couleurs','croise','af-slide','Slide',{film:'fuji-fuji-velvia-50'},AF);
-L('nb','nb','af-bwhigh','B&W High Contrast',{film:'kodak-kodak-tri-x-400',tone:{contrast:.55},grain:'moyen'},AF);
-L('nb','virages','af-bwtone','B&W Color Tone',{tone:{mono:1,contrast:.15,tone:{map:1,sh:'#0e1c34',hi:'#e6edf2',amt:.85}}},AF);
-L('nb','nb','af-bwfilter','B&W Color Filter',{tone:{mono:1,monoW:[.85,.15,0],contrast:.25},glow:{bloom:.5,diffuse:.3,th:.55,radius:.02}},AF);          /* filtre rouge : « effet de halo lumineux » */
-L('lumiere','fuites','af-leaks1','Light Leaks 1',{light:'leakred'},AF);
-L('lumiere','fuites','af-leaks2','Light Leaks 2',{light:'fog'},AF);
-L('matieres','usure','af-dust','Dust & Scratches',{dust:'d10',fx:[{op:'tex',name:'dust3',blend:'dustDark',amt:.9,tint:'#2a2018'}]},AF);
-L('cadres','tirages','af-frame01','Frame 01',{frame:'af-01'},AF);
-L('cadres','tirages','af-frame07','Frame 07',{frame:'af-07'},AF);
-L('cadres','tirages','af-black','Black Frame',{frame:'af-black'},AF);
+/* ================================================================ 4. Données et signal (Decim8, Glitchr) */
+const b4=B('donnees','Données et signal','Data and signal');
+const D='Decim8',GL='Glitchr';
+const vers=(id,name,src,op,key,vals,base,x)=>vals.map((v,i)=>P(id+'-'+(i+1),name+' · '+(i+1),src,Object.assign({['cv.0.'+key]:v},base||{}),x));
+N(b4,'jpeg','Fichier JPEG','JPEG file',[D,GL],{cv:[{op:'jpegcrush',passes:4,q:.02,scale:.45,off:true},{op:'jpegbend',hits:9,passes:2,q:.75,shifts:0,dqt:0},{op:'chanswap',off:true}]},[
+ T('crush','Recompression extrême','Extreme recompression','cv.0.off',false,true),R('passes','Passages','Passes','cv.0.passes',1,10,1,4),R('q','Qualité','Quality','cv.0.q',.005,.15,.005,.02),
+ R('hits','Octets touchés','Bytes hit','cv.1.hits',0,48,1,9),R('shifts','Tronçons recopiés','Copied chunks','cv.1.shifts',0,24,1,0),R('dqt','Tables de quantification','Quantisation tables','cv.1.dqt',0,.5,.01,0),T('chan','Couleurs permutées','Swapped colours','cv.2.off',false,true)],[
+ P('gl-glitchart','Glitch Art Effect',GL,{'cv.2.off':false}),P('gl-jpeg','JPEG/Datamosh Effect',GL,{'cv.0.off':false,'cv.1.hits':1,'cv.1.shifts':6,'cv.1.q':.6})]);
+const d8=(id,name,op,base,key,vals,params,x)=>N(b4,'d8-'+id,name,name,[D],{cv:[Object.assign({op},base)]},params,vals?vers('d8-'+id,name,D,op,key,vals,{},x):[P('d8-'+id,name,D,{},x)]);
+d8('brainfeed3r','Brainfeed3r','feedback',{n:4},'n',[2,4,7],[R('n','Échos','Echoes','cv.0.n',1,9,1,4),R('alpha','Opacité des échos','Echo opacity','cv.0.alpha',.1,.9,.01,.42),R('zoom','Agrandissement','Zoom','cv.0.zoom',0,.2,.005,.06)]);
+d8('ocular','Doctor Ocular','ocular',{},'amt',[.03,.07,.14],[R('amt','Distorsion','Distortion','cv.0.amt',0,.2,.005,.07),R('hue','Rotation de teinte','Hue rotation','cv.0.hue',0,300,5,120)]);
+d8('xexox','XEXOX','smear',{rate:.45,len:.9},'rate',[.2,.45,.8],[R('rate','Traînées','Streaks','cv.0.rate',.05,1,.01,.45),R('len','Longueur','Length','cv.0.len',.1,1,.01,.9)]);
+d8('fold','Fold 4 Rap 5','fold',{depth:5},'depth',[3,5,8],[R('depth','Plis','Folds','cv.0.depth',1,9,1,5)]);
+d8('bitboy','Bitboy','bitboy',{cell:.006},'cell',[.003,.006,.012],[R('cell','Taille du point','Dot size','cv.0.cell',.002,.02,.001,.006),R('over','Posé sur l\'original','Over the original','cv.0.over',.2,1,.01,1)]);
+d8('ti994x','TI994X','chars',{cols:72,pal:'ti99'},'cols',[100,72,40],[R('cols','Colonnes','Columns','cv.0.cols',24,160,1,72)]);
+d8('0irectine','0Irectine','harmonic',{n:8},'n',[4,8,12],[R('n','Harmoniques','Harmonics','cv.0.n',2,16,1,8)]);
+d8('fingerblib','Fingerblib','fracture',{block:.018,bands:8,amt:.3},'amt',[.15,.3,.6],[R('block','Bloc','Block','cv.0.block',.005,.06,.001,.018),R('bands','Niveaux','Levels','cv.0.bands',2,16,1,8),R('amt','Fracture','Fracture','cv.0.amt',0,1,.01,.3)]);
+d8('komplaince','Komplaince','komplaince',{},'cell',[.02,.045,.09],[R('cell','Case','Cell','cv.0.cell',.008,.12,.002,.045),T('rows','Rangées','Rows','cv.0.rows',true,false)]);
+d8('motor','M0T0R','motor',{},'amp',[.02,.05,.1],[R('amp','Déformation','Warp','cv.0.amp',0,.15,.002,.05)]);
+d8('l225','L225','droste',{},'ratio',[.45,.32,.2],[R('ratio','Rapport de récursion','Recursion ratio','cv.0.ratio',.12,.6,.01,.32)]);
+d8('beamrider','Beamrider','beamrider',{},'beams',[40,150,400],[R('beams','Faisceaux','Beams','cv.0.beams',10,600,5,150)]);
+d8('blitbomb','Blitbomb','blocks',{n:70},'n',[30,70,160],[R('n','Blocs','Blocks','cv.0.n',5,300,5,70)]);
+N(b4,'d8-vortron','Vortron','Vortron',[D],{fx:[{op:'warp',mode:'swirl',amt:1,rad:.45}]},[R('amt','Tourbillon','Swirl','fx.0.amt',-3,3,.05,1),R('rad','Rayon','Radius','fx.0.rad',.1,.9,.01,.45),S('mode','Sens','Mode','fx.0.mode',[['swirl','Tourbillon','Swirl'],['implode','Aspiration','Implode'],['explode','Explosion','Explode']])],[P('d8-vortron-1','Vortron · 1',D,{'fx.0.amt':.5}),P('d8-vortron-2','Vortron · 2',D,{}),P('d8-vortron-3','Vortron · 3',D,{'fx.0.amt':2.2})],'nom seul');
+d8('graboid','Graboid','thresholdRound',{},'passes',[2,4,6],[R('passes','Passes','Passes','cv.0.passes',1,8,1,4),R('block','Bloc','Block','cv.0.block',.004,.04,.001,.012),R('th','Seuil','Threshold','cv.0.th',0,1,.01,.35)],{note:'nom seul ; procédé « Multipass Brightness Threshold Pixel Rounding »'});
+d8('veth','Veth','selfSample',{},'n',[10,24,48],[R('n','Échantillons','Samples','cv.0.n',4,80,1,24),R('alpha','Opacité','Opacity','cv.0.alpha',.2,1,.01,.92)],{note:'nom seul ; procédé « Self-Sampling Recursion Artifact »'});
+d8('sigstop','Sigstop','fpPrecision',{},'q',[4,10,22],[R('q','Pas des coordonnées','Coordinate step','cv.0.q',2,40,1,10),R('levels','Paliers','Levels','cv.0.levels',2,12,1,4)],{note:'nom seul ; procédé « Floating Point Precision Artifacts »'});
+d8('agency','Agency','repeatShift',{},'copies',[5,12,24],[R('zones','Zones','Zones','cv.0.zones',1,6,1,3),R('copies','Copies','Copies','cv.0.copies',2,40,1,12)],{note:'nom seul ; procédé « Translated Repititionism »'});
+d8('bunker','Bunker','satPosition',{},'amt',[.8,1.6,3],[R('amt','Saturation','Saturation','cv.0.amt',0,4,.05,1.6)],{note:'nom seul ; procédé « Saturation Function of Position »'});
+d8('2600','2600++','atari',{},'colors',[2,4,8],[R('colors','Couleurs par ligne','Colours per line','cv.0.colors',1,12,1,4)],{note:'nom seul ; Atari 2600'});
+d8('5994','59.94','ntsc',{bleed:.02,dots:10},'shift',[.008,.018,.035],[R('shift','Décalage des trames','Field offset','cv.0.shift',0,.04,.001,.006),R('bleed','Bavure de chrominance','Chroma bleed','cv.0.bleed',.002,.05,.001,.01),R('dots','Points de sous-porteuse','Subcarrier dots','cv.0.dots',0,20,1,6)],{note:'nom seul ; champ NTSC 59,94 Hz'});
+d8('interface','Interface','interlace',{},'shift',[.01,.03,.07],[R('shift','Décalage','Offset','cv.0.shift',0,.12,.002,.03),R('line','Hauteur de ligne','Line height','cv.0.line',.001,.02,.001,.004)],{note:'nom seul'});
+d8('precog1','Precog1','precog',{dist:.035},'n',[3,6,10],[R('n','Échos','Echoes','cv.0.n',1,12,1,5),R('dist','Écart','Distance','cv.0.dist',.002,.06,.001,.02)],{note:'« vibration, résonance » (utilisateur)'});
+d8('glassdagger','Glass Dagger','shards',{},'n',[14,28,48],[R('n','Éclats','Shards','cv.0.n',2,60,1,16)],{note:'« fait ressortir les angles » (utilisateur)'});
+d8('polybomb','Polybomb','lowpoly',{n:500,edge:.7},'n',[200,500,1200],[R('n','Polygones','Polygons','cv.0.n',50,3000,50,500)],{note:'ex-Tribomb ; nom seul'});
+d8('brokendiamond','Broken Diamond','diamonds',{},'amt',[.3,.55,.85],[R('size','Taille','Size','cv.0.size',.03,.25,.005,.09),R('amt','Part brisée','Broken share','cv.0.amt',0,1,.01,.55)],{note:'nom seul'});
+d8('spoif','Spoif','spray',{},'n',[2,4,8],[R('n','Impacts','Impacts','cv.0.n',1,12,1,4)],{note:'nom illisible dans les sources'});
+d8('mxl','MXLHXLLXND','tape',{},'n',[50,120,240],[R('n','Pertes de signal','Dropouts','cv.0.n',0,300,5,60)],{note:'nom seul'});
+d8('arecibo','ARECIBO','arecibo',{},'cols',[30,46,73],[R('cols','Colonnes de bits','Bit columns','cv.0.cols',20,120,1,46),R('th','Seuil','Threshold','cv.0.th',0,1,.01,.45)],{note:'nom seul ; message d\'Arecibo'});
+d8('vanstroke','VAN STROKE','strokes',{base:.08,min:.006,len:4,wobble:.7,cjit:.1},'len',[2.5,4,6],[R('len','Longueur des touches','Stroke length','cv.0.len',1,8,.1,4),R('wobble','Tourbillon','Swirl','cv.0.wobble',0,1.5,.01,.7)],{note:'nom seul'});
+d8('yubari','YUBARI','yubari',{},'amt',[.4,.7,1],[R('amt','Intensité','Intensity','cv.0.amt',0,1,.01,.7)],{note:'nom seul'});
+NODES.push({b:'donnees',id:'d8-isam',fr:'ISAM',en:'ISAM',apps:[D],tpl:{cpu:{ops:[{op:'pixelSort',direction:'h',low:.25,high:.8}]}},params:[S('dir','Sens','Direction','cpu.ops.0.direction',[['h','Horizontal','Horizontal'],['v','Vertical','Vertical']]),R('low','Seuil bas','Low threshold','cpu.ops.0.low',0,1,.01,.25),R('high','Seuil haut','High threshold','cpu.ops.0.high',0,1,.01,.8)],
+ presets:[P('d8-isam-1','ISAM · 1',D,{'cpu.ops.0.low':.4}),P('d8-isam-2','ISAM · 2',D,{}),P('d8-isam-3','ISAM · 3',D,{'cpu.ops.0.low':.1,'cpu.ops.0.high':.95})],note:'nom seul ; accès séquentiel indexé → tri'});b4.subs.push(['d8-isam','ISAM','ISAM']);
+NODES.push({b:'donnees',id:'d8-kal1d0',fr:'KAL1D0',en:'KAL1D0',apps:[D],tpl:{cpu:{ops:[{op:'kaleido',segments:6}]}},params:[R('seg','Segments','Segments','cpu.ops.0.segments',2,16,1,6),R('rot','Rotation','Rotation','cpu.ops.0.rotation',0,360,1,0),R('zoom','Zoom','Zoom','cpu.ops.0.zoom',.5,3,.05,1)],
+ presets:[P('d8-kal1d0-1','KAL1D0 · 1',D,{'cpu.ops.0.segments':4}),P('d8-kal1d0-2','KAL1D0 · 2',D,{}),P('d8-kal1d0-3','KAL1D0 · 3',D,{'cpu.ops.0.segments':12})]});b4.subs.push(['d8-kal1d0','KAL1D0','KAL1D0']);
+N(b4,'decalage','Canaux décalés (relief 3D)','Offset channels (3D)',[GL,'Camly'],{cv:[{op:'channels',dx:.022}]},[R('dx','Écart horizontal','Horizontal offset','cv.0.dx',0,.08,.001,.022),R('dy','Écart vertical','Vertical offset','cv.0.dy',0,.05,.001,0),R('jit','Saccades','Jitter','cv.0.jitter',0,.2,.005,0)],[
+ P('gl-3d','3D Anaglyph Effect',GL,{}),P('ca-anaglyph','Anaglyph 3D','Camly',{'cv.0.dx':.03})]);
+N(b4,'vhs','Bande VHS','VHS tape',[GL,C],{cv:[{op:'channels',dx:.006}],fx:[{op:'vhs',amt:2.4}],grain:'moyenc',frame:''},[R('amt','Bandes','Bands','fx.0.amt',0,4,.05,2.4),T('date','Date incrustée','Date stamp','frame','hw-vhs',''),R('dx','Bavure','Bleed','cv.0.dx',0,.03,.001,.006)],[P('gl-vhs','VHS Effect',GL,{}),P('gl-vhsdate','VHS Effect, date',GL,{frame:'hw-vhs'})]);
 
-/* ================= MOLDIV (JellyBus, 2013–) ================= */
-const M='MOLDIV';
-L('matieres','usure','mo-grain','Film Grain',{grain:'gros',tone:{fade:.08}},M);
-L('lumiere','fuites','mo-flare','Lens Flare',{light:'sun'},M);
-L('lumiere','meteo','mo-rain','Rain',{fx:[{op:'ovl',mode:'rain',amt:1}],tone:{exposure:-.1,temp:-.15}},M);
-L('lumiere','meteo','mo-snow','Snow',{fx:[{op:'ovl',mode:'snow',amt:1}]},M);
-L('lumiere','fuites','mo-leak','Light Leak',{light:'leakmag'},M);
-L('couleurs','cinema','mo-vesper','VESPER',{tone:{temp:-.28,tint:.18,sat:.35,contrast:.2,exposure:-.08},glow:{bloom:.5,diffuse:.2,th:.55,radius:.015}},M);   /* « effets néon sur les paysages urbains de nuit » */
-L('cadres','film','mo-filmframe','Film Frame',{frame:'film35neg'},M);
-L('montages','collages','mo-split2','Split 2',{cv:[{op:'collage',n:2}]},M);
-L('montages','collages','mo-split3','Split 3',{cv:[{op:'collage',n:3}]},M);
-L('montages','collages','mo-grid4','Grid 4',{cv:[{op:'collage',n:4}]},M);
+/* ================================================================ 5. Écrans et consoles */
+const b5=B('ecrans','Écrans et consoles','Screens and consoles');
+N(b5,'consoles','Consoles et ordinateurs','Consoles and computers',[GL,D],{cv:[{op:'gbcam',cols:160,pal:'green'}]},[
+ S('m','Machine','Machine','cv.0.op',[['gbcam','Game Boy','Game Boy'],['pixel','Palette fixe','Fixed palette'],['zx','ZX Spectrum','ZX Spectrum'],['atari','Atari 2600','Atari 2600'],['bitboy','1 bit','1 bit']]),
+ S('pal','Palette','Palette','cv.0.pal',[['green','Vert Game Boy','Game Boy green'],['grey','Gris','Grey'],['nes','NES','NES'],['cga','CGA','CGA'],['gameboy','Game Boy (fixe)','Game Boy (fixed)']]),R('cols','Colonnes','Columns','cv.0.cols',64,320,8,160),R('cell','Pixel','Pixel','cv.0.cell',.002,.03,.001,.008),R('dither','Tramage','Dither','cv.0.dither',0,1.2,.01,.6)],[
+ P('gl-gb','Original Gameboy Effect',GL,{}),P('gl-gbcam','Gameboy Camera Effect',GL,{'cv.0.cols':128,'cv.0.pal':'grey'}),P('gl-nes','NES Effect',GL,{'cv.0.op':'pixel','cv.0.pal':'nes','cv.0.cell':.008,'cv.0.dither':.45}),
+ P('gl-zx','ZX Spectrum Effect',GL,{'cv.0.op':'zx'})]);
+N(b5,'caracteres','Écrans de caractères','Character screens',[D,GL],{cv:[{op:'chars',cols:72,pal:'ti99'}]},[S('pal','Palette','Palette','cv.0.pal',[['ti99','TI-99/4A','TI-99/4A'],['mono','Blanc sur noir','White on black']]),R('cols','Colonnes','Columns','cv.0.cols',24,180,1,72),S('dust','Poussière','Dust','dust',DUST)],[
+ P('gl-ascii','ASCII Art Effect',GL,{'cv.0.pal':'mono','cv.0.cols':90})]);
 
-/* ================= Camly (2014–) ================= */
-const K='Camly';
-L('formes','polygones','ca-lowpoly','Low Poly',{cv:[{op:'lowpoly',n:1100,edge:.85}]},K);
-L('optique','prisme','ca-prism','Prism',{lens:'prism'},K);
-L('lumiere','eclairage','ca-studio','Studio Light',{fx:[{op:'relight',at:'spot',amt:.9,spec:.4}]},K,{spot:1});
-L('signal','couleurs','ca-anaglyph','Anaglyph 3D',{cv:[{op:'channels',dx:.03}]},K);
-L('optique','deformation','ca-fisheye','Fisheye',{lens:'fisheye'},K);
-L('optique','deformation','ca-barrel','Barrel',{lens:'barrel'},K);
-L('optique','deformation','ca-pincushion','Pincushion',{fx:[{op:'lens',type:'none',dist:-.22}]},K);
-L('optique','deformation','ca-keystone','Keystone',{cv:[{op:'keystone',amt:.22}]},K);
-L('optique','flou','ca-tiltshift','Tilt-Shift',{fx:[{op:'lens',type:'tilt',amt:1.4,y:.33,w:.28}]},K);
-L('optique','flou','ca-blur','Blur',{fx:[{op:'bokeh',at:'spot',amt:1.5,focus:.16}]},K,{spot:1});
-L('lumiere','fuites','ca-leaks','Light Leaks',{light:'leakgold'},K);
+/* ================================================================ 6. Primitives : mots, touches, polygones */
+const b6=B('primitives','Mots, touches, polygones','Words, strokes, polygons');
+N(b6,'mots','Mots (WordFoto)','Words (WordFoto)',['WordFoto'],{cv:[{op:'words',shadow:'#0f0f14',high:'#ffffff',sat:.9,edge:.16,big:.075,bright:1.15,contrast:1.8,pad:.04}]},[
+ S('sh','Couleur d\'ombre','Shadow colour','cv.0.shadow',COL),S('hi','Couleur de haute lumière','Highlight colour','cv.0.high',COL),R('sat','Saturation','Saturation','cv.0.sat',0,1,.01,.9),R('br','Luminosité','Brightness','cv.0.bright',.5,1.8,.01,1.15),R('ct','Contraste','Contrast','cv.0.contrast',.5,3,.01,1.8),
+ R('pad','Marge','Padding','cv.0.pad',0,.2,.005,.04),S('font','Police','Font','cv.0.font',[['"Bebas Neue",Impact,sans-serif','Bebas Neue','Bebas Neue'],['Georgia,serif','Georgia','Georgia'],['"Courier New",monospace','Courier','Courier'],['Impact,sans-serif','Impact','Impact'],['"Archivo",sans-serif','Archivo','Archivo'],['"Reenie Beanie",cursive','Manuscrite','Handwritten'],['"American Typewriter",serif','American Typewriter','American Typewriter'],['Futura,"Century Gothic",sans-serif','Futura','Futura'],['"Marker Felt",cursive','Marker Felt','Marker Felt']]),
+ R('edge','Edge Threshold','Edge Threshold','cv.0.edge',.02,.6,.01,.16),R('tol','Color Tolerance','Color Tolerance','cv.0.big',.03,.2,.005,.075),R('dens','Densité','Density','cv.0.dens',3,30,1,12)],[
+ P('wf-classiccolor','Classic Color','WordFoto',{},{words:1}),P('wf-classicgray','Classic Gray','WordFoto',{'cv.0.sat':0},{words:1}),P('wf-howling','Howling','WordFoto',{'cv.0.shadow':'#08101e','cv.0.high':'#bcd8ff','cv.0.sat':.2,'cv.0.font':'Georgia,serif'},{words:1})]);
+N(b6,'touches','Touches de pinceau (Glaze)','Brush strokes (Glaze)',['Glaze'],{cv:[{op:'strokes',base:.075,min:.006,detail:5000,len:2.4,alpha:.7,cover:.55,wobble:0,cjit:0}],fx:[{op:'tex',name:'canvas',blend:'relief',amt:.4,relief:.45,scale:1.4}]},[
+ R('base','Taille des touches','Stroke size','cv.0.base',.03,.18,.005,.075),R('min','Touche la plus fine','Finest stroke','cv.0.min',.002,.03,.001,.006),R('detail','Détail','Detail','cv.0.detail',0,14000,250,5000),R('len','Longueur','Length','cv.0.len',1,6,.1,2.4),
+ R('alpha','Opacité','Opacity','cv.0.alpha',.2,1,.01,.7),R('cover','Couverture','Coverage','cv.0.cover',.05,1,.01,.55),R('wob','Variation','Variation','cv.0.wobble',0,1,.01,0),R('cj','Couleurs déplacées','Colour jitter','cv.0.cjit',0,.4,.01,0),
+ S('ground','Toile','Ground','cv.0.ground',[['','Image moyenne','Mean image'],['#8d8a84','Grise','Grey'],['#0b0b0b','Noire','Black'],['#f4f1ea','Blanche','White']]),T('nobase','Sans couche de fond','No base layer','cv.0.nobase',1,0)],[
+ P('gz-sailboat','Sailboat','Glaze',{'cv.0.base':.05,'cv.0.min':.0035,'cv.0.detail':9000,'cv.0.len':2}),P('gz-planet','Planet','Glaze',{'cv.0.ground':'#8d8a84','cv.0.nobase':1,'cv.0.cover':.3,'cv.0.base':.08,'cv.0.len':2.6,'cv.0.alpha':.85}),
+ P('gz-poppy','Poppy','Glaze',{'cv.0.base':.1,'cv.0.len':1.4,'cv.0.cjit':.15,'cv.0.alpha':.8},{note:'nom seul'}),P('gz-pearl','Pearl','Glaze',{'cv.0.alpha':.5,'cv.0.cover':.7,'cv.0.ground':'#f4f1ea'},{note:'nom seul'}),
+ P('gz-daisy','Daisy','Glaze',{'cv.0.base':.06,'cv.0.len':1.2,'cv.0.detail':7000},{note:'nom seul'}),P('gz-orange','Orange','Glaze',{'cv.0.cjit':.25,'cv.0.base':.09},{note:'nom seul'}),
+ P('gz-workshop','Workshop',"Glaze",{'cv.0.base':.11,'cv.0.min':.012,'cv.0.detail':2500,'cv.0.len':2.8,'cv.0.alpha':.8,'cv.0.cjit':.15,'cv.0.wobble':.4})],'Workshop: Relancer = random style; Mes rendus = palette slots; Labo layers = combine (tap-tap).');
+N(b6,'polygones','Polygones','Polygons',['Camly',GL],{cv:[{op:'lowpoly',n:1100,edge:.85,lines:0}]},[R('n','Triangles','Triangles','cv.0.n',100,4000,50,1100),R('edge','Respect des contours','Edge fidelity','cv.0.edge',0,1,.01,.85),R('lines','Arêtes claires','Light edges','cv.0.lines',0,.5,.01,0)],[
+ P('ca-lowpoly','Low Poly','Camly',{}),P('gl-tri','Triangulation Effect',GL,{'cv.0.n':900,'cv.0.edge':.8})]);
 
-/* ================= Polamatic (Polaroid, 2012–2015) ================= */
-const PM='Polamatic';
-for(const [id,n] of [['new','New'],['almost','Almost New'],['crumpled','Crumpled'],['tape','Tape'],['wrinkled','Wrinkled'],['crushed','Crushed'],['sat','I Sat On It']])
- L('cadres','instantanes','pm-'+id,n,{frame:'pm-'+id,film:'polaroid-polaroid-px-680',filmAmt:.6},'Polamatic, frames',{caption:1});
-L('couleurs','instant','pm-sepia','Sepia',{film:'polaroid-polaroid-px-680',filmAmt:.5,tone:{sat:-.55,temp:.35,fade:.1}},PM);
-L('couleurs','instant','pm-rosy','Rosy',{film:'polaroid-polaroid-px-680',filmAmt:.5,tone:{tint:.18,temp:.12,fade:.08}},PM);
-L('couleurs','instant','pm-lomo','LOMO',{film:'lomography-lomography-x-pro-slide-200',filmAmt:.7,vign:'toy'},PM);
-L('nb','nb','pm-mono','Monochrome',{film:'polaroid-polaroid-px-100uv-cold'},PM);
-const PF='Polamatic 5, Films';
-L('cadres','instantanes','pmf-600','Polaroid 600',{frame:'polaroid',film:'polaroid-polaroid-px-680'},PF,{caption:1});
-L('cadres','instantanes','pmf-sx70','SX-70',{frame:'sx70',film:'polaroid-polaroid-time-zero-expired'},PF,{caption:1});
-L('cadres','instantanes','pmf-spectra','Image Spectra',{frame:'spectra',film:'polaroid-polaroid-690'},PF,{caption:1});
-L('cadres','instantanes','pmf-300','300',{frame:'instaxMini',film:'fuji-fuji-superia-400',filmAmt:.6},PF,{caption:1});
-L('cadres','instantanes','pmf-100','Polaroid 100',{frame:'peelapart',film:'polaroid-polaroid-669'},PF);
-L('cadres','instantanes','pmf-type80','Type 80',{frame:'peelapart',film:'polaroid-polaroid-664'},PF);
-L('cadres','instantanes','pmf-4x5','4×5',{frame:'carrier',film:'polaroid-polaroid-665'},PF);
+/* ================================================================ 7. Objets et formes */
+const b7=B('objets','Objets et formes','Objects and shapes');
+const MSH=[['sphere','Sphere','Sphere'],['cube','Cube','Cube'],['torus','Torus','Torus'],['octa','Octahedron','Octahedron'],['hexprism','Hexagonal Prism','Hexagonal Prism'],['twist','Twisted Column','Twisted Column'],['beads','Ring of Beads','Ring of Beads'],['column','Fluted Column','Fluted Column']];
+const MST=[['chrome','Reflect','Reflect'],['wrap','Wrap','Wrap'],['glass','Refract 1','Refract 1'],['frosted','Refract 3','Refract 3'],['opaque','Solid','Solid'],['wire','Thin Wire','Thin Wire'],['dots','Dots','Dots'],['fade','Partial Fade','Partial Fade']];
+N(b7,'matter','Objets 3D (Matter)','3D objects (Matter)',['Matter'],{fx:[{op:'matter',at:'spot',shape:'cube',mat:'chrome',size:.24,color:'#dfe6ea',shadow:.7,shOn:1,floor:.5,blur:.1,light:-60,ior:1.45}]},[
+ S('shape','Objet','Object','fx.0.shape',MSH),S('mat','Style','Style','fx.0.mat',MST),S('color','Couleur','Colour','fx.0.color',[['#dfe6ea','Neutre','Neutral']].concat(COL.slice(17))),R('size','Taille','Size','fx.0.size',.06,.55,.01,.24),R('ang','Rotation','Rotation','fx.0.ang',0,6.28,.01,.6),
+ R('ior','Réfraction','Refraction','fx.0.ior',1.05,2.4,.01,1.45),T('shOn','Ombre','Shadow','fx.0.shOn',1,0),R('floor','Shadow Floor','Shadow Floor','fx.0.floor',0,1,.01,.5),R('shOp','Opacité de l\'ombre','Shadow opacity','fx.0.shadow',0,1,.01,.7),R('blur','Flou de l\'ombre','Shadow blur','fx.0.blur',0,1,.01,.1),R('light','Direction de la lumière','Light direction','fx.0.light',-180,180,1,-60),R('spin','Rotation animée','Animated spin','fx.0.spin',0,3,.05,1)],
+ MSH.map(([sh,n],i)=>P('mt-'+sh,n+', '+MST[i%MST.length][1],'Matter',{'fx.0.shape':sh,'fx.0.mat':MST[i%MST.length][0],'fx.0.color':MST[i%MST.length][0]==='opaque'?'#e9e4da':'#dfe6ea'},{spot:1})).concat([P('mt-refract2','Cube, Refract 2','Matter',{'fx.0.mat':'glass','fx.0.ior':1.9},{spot:1})]),
+ 'Gestures: tap places the object; Relancer = Shuffle; Labo layers = Add Object; GIF/video export = spin loop.');
+const TSH=[['circle','Cercle','Circle'],['square','Carré','Square'],['triangle','Triangle (prisme)','Triangle (prism)'],['hexagon','Hexagone','Hexagon'],['diamond','Losange','Diamond'],['ring','Anneau','Ring'],['band','Bande','Band'],['half','Moitié','Half'],['star','Étoile','Star'],['frame','Cadre','Frame'],['graduated','Filtre dégradé','Graduated filter'],['halftone','Points de trame','Halftone dots']];
+const TPT=[['solid','Uni','Solid'],['stripes','Rayures','Stripes'],['dots','Pois','Dots'],['grid','Grille','Grid'],['chevron','Chevrons','Chevron'],['rays','Rayons','Rays'],['rings','Cercles','Circles'],['checker','Damier','Checker'],['dashes','Tirets','Dashes'],['lines','Lignes fines','Pinstripes'],['explosion','Explosion','Explosion'],['decay','Urban Decay','Urban Decay']];
+const TBL=[['normal','B1 Normal','B1 Normal'],['dodge','B2 Color Dodge','B2 Color Dodge'],['lighten','B3 Lighten','B3 Lighten'],['darken','B4 Darken','B4 Darken'],['black','B5 Black Background','B5 Black Background'],['difference','B6 Difference','B6 Difference'],['burn','B7 Color Burn','B7 Color Burn'],['contrast','B8 Contrast','B8 Contrast'],['saturation','B9 Saturation','B9 Saturation']];
+N(b7,'tangent','Formes et motifs (Tangent)','Shapes and patterns (Tangent)',['Tangent'],{fx:[{op:'tangent',at:'spot',shape:'circle',pattern:'dots',color:'#ff4f7a',color2:'#000000',blend:'normal',size:.34,rot:0,prot:0,pscale:1,opa:.85,sop:1,pm:1,invert:0}]},[
+ S('shape','Forme','Shape','fx.0.shape',TSH),R('size','Taille','Size','fx.0.size',.06,.8,.01,.34),R('rot','Rotation (pas de 45°)','Rotation (45° steps)','fx.0.rot',0,315,45,0),T('inv','Invert','Invert','fx.0.invert',1,0),T('pm','Toggle Photo Masking','Toggle Photo Masking','fx.0.pm',1,0),R('sop','Opacité de la forme','Shape opacity','fx.0.sop',0,1,.01,1),
+ S('pattern','Motif','Pattern','fx.0.pattern',TPT),R('prot','Rotation du motif','Pattern rotation','fx.0.prot',0,315,45,0),R('psc','Échelle du motif','Pattern scale','fx.0.pscale',.3,3,.05,1),
+ S('color','Couleur','Colour','fx.0.color',COL),S('color2','Seconde couleur','Second colour','fx.0.color2',COL),S('blend','Fusion','Blend','fx.0.blend',TBL),R('opa','Opacité','Opacity','fx.0.opa',0,1,.01,.85)],
+ TBL.map(([bl,n],i)=>P('tg-b'+(i+1),n,'Tangent',{'fx.0.blend':bl,'fx.0.shape':TSH[i%TSH.length][0],'fx.0.pattern':TPT[(i*3)%TPT.length][0],'fx.0.color':COL[17+(i%7)][0]},{spot:1})).concat([
+  P('tg-prism','Prism','Tangent',{'fx.0.shape':'triangle','fx.0.pattern':'solid','fx.0.color':'#ffffff','fx.0.blend':'difference'},{spot:1}),P('tg-graduated','Graduated','Tangent',{'fx.0.shape':'graduated','fx.0.pattern':'solid','fx.0.color':'#ffd27a','fx.0.blend':'burn','fx.0.opa':.6},{spot:1}),
+  P('tg-halftone','Halftone','Tangent',{'fx.0.shape':'halftone','fx.0.pattern':'solid','fx.0.color':'#000000','fx.0.blend':'normal','fx.0.size':.6},{spot:1})]),'Retangent = Labo layer on top of the flattened result.');
 
-/* ================= Plaques : Koloid, TinType (Hipstamatic), Tintype (Michael Newton) ================= */
-for(const [id,n,qty] of [['k15',['Révélateur 15','Developer 15'],15],['k7',['Révélateur 7','Developer 7'],7],['k30',['Révélateur 30','Developer 30'],30]])
- L('plaques','collodion','ko-'+id,n,{fx:[{op:'pour',at:'spot',qty,warm:.2}],dust:'d7',vign:'natural',frame:'koloid'},'Koloid',{pour:1});
-const TT='TinType (Hipstamatic)';
-const tt=(id,n,tone,x)=>L('plaques','ferrotype','tt-'+id,n,Object.assign({film:'rollei-rollei-ortho-25',tone,fx:[{op:'bokeh',at:'spot',amt:1.05,focus:.2,boost:.2}],matter:'metal',dust:'d1',vign:'oval',frame:'tinplate'},x),TT,{spot:1});
-tt('bw','Black and White',{mono:1,contrast:.3,tone:{sh:'#120d08',hi:'#e9dcc0',amt:.5}});                                  /* « noir et blanc contrasté de la fin des années 1800 » */
-tt('color','Color',{sat:-.55,temp:.18,fade:.08,contrast:.1},{film:'kodak-kodak-portra-160',filmAmt:.6});                   /* « couleur rehaussée à la main », ton éteint */
-tt('sepia','Sepia',{mono:1,tone:{map:1,sh:'#2a1a0c',hi:'#f0d9b0',amt:.85},contrast:.15});
-tt('warm','Warm Tones',{mono:1,tone:{map:1,sh:'#1c1006',hi:'#f6dcae',amt:.7},contrast:.1});
-tt('high','High Contrast',{mono:1,contrast:.6,tone:{sh:'#0c0a08',hi:'#f0e6d2',amt:.4}});
-tt('dark','Dark',{mono:1,exposure:-.35,contrast:.35,tone:{sh:'#0a0806',hi:'#d8ccb4',amt:.5}});
-L('plaques','ferrotype','tn-tintype','Tintype',{film:'rollei-rollei-ortho-25',tone:{mono:1,contrast:.25,tone:{sh:'#100c08',hi:'#e4d6ba',amt:.6}},matter:'metal',dust:'d2',vign:'natural',frame:'tinplate'},'Tintype (Michael Newton)');
+/* ================================================================ 8. Reflets et montages */
+const b8=B('montages','Reflets et montages','Reflections and montage');
+const WATER=[['#1d3a4a','Lac','Lake'],['#0c3a66','Bleu','Blue'],['#1d4a2a','Vert','Green'],['#03080f','Nuit','Night'],['#3a2a12','Boue','Mud'],['#2a4a5a','Glacier','Glacier'],['#4a1d3a','Pourpre','Purple'],['#5a3a1d','Ambre','Amber'],['#0a2a2a','Sarcelle','Teal'],['#3a3a3a','Gris','Grey'],['#5a1d1d','Rouge','Red'],['#1d1d5a','Indigo','Indigo']];
+N(b8,'reflet','Reflet d\'eau (Reflection)','Water reflection (Reflection)',[RF],{fx:[{op:'ripple',hy:.55,wave:.4,tint:.2,amt:1,water:'#1d3a4a'}]},[R('hy','Ligne d\'eau','Waterline','fx.0.hy',.15,.9,.01,.55),R('amt','Blur (longueur du reflet)','Blur (reflection length)','fx.0.amt',0,2,.01,1),R('tint','Transparency (densité)','Transparency (density)','fx.0.tint',0,1,.01,.2),
+ S('water','Couleur de l\'eau','Water colour','fx.0.water',WATER),R('wave','Ondes','Ripples','fx.0.wave',0,3,.05,.4)],WATER.map(([c,fr,en],i)=>P('rf-'+i,i?'Water · '+en:'Water',RF,{'fx.0.water':c,'fx.0.tint':i?.45:.2,'fx.0.wave':i===3?.8:.4+.1*(i%4)})));
+N(b8,'splitter','Miroir, clone, fantôme','Mirror, clone, ghost',['Splitter Pro'],{cv:[{op:'splitter',mode:'mirror'}]},[S('mode','Mode','Mode','cv.0.mode',[['mirror','Mirror','Mirror'],['ghost','Ghost','Ghost'],['clone','Clone Yourself','Clone Yourself'],['split','Split Lens (même photo)','Split Lens (same photo)']])],[
+ P('sp-mirror','Mirror','Splitter Pro',{}),P('sp-ghost','Ghost','Splitter Pro',{'cv.0.mode':'ghost'}),P('sp-clone','Clone Yourself','Splitter Pro',{'cv.0.mode':'clone'}),P('sp-split','Split Lens','Splitter Pro',{'cv.0.mode':'split'})]);
+N(b8,'deux','Deux photos : fusion, objectif divisé','Two photos: blend, split lens',['Splitter Pro',MO,'Pixlr Express'],{dbl:1,cv:[{op:'splitter',mode:'ghost',noSecond:1}]},[],[P('sp-picblender','Pic Blender','Splitter Pro',{},{dbl:'screen'}),P('sp-splitlens2','Split Lens, deux photos','Splitter Pro',{'cv.0.mode':'split'},{dbl:'split'}),P('mo-double','Double Exposure',MO,{},{dbl:'screen'}),P('pxe-double','Double Exposure','Pixlr Express',{},{dbl:'overlay'})],'Second image chosen in Labo, Outils; without it, the photo blends with its own mirror.');
+N(b8,'collage','Collages et mises en page','Collages and layouts',[MO,'Camly','Pixlr Express'],{cv:[{op:'collage',n:2,gutter:.025,bg:'#ffffff',round:0,shadow:0}]},[S('n','Cases','Cells','cv.0.n',[[2,'2','2'],[3,'3','3'],[4,'4','4'],[6,'6','6'],[9,'9','9'],[-1,'Stitch vertical','Vertical stitch'],[-2,'Stitch horizontal','Horizontal stitch']]),R('gut','Bordure','Border','cv.0.gutter',0,.08,.002,.025),
+ R('round','Coins arrondis','Round corners','cv.0.round',0,.5,.01,0),R('shadow','Ombre','Shadow','cv.0.shadow',0,1,.01,0),S('bg','Fond','Background','cv.0.bg',COL)],[
+ P('mo-split2','Collage 2',MO,{}),P('mo-split3','Collage 3',MO,{'cv.0.n':3}),P('mo-grid4','Collage 4',MO,{'cv.0.n':4}),P('mo-grid6','Collage 6',MO,{'cv.0.n':6,'cv.0.round':.15}),P('mo-grid9','Collage 9',MO,{'cv.0.n':9,'cv.0.shadow':.5}),
+ P('mo-stitchv','Stitch',MO,{'cv.0.n':-1}),P('pxe-collage','Collage','Pixlr Express',{'cv.0.n':4,'cv.0.round':.3,'cv.0.bg':'#000000'})],'Extra photos chosen in Labo, Outils; long-press swap = order of the chosen photos.');
+N(b8,'beaute','Retouche du visage','Face retouch',[MO,'Camly','Pixlr Express'],{cpu:{ops:[{op:'beauty',at:'spot',smooth:.6}]}},[R('smooth','Lissage de la peau','Skin smoothing','cpu.ops.0.smooth',0,1,.01,.6)],[P('mo-beauty','Beauty',MO,{},{spot:1}),P('ca-selfie','Selfie','Camly',{'cpu.ops.0.smooth':.8},{spot:1})]);
+N(b8,'visage','Visage remodelé','Reshaped face',[MO,'Camly','Pixlr Express'],{cpu:{ops:[{op:'faceWarp',at:'spot',effect:'slim',amount:.5}]}},[S('eff','Effet','Effect','cpu.ops.0.effect',[['slim','Affiner','Slim'],['eyes','Agrandir les yeux','Enlarge eyes'],['fat','Gonfler','Puff']]),R('amt','Force','Amount','cpu.ops.0.amount',0,1,.01,.5)],[
+ P('mo-slim','Slim',MO,{},{spot:1}),P('mo-eyes','Eye enlargement',MO,{'cpu.ops.0.effect':'eyes'},{spot:1}),P('ca-faceplastic','Face plastic','Camly',{'cpu.ops.0.effect':'fat','cpu.ops.0.amount':.35},{spot:1}),P('pxe-liquify','Liquify','Pixlr Express',{'cpu.ops.0.effect':'fat','cpu.ops.0.amount':.7},{spot:1})]);
+N(b8,'autocollants','Autocollants','Stickers',[MO,'Camly','Pixlr Express'],{cpu:{ops:[{op:'stickers',kind:'glyph',text:'★',count:5,color:'#ffd23f',size:.12}]}},[S('g','Motif','Glyph','cpu.ops.0.text',[['★','Étoile','Star'],['♥','Cœur','Heart'],['✿','Fleur','Flower'],['☁','Nuage','Cloud'],['✦','Éclat','Sparkle'],['☺','Visage','Face']]),R('n','Nombre','Count','cpu.ops.0.count',1,30,1,5),S('col','Couleur','Colour','cpu.ops.0.color',COL)],[
+ P('mo-stickers','Stickers',MO,{}),P('ca-stickers','Stickers','Camly',{'cpu.ops.0.text':'♥','cpu.ops.0.color':'#ff4f7a','cpu.ops.0.count':8}),P('pxe-stickers','Stickers','Pixlr Express',{'cpu.ops.0.text':'✿','cpu.ops.0.count':6})]);
 
-/* ================= Glaze (Wexler, Dezeustre, 2012) : groupes de styles ================= */
-const GZ='Glaze';const cnv=[{op:'tex',name:'canvas',blend:'relief',amt:.4,relief:.45,scale:1.4}];
-L('peinture','touches','gz-sailboat','Sailboat',{cv:[{op:'strokes',base:.05,min:.0035,detail:9000,len:2}],fx:cnv},GZ);                     /* « détail et texture lisse » */
-L('peinture','touches','gz-planet','Planet',{cv:[{op:'strokes',ground:'#8d8a84',nobase:1,cover:.3,base:.08,min:.006,len:2.6,alpha:.85}],fx:cnv},GZ); /* laisse voir la toile noire, blanche ou grise */
-L('peinture','touches','gz-workshop','Workshop',{cv:[{op:'strokes',base:.11,min:.012,detail:2500,len:2.8,alpha:.8,cjit:.15,wobble:.4}],fx:cnv},GZ);
-/* ================= WordFoto (bitCycle, 2011) ================= */
-const WF='WordFoto';
-L('peinture','mots','wf-classiccolor','Classic Color',{cv:[{op:'words',shadow:'#0f0f14',high:'#ffffff',sat:.9}]},WF,{words:1});
-L('peinture','mots','wf-classicgray','Classic Gray',{cv:[{op:'words',shadow:'#0f0f14',high:'#ffffff',sat:0}]},WF,{words:1});
-L('peinture','mots','wf-howling','Howling',{cv:[{op:'words',shadow:'#08101e',high:'#bcd8ff',sat:.2,font:'Georgia,serif'}]},WF,{words:1});
+/* ================================================================ 9. Plaques et procédés */
+const b9=B('plaques','Plaques et procédés','Plates and processes');
+N(b9,'collodion','Collodion versé (Koloid)','Poured collodion (Koloid)',['Koloid'],{fx:[{op:'pour',at:'spot',qty:15,warm:.2}],dust:'d7',vign:'natural',frame:'koloid'},[R('qty','Quantité de liquide','Liquid amount','fx.0.qty',3,40,1,15),R('warm','Ton de la plaque','Plate tone','fx.0.warm',0,1,.01,.2),T('cap','Légende date et lieu','Date and place caption','frame','koloid','koloid-nocap')],
+ [5,10,15,20,30,40].map(q=>P('ko-'+q,q===15?'Koloid':'Koloid, liquide '+q,'Koloid',{'fx.0.qty':q},{pour:1})),'Develop: press and move the finger (tilt on phones); dwell burns; caption from Labo, Outils (description).');
+N(b9,'ferrotype','Ferrotype (TinType, Tintype)','Tintype (TinType, Tintype)',['TinType','Tintype'],{film:'rollei-rollei-ortho-25',tone:{mono:1,contrast:.3,tone:{map:1,sh:'#120d08',hi:'#e9dcc0',amt:.5}},fx:[{op:'bokeh',at:'spot',amt:1.05,focus:.2,boost:.2}],matter:'metal',dust:'d1',vign:'oval',frame:'tinplate'},[
+ R('dof','Depth of Field','Depth of Field','fx.0.amt',0,2.5,.05,1.05),R('eye','Eye Intensity','Eye Intensity','fx.0.boost',0,1,.01,.2),R('focus','Zone nette','Sharp zone','fx.0.focus',.05,.5,.01,.2),S('grain','Plate Grain','Plate Grain','dust',[['','0 %','0 %'],['d1','25 %','25 %'],['d2','50 %','50 %'],['d7','75 %','75 %'],['d10','100 %','100 %']]),
+ S('frame','Frame','Frame','frame',[['tinplate','Plaque 1','Plate 1'],['tinplate2','Plaque 2','Plate 2'],['','Sans cadre','No frame']]),R('con','Contraste','Contrast','tone.contrast',-1,1,.01,.3),R('exp','Exposition','Exposure','tone.exposure',-1,1,.01,0)],[
+ P('tt-bw','Black and White','TinType',{},{spot:1}),P('tt-color','Color','TinType',{'tone.mono':0,'tone.sat':-.55,'tone.temp':.18,'tone.fade':.08,'tone.tone.amt':0,film:'kodak-kodak-portra-160',filmAmt:.6},{spot:1}),
+ P('tt-sepia','Sepia','TinType',{'tone.tone.sh':'#2a1a0c','tone.tone.hi':'#f0d9b0','tone.tone.amt':.85,'tone.contrast':.15},{spot:1}),P('tt-warm','Warm Tones','TinType',{'tone.tone.sh':'#1c1006','tone.tone.hi':'#f6dcae','tone.tone.amt':.7,'tone.contrast':.1},{spot:1}),
+ P('tt-high','High Contrast','TinType',{'tone.contrast':.6,'tone.tone.amt':.4},{spot:1}),P('tt-dark','Dark','TinType',{'tone.exposure':-.35,'tone.contrast':.35,'tone.tone.hi':'#d8ccb4'},{spot:1}),
+ P('tn-tintype','Tintype','Tintype (Michael Newton)',{'fx.0.amt':0,'tone.contrast':.25,'tone.tone.amt':.6,dust:'d2',vign:'natural'})],'Tap sets the eyes / focal point; Relancer = shake to randomize.');
 
-/* ================= Matter (Pixite, 2014) : objets et matières ================= */
-const MT='Matter';
-for(const [sh,mat,fr,en] of [['sphere','chrome','Sphere, Reflective','Sphere, Reflective'],['cube','glass','Cube, Refractive','Cube, Refractive'],['torus','frosted','Torus, Transparent','Torus, Transparent'],['octa','opaque','Octahedron, Solid','Octahedron, Solid'],
- ['hexprism','chrome','Hexagonal Prism, Reflective','Hexagonal Prism, Reflective'],['twist','glass','Twisted Column, Refractive','Twisted Column, Refractive'],['beads','frosted','Ring of Beads, Transparent','Ring of Beads, Transparent'],['column','opaque','Fluted Column, Solid','Fluted Column, Solid']])
- L('formes','objets','mt-'+sh,[fr,en],{fx:[{op:'matter',at:'spot',shape:sh,mat,size:.24,color:mat==='opaque'?'#e9e4da':'#dfe6ea'}]},MT,{spot:1});
-/* ================= Tangent (Pixite, 2013) : forme, motif, sept fusions B1–B7 ================= */
-const TG='Tangent';
-[['circle','dots','#ff4f7a','normal','B1 Normal'],['triangle','stripes','#ffd23a','dodge','B2 Color Dodge'],['hexagon','grid','#2de0c8','lighten','B3 Lighten'],['band','chevron','#ff6a2a','darken','B4 Darken'],
- ['circle','rings','#ffffff','black','B5 Black Background'],['star','solid','#ffea6a','difference','B6 Difference'],['diamond','stripes','#7a6aff','burn','B7 Color Burn']]
- .forEach(([shape,pattern,color,blend,n],i)=>L('formes','formes','tg-b'+(i+1),n,{fx:[{op:'tangent',at:'spot',shape,pattern,color,blend,size:shape==='band'?.3:.34,prot:i*15,opa:.85}]},TG,{spot:1}));
-
-/* ================= Reflection 2.0 et Splitter Pro (Lotogram, 2013–2014) ================= */
-const RF='Reflection';
-L('montages','reflets','rf-water','Water',{fx:[{op:'ripple',hy:.55,wave:.4,tint:.2}]},RF);
-L('montages','reflets','rf-dark','Water Darkness',{fx:[{op:'ripple',hy:.55,wave:.5,tint:.65,water:'#03080f'}]},RF);
-L('montages','reflets','rf-blue','Blue Water',{fx:[{op:'ripple',hy:.55,wave:.6,tint:.45,water:'#0c3a66'}]},RF);
-L('montages','reflets','rf-green','Green Water',{fx:[{op:'ripple',hy:.55,wave:.6,tint:.45,water:'#1d4a2a'}]},RF);
-L('montages','reflets','rf-ripples','Ripples',{fx:[{op:'ripple',hy:.55,wave:1.5,tint:.3}]},RF);
-const SP='Splitter Pro';
-L('montages','miroirs','sp-clone','Clone Yourself',{cv:[{op:'splitter',mode:'clone'}]},SP);
-L('optique','prisme','sp-split','Split Lens',{cv:[{op:'splitter',mode:'split'}]},SP);
-L('montages','miroirs','sp-ghost','Ghost',{cv:[{op:'splitter',mode:'ghost'}]},SP);
-L('montages','miroirs','sp-mirror','Mirror',{cv:[{op:'splitter',mode:'mirror'}]},SP);
-/* ================= Nüdifier (Pony Code, 2012) ================= */
-L('montages','censure','nu-censor','Nüdifier',{cv:[{op:'censor',at:'spot',skin:'#e0ac8a',skinAmt:.5}]},'Nüdifier',{spot:1});
-
-/* l'ordre suit la liste des genres de chaque famille */
-return {build:()=>O}})();
-
-/* ================= réglages de chaque effet, tels que les applis les offraient =================
-   range : curseur ; sel : liste ; tog : interrupteur ; chemin : position du paramètre dans la recette (cv.0.n = 1re opération sur toile, paramètre n) */
-const CTL=(()=>{const R=(k,fr,en,path,min,max,step)=>({k,type:'range',fr,en,path,min,max,step}),S=(k,fr,en,path,opts)=>({k,type:'sel',fr,en,path,opts}),T=(k,fr,en,path,on,off)=>({k,type:'tog',fr,en,path,on,off});
- const V=(k,a,b,c)=>({k:'ver',type:'preset',fr:'Version',en:'Version',opts:[[1,'1','1',{[k]:a}],[2,'2','2',{[k]:b}],[3,'3','3',{[k]:c}]]});
- const warp=T('warp','Post-FX color warp','Post-FX color warp','cv+',{op:'chanswap'});            /* Decim8 : décalages de couleur dans la zone abîmée */
- const band=[R('y','Position de la bande nette','Sharp band position','fx.0.y',.05,.95,.01),R('w','Largeur nette','Sharp width','fx.0.w',.05,.8,.01)];
- const WATER=[['#1d3a4a','Lac','Lake'],['#0c3a66','Bleu','Blue'],['#1d4a2a','Vert','Green'],['#03080f','Nuit','Night'],['#3a2a12','Boue','Mud'],['#2a4a5a','Glacier','Glacier'],['#4a1d3a','Pourpre','Purple'],['#5a3a1d','Ambre','Amber'],['#0a2a2a','Sarcelle','Teal'],['#3a3a3a','Gris','Grey'],['#5a1d1d','Rouge','Red'],['#1d1d5a','Indigo','Indigo']];
- const TGS=[['circle','Cercle','Circle'],['square','Carré','Square'],['triangle','Triangle','Triangle'],['hexagon','Hexagone','Hexagon'],['diamond','Losange','Diamond'],['ring','Anneau','Ring'],['band','Bande','Band'],['half','Moitié','Half'],['star','Étoile','Star']];
- const TGP=[['solid','Uni','Solid'],['stripes','Rayures','Stripes'],['dots','Pois','Dots'],['grid','Grille','Grid'],['chevron','Chevrons','Chevron'],['rays','Rayons','Rays'],['rings','Cercles','Rings'],['checker','Damier','Checker']];
- const TGB=[['normal','B1 Normal','B1 Normal'],['dodge','B2 Color Dodge','B2 Color Dodge'],['lighten','B3 Lighten','B3 Lighten'],['darken','B4 Darken','B4 Darken'],['black','B5 Black Background','B5 Black Background'],['difference','B6 Difference','B6 Difference'],['burn','B7 Color Burn','B7 Color Burn']];
- const TGC=[['#ffffff','Blanc','White'],['#000000','Noir','Black'],['#ff4f7a','Rose','Pink'],['#ffd23a','Jaune','Yellow'],['#2de0c8','Turquoise','Turquoise'],['#ff6a2a','Orange','Orange'],['#7a6aff','Violet','Violet'],['#3ad0ff','Ciel','Sky']];
- const MS=[['sphere','Sphere','Sphere'],['cube','Cube','Cube'],['torus','Torus','Torus'],['octa','Octahedron','Octahedron'],['hexprism','Hexagonal Prism','Hexagonal Prism'],['twist','Twisted Column','Twisted Column'],['beads','Ring of Beads','Ring of Beads'],['column','Fluted Column','Fluted Column']];
- const MM=[['chrome','Reflective','Reflective'],['glass','Refractive','Refractive'],['frosted','Transparent','Transparent'],['opaque','Solid','Solid']];
- const tangent=[S('shape','Forme','Shape','fx.0.shape',TGS),S('pattern','Motif','Pattern','fx.0.pattern',TGP),S('blend','Fusion','Blend','fx.0.blend',TGB),S('color','Couleur','Colour','fx.0.color',TGC),
-  R('size','Taille','Size','fx.0.size',.08,.7,.01),R('rot','Rotation','Rotate','fx.0.rot',0,315,45),R('opa','Opacité','Opacity','fx.0.opa',0,1,.01),T('inv','Invert','Invert','fx.0.invert',1,0)];
- const matter=[S('shape','Objet','Object','fx.0.shape',MS),S('mat','Matière','Material','fx.0.mat',MM),R('size','Taille','Size','fx.0.size',.08,.5,.01),R('shadow','Ombre','Shadow','fx.0.shadow',0,1,.01)];
- const tt=[R('dof','Depth of Field','Depth of Field','fx.0.amt',0,2.5,.05),R('eye','Eye Intensity','Eye Intensity','fx.0.boost',0,1,.01),S('grain','Plate Grain','Plate Grain','dust',[['none','0','0'],['d1','1','1'],['d2','2','2'],['d7','3','3'],['d10','4','4']]),T('frame','Frame','Frame','frame','tinplate','none')];
- const C={
-  'd8-brainfeed3r':[V('cv.0.n',2,4,7),R('n','Échos','Echoes','cv.0.n',1,9,1),warp],'d8-ocular':[V('cv.0.amt',.03,.07,.14),R('amt','Distorsion','Distortion','cv.0.amt',0,.2,.005),R('hue','Rotation de teinte','Hue rotation','cv.0.hue',0,300,5),warp],
-  'd8-xexox':[V('cv.0.rate',.2,.45,.8),R('rate','Traînées','Streaks','cv.0.rate',.05,1,.01),R('len','Longueur','Length','cv.0.len',.1,1,.01),warp],'d8-fold':[V('cv.0.depth',3,5,8),R('depth','Plis','Folds','cv.0.depth',1,9,1),warp],
-  'd8-bitboy':[V('cv.0.cell',.003,.006,.012),R('cell','Taille du point','Dot size','cv.0.cell',.002,.02,.001),R('over','Posé sur l\'original','Over the original','cv.0.over',.2,1,.01),warp],'d8-ti994x':[V('cv.0.cols',100,72,40),R('cols','Colonnes','Columns','cv.0.cols',24,160,1),warp],
-  'd8-0irectine':[V('cv.0.n',4,8,12),R('n','Harmoniques','Harmonics','cv.0.n',2,16,1),warp],'d8-fingerblib':[V('cv.0.amt',.15,.3,.6),R('block','Bloc','Block','cv.0.block',.005,.06,.001),R('bands','Niveaux','Levels','cv.0.bands',2,16,1),R('amt','Fracture','Fracture','cv.0.amt',0,1,.01),warp],
-  'd8-komplaince':[V('cv.0.cell',.02,.045,.09),R('cell','Case','Cell','cv.0.cell',.008,.12,.002),T('rows','Rangées','Rows','cv.0.rows',true,false),warp],'d8-motor':[V('cv.0.amp',.02,.05,.1),R('amp','Déformation','Warp','cv.0.amp',0,.15,.002),warp],
-  'd8-l225':[V('cv.0.ratio',.45,.32,.2),R('ratio','Rapport de récursion','Recursion ratio','cv.0.ratio',.12,.6,.01),warp],'d8-beamrider':[V('cv.0.beams',40,150,400),R('beams','Faisceaux','Beams','cv.0.beams',10,600,5),warp],
-  'gl-vhs':[R('amt','Bandes','Bands','fx.0.amt',.5,4,.05)],'gl-glitchart':[R('hits','Octets touchés','Bytes hit','cv.0.hits',1,48,1)],'gl-jpeg':[R('q','Qualité JPEG','JPEG quality','cv.0.q',.005,.15,.005),R('passes','Passages','Passes','cv.0.passes',1,10,1)],
-  'gl-3d':[R('dx','Écart','Offset','cv.0.dx',0,.07,.001)],'gl-tri':[R('n','Triangles','Triangles','cv.0.n',100,4000,50)],'gl-nes':[R('cell','Pixel','Pixel','cv.0.cell',.003,.03,.001)],'gl-ascii':[R('cols','Colonnes','Columns','cv.0.cols',30,180,1)],
-  'cp-dof':band,'cp-miniaturize':band,'ca-tiltshift':band,
-  'ca-pincushion':[R('dist','Coussinet','Pincushion','fx.0.dist',-.6,0,.01)],'ca-keystone':[R('amt','Trapèze','Keystone','cv.0.amt',0,.5,.01),T('up','Vers le bas','Downward','cv.0.up',true,false)],
-  'ca-anaglyph':[R('dx','Intensité 3D','3D intensity','cv.0.dx',0,.07,.001)],'ca-blur':[R('amt','Flou','Blur','fx.0.amt',0,3,.05),R('focus','Zone nette','Sharp zone','fx.0.focus',.03,.5,.01)],'ca-studio':[R('amt','Lumière','Light','fx.0.amt',0,1.5,.01),R('spec','Brillance','Shine','fx.0.spec',0,1,.01)],
-  'mo-split2':[S('n','Mise en page','Layout','cv.0.n',[[2,'2','2'],[3,'3','3'],[4,'4','4']])],'mo-split3':[S('n','Mise en page','Layout','cv.0.n',[[2,'2','2'],[3,'3','3'],[4,'4','4']])],'mo-grid4':[S('n','Mise en page','Layout','cv.0.n',[[2,'2','2'],[3,'3','3'],[4,'4','4']])],
-  'mo-rain':[R('amt','Pluie','Rain','fx.0.amt',.1,1.5,.01)],'mo-snow':[R('amt','Neige','Snow','fx.0.amt',.1,1.5,.01)],
-  'ko-k15':[R('qty','Révélateur','Developer','fx.0.qty',3,40,1)],'ko-k7':[R('qty','Révélateur','Developer','fx.0.qty',3,40,1)],'ko-k30':[R('qty','Révélateur','Developer','fx.0.qty',3,40,1)],
-  'gz-sailboat':[R('detail','Détail','Detail','cv.0.detail',0,14000,250),R('len','Longueur des touches','Stroke length','cv.0.len',1,5,.1)],'gz-planet':[R('cover','Couverture','Coverage','cv.0.cover',.05,.8,.01),R('len','Longueur des touches','Stroke length','cv.0.len',1,5,.1)],
-  'gz-workshop':[R('base','Taille des touches','Stroke size','cv.0.base',.03,.18,.005),R('wobble','Variation','Variation','cv.0.wobble',0,1,.01)],
-  'wf-classiccolor':[R('sat','Saturation','Saturation','cv.0.sat',0,1,.01)],'wf-howling':[R('sat','Saturation','Saturation','cv.0.sat',0,1,.01)],
-  'sp-clone':[S('mode','Mode','Mode','cv.0.mode',[['clone','Clone Yourself','Clone Yourself'],['split','Split Lens','Split Lens'],['ghost','Ghost','Ghost'],['mirror','Mirror','Mirror']])],
-  'sp-split':[S('mode','Mode','Mode','cv.0.mode',[['clone','Clone Yourself','Clone Yourself'],['split','Split Lens','Split Lens'],['ghost','Ghost','Ghost'],['mirror','Mirror','Mirror']])],
-  'sp-ghost':[S('mode','Mode','Mode','cv.0.mode',[['clone','Clone Yourself','Clone Yourself'],['split','Split Lens','Split Lens'],['ghost','Ghost','Ghost'],['mirror','Mirror','Mirror']])],
-  'sp-mirror':[S('mode','Mode','Mode','cv.0.mode',[['clone','Clone Yourself','Clone Yourself'],['split','Split Lens','Split Lens'],['ghost','Ghost','Ghost'],['mirror','Mirror','Mirror']])],
-  'nu-censor':[R('cell','Pixels','Pixels','cv.0.cell',.01,.09,.002),R('w','Largeur','Width','cv.0.w',.1,.8,.01),R('h','Hauteur','Height','cv.0.h',.1,.8,.01)]};
- for(const id of ['rf-water','rf-dark','rf-blue','rf-green','rf-ripples'])C[id]=[R('hy','Ligne d\'eau','Waterline','fx.0.hy',.2,.85,.01),R('tint','Water darkness','Water darkness','fx.0.tint',0,1,.01),R('wave','Ondes','Ripples','fx.0.wave',0,3,.05),S('water','Couleur de l\'eau','Water colour','fx.0.water',WATER)];
- for(const L of CORPUS.build()){const id=L.id.slice(2);if(id.startsWith('tg-'))C[id]=tangent;if(id.startsWith('mt-'))C[id]=matter;if(id.startsWith('tt-'))C[id]=tt}
- return C})();
-for(const L of CORPUS.build()){const k=L.id.slice(2);if(CTL[k])L.ctl=CTL[k];if(/^Pixlr/.test(L.src||''))L.pixlr=1}
+/* ================================================================ 10. Supports et cadres */
+const b10=B('cadres','Cadres et légendes','Frames and captions');
+const IF=[['polaroid','Polaroid 600','Polaroid 600'],['sx70','SX-70','SX-70'],['spectra','Image Spectra','Image Spectra'],['polaroidBlack','Bord noir','Black border'],['instaxMini','300','300'],['peelapart','Polaroid 100 / Type 80','Polaroid 100 / Type 80'],['carrier','4×5','4×5'],['film120','Roll Film','Roll Film'],
+ ['pm-new','New','New'],['pm-almost','Almost New','Almost New'],['pm-crumpled','Crumpled','Crumpled'],['pm-tape','Tape','Tape'],['pm-wrinkled','Wrinkled','Wrinkled'],['pm-crushed','Crushed','Crushed'],['pm-sat','I Sat On It','I Sat On It'],['px-nolaroid','Nolaroid','Nolaroid']];
+N(b10,'instantanes','Instantanés (Polamatic)','Instants (Polamatic)',[PM,C,PX],{frame:'polaroid',film:'polaroid-polaroid-px-680',filmAmt:.6},[S('frame','Format et bord','Format and border','frame',IF),S('film','Film','Film','film',FILMSEL),R('filmAmt','Dose du film','Film amount','filmAmt',0,1,.01,.6),S('fc','Couleur du bord','Border colour','frameColor',[['','Blanc','White']].concat(COL.slice(17)))],[
+ P('pmf-600','Polaroid 600',PM+' 5',{},{caption:1}),P('pmf-sx70','SX-70',PM+' 5',{frame:'sx70',film:'polaroid-polaroid-time-zero-expired',filmAmt:1},{caption:1}),P('pmf-spectra','Image Spectra',PM+' 5',{frame:'spectra',film:'polaroid-polaroid-690',filmAmt:1},{caption:1}),
+ P('pmf-300','300',PM+' 5',{frame:'instaxMini',film:'fuji-fuji-superia-400'},{caption:1}),P('pmf-100','Polaroid 100',PM+' 5',{frame:'peelapart',film:'polaroid-polaroid-669',filmAmt:1}),P('pmf-type80','Type 80',PM+' 5',{frame:'peelapart',film:'polaroid-polaroid-664',filmAmt:1}),
+ P('pmf-4x5','4×5',PM+' 5',{frame:'carrier',film:'polaroid-polaroid-665',filmAmt:1}),P('pmf-8x10','8×10',PM+' 5',{frame:'carrier',film:'fuji-fuji-fp-100c',filmAmt:1}),P('pmf-roll','Roll Film',PM+' 5',{frame:'film120',film:'polaroid-polaroid-667',filmAmt:1}),
+ P('pmf-500','500',PM+' 5',{frame:'instaxWide',film:'polaroid-polaroid-px-70'},{caption:1}),P('pmf-nofilm','No Film',PM+' 5',{frame:'',film:'',filmAmt:0}),
+ ...['new','almost','crumpled','tape','wrinkled','crushed','sat'].map(k=>P('pm-'+k,IF.find(x=>x[0]==='pm-'+k)[1],PM+', frames',{frame:'pm-'+k},{caption:1})),
+ P('pmf-600c','Polaroid 600, bord de couleur',PM+' 5',{frameColor:'#2de0c8'},{caption:1}),P('cpb-instant','Instant',C+', Borders',{film:''},{caption:1}),P('pxb-nolaroid','Nolaroid',PX+', Borders',{frame:'px-nolaroid',film:''})],'Caption text, font, colour: Labo, Outils.');
+const BF=[['cp-lightmat','Light Mat'],['cp-darkmat','Dark Mat'],['cp-roundwhite','Round White'],['cp-roundblack','Round Black'],['cp-offset','Offset'],['cp-lightgrit','Light Grit'],['cp-darkgrit','Dark Grit'],['cp-oldtimey','Old-Timey'],['cp-vintage','Vintage'],
+ ['px-white','White'],['px-grunge','Grunge'],['px-rounded','Rounded Corner'],['px-ripped','Ripped Paper'],['px-ink','Ink'],['px-pinstripe','Pinstripe'],['px-sand','Sand'],['af-01','Frame 01'],['af-07','Frame 07'],['af-black','Black Frame'],['print70','Tirage'],['deckle','Bord frangé'],['mat','Passe-partout'],['ina69','Coins ronds'],['brushed','Bord brossé']];
+N(b10,'bordures','Bordures','Borders',[C,PX,AF,'Camly'],{frame:'cp-lightmat'},[S('frame','Bordure','Border','frame',BF.map(([v,n])=>[v,n,n]))],
+ BF.slice(0,19).map(([v,n])=>P('b-'+v,n,v.startsWith('cp-')?C+', Borders':v.startsWith('px-')?PX+', Borders':AF,{frame:v},{caption:v.startsWith('cp-')?1:0})));
+const FF=[['film35','Film'],['film35neg','Film Frame'],['cp-sprockets','Sprockets'],['cp-viewfinder','Viewfinder'],['px-hassel','Hassel'],['hw-letterbox','Letterbox'],['hw-hdtv','HDTV'],['hw-vhs','VHS'],['hw-crt','CRT'],['hw-super8','Super 8'],['hw-16mm','16 mm'],['hw-super35','Super 35'],['hw-poster','Poster'],['hw-dvd','DVD'],['contact35','Planche contact']];
+N(b10,'cinema','Film et cinéma','Film and cinema',[C,PX,MO],{frame:'film35'},[S('frame','Cadre','Frame','frame',FF.map(([v,n])=>[v,n,n]))],
+ FF.slice(0,14).map(([v,n])=>P('f-'+v,n,v.startsWith('hw-')?CH:v.startsWith('px-')?PX+', Borders':v==='film35neg'?MO:C+', Borders',{frame:v})));
+N(b10,'texte','Texte et date','Text and date',[PM,C,'Koloid',GL,'Camly',MO,'Pixlr Express'],{cpu:{ops:[{op:'dateStamp'}]}},[],[P('gl-date','Date Stamp',GL,{}),P('cp-captions','Captions',C,{cpu:null,frame:'cp-lightmat'},{caption:1})],'Text items (Polamatic 5: font, size, rotation, opacity, alignment, colour; MOLDIV: spacing, shadow): Labo, Outils.');
+TAXO.push({id:'mes',fr:'Mes rendus',en:'My looks',subs:[]});
+const WARP=T('warp','Post-FX color warp','Post-FX color warp','cv+',{op:'chanswap'});for(const n of NODES)if(n.apps.length===1&&n.apps[0]==='Decim8'&&n.tpl.cv)n.params=n.params.concat([WARP]);
+return {build(){const out=[];for(const n of NODES){for(const p of n.presets){const c=clone(n.tpl||{});for(const [k,v] of Object.entries(p.set))if(v===null){const ks=k.split('.');let a=c;for(let i=0;i<ks.length-1;i++)a=a&&a[ks[i]];if(a)delete a[ks[ks.length-1]]}else setP(c,k,v);
+  if(p.x.dbl){c.dbl=1;c.dblMode=p.x.dbl}
+  const pk=/^Pixlr/.test(p.src)?(n.b==='cadres'?'b':['lumiere'].includes(n.b)?'o':'e'):0;
+  out.push(Object.assign({pixlr:pk||undefined,id:'n-'+p.id,f:n.b,s:n.id,fr:Array.isArray(p.name)?p.name[0]:p.name,en:Array.isArray(p.name)?p.name[1]:p.name,c,src:p.src,ctl:n.params,node:n.id,set:p.set},p.x))}}return out},setP,flat}})();
+const CORPUS={build:ARBRE.build};
 
 /* ==== GIF89a animé : palette commune par coupe médiane, tramage Floyd-Steinberg léger, LZW ==== */
 const GIF=(()=>{
@@ -3600,7 +3740,7 @@ fr:{ph:"Décris une image, ou le mouvement de la vidéo",open:"Ouvrir",shoot:"Pr
  net:"Cette page a perdu le réseau.",saved:"Enregistré :",rendering:"Rendu…",puter_ok:"Fenêtre Puter : clique sur Continue",photo:"photo",video:"vidéo",reel:"Pellicule",
  t_compose:"Composer",t_retouch:"Retouche",t_tools:"Outils",t_export:"Exporter",t_keys:"Clés",
  s_film:"Pellicule",s_lens:"Objectif",s_flash:"Flash",s_light:"Lumière",s_grain:"Grain",s_matter:"Matière",s_dust:"Poussière",s_vign:"Vignettage",s_frame:"Cadre",inherit:"Du rendu",variantL:"Variante",
- shuffle:"Tirer au hasard",auto:"Au hasard",reroll:"Relancer",roulette:"Roulette",pxE:"Effet",pxO:"Lumière",pxB:"Cadre",layer:"Couche {n}",none:"Aucune",stackHint:"Les couches s'ajoutent au spécimen, dans l'ordre, comme les chaînes d'effets de Decim8, les effets superposés de Camera+ et les trois couches de Pixlr-o-matic.",keep:"Garder ce rendu",reset:"Tout remettre",kept:"Rendu gardé dans « Mes rendus ».",strength:"Intensité du rendu",
+ shuffle:"Tirer au hasard",auto:"Au hasard",bmodes:"Normal|Produit|Superposition claire|Incrustation|Lumière douce|Différence|Éclaircir|Assombrir|Addition|Densité couleur −|Densité couleur +|Exclusion|Lumière crue",lblend:"Fusion de la couche",lamt:"Transparence de la couche",allCtl:"Tous les réglages",reroll:"Relancer",roulette:"Roulette",pxE:"Effet",pxO:"Lumière",pxB:"Cadre",layer:"Couche {n}",none:"Aucune",stackHint:"Les couches s'ajoutent au spécimen, dans l'ordre, comme les chaînes d'effets de Decim8, les effets superposés de Camera+ et les trois couches de Pixlr-o-matic.",keep:"Garder ce rendu",reset:"Tout remettre",kept:"Rendu gardé dans « Mes rendus ».",strength:"Intensité du rendu",
  r_light:"Lumière",r_contrast:"Contraste",r_hi:"Hautes lumières",r_sh:"Ombres",r_wh:"Blancs",r_bl:"Noirs",r_temp:"Température",r_tint:"Teinte",r_vib:"Vibrance",r_sat:"Saturation",r_fade:"Délavé",r_clar:"Clarté",r_sharp:"Netteté",r_grain:"Grain ajouté",r_vign:"Vignettage ajouté",
  split:"Virage partagé",sh_hue:"Teinte des ombres",hi_hue:"Teinte des hautes lumières",split_amt:"Force",split_bal:"Équilibre",hsl:"Teinte, saturation, luminance",curves:"Courbes",
  colors:["Rouges","Oranges","Jaunes","Verts","Cyans","Bleus","Violets","Magentas"],hslH:"Teinte",hslS:"Saturation",hslL:"Luminance",
@@ -3618,7 +3758,7 @@ en:{ph:"Describe an image, or the motion of the video",open:"Open",shoot:"Shoot"
  net:"This page lost the network.",saved:"Saved:",rendering:"Rendering…",puter_ok:"Puter window: click Continue",photo:"photo",video:"video",reel:"Film roll",
  t_compose:"Compose",t_retouch:"Retouch",t_tools:"Tools",t_export:"Export",t_keys:"Keys",
  s_film:"Film",s_lens:"Lens",s_flash:"Flash",s_light:"Light",s_grain:"Grain",s_matter:"Material",s_dust:"Dust",s_vign:"Vignette",s_frame:"Frame",inherit:"From the look",variantL:"Variant",
- shuffle:"Shuffle",auto:"Random",reroll:"Re-roll",roulette:"Roulette",pxE:"Effect",pxO:"Overlay",pxB:"Border",layer:"Layer {n}",none:"None",stackHint:"Layers add to the specimen, in order, like Decim8 effect chains, Camera+ layered effects and the three layers of Pixlr-o-matic.",keep:"Keep this look",reset:"Reset all",kept:"Look kept in “My looks”.",strength:"Look strength",
+ shuffle:"Shuffle",auto:"Random",bmodes:"Normal|Multiply|Screen|Overlay|Soft light|Difference|Lighten|Darken|Add|Color dodge|Color burn|Exclusion|Hard light",lblend:"Layer blend",lamt:"Layer opacity",allCtl:"All settings",reroll:"Re-roll",roulette:"Roulette",pxE:"Effect",pxO:"Overlay",pxB:"Border",layer:"Layer {n}",none:"None",stackHint:"Layers add to the specimen, in order, like Decim8 effect chains, Camera+ layered effects and the three layers of Pixlr-o-matic.",keep:"Keep this look",reset:"Reset all",kept:"Look kept in “My looks”.",strength:"Look strength",
  r_light:"Light",r_contrast:"Contrast",r_hi:"Highlights",r_sh:"Shadows",r_wh:"Whites",r_bl:"Blacks",r_temp:"Temperature",r_tint:"Tint",r_vib:"Vibrance",r_sat:"Saturation",r_fade:"Fade",r_clar:"Clarity",r_sharp:"Sharpness",r_grain:"Added grain",r_vign:"Added vignette",
  split:"Split toning",sh_hue:"Shadow hue",hi_hue:"Highlight hue",split_amt:"Strength",split_bal:"Balance",hsl:"Hue, saturation, luminance",curves:"Curves",
  colors:["Reds","Oranges","Yellows","Greens","Cyans","Blues","Purples","Magentas"],hslH:"Hue",hslS:"Saturation",hslL:"Luminance",
@@ -3652,7 +3792,7 @@ const S={ctl:{},src:null,prev:null,tiny:null,ver:0,look:null,seed:1974,labo:{},u
 const ALL=LOOKS_ALL();const byId=id=>ALL.find(l=>l.id===id)||MINE().find(l=>l.id===id);
 const MINE=()=>LS.get("pf_mine",[]).map(m=>({id:m.id,f:"mes",fr:m.name,en:m.name,c:m.c,user:m.user}));
 /* empilement : chaque couche ajoute ses étapes après celles du spécimen (chaîne d'effets de Decim8, effets superposés de Camera+, effet, lumière et cadre de Pixlr-o-matic) */
-function stackCombo(c,c2){c=Object.assign({},c);c.post=(c.post||[]).concat(stepsOf(Object.assign({},c2,{frame:null}),null));if(c2.cv)c.cv=(c.cv||[]).concat(c2.cv);if(c2.frame)c.frame=c2.frame;return c}
+function stackCombo(c,c2,mode,amt){c=Object.assign({},c);const st=stepsOf(Object.assign({},c2,{frame:null}),null);const bl=(mode|0)||amt!=null&&amt<1;c.post=(c.post||[]).concat(bl?[{op:'mark'}]:[],st,bl?[{op:'blendmark',mode:mode|0,amt:amt??1}]:[]);if(c2.cv)c.cv=(c.cv||[]).concat(c2.cv);if(c2.frame)c.frame=c2.frame;return c}
 function getPath(o,path){return path.split('.').reduce((a,k)=>a==null?a:a[k],o)}
 function setPath(o,path,v){const ks=path.split('.');let a=o;for(let i=0;i<ks.length-1;i++){const k=ks[i];a[k]=Array.isArray(a[k])?a[k].slice():Object.assign({},a[k]);a=a[k]}a[ks[ks.length-1]]=v}
 /* réglages de l'effet ouvert (S.ctl) appliqués à une copie de sa recette */
@@ -3660,41 +3800,48 @@ function tuned(L){let c=JSON.parse(JSON.stringify(L.c));for(const d of L.ctl||[]
   if(d.type==='preset'){const o=d.opts.find(x=>x[0]===v);if(o)for(const [pp,vv] of Object.entries(o[3]))setPath(c,pp,vv)}else if(d.path==='cv+'){if(v)c.cv=(c.cv||[]).concat([d.on])}else if(d.type==='tog')setPath(c,d.path,v?d.on:d.off);else setPath(c,d.path,v)}return c}
 /* Pixlr-o-matic : effet, lumière, cadre, trois couches choisies à part */
 function pixlrCombo(){const P=S.ctl.px||{};let c={};for(const id of [P.e,P.o,P.b]){const X=id&&byId(id);if(X)c=c.cv||c.fx||c.film||c.tone||c.frame||c.light?stackCombo(c,X.c):JSON.parse(JSON.stringify(X.c))}return c}
-function combo(){const L=byId(S.look);let c=L?(L.pixlr&&S.ctl.px?pixlrCombo():tuned(L)):{};const lab=S.labo||{};for(const id of lab.stack||[]){const X=id&&byId(id);if(X)c=stackCombo(c,X.c)}if(lab.frame!==undefined)c.frame=lab.frame;if(S.dbl.on)c.dbl=1;return c}
+function combo(){const L=byId(S.look);let c=L?(L.pixlr&&S.ctl.px?pixlrCombo():tuned(L)):{};const lab=S.labo||{};(lab.stack||[]).forEach((id,i)=>{const X=id&&byId(id);if(X)c=stackCombo(c,X.c,(lab.mode||[])[i],(lab.amt||[])[i])});if(lab.frame!==undefined)c.frame=lab.frame;if(S.dbl.on)c.dbl=1;if(c.dbl&&S.secondTex&&c.cv)c.cv=c.cv.filter(o=>!o.noSecond);return c}
 function snapshot(){return JSON.parse(JSON.stringify({ctl:S.ctl,look:S.look,seed:S.seed,labo:S.labo,user:S.user,spot:S.spot,caption:S.caption,words:S.words,font:S.font,dbl:S.dbl,ver:S.ver,pour:S.pour}))}
 function pushHist(){const h=snapshot();h.src=S.src;S.hist.push(h);if(S.hist.length>50)S.hist.shift()}
 function scaleTo(img,max){const k=Math.min(1,max/Math.max(img.width,img.height));if(k>=1)return img;const c=document.createElement("canvas");c.width=Math.max(1,Math.round(img.width*k));c.height=Math.max(1,Math.round(img.height*k));
  const t0=document.createElement("canvas");t0.width=img.width;t0.height=img.height;t0.getContext("2d").putImageData(img,0,0);const g=c.getContext("2d");g.imageSmoothingQuality="high";g.drawImage(t0,0,0,c.width,c.height);return g.getImageData(0,0,c.width,c.height)}
 const SRC={};function srcTex(level){const k=level+":"+S.ver;if(SRC[level]&&SRC[level].k===k)return SRC[level];if(SRC[level])E.del(SRC[level].tex);const im=level==="full"?S.src:level==="prev"?S.prev:S.tiny;SRC[level]={k,tex:E.texFrom(im),w:im.width,h:im.height};return SRC[level]}
-function setSource(img,own){S.src=scaleTo(img,4096);S.prev=scaleTo(S.src,1600);S.tiny=scaleTo(S.src,240);S.ver++;S.own=!!own;S.mask=null;if(S.maskTex){E.del(S.maskTex);S.maskTex=null}THUMBS.clear();CPUC.clear();drawStrip();render()}
+/* visage probable : plus grande tache de peau dans les deux tiers hauts (sert aux retouches du visage tant que l'on n'a pas touché la photo) */
+function faceGuess(im){try{const W=im.width,H=im.height,d=im.data,N=20,cs=new Float32Array(N*N),cn=new Float32Array(N*N);
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=(y*W+x)*4,r=d[i],g=d[i+1],b=d[i+2],cb=128-.169*r-.331*g+.5*b,cr=128+.5*r-.419*g-.081*b;const k=Math.min(N-1,Math.floor(y/H*N))*N+Math.min(N-1,Math.floor(x/W*N));cn[k]++;if(cr>138&&cr<173&&cb>77&&cb<127&&r>60)cs[k]++}
+ let best=-1,bk=0;for(let j=1;j<N-1;j++)for(let i=1;i<N-1;i++){let v=0;for(let b=-1;b<=1;b++)for(let a=-1;a<=1;a++){const k=(j+b)*N+i+a;v+=cs[k]/cn[k]}v*=1-.6*j/N;v*=1-.5*Math.abs(i/N-.5);if(v>best){best=v;bk=j*N+i}}
+ if(best<1.2)return null;const ci=bk%N,cj=Math.floor(bk/N);let sx=0,sy=0,n=0,x0=1,x1=0;for(let y=Math.floor((cj-2)/N*H);y<Math.min(H,(cj+3)/N*H);y++)for(let x=Math.max(0,Math.floor((ci-3)/N*W));x<Math.min(W,(ci+4)/N*W);x++){if(y<0)continue;const i=(y*W+x)*4,r=d[i],g=d[i+1],b=d[i+2],cb=128-.169*r-.331*g+.5*b,cr=128+.5*r-.419*g-.081*b;if(cr>138&&cr<173&&cb>77&&cb<127&&r>60){sx+=x;sy+=y;n++;x0=Math.min(x0,x/W);x1=Math.max(x1,x/W)}}
+ if(!n)return null;return {x:sx/n/W,y:sy/n/H,w:Math.max(.08,Math.min(.5,x1-x0))}}catch(e){return null}}
+function setSource(img,own){S.src=scaleTo(img,4096);S.prev=scaleTo(S.src,1600);S.tiny=scaleTo(S.src,240);S.face=faceGuess(S.tiny);S.spotSet=false;S.ver++;S.own=!!own;S.mask=null;if(S.maskTex){E.del(S.maskTex);S.maskTex=null}THUMBS.clear();CPUC.clear();drawStrip();render()}
 
 /* ---------- rendu ---------- */
 const CPUC=new Map();
-async function cpuStage(c,level,img){if(!c.cpu)return img;const k=JSON.stringify(c.cpu)+"|"+S.seed+"|"+level+"|"+S.ver;if(CPUC.has(k))return CPUC.get(k);const r=Object.assign({},c.cpu,{seed:(c.cpu.seed||1974)+S.seed});
+async function cpuStage(c,level,img,opts){if(!c.cpu)return img;const F=S.face,sp=(opts&&opts.thumb)||!S.spotSet?(F?{x:F.x,y:F.y-F.w*.12}:{x:.5,y:.38}):S.spot,fw=F?F.w:.2;c=Object.assign({},c,{cpu:Object.assign({},c.cpu,{ops:(c.cpu.ops||[]).map(o=>o.at==="spot"?Object.assign({},o,{face:{lx:sp.x-fw*.22,ly:sp.y,rx:sp.x+fw*.22,ry:sp.y,mx:sp.x,my:sp.y+fw*.45}}):o)})});const k=JSON.stringify(c.cpu)+"|"+S.seed+"|"+level+"|"+S.ver;if(CPUC.has(k))return CPUC.get(k);const r=Object.assign({},c.cpu,{seed:(c.cpu.seed||1974)+S.seed});
  const out=await CPUW.render(img,r,{});CPUC.set(k,out);if(CPUC.size>24)CPUC.delete(CPUC.keys().next().value);return out}
 /* opérations sur toile 2D (applis 2010) : résultat gardé en cache tant que l'image, le rendu et le point ne changent pas */
 const CVC=new Map();
 function wordsList(){const src=(S.words||S.caption||"").trim();return src?src.split(/[\s,;]+/).filter(Boolean).slice(0,12):["KORHOGO","FAUNA","MAUK","TENIEB"]}
 async function cvStage(c,level,img,opts){const spot=opts.thumb?{x:.5,y:.38}:S.spot;const ops=JSON.parse(JSON.stringify(c.cv)).map(o=>{if(o.at==="spot"){o.x=spot.x;o.y=spot.y}if(o.op==="words")o.words=wordsList();return o});
- const k=JSON.stringify(ops)+"|"+S.seed+"|"+level+"|"+S.ver+"|"+(c.cpu?1:0);if(CVC.has(k))return CVC.get(k);let out=img;
- for(let i=0;i<ops.length;i++){const o=ops[i],f=APPS.OPS[o.op];if(f)out=await f(out,o,(S.seed*31+i*977)>>>0)}
+ const k=JSON.stringify(ops)+"|"+S.seed+"|"+level+"|"+S.ver+"|"+(c.cpu?1:0)+"|"+(S.second?S.second.width+"x"+S.second.height:0);if(CVC.has(k))return CVC.get(k);let out=img;
+ for(let i=0;i<ops.length;i++){const o=ops[i],f=APPS.OPS[o.op];if(f&&!o.off)out=await f(out,o,(S.seed*31+i*977)>>>0)}
  CVC.set(k,out);if(CVC.size>30)CVC.delete(CVC.keys().next().value);return out}
 function maskFor(level,w,h){if(!S.mask)return null;if(S.maskDirty||!S.maskTex){if(S.maskTex)E.del(S.maskTex);S.maskTex=E.texFrom(S.mask);S.maskDirty=false}return S.maskTex}
 /* rend le combo sur un niveau d'image ; renvoie un canvas (cadre compris) */
 async function renderLevel(level,opts={}){const c=opts.combo||combo();const base=level==="full"?S.src:level==="prev"?S.prev:S.tiny;
  let st=srcTex(level),w=st.w,h=st.h,tex=st.tex,tmp=null;
- let im0=null;if(c.cpu){im0=await cpuStage(c,level,base);w=im0.width;h=im0.height}
+ let im0=null;if(c.cpu){im0=await cpuStage(c,level,base,opts);w=im0.width;h=im0.height}
  if(c.cv){im0=await cvStage(c,level,im0||base,opts);w=im0.width;h=im0.height}
  if(im0){tmp=E.texFrom(im0);tex=tmp}
  const user=opts.thumb?null:S.user;const steps=stepsOf(c,user&&isUserActive()?Object.assign({},user,{active:true}):null);
  if(c.dbl&&S.secondTex&&!opts.thumb)steps.push(Object.assign({op:"dbl"},S.dbl));
+ for(let i=steps.length-1;i>=0;i--)if(steps[i].off)steps.splice(i,1);
  for(const s of steps)if(s.op==="tex"&&s.name==="dust")s.name="dust1";
  steps.forEach(s=>{if(s.op==="pour"&&!opts.thumb&&S.pour&&S.pour.pts.length)s.pts=S.pour.pts;if(s.at==="spot"){const sp=opts.thumb?{x:.5,y:.38}:S.spot;s.x=sp.x;s.y=sp.y}});
  const mk=!opts.thumb&&S.mask?maskFor(level,w,h):null;const str=opts.thumb?1:S.user.strength;
  const out=await GPU.run(E,tex,w,h,steps,{asset:gctx.asset,lut:gctx.lut,seed:S.seed+(opts.frameT||0)*7919,t:opts.frameT||0,second:S.secondTex,mask:mk||(str<1?E.white():null),maskAmt:(mk||str<1)?str:null});
  GLC.width=w;GLC.height=h;E.draw("out",null,{SEED:S.seed%97},{A:out.tex});E.release(out);if(tmp)E.del(tmp);
  let cv=document.createElement("canvas");cv.width=w;cv.height=h;cv.getContext("2d").drawImage(GLC,0,0);
- if(c.frame&&c.frame!=="none"){await texImages();cv=FRAMES.draw(c.frame,cv,{seed:S.seed,tex:TEXIMG,caption:opts.thumb?"":S.caption,font:S.font||undefined})}
+ if(c.frame&&c.frame!=="none"){await texImages();cv=FRAMES.draw(c.frame,cv,{color:c.frameColor||undefined,seed:S.seed,tex:TEXIMG,caption:opts.thumb?"":S.caption,font:S.font||undefined})}
  return cv}
 function isUserActive(){const u=S.user,z=USER0();for(const k of ["exposure","contrast","highlights","shadows","whites","blacks","temp","tint","vibrance","sat","fade","clarity","sharpen","grainAdd","vignAdd"])if(u[k]!==z[k])return true;
  if(u.curves.rgb||u.curves.r||u.curves.g||u.curves.b||u.split)return true;return u.hsl.some(x=>x[0]||x[1]||x[2])}
@@ -3734,17 +3881,18 @@ function drawCtl(){const box=$("ctl");if(!box)return;box.textContent="";const L=
  const re=el("button",{type:"button",className:"chip",on:{click:()=>{pushHist();S.seed=Math.floor(Math.random()*99999);S.pour=null;render()}}},t("reroll"));row.append(re);
  const st=el("input",{type:"range",min:0,max:1,step:.01,value:S.user.strength});st.addEventListener("pointerdown",()=>pushHist());let t0=0;st.addEventListener("input",()=>{S.user.strength=+st.value;clearTimeout(t0);t0=setTimeout(render,60)});
  row.append(el("label",{className:"cr"},el("span",{},t("strength")),st));
- if(L.pixlr){const P=S.ctl.px||(S.ctl.px={e:L.s&&L.f!=='cadres'&&!/Overlays/.test(L.src)?L.id:"",o:/Overlays/.test(L.src)?L.id:"",b:L.f==='cadres'?L.id:""});
-  const lists={e:ALL.filter(x=>x.pixlr&&!/Overlays|Borders/.test(x.src)),o:ALL.filter(x=>x.pixlr&&/Overlays/.test(x.src)),b:ALL.filter(x=>x.pixlr&&/Borders/.test(x.src))};
+ if(L.pixlr){const P=S.ctl.px||(S.ctl.px={e:L.pixlr==='e'?L.id:"",o:L.pixlr==='o'?L.id:"",b:L.pixlr==='b'?L.id:""});
+  const lists={e:ALL.filter(x=>x.pixlr==='e'),o:ALL.filter(x=>x.pixlr==='o'),b:ALL.filter(x=>x.pixlr==='b')};
   for(const [k,lab] of [["e","pxE"],["o","pxO"],["b","pxB"]]){const s2=el("select");s2.append(el("option",{value:""},t("none")));for(const x of lists[k])s2.append(el("option",{value:x.id},lname(x)));s2.value=P[k]||"";
    s2.onchange=()=>{pushHist();P[k]=s2.value;render()};row.append(el("label",{className:"cr"},el("span",{},t(lab)),s2))}
   row.append(el("button",{type:"button",className:"chip",on:{click:()=>{pushHist();const pk=a=>a[Math.floor(Math.random()*a.length)].id;S.ctl.px={e:pk(lists.e),o:Math.random()<.75?pk(lists.o):"",b:Math.random()<.75?pk(lists.b):""};drawCtl();render()}}},t("roulette")))}
- for(const d of L.ctl||[]){const lab=LANG==="fr"?d.fr:d.en;const cur=S.ctl[d.k];
-  if(d.type==="range"){const def=d.path==="cv+"?0:getPath(L.c,d.path);const i=el("input",{type:"range",min:d.min,max:d.max,step:d.step,value:cur??def??(d.min+d.max)/2});i.addEventListener("pointerdown",()=>pushHist());let t1=0;i.addEventListener("input",()=>{S.ctl[d.k]=+i.value;clearTimeout(t1);t1=setTimeout(render,80)});row.append(el("label",{className:"cr"},el("span",{},lab),i))}
-  else if(d.type==="preset"){const s4=el("select");s4.append(el("option",{value:""},t("auto")));for(const [v,fr,en] of d.opts)s4.append(el("option",{value:String(v)},LANG==="fr"?fr:en));s4.value=cur==null?"":String(cur);s4.onchange=()=>{pushHist();S.ctl[d.k]=s4.value===""?undefined:+s4.value;render()};row.append(el("label",{className:"cr"},el("span",{},lab),s4))}
-  else if(d.type==="sel"){const s3=el("select");for(const [v,fr,en] of d.opts)s3.append(el("option",{value:String(v)},LANG==="fr"?fr:en));s3.value=String(cur??getPath(L.c,d.path)??d.opts[0][0]);s3.onchange=()=>{pushHist();const o=d.opts.find(x=>String(x[0])===s3.value);S.ctl[d.k]=o[0];render()};row.append(el("label",{className:"cr"},el("span",{},lab),s3))}
-  else{const on=cur!==undefined?!!cur:(d.path==="cv+"?false:getPath(L.c,d.path)===d.on);const b=el("button",{type:"button",className:"chip","aria-pressed":String(on)},lab);b.onclick=()=>{pushHist();S.ctl[d.k]=!on;drawCtl();render()};row.append(b)}}
- box.append(row)}
+ const many=(L.ctl||[]).length>9;let more=null;if(many){more=el("details",{className:"ctlmore"});more.append(el("summary",{},t("allCtl")));more._row=el("div",{className:"ctlrow"});more.append(more._row)}
+ for(const [di,d] of (L.ctl||[]).entries()){const tg=many&&di>=8?more._row:row;const lab=LANG==="fr"?d.fr:d.en;const cur=S.ctl[d.k];
+  if(d.type==="range"){const def=d.path==="cv+"?0:getPath(L.c,d.path);const i=el("input",{type:"range",min:d.min,max:d.max,step:d.step,value:cur??def??d.def??(d.min+d.max)/2});i.addEventListener("pointerdown",()=>pushHist());let t1=0;i.addEventListener("input",()=>{S.ctl[d.k]=+i.value;clearTimeout(t1);t1=setTimeout(render,80)});tg.append(el("label",{className:"cr"},el("span",{},lab),i))}
+  else if(d.type==="preset"){const s4=el("select");s4.append(el("option",{value:""},t("auto")));for(const [v,fr,en] of d.opts)s4.append(el("option",{value:String(v)},LANG==="fr"?fr:en));s4.value=cur==null?"":String(cur);s4.onchange=()=>{pushHist();S.ctl[d.k]=s4.value===""?undefined:+s4.value;render()};tg.append(el("label",{className:"cr"},el("span",{},lab),s4))}
+  else if(d.type==="sel"){const s3=el("select");for(const [v,fr,en] of d.opts)s3.append(el("option",{value:String(v)},LANG==="fr"?fr:en));s3.value=String(cur??getPath(L.c,d.path)??d.def??d.opts[0][0]);if(s3.selectedIndex<0)s3.selectedIndex=0;s3.onchange=()=>{pushHist();const o=d.opts.find(x=>String(x[0])===s3.value);S.ctl[d.k]=o[0];render()};tg.append(el("label",{className:"cr"},el("span",{},lab),s3))}
+  else{const on=cur!==undefined?!!cur:(d.path==="cv+"?false:getPath(L.c,d.path)===d.on);const b=el("button",{type:"button",className:"chip","aria-pressed":String(on)},lab);b.onclick=()=>{pushHist();S.ctl[d.k]=!on;drawCtl();render()};tg.append(b)}}
+ box.append(row);if(more)box.append(more)}
 function randomLook(){const L=ALL[Math.floor(Math.random()*ALL.length)];S.fam=L.f;S.sub=L.s;S.q="";$("q").value="";drawFams();drawGrid();pickLook(L.id);const el=$("grid").querySelector(`[data-id="${L.id}"]`);if(el)el.scrollIntoView({block:"nearest",inline:"nearest"})}
 const STRIPIO=new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting&&e.target._q){thumbQ.push([...e.target._q,e.target]);e.target._q=null;STRIPIO.unobserve(e.target)}pumpThumbs()},{root:null,rootMargin:"200px"});
 async function pumpThumbs(){if(thumbBusy||!S.tiny)return;thumbBusy=true;
@@ -3753,7 +3901,7 @@ async function pumpThumbs(){if(thumbBusy||!S.tiny)return;thumbBusy=true;
    const u=cv.toDataURL("image/jpeg",.82);THUMBS.set(key,u);if(b.isConnected){const ph=b.querySelector(".ph");if(ph){const im=document.createElement("img");im.alt="";im.src=u;ph.replaceWith(im)}}}catch(e){console.warn(id,e)}
   await sleep(0)}
  thumbBusy=false}
-function pickLook(id){pushHist();const L=byId(id);
+function pickLook(id){pushHist();const L=byId(id);if(L&&L.dbl){S.dbl.mode=L.dbl==='split'?'split':L.dbl;S.dbl.on=true}
  if(id&&id===S.look){S.pour=null;if(L&&L.film&&L.film.v.length>1){const cur=S.labo.fv!=null?S.labo.fv:L.film.d;S.labo.fv=(cur+1)%L.film.v.length}else S.seed=Math.floor(Math.random()*99999)}
  else{S.look=id;S.seed=1974;S.ctl={};S.labo={stack:S.labo.stack,frame:S.labo.frame};S.pour=null;if(L&&L.user)S.user=Object.assign(USER0(),JSON.parse(JSON.stringify(L.user)))}
  [...$("grid").children].forEach(b=>b.setAttribute("aria-pressed",String((b.dataset.id||"")===(id||""))));closeVideo();setLabel();render()}
@@ -3771,7 +3919,7 @@ stage.addEventListener("pointerdown",e=>{if(e.target.closest("button")||!$("play
  if(S.cmp!=null){drag="cmp";S.cmp=p.x;drawCompare();return}
  const L=byId(S.look);if(L&&(L.c.cpu&&JSON.stringify(L.c.cpu).includes('"thermal"'))){S.spot=p;setThermalSpot(p);return}
  if(L&&L.pour){pushHist();startPour(p);drag="pour";return}
- if(L&&L.spot){pushHist();S.spot={x:p.x,y:p.y};render();return}
+ if(L&&L.spot){pushHist();S.spot={x:p.x,y:p.y};S.spotSet=true;render();return}
  drag={hold:setTimeout(()=>{if(!S.prev)return;const v=$("view");const c=document.createElement("canvas");c.width=S.prev.width;c.height=S.prev.height;c.getContext("2d").putImageData(S.prev,0,0);v.getContext("2d").drawImage(c,0,0,v.width,v.height);$("lbName").textContent=t("orig");drag.shown=1},220)}});
 stage.addEventListener("pointermove",e=>{if(!drag)return;const p=stagePos(e);if(drag==="pour"){POUR.target=p;return};if(drag==="brush")brushAt(p);else if(drag==="cmp"){S.cmp=p.x;drawCompare()}else if(drag.crop){const r=p.r;CROP.ox=drag.ox+(e.clientX-drag.x)/r.width;CROP.oy=drag.oy+(e.clientY-drag.y)/r.height;drawCrop()}});
 const up=()=>{if(drag==="pour"){stopPour();drag=null;return}if(drag&&drag.hold){clearTimeout(drag.hold);if(drag.shown&&S.lastView){const v=$("view");v.getContext("2d").drawImage(S.lastView,0,0);setLabel()}}if(drag==="brush"){S.maskDirty=true;render()}drag=null};
@@ -3853,14 +4001,17 @@ function rng(id,label,min,max,step,val,on,dbl){const i=el("input",{type:"range",
 function paneCompose(box){const lk=S.labo.stack||[];const fr=S.labo.frame;
  const grp=(withNone,filter)=>{const s=el("select");if(withNone)s.append(el("option",{value:""},t("none")));for(const F of TAXO){if(F.id==="mes")continue;const og=el("optgroup",{label:LANG==="fr"?F.fr:F.en});for(const L of looksIn(F.id))if(!filter||filter(L))og.append(el("option",{value:L.id},lname(L)+(L.src?"  ·  "+L.src:"")));if(og.children.length)s.append(og)}return s};
  const grid=el("div",{className:"slots"});
- for(let i=0;i<3;i++){const s=grp(true,L=>L.f!=="cadres");s.value=lk[i]||"";s.onchange=()=>{pushHist();const a=(S.labo.stack||[]).slice();a[i]=s.value;S.labo.stack=a.filter((x,k)=>x||k<a.length);render()};grid.append(el("label",{className:"sl"},el("span",{},t("layer",{n:i+1})),s))}
+ for(let i=0;i<3;i++){const s=grp(true,L=>L.f!=="cadres");s.value=lk[i]||"";s.onchange=()=>{pushHist();const a=(S.labo.stack||[]).slice();a[i]=s.value;S.labo.stack=a.filter((x,k)=>x||k<a.length);render()};grid.append(el("label",{className:"sl"},el("span",{},t("layer",{n:i+1})),s));
+  const bm=el("select");t("bmodes").split("|").forEach((m,k)=>bm.append(el("option",{value:String(k)},m)));bm.value=String(((S.labo.mode||[])[i])|0);bm.onchange=()=>{pushHist();const a=(S.labo.mode||[]).slice();a[i]=+bm.value;S.labo.mode=a;render()};
+  const am=el("input",{type:"range",min:0,max:1,step:.01,value:(S.labo.amt||[])[i]??1});am.addEventListener("pointerdown",()=>pushHist());let tt=0;am.oninput=()=>{const a=(S.labo.amt||[]).slice();a[i]=+am.value;S.labo.amt=a;clearTimeout(tt);tt=setTimeout(render,80)};
+  grid.append(el("label",{className:"sl"},el("span",{},t("lblend")),bm),el("label",{className:"sl"},el("span",{},t("lamt")),am))}
  const fs=grp(true,L=>L.f==="cadres");fs.querySelector("option").textContent=t("inherit");const fsel=el("option",{value:"none"},t("none"));fs.insertBefore(fsel,fs.children[1]);
  fs.value=fr===undefined?"":fr==="none"?"none":(ALL.find(L=>L.f==="cadres"&&L.c.frame===fr)||{}).id||"";fs.onchange=()=>{pushHist();const v=fs.value;if(v==="")delete S.labo.frame;else S.labo.frame=v==="none"?"none":byId(v).c.frame;render()};
  grid.append(el("label",{className:"sl"},el("span",{},t("s_frame")),fs));
  box.append(el("p",{className:"hint"},t("stackHint")),grid,rng("r_str",t("strength"),0,1,.01,S.user.strength,v=>S.user.strength=v,1),
   el("div",{className:"row"},el("button",{type:"button",className:"btn sm",on:{click:shuffle}},t("shuffle")),el("button",{type:"button",className:"btn sm",on:{click:keepLook}},t("keep")),el("button",{type:"button",className:"btn sm",on:{click:()=>{pushHist();S.labo={};S.user=USER0();render();drawLabo()}}},t("reset"))))}
 function shuffle(){pushHist();const pool=ALL.filter(L=>L.f!=="cadres"),fr=ALL.filter(L=>L.f==="cadres");const pk=a=>a[Math.floor(Math.random()*a.length)];
- const n=1+Math.floor(Math.random()*2);S.labo={stack:Array.from({length:n},()=>pk(pool).id),frame:Math.random()<.4?pk(fr).c.frame:undefined};if(S.labo.frame===undefined)delete S.labo.frame;S.seed=Math.floor(Math.random()*99999);render();drawLabo()}
+ const n=1+Math.floor(Math.random()*2);S.labo={stack:Array.from({length:n},()=>pk(pool).id),mode:Array.from({length:n},()=>Math.random()<.5?0:Math.floor(Math.random()*13)),amt:Array.from({length:n},()=>Math.random()<.5?1:+(0.4+Math.random()*.6).toFixed(2)),frame:Math.random()<.4?pk(fr).c.frame:undefined};if(S.labo.frame===undefined)delete S.labo.frame;S.seed=Math.floor(Math.random()*99999);render();drawLabo()}
 function keepLook(){const L=byId(S.look);const c=combo();const mine=LS.get("pf_mine",[]);const n=(L?lname(L):t("orig"))+" · "+(mine.length+1);mine.unshift({id:"mes-"+Date.now(),name:n,c,user:S.user});LS.set("pf_mine",mine.slice(0,200));drawFams();setStatus(t("kept"),"ok")}
 function paneRetouch(box){const u=S.user,set=k=>v=>{u[k]=v};
  box.append(el("div",{className:"sls"},
