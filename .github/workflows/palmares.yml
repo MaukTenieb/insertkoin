@@ -22,8 +22,8 @@ jobs:
       - name: commit the ten
         run: |
           if git diff --quiet -- palmares.json; then exit 0; fi
-          git config user.name "palmares"
-          git config user.email "palmares@users.noreply.github.com"
+          git config user.name "Mauk Tenieb"
+          git config user.email "mauktenieb@gmail.com"
           git add palmares.json
           git commit -m "palmares: the ten of $(date -u +%Y-%m-%dT%H:%MZ)"
           git push
