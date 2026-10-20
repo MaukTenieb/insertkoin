@@ -1270,6 +1270,7 @@ function buildRoom(){roomLoad();const c=bg;c.imageSmoothingEnabled=true;c.clearR
   const vg=c.createRadialGradient(W/2,H*.35,80,W/2,H*.4,360);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.55)');c.fillStyle=vg;c.fillRect(0,0,W,H);
   /* the painted room (room-puck.webp, laid out on this very geometry): it replaces the drawn walls and furniture; the two Fauna portraits and the score board stay alive on it */
   if(ROOMPIC.complete&&ROOMPIC.naturalWidth){c.save();c.imageSmoothingEnabled=true;c.clearRect(0,0,W,H);c.drawImage(ROOMPIC,0,0,W,H);
+    if(ROOM&&BUST&&BUSTPIC.complete&&BUSTPIC.naturalWidth){const q=BUSTCELL[ROOM.n+'.'+BUST];if(q){const[qx,qy,qw,qh]=q,kx=W/1264,ky=H/848;c.drawImage(BUSTPIC,qx,qy,qw,qh,ROOM.b[0]-qw*kx/2,ROOM.b[1]-qh*ky,qw*kx,qh*ky);}}
     if(ROOM){const[tx,ty,tw,th]=ROOM.tv;TV.x=Math.round(tx);TV.y=Math.round(ty);TV.w=Math.round(tw);TV.h=Math.round(th);CLK.x=tx+13;CLK.y=ty-12;}
     const[p0x,p0y]=P3(170,-40,RZ),[p1x,p1y]=P3(300,110,RZ);drawPic(c,RV.pics&&RV.pics[0],p0x+1.2,p0y+1.2,p1x-p0x-2.4,p1y-p0y-2.4);
     const[q0x,q0y]=P3(RX,-10,2070),[q1x,q1y]=P3(RX,190,1880);drawPic(c,RV.pics&&RV.pics[1],Math.min(q0x,q1x)+.8,q0y+1,Math.abs(q1x-q0x)-1.6,q1y-q0y-2);
@@ -1289,16 +1290,21 @@ const ROOMPIC=new Image();ROOMPIC.decoding='async';ROOMPIC.onload=()=>{bgKey=-1;
 /* the painted rooms of Korong!, one drawn at random per match (never the same twice in a row).
    Each carries its own live zones, measured on the picture, in canvas units (512 x 343): tv = the screen,
    win = the window pane; the two portrait frames and the slate board keep the reference geometry. */
-const ROOMS=[{s:'room-puck-1.webp',tv:[328.1,60.7,62.4,57.8],win:[119.1,16.2,52.7,62.3]},
- {s:'room-puck-2.webp',tv:[327.3,69.6,62.8,57.8],win:[126.4,10.5,45.4,73.2]},
- {s:'room-puck-3.webp',tv:[327.7,69.6,62.4,58.2],win:[126.4,14.2,43.3,53.0]},
- {s:'room-puck-4.webp',tv:[328.1,71.2,62.8,56.2],win:[119.1,16.2,52.7,62.3]},
- {s:'room-puck-5.webp',tv:[328.9,60.3,61.6,57.8],win:[123.5,12.1,43.7,66.3]},
- {s:'room-puck-6.webp',tv:[328.5,59.5,62.0,59.1],win:[128.0,13.7,42.0,65.5]}];
-let ROOM=null;
+const ROOMS=[{s:'room-puck-1.webp',tv:[328.1,60.7,62.4,57.8],win:[119.1,16.2,52.7,62.3],b:[395.95,55.01,1.03]},
+ {s:'room-puck-2.webp',tv:[327.3,69.6,62.8,57.8],win:[126.4,10.5,45.4,73.2],b:[396.15,62.29,1.045]},
+ {s:'room-puck-3.webp',tv:[327.7,69.6,62.4,58.2],win:[126.4,14.2,43.3,53.0],b:[395.95,63.1,1.076]},
+ {s:'room-puck-4.webp',tv:[328.1,71.2,62.8,56.2],win:[119.1,16.2,52.7,62.3],b:[396.15,64.72,1.045]},
+ {s:'room-puck-5.webp',tv:[328.9,60.3,61.6,57.8],win:[123.5,12.1,43.7,66.3],b:[394.73,53.8,0.955]},
+ {s:'room-puck-6.webp',tv:[328.5,59.5,62.0,59.1],win:[128.0,13.7,42.0,65.5],b:[394.33,53.39,0.818]}];
+/* the bust on the television: drawn at random per match among the figures below, from busts-puck.png
+   (each bust tinted to each room's light); b = [centre x, base y, scale] of the bust in canvas units */
+const BUSTS=["marx", "christ", "lenin", "marianne"],BUSTCELL={"1.marx":[3,26,54,74],"1.christ":[63,23,54,77],"1.lenin":[125,31,49,69],"1.marianne":[182,6,56,94],"2.marx":[3,125,54,75],"2.christ":[63,122,54,78],"2.lenin":[125,130,50,70],"2.marianne":[182,105,56,95],"3.marx":[2,223,56,77],"3.christ":[62,219,56,81],"3.lenin":[124,228,52,72],"3.marianne":[181,202,58,98],"4.marx":[3,325,54,75],"4.christ":[63,322,54,78],"4.lenin":[125,330,50,70],"4.marianne":[182,305,56,95],"5.marx":[5,431,50,69],"5.christ":[65,428,50,72],"5.lenin":[127,436,46,64],"5.marianne":[184,413,52,87],"6.marx":[8,541,43,59],"6.christ":[68,539,43,61],"6.lenin":[130,545,39,55],"6.marianne":[188,526,44,74]};
+const BUSTPIC=new Image();BUSTPIC.decoding='async';BUSTPIC.onload=()=>{bgKey=-1;};
+let ROOM=null,BUST=null;
 function pickRoom(){let last=-1;try{last=+(localStorage.getItem('ik.room')||-1);}catch(e){}
   let i=Math.floor(Math.random()*ROOMS.length);if(ROOMS.length>1&&i===last)i=(i+1+Math.floor(Math.random()*(ROOMS.length-1)))%ROOMS.length;
-  try{localStorage.setItem('ik.room',String(i));}catch(e){}ROOM=ROOMS[i];if(ROOMPIC.getAttribute('src')!==ROOM.s){ROOMPIC.src=ROOM.s;}bgKey=-1;}
+  try{localStorage.setItem('ik.room',String(i));}catch(e){}ROOM=ROOMS[i];ROOM.n=i+1;if(ROOMPIC.getAttribute('src')!==ROOM.s){ROOMPIC.src=ROOM.s;}
+  BUST=BUSTS[Math.floor(Math.random()*BUSTS.length)];if(!BUSTPIC.getAttribute('src'))BUSTPIC.src='busts-puck.png';bgKey=-1;}
 
 /* the painted room is fetched only when Korong! opens, not with the title screen */
 function roomLoad(){if(!ROOM)pickRoom();}
