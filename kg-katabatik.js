@@ -1430,7 +1430,9 @@ document.addEventListener('keydown',function(e){var p=document.getElementById('h
     tone(220,150,.05,'triangle',.025);}
   function die(m){S.lives--;S.inv=110;S.bombs=[];burst(S.p.x,PY,'#e9e2d4',30);burst(S.p.x,PY,m.c,20);S.shake=12;S.tags.push({x:S.p.x,y:PY-30,s:m.name,c:m.c,t:70});
     tone(400,40,.7,'sawtooth',.07);if(S.lives<=0)over();}
-  function over(){S.mode='over';S.endT=Date.now();if(S.score>best())saveBest(S.score);}
+  function over(){S.mode='over';S.endT=Date.now();if(S.score>best())saveBest(S.score);S.top=null;S.rank=0;
+    /* palmarès: score, then wave */
+    if(window.IKP&&S.score>0){var g=S;IKP.record('fauninvaders',{a:S.score,b:S.wave,run:Date.now().toString(36)+Math.random().toString(36).slice(2,8)},function(t,rank){g.top=t;g.rank=rank;});}}
   function stepBombs(){
     for(var i=S.bombs.length-1;i>=0;i--){var b=S.bombs[i],m=b.m;b.t++;
       if(m.sig==='entropy')b.vx=Math.max(-2,Math.min(2,b.vx+(Math.random()-.5)*.6));
@@ -1506,7 +1508,10 @@ document.addEventListener('keydown',function(e){var p=document.getElementById('h
     if(S.mode!=='play'){ctx.fillStyle='rgba(7,6,10,.72)';ctx.fillRect(0,0,W,H);ctx.textAlign='center';
       ctx.fillStyle='#c9a84c';ctx.font='64px "Bebas Neue",Impact,sans-serif';ctx.fillText(S.mode==='title'?'FAUNINVADERS':T('over'),W/2,H*.38);
       ctx.fillStyle='#e9e2d4';ctx.font='13px "DM Mono",monospace';ctx.fillText(S.mode==='title'?'← → · SPACE':String(S.score),W/2,H*.47);
-      ctx.fillStyle='#8a8174';ctx.fillText(T('go'),W/2,H*.53);}
+      ctx.fillStyle='#8a8174';ctx.fillText(T('go'),W/2,H*.53);
+      if(S.mode==='over'&&S.top&&S.top.length){ctx.font='12px "DM Mono",monospace';ctx.fillStyle='#c9a84c';ctx.fillText('PALMARÈS',W/2,H*.6);
+        S.top.forEach(function(x,i){ctx.fillStyle=i+1===S.rank?'#c9a84c':'#e9e2d4';ctx.textAlign='right';ctx.fillText(String(i+1),W/2-90,H*.6+20+i*17);ctx.textAlign='left';ctx.fillText(x.ini,W/2-70,H*.6+20+i*17);
+          ctx.textAlign='right';ctx.fillText(('00000'+x.a).slice(-5),W/2+60,H*.6+20+i*17);ctx.fillText('W'+x.b,W/2+105,H*.6+20+i*17);});ctx.textAlign='center';}}
     ctx.restore();}
   function shown(){var p=document.getElementById('fi-panel');return p&&p.style.display!=='none'&&p.offsetParent!==null;}
   function loop(now){if(!shown()){raf=0;return;}acc+=Math.min(100,now-last);last=now;while(acc>=1000/60){acc-=1000/60;tick();}draw();raf=requestAnimationFrame(loop);}

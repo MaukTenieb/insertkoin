@@ -503,6 +503,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
           <button id="next" class="btn hot" type="button">NEXT</button>
           <button id="menu" class="btn" type="button" data-i18n="select">SELECT</button>
         </div>
+        <div id="palm" aria-live="polite"></div>
       </div>
     </div>
   </section>
@@ -637,6 +638,7 @@ SOFTWARE.</pre></details>
   wash();window.__wash=wash;
   new MutationObserver(()=>{if(document.body.classList.contains('on-home')&&!t.dataset.seen){t.dataset.seen=1;wash();}if(!document.body.classList.contains('on-home'))delete t.dataset.seen;}).observe(document.body,{attributes:true,attributeFilter:['class']});
 })();</script>
+<script src="ik-palmares.js" defer></script>
 <script src="ik-name.js"></script>
 <script src="kg-vhs-library.js"></script>
 <script src="kg-loader.js"></script>
@@ -1757,7 +1759,7 @@ function domShot(){return new Promise(res=>{const d=Math.min(2,devicePixelRatio|
 let RUN=null;
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function runOrder(){const o=R.filter(r=>r.lv<16).sort((a,b)=>a.lv-b.lv).map(r=>r.id),out=[];for(let i=0;i<16;i+=4)out.push(...shuffle(o.slice(i,i+4)));return out.concat(['aube','unkle_maukie']);}
-function startRun(){if(!pay())return false;RUN={order:runOrder(),idx:0};playRun();return true;}
+function startRun(){if(!pay())return false;RUN={order:runOrder(),idx:0,id:Date.now().toString(36)+Math.random().toString(36).slice(2,8),ga:0};playRun();return true;}
 if($('run'))$('run').onclick=startRun;
 /* opponent card: number, name, motto, the six Korhogo stats */
 function card(r){$('mStats').innerHTML=Object.entries(r.st).map(([k,v])=>`<span><i>${k}</i><span class="bar0"><b style="width:${v*10}%"></b></span><em>${v}</em></span>`).join('');}
@@ -1765,7 +1767,10 @@ function saveRun(){try{RUN?localStorage.setItem('ik.run',JSON.stringify(RUN)):lo
 function loadRun(){try{const r=JSON.parse(localStorage.getItem('ik.run')||'null');if(r&&Array.isArray(r.order)&&r.order.length===18)return r;}catch(e){}return null;}
 function playRun(){saveRun();const id=RUN.order[RUN.idx];startMatch(R.findIndex(r=>r.id===id),RUN.idx);}
 function pickGuest(i){if(!pay())return;RUN=null;startMatch(i,null);}
-function afterMatch(won){const last=RUN&&RUN.idx===RUN.order.length-1;if(RUN){if(won&&last){const done=RUN;RUN=null;saveRun();RUN=done;setTimeout(()=>champion(),900);}else if(won){RUN.krew=KREW[G.r.id]||null;RUN.idx++;saveRun();RUN.idx--;}}
+/* palmarès of the run: Masks beaten, then goals let in over the whole run (continues included) */
+function palmKorong(won){const P=$('palm');if(P)P.innerHTML='';if(!RUN||!window.IKP)return;if(!RUN.id)RUN.id=Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+  RUN.ga=(RUN.ga||0)+G.e.opponent_score;const masks=won?RUN.idx+1:RUN.idx;IKP.record('korong',{a:masks,b:RUN.ga,run:RUN.id},(t,rank)=>{if(P)P.innerHTML=IKP.html('korong',t,rank);});}
+function afterMatch(won){palmKorong(won);const last=RUN&&RUN.idx===RUN.order.length-1;if(RUN){if(won&&last){const done=RUN;RUN=null;saveRun();RUN=done;setTimeout(()=>champion(),900);}else if(won){RUN.krew=KREW[G.r.id]||null;RUN.idx++;saveRun();RUN.idx--;}}
   if(won)earn();
   $('ovT').textContent=won?(last?tr('champ'):tr('win')):tr('lose');
   $('next').hidden=!(won&&(RUN?!last:G.i<R.length-1));$('next').textContent=tr('next');
