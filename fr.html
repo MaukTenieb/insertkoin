@@ -1728,6 +1728,15 @@ function kataLang(){const f=$('cf'),set=()=>{try{const b=f.contentDocument.query
 function photoLang(){const f=$('cf'),cur=()=>{try{return JSON.parse(f.contentWindow.localStorage.getItem('obturama.lang'))||'en';}catch(e){return 'en';}},set=()=>{try{const d=f.contentDocument,b=d&&d.getElementById('bLang');if(b&&cur()!==LANG)b.click();}catch(e){}};
   f.addEventListener('load',set,{once:true});setTimeout(set,400);setTimeout(()=>{if(cur()!==LANG)set();},900);}
 /* ---- Calque: sibling sites open inside the page, so the jukebox keeps playing ---- */
+/* palmarès bridge: the Minitel served at /3615/ still asks the old address of the palmarès (a Cloudflare worker
+   never deployed); inside the arcade, its requests are answered from the Nostr palmarès (ik-palmares.js), same rules,
+   same ten. The bridge goes as soon as the 3615 repository carries its own Nostr reader. */
+function palmBridge(){const f=$('cf');let w=null;try{w=f.contentWindow;void w.document;}catch(e){return;}if(!w||w.__ikPalm)return;
+  const of=w.fetch.bind(w),OLD='https://palmares.mauktenieb.workers.dev/top?game=';
+  w.fetch=function(u,o){const s=String(u&&u.url||u);if(s.indexOf(OLD)===0&&window.IKP){const g=decodeURIComponent(s.slice(OLD.length));
+    return IKP.top(g).then(t=>new w.Response(JSON.stringify(t.map(x=>({ini:x.ini,a:x.a,b:x.b,t:x.t}))),{status:200,headers:{'Content-Type':'application/json'}}));}
+    return of(u,o);};w.__ikPalm=1;}
+$('cf').addEventListener('load',palmBridge);
 function openCalque(src,title,then,keep){clearInterval(cfWatch);if(window.KG)KG.close();$('kg-root').hidden=true;$('cf').hidden=false;$('ctitle').textContent=title;show('calque');const f=$('cf');
   const run=()=>{let w=null;try{w=f.contentWindow;void w.document;}catch(e){w=null;}if(then&&w)setTimeout(()=>{try{then(w);}catch(e){}if(!keep)watch(w);},350);};
   if(cfSrc===src){run();}else{cfSrc=src;f.onload=run;f.src=src;}}
