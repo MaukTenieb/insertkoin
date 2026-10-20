@@ -100,7 +100,7 @@ Everything sits at the top level, no folders (except `tor/` and `.github/`), so 
 | `mask-*.webp` | the Masks' portraits (Photofauna, the paintings of the room) |
 | `thumb-*.jpg` | the cabinets (`thumb-bio-*.jpg`: the Bio cabinet draws one of the eighteen Masks) |
 | `poster*.{jpg,webp}`, `room.webp` | the painting and the pixel room |
-| `room-puck.webp` | the painted motel room of Korong! (the table, the Mask, the window's sky, the TV, the portraits and the score board are laid over it by the game) |
+| `room-puck-1.webp` … `room-puck-6.webp` | the six painted motel rooms of Korong!, one drawn at random per match (the table, the Mask, the window's sky, the TV, the portraits and the score board are laid over it by the game, each room with its own measured zones); `room-puck.webp` is the former room |
 | `kg-hang-ja.json` | Akasztófa's stanzas |
 | `kg-*` | the Korhogo games, loaded on demand (`kg-loader.js`, `kg-core.*`, `kg-chess.*`, `kg-erratic.*`, `kg-faunarratics.*`, `kg-katabatik.*`, `kg-kapture.*`); `kg-faces.json` their portraits |
 | `kg-vhs.*`, `kg-vhs-library.js`, `kg-vhs-recorder.js`, `kg-vhs-scrape.js` | VHS: the deck, the cassette library, the shelf and REC bay, the in-page recorder |
