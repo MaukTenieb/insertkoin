@@ -1216,9 +1216,13 @@ function hangFigKick(){
 window.hangFigKick=hangFigKick;
 
 // ============================================================
-// MASTERMIND -- 3 niveaux ; les pions portent les couleurs des Masks.
+// MASTERMIND -- 3 niveaux ; chaque pion est un Mask : sa couleur et son signe du Substack (MOVEMENT 3 et 4).
+// Le premier essai est tiré au hasard et noté d'office ; le joueur reprend au deuxième.
 // ============================================================
 var MM_COLORS=['#d32f2f','#4fc3f7','#66bb6a','#ffd54f','#ab47bc','#ff7043','#78909c','#f48fb1'];
+var MM_MASKS=[['Honey Buzzard','\u{1313F}'],['C7H5N3O6','\u2658'],['Auvergne','\u2656'],['Truce','\u2658'],['Poisoned Well','\u265D'],["Ts'ui P\u00ean",'\u2657'],['Silent Pact','\u265C'],['Aube','\u2655']];
+function mmPegIn(c){return '<i class="mm-g" aria-hidden="true">'+MM_MASKS[c][1]+'</i>';}
+function mmRandRow(L,avoid){var g,tries=0;do{g=[];for(var s=0;s<L.slots;s++){var c;do{c=Math.floor(Math.random()*L.colors);}while(!L.dup&&g.indexOf(c)>=0);g.push(c);}tries++;}while(avoid&&g.join()===avoid.join()&&tries<50);return g;}
 var MM_LEVELS=[
   {slots:4,colors:6,rows:10,dup:false},
   {slots:4,colors:8,rows:10,dup:true},
@@ -1240,6 +1244,8 @@ function mmNew(lv){
     secret.push(c);
   }
   _mm={level:lv||0,secret:secret,rows:[],cur:[],over:false,won:false};
+  /* the first row is imposed by chance, scored like any other, and never the code itself */
+  var first=mmRandRow(L,secret);_mm.rows.push({guess:first,fb:mmScore(first,secret),dealt:true});
   var tabs=document.querySelectorAll('.mm-lv');
   tabs.forEach(function(t,i){t.className='mm-lv'+(i===(lv||0)?' on':'');});
   mmDraw();
@@ -1258,7 +1264,7 @@ function mmPegs(g,cur){
   var L=MM_LEVELS[_mm.level],h='';
   for(var i=0;i<L.slots;i++){
     if(g&&g[i]!==undefined){
-      h+='<span class="mm-peg"'+(cur?' data-action="mmPop()"':'')+' style="background:'+MM_COLORS[g[i]]+'"></span>';
+      h+='<span class="mm-peg"'+(cur?' data-action="mmPop()"':'')+' style="background:'+MM_COLORS[g[i]]+'" title="'+MM_MASKS[g[i]][0]+'">'+mmPegIn(g[i])+'</span>';
     } else {
       h+='<span class="mm-peg mm-empty"></span>';
     }
@@ -1284,7 +1290,7 @@ function mmDraw(){
   if(!bEl)return;
   var h='<div class="mm-legend"><b class="mm-ex"></b>'+kbT('well placed')+'<i class="mm-near"></i>'+kbT('wrong spot')+'<s class="mm-no"></s>'+kbT('absent')+'</div>';
   for(var r=0;r<_mm.rows.length;r++){
-    h+='<div class="mm-row">'+mmPegs(_mm.rows[r].guess,false)+mmFb(_mm.rows[r].fb,L)+'</div>';
+    h+='<div class="mm-row'+(_mm.rows[r].dealt?' mm-dealt':'')+'">'+mmPegs(_mm.rows[r].guess,false)+mmFb(_mm.rows[r].fb,L)+'</div>';
   }
   if(!_mm.over){
     h+='<div class="mm-row mm-cur">'+mmPegs(_mm.cur,true)+mmFb(null,L)+'</div>';
@@ -1296,7 +1302,7 @@ function mmDraw(){
   bEl.innerHTML=h;
   if(pEl){
     var ph='';
-    if(!_mm.over){for(var c=0;c<L.colors;c++)ph+='<button class="mm-peg" style="background:'+MM_COLORS[c]+'" data-action="mmPick('+c+')"></button>';}
+    if(!_mm.over){for(var c=0;c<L.colors;c++)ph+='<button class="mm-peg" style="background:'+MM_COLORS[c]+'" data-action="mmPick('+c+')" title="'+MM_MASKS[c][0]+'" aria-label="'+MM_MASKS[c][0]+'">'+mmPegIn(c)+'</button>';}
     pEl.innerHTML=ph;
   }
   if(sEl){

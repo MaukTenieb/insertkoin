@@ -111,3 +111,19 @@
 #bb-grid .bb-label{width:150px;overflow:visible}
 #bb-grid{max-width:520px}
 :where(.kg-layer) .kb-tab{font-size:22px;letter-spacing:0;line-height:1;min-width:46px;min-height:40px;padding:6px 10px}
+
+/* [IK] Mastermind: each peg shows its Mask's sign from the Substack (chess pieces, and the hieroglyph of Honey Buzzard) */
+@font-face{font-family:"IK Hiero";src:url(font-noto-hiero-honey.woff2) format("woff2");unicode-range:U+1313F;font-display:swap}
+:where(.kg-layer) .mm-peg{display:inline-flex;align-items:center;justify-content:center;}
+:where(.kg-layer) .mm-peg .mm-g{font-style:normal;font-size:22px;line-height:1;color:rgba(11,8,5,.82);font-family:"IK Hiero","Segoe UI Symbol","Noto Sans Symbols 2","DejaVu Sans","Apple Symbols",sans-serif;font-variant-emoji:text;pointer-events:none;}
+:where(.kg-layer) .mm-row.mm-dealt{opacity:.8;}
+:where(.kg-layer) .mm-row.mm-dealt .mm-peg{border-style:dashed;border-color:rgba(201,168,76,.6);}
+/* [IK] Mastermind on a phone: five pegs and the feedback fit the width; the sentence under the dots gives way to the dots */
+@media (max-width:560px){
+  :where(.kg-layer) .mm-legend{flex-wrap:wrap;justify-content:center;}
+  :where(.kg-layer) .mm-fb em{display:none;}
+  :where(.kg-layer) .mm-row{gap:8px;}
+  :where(.kg-layer) #mm-board .mm-peg{width:34px;height:34px;}
+  :where(.kg-layer) #mm-board .mm-peg .mm-g{font-size:19px;}
+  :where(.kg-layer) .mm-fb b,:where(.kg-layer) .mm-fb i,:where(.kg-layer) .mm-fb s{width:20px;height:20px;}
+}

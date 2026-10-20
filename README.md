@@ -155,7 +155,7 @@ Third-party components:
 - FaunaTor's Tor clients: webtor-rs by privacy-ethereum and by andrewtheguy (MIT, see `TOR-LICENSES.txt`).
 - Akasztófa's stanzas: József Attila's poems up to 1928, in verse and in prose (public domain), taken from the [ELTE Poetry Corpus](https://github.com/ELTE-DH/poetry-corpus) (MEK edition) → `kg-hang-ja.json`.
 - Skoporhogo uses [three.js](https://threejs.org) r128 (MIT).
-- Fonts: Bebas Neue, DM Mono, Press Start 2P, Archivo (SIL Open Font License), served from the site.
+- Fonts: Bebas Neue, DM Mono, Press Start 2P, Archivo, and one glyph of Noto Sans Egyptian Hieroglyphs (Honey Buzzard's sign in the Mastermind) (SIL Open Font License), served from the site.
 
 Characters, images and music: Mauk Tenieb. Motel Sound plays through YouTube.
 
