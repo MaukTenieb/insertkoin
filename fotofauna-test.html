@@ -77,6 +77,12 @@ h1 span{color:var(--cyan)}
 .sh{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);width:66px;height:66px;border-radius:50%;border:4px solid var(--papier);background:rgba(238,232,218,.2);cursor:pointer}
 .flashFx{position:absolute;inset:0;background:#fff;transition:opacity .3s;pointer-events:none}
 #gl,#cam{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-9px;top:-9px}
+.ctl .ctlrow{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:flex-end;padding:8px 10px;border:1px solid var(--trait);background:rgba(8,28,48,.55)}
+.ctl .cr{display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--cyan);min-width:120px;flex:1 1 140px}
+.ctl .cr input[type=range]{width:100%;accent-color:var(--or)}
+.ctl select{font-size:13px;color:var(--papier);background:var(--fosse);border:1px solid var(--trait);padding:5px 6px;border-radius:0;width:100%}
+.ctl .chip{flex:0 0 auto}
+.ctl:empty{display:none}
 /* outils et FaunAI */
 .ask{grid-area:ask;display:flex;flex-direction:column;gap:8px;min-width:0}
 .tools{display:flex;gap:6px}.tools .btn{flex:1 1 0}.tools .btn.labo{flex:0 0 auto}
@@ -180,6 +186,7 @@ footer a{color:var(--cyan)}
  </section>
 
  <section class="ask">
+  <div class="ctl" id="ctl"></div>
   <div class="tools">
    <button class="btn" id="bOpen" type="button" data-i="open"></button>
    <button class="btn" id="bShoot" type="button" data-i="shoot"></button>
@@ -3349,9 +3356,9 @@ L('nb','virages','px-shaan','Shaan',{tone:{mono:1,tone:{map:1,sh:'#3a2410',hi:'#
 L('couleurs','vintage','px-amber','Amber',{tone:{temp:.8,tint:.15,fade:.18,fadeColor:'#c8862a',sat:.1}},P);
 const PL='Pixlr-o-matic, Overlays';
 L('lumiere','eclats','pxo-rainbow','Rainbow',{light:'rainbow',fx:[{op:'ovl',mode:'sparkle',amt:.6}]},PL);
-L('lumiere','eclats','pxo-twinkle','Twinkle',{fx:[{op:'ovl',mode:'sparkle',amt:.9}]},PL);
-L('lumiere','eclats','pxo-bubble','Bubble',{fx:[{op:'ovl',mode:'bubble',amt:.8}]},PL);
-L('lumiere','eclats','pxo-beep','Beep',{fx:[{op:'ovl',mode:'neon',amt:.9}]},PL);                                                               /* « lumière de néon » */
+L('lumiere','eclats','pxo-twinkle','Twinkle',{fx:[{op:'ovl',mode:'sparkle',amt:.9}],glow:{bloom:.5,th:.7,radius:.012}},PL);
+L('lumiere','eclats','pxo-bubble','Bubble',{fx:[{op:'ovl',mode:'bubble',amt:.8}],glow:{bloom:.4,diffuse:.15,th:.6,radius:.015}},PL);
+L('lumiere','eclats','pxo-beep','Beep',{fx:[{op:'ovl',mode:'neon',amt:.9}],glow:{bloom:.7,diffuse:.2,th:.55,radius:.025}},PL);                                                               /* « lumière de néon » */
 L('lumiere','eclats','pxo-bocea','Bocea',{light:'bokeh'},PL);
 L('matieres','usure','pxo-subtle','Subtle',{fx:[{op:'ovl',mode:'subtle',amt:.9}],grain:'moyen'},PL);                                         /* « comme un négatif sale » */
 L('lumiere','meteo','pxo-rain','Rain',{fx:[{op:'ovl',mode:'rain',amt:.85}]},PL);
@@ -3363,11 +3370,11 @@ const PX='Pixlr Express, Overlays';
 L('lumiere','eclats','pxe-bokeh','Bokeh',{light:'bokehc'},PX);
 L('matieres','textures','pxe-canvas','Canvas',{matter:'canvas'},PX);
 L('lumiere','fuites','pxe-chemburn','Chem Burn',{fx:[{op:'ovl',mode:'chemburn',amt:1}]},PX);
-L('lumiere','eclats','pxe-fireworks','Fireworks',{fx:[{op:'ovl',mode:'fireworks',amt:1}],tone:{exposure:-.1}},PX);
+L('lumiere','eclats','pxe-fireworks','Fireworks',{fx:[{op:'ovl',mode:'fireworks',amt:1}],tone:{exposure:-.15},glow:{bloom:.8,th:.55,radius:.02}},PX);
 L('matieres','textures','pxe-grunge','Grunge',{matter:'kraft',dust:'d9',tone:{contrast:.15}},PX);
 L('lumiere','fuites','pxe-leaks','Leaks',{light:'leak'},PX);
-L('lumiere','eclats','pxe-lightpaint','Light Paint',{fx:[{op:'ovl',mode:'lightpaint',amt:.9}],tone:{exposure:-.15}},PX);
-L('lumiere','eclats','pxe-neon','Neon',{fx:[{op:'ovl',mode:'neon',amt:1}],tone:{exposure:-.2}},PX);
+L('lumiere','eclats','pxe-lightpaint','Light Paint',{fx:[{op:'ovl',mode:'lightpaint',amt:.9}],tone:{exposure:-.15},glow:{bloom:.7,th:.55,radius:.025}},PX);
+L('lumiere','eclats','pxe-neon','Neon',{fx:[{op:'ovl',mode:'neon',amt:1}],tone:{exposure:-.2},glow:{bloom:.75,diffuse:.2,th:.5,radius:.025}},PX);
 L('matieres','textures','pxe-paper','Paper',{matter:'cold'},PX);
 L('lumiere','meteo','pxe-smoke','Smoke',{fx:[{op:'ovl',mode:'smoke',amt:.9}]},PX);
 L('lumiere','meteo','pxe-space','Space',{fx:[{op:'ovl',mode:'space',amt:.9}]},PX);
@@ -3493,6 +3500,50 @@ L('montages','censure','nu-censor','Nüdifier',{cv:[{op:'censor',at:'spot',skin:
 /* l'ordre suit la liste des genres de chaque famille */
 return {build:()=>O}})();
 
+/* ================= réglages de chaque effet, tels que les applis les offraient =================
+   range : curseur ; sel : liste ; tog : interrupteur ; chemin : position du paramètre dans la recette (cv.0.n = 1re opération sur toile, paramètre n) */
+const CTL=(()=>{const R=(k,fr,en,path,min,max,step)=>({k,type:'range',fr,en,path,min,max,step}),S=(k,fr,en,path,opts)=>({k,type:'sel',fr,en,path,opts}),T=(k,fr,en,path,on,off)=>({k,type:'tog',fr,en,path,on,off});
+ const warp=T('warp','Post-FX color warp','Post-FX color warp','cv+',{op:'chanswap'});            /* Decim8 : décalages de couleur dans la zone abîmée */
+ const band=[R('y','Position de la bande nette','Sharp band position','fx.0.y',.05,.95,.01),R('w','Largeur nette','Sharp width','fx.0.w',.05,.8,.01)];
+ const WATER=[['#1d3a4a','Lac','Lake'],['#0c3a66','Bleu','Blue'],['#1d4a2a','Vert','Green'],['#03080f','Nuit','Night'],['#3a2a12','Boue','Mud'],['#2a4a5a','Glacier','Glacier'],['#4a1d3a','Pourpre','Purple'],['#5a3a1d','Ambre','Amber'],['#0a2a2a','Sarcelle','Teal'],['#3a3a3a','Gris','Grey'],['#5a1d1d','Rouge','Red'],['#1d1d5a','Indigo','Indigo']];
+ const TGS=[['circle','Cercle','Circle'],['square','Carré','Square'],['triangle','Triangle','Triangle'],['hexagon','Hexagone','Hexagon'],['diamond','Losange','Diamond'],['ring','Anneau','Ring'],['band','Bande','Band'],['half','Moitié','Half'],['star','Étoile','Star']];
+ const TGP=[['solid','Uni','Solid'],['stripes','Rayures','Stripes'],['dots','Pois','Dots'],['grid','Grille','Grid'],['chevron','Chevrons','Chevron'],['rays','Rayons','Rays'],['rings','Cercles','Rings'],['checker','Damier','Checker']];
+ const TGB=[['normal','B1 Normal','B1 Normal'],['dodge','B2 Color Dodge','B2 Color Dodge'],['lighten','B3 Lighten','B3 Lighten'],['darken','B4 Darken','B4 Darken'],['black','B5 Black Background','B5 Black Background'],['difference','B6 Difference','B6 Difference'],['burn','B7 Color Burn','B7 Color Burn']];
+ const TGC=[['#ffffff','Blanc','White'],['#000000','Noir','Black'],['#ff4f7a','Rose','Pink'],['#ffd23a','Jaune','Yellow'],['#2de0c8','Turquoise','Turquoise'],['#ff6a2a','Orange','Orange'],['#7a6aff','Violet','Violet'],['#3ad0ff','Ciel','Sky']];
+ const MS=[['sphere','Sphere','Sphere'],['cube','Cube','Cube'],['torus','Torus','Torus'],['octa','Octahedron','Octahedron'],['hexprism','Hexagonal Prism','Hexagonal Prism'],['twist','Twisted Column','Twisted Column'],['beads','Ring of Beads','Ring of Beads'],['column','Fluted Column','Fluted Column']];
+ const MM=[['chrome','Reflective','Reflective'],['glass','Refractive','Refractive'],['frosted','Transparent','Transparent'],['opaque','Solid','Solid']];
+ const tangent=[S('shape','Forme','Shape','fx.0.shape',TGS),S('pattern','Motif','Pattern','fx.0.pattern',TGP),S('blend','Fusion','Blend','fx.0.blend',TGB),S('color','Couleur','Colour','fx.0.color',TGC),
+  R('size','Taille','Size','fx.0.size',.08,.7,.01),R('rot','Rotation','Rotate','fx.0.rot',0,315,45),R('opa','Opacité','Opacity','fx.0.opa',0,1,.01),T('inv','Invert','Invert','fx.0.invert',1,0)];
+ const matter=[S('shape','Objet','Object','fx.0.shape',MS),S('mat','Matière','Material','fx.0.mat',MM),R('size','Taille','Size','fx.0.size',.08,.5,.01),R('shadow','Ombre','Shadow','fx.0.shadow',0,1,.01)];
+ const tt=[R('dof','Depth of Field','Depth of Field','fx.0.amt',0,2.5,.05),R('eye','Eye Intensity','Eye Intensity','fx.0.boost',0,1,.01),S('grain','Plate Grain','Plate Grain','dust',[['none','0','0'],['d1','1','1'],['d2','2','2'],['d7','3','3'],['d10','4','4']]),T('frame','Frame','Frame','frame','tinplate','none')];
+ const C={
+  'd8-brainfeed3r':[R('n','Échos','Echoes','cv.0.n',1,9,1),warp],'d8-ocular':[R('amt','Distorsion','Distortion','cv.0.amt',0,.2,.005),R('hue','Rotation de teinte','Hue rotation','cv.0.hue',0,300,5),warp],
+  'd8-xexox':[R('rate','Traînées','Streaks','cv.0.rate',.05,1,.01),R('len','Longueur','Length','cv.0.len',.1,1,.01),warp],'d8-fold':[R('depth','Plis','Folds','cv.0.depth',1,9,1),warp],
+  'd8-bitboy':[R('cell','Taille du point','Dot size','cv.0.cell',.002,.02,.001),R('over','Posé sur l\'original','Over the original','cv.0.over',.2,1,.01),warp],'d8-ti994x':[R('cols','Colonnes','Columns','cv.0.cols',24,160,1),warp],
+  'd8-0irectine':[R('n','Harmoniques','Harmonics','cv.0.n',2,16,1),warp],'d8-fingerblib':[R('block','Bloc','Block','cv.0.block',.005,.06,.001),R('bands','Niveaux','Levels','cv.0.bands',2,16,1),R('amt','Fracture','Fracture','cv.0.amt',0,1,.01),warp],
+  'd8-komplaince':[R('cell','Case','Cell','cv.0.cell',.008,.12,.002),T('rows','Rangées','Rows','cv.0.rows',true,false),warp],'d8-motor':[R('amp','Déformation','Warp','cv.0.amp',0,.15,.002),warp],
+  'd8-l225':[R('ratio','Rapport de récursion','Recursion ratio','cv.0.ratio',.12,.6,.01),warp],'d8-beamrider':[R('beams','Faisceaux','Beams','cv.0.beams',10,600,5),warp],
+  'gl-vhs':[R('amt','Bandes','Bands','fx.0.amt',.5,4,.05)],'gl-glitchart':[R('hits','Octets touchés','Bytes hit','cv.0.hits',1,48,1)],'gl-jpeg':[R('q','Qualité JPEG','JPEG quality','cv.0.q',.005,.15,.005),R('passes','Passages','Passes','cv.0.passes',1,10,1)],
+  'gl-3d':[R('dx','Écart','Offset','cv.0.dx',0,.07,.001)],'gl-tri':[R('n','Triangles','Triangles','cv.0.n',100,4000,50)],'gl-nes':[R('cell','Pixel','Pixel','cv.0.cell',.003,.03,.001)],'gl-ascii':[R('cols','Colonnes','Columns','cv.0.cols',30,180,1)],
+  'cp-dof':band,'cp-miniaturize':band,'ca-tiltshift':band,
+  'ca-pincushion':[R('dist','Coussinet','Pincushion','fx.0.dist',-.6,0,.01)],'ca-keystone':[R('amt','Trapèze','Keystone','cv.0.amt',0,.5,.01),T('up','Vers le bas','Downward','cv.0.up',true,false)],
+  'ca-anaglyph':[R('dx','Intensité 3D','3D intensity','cv.0.dx',0,.07,.001)],'ca-blur':[R('amt','Flou','Blur','fx.0.amt',0,3,.05),R('focus','Zone nette','Sharp zone','fx.0.focus',.03,.5,.01)],'ca-studio':[R('amt','Lumière','Light','fx.0.amt',0,1.5,.01),R('spec','Brillance','Shine','fx.0.spec',0,1,.01)],
+  'mo-split2':[S('n','Mise en page','Layout','cv.0.n',[[2,'2','2'],[3,'3','3'],[4,'4','4']])],'mo-split3':[S('n','Mise en page','Layout','cv.0.n',[[2,'2','2'],[3,'3','3'],[4,'4','4']])],'mo-grid4':[S('n','Mise en page','Layout','cv.0.n',[[2,'2','2'],[3,'3','3'],[4,'4','4']])],
+  'mo-rain':[R('amt','Pluie','Rain','fx.0.amt',.1,1.5,.01)],'mo-snow':[R('amt','Neige','Snow','fx.0.amt',.1,1.5,.01)],
+  'ko-k15':[R('qty','Révélateur','Developer','fx.0.qty',3,40,1)],'ko-k7':[R('qty','Révélateur','Developer','fx.0.qty',3,40,1)],'ko-k30':[R('qty','Révélateur','Developer','fx.0.qty',3,40,1)],
+  'gz-sailboat':[R('detail','Détail','Detail','cv.0.detail',0,14000,250),R('len','Longueur des touches','Stroke length','cv.0.len',1,5,.1)],'gz-planet':[R('cover','Couverture','Coverage','cv.0.cover',.05,.8,.01),R('len','Longueur des touches','Stroke length','cv.0.len',1,5,.1)],
+  'gz-workshop':[R('base','Taille des touches','Stroke size','cv.0.base',.03,.18,.005),R('wobble','Variation','Variation','cv.0.wobble',0,1,.01)],
+  'wf-classiccolor':[R('sat','Saturation','Saturation','cv.0.sat',0,1,.01)],'wf-howling':[R('sat','Saturation','Saturation','cv.0.sat',0,1,.01)],
+  'sp-clone':[S('mode','Mode','Mode','cv.0.mode',[['clone','Clone Yourself','Clone Yourself'],['split','Split Lens','Split Lens'],['ghost','Ghost','Ghost'],['mirror','Mirror','Mirror']])],
+  'sp-split':[S('mode','Mode','Mode','cv.0.mode',[['clone','Clone Yourself','Clone Yourself'],['split','Split Lens','Split Lens'],['ghost','Ghost','Ghost'],['mirror','Mirror','Mirror']])],
+  'sp-ghost':[S('mode','Mode','Mode','cv.0.mode',[['clone','Clone Yourself','Clone Yourself'],['split','Split Lens','Split Lens'],['ghost','Ghost','Ghost'],['mirror','Mirror','Mirror']])],
+  'sp-mirror':[S('mode','Mode','Mode','cv.0.mode',[['clone','Clone Yourself','Clone Yourself'],['split','Split Lens','Split Lens'],['ghost','Ghost','Ghost'],['mirror','Mirror','Mirror']])],
+  'nu-censor':[R('cell','Pixels','Pixels','cv.0.cell',.01,.09,.002),R('w','Largeur','Width','cv.0.w',.1,.8,.01),R('h','Hauteur','Height','cv.0.h',.1,.8,.01)]};
+ for(const id of ['rf-water','rf-dark','rf-blue','rf-green','rf-ripples'])C[id]=[R('hy','Ligne d\'eau','Waterline','fx.0.hy',.2,.85,.01),R('tint','Water darkness','Water darkness','fx.0.tint',0,1,.01),R('wave','Ondes','Ripples','fx.0.wave',0,3,.05),S('water','Couleur de l\'eau','Water colour','fx.0.water',WATER)];
+ for(const L of CORPUS.build()){const id=L.id.slice(2);if(id.startsWith('tg-'))C[id]=tangent;if(id.startsWith('mt-'))C[id]=matter;if(id.startsWith('tt-'))C[id]=tt}
+ return C})();
+for(const L of CORPUS.build()){const k=L.id.slice(2);if(CTL[k])L.ctl=CTL[k];if(/^Pixlr/.test(L.src||''))L.pixlr=1}
+
 /* ==== GIF89a animé : palette commune par coupe médiane, tramage Floyd-Steinberg léger, LZW ==== */
 const GIF=(()=>{
 function palette(frames,n=256){const px=[];for(const cv of frames){const d=cv.getContext("2d").getImageData(0,0,cv.width,cv.height).data;const step=Math.max(1,Math.floor(d.length/4/40000));for(let i=0;i<d.length;i+=4*step)px.push([d[i],d[i+1],d[i+2]])}
@@ -3548,7 +3599,7 @@ fr:{ph:"Décris une image, ou le mouvement de la vidéo",open:"Ouvrir",shoot:"Pr
  net:"Cette page a perdu le réseau.",saved:"Enregistré :",rendering:"Rendu…",puter_ok:"Fenêtre Puter : clique sur Continue",photo:"photo",video:"vidéo",reel:"Pellicule",
  t_compose:"Composer",t_retouch:"Retouche",t_tools:"Outils",t_export:"Exporter",t_keys:"Clés",
  s_film:"Pellicule",s_lens:"Objectif",s_flash:"Flash",s_light:"Lumière",s_grain:"Grain",s_matter:"Matière",s_dust:"Poussière",s_vign:"Vignettage",s_frame:"Cadre",inherit:"Du rendu",variantL:"Variante",
- shuffle:"Tirer au hasard",layer:"Couche {n}",none:"Aucune",stackHint:"Les couches s'ajoutent au spécimen, dans l'ordre, comme les chaînes d'effets de Decim8, les effets superposés de Camera+ et les trois couches de Pixlr-o-matic.",keep:"Garder ce rendu",reset:"Tout remettre",kept:"Rendu gardé dans « Mes rendus ».",strength:"Intensité du rendu",
+ shuffle:"Tirer au hasard",reroll:"Relancer",roulette:"Roulette",pxE:"Effet",pxO:"Lumière",pxB:"Cadre",layer:"Couche {n}",none:"Aucune",stackHint:"Les couches s'ajoutent au spécimen, dans l'ordre, comme les chaînes d'effets de Decim8, les effets superposés de Camera+ et les trois couches de Pixlr-o-matic.",keep:"Garder ce rendu",reset:"Tout remettre",kept:"Rendu gardé dans « Mes rendus ».",strength:"Intensité du rendu",
  r_light:"Lumière",r_contrast:"Contraste",r_hi:"Hautes lumières",r_sh:"Ombres",r_wh:"Blancs",r_bl:"Noirs",r_temp:"Température",r_tint:"Teinte",r_vib:"Vibrance",r_sat:"Saturation",r_fade:"Délavé",r_clar:"Clarté",r_sharp:"Netteté",r_grain:"Grain ajouté",r_vign:"Vignettage ajouté",
  split:"Virage partagé",sh_hue:"Teinte des ombres",hi_hue:"Teinte des hautes lumières",split_amt:"Force",split_bal:"Équilibre",hsl:"Teinte, saturation, luminance",curves:"Courbes",
  colors:["Rouges","Oranges","Jaunes","Verts","Cyans","Bleus","Violets","Magentas"],hslH:"Teinte",hslS:"Saturation",hslL:"Luminance",
@@ -3566,7 +3617,7 @@ en:{ph:"Describe an image, or the motion of the video",open:"Open",shoot:"Shoot"
  net:"This page lost the network.",saved:"Saved:",rendering:"Rendering…",puter_ok:"Puter window: click Continue",photo:"photo",video:"video",reel:"Film roll",
  t_compose:"Compose",t_retouch:"Retouch",t_tools:"Tools",t_export:"Export",t_keys:"Keys",
  s_film:"Film",s_lens:"Lens",s_flash:"Flash",s_light:"Light",s_grain:"Grain",s_matter:"Material",s_dust:"Dust",s_vign:"Vignette",s_frame:"Frame",inherit:"From the look",variantL:"Variant",
- shuffle:"Shuffle",layer:"Layer {n}",none:"None",stackHint:"Layers add to the specimen, in order, like Decim8 effect chains, Camera+ layered effects and the three layers of Pixlr-o-matic.",keep:"Keep this look",reset:"Reset all",kept:"Look kept in “My looks”.",strength:"Look strength",
+ shuffle:"Shuffle",reroll:"Re-roll",roulette:"Roulette",pxE:"Effect",pxO:"Overlay",pxB:"Border",layer:"Layer {n}",none:"None",stackHint:"Layers add to the specimen, in order, like Decim8 effect chains, Camera+ layered effects and the three layers of Pixlr-o-matic.",keep:"Keep this look",reset:"Reset all",kept:"Look kept in “My looks”.",strength:"Look strength",
  r_light:"Light",r_contrast:"Contrast",r_hi:"Highlights",r_sh:"Shadows",r_wh:"Whites",r_bl:"Blacks",r_temp:"Temperature",r_tint:"Tint",r_vib:"Vibrance",r_sat:"Saturation",r_fade:"Fade",r_clar:"Clarity",r_sharp:"Sharpness",r_grain:"Added grain",r_vign:"Added vignette",
  split:"Split toning",sh_hue:"Shadow hue",hi_hue:"Highlight hue",split_amt:"Strength",split_bal:"Balance",hsl:"Hue, saturation, luminance",curves:"Curves",
  colors:["Reds","Oranges","Yellows","Greens","Cyans","Blues","Purples","Magentas"],hslH:"Hue",hslS:"Saturation",hslL:"Luminance",
@@ -3596,13 +3647,20 @@ async function texImages(){for(const n of ["paper-smooth","paper-cold","paper-kr
 
 /* ---------- état ---------- */
 const USER0=()=>({active:false,exposure:0,contrast:0,highlights:0,shadows:0,whites:0,blacks:0,temp:0,tint:0,vibrance:0,sat:0,fade:0,clarity:0,sharpen:0,grainAdd:0,vignAdd:0,curves:{rgb:null,r:null,g:null,b:null},hsl:[[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]],split:null,strength:1});
-const S={src:null,prev:null,tiny:null,ver:0,look:null,seed:1974,labo:{},user:USER0(),spot:{x:.5,y:.38},fam:(t=>TAXO.some(f=>f.id===t)?t:TAXO[0].id)(LS.get("pf_fam","couleurs")),sub:null,q:"",hist:[],own:false,caption:"",second:null,secondTex:null,dbl:{mode:"screen",amt:.65,scale:1,lkey:0},mask:null,maskTex:null,maskDirty:false};
+const S={ctl:{},src:null,prev:null,tiny:null,ver:0,look:null,seed:1974,labo:{},user:USER0(),spot:{x:.5,y:.38},fam:(t=>TAXO.some(f=>f.id===t)?t:TAXO[0].id)(LS.get("pf_fam","couleurs")),sub:null,q:"",hist:[],own:false,caption:"",second:null,secondTex:null,dbl:{mode:"screen",amt:.65,scale:1,lkey:0},mask:null,maskTex:null,maskDirty:false};
 const ALL=LOOKS_ALL();const byId=id=>ALL.find(l=>l.id===id)||MINE().find(l=>l.id===id);
 const MINE=()=>LS.get("pf_mine",[]).map(m=>({id:m.id,f:"mes",fr:m.name,en:m.name,c:m.c,user:m.user}));
 /* empilement : chaque couche ajoute ses étapes après celles du spécimen (chaîne d'effets de Decim8, effets superposés de Camera+, effet, lumière et cadre de Pixlr-o-matic) */
 function stackCombo(c,c2){c=Object.assign({},c);c.post=(c.post||[]).concat(stepsOf(Object.assign({},c2,{frame:null}),null));if(c2.cv)c.cv=(c.cv||[]).concat(c2.cv);if(c2.frame)c.frame=c2.frame;return c}
-function combo(){const L=byId(S.look);let c=Object.assign({},L?L.c:{});const lab=S.labo||{};for(const id of lab.stack||[]){const X=id&&byId(id);if(X)c=stackCombo(c,X.c)}if(lab.frame!==undefined)c.frame=lab.frame;if(S.dbl.on)c.dbl=1;return c}
-function snapshot(){return JSON.parse(JSON.stringify({look:S.look,seed:S.seed,labo:S.labo,user:S.user,spot:S.spot,caption:S.caption,words:S.words,font:S.font,dbl:S.dbl,ver:S.ver,pour:S.pour}))}
+function getPath(o,path){return path.split('.').reduce((a,k)=>a==null?a:a[k],o)}
+function setPath(o,path,v){const ks=path.split('.');let a=o;for(let i=0;i<ks.length-1;i++){const k=ks[i];a[k]=Array.isArray(a[k])?a[k].slice():Object.assign({},a[k]);a=a[k]}a[ks[ks.length-1]]=v}
+/* réglages de l'effet ouvert (S.ctl) appliqués à une copie de sa recette */
+function tuned(L){let c=JSON.parse(JSON.stringify(L.c));for(const d of L.ctl||[]){const v=S.ctl[d.k];if(v===undefined)continue;
+  if(d.path==='cv+'){if(v)c.cv=(c.cv||[]).concat([d.on])}else if(d.type==='tog')setPath(c,d.path,v?d.on:d.off);else setPath(c,d.path,v)}return c}
+/* Pixlr-o-matic : effet, lumière, cadre, trois couches choisies à part */
+function pixlrCombo(){const P=S.ctl.px||{};let c={};for(const id of [P.e,P.o,P.b]){const X=id&&byId(id);if(X)c=c.cv||c.fx||c.film||c.tone||c.frame||c.light?stackCombo(c,X.c):JSON.parse(JSON.stringify(X.c))}return c}
+function combo(){const L=byId(S.look);let c=L?(L.pixlr&&S.ctl.px?pixlrCombo():tuned(L)):{};const lab=S.labo||{};for(const id of lab.stack||[]){const X=id&&byId(id);if(X)c=stackCombo(c,X.c)}if(lab.frame!==undefined)c.frame=lab.frame;if(S.dbl.on)c.dbl=1;return c}
+function snapshot(){return JSON.parse(JSON.stringify({ctl:S.ctl,look:S.look,seed:S.seed,labo:S.labo,user:S.user,spot:S.spot,caption:S.caption,words:S.words,font:S.font,dbl:S.dbl,ver:S.ver,pour:S.pour}))}
 function pushHist(){const h=snapshot();h.src=S.src;S.hist.push(h);if(S.hist.length>50)S.hist.shift()}
 function scaleTo(img,max){const k=Math.min(1,max/Math.max(img.width,img.height));if(k>=1)return img;const c=document.createElement("canvas");c.width=Math.max(1,Math.round(img.width*k));c.height=Math.max(1,Math.round(img.height*k));
  const t0=document.createElement("canvas");t0.width=img.width;t0.height=img.height;t0.getContext("2d").putImageData(img,0,0);const g=c.getContext("2d");g.imageSmoothingQuality="high";g.drawImage(t0,0,0,c.width,c.height);return g.getImageData(0,0,c.width,c.height)}
@@ -3669,7 +3727,22 @@ function drawGrid(){drawGenres();const box=$("grid");box.textContent="";thumbQ=[
   b.onclick=()=>pickLook(id);box.appendChild(b)};
  card(null);const list=S.q?searchLooks(S.q):looksIn(S.fam,S.sub);for(const L of list)card(L)}
 const drawStrip=drawGrid;
-function setLabel(){const L=byId(S.look);$("lbFam").textContent=L?genreName(L):t("taxonOrig");$("lbName").textContent=L?lname(L):t("orig");$("lbSrc").textContent=L&&L.src?t("after",{a:L.src}):"";$("lbHint").textContent=L&&L.pour?t("pourHint"):L&&L.spot?t("spotHint"):L&&L.words?t("wordsHint2"):""}
+function setLabel(){drawCtl();const L=byId(S.look);$("lbFam").textContent=L?genreName(L):t("taxonOrig");$("lbName").textContent=L?lname(L):t("orig");$("lbSrc").textContent=L&&L.src?t("after",{a:L.src}):"";$("lbHint").textContent=L&&L.pour?t("pourHint"):L&&L.spot?t("spotHint"):L&&L.words?t("wordsHint2"):""}
+function drawCtl(){const box=$("ctl");if(!box)return;box.textContent="";const L=byId(S.look);if(!L)return;
+ const row=el("div",{className:"ctlrow"});
+ const re=el("button",{type:"button",className:"chip",on:{click:()=>{pushHist();S.seed=Math.floor(Math.random()*99999);S.pour=null;render()}}},t("reroll"));row.append(re);
+ const st=el("input",{type:"range",min:0,max:1,step:.01,value:S.user.strength});st.addEventListener("pointerdown",()=>pushHist());let t0=0;st.addEventListener("input",()=>{S.user.strength=+st.value;clearTimeout(t0);t0=setTimeout(render,60)});
+ row.append(el("label",{className:"cr"},el("span",{},t("strength")),st));
+ if(L.pixlr){const P=S.ctl.px||(S.ctl.px={e:L.s&&L.f!=='cadres'&&!/Overlays/.test(L.src)?L.id:"",o:/Overlays/.test(L.src)?L.id:"",b:L.f==='cadres'?L.id:""});
+  const lists={e:ALL.filter(x=>x.pixlr&&!/Overlays|Borders/.test(x.src)),o:ALL.filter(x=>x.pixlr&&/Overlays/.test(x.src)),b:ALL.filter(x=>x.pixlr&&/Borders/.test(x.src))};
+  for(const [k,lab] of [["e","pxE"],["o","pxO"],["b","pxB"]]){const s2=el("select");s2.append(el("option",{value:""},t("none")));for(const x of lists[k])s2.append(el("option",{value:x.id},lname(x)));s2.value=P[k]||"";
+   s2.onchange=()=>{pushHist();P[k]=s2.value;render()};row.append(el("label",{className:"cr"},el("span",{},t(lab)),s2))}
+  row.append(el("button",{type:"button",className:"chip",on:{click:()=>{pushHist();const pk=a=>a[Math.floor(Math.random()*a.length)].id;S.ctl.px={e:pk(lists.e),o:Math.random()<.75?pk(lists.o):"",b:Math.random()<.75?pk(lists.b):""};drawCtl();render()}}},t("roulette")))}
+ for(const d of L.ctl||[]){const lab=LANG==="fr"?d.fr:d.en;const cur=S.ctl[d.k];
+  if(d.type==="range"){const def=d.path==="cv+"?0:getPath(L.c,d.path);const i=el("input",{type:"range",min:d.min,max:d.max,step:d.step,value:cur??def??(d.min+d.max)/2});i.addEventListener("pointerdown",()=>pushHist());let t1=0;i.addEventListener("input",()=>{S.ctl[d.k]=+i.value;clearTimeout(t1);t1=setTimeout(render,80)});row.append(el("label",{className:"cr"},el("span",{},lab),i))}
+  else if(d.type==="sel"){const s3=el("select");for(const [v,fr,en] of d.opts)s3.append(el("option",{value:String(v)},LANG==="fr"?fr:en));s3.value=String(cur??getPath(L.c,d.path)??d.opts[0][0]);s3.onchange=()=>{pushHist();const o=d.opts.find(x=>String(x[0])===s3.value);S.ctl[d.k]=o[0];render()};row.append(el("label",{className:"cr"},el("span",{},lab),s3))}
+  else{const on=cur!==undefined?!!cur:(d.path==="cv+"?false:getPath(L.c,d.path)===d.on);const b=el("button",{type:"button",className:"chip","aria-pressed":String(on)},lab);b.onclick=()=>{pushHist();S.ctl[d.k]=!on;drawCtl();render()};row.append(b)}}
+ box.append(row)}
 function randomLook(){const L=ALL[Math.floor(Math.random()*ALL.length)];S.fam=L.f;S.sub=L.s;S.q="";$("q").value="";drawFams();drawGrid();pickLook(L.id);const el=$("grid").querySelector(`[data-id="${L.id}"]`);if(el)el.scrollIntoView({block:"nearest",inline:"nearest"})}
 const STRIPIO=new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting&&e.target._q){thumbQ.push([...e.target._q,e.target]);e.target._q=null;STRIPIO.unobserve(e.target)}pumpThumbs()},{root:null,rootMargin:"200px"});
 async function pumpThumbs(){if(thumbBusy||!S.tiny)return;thumbBusy=true;
@@ -3680,7 +3753,7 @@ async function pumpThumbs(){if(thumbBusy||!S.tiny)return;thumbBusy=true;
  thumbBusy=false}
 function pickLook(id){pushHist();const L=byId(id);
  if(id&&id===S.look){S.pour=null;if(L&&L.film&&L.film.v.length>1){const cur=S.labo.fv!=null?S.labo.fv:L.film.d;S.labo.fv=(cur+1)%L.film.v.length}else S.seed=Math.floor(Math.random()*99999)}
- else{S.look=id;S.seed=1974;S.labo={stack:S.labo.stack,frame:S.labo.frame};S.pour=null;if(L&&L.user)S.user=Object.assign(USER0(),JSON.parse(JSON.stringify(L.user)))}
+ else{S.look=id;S.seed=1974;S.ctl={};S.labo={stack:S.labo.stack,frame:S.labo.frame};S.pour=null;if(L&&L.user)S.user=Object.assign(USER0(),JSON.parse(JSON.stringify(L.user)))}
  [...$("grid").children].forEach(b=>b.setAttribute("aria-pressed",String((b.dataset.id||"")===(id||""))));closeVideo();setLabel();render()}
 
 /* ---------- scène : avant / après, point de mesure, pinceau, recadrage ---------- */
@@ -3739,7 +3812,7 @@ async function loadFile(f){if(!f)return;try{pushHist();const img=await readFile(
 $("bOpen").onclick=()=>$("fOpen").click();$("fOpen").onchange=()=>{loadFile($("fOpen").files[0]);$("fOpen").value=""};$("fShoot").onchange=()=>{loadFile($("fShoot").files[0]);$("fShoot").value=""};
 document.addEventListener("paste",e=>{const f=[...(e.clipboardData?.files||[])].find(x=>/^image\//.test(x.type));if(f){e.preventDefault();loadFile(f)}});
 document.addEventListener("dragover",e=>e.preventDefault());document.addEventListener("drop",e=>{e.preventDefault();const f=[...e.dataTransfer.files].find(x=>/^image\//.test(x.type));if(f)loadFile(f)});
-$("bUndo").onclick=()=>{const h=S.hist.pop();if(!h)return;Object.assign(S,{look:h.look,seed:h.seed,labo:h.labo,user:h.user,spot:h.spot,caption:h.caption,words:h.words,font:h.font,dbl:h.dbl,pour:h.pour});if(h.ver!==S.ver){S.src=h.src;S.prev=scaleTo(S.src,1600);S.tiny=scaleTo(S.src,240);S.ver=h.ver;THUMBS.clear();CPUC.clear()}drawStrip();drawLabo();closeVideo();render()};
+$("bUndo").onclick=()=>{const h=S.hist.pop();if(!h)return;Object.assign(S,{ctl:h.ctl||{},look:h.look,seed:h.seed,labo:h.labo,user:h.user,spot:h.spot,caption:h.caption,words:h.words,font:h.font,dbl:h.dbl,pour:h.pour});if(h.ver!==S.ver){S.src=h.src;S.prev=scaleTo(S.src,1600);S.tiny=scaleTo(S.src,240);S.ver=h.ver;THUMBS.clear();CPUC.clear()}drawStrip();drawLabo();closeVideo();render()};
 function download(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000)}
 const EX={fmt:LS.get("pf_exfmt","jpeg"),size:LS.get("pf_exsize",0)};
 async function savePhoto(){if(!$("player").hidden&&CUR_VID){const ext=(CUR_VID.blob?.type||"video/mp4").split("/")[1].replace("quicktime","mov");if(CUR_VID.blob)download(CUR_VID.blob,ikName("faunai",ext));else window.open(CUR_VID.url,"_blank","noopener");return}
