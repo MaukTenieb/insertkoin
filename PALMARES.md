@@ -1,6 +1,6 @@
 # Palmarès
 
-The palmarès of Insert Koin keeps the ten best of two games: Korong! (air-puck against the eighteen Masks of the Korhogo Fauna) and FaunInvaders (the Masks in formation, in Katabatik). The 3615 Minitel shows it: 3615 KORHOGO, menu 5, and the first of each game under the home menu.
+The palmarès of Insert Koin keeps the ten best of two games: Korong! (air-puck against the eighteen Masks of the Korhogo Fauna) and FaunInvaders (the Masks in formation, in Katabatik). The 3615 Minitel shows the five first of each game on its home screen (3615 KORHOGO), under the menu.
 
 ## Rules
 

@@ -50,7 +50,7 @@ A few seconds after the title screen opens, then now and then, a guide wanders a
 
 ## Palmarès
 
-The ten best of Korong! and of FaunInvaders, shown by the 3615 Minitel (3615 KORHOGO, menu 5). Entries travel on the open Nostr network, the Minitel's own transport; the routine of this repository rewrites [`palmares.json`](palmares.json) every hour. Rules, transport and checks: [PALMARES.md](PALMARES.md).
+The ten best of Korong! and of FaunInvaders, shown by the 3615 Minitel on its home screen (3615 KORHOGO, the five first of each game). Entries travel on the open Nostr network, the Minitel's own transport; the routine of this repository rewrites [`palmares.json`](palmares.json) every hour. Rules, transport and checks: [PALMARES.md](PALMARES.md).
 
 ## Koins
 

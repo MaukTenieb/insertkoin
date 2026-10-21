@@ -8,7 +8,7 @@
    IKP.top(game)                 → Promise<[{ini,a,b,t}]>: palmares.json merged with what the relays hold right now
    IKP.record(game,{a,b,run},cb) → asks the three initials once per run when the entry takes a place, signs it with
                                    the Minitel's key and sends it to the relays, then cb(top,rank)
-   IKP.line(rank)                → "#3 — 3615 PALMARÈS" (the full list lives in the Minitel: 3615 KORHOGO, 5)
+   IKP.line(rank)                → "#3 — 3615 KORHOGO" (the board sits on the Minitel's home screen)
    korong: a = Masks beaten in the run, b = goals let in; fauninvaders: a = score, b = wave */
 (function(){
   var INI={},R=null,NT=null,LIVE=[];
@@ -59,7 +59,7 @@
     });
   }
   /* in the games, a single line: the rank, and where the whole list lives (the Minitel) */
-  function line(rank){if(!rank)return '';return (fr()?(rank===1?'1er':rank+'e'):'#'+rank)+' \u2014 3615 PALMAR\u00c8S';}
+  function line(rank){if(!rank)return '';return (fr()?(rank===1?'1er':rank+'e'):'#'+rank)+' \u2014 3615 KORHOGO';}
   function html(game,t,rank){
     if(!t||!t.length)return '';
     var col=game==='korong'?(fr()?['MASKS','BUTS PRIS']:['MASKS','GOALS LET IN']):(fr()?['SCORE','VAGUE']:['SCORE','WAVE']);
