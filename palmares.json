@@ -1,13 +1,21 @@
 {
- "updated": "2026-10-20T20:38Z",
+ "updated": "2026-10-21T10:13Z",
  "relays": {
-  "wss://relay.damus.io": 0,
-  "wss://nos.lol": 1,
-  "wss://relay.primal.net": 1,
-  "wss://nostr.mom": 1
+  "wss://relay.damus.io": 2,
+  "wss://nos.lol": 4,
+  "wss://relay.primal.net": 4,
+  "wss://nostr.mom": 4
  },
  "korong": [],
  "fauninvaders": [
+  {
+   "ini": "JAU",
+   "a": 3830,
+   "b": 3,
+   "t": 1792568865,
+   "who": "f59755a108b9d37535a1b8e31ba14a7db9c876c8384794c54d70fa7c382d1d0a",
+   "run": "korhogo-palmares:fauninvaders:mvht7vatguh9i2"
+  },
   {
    "ini": "LIO",
    "a": 3470,
@@ -15,6 +23,22 @@
    "t": 1792518339,
    "who": "515d1f59029568f92203b036679dbd033a010db2748ae3eaa4904327ec96c52a",
    "run": "korhogo-palmares:fauninvaders:mvgz4s8fnqg4t7"
+  },
+  {
+   "ini": "J9R",
+   "a": 3240,
+   "b": 2,
+   "t": 1792568632,
+   "who": "f59755a108b9d37535a1b8e31ba14a7db9c876c8384794c54d70fa7c382d1d0a",
+   "run": "korhogo-palmares:fauninvaders:mvht2lykgc3dn6"
+  },
+  {
+   "ini": "JAU",
+   "a": 1720,
+   "b": 2,
+   "t": 1792568715,
+   "who": "f59755a108b9d37535a1b8e31ba14a7db9c876c8384794c54d70fa7c382d1d0a",
+   "run": "korhogo-palmares:fauninvaders:mvht4kk4g0zvdi"
   }
  ]
 }
