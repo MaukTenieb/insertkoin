@@ -49,8 +49,8 @@
     chess:       {mods:['chess'],             roots:['chess'],                          entry:function(){window.openChess();}},
     erratic:     {mods:['erratic'],           roots:['mem'],                            entry:function(){window.openMem();}},
     faunarratics:{mods:['faunarratics'],      roots:['konklave-panel'],                 entry:function(){window.openFaunarratics();}},
-    // the arcade's die picks one of the five games (window.__ikKata); Connect 4 when nothing was rolled
-    katabatik:   {mods:['katabatik'],         roots:['c4-panel','bb-panel','hang-panel','mm-panel','fi-panel'], entry:function(){window.chRandomMask();var g=window.__ikKata;window.__ikKata=null;if(g&&g!=='c4'&&window.kbShow)window.kbShow(g);}},
+    // the arcade's die picks one of the five games (window.__ikKata); Connect 4 when nothing was rolled; kbShow always runs, so a panel left open by the previous game closes
+    katabatik:   {mods:['katabatik'],         roots:['c4-panel','bb-panel','hang-panel','mm-panel','fi-panel'], entry:function(){window.chRandomMask();var g=window.__ikKata;window.__ikKata=null;if(window.kbShow)window.kbShow(g||'c4');}},
     // KAM: the camera opens at once; SKREEN is taken by the host page, without this module
     kapture:     {mods:['kapture'],           roots:['kapture-overlay'],                entry:function(){window.kaptureStart();}},
     // VHS deck: library + recorder warm up in the background, the deck opens on the scrapes
