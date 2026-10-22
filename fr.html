@@ -1324,6 +1324,9 @@ let tvClipLast=-1e9;function tvClipOk(){return navigator.onLine!==false&&typeof 
 function tvClip(sec){let f=$('tvClip');if(!sec){if(f)f.remove();return;}tvClipLast=performance.now();const st=$('stage');if(!st)return;if(f)f.remove();
   const tk=JUKE_TRACKS[Math.floor(Math.random()*JUKE_TRACKS.length)],t0=20+Math.floor(Math.random()*90);f=document.createElement('div');f.id='tvClip';f.className='tvclip';
   const cr=$('cv').getBoundingClientRect(),sr=st.getBoundingClientRect();Object.assign(f.style,{left:cr.left-sr.left+TV.x/W*cr.width+'px',top:cr.top-sr.top+TV.y/H*cr.height+'px',width:TV.w/W*cr.width+'px',height:TV.h/H*cr.height+'px'});
+  /* the clip lies over the canvas: cut it where the table rises in front of the screen */
+  try{const m=document.createElement('canvas');m.width=TV.w*2;m.height=TV.h*2;const mc=m.getContext('2d');mc.fillStyle='#fff';mc.fillRect(0,0,m.width,m.height);mc.globalCompositeOperation='destination-out';mc.drawImage(ctL,TV.x*2,TV.y*2,TV.w*2,TV.h*2,0,0,m.width,m.height);
+    const u='url('+m.toDataURL()+')';f.style.webkitMaskImage=f.style.maskImage=u;f.style.webkitMaskSize=f.style.maskSize='100% 100%';}catch(x){}
   f.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${tk.id}?autoplay=1&mute=1&controls=0&disablekb=1&fs=0&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3&start=${t0}" allow="autoplay; encrypted-media" tabindex="-1" title=""></iframe>`;st.appendChild(f);
   setTimeout(()=>{const g=$('tvClip');if(g===f)f.remove();},sec*1000+400);}
 function tvScreen(c,t,e){const T=G.tvs||(G.tvs={ch:'motto',at:0,until:0,snow:0,rally:0,best:0,lastTv:G.tv});
@@ -1556,7 +1559,8 @@ function fxDraw(c,r,x,y,fw,fh,f){const t=G.t,L=(FXF[r.id]&&FXF[r.id][f|0])||FX[r
     if(q.k==='smoke'){c.fillStyle='rgba(215,210,200,.22)';for(let i=0;i<5;i++){const s=(t*.3+i/5)%1;c.fillRect(Math.round(x+q.x+Math.sin(t*1.2+i*2)*5*s),Math.round(y+q.y-s*40),1+Math.round(s*4),2);}}
     else if(q.k==='steam'&&G.face===6||q.k==='steam'&&(t%6)<1.2){c.fillStyle='rgba(230,230,230,.3)';for(const[a,b]of q.pts)for(let i=0;i<3;i++){const s=((t*1.5+i/3)%1);c.fillRect(x+a+(a<66?-s*8:s*8),y+b+s*4,1+s*4,1+s*2);}}}}
 /* some Masks stand lower, so their hind legs go behind the table */
-const SINK={croisiere_noire:6},BIG={croisiere_noire:1.05,dogxim:.86};
+/* the Masks sit at the far end of the table: scaled to the room (dogXim, a teenager, smaller than the adults) */
+const SINK={croisiere_noire:6},BIG={croisiere_noire:.9,dogxim:.7},SIZE=.84;
 function portrait(c,ox){const r=G.r;if(!r.sheet)return;const e=G.e,f=faceNow(),fw=r.fw,fh=r.fh,t=G.t;
   const stoic=r.sig==='silent';let sink=0;if(!stoic){if(G.hitT>0)sink+=2;if(e.down>0)sink+=8;}
   const lag=e.player_score-e.opponent_score;if(!stoic)sink+=Math.max(0,Math.min(8,lag));
@@ -1564,7 +1568,7 @@ function portrait(c,ox){const r=G.r;if(!r.sheet)return;const e=G.e,f=faceNow(),f
   if(G.face===7&&G.faceT>1.2)ox+=Math.round(Math.sin(t*60)*2);
   const x=Math.round(W/2-fw/2+ox),y=Math.round(BASE-fh+sink-Math.min(12,Math.max(0,118-fh))+(SINK[r.id]||0));
   c.save();c.beginPath();c.rect(0,0,W,CLIP);c.clip();
-  {const breath=1+.009*Math.sin(t*1.7),sc=(BIG[r.id]||1)*(stoic?1:(e.mode==='hit'?1.05:1)*(G.hitT>0?.96:1)*(G.face===4&&G.faceT>0?1.03:1)),rot=stoic?0:.006*Math.sin(t*.7)+(G.face===6?-.03:0)+(G.face===7&&G.faceT>0?.04*Math.sin(t*30):0)+(lag>=5?.05:0);
+  {const breath=1+.009*Math.sin(t*1.7),sc=(BIG[r.id]||SIZE)*(stoic?1:(e.mode==='hit'?1.05:1)*(G.hitT>0?.96:1)*(G.face===4&&G.faceT>0?1.03:1)),rot=stoic?0:.006*Math.sin(t*.7)+(G.face===6?-.03:0)+(G.face===7&&G.faceT>0?.04*Math.sin(t*30):0)+(lag>=5?.05:0);
    c.translate(W/2,BASE);c.rotate(rot);c.scale(sc,sc*breath);c.translate(-W/2,-BASE);}
   c.globalAlpha=.35;c.drawImage(r.shadow,f*fw*r.k,0,fw*r.k,fh*r.k,x+7,y-3,fw,fh);c.globalAlpha=1;
   /* bioluminescence, behind the figure: now and then the silhouette glows in the character's colour (always, faintly, for Poisoned Well) */
@@ -1792,7 +1796,9 @@ function loadRun(){try{const r=JSON.parse(localStorage.getItem('ik.run')||'null'
 function playRun(){saveRun();const id=RUN.order[RUN.idx];startMatch(R.findIndex(r=>r.id===id),RUN.idx);}
 function pickGuest(i){if(!pay())return;RUN=null;startMatch(i,null);}
 /* palmarès of the run: Masks beaten, then goals let in over the whole run (continues included) */
-function palmKorong(won){const P=$('palm');if(P)P.innerHTML='';if(!RUN||!window.IKP)return;if(!RUN.id)RUN.id=Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+function palmKorong(won){const P=$('palm');if(P)P.innerHTML='';if(!window.IKP)return;
+  /* a duel won against a Mask picked by hand: one Mask beaten, the goals of that match */
+  if(!RUN){if(won)IKP.record('korong',{a:1,b:G.e.opponent_score,run:'d'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)},(t,rank)=>{if(P)P.textContent=IKP.line(rank);});return;}if(!RUN.id)RUN.id=Date.now().toString(36)+Math.random().toString(36).slice(2,8);
   RUN.ga=(RUN.ga||0)+G.e.opponent_score;const masks=won?RUN.idx+1:RUN.idx;IKP.record('korong',{a:masks,b:RUN.ga,run:RUN.id},(t,rank)=>{if(P)P.textContent=IKP.line(rank);});}
 function afterMatch(won){palmKorong(won);const last=RUN&&RUN.idx===RUN.order.length-1;if(RUN){if(won&&last){const done=RUN;RUN=null;saveRun();RUN=done;setTimeout(()=>champion(),900);}else if(won){RUN.krew=KREW[G.r.id]||null;RUN.idx++;saveRun();RUN.idx--;}}
   if(won)earn();
