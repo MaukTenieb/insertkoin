@@ -1316,7 +1316,7 @@ function fitFont(c,txt,max,big,face){let z=big;do{c.font=z+'px '+face;}while(c.m
 function headTV(c,txt,X,Y,Wd,t,col){c.font='4px "Press Start 2P",monospace';c.fillStyle=col;const w=c.measureText(txt).width;if(w<=Wd-6){c.fillText(txt,X+3,Y+3);return;}const o=((t*14)%(w+20));c.fillText(txt+'     '+txt,X+3-o,Y+3);}
 function wrapTV(c,txt,w){const out=[];for(const para of String(txt).split('\n')){let line='';for(const word of para.split(' ')){const tryL=line?line+' '+word:word;if(c.measureText(tryL).width>w&&line){out.push(line);line=word;}else line=tryL;}out.push(line);}return out;}
 function tvPick(e,forced){const T=G.tvs,r=G.r,ch=['motto','motto','score','stats','rally','sig','koins','koins','bars','card','grid','snow','radio','clock','clip'].filter(k=>!(k==='motto'&&!r.motto)&&!(k==='radio'&&!radioOn)&&!(k==='clip'&&!tvClipOk()));
-  T.ch=forced||ch[Math.floor(Math.random()*ch.length)];T.at=G.t;T.until=G.t+(T.ch==='clip'?6+Math.random()*4:T.ch==='snow'?1.5+Math.random()*2:4+Math.random()*5);T.snow=.18+Math.random()*.25;
+  T.ch=forced||ch[Math.floor(Math.random()*ch.length)];T.kw=Math.random()<.5?'KOINS':'KINOS';T.at=G.t;T.until=G.t+(T.ch==='clip'?6+Math.random()*4:T.ch==='snow'?1.5+Math.random()*2:4+Math.random()*5);T.snow=.18+Math.random()*.25;
   tvClip(T.ch==='clip'?T.until-G.t:0);}
 /* a few seconds of a Mauk Tenieb clip on the set: a muted YouTube player laid over the screen */
 let tvClipLast=-1e9;function tvClipOk(){return navigator.onLine!==false&&typeof JUKE_TRACKS!=='undefined'&&JUKE_TRACKS.length&&performance.now()-tvClipLast>45000&&!matchMedia('(prefers-reduced-motion:reduce)').matches;}
@@ -1349,7 +1349,7 @@ function tvScreen(c,t,e){const T=G.tvs||(G.tvs={ch:'motto',at:0,until:0,snow:0,r
     else if(ch==='rally'){c.font='4px '+PS;c.fillStyle=col;c.fillText(L.rally,X+pad,Y+pad);c.font='12px '+PS;c.fillStyle='#e8e0c8';const rv=String(e.rally||0);c.fillText(rv,X+pad,Y+12);c.font='4px '+PS;c.fillStyle='#c8c0a8';c.fillText(L.best+' '+T.best,X+pad,Y+Ht-9);
       for(let i=0;i<Math.min(24,e.rally||0);i++){c.fillStyle=col;c.fillRect(X+Wd-pad-4-(i%6)*5,Y+12+Math.floor(i/6)*5,3,3);}}
     else if(ch==='sig'){headTV(c,plain(G.r.name).toUpperCase(),X,Y,Wd,t,col);c.fillStyle='#e8e0c8';const sg=(SIGN[G.r.sig]||'')+' '+(SIGNAME[G.r.sig]||'');fitFont(c,sg,Wd-pad*2,9,PS);c.fillText(sg,X+pad,Y+Ht/2-4);}
-    else if(ch==='koins'){c.font='4px '+PS;c.fillStyle='#c9a84c';c.fillText(L.koins,X+pad,Y+pad);c.font='10px '+PS;c.fillStyle='#ffe08a';const kt='◉ '+kfmt(koins);c.fillText(kt,X+pad,Y+Ht/2-4);
+    else if(ch==='koins'){c.font='4px '+PS;c.fillStyle='#c9a84c';c.fillText(T.kw||L.koins,X+pad,Y+pad);c.font='10px '+PS;c.fillStyle='#ffe08a';const kt='◉ '+kfmt(koins);c.fillText(kt,X+pad,Y+Ht/2-4);
       for(let i=0;i<6;i++){const fy=((t*30+i*17)%(Ht+10))-5;c.fillStyle=`rgba(255,224,138,${.25+.1*i%3})`;c.fillText('◉',X+Wd-10-(i%3)*7,Y+fy);}}
     else if(ch==='snow'){c.fillStyle='#1c2024';c.fillRect(X,Y,Wd,Ht);c.fillStyle='#c8d2d7';for(let i=0;i<Wd*Ht*.55;i++)c.fillRect(X+Math.random()*Wd,Y+Math.random()*Ht,1,1);if(Math.random()<.3){c.fillStyle='rgba(255,255,255,.25)';c.fillRect(X,Y+Math.random()*Ht,Wd,2);}}
     else if(ch==='clip'){c.fillStyle='#000';c.fillRect(X,Y,Wd,Ht);}
@@ -1683,7 +1683,7 @@ $('lang').onclick=()=>{LANG=LANG==='en'?'fr':'en';try{localStorage.setItem('ik.l
 /* ---- Koins (shared on mauktenieb.github.io, readable by 3615 as the Kalabass) ---- */
 let koins=3,freeAt=0;try{const k=localStorage.getItem('ik.koins');if(k!==null)koins=+k;freeAt=+(localStorage.getItem('ik.freeAt')||0);}catch(e){}
 function kfmt(n){return n<1e5?String(n):n<1e8?Math.floor(n/1e3)+'K':n<1e11?Math.floor(n/1e6)+'M':Math.floor(n/1e9)+'G';}
-function saveKoins(){try{localStorage.setItem('ik.koins',koins);localStorage.setItem('ik.freeAt',freeAt);}catch(e){}$('kn').textContent=kfmt(koins);$('koins').title=koins+' Koins';}
+function saveKoins(){try{localStorage.setItem('ik.koins',koins);localStorage.setItem('ik.freeAt',freeAt);}catch(e){}$('kn').textContent=kfmt(koins);$('koins').title=koins+(Math.random()<.5?' Koins':' Kinos');}
 function koinFx(){const k=$('koins');k.classList.remove('pay');void k.offsetWidth;k.classList.add('pay');}
 function pay(){if(koins<1){if(!freeAt)freeAt=Date.now()+30000;saveKoins();return false;}koins--;saveKoins();koinFx();if(typeof koinOut==='function')koinOut();ac();tone(988,.06,'square',.05);tone(1319,.12,'square',.05,0,.07);return true;}
 /* any win, in any game, brings exactly one Koin — the rule the 3615 KOINS screen gives ("+1 when you win in a game") */
@@ -1924,13 +1924,19 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
   function place(){const w=im.clientWidth,h=im.clientHeight;if(!w||!h)return;const k=Math.max(w/NW,h/NH),ox=(w-NW*k)*.5,oy=(h-NH*k)*.38,t=im.offsetTop,l=im.offsetLeft;
     els.forEach(([e,[x0,y0,x1,y1]])=>{let L=ox+x0*k,T=oy+y0*k,W=(x1-x0)*k,H=(y1-y0)*k;const mn=touchDev?40:22;if(W<mn){L-=(mn-W)/2;W=mn;}if(H<mn){T-=(mn-H)/2;H=mn;}const vis=T+H>0&&T<h&&L+W>0&&L<w;e.hidden=!vis;Object.assign(e.style,{left:l+L+'px',top:t+T+'px',width:W+'px',height:H+'px'});});}
   place();addEventListener('resize',place);if(!im.complete)im.addEventListener('load',place);try{new ResizeObserver(place).observe(im);}catch(e){}})();
-/* ---- Insert Koin, Intersektio, Noirinsekt: now and then the sign slips ---- */
-(function slip(){const h=document.querySelector('.heroText .logo');if(!h||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
-  const A='INSERT KOIN',BB=['INTERSEKTIO','NOIRINSEKT'];let B=BB[0];const G='ΞЖ#KOЯ%▒';let busy=false;
+/* ---- the sign: the address says Insert Koin; on screen the name drifts between Noir Insekt, Intersektion and Inn Eskort ---- */
+(function slip(){const NM=['NOIR INSEKT','INTERSEKTION','INN ESKORT'],pick=x=>{const o=NM.filter(n=>n!==x);return o[(Math.random()*o.length)|0];};
+  let cur=NM[(Math.random()*NM.length)|0];const h=document.querySelector('.heroText .logo'),br=$('brand'),rf=$('refresh');
+  [h,br,rf].forEach(el=>{if(el)el.textContent=cur;});
+  /* Bio, now and then BioGraphik or BioTenieb */
+  const r=Math.random(),bio=r<.5?'BIO':r<.75?'BIOGRAPHIK':'BIOTENIEB';document.querySelectorAll('[data-swap="bio"] b, a[data-swap="bio"]').forEach(el=>{el.textContent=bio;});
+  const titles={'NOIR INSEKT':'Noir Insekt','INTERSEKTION':'Intersektion','INN ESKORT':'Inn Eskort'},T=document.title;
+  document.addEventListener('visibilitychange',()=>{document.title=document.hidden?titles[pick(cur)]:T;});
+  if(!h||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  const G='ΞЖ#KOЯ%▒';let busy=false;
   function morph(from,to,done){let i=0;const n=Math.max(from.length,to.length);const iv=setInterval(()=>{i++;let o='';for(let j=0;j<n;j++){o+=j<i-2?(to[j]||''):j<i?G[(Math.random()*G.length)|0]:(from[j]||'');}h.textContent=o;if(i>n+2){clearInterval(iv);h.textContent=to;done&&done();}},55);}
-  function go2(){if(busy||$('home').hidden||document.hidden){return later();}busy=true;B=BB[(Math.random()*BB.length)|0];morph(A,B,()=>setTimeout(()=>morph(B,A,()=>{busy=false;later();}),1700+Math.random()*1400));}
-  function later(){setTimeout(go2,38000+Math.random()*60000);}later();
-  const T=document.title;document.addEventListener('visibilitychange',()=>{document.title=document.hidden?(Math.random()<.5?'Intersektio':'Noirinsekt'):T;});})();
+  function go2(){if(busy||$('home').hidden||document.hidden){return later();}busy=true;const nx=pick(cur);morph(cur,nx,()=>{cur=nx;if(br)br.textContent=cur;if(rf)rf.textContent=cur;busy=false;later();});}
+  function later(){setTimeout(go2,38000+Math.random()*60000);}later();})();
 /* full screen: the score follows inside the table */
 /* ---- the motel lives: the hour outside, the television, a storm at the window, the cigarette, the scarab, Plague's cloud, a beetle, and the picture wearing out the longer one stays ---- */
 (function life(){const hero=document.querySelector('.hero'),im=hero&&hero.querySelector('img');if(!im)return;
