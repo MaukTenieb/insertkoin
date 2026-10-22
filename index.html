@@ -1924,19 +1924,19 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
   function place(){const w=im.clientWidth,h=im.clientHeight;if(!w||!h)return;const k=Math.max(w/NW,h/NH),ox=(w-NW*k)*.5,oy=(h-NH*k)*.38,t=im.offsetTop,l=im.offsetLeft;
     els.forEach(([e,[x0,y0,x1,y1]])=>{let L=ox+x0*k,T=oy+y0*k,W=(x1-x0)*k,H=(y1-y0)*k;const mn=touchDev?40:22;if(W<mn){L-=(mn-W)/2;W=mn;}if(H<mn){T-=(mn-H)/2;H=mn;}const vis=T+H>0&&T<h&&L+W>0&&L<w;e.hidden=!vis;Object.assign(e.style,{left:l+L+'px',top:t+T+'px',width:W+'px',height:H+'px'});});}
   place();addEventListener('resize',place);if(!im.complete)im.addEventListener('load',place);try{new ResizeObserver(place).observe(im);}catch(e){}})();
-/* ---- the sign: the address says Insert Koin; on screen the name drifts between Noir Insekt, Intersektion and Inn Eskort ---- */
-(function slip(){const NM=['NOIR INSEKT','INTERSEKTION','INN ESKORT'],pick=x=>{const o=NM.filter(n=>n!==x);return o[(Math.random()*o.length)|0];};
+/* ---- the sign: Insert Koin, Intersektion, Noir Insekt, Sektor Inn — the name changes under the visitor's eyes ---- */
+(function slip(){const NM=['INSERT KOIN','INTERSEKTION','NOIR INSEKT','SEKTOR INN'],pick=x=>{const o=NM.filter(n=>n!==x);return o[(Math.random()*o.length)|0];};
   let cur=NM[(Math.random()*NM.length)|0];const h=document.querySelector('.heroText .logo'),br=$('brand'),rf=$('refresh');
   [h,br,rf].forEach(el=>{if(el)el.textContent=cur;});
   /* Bio, now and then BioGraphik or BioTenieb */
   const r=Math.random(),bio=r<.5?'BIO':r<.75?'BIOGRAPHIK':'BIOTENIEB';document.querySelectorAll('[data-swap="bio"] b, a[data-swap="bio"]').forEach(el=>{el.textContent=bio;});
-  const titles={'NOIR INSEKT':'Noir Insekt','INTERSEKTION':'Intersektion','INN ESKORT':'Inn Eskort'},T=document.title;
+  const titles={'INSERT KOIN':'Insert Koin','INTERSEKTION':'Intersektion','NOIR INSEKT':'Noir Insekt','SEKTOR INN':'Sektor Inn'},T=document.title;
   document.addEventListener('visibilitychange',()=>{document.title=document.hidden?titles[pick(cur)]:T;});
   if(!h||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
   const G='ΞЖ#KOЯ%▒';let busy=false;
   function morph(from,to,done){let i=0;const n=Math.max(from.length,to.length);const iv=setInterval(()=>{i++;let o='';for(let j=0;j<n;j++){o+=j<i-2?(to[j]||''):j<i?G[(Math.random()*G.length)|0]:(from[j]||'');}h.textContent=o;if(i>n+2){clearInterval(iv);h.textContent=to;done&&done();}},55);}
   function go2(){if(busy||$('home').hidden||document.hidden){return later();}busy=true;const nx=pick(cur);morph(cur,nx,()=>{cur=nx;if(br)br.textContent=cur;if(rf)rf.textContent=cur;busy=false;later();});}
-  function later(){setTimeout(go2,38000+Math.random()*60000);}later();})();
+  function later(){setTimeout(go2,7000+Math.random()*11000);}later();})();
 /* full screen: the score follows inside the table */
 /* ---- the motel lives: the hour outside, the television, a storm at the window, the cigarette, the scarab, Plague's cloud, a beetle, and the picture wearing out the longer one stays ---- */
 (function life(){const hero=document.querySelector('.hero'),im=hero&&hero.querySelector('img');if(!im)return;
