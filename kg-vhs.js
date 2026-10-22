@@ -1920,11 +1920,29 @@
   function refreshTracks() {
     const s = state;
     if (s.destroyed) return -1;
+    const before = s.tracks.length ? s.tracks[0].id : null;
     normaliseTracks(s);
     renderLists(s);
     s.trackIndex = 0;
     updateTrackUI(s);
     setCounter(s, 0);
+    // A new cassette: the deck ejects the old tape and cues the first track
+    // of the new one, so the screen never keeps the previous cassette.
+    if (s.source === "youtube" && s.tracks.length && s.tracks[0].id !== before) {
+      if (!bootState && !s.reducedMotion) {
+        const screen = q(s, "[data-vhs-screen]");
+        if (screen) {
+          screen.classList.remove("is-tape-swap");
+          void screen.offsetWidth;
+          screen.classList.add("is-tape-swap");
+          setTimeout(() => { if (live(s)) screen.classList.remove("is-tape-swap"); }, 900);
+        }
+      }
+      if (s.player && s.playerReady) { try { s.player.stopVideo(); } catch (_) { /* ignore */ } }
+      s.ytPlaying = false;
+      setStatus(s, "Stop");
+      selectTrack(s, 0, false);
+    }
     return s.tracks.length;
   }
 
