@@ -18,12 +18,12 @@ var chNames={
   w:{K:'Unkle Maukie',Q:'Aube',R1:'Honey Buzzard',R2:'Plague of Justinian',B1:"Ts\u2019ui P\xean",B2:'C7H5N3O6',G:'Grand Colonel'},
   b:{K:'dogXim',Q:'Maiden Call',R1:'Auvergne',R2:'Poisoned Well',B1:'H\xe1tra L\xf6v\xe9s',B2:'Silent Pact',M:'Malika'}
 };
-// Croisi\u00e8re Noire replaces one black rook, Naphta replaces Maiden Call 50/50
+// Croisi\u00e8re Noire replaces one black rook, Naphta-Kerema replaces Maiden Call 50/50
 function randomiseAvatars(){
-  // Naphta: random Dame blanche ou noire
+  // Naphta-Kerema: random Dame blanche ou noire
   var naphtaSide=Math.random()<.5?'b':'w';
-  if(naphtaSide==='b'){chNames.b.Q='Naphta';chNames.w.Q='Aube';}
-  else{chNames.w.Q='Naphta';chNames.b.Q='Maiden Call';}
+  if(naphtaSide==='b'){chNames.b.Q='Naphta-Kerema';chNames.w.Q='Aube';}
+  else{chNames.w.Q='Naphta-Kerema';chNames.b.Q='Maiden Call';}
   // Croisi\u00e8re Noire: random Tour blanche ou noire
   var cnSide=Math.random()<.5?'b':'w';
   if(cnSide==='b'){

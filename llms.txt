@@ -17,7 +17,7 @@
 - **N° 01 Unkle Maukie** (STR 7, DEX 7, INT 9, WIS 9, CHA 9, CON 7): « Decide from the dance floor of things » Panther's Crude Roar. At the table: Strikes only on the beat of a drum that quickens as the match goes on. The reigning champion.
 - **N° 02 dogXim** (STR 7, DEX 9, INT 8, WIS 6, CHA 8, CON 6): « Chaos is the ladder of fuck! » Fox's Crude Jet. At the table: Reacts at the very last moment; one shot in four is a jet at full force.
 - **N° 03 C7H5N3O6** (STR 9, DEX 8, INT 10, WIS 6, CHA 4, CON 7): « Efficiency is... » Golem's Oil Crush. At the table: Moves only sideways behind a huge paddle and never leaves his line.
-- **N° 04 Naphta** (STR 7, DEX 8, INT 9, WIS 7, CHA 8, CON 6): « Presence is the essence of power » Reptilian Oil Blaze. At the table: Hardly moves; every fourth return is a blaze.
+- **N° 04 Naphta-Kerema** (STR 7, DEX 8, INT 9, WIS 7, CHA 8, CON 6): « Presence is the essence of power » Reptilian Oil Blaze. At the table: Hardly moves; every fourth return is a blaze.
 - **N° 05 Ts'ui Pên** (STR 5, DEX 6, INT 9, WIS 10, CHA 7, CON 6): « Infinity breathes wisdom » Butterfly's Oil Haze. At the table: A veil of butterflies hides the middle of the table.
 - **N° 06 Honey Buzzard** (STR 6, DEX 8, INT 7, WIS 10, CHA 5, CON 8): « Even nothing is something that is nothing » Buzzard's Oil Rot. At the table: Alternates dead drops and smashes at random, and decays as the night goes on.
 - **N° 07 Hátra Lövés** (STR 6, DEX 10, INT 5, WIS 7, CHA 6, CON 8): « Surviving is striking from behind » Archer's Crude Shot. At the table: Plays banked shots off the side rails.
@@ -50,7 +50,7 @@
 
 Transmedia underground worldbuilder.
 
-**Korhogo** is a self-proliferating sci-fi world and an uncanny crucible-platform for: Experimental Hip-Hop, Concept Albums, Illbient, IDM, Experimental Dub. Its 18 avatars: the **Korhogo Fauna**, aka the Masks (Honey Buzzard/Marumero, Naphta/Naphta-Kerema, Aube/Rosy Fingers, Plague of Justinian, Truce/↑héé↑è↑e, Malika/Quintina, Cadaver Synod, Croisière Noire, Grand Colonel, Poisoned Well, Unkle Maukie, Hátra Lövés, Maiden Call, C7H5N3O6, Silent Pact, Auvergne, Ts'ui Pên, dogXim).
+**Korhogo** is a self-proliferating sci-fi world and an uncanny crucible-platform for: Experimental Hip-Hop, Concept Albums, Illbient, IDM, Experimental Dub. Its 18 avatars: the **Korhogo Fauna**, aka the Masks (Honey Buzzard/Marumero, Aube/Rosy Fingers, Plague of Justinian, Truce/↑héé↑è↑e, Malika/Quintina, Naphta-Kerema, Cadaver Synod, Croisière Noire, Grand Colonel, Poisoned Well, Unkle Maukie, Hátra Lövés, Maiden Call, C7H5N3O6, Silent Pact, Auvergne, Ts'ui Pên, dogXim).
 
 Concept Albums: Experimental Hip-Hop/Dub, IDM/Braindance, Ethnotronica/Free Improvisation, Concept Soundtracks.
 
@@ -77,7 +77,7 @@ Copyright © Mauk Tenieb & Korhogo. Korhogo™, Korhogo Fauna™, Fauna Masks™
 - [Unkle Maukie](https://mauktenieb.github.io/insertkoin/fauna-unkle_maukie.html)
 - [dogXim](https://mauktenieb.github.io/insertkoin/fauna-dogxim.html)
 - [C7H5N3O6](https://mauktenieb.github.io/insertkoin/fauna-c7h5n3o6.html)
-- [Naphta](https://mauktenieb.github.io/insertkoin/fauna-naphta.html)
+- [Naphta-Kerema](https://mauktenieb.github.io/insertkoin/fauna-naphta.html)
 - [Ts'ui Pên](https://mauktenieb.github.io/insertkoin/fauna-tsui_pen.html)
 - [Honey Buzzard](https://mauktenieb.github.io/insertkoin/fauna-honey_buzzard.html)
 - [Hátra Lövés](https://mauktenieb.github.io/insertkoin/fauna-hatra_loves.html)
