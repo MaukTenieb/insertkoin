@@ -101,7 +101,7 @@
     var hint = q(root, "[data-vhs-rec-hint]");
     if (hint) hint.textContent = t("Load a cassette and record a new channel over it: the tape is erased and rewound with fresh tracks.");
 
-    /* [IK] cassettes sans rubrique d'abord, puis chaque rubrique (KURATION…) sous son titre */
+    /* [IK] cassettes sans rubrique d'abord, puis chaque rubrique (CURATORS…) sous son titre */
     var en = ((global.document.documentElement.lang || "en").slice(0, 2).toLowerCase() !== "fr");
     var plain = tapes.filter(function (x) { return !x.shelf; });
     var shelves = [];
@@ -602,7 +602,7 @@
     };
   }
 
-  /* [IK] KURATION : exports détaillés par critères et listes de lecture YouTube (50 vidéos par liste, limite de YouTube) */
+  /* [IK] CURATORS : exports détaillés par critères et listes de lecture YouTube (50 vidéos par liste, limite de YouTube) */
   function kurPlaylists(tape) {
     var ids = (tape.tracks || []).map(function (x) { return x.id; }), out = [];
     for (var i = 0; i < ids.length; i += 50) out.push("https://www.youtube.com/watch_videos?video_ids=" + ids.slice(i, i + 50).join(","));
@@ -637,8 +637,8 @@
       var a = q(root, "[data-vhs-tapetools-" + fmt + "]");
       if (!a) return;
       if (a.__blob) try { URL.revokeObjectURL(a.__blob); } catch (e) {}
-      a.__blob = URL.createObjectURL(k.ex[fmt]); a.href = a.__blob; a.setAttribute("download", "kuration." + fmt);
-      a.onclick = function () { if (window.ikName) a.setAttribute("download", window.ikName("kuration", fmt)); };
+      a.__blob = URL.createObjectURL(k.ex[fmt]); a.href = a.__blob; a.setAttribute("download", "curators." + fmt);
+      a.onclick = function () { if (window.ikName) a.setAttribute("download", window.ikName("curators", fmt)); };
     });
     var yt = q(root, "[data-vhs-tapetools-yt]");
     if (yt) {

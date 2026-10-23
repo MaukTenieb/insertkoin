@@ -143,7 +143,7 @@
         channel_url: src.channel_url || "",
         count: src.count || tracks.length,
         tracks: tracks,
-        /* [IK] rubrique (ex. « Kuration »), étiquette au feutre (genre, date républicaine, encre) et critères */
+        /* [IK] rubrique (ex. « Curators »), étiquette au feutre (genre, date républicaine, encre) et critères */
         shelf: src.shelf || "",
         label: src.label || "",
         label_en: src.label_en || "",
@@ -301,7 +301,7 @@
     readLocal().forEach(function (t) { if (t && t.channel && !have[t.channel]) { have[t.channel] = 1; out.push(t); } });
     return out;
   }
-  /* [IK] cassettes livrées par un instantané (rubrique KURATION) : elles s'ajoutent à l'étagère,
+  /* [IK] cassettes livrées par un instantané (rubrique CURATORS) : elles s'ajoutent à l'étagère,
      jamais au programme par défaut du magnétoscope, qui reste le catalogue du site */
   var snapTapes = [];
   function withSnapshot(tapes) {

@@ -934,7 +934,7 @@
 @media (prefers-reduced-motion:reduce){.vhs.is-fresh .vhs-key-play{animation:none}}
 .vhs-boot-tape,.vhs-boot-flap{display:none!important}
 
-/* [IK] KURATION : étiquettes de cassette écrites au feutre (Permanent Marker, Font Diner, licence Apache 2.0, servie par le site) */
+/* [IK] CURATORS : étiquettes de cassette écrites au feutre (Permanent Marker, Font Diner, licence Apache 2.0, servie par le site) */
 @font-face {
   font-family: 'Permanent Marker';
   font-style: normal;

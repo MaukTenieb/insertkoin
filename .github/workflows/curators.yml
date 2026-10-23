@@ -1,0 +1,26 @@
+# CURATORS: every Monday, after the watch of MaukTenieb/curators, the VHS deck gets the new cassettes.
+name: curators
+
+on:
+  schedule:
+    - cron: "19 9 * * 1"   # Monday, 9:19 UTC, after the 6:49 watch
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cassettes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cassettes of the week
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/MaukTenieb/curators/main/data/kg-vhs-curations.js -o kg-vhs-curations.js
+          node --check kg-vhs-curations.js
+          if git diff --quiet -- kg-vhs-curations.js; then echo "Same cassettes."; exit 0; fi
+          sed -i "s/const C='ik-[0-9]*';/const C='ik-$(TZ=Europe/Paris date +%Y%m%d%H%M)';/" sw.js
+          git config user.name "Mauk Tenieb"
+          git config user.email "mauktenieb@gmail.com"
+          git commit -am "CURATORS $(TZ=Europe/Paris date +%F)"
+          git push

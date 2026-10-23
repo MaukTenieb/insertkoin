@@ -75,27 +75,13 @@ Paste a YouTube channel (or playlist) link and press REC: the page records it on
 
 Refused pages are asked again before giving up; a cassette that could not be read to the end says so (for example 56 / 200). Cassettes stay in the visitor's browser. Pick one on the shelf for its tools: CSV, JSON, XLSX, TXT and MD exports (title, link, publication, duration, views, likes, comments), and ERASE (press twice).
 
-## VHS — KURATION
+## VHS — CURATORS
 
-The shelf holds a second row, KURATION: compilations of other artists' music on YouTube. Each label carries, in marker, a genre and a date of the French Republican calendar (the day the cassette last changed), in an ink of its own per genre: Death metal in red, Black metal in black, Jazz in blue, Folk & chanson in green… The row holds a Top 60, one compilation per genre (99 videos at most, a Pot-pourri for genres under 4 videos) and the 10 latest dated cassettes, one per genre and per weekly watch. The labels name genres and dates only; the curators stay in this file. Hovering a cassette shows its criteria.
+A second row of the shelf, CURATORS, offers compilations of other artists' music on YouTube, chosen by eight curators. Each label shows, in marker, a genre and a date of the French Republican calendar (the day the cassette last changed), in an ink for each genre: Death metal in red, Black metal in black, Jazz in blue, Folk & chanson in green. The row offers a Top 60, one compilation per genre (99 videos at most; Pot-pourri for genres under 4 videos) and the 10 latest dated cassettes, one per genre and per weekly watch. Labels name genres and dates; hovering a cassette shows its criteria.
 
-Pick a KURATION cassette for its tools: CSV, JSON, XLSX, TXT and MD exports, written out by criteria (genre, date, Republican date, selection rule, ranking order, tracks, YouTube links), and YOUTUBE, which opens the cassette as a YouTube playlist (50 videos per playlist, YouTube's limit; the JSON and MD exports list every playlist). Files are named by the Republican calendar: `29-vendemiaire-235_kuration_001.json`.
+A CURATORS cassette offers CSV, JSON, XLSX, TXT and MD exports by criteria (genre, date, Republican date, selection rule, ranking order, tracks, YouTube links) and YOUTUBE, which opens the cassette as YouTube playlists of 50 videos, YouTube's limit. File names follow the Republican calendar: `29-vendemiaire-235_curators_001.json`.
 
-Every Monday a scheduled watch reads the curators' public sources, keeps each piece of another artist's music they put forward, finds its YouTube video, ranks the artists (number of curators first, then best rank in Rate Your Music's top 10,000, then number of mentions) and writes `kg-vhs-curations.js`. The deck loads that file when the VHS cabinet opens; its default programme remains the site's own catalogue.
-
-Sources of the watch:
-
-- Dominique Pagani: the workshops, *Pagani Parle Musique* and *Musicosophie* (dominiquepagani.fr)
-- Marc-Édouard Nabe: wikinabia.com and the captions of his TikTok videos
-- Wyattxhim: the YouTube channel, its icebergs and tops on albumoftheyear.org
-- Ida B. (Sly Ida): her KALX playlists on Spinitron, WRIR, the Spotify playlist of her Instagram picks
-- Mauk Tenieb: Openwhyd, the Top 40 and its side paths
-- Alpha-27: the *Alpha-27 Essentials* and *Alpha-27 Review* videos
-- Adam Sigmund: *The Lowdown on Mad Wasp Radio* (archive.org) and the sub65 netlabel
-- Microchip.ufo: *The Micro Archives*
-- Rate Your Music: the top 10,000 albums ([sameraslan/recmyrecord](https://github.com/sameraslan/recmyrecord)), for ranks and genres
-
-A curator's own books, playlists and videos serve as provenance, never as cassette tracks.
+The cassettes come from [Curators](https://github.com/MaukTenieb/curators) (page: https://mauktenieb.github.io/curators/): every Monday a watch reads the curators' public sources, ranks the artists (number of curators, then best rank in Rate Your Music's top 10,000, then number of mentions) and writes `kg-vhs-curations.js`; the workflow `curators` copies that file here. The deck loads it when the VHS cabinet opens.
 
 ## FaunaTor and Tor
 
