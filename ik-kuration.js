@@ -1,15 +1,16 @@
 /*
- * Code: MIT licence, Copyright (c) 2026 Mauk Tenieb (see LICENSE).
- * Korhogo material: Copyright © Mauk Tenieb & Korhogo, all rights reserved. No use for training artificial intelligence.
+ * Code: MIT licence, Copyright (c) 2026 Mauk Tenieb & Korhogo (see LICENSE).
+ * Korhogo material: Copyright © Mauk Tenieb & Korhogo, all rights reserved. Training of AI models: reserved.
  */
-/* IKK — Korhogo Kuration: the tracks a visitor keeps with ♥ in the VHS deck become his own cassette.
-   The list lives in this browser (localStorage ik.kuration), sits on the deck's shelf as the cassette
+/* IKK, Korhogo Kuration: a visitor keeps tracks with the heart key of the VHS deck and makes a cassette of them.
+   The list stays in this browser (localStorage ik.kuration), appears on the deck's shelf as the cassette
    « Korhogo Kuration », and goes out on the open Nostr network (the Minitel's transport), signed with
-   the Minitel's key: one addressable event per visitor (kind 30078, d = korhogo-kuration), the last
-   version replacing the previous one. Anyone opens it at insertkoin/?k=<public key>; the page
-   kuration.html and the Minitel service 3615 KURATIONS list every visitor's cassette.
+   the Minitel's key: one addressable event per visitor (kind 30078, d = korhogo-kuration); each version replaces
+   the previous one. Anyone opens it at insertkoin/?k=<public key>; kuration.html lists every visitor's cassette,
+   kuration.html?k=<key> shows one; the Minitel service 3615 KURATIONS lists them too.
+   The browser key appears with the first heart: reading the list creates zero keys.
    IKK.has(id) · IKK.toggle({id,title}) → true if kept · IKK.mine() → [{id,title}] · IKK.all() → Promise<[{pk,name,tracks,t}]>
-   IKK.one(pk) → Promise<{pk,name,tracks,t}|null> · IKK.url(pk) · IKK.pk() → own public key (hex) */
+   IKK.one(pk) → Promise<{pk,name,tracks,t}|null> · IKK.find(hex) → Promise<{…}|null> (8 to 64 hex) · IKK.url(pk) · IKK.pk() → own public key (hex) or null */
 (function () {
   var KIND = 30078, TAG = 'korhogo-kuration', SINCE = 1792713600 /* 23 Oct 2026 */, MAX = 200,
     RELAYS = ['wss://relay.damus.io', 'wss://nos.lol', 'wss://relay.primal.net', 'wss://nostr.mom'],
@@ -19,8 +20,9 @@
   function load(src) { return new Promise(function (ok, ko) { var s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = ko; document.head.appendChild(s); }); }
   function libs() { if (NT) return Promise.resolve(NT); return (window.NostrTools ? Promise.resolve() : load('nostr-tools.js')).then(function () { NT = window.NostrTools; return NT; }); }
   /* the browser's key, shared with the Minitel and the palmarès (same site, same storage) */
-  function key() {
+  function key(create) {
     var h = get('vdx.nostr.sk', null);
+    if ((!h || !/^[0-9a-f]{64}$/.test(h)) && !create) return null;
     if (!h || !/^[0-9a-f]{64}$/.test(h)) { var b = NT.generateSecretKey(); h = Array.prototype.map.call(b, function (x) { return ('0' + x.toString(16)).slice(-2); }).join(''); put('vdx.nostr.sk', h); }
     var u = new Uint8Array(32); for (var i = 0; i < 32; i++) u[i] = parseInt(h.substr(i * 2, 2), 16); return u;
   }
@@ -39,7 +41,7 @@
     var list = mine();
     return libs().then(function () {
       var ev = NT.finalizeEvent({ kind: KIND, created_at: Math.floor(Date.now() / 1000), content: JSON.stringify({ tracks: list.slice(-MAX).map(function (t) { return [t.id, String(t.title || '').slice(0, 120)]; }) }),
-        tags: [['d', TAG], ['t', TAG], ['name', name()]] }, key());
+        tags: [['d', TAG], ['t', TAG], ['name', name()]] }, key(true));
       var pool = new NT.SimplePool();
       return Promise.allSettled(pool.publish(RELAYS, ev)).then(function () { try { pool.close(RELAYS); } catch (x) { /* closed */ } return ev; });
     }).catch(function () { return null; });
@@ -72,12 +74,13 @@
       return Object.keys(by).map(function (p) { return by[p]; }).filter(function (k) { return k.tracks.length; }).sort(function (a, b) { return b.t - a.t; });
     }).catch(function () { return []; });
   }
-  function all() { return query({ kinds: [KIND], '#t': [TAG], since: SINCE, limit: 500 }); }
+  function all() { return query({ kinds: [KIND], '#t': [TAG], since: SINCE, limit: 2000 }); }
   function one(pk) { if (!/^[0-9a-f]{64}$/.test(pk || '')) return Promise.resolve(null); return query({ kinds: [KIND], authors: [pk], '#d': [TAG] }).then(function (a) { return a[0] || null; }); }
-  function pk() { return libs().then(function () { return NT.getPublicKey(key()); }); }
-  /* the short address: mauktenieb.github.io/k/<first 8 hex of the key>, sent on by the root site's 404 page */
-  function url(p) { return 'https://mauktenieb.github.io/k/' + p.slice(0, 8); }
-  window.IKK = { has: has, toggle: toggle, mine: mine, all: all, one: one, url: url, pk: pk, name: name };
+  function pk() { return libs().then(function () { var k = key(false); return k ? NT.getPublicKey(k) : null; }); }
+  function find(want) { want = String(want || '').toLowerCase(); if (!/^[0-9a-f]{8,64}$/.test(want)) return Promise.resolve(null); return want.length === 64 ? one(want) : all().then(function (a) { return a.filter(function (k) { return k.pk.indexOf(want) === 0; })[0] || null; }); }
+  /* the short address: mauktenieb.github.io/k/<first 12 hex of the key>; the root site's 404 page sends it on (8 hex still work) */
+  function url(p) { return 'https://mauktenieb.github.io/k/' + p.slice(0, 12); }
+  window.IKK = { has: has, toggle: toggle, mine: mine, all: all, one: one, find: find, url: url, pk: pk, name: name };
 
   /* insertkoin/?k=<public key>: that visitor's cassette goes into the deck */
   var m = /[?&]k=([0-9a-f]{8,64})/.exec(location.search);
