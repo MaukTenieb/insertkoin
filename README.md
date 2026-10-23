@@ -54,7 +54,7 @@ The ten best of Korong! and of FaunInvaders, shown by the 3615 Minitel on its ho
 
 ## Korhogo Kuration
 
-In the VHS deck, the key ♡ keeps the track playing in the visitor's own cassette, « Korhogo Kuration », which sits on the deck's shelf; the key ♥ takes it out again. The cassette travels on the open Nostr network, signed with the Minitel's key (`ik-kuration.js`, one addressable event per visitor, kind 30078, `d` = `korhogo-kuration`). Each cassette has its own address, `https://mauktenieb.github.io/insertkoin/?k=<public key>`, which opens it in the deck. [`kuration.html`](https://mauktenieb.github.io/insertkoin/kuration.html) lists every cassette, with a « play all » link on YouTube; the Minitel lists them too, in 3615 KURATIONS.
+In the VHS deck, the key ♡ keeps the track playing in the visitor's own cassette, « Korhogo Kuration », which sits on the deck's shelf; the key ♥ takes it out again. The cassette travels on the open Nostr network, signed with the Minitel's key (`ik-kuration.js`, one addressable event per visitor, kind 30078, `d` = `korhogo-kuration`). Each cassette has its own short address, `https://mauktenieb.github.io/k/<first 8 characters of the public key>`, which opens it in the deck (the root site's 404 page sends it on to `insertkoin/?k=`). [`kuration.html`](https://mauktenieb.github.io/insertkoin/kuration.html) lists every cassette, with a « play all » link on YouTube; the Minitel lists them too, in 3615 KURATIONS.
 
 ## Koins
 

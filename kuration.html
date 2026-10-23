@@ -59,7 +59,7 @@ footer{color:var(--dim);font-size:11px;margin-top:40px}
       var ids=k.tracks.slice(0,50).map(function(t){return t.id;}).join(',');
       return '<section class="k'+(k.pk===me?' me':'')+'"><h2>'+esc(k.name)+'</h2>'+
         '<div class="meta">'+k.tracks.length+(fr?' morceau'+(k.tracks.length>1?'x':''):' track'+(k.tracks.length>1?'s':''))+' · '+day(k.t)+' · '+k.pk.slice(0,8).toUpperCase()+'</div>'+
-        '<div class="go"><a href="'+esc(IKK.url(k.pk))+'">'+(fr?'Magnétoscope':'VHS deck')+'</a><a href="https://www.youtube.com/watch_videos?video_ids='+ids+'" target="_blank" rel="noopener">'+(fr?'Tout lire sur YouTube':'Play all on YouTube')+'</a></div>'+
+        '<div class="meta"><a href="'+esc(IKK.url(k.pk))+'">'+esc(IKK.url(k.pk).replace('https://',''))+'</a></div>'+'<div class="go"><a href="'+esc(IKK.url(k.pk))+'">'+(fr?'Magnétoscope':'VHS deck')+'</a><a href="https://www.youtube.com/watch_videos?video_ids='+ids+'" target="_blank" rel="noopener">'+(fr?'Tout lire sur YouTube':'Play all on YouTube')+'</a></div>'+
         '<details><summary>'+(fr?'Les morceaux':'The tracks')+'</summary><ol>'+k.tracks.map(function(t){return '<li><a href="https://youtu.be/'+t.id+'" target="_blank" rel="noopener">'+esc(t.title)+'</a></li>';}).join('')+'</ol></details></section>';
     }).join('');
   });

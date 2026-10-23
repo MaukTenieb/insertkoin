@@ -75,16 +75,18 @@
   function all() { return query({ kinds: [KIND], '#t': [TAG], since: SINCE, limit: 500 }); }
   function one(pk) { if (!/^[0-9a-f]{64}$/.test(pk || '')) return Promise.resolve(null); return query({ kinds: [KIND], authors: [pk], '#d': [TAG] }).then(function (a) { return a[0] || null; }); }
   function pk() { return libs().then(function () { return NT.getPublicKey(key()); }); }
-  function url(p) { return BASE + '?k=' + p; }
+  /* the short address: mauktenieb.github.io/k/<first 8 hex of the key>, sent on by the root site's 404 page */
+  function url(p) { return 'https://mauktenieb.github.io/k/' + p.slice(0, 8); }
   window.IKK = { has: has, toggle: toggle, mine: mine, all: all, one: one, url: url, pk: pk, name: name };
 
   /* insertkoin/?k=<public key>: that visitor's cassette goes into the deck */
-  var m = /[?&]k=([0-9a-f]{64})/.exec(location.search);
+  var m = /[?&]k=([0-9a-f]{8,64})/.exec(location.search);
   if (m) window.addEventListener('load', function () { if (!window.KG) return;
     var want = m[1];
-    Promise.all([one(want), pk()]).then(function (r) {
+    var find = want.length === 64 ? one(want) : all().then(function (a) { return a.filter(function (k) { return k.pk.indexOf(want) === 0; })[0] || null; });
+    Promise.all([find, pk()]).then(function (r) {
       var k = r[0]; if (!k) return;
-      var own = r[1] === want, ch = own ? 'Korhogo Kuration' : 'Korhogo Kuration · ' + k.name;
+      var own = r[1] === k.pk, ch = own ? 'Korhogo Kuration' : 'Korhogo Kuration · ' + k.name;
       if (own) put('ik.kuration', k.tracks);
       var tries = 0;
       (function wait() {
