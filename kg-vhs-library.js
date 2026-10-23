@@ -496,6 +496,7 @@
         "Rewind 5 seconds": "Rembobine 5 secondes",
         "Forward 5 seconds": "Avance 5 secondes",
         "Random": "Aléatoire",
+        "Keep in Korhogo Kuration": "Garder dans Korhogo Kuration",
         "Tape speed": "Vitesse de bande",
         "Mute / unmute": "Couper / remettre le son",
         "Play / pause": "Lecture / pause",

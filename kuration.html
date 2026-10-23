@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!--
+  Code: MIT licence, Copyright (c) 2026 Mauk Tenieb (see LICENSE).
+  Korhogo material: Copyright © Mauk Tenieb & Korhogo, all rights reserved. No use for training artificial intelligence.
+-->
+<title>Korhogo Kuration — Insert Koin</title>
+<meta name="description" content="Korhogo Kuration: the cassettes of the visitors of Insert Koin, Mauk Tenieb's Korhogo world, games and machines in a browser. Each cassette holds the tracks a visitor keeps with the heart key of the VHS deck.">
+<link rel="canonical" href="https://mauktenieb.github.io/insertkoin/kuration.html">
+<link rel="icon" href="favicon.png">
+<link href="fonts.css" rel="stylesheet">
+<style>
+:root{--bg:#0b0907;--ink:#ece4d2;--dim:rgba(236,228,210,.55);--gold:#c9a84c;--rose:#e0457b;--line:rgba(201,168,76,.25)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 "DM Mono",ui-monospace,monospace}
+main{max-width:860px;margin:0 auto;padding:28px 16px 60px}
+h1{font:400 clamp(2rem,7vw,3.4rem)/1 "Bebas Neue",Impact,sans-serif;letter-spacing:.05em;margin:0 0 10px;color:#fff}
+h1 b{color:var(--rose);font-weight:400}
+.how{color:var(--dim);margin:0 0 6px;max-width:62ch}
+.how a,.k a{color:var(--gold)}
+.state{color:var(--dim);margin:22px 0}
+.k{border-top:1px solid var(--line);padding:14px 0}
+.k h2{font:400 1.35rem/1.1 "Bebas Neue",Impact,sans-serif;letter-spacing:.06em;margin:0 0 4px}
+.k .meta{color:var(--dim);font-size:12px}
+.k .go{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0}
+.k .go a{border:1px solid var(--line);padding:4px 10px;text-decoration:none}
+.k.me h2{color:var(--rose)}
+details summary{cursor:pointer;color:var(--dim);font-size:12px}
+ol{margin:6px 0 0;padding-left:2.2em;font-size:12px}
+ol a{color:var(--ink);text-decoration:none}ol a:hover{color:var(--gold)}
+footer{color:var(--dim);font-size:11px;margin-top:40px}
+</style>
+</head>
+<body>
+<main>
+<h1>Korhogo Kuration <b>&#x2665;</b></h1>
+<p class="how" data-en="The cassettes of the visitors of Insert Koin. In the VHS deck, the key &#x2661; keeps the track playing in your own cassette; each cassette has its own address, listed here." data-fr="Les cassettes des visiteurs d'Insert Koin. Dans le magnétoscope, la touche &#x2661; garde le morceau en cours dans ta propre cassette ; chaque cassette a son adresse, rangée ici.">The cassettes of the visitors of Insert Koin. In the VHS deck, the key &#x2661; keeps the track playing in your own cassette; each cassette has its own address, listed here.</p>
+<p class="how"><a href="https://mauktenieb.github.io/insertkoin/" data-en="Insert Koin, the VHS deck" data-fr="Insert Koin, le magnétoscope">Insert Koin, the VHS deck</a> · 3615 KURATIONS</p>
+<p class="state" id="state" data-en="Reading the network…" data-fr="Lecture du réseau…">Reading the network…</p>
+<div id="list"></div>
+<footer>© Korhogo™ · Korhogo Fauna™ · Mauk Tenieb. <span data-en="Cassettes carried by the open Nostr network; tracks played from YouTube." data-fr="Cassettes portées par le réseau ouvert Nostr ; morceaux lus depuis YouTube.">Cassettes carried by the open Nostr network; tracks played from YouTube.</span></footer>
+</main>
+<script src="ik-kuration.js"></script>
+<script>
+(function(){
+  var fr=(function(){try{var l=localStorage.getItem('ik.lang');if(l)return l==='fr';}catch(e){}return /^fr/i.test(navigator.language||'');})();
+  document.documentElement.lang=fr?'fr':'en';
+  document.querySelectorAll('[data-en]').forEach(function(el){el.innerHTML=el.getAttribute(fr?'data-fr':'data-en');});
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function day(t){return new Date(t*1000).toISOString().slice(0,10);}
+  Promise.all([IKK.all(),IKK.pk().catch(function(){return '';})]).then(function(r){
+    var ks=r[0],me=r[1],st=document.getElementById('state'),box=document.getElementById('list');
+    ks.sort(function(a,b){return (b.pk===me)-(a.pk===me)||b.t-a.t;});
+    st.textContent=ks.length?(ks.length+(fr?' cassette'+(ks.length>1?'s':''):' cassette'+(ks.length>1?'s':''))):(fr?'Zéro cassette sur le réseau pour l’instant.':'Zero cassette on the network for now.');
+    box.innerHTML=ks.map(function(k){
+      var ids=k.tracks.slice(0,50).map(function(t){return t.id;}).join(',');
+      return '<section class="k'+(k.pk===me?' me':'')+'"><h2>'+esc(k.name)+'</h2>'+
+        '<div class="meta">'+k.tracks.length+(fr?' morceau'+(k.tracks.length>1?'x':''):' track'+(k.tracks.length>1?'s':''))+' · '+day(k.t)+' · '+k.pk.slice(0,8).toUpperCase()+'</div>'+
+        '<div class="go"><a href="'+esc(IKK.url(k.pk))+'">'+(fr?'Magnétoscope':'VHS deck')+'</a><a href="https://www.youtube.com/watch_videos?video_ids='+ids+'" target="_blank" rel="noopener">'+(fr?'Tout lire sur YouTube':'Play all on YouTube')+'</a></div>'+
+        '<details><summary>'+(fr?'Les morceaux':'The tracks')+'</summary><ol>'+k.tracks.map(function(t){return '<li><a href="https://youtu.be/'+t.id+'" target="_blank" rel="noopener">'+esc(t.title)+'</a></li>';}).join('')+'</ol></details></section>';
+    }).join('');
+  });
+})();
+</script>
+</body>
+</html>

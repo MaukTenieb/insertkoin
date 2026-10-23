@@ -146,6 +146,7 @@
 .vhs .vhs-key-play { width: clamp(44px, 5.6vw, 56px); color: #e8e2d6; }
 .vhs .vhs-key-eject { margin-right: 6px; }
 .vhs .vhs-key-small { width: 26px; height: 22px; font-size: 13px; letter-spacing: 0; margin-left: 6px; }
+.vhs .vhs-key-heart[aria-pressed="true"] { color: #e0457b; }
 .vhs .vhs-tv-key {
   min-height: 0; padding: 3px 8px; border: 0; border-radius: 2px;
   background: linear-gradient(180deg, #2c2926, #1c1a18); color: #8c867d;

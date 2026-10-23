@@ -52,6 +52,10 @@ A few seconds after the title screen opens, then now and then, a guide wanders a
 
 The ten best of Korong! and of FaunInvaders, shown by the 3615 Minitel on its home screen (3615 KORHOGO, the five first of each game). Entries travel on the open Nostr network, the Minitel's own transport; the routine of this repository rewrites [`palmares.json`](palmares.json) every hour. Rules, transport and checks: [PALMARES.md](PALMARES.md).
 
+## Korhogo Kuration
+
+In the VHS deck, the key ♡ keeps the track playing in the visitor's own cassette, « Korhogo Kuration », which sits on the deck's shelf; the key ♥ takes it out again. The cassette travels on the open Nostr network, signed with the Minitel's key (`ik-kuration.js`, one addressable event per visitor, kind 30078, `d` = `korhogo-kuration`). Each cassette has its own address, `https://mauktenieb.github.io/insertkoin/?k=<public key>`, which opens it in the deck. [`kuration.html`](https://mauktenieb.github.io/insertkoin/kuration.html) lists every cassette, with a « play all » link on YouTube; the Minitel lists them too, in 3615 KURATIONS.
+
 ## Koins
 
 - One Koin opens a game (a Korong! duel or run, a Korhogo game). The machines (3615, VHS, Photofauna, FaunaTor, Skoporhogo, Reporhogo) and Motel Sound are free.

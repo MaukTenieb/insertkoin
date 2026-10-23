@@ -497,6 +497,23 @@
     return s.source === "youtube" ? s.trackIndex : s.localIndex;
   }
 
+  /* Korhogo Kuration (ik-kuration.js): ♥ keeps the current track in the visitor's own cassette */
+  function heartState(s) {
+    const b = q(s, "[data-vhs-action='heart']");
+    if (!b) return;
+    const t = s.source === "youtube" ? s.tracks[s.trackIndex] : null;
+    const on = !!(t && window.IKK && window.IKK.has(t.id));
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+    b.textContent = on ? "\u2665" : "\u2661";
+    b.disabled = !t || !window.IKK;
+  }
+  function toggleHeart(s) {
+    const t = s.source === "youtube" ? s.tracks[s.trackIndex] : null;
+    if (!t || !window.IKK) return;
+    window.IKK.toggle({ id: t.id, title: t.title });
+    heartState(s);
+  }
+
   function updateTrackUI(s) {
     const n = listLength(s);
     const i = currentIndex(s);
@@ -509,6 +526,7 @@
     }
     setText(s, "[data-vhs-osd-track]", label);
     if (s.root) s.root.classList.toggle("is-loaded", label !== "\u2014");
+    heartState(s);
 
     const mark = (selector, active) => {
       qa(s, selector).forEach((button, idx) => {
@@ -1499,6 +1517,7 @@
     else if (action === "rew") startScan(s, -1); // keydown only: held REW
     else if (action === "ffw") startScan(s, 1); // keydown only: held FFW
     else if (action === "random") randomItem(s);
+    else if (action === "heart") toggleHeart(s);
     else if (action === "play") togglePlay(s);
     else if (action === "mute") toggleMute(s);
     else if (action === "eject") close();
