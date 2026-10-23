@@ -6,6 +6,8 @@ Insert Koin, Mauk Tenieb's Korhogo world, games and machines in a browser.
 
 Insert Koin runs in the visitor's browser on desktop and phone, held upright or on its side, in English and French.
 
+By Mauk Tenieb & Korhogo. Build guide: [method](https://github.com/MaukTenieb/method).
+
 ---
 
 ## The arcade
@@ -18,22 +20,22 @@ The home screen is the motel painting, then the cabinets. Every visit draws its 
 | **Fauna Chess** | Fairy chess against the Fauna. |
 | **Erratik** | The memory game. |
 | **Faunarratik** | A tale built with the Masks; *Let the Kerema wrap it* saves it as a text file. English only. |
-| **Katabatik** | A die is thrown on the cabinet: Konnect4, Sampler, Akasztófa (the Hungarian hangman, on a Hungarian keyboard; a vowel counts with or without its accents; a win brings a short unsigned quotation to guess) or Mastermind. |
+| **Katabatik** | A die is thrown on the cabinet: Konnect4, Sampler, Akasztófa (the Hungarian hangman, on a Hungarian keyboard; a vowel counts with its accents or bare; a win brings a short unsigned quotation to guess) or Mastermind. |
 | **3615** | The K Terminal, a Minitel emulator: https://mauktenieb.github.io/3615/ |
 | **VHS** | A television on a tape deck: Motel Sound and your own YouTube tapes. |
 | **Photofauna** | The photo editor: takes or opens a photo and applies 44 looks. |
 | **FaunaTor** | Opens web pages and v3 .onion sites through Tor clients that run in the page. |
-| **Skoporhogo** | The Fauna living in an isometric hotel room. |
+| **Skoporhogo** | The Fauna in an isometric hotel room. |
 | **Reporhogo** | Reporhogo searches forty-one code forges for a topic and collects the URLs of the repositories it finds. |
 | Bio · Burrows · Lore · TL · IG | Mauk Tenieb on GitHub · Korhogo Fauna (katabase) · the Substack · the Threadless store · Instagram. |
 
 Always there, on every screen: **Motel Sound** (the Korhogo jukebox, open to every visitor), **Kapture** (camera and microphone recorder), **Baku Boom** (back to the menu), **FX** on/off (remembered), **FR/EN**.
 
 ### The home screen
-The painting takes the visitor's hour (bluish night, pink dawn, orange evening). The television is never steady and changes channel in the snow; some visits bring a storm behind the window, with thunder when FX are on; Plague of Justinian's cloud rumbles; the scarab breathes; Aube's hands glint pink, Maiden Call's telephone blue, Auvergne's eyes green; the cigarette smokes; a beetle sometimes crosses the picture; the longer one stays, the more the picture wears (grain, tape tears, scratches). A light runs over the cabinets now and then, or one flickers; the neons of the chips falter; the devices of the motel call (the television leads to VHS, the telephone to 3615, the chessboard to Fauna Chess, the cards to Erratik, Unkle Maukie to Korong!, the Koins on the floor to 3615 KOINS, the lyre to Motel Sound, the window to FaunaTor, the boxes to Katabatik). On screen, the sign reads INSERT KOIN, INTERSEKTION, NOIR INSEKT or SEKTOR INN, drawn at random, and changes every few seconds under the visitor's eyes; the address stays insertkoin. The Bio tile reads BIO, BIOGRAPHIK or BIOTENIEB; the Koins sometimes read Kinos. Each time the title screen opens, it takes the faint colour of one Mask drawn at random: a soft wash over the picture, its lines and golds leaning a little toward it.
+The painting takes the visitor's hour (bluish night, pink dawn, orange evening). The television flickers and changes channel in the snow; some visits bring a storm behind the window, with thunder when FX are on; Plague of Justinian's cloud rumbles; the scarab breathes; Aube's hands glint pink, Maiden Call's telephone blue, Auvergne's eyes green; the cigarette smokes; a beetle sometimes crosses the picture; the longer one stays, the more the picture wears (grain, tape tears, scratches). A light runs over the cabinets now and then, or one flickers; the neons of the chips falter; the devices of the motel call (the television leads to VHS, the telephone to 3615, the chessboard to Fauna Chess, the cards to Erratik, Unkle Maukie to Korong!, the Koins on the floor to 3615 KOINS, the lyre to Motel Sound, the window to FaunaTor, the boxes to Katabatik). On screen, the sign reads INSERT KOIN, INTERSEKTION, NOIR INSEKT or SEKTOR INN, drawn at random, and changes every few seconds under the visitor's eyes; the address stays insertkoin. The Bio tile reads BIO, BIOGRAPHIK or BIOTENIEB; the Koins sometimes read Kinos. Each time the title screen opens, it takes the faint colour of one Mask drawn at random: a soft wash over the picture, its lines and golds leaning a little toward it.
 
 ### The guide
-A few seconds after the title screen opens, then now and then, a guide wanders along the cabinets, shining in its colour when it arrives: C7H5N3O6 (blue), Honey Buzzard (red), Ts'ui Pên (orange) or Croisière Noire (its own grey), drawn from their Korong! sprites. Touched, it walks every cabinet and chip, then Motel Sound and Kapture, lights each one and names it with one line. A click elsewhere, or Escape, stops it. It can also be grabbed with the mouse or a finger and thrown: it slides and bounces off the edges like the Korong! puck, silent, lighting up at each impact; after one or two impacts it lays a Koin that goes to the counter by itself (one or two Koins at most per visit, however long one plays). Now and then, hitting an edge, it swears. Thrown in the middle of a visit, it takes it up again a few seconds later. Every visit starts on any tile or menu, at random.
+A few seconds after the title screen opens, then now and then, a guide wanders along the cabinets, shining in its colour when it arrives: C7H5N3O6 (blue), Honey Buzzard (red), Ts'ui Pên (orange) or Croisière Noire (its own grey), drawn from their Korong! sprites. Touched, it walks every cabinet and chip, then Motel Sound and Kapture, lights each one and names it with one line. A click elsewhere, or Escape, stops it. The mouse or a finger also grabs it and throws it: it slides and bounces off the edges like the Korong! puck, silent, lighting up at each impact; after one or two impacts it lays a Koin that goes to the counter by itself (one or two Koins at most per visit, however long one plays). Now and then, hitting an edge, it swears. Thrown in the middle of a visit, it takes it up again a few seconds later. Every visit starts on any tile or menu, at random.
 
 ---
 
@@ -42,15 +44,15 @@ A few seconds after the title screen opens, then now and then, a guide wanders a
 - Move the paddle with the mouse, a finger or the arrow keys. Pull back, then drive through the puck to hit hard; hold the button or Space to catch it. The whole back line is the goal.
 - The mouse stays inside the table while playing; Enter or Esc lets it go.
 - Each Mask plays by its Korhogo stats (STR power, DEX speed, INT precision, WIS reading, CHA placing, CON stamina) and a signature move, and keeps its own fixed level.
-- **Duel**: click a Mask in the room, first to 15. **Kompete!** starts a tournament against the eighteen Masks, first to 11 each time; **Continue** picks a saved one up where it stopped.
+- Duel: click a Mask in the room, first to 15. Kompete! starts a tournament against the eighteen Masks, first to 11 each time; Continue picks a saved one up where it stopped.
 - The room is a painted motel room; its two paintings show Fauna drawn at random for each match, and the board on the left wall keeps the score. The CRT on the dresser switches at random and on every point between the Mask's motto, the score, its stats, the rally, its signature, your Koins, the hour, Motel Sound, test cards, snow and a few seconds of a Mauk Tenieb clip.
-- **The Kerema decides!** One tournament in two opens with a die that sets the applicant's swing, from −15% (⚀) to +15% (⚅); the face stays by the score. One match in two, a translucent die floats over the table once or twice (*Puck a boo!* — *On est joueur ?*, *Koquinette ou Koquinou ?*): touch it with the paddle to take the throw, or let it drift away. The Kerema leans toward those who earned their Koins: the more Koins, the higher the faces (about 7 Koins: even).
+- *The Kerema decides!* One tournament in two opens with a die that sets the applicant's swing, from −15% (⚀) to +15% (⚅); the face stays by the score. One match in two, a translucent die floats over the table once or twice (*Puck a boo!*, *On est joueur ?*, *Koquinette ou Koquinou ?*): touch it with the paddle to take the throw, or let it drift away. The Kerema leans toward those who earned their Koins: the more Koins, the higher the faces (about 7 Koins: even).
 - Now and then, after a point, the Kerema's sarcasm comes on the TV, in the visitor's language.
 - On a phone held upright, a phone sign turns over the table; on its side, the table takes the whole height; the score stays on the CRT and the board on the wall.
 
-## Palmarès
+## Palmarès and Hall of Kave
 
-The ten best of Korong! and of FaunInvaders, shown by the 3615 Minitel on its home screen (3615 KORHOGO, the five first of each game). Entries travel on the open Nostr network, the Minitel's own transport; the routine of this repository rewrites [`palmares.json`](palmares.json) every hour. Rules, transport and checks: [PALMARES.md](PALMARES.md).
+The 3615 Minitel shows on its home screen (3615 KORHOGO) the five first of Korong! and of FaunInvaders, and in 3615 HALL the HALL OF KAVE: the twenty best players of all the games, one total per player, points of every game plus Koins earned. Results go out on the open Nostr network, the Minitel's own transport; the routine of this repository rewrites [`palmares.json`](palmares.json) every hour. Rules, points, transport and checks: [PALMARES.md](PALMARES.md).
 
 ## Korhogo Kuration
 
@@ -59,23 +61,23 @@ In the VHS deck, the key ♡ puts the track playing into the visitor's own casse
 ## Koins
 
 - One Koin opens a game (a Korong! duel or run, a Korhogo game). The machines (3615, VHS, Photofauna, FaunaTor, Skoporhogo, Reporhogo) and Motel Sound are free.
-- **Every win, in any game, brings one Koin.** A win rains Koins on the screen.
-- In the 3615: **1 Koin per connection to 3615 KOINS**; 1 per Fauna profile read to its last page; 1 per message sent (5 a day). No ceiling.
+- Every win, in any game, brings one Koin. A win rains Koins on the screen.
+- In the 3615: 3 Koins at the first connection of the day to 3615 KOINS, then 1 per hour, 10 a day at most; 1 per Fauna profile read to its last page; 1 per message sent, 5 a day at most.
 - At 0, one Koin comes back after 30 seconds.
-- The balance is shared with the 3615 (same address, `ik.koins` in the browser).
+- The 3615 shares the balance (same address, `ik.koins` in the browser).
 
-## VHS — REC
+## VHS: REC
 
-Paste a YouTube channel (or playlist) link and press REC: the page records it onto a cassette inside the visitor's browser (`kg-vhs-scrape.js`). Several roads are tried, the first that answers wins:
+Paste a YouTube channel (or playlist) link and press REC: the page records it onto a cassette inside the visitor's browser (`kg-vhs-scrape.js`). The page tries several roads and keeps the first that answers:
 
-1. YouTube's own Data API, when a key is set in `YT_KEY` (whole channel, with dates, durations, views, likes, comments);
+1. YouTube's own Data API, with a key in `YT_KEY` (whole channel, with dates, durations, views, likes, comments);
 2. Piped (api.piped.private.coffee first) and Invidious, raced: the whole channel, page after page, its shorts and streams, and an artist's playlists when the uploads are few;
 3. the channel's pages rendered by r.jina.ai;
 4. the uploads playlist page or the RSS feed, through public relays or FaunaTor's Tor.
 
-Refused pages are asked again before giving up; a cassette that could not be read to the end says so (for example 56 / 200). Cassettes stay in the visitor's browser. Pick one on the shelf for its tools: CSV, JSON, XLSX, TXT and MD exports (title, link, publication, duration, views, likes, comments), and ERASE (press twice).
+The page asks a refusing source again, a few times; a cassette read in part shows its count (for example 56 / 200). Cassettes stay in the visitor's browser. Pick one on the shelf for its tools: CSV, JSON, XLSX, TXT and MD exports (title, link, publication, duration, views, likes, comments), and ERASE (press twice).
 
-## VHS — CURATORS
+## VHS: CURATORS
 
 A second row of the shelf, CURATORS, offers compilations of other artists' music on YouTube, chosen by eight curators. Each label shows, in marker, a genre and a date of the French Republican calendar (the day the cassette last changed), in an ink for each genre: Death metal in red, Black metal in black, Jazz in blue, Folk & chanson in green. The row offers a Top 60, one compilation per genre (99 videos at most; Pot-pourri for genres under 4 videos) and the 10 latest dated cassettes, one per genre and per weekly watch. Labels name genres and dates; hovering a cassette shows its criteria.
 
@@ -89,51 +91,57 @@ FaunaTor runs Tor inside the page: two Tor clients compiled to WebAssembly reach
 
 - the web, through Tor exits: [privacy-ethereum/webtor-rs](https://github.com/privacy-ethereum/webtor-rs) (MIT) → `tor-web.js`, `tor-web_bg.wasm`
 - `.onion` (v3): [andrewtheguy/webtor-rs](https://github.com/andrewtheguy/webtor-rs) (MIT) → `tor-onion.js`, `tor-onion_bg.wasm`
-- the Tor consensus is fetched from the directory authorities twice a day and published on this site (`tor/`), so the web client reads it from here.
+- a workflow fetches the Tor consensus from the directory authorities twice a day and publishes it on this site (`tor/`), so the web client reads it from here.
 
-When a page cannot be reached: *Your Kalabass was rejected. Apply later.* — with the reason, small, underneath.
+A page out of reach shows *Your Kalabass was rejected. Apply later.*, with the reason in small type underneath.
 
 ## Photofauna
 
-Photofauna, the photo editor of Insert Koin, honours the photo apps of 2008–2019: 44 looks (simulated film, toy cameras, historical processes, instants, glitch, painting, shapes…), an editor with adjustments, recipes kept inside the saved PNG, GIF export, deterministic renders. The camera opens on a Mask drawn at random. Every shot is saved at once, untouched. Looks pile up: **Keep** fixes the current look into the picture and the next one goes on top; **Undo** steps back, last look first, then last layer. The saved PNG carries the fixed layers in its recipe. The file `fotofauna.html` holds the whole app.
+Photofauna, the photo editor of Insert Koin, reproduces the looks of the photo apps of 2008–2019: 44 looks (simulated film, toy cameras, historical processes, instants, glitch, painting, shapes…), an editor with adjustments, recipes kept inside the saved PNG, GIF export, deterministic renders. The camera opens on a Mask drawn at random. Photofauna saves every shot at once, untouched. Looks pile up: **Keep** fixes the current look into the picture and the next one goes on top; **Undo** steps back, last look first, then last layer. The saved PNG keeps the fixed layers in its recipe. `fotofauna.html` contains the whole app.
 
 ## Saved files
 
-Everything Insert Koin saves (Photofauna, Faunarratik, the Sampler, Kapture, VHS exports, the Motel Sound list) is named by the French Republican calendar, then the program, then a counter of the day: `18-vendemiaire-235_photofauna_001.jpg`. The day is the visitor's own; years III, VII, XI and XV are sextile as they were kept, then Romme's rule (`ik-name.js`).
+Insert Koin names everything it saves (Photofauna, Faunarratik, the Sampler, Kapture, VHS exports, the Motel Sound list) by the French Republican calendar, then the program, then a counter of the day: `18-vendemiaire-235_photofauna_001.jpg`. The day is the visitor's own; years III, VII, XI and XV count as sextile, as in the calendar of the time; Romme's rule follows (`ik-name.js`).
 
 ---
 
 ## Files
 
-Everything sits at the top level, no folders (except `tor/` and `.github/`), so the site updates in one upload.
+Every file is at the top level; the folders are `tor/`, `notes/`, `tools/` and `.github/`. One upload updates the site.
 
 | Files | Role |
 |---|---|
 | `index.html` | the site |
-| `fr.html` | the same page opening in French — **generated**: edit `index.html`, then run `python3 build-fr.py` |
+| `fr.html` | the same page in French, built from `index.html`: edit `index.html`, then run `python3 build-fr.py` |
 | `fauna-*.html`, `fauna-*.webp` | one page per member of the Fauna |
 | `sprite-*.webp` | the Masks of Korong! (8 expressions each) |
 | `mask-*.webp` | the Masks' portraits (Photofauna, the paintings of the room) |
 | `thumb-*.jpg` | the cabinets (`thumb-bio-*.jpg`: the Bio cabinet draws one of the eighteen Masks) |
 | `poster*.{jpg,webp}`, `room.webp` | the painting and the pixel room |
-| `room-puck-1.webp` … `room-puck-6.webp` | the six painted motel rooms of Korong!, one drawn at random per match (the table, the Mask, the window's sky, the TV, the portraits and the score board are laid over it by the game, each room with its own measured zones); `room-puck.webp` is the former room |
+| `room-puck-1.webp` … `room-puck-6.webp` | the six painted motel rooms of Korong!, one drawn at random per match (the game lays the table, the Mask, the window's sky, the TV, the portraits and the score board over it, each room with its own measured zones); `room-puck.webp` is the former room |
 | `kg-hang-ja.json` | Akasztófa's stanzas |
 | `kg-*` | the Korhogo games, loaded on demand (`kg-loader.js`, `kg-core.*`, `kg-chess.*`, `kg-erratic.*`, `kg-faunarratics.*`, `kg-katabatik.*`, `kg-kapture.*`); `kg-faces.json` their portraits |
 | `kg-vhs.*`, `kg-vhs-library.js`, `kg-vhs-recorder.js`, `kg-vhs-scrape.js` | VHS: the deck, the cassette library, the shelf and REC bay, the in-page recorder |
+| `kg-vhs-curations.js` | VHS: the CURATORS cassettes, copied every Monday from [Curators](https://github.com/MaukTenieb/curators) |
+| `font-permanent-marker-latin-400-normal.woff2` | the marker of the CURATORS labels (Permanent Marker, Font Diner, Apache License 2.0) |
+| `ik-kuration.js`, `kuration.html` | Korhogo Kuration: the visitors' cassettes and their pages |
+| `palmares-rules.js`, `ik-palmares.js`, `palmares.json`, `tools/palmares.mjs`, `PALMARES.md` | palmarès and Hall of Kave: rules, arcade client, the hourly list, the routine, the method |
 | `fotofauna.html` | Photofauna |
 | `tor.html`, `faunator-tor.js`, `tor-web*`, `tor-onion*`, `tor/` | FaunaTor and its Tor clients; `faunator-worker.js`, an optional Cloudflare Worker relay |
 | `skoporhogo.html`, `three.min.js` | Skoporhogo and three.js r128 |
 | `reporhogo.html` | Reporhogo |
 | `fonts.css`, `font-*.woff2` | the fonts, served by the site |
 | `manifest.webmanifest`, `sw.js`, `icon.png`, `favicon.png` | installation and offline use (`sw.js`: pages and code from the network first, images from the cache) |
-| `robots.txt`, `sitemap.xml`, `llms.txt` | search and answer engines are welcome; training crawlers are refused |
-| `ik-name.js` | names every saved file by the Republican calendar (`fotofauna.html` carries its own copy) |
+| `robots.txt`, `sitemap.xml`, `llms.txt` | robots.txt welcomes search and answer engines and turns away training crawlers |
+| `ik-name.js` | names every saved file by the Republican calendar (`fotofauna.html` has its own copy) |
 | `build-fr.py` | builds `fr.html` from `index.html` |
 
 ### Workflows (`.github/workflows/`)
-- `faunator-tor.yml` — builds the two Tor clients and commits them.
-- `tor-consensus.yml` — refreshes the Tor consensus in `tor/` twice a day.
-- `vhs-probe.yml` — runs a real browser against the live site (every cabinet, desktop, French, phone upright and on its side, a real REC) and writes the result to the `probe-results` branch. Run it from Actions → vhs-probe → Run workflow.
+- `faunator-tor.yml`: builds the two Tor clients and commits them.
+- `tor-consensus.yml`: refreshes the Tor consensus in `tor/` twice a day.
+- `palmares.yml`: every hour, reads the palmarès and the Hall of Kave cards on the Nostr relays and rewrites `palmares.json`.
+- `curators.yml`: every Monday at 9:19 UTC, copies the CURATORS cassettes from MaukTenieb/curators.
+- `vhs-probe.yml`: runs a real browser against the live site (every cabinet, desktop, French, phone upright and on its side, a real REC) and writes the result to the `probe-results` branch. Run it from Actions → vhs-probe → Run workflow.
 
 ## Updating
 
@@ -141,12 +149,12 @@ Edit, then commit to `main`: GitHub Pages publishes within a minute or two. Afte
 
 ## Notes
 
-How Insert Koin gets made, in English and French: https://mauktenieb.github.io/insertkoin/notes/
+Notes on the making of Insert Koin, in English and French: https://mauktenieb.github.io/insertkoin/notes/ · the whole method: https://github.com/MaukTenieb/method
 
 - [Catchlight: placing eye lights on sprite frames](https://mauktenieb.github.io/insertkoin/notes/catchlight.html)
 - [Detour: cutting Midjourney portrait sheets into sprite strips](https://mauktenieb.github.io/insertkoin/notes/detour.html)
 
-The notes follow house rules checked by `tools/prose-lint.py`: facts, present tense, affirmations, active voice.
+The notes follow the house prose rules of the method repo ([prose/RULES.md](https://github.com/MaukTenieb/method/blob/main/prose/RULES.md)), checked by `prose-lint.py`.
 
 <!-- network:start -->
 ## Korhogo
@@ -162,9 +170,7 @@ Index of Mauk Tenieb's sites: https://mauktenieb.github.io/
 
 ## Rights
 
-Copyright © Mauk Tenieb & Korhogo. Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Korong!™ and any related material — including characters, names, symbols, rules, lore and texts, in any form or medium — are the exclusive property of Korhogo™, all rights reserved. The source code of this site is free to reuse under the MIT licence (see `LICENSE`); the lore, names, marks, characters, images, music and texts stay out of that licence and remain the property of the author.
-
-The code is MIT: take it, change it, redistribute it, keep the notice. The Korhogo material (characters, names, marks, lore, texts, images, music) requires written permission for any reproduction or reuse, including training or use by artificial-intelligence systems. Whoever reuses the code replaces that material with their own. Details: `LICENSE`.
+Code under MIT, method under CC BY 4.0, Korhogo material reserved: Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Korong!™, the characters, names, symbols, rules, lore, texts, images, videos and music. Credit for any reuse: Mauk Tenieb & Korhogo. A person may use an AI assistant to read, explain and adapt the code and the method; training of AI models: reserved. Whoever reuses the code replaces the Korhogo material with their own. Details: [LICENSE](LICENSE).
 
 Third-party components:
 - Korong! runs on a JavaScript port of [PuffleHuck](https://github.com/iconidentify/pufflehuck) (MIT, see `LICENSE`).
