@@ -76,7 +76,33 @@
     '.ikp-top caption{font-family:"Press Start 2P",monospace;font-size:9px;letter-spacing:.2em;color:#c9a84c;padding-bottom:6px}'+
     '.ikp-top th{font-weight:400;color:rgba(236,228,210,.5);font-size:9px;padding:2px 8px}.ikp-top td{padding:2px 8px;text-align:right}.ikp-top td:nth-child(2){text-align:left;letter-spacing:.2em}.ikp-top tr.me td{color:#c9a84c}';
   document.head.appendChild(css);
-  window.IKP={top:top,record:record,html:html,line:line};
+  /* HALL OF KAVE: this browser's card (localStorage ik.kave), sent to the relays a few seconds after each change */
+  var KV=null,kvT=0;
+  function kvGet(){if(KV)return KV;try{KV=JSON.parse(localStorage.getItem('ik.kave'))||{};}catch(e){KV={};}
+    ['ka','kb','du','fi','cl','er','c4','hg','mm','ko'].forEach(function(k){KV[k]=+KV[k]||0;});return KV;}
+  function kvSave(){try{localStorage.setItem('ik.kave',JSON.stringify(KV));}catch(e){}}
+  function kvPut(){kvSave();clearTimeout(kvT);kvT=setTimeout(kvSend,5000);}
+  function kvName(){var n='';try{n=JSON.parse(localStorage.getItem('vdx.nick'))||'';}catch(e){}if(!n)n=lastIni();return String(n).replace(/[^\w\- .'À-ÿ]/g,'').slice(0,16)||'KORHOGO';}
+  function kvSend(){libs().then(function(){var c={};Object.keys(R.CAP).forEach(function(k){c[k]=Math.min(R.CAP[k],kvGet()[k]);});
+    var ev=NT.finalizeEvent({kind:R.KIND,created_at:Math.floor(Date.now()/1000),content:JSON.stringify(c),tags:[['d',R.KAVE],['t',R.KAVE],['name',kvName()]]},key());
+    var pool=new NT.SimplePool();return Promise.allSettled(pool.publish(R.RELAYS,ev)).then(function(){try{pool.close(R.RELAYS);}catch(x){}});}).catch(function(){});}
+  var kave={
+    /* a Kompete! run: the card keeps the best one (more Masks, then fewer goals) */
+    run:function(masks,goals){var c=kvGet();if(masks>c.ka||(masks===c.ka&&masks>0&&goals<c.kb)){c.ka=masks;c.kb=goals;kvPut();}},
+    fi:function(score){var c=kvGet();if(score>c.fi){c.fi=score-score%10;kvPut();}},
+    /* a win reported by kg-loader (KG.onwin) or by Korong! (duel) */
+    win:function(name,d){var c=kvGet();d=d||{};
+      if(name==='duel')c.du++;else if(name==='chess')c.cl+=Math.max(1,Math.min(3,+d.level||1));else if(name==='erratic')c.er++;
+      else if(name==='katabatik'&&d.game==='c4')c.c4++;else if(name==='katabatik'&&d.game==='hang')c.hg++;else if(name==='katabatik'&&d.game==='mm')c.mm++;else return;kvPut();},
+    card:function(){return Object.assign({},kvGet());},
+    points:function(){return libs().then(function(){return R.points(kvGet());});}
+  };
+  /* Koins earned: each rise of the balance (wins, 3615 KOINS, profiles, messages) adds to the card */
+  function kvKoins(){var b=0;try{b=+JSON.parse(localStorage.getItem('ik.koins'))||0;}catch(e){}var c=kvGet();
+    if(c.seen===undefined){c.seen=b;kvSave();return;}
+    if(b>c.seen){c.ko+=b-c.seen;c.seen=b;kvPut();}else if(b<c.seen){c.seen=b;kvSave();}}
+  setInterval(kvKoins,2000);window.addEventListener('storage',function(e){if(e.key==='ik.koins')kvKoins();});
+  window.IKP={top:top,record:record,html:html,line:line,kave:kave};
 })();
 
 /* ikp line style */

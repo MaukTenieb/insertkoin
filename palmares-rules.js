@@ -43,7 +43,36 @@
         .forEach(function (x) { per[x.who] = (per[x.who] || 0) + 1; if (per[x.who] <= 3 && out.length < 10) out.push(x); });
       return out;
     },
-    enters: function (game, a, b, t) { if (a <= 0) return false; if (!t || t.length < 10) return true; return P.GAMES[game].better({ a: a, b: b }, t[t.length - 1]) > 0; }
+    enters: function (game, a, b, t) { if (a <= 0) return false; if (!t || t.length < 10) return true; return P.GAMES[game].better({ a: a, b: b }, t[t.length - 1]) > 0; },
+
+    /* HALL OF KAVE: one card per player (per key), the last version replacing the previous one:
+       kind 30078, tags ["d","korhogo-kave"] ["t","korhogo-kave"] ["name",<nickname or initials>], content = the card:
+       ka/kb best Kompete! run (Masks beaten, goals let in) · du duels won · fi best FaunInvaders score
+       cl sum of the levels of the chess AIs beaten · er Erratik grids · c4 hg mm Konnect4, Akasztófa, Mastermind wins
+       ko Koins earned since the first visit.
+       Points: 100 per Mask of the best run minus 1 per goal let in (0 to 1,800) · 20 per duel · best FaunInvaders score ÷ 10
+       · 50 per chess level beaten · 30 per Erratik grid · 20 per Konnect4, Akasztófa or Mastermind win · 1 per Koin earned. */
+    KAVE: 'korhogo-kave',
+    CAP: { ka: 18, kb: 2000, du: 100000, fi: 1708290, cl: 300000, er: 100000, c4: 100000, hg: 100000, mm: 100000, ko: 1000000 },
+    points: function (c) {
+      return Math.max(0, Math.min(1800, 100 * c.ka - (c.ka ? c.kb : 0))) + 20 * c.du + Math.floor(c.fi / 10) + 50 * c.cl + 30 * c.er + 20 * (c.c4 + c.hg + c.mm) + c.ko;
+    },
+    card: function (e) {
+      if (!e || e.kind !== P.KIND || !e.tags || e.created_at < P.SINCE || P.tag(e, 'd') !== P.KAVE) return null;
+      var raw; try { raw = JSON.parse(e.content || '{}'); } catch (x) { return null; }
+      var c = {};
+      for (var k in P.CAP) { var v = +(raw[k] || 0); if (!isFinite(v) || v < 0 || v !== Math.floor(v) || v > P.CAP[k]) return null; c[k] = v; }
+      if (c.fi % 10) return null;
+      var name = String(P.tag(e, 'name') || '').replace(/[^\w\- .'À-ÿ]/g, '').slice(0, 16) || 'KORHOGO';
+      return { who: e.pubkey, name: name, t: e.created_at, c: c, pts: P.points(c) };
+    },
+    /* the twenty: the last card of each key, best total first */
+    hall: function (cards) {
+      var by = {};
+      cards.forEach(function (x) { if (x && (!by[x.who] || x.t > by[x.who].t)) by[x.who] = x; });
+      return Object.keys(by).map(function (k) { return by[k]; }).filter(function (x) { return x.pts > 0; })
+        .sort(function (x, y) { return y.pts - x.pts || x.t - y.t; }).slice(0, 20);
+    }
   };
   root.IKPR = P;
   if (typeof module !== 'undefined') module.exports = P;

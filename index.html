@@ -1798,8 +1798,8 @@ function pickGuest(i){if(!pay())return;RUN=null;startMatch(i,null);}
 /* palmarès of the run: Masks beaten, then goals let in over the whole run (continues included) */
 function palmKorong(won){const P=$('palm');if(P)P.innerHTML='';if(!window.IKP)return;
   /* a duel won against a Mask picked by hand: one Mask beaten, the goals of that match */
-  if(!RUN){if(won)IKP.record('korong',{a:1,b:G.e.opponent_score,run:'d'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)},(t,rank)=>{if(P)P.textContent=IKP.line(rank);});return;}if(!RUN.id)RUN.id=Date.now().toString(36)+Math.random().toString(36).slice(2,8);
-  RUN.ga=(RUN.ga||0)+G.e.opponent_score;const masks=won?RUN.idx+1:RUN.idx;IKP.record('korong',{a:masks,b:RUN.ga,run:RUN.id},(t,rank)=>{if(P)P.textContent=IKP.line(rank);});}
+  if(!RUN){if(won&&IKP.kave)IKP.kave.win('duel');if(won)IKP.record('korong',{a:1,b:G.e.opponent_score,run:'d'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)},(t,rank)=>{if(P)P.textContent=IKP.line(rank);});return;}if(!RUN.id)RUN.id=Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+  RUN.ga=(RUN.ga||0)+G.e.opponent_score;const masks=won?RUN.idx+1:RUN.idx;if(IKP.kave)IKP.kave.run(masks,RUN.ga);IKP.record('korong',{a:masks,b:RUN.ga,run:RUN.id},(t,rank)=>{if(P)P.textContent=IKP.line(rank);});}
 function afterMatch(won){palmKorong(won);const last=RUN&&RUN.idx===RUN.order.length-1;if(RUN){if(won&&last){const done=RUN;RUN=null;saveRun();RUN=done;setTimeout(()=>champion(),900);}else if(won){RUN.krew=KREW[G.r.id]||null;RUN.idx++;saveRun();RUN.idx--;}}
   if(won)earn();
   $('ovT').textContent=won?(last?tr('champ'):tr('win')):tr('lose');
@@ -1904,7 +1904,7 @@ function koinRain(){if(matchMedia('(prefers-reduced-motion:reduce)').matches)ret
     c.style.cssText+=`left:${x}px;top:-30px;font-size:${sz}px;z-index:10000`;document.body.appendChild(c);
     const a=c.animate([{transform:'translateY(0) rotateY(0)',opacity:1},{transform:`translate(${(Math.random()-.5)*80}px,${innerHeight+60}px) rotateY(${720+Math.random()*1080}deg)`,opacity:.9}],{duration:d,delay:dl,easing:'cubic-bezier(.45,0,.95,.6)',fill:'both'});
     if(i%3===0)setTimeout(()=>{try{tone(2093+Math.random()*900,.05,'triangle',.03);tone(3136,.07,'triangle',.018,0,.03);}catch(e){}},dl+d*.92);a.onfinish=()=>c.remove();}}
-if(window.KG)KG.onwin=()=>{earn();koinRain();};
+if(window.KG)KG.onwin=(name,d)=>{earn();koinRain();if(window.IKP&&IKP.kave)IKP.kave.win(name,d);};
 /* saved run: CONTINUE picks it up where it stopped */
 const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b=$('run2');b.hidden=!r;if(r)b.textContent=tr('cont');};
 

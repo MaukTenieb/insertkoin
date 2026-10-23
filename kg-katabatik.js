@@ -1438,7 +1438,7 @@ document.addEventListener('keydown',function(e){var p=document.getElementById('h
     tone(400,40,.7,'sawtooth',.07);if(S.lives<=0)over();}
   function over(){S.mode='over';S.endT=Date.now();if(S.score>best())saveBest(S.score);S.top=null;S.rank=0;
     /* palmarès: score, then wave */
-    if(window.IKP&&S.score>0){var g=S;IKP.record('fauninvaders',{a:S.score,b:S.wave,run:Date.now().toString(36)+Math.random().toString(36).slice(2,8)},function(t,rank){g.top=t;g.rank=rank;});}}
+    if(window.IKP&&S.score>0&&IKP.kave)IKP.kave.fi(S.score);if(window.IKP&&S.score>0){var g=S;IKP.record('fauninvaders',{a:S.score,b:S.wave,run:Date.now().toString(36)+Math.random().toString(36).slice(2,8)},function(t,rank){g.top=t;g.rank=rank;});}}
   function stepBombs(){
     for(var i=S.bombs.length-1;i>=0;i--){var b=S.bombs[i],m=b.m;b.t++;
       if(m.sig==='entropy')b.vx=Math.max(-2,Math.min(2,b.vx+(Math.random()-.5)*.6));

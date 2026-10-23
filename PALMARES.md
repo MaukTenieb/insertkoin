@@ -20,10 +20,26 @@ The palmarès travels on Nostr, the open network the Minitel already uses for it
 3. Every hour (minute 17), the routine of this repository ([`.github/workflows/palmares.yml`](.github/workflows/palmares.yml), [`tools/palmares.mjs`](tools/palmares.mjs)) reads the four relays, checks each signature and each rule, keeps the ten best of each game and writes [`palmares.json`](palmares.json). An entry already in the ten stays there when a relay drops it.
 4. The Minitel and the arcade read `palmares.json`, add the entries the relays hold at that minute, and apply the same rules.
 
+## Hall of Kave
+
+The 3615 shows the twenty best players of all the games, one total per key. Each browser keeps a card (`ik.kave`) and sends it to the relays a few seconds after each change: kind 30078, `d` = `t` = `korhogo-kave`, tag `name` (the 3615 nickname, else the initials), the card as content. Each new card of a key replaces the previous one.
+
+| Game | Card | Points |
+|---|---|---|
+| Korong!, Kompete! | best run: Masks beaten, goals let in | 100 per Mask minus 1 per goal let in, 0 to 1,800 |
+| Korong!, duel | duels won | 20 each |
+| FaunInvaders | best score | score ÷ 10 |
+| Fauna Chess | levels of the AIs beaten (1 to 3) | 50 per level |
+| Erratik | grids finished | 30 each |
+| Konnect4, Akasztófa, Mastermind | wins | 20 each |
+| Koins | Koins earned since the first visit | 1 each |
+
+`palmares-rules.js` gives the ranges and the formula (`card`, `points`, `hall`); the hourly routine writes the twenty to `palmares.json` under `kave`.
+
 ## Checks
 
 - A signature that fails, a figure outside its range, a FaunInvaders score off the ten-point grid: the entry goes.
 - Everything stays public and checkable: the events on the relays, the code, the history of `palmares.json` in the commits.
 - The arcade runs in the browser, so a determined player can forge a score. The ranges and the limit of three lines per key keep the board readable; the commit history keeps every past state.
 
-Code: MIT licence (see [LICENSE](LICENSE)). nostr-tools: MIT licence, fiatjaf and contributors. Korhogo material: © Korhogo, all rights reserved.
+Code: MIT licence, Mauk Tenieb & Korhogo (see [LICENSE](LICENSE)). nostr-tools: MIT licence, fiatjaf and contributors. Korhogo material: © Mauk Tenieb & Korhogo, all rights reserved.
