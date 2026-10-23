@@ -1,4 +1,4 @@
-/* nostr-tools (MIT licence, (c) fiatjaf and contributors, https://github.com/nbd-wtf/nostr-tools), the bundle the 3615 Minitel carries.
+/* nostr-tools (public domain, Unlicense, fiatjaf and contributors, https://github.com/nbd-wtf/nostr-tools), the bundle the 3615 Minitel carries.
    Shared here so Insert Koin signs its palmares entries with the same key as the Minitel (localStorage vdx.nostr.sk). */
 "use strict";
 var NostrTools = (() => {

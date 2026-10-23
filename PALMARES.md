@@ -42,4 +42,4 @@ The 3615 shows the twenty best players of all the games, one total per key. Each
 - Everything stays public and checkable: the events on the relays, the code, the history of `palmares.json` in the commits.
 - The arcade runs in the browser, so a determined player can forge a score. The ranges and the limit of three lines per key keep the board readable; the commit history keeps every past state.
 
-Code: MIT licence, Mauk Tenieb & Korhogo (see [LICENSE](LICENSE)). nostr-tools: MIT licence, fiatjaf and contributors. Korhogo material: © Mauk Tenieb & Korhogo, all rights reserved.
+Code: MIT licence, Mauk Tenieb & Korhogo (see [LICENSE](LICENSE)). nostr-tools: public domain (Unlicense), fiatjaf and contributors. Korhogo material: © Mauk Tenieb & Korhogo, all rights reserved.
