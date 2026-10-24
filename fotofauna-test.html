@@ -89,6 +89,19 @@ main.left{background:var(--pebble);min-width:0}
 .shutter{width:72px;height:72px;padding:0;border-radius:50%;background:radial-gradient(circle at 40% 35%,#ffd08a,#e08a1c);border:5px solid #070707;box-shadow:0 0 0 2px var(--line2),0 6px 18px rgba(242,163,58,.35)}
 .shutter:hover{background:radial-gradient(circle at 40% 35%,#ffdca2,#ea9628)}
 .shutter:active{transform:scale(.94)}
+.shutter{position:relative}
+.shutter.vid{background:radial-gradient(circle at 40% 35%,#ff8a72,#c8321e)}
+.shutter.rec::after{content:"";position:absolute;inset:29%;border-radius:3px;background:#f4efdf}
+.shutter.rec{animation:recp 1.2s ease-in-out infinite}
+@keyframes recp{50%{box-shadow:0 0 0 2px var(--line2),0 0 0 8px rgba(200,50,30,.35)}}
+.pvMode{display:flex;padding:3px;border-radius:3px;background:#0a0906;box-shadow:inset 0 0 0 1px var(--line2)}
+.pvMode button{font:500 10.5px/1 var(--num);letter-spacing:.14em;text-transform:uppercase;padding:9px 9px;border:0;border-radius:2px;background:none;color:#9a9282}
+.pvMode button[aria-pressed=true]{background:var(--acc);color:var(--acc-ink)}
+.vidBar{display:flex;align-items:center;gap:10px;width:100%;max-width:640px}
+.vidBar .key{min-height:32px;padding:6px 10px}
+.vidBar input[type=range]{flex:1;min-width:60px}
+.vTime{font:500 11px/1 var(--num);letter-spacing:.08em;color:var(--mute);white-space:nowrap}
+.vsrc{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-9px;top:-9px}
 .advance{width:44px;height:44px;border-radius:50%;background:repeating-conic-gradient(#4a3d22 0 10deg,#0a0906 10deg 20deg);border:3px solid #050403}
 #gl,#cam{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-9px;top:-9px}
 /* rangée d'actions */
@@ -196,7 +209,7 @@ dialog.sheet::backdrop{background:rgba(0,0,0,.6)}
  .stageCol{padding:12px 10px 10px;gap:10px}
  .stage{padding:8px;border-radius:8px}.stage::before,.stage::after{inset:8px}.stage video#player{inset:8px;width:calc(100% - 16px);height:calc(100% - 16px)}
  .badge{left:16px;top:16px}#closeVid{right:14px;top:14px}.busy{left:8px;right:8px;bottom:8px}
- .stageWrap.live{padding:10px 10px 10px;border-radius:16px}.shutter{width:62px;height:62px;border-width:4px}.advance{width:34px;height:34px}
+ .stageWrap.live{padding:10px 10px 10px;border-radius:16px}.shutterRow{gap:14px}.pvMode button{padding:8px 7px}.shutter{width:62px;height:62px;border-width:4px}.advance{width:34px;height:34px}
  .strip{grid-template-columns:repeat(auto-fill,minmax(96px,1fr))}
  .dock{position:sticky;top:var(--hd);z-index:12}
 }
@@ -221,6 +234,7 @@ html.ike-on .ctrl{display:flex;flex-direction:column;gap:10px;background:var(--p
 html.ike-on .ctrl header.top{position:relative;top:auto;height:auto;min-height:50px;padding:6px 10px;border-radius:6px 6px 0 0;flex:none;flex-wrap:wrap;row-gap:6px}
 html.ike-on .ctrl .logo .word{font-size:18px;letter-spacing:.24em}
 html.ike-on .ctrl .shutterRow{flex:none;padding:2px 0}
+html.ike-on .ctrl .vidBar{flex:none;padding:0 10px;max-width:none;width:auto}
 html.ike-on .ctrl .actions{flex:none;padding:0 10px;flex-wrap:wrap}
 html.ike-on .ctrl .status{flex:none;padding:0 10px}
 html.ike-on .ctrl .inspector{border-top:1px solid #000;border-left:0;box-shadow:inset 0 1px 0 #221e17;height:auto}
@@ -243,6 +257,8 @@ html.ike-on .app[data-ike-layout=narrow] .ctrl{border-radius:0}
 <symbol id="i-dice" viewBox="0 0 24 24"><rect x="4.5" y="4.5" width="15" height="15" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="9" cy="9" r="1.3" fill="currentColor"/><circle cx="15" cy="15" r="1.3" fill="currentColor"/><circle cx="15" cy="9" r="1.3" fill="currentColor"/><circle cx="9" cy="15" r="1.3" fill="currentColor"/></symbol>
 <symbol id="i-compare" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 3v18" stroke="currentColor" stroke-width="1.6"/><path d="M12 5h6a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-6z" fill="currentColor" opacity=".35"/></symbol>
 <symbol id="i-save" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 17v1.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><path d="M7.5 5.5h3v13h-3zM13.5 5.5h3v13h-3z" fill="currentColor"/></symbol>
 <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
 <symbol id="i-aperture" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 2.5 21 13M29.2 13.5 18 15M23.5 27.5 16.5 18.5M7.5 27 14 17.5M3 11.5l11.5 4.3M9.5 4.5 14.8 14" stroke="currentColor" stroke-width="1.6"/></symbol>
 </defs></svg>
@@ -265,7 +281,8 @@ html.ike-on .app[data-ike-layout=narrow] .ctrl{border-radius:0}
     <div class="flashFx" id="flashFx" hidden></div>
     <div class="busy" id="busy" hidden></div>
    </div>
-   <div class="shutterRow" id="shutterRow" hidden><div class="advance" aria-hidden="true"></div><button class="shutter" id="shutter" type="button" data-al="shutter"></button><button class="key" id="camOff" type="button" data-al="camOff"><svg class="ic" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+   <div class="shutterRow" id="shutterRow" hidden><div class="pvMode" id="pvMode" role="group"><button type="button" data-m="photo" aria-pressed="true" data-i="mPhoto"></button><button type="button" data-m="video" aria-pressed="false" data-i="mVideo"></button></div><div class="advance" aria-hidden="true"></div><button class="shutter" id="shutter" type="button" data-al="shutter"></button><button class="key" id="camOff" type="button" data-al="camOff"><svg class="ic" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+   <div class="vidBar" id="vidBar" hidden><button class="key" id="vPlay" type="button" data-al="vPlay"><svg class="ic" aria-hidden="true"><use href="#i-pause"/></svg></button><input type="range" id="vSeek" min="0" max="1000" step="1" value="0" data-al="vSeek"><span class="vTime" id="vTime">0:00:00</span></div>
   </div>
   <div class="actions" id="actions">
    <button class="key" id="bUndo" type="button"><svg class="ic" aria-hidden="true"><use href="#i-undo"/></svg><span data-i="undo"></span></button>
@@ -316,7 +333,7 @@ html.ike-on .app[data-ike-layout=narrow] .ctrl{border-radius:0}
  <div id="exBody"></div>
 </dialog>
 <canvas id="gl"></canvas><video id="cam" playsinline muted></video>
-<input type="file" id="fOpen" accept="image/*" hidden>
+<input type="file" id="fOpen" accept="image/*,video/*" hidden>
 <input type="file" id="fShoot" accept="image/*" capture="environment" hidden>
 <input type="file" id="fSecond" accept="image/*" hidden>
 <input type="file" id="fPhotos" accept="image/*" multiple hidden>
@@ -7849,6 +7866,9 @@ Object.assign(W.fr,{keepL:"Valider",dice:"Tirer",layers:"Couches",noLayer:"Image
  recipe:"Recette",recExport:"Exporter",recImport:"Importer",recDone:"Recette importée.",recBad:"Recette illisible.",recPng:"Cette image contient une recette.",recLoad:"Charger",recBaked:"Les couches de coulée Koloid restent hors de la recette : ce sont des images figées.",
  recHint:"La recette garde la pile des effets, leurs réglages, leurs graines et les tables de couleurs. Un PNG enregistré ici la porte aussi.",
  lut:"Table de couleurs (.cube, HaldCLUT)",lutDone:"Table chargée : {n}³.",lutBad:"Table illisible : ",
+ mPhoto:"Photo",mVideo:"Vidéo",vPlay:"Lecture, pause",vSeek:"Position dans la vidéo",recStart:"Filmer",recStop:"Arrêter de filmer",micOff:"Micro fermé : vidéo muette.",
+ clipDone:"Clip de {s} s, effets compris.",vidBad:"Vidéo illisible dans ce navigateur.",stillOnly:"image fixe seulement",stillSkip:"Image fixe seulement, hors vidéo : {n}",
+ exClip:"Enregistrer la vidéo",exClipHint:"Toute la vidéo passe dans la pile d'effets, à la taille choisie, avec sa bande son.",vidRender:"Rendu : image {i} / {n}",vidEnc:"Encodage : {s} s",
  frameN:"Image {i} / {n}…",recording:"Enregistrement : {s} s",gifDone:"GIF : {k} Ko",vidDone:"Vidéo : {k} Ko",noRec:"Ce navigateur enregistre la vidéo hors de MediaRecorder : export vidéo indisponible.",rawSaved:"Photo brute enregistrée : "});
 Object.assign(W.en,{keepL:"Keep",dice:"Roll",layers:"Layers",noLayer:"Original image",drop:"Remove",seconds:"Extra images",pour:"Pour",secondOpen:"Second photo",photosOpen:"Photos (collage)",variants:"variants",apps:"apps",
  shoot:"Take",undo:"Undo",compare:"Compare",labo:"Lab",t_looks:"Looks",shuffle:"Shuffle",close:"Close",live:"Live",
@@ -7858,6 +7878,9 @@ Object.assign(W.en,{keepL:"Keep",dice:"Roll",layers:"Layers",noLayer:"Original i
  recipe:"Recipe",recExport:"Export",recImport:"Import",recDone:"Recipe imported.",recBad:"Unreadable recipe.",recPng:"This image carries a recipe.",recLoad:"Load",recBaked:"Koloid pour layers stay out of the recipe: they are frozen images.",
  recHint:"The recipe keeps the stack of effects, their settings, their seeds and the colour tables. A PNG saved here carries it too.",
  lut:"Colour table (.cube, HaldCLUT)",lutDone:"Table loaded: {n}³.",lutBad:"Unreadable table: ",
+ mPhoto:"Photo",mVideo:"Video",vPlay:"Play, pause",vSeek:"Position in the video",recStart:"Film",recStop:"Stop filming",micOff:"Microphone closed: silent video.",
+ clipDone:"{s} s clip, effects included.",vidBad:"This browser cannot read this video.",stillOnly:"still image only",stillSkip:"Still image only, left out of the video: {n}",
+ exClip:"Save the video",exClipHint:"The whole video runs through the effect stack, at the chosen size, with its soundtrack.",vidRender:"Render: frame {i} / {n}",vidEnc:"Encoding: {s} s",
  frameN:"Frame {i} / {n}…",recording:"Recording: {s} s",gifDone:"GIF: {k} KB",vidDone:"Video: {k} KB",noRec:"This browser cannot record video (MediaRecorder).",rawSaved:"Raw photo saved: "});
 /* libellés repris de la page en ligne */
 Object.assign(W.fr,{open:"Ouvrir",save:"Enregistrer"});Object.assign(W.en,{open:"Open",save:"Save"});
@@ -7918,13 +7941,15 @@ function pushHist(){S.hist.push({src:S.src,stack:S.stack.slice(),cur:S.cur});if(
 
 /* ---------- rendu ---------- */
 const CACHE=new Map(),THUMBS=new Map();
-function ctxFor(img){const res=x=>x?scaleTo(x,Math.max(img.width,img.height)):null;return {second:res(S.second)||null,images:[img].concat(S.images.map(res)),w:img.width,h:img.height,preview:img!==S.src,face:faceFor(img)}}
+const SCM=new WeakMap();
+function scaleMemo(x,m){let o=SCM.get(x);if(!o)SCM.set(x,o=new Map());if(!o.has(m)){if(o.size>6)o.clear();o.set(m,scaleTo(x,m))}return o.get(m)}
+function ctxFor(img){const res=x=>x?scaleMemo(x,Math.max(img.width,img.height)):null;return {second:res(S.second)||null,images:[img].concat(S.images.map(res)),w:img.width,h:img.height,preview:FULLQ?false:img!==S.src,face:faceFor(img)}}
 async function applyLayer(img,L){const op=FF.ops[L.id];if(!op)return img;const p=Object.assign(FF.defaults(op),L.p||{});let out=await op.fn(img,p,FF.prng(L.seed||1),ctxFor(img));
  if(L.amt!=null&&L.amt<1&&out.width===img.width&&out.height===img.height)out=FF.util.blendImg(img,out,"normal",L.amt);return out}
 const layerKey=L=>L.id==="__baked"?"baked:"+(L.k||(L.k=Math.random())):JSON.stringify(L);
 async function renderAt(base,layers,level){let img=base,key=level+"|"+S.ver;for(const L of layers){key+="|"+layerKey(L);if(level!=="full"&&CACHE.has(key)){img=CACHE.get(key);continue}img=await applyLayer(img,L);if(level!=="full"){CACHE.set(key,img);if(CACHE.size>60)CACHE.delete(CACHE.keys().next().value)}}return img}
 const layersNow=()=>S.cur?S.stack.concat([S.cur]):S.stack;
-async function render(){if(!S.prev||CAM)return;const tok=++REND.tok;$("busy").hidden=false;
+async function render(){if(!S.prev||CAM||VM)return;const tok=++REND.tok;$("busy").hidden=false;
  try{const out=await renderAt(S.prev,layersNow(),"prev");if(tok!==REND.tok)return;paint(S.cmp?S.prev:out);S.lastView=FF.util.toCanvas(out);if(!STOP)setStatus("")}
  catch(e){console.error(e);setStatus(String(e.message||e),"err")} finally{if(tok===REND.tok)$("busy").hidden=true}setLabel()}
 function paint(img){const c=$("view");if(c.width!==img.width||c.height!==img.height){c.width=img.width;c.height=img.height}c.getContext("2d").putImageData(img,0,0);fit()}
@@ -7934,7 +7959,7 @@ function fit(){const c=$("view"),col=$("stageCol");if(!c.width||!col)return;
  if(ECRAN){const s=$("stage"),w=s.clientWidth,h=s.clientHeight;if(!w||!h)return;const k=Math.max(.05,Math.min(w/c.width,h/c.height,4));c.style.width=Math.floor(c.width*k)+"px";c.style.height=Math.floor(c.height*k)+"px";return}
  const desk=matchMedia("(min-width:1000px)").matches,pad=desk?28:16;
  let W=col.clientWidth-(desk?48:20)-pad,H;
- if(desk){const cs=getComputedStyle(col),used=$("actions").offsetHeight+$("status").offsetHeight+($("shutterRow").hidden?0:$("shutterRow").offsetHeight+12)+parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom)+28;H=col.clientHeight-used-pad}
+ if(desk){const cs=getComputedStyle(col),used=$("actions").offsetHeight+$("status").offsetHeight+($("shutterRow").hidden?0:$("shutterRow").offsetHeight+12)+($("vidBar").hidden?0:$("vidBar").offsetHeight+12)+parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom)+28;H=col.clientHeight-used-pad}
  else H=Math.round(Math.min(innerHeight,screen.height||innerHeight)*.42)-pad;
  if(CAM)W-=32,H-=28;
  const k=Math.max(.05,Math.min(W/c.width,H/c.height,4));c.style.width=Math.floor(c.width*k)+"px";c.style.height=Math.floor(c.height*k)+"px"}
@@ -7945,7 +7970,7 @@ function setLabel(){const L=S.cur&&FF.ops[S.cur.id];$("lbFam").textContent=L?fam
  const pn=L&&S.cur.pi>=0&&L.presets?labelTxt(L,L.presets[S.cur.pi].label):null;$("lbName").textContent=L?(pn?L.label+" · "+pn:L.label):(S.stack.length?FF.ops[S.stack[S.stack.length-1].id]?.label||t("orig"):t("orig"));
  $("lbSrc").textContent=L?(APPN[L.app]||L.app):"";const pv=L&&S.cur.pi>=0&&L.presets?L.presets[S.cur.pi]:null,nt=(pv&&(pv.note||(itemOf(L,pv.label)||{}).note))||(L&&L.note)||"";$("lbHint").textContent=L&&L.kind==="interactive"?t("pourHint"):nt;
  const g=$("guide"),on=!!(S.cur||S.session);g.hidden=!on;$("pane-looks").classList.toggle("has-ctl",on);
- const bd=$("badge");if(CAM){bd.textContent="● "+t("live");bd.className="badge rec";bd.hidden=false}else if(S.cmp){bd.textContent=t("orig");bd.className="badge";bd.hidden=false}else bd.hidden=true}
+ if(VM&&!L)$("lbName").textContent=t("mVideo");const bd=$("badge");if(REC){vtick(true)}else if(CAM){bd.textContent="● "+t("live");bd.className="badge rec";bd.hidden=false}else if(S.cmp){bd.textContent=t("orig");bd.className="badge";bd.hidden=false}else bd.hidden=true}
 
 /* ---------- familles, procédés, fiches ---------- */
 function visibleCards(){const q=S.q.toLowerCase();return CARDS.filter(c=>q?(c.name+" "+labelTxt(c.op,c.name)+" "+c.op.label+" "+(APPN[c.op.app]||"")+" "+(c.op.taxon||"")+" "+famName(famOf(c.op))+" "+subName(subOf(c.op))).toLowerCase().includes(q):famOf(c.op)===S.fam&&(!S.sub||subOf(c.op)===S.sub))}
@@ -8027,7 +8052,7 @@ function el(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=
 function btn(txt,fn,cls){const b=el("button",cls||"chip",txt);b.type="button";b.onclick=fn;return b}
 function drawLayers(){const box=$("laboBody");if(!box)return;box.innerHTML="";
  const t1=el("div","tool");t1.appendChild(el("h3",null,t("layers")));const ol=el("ol","layers");ol.appendChild(el("li",null,t("noLayer")));
- S.stack.forEach((L,i)=>{const li=el("li",null,layerName(L));li.appendChild(btn(t("drop"),()=>{pushHist();S.stack.splice(i,1);THUMBS.clear();drawLayers();drawGrid();render()}));ol.appendChild(li)});t1.appendChild(ol);box.appendChild(t1);
+ S.stack.forEach((L,i)=>{const li=el("li",null,layerName(L)+((CAM||VM)&&stillOnly(L)?" · "+t("stillOnly"):""));li.appendChild(btn(t("drop"),()=>{pushHist();S.stack.splice(i,1);THUMBS.clear();drawLayers();drawGrid();render()}));ol.appendChild(li)});t1.appendChild(ol);box.appendChild(t1);
  const t2=el("div","tool");t2.appendChild(el("h3",null,t("seconds")));const r2=el("div","row");
  r2.append(btn(t("secondOpen")+(S.second?" ✓":""),()=>$("fSecond").click()),btn(t("photosOpen")+(S.images.length?" ("+S.images.length+")":""),()=>$("fPhotos").click()),btn(t("lut"),pickLut));t2.appendChild(r2);box.appendChild(t2);
  const t3=el("div","tool");t3.appendChild(el("h3",null,t("recipe")));const r3=el("div","row");r3.append(btn(t("recExport"),exportRecipe),btn(t("recImport"),importRecipe));t3.append(r3,el("p","hint",t("recHint")));box.appendChild(t3)}
@@ -8066,24 +8091,28 @@ async function readPngRecipe(file){try{const b=new Uint8Array(await file.arrayBu
   if(ty==="tEXt"){const s=new TextDecoder().decode(b.subarray(p+8,p+8+len));if(s.startsWith("photofauna-recette\0"))return JSON.parse(s.slice(19))}if(ty==="IEND")break;p+=12+len}}catch{}return null}
 
 /* ---------- enregistrer : photo, animation, recette ---------- */
-const EX={fmt:LS.get("pf_exfmt","jpeg"),size:LS.get("pf_exsize",2048),vid:LS.get("pf_exvid",480)};
+const EX={fmt:LS.get("pf_exfmt","jpeg"),size:LS.get("pf_exsize",2048),vid:LS.get("pf_exvid",480),clip:LS.get("pf_exclip",0)};
 let LAST_NAME="";
 function download(blob,name){LAST_NAME=name;const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000)}
 const fname=ext=>(window.ikName?ikName("photofauna",ext):"photofauna-"+Date.now()+"."+ext);
 function sel(opts,cur,fn){const s=document.createElement("select");opts.forEach(([v,l])=>{const o=document.createElement("option");o.value=v;o.textContent=l;if(String(v)===String(cur))o.selected=true;s.appendChild(o)});s.onchange=()=>fn(s.value);return s}
 function lab(txt,elm){const l=el("label");l.append(el("span",null,txt),elm);return l}
 function drawExport(){const b=$("exBody");b.innerHTML="";
+ if(VM){const t0=el("div","tool"),bv=btn(t("exClip"),exportClip,"key prim big");bv.id="exClip";t0.appendChild(bv);const r0=el("div","row");
+  r0.append(lab(t("exSize"),sel([[0,t("exOrig")],[1080,"1080 px"],[720,"720 px"],[480,"480 px"]],EX.clip,v=>{EX.clip=+v;LS.set("pf_exclip",EX.clip)})));t0.append(r0,el("p","hint",t("exClipHint")));
+  const sk=layersNow().filter(stillOnly);if(sk.length)t0.appendChild(el("p","hint",t("stillSkip",{n:sk.map(L=>layerName(L).split(" — ")[0]).join(", ")})));b.appendChild(t0)}
  const t1=el("div","tool");const big=btn(t("exPhoto"),savePhoto,"key prim big");big.id="exImg";t1.appendChild(big);const r1=el("div","row");
  r1.append(lab(t("exSize"),sel([[0,t("exOrig")],[1080,"1080 px"],[2048,"2048 px"],[4096,"4096 px"]],EX.size,v=>{EX.size=+v;LS.set("pf_exsize",EX.size)})),lab(t("exFmt"),sel([["jpeg","JPEG"],["png","PNG"]],EX.fmt,v=>{EX.fmt=v;LS.set("pf_exfmt",v)})));t1.appendChild(r1);b.appendChild(t1);
  const t2=el("div","tool");t2.appendChild(el("h3",null,t("exAnim")));const r2=el("div","row"),g=btn(t("exGif"),exportGif,"key"),v=btn(t("exVid"),exportVideo,"key");g.id="exGif";v.id="exVid";
- r2.append(g,v,lab(t("exVidSize"),sel([[480,"480 px"],[720,"720 px"]],EX.vid,x=>{EX.vid=+x;LS.set("pf_exvid",EX.vid)})));t2.append(r2,el("p","hint",animated()?t("exAnimTxt"):t("exStatic")));b.appendChild(t2);
+ r2.append(g,v,lab(t("exVidSize"),sel([[480,"480 px"],[720,"720 px"]],EX.vid,x=>{EX.vid=+x;LS.set("pf_exvid",EX.vid)})));t2.append(r2,el("p","hint",animated()?t("exAnimTxt"):t("exStatic")));if(!VM)b.appendChild(t2);
  const t3=el("div","tool");t3.appendChild(el("h3",null,t("recipe")));const r3=el("div","row"),re=btn(t("recExport"),exportRecipe),ri=btn(t("recImport"),importRecipe);re.id="exRecipe";ri.id="imRecipe";r3.append(re,ri);t3.append(r3,el("p","hint",t("recHint")));b.appendChild(t3);
  const pr=el("p","hint");pr.id="exProg";b.appendChild(pr)}
 const prog=s=>{const p=$("exProg");if(p)p.textContent=s;setStatus(s)};
 $("exClose").onclick=()=>$("dlgExport").close();
 $("bSave").onclick=()=>{if(!$("player").hidden&&window.CUR_VID){const ext=(CUR_VID.blob?.type||"video/mp4").split("/")[1].replace("quicktime","mov");if(CUR_VID.blob)download(CUR_VID.blob,fname(ext));else window.open(CUR_VID.url,"_blank","noopener");return}
  drawExport();$("dlgExport").showModal()};
-async function savePhoto(){if(!S.src)return;prog(t("rendering"));$("busy").hidden=false;try{const base=EX.size?scaleTo(S.src,EX.size):scaleTo(S.src,4096);const out=await renderAt(base,layersNow(),"full");const c=FF.util.toCanvas(out);
+async function savePhoto(){if(!S.src)return;prog(t("rendering"));$("busy").hidden=false;try{let full=S.src;if(VM&&VM.v.videoWidth){const c=FF.util.canvas(VM.v.videoWidth,VM.v.videoHeight);c.getContext("2d").drawImage(VM.v,0,0);full=FF.util.fromCanvas(c)}
+  const base=EX.size?scaleTo(full,EX.size):scaleTo(full,4096);const out=await renderAt(base,layersNow(),"full");const c=FF.util.toCanvas(out);
   let blob=await new Promise(r=>c.toBlob(r,"image/"+EX.fmt,.93));if(EX.fmt==="png")blob=await pngWithRecipe(blob,recipeNow().r);const name=fname(EX.fmt==="png"?"png":"jpg");
   if(navigator.canShare&&/iPhone|iPad|Android/i.test(navigator.userAgent)){const file=new File([blob],name,{type:blob.type});if(navigator.canShare({files:[file]})){try{await navigator.share({files:[file]});prog(c.width+" × "+c.height+" px");return}catch{}}}
   download(blob,name);prog(t("saved")+" "+name+" · "+c.width+" × "+c.height+" px");$("status").className="status ok"}catch(e){setStatus(String(e.message||e),"err")}finally{$("busy").hidden=true}}
@@ -8120,7 +8149,8 @@ async function openBlob(f,how){endSession();stopCam();closeVideo();S.own=true;pu
  if(/png/.test(f.type||"")){const r=await readPngRecipe(f);if(r&&r.photofauna===1)statusAction(t("recPng"),t("recLoad"),()=>{try{loadRecipe(r)}catch{setStatus(t("recBad"),"err")}})}
  if(how==="shot")saveRaw(img);return img}
 $("bOpen").onclick=()=>$("fOpen").click();
-$("fOpen").onchange=async e=>{const f=e.target.files[0];if(!f)return;e.target.value="";try{await openBlob(f)}catch(x){setStatus(String(x.message||x),"err")}};
+const isVidFile=f=>/^video\//.test(f.type||"")||/\.(mp4|m4v|mov|webm|mkv|ogv)$/i.test(f.name||"");
+$("fOpen").onchange=async e=>{const f=e.target.files[0];if(!f)return;e.target.value="";try{if(isVidFile(f))await openVideo(f,{kind:"file"});else await openBlob(f)}catch(x){setStatus(String(x.message||x),"err")}};
 $("fShoot").onchange=async e=>{const f=e.target.files[0];if(!f)return;e.target.value="";try{await openBlob(f,"shot")}catch(x){setStatus(String(x.message||x),"err")}};
 $("fSecond").onchange=async e=>{const f=e.target.files[0];if(!f)return;S.second=scaleTo(await readFile(f),2000);CACHE.clear();THUMBS.clear();drawLayers();drawGrid();render();e.target.value=""};
 $("fPhotos").onchange=async e=>{const fs=[...e.target.files].slice(0,8);S.images=[];for(const f of fs)S.images.push(scaleTo(await readFile(f),2000));if(!S.second&&S.images[0])S.second=S.images[0];CACHE.clear();THUMBS.clear();drawLayers();drawGrid();render();e.target.value=""};
@@ -8131,16 +8161,136 @@ let qT=0;$("q").addEventListener("input",e=>{clearTimeout(qT);qT=setTimeout(()=>
 
 /* ---------- caméra : viseur en direct sur la grande scène, déclencheur rond ---------- */
 let CAM=null;
-$("bShoot").onclick=async()=>{if(CAM){shoot();return}endSession();closeVideo();try{const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:{ideal:1280}},audio:false});const v=$("cam");v.srcObject=st;await v.play();CAM={st,v,run:1};
-  $("stageWrap").classList.add("live");$("shutterRow").hidden=false;$("bShoot").querySelector("span").textContent=t("shutter");setLabel();loopCam()}catch(e){CAM=null;$("fShoot").click()}};
-async function loopCam(){while(CAM&&CAM.run){const v=CAM.v;if(v.videoWidth){const c=FF.util.canvas(v.videoWidth,v.videoHeight),g=c.getContext("2d");g.translate(c.width,0);g.scale(-1,1);g.drawImage(v,0,0);let img=scaleTo(FF.util.fromCanvas(c),640);
-  try{img=await renderAt(img,layersNow().filter(L=>L.id!=="__baked"&&(L.id==="__lut"||FF.ops[L.id]&&FF.ops[L.id].kind!=="interactive")),"full")}catch{}if(CAM)paint(img)}await sleep(30)}}
-function stopCam(){if(!CAM)return;CAM.run=0;CAM.st.getTracks().forEach(t=>t.stop());CAM=null;$("stageWrap").classList.remove("live");$("shutterRow").hidden=true;$("bShoot").querySelector("span").textContent=t("shoot");setLabel();fit()}
+$("bShoot").onclick=async()=>{if(CAM){shutterPress();return}endSession();closeVideo();try{const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:{ideal:1280}},audio:false});const v=$("cam");v.srcObject=st;await v.play();CAM={st,v,run:1};
+  $("stageWrap").classList.add("live");$("shutterRow").hidden=false;$("bShoot").querySelector("span").textContent=t("shutter");VSIDE=VMAX;VFT=0;STN="";setPvMode(PVMODE);setLabel();fit();vloop()}catch(e){CAM=null;$("fShoot").click()}};
+function stopCam(){if(!CAM)return;if(REC)recStop(true);if(MIC){MIC.getTracks().forEach(x=>x.stop());MIC=null}VLOOP.tok++;STN="";CAM.run=0;CAM.st.getTracks().forEach(t=>t.stop());CAM=null;$("stageWrap").classList.remove("live");$("shutterRow").hidden=true;$("bShoot").querySelector("span").textContent=t("shoot");setLabel();fit()}
 async function shoot(){if(!CAM)return;const v=CAM.v,c=FF.util.canvas(v.videoWidth,v.videoHeight),g=c.getContext("2d");g.translate(c.width,0);g.scale(-1,1);g.drawImage(v,0,0);const fx=$("flashFx");fx.hidden=false;fx.style.opacity=1;setTimeout(()=>{fx.style.opacity=0;setTimeout(()=>fx.hidden=true,300)},60);
  stopCam();const keep=S.stack.concat(S.cur?[S.cur]:[]),img=FF.util.fromCanvas(c);pushHist();await setSource(img,true);S.stack=keep.filter(L=>L.id!=="__baked");THUMBS.clear();drawLayers();drawGrid();render();saveRaw(img)}
-$("shutter").onclick=shoot;$("camOff").onclick=()=>{stopCam();render()};
+$("shutter").onclick=shutterPress;$("camOff").onclick=()=>{if(REC){recStop();return}stopCam();render()};
 /* chaque prise part tout de suite sur le disque, brute, avant tout rendu (page en ligne : saveRaw) */
 function saveRaw(img){try{const c=FF.util.toCanvas(img);c.toBlob(b=>{if(!b)return;const n=fname("jpg");download(b,n);setStatus(t("rawSaved")+n,"ok")},"image/jpeg",.92)}catch{}}
+
+/* ---------- vidéo : filmer à la caméra, ouvrir un fichier vidéo, la pile d'effets image par image ----------
+   Aperçu : côté long de travail 640 px, réduit (jusqu'à 240 px) tant que l'aperçu passe sous 15 i/s, remonté au-dessus de 30 i/s.
+   Une op qui dépasse 250 ms par image à 320 px ou moins (1 s à toute taille), après une image de chauffe, passe « image fixe seulement » :
+   la vidéo la saute, le statut la nomme. Les graines restent fixes d'une image à l'autre : un tirage au hasard reste le même tout le clip.
+   Enregistrement d'un fichier : chaque image (30 i/s) passe dans la pile à la taille choisie, puis le clip est rejoué en temps réel
+   dans un canvas enregistré par MediaRecorder, avec la bande son d'origine (Web Audio) ; MP4 quand le navigateur l'écrit, sinon WebM. */
+const VMAX=640,VMIN=240,VFPS=30;
+const STILL=new Set(),WARM=new Map();
+let VM=null,VSIDE=VMAX,VFT=0,VADJ=0,VCV=null,PVMODE="photo",MIC=null,REC=null,FULLQ=false,VBUSY=false,ECP="photo",STN="";
+const VLOOP={tok:0};
+const hms=x=>{x=Math.max(0,Math.floor(x||0));return Math.floor(x/3600)+":"+String(Math.floor(x/60)%60).padStart(2,"0")+":"+String(x%60).padStart(2,"0")};
+const stillOnly=L=>{if(L.id==="__lut")return false;if(L.id==="__baked")return true;const op=FF.ops[L.id];return !op||op.kind==="interactive"||!!op.session||STILL.has(L.id)};
+const vidLayers=()=>layersNow().filter(L=>!stillOnly(L));
+const VTYPES=["video/mp4;codecs=avc1.42E01E,mp4a.40.2","video/mp4;codecs=avc1.42E01E,opus","video/mp4;codecs=vp9,opus","video/mp4","video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm"];
+const pickMime=()=>VTYPES.find(x=>MediaRecorder.isTypeSupported(x))||"";
+const extOf=type=>/mp4/.test(type||"")?"mp4":/quicktime/.test(type||"")?"mov":"webm";
+const canRec=()=>!!(window.MediaRecorder&&HTMLCanvasElement.prototype.captureStream);
+
+/* image de la source à la taille de travail (miroir pour la caméra frontale, comme la prise photo) */
+function vframe(src,mirror,side){const sw=src.videoWidth,sh=src.videoHeight;if(!sw||!sh)return null;const k=Math.min(1,side/Math.max(sw,sh)),w=Math.max(2,Math.round(sw*k)&~1),h=Math.max(2,Math.round(sh*k)&~1);
+ if(!VCV)VCV=document.createElement("canvas");if(VCV.width!==w||VCV.height!==h){VCV.width=w;VCV.height=h}const g=VCV.getContext("2d",{willReadFrequently:true});
+ g.setTransform(1,0,0,1,0,0);if(mirror){g.translate(w,0);g.scale(-1,1)}g.drawImage(src,0,0,w,h);g.setTransform(1,0,0,1,0,0);return g.getImageData(0,0,w,h)}
+/* la pile sur une image ; mesure : chaque op est chronométrée après sa première image */
+async function vchain(img,layers,measure){for(const L of layers){const t0=performance.now();let out;try{out=await applyLayer(img,L)}catch(e){console.warn(L.id,e);STILL.add(L.id);continue}
+  if(measure&&L.id!=="__lut"){const dt=performance.now()-t0,n=(WARM.get(L.id)||0)+1;WARM.set(L.id,n);if(n>1&&(dt>1000||(dt>250&&VSIDE<=320)))STILL.add(L.id)}img=out}return img}
+function vadapt(ms){VFT=VFT?VFT*.8+ms*.2:ms;const now=performance.now();if(now-VADJ<600)return;VADJ=now;
+ if(VFT>1000/15&&VSIDE>VMIN)VSIDE=Math.max(VMIN,Math.round(VSIDE*.8));else if(VFT<1000/30&&VSIDE<VMAX)VSIDE=Math.min(VMAX,Math.round(VSIDE*1.15))}
+function stillNote(){if(!CAM&&!VM){STN="";return}const n=[...new Set(layersNow().filter(stillOnly).map(L=>layerName(L).split(" — ")[0]))].join(", ");if(n===STN)return;const prev=STN;STN=n;if(n)setStatus(t("stillSkip",{n}));else if(prev)setStatus("")}
+function vpaint(img){const c=$("view");if(c.width!==img.width||c.height!==img.height){c.width=img.width;c.height=img.height;c.getContext("2d").putImageData(img,0,0);fit()}else c.getContext("2d").putImageData(img,0,0)}
+const nextF=()=>new Promise(r=>{let d=0;const f=()=>{if(!d){d=1;r()}};requestAnimationFrame(f);setTimeout(f,100)});
+/* boucle d'aperçu commune : caméra ouverte ou vidéo courante */
+async function vloop(){const me=++VLOOP.tok;let key="",lastT=-1;
+ while(me===VLOOP.tok){const src=CAM?CAM.v:VM?VM.v:null;if(!src)break;
+  if(!VBUSY&&src.readyState>=2&&src.videoWidth){const L=S.cmp?[]:vidLayers(),k=L.map(layerKey).join("|")+"|"+VSIDE,tt=src.currentTime;
+   if(CAM||tt!==lastT||k!==key){const t0=performance.now();let img=vframe(src,!!CAM,VSIDE);
+    if(img){img=await vchain(img,L,true);if(me!==VLOOP.tok)break;vpaint(img);if(REC)REC.g.drawImage($("view"),0,0,REC.rc.width,REC.rc.height)}
+    vadapt(performance.now()-t0);lastT=tt;key=k;stillNote()}}
+  vtick();await nextF()}}
+let VTK=0;
+function vtick(force){const now=performance.now();if(!force&&now-VTK<250)return;VTK=now;
+ const s=REC?(now-REC.t0)/1000:VM?VM.v.currentTime:null;
+ if(REC){const b=$("badge");b.textContent="● REC "+hms(s);b.className="badge rec";b.hidden=!!ECRAN}
+ if(VM){const d=VM.dur||VM.v.duration;$("vTime").textContent=hms(s)+(isFinite(d)&&d>0?" / "+hms(d):"");const r=$("vSeek");if(document.activeElement!==r&&isFinite(d)&&d>0){r.value=Math.round(Math.min(1,s/d)*1000);rng(r)}
+  $("vPlay").querySelector("use").setAttribute("href",VM.v.paused?"#i-play":"#i-pause")}
+ if(ECRAN&&s!=null)ECRAN.osd({counter:hms(s)})}
+/* écran commun : « camescope » pendant l'enregistrement et la lecture d'une vidéo, « photo » sinon */
+function ecranSync(){if(!ECRAN)return;const pl=$("player"),on=!!REC||!!VM||!pl.hidden,pr=on?"camescope":"photo";
+ if(pr!==ECP){ECP=pr;IKEcran.mount($("stage"),{profile:pr})}if(on)ECRAN.osd({rec:!!REC,counter:hms(REC?(performance.now()-REC.t0)/1000:VM?VM.v.currentTime:pl.currentTime)})}
+
+/* durée d'un WebM de MediaRecorder (sans durée inscrite) : saut au bout, lecture de la durée, retour au début */
+function vDur(v){if(isFinite(v.duration)&&v.duration>0)return Promise.resolve(v.duration);
+ return new Promise(res=>{let done=0;const end=d=>{if(done)return;done=1;v.removeEventListener("durationchange",f);try{v.currentTime=0}catch{}res(d)},f=()=>{if(isFinite(v.duration)&&v.duration>0)end(v.duration)};
+  v.addEventListener("durationchange",f);try{v.currentTime=1e101}catch{}setTimeout(()=>end(0),5000)})}
+const vLoaded=v=>new Promise((res,rej)=>{if(v.readyState>=2)return res();v.addEventListener("loadeddata",()=>res(),{once:true});v.addEventListener("error",()=>rej(new Error(t("vidBad"))),{once:true})});
+const vSeek=(v,tt)=>new Promise(res=>{if(Math.abs(v.currentTime-tt)<1e-4&&v.readyState>=2&&!v.seeking)return res();let d=0;const f=()=>{if(d)return;d=1;v.removeEventListener("seeked",f);res()};v.addEventListener("seeked",f);v.currentTime=tt;setTimeout(f,4000)});
+function vEl(url,muted){const v=document.createElement("video");v.className="vsrc";v.playsInline=true;v.preload="auto";v.muted=!!muted;v.src=url;document.body.appendChild(v);return v}
+
+/* ouvrir une vidéo (fichier, clip filmé, vidéo FaunAI) : elle joue sur l'écran, la pile s'applique à chaque image.
+   bare : clip aux effets déjà inclus (caméra) ou vidéo FaunAI tirée de l'image rendue : la pile repart vide. */
+async function openVideo(blob,o){o=o||{};endSession();stopCam();closeVideo();
+ const url=URL.createObjectURL(blob),v=vEl(url,false);
+ try{await vLoaded(v)}catch(e){v.remove();URL.revokeObjectURL(url);throw e}
+ const dur=o.dur||await vDur(v);await vSeek(v,0);
+ const st=S.stack.slice(),cu=S.cur,c=FF.util.canvas(v.videoWidth,v.videoHeight);c.getContext("2d").drawImage(v,0,0);
+ pushHist();VM={v,url,blob,kind:o.kind||"file",dur:dur||0,it:o.it||null};VSIDE=VMAX;VFT=0;STN="";
+ await setSource(FF.util.fromCanvas(c),true);
+ if(!o.bare){S.stack=st.filter(L=>L.id!=="__baked");S.cur=cu}THUMBS.clear();drawCtl();drawGrid();drawLayers();
+ v.loop=true;v.addEventListener("ended",()=>{if(VM&&VM.v===v){v.currentTime=0;v.play().catch(()=>{})}});
+ $("vidBar").hidden=false;$("closeVid").hidden=false;setLabel();ecranSync();fit();
+ try{await v.play()}catch{v.muted=true;v.play().catch(()=>{})}
+ vloop();return VM}
+function vclose(){if(!VM)return;const m=VM;VM=null;VLOOP.tok++;m.v.pause();m.v.remove();setTimeout(()=>URL.revokeObjectURL(m.url),1000);
+ $("vidBar").hidden=true;$("closeVid").hidden=true;STN="";ecranSync();setLabel();render()}
+$("vPlay").onclick=()=>{if(!VM)return;if(VM.v.paused)VM.v.play().catch(()=>{});else VM.v.pause();vtick(true)};
+$("vSeek").oninput=e=>{if(!VM)return;const d=VM.dur||VM.v.duration;rng(e.target);if(isFinite(d)&&d>0)VM.v.currentTime=e.target.value/1000*d};
+$("vSeek").onchange=()=>$("vSeek").blur();
+
+/* mode du déclencheur : Photo ou Vidéo ; le micro est demandé au passage en Vidéo seulement */
+function setPvMode(m){if(REC)return;PVMODE=m==="video"?"video":"photo";document.querySelectorAll("#pvMode button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m===PVMODE)));
+ $("shutter").classList.toggle("vid",PVMODE==="video");$("shutter").setAttribute("aria-label",t(PVMODE==="video"?"recStart":"shutter"));if(PVMODE==="video")askMic()}
+document.querySelectorAll("#pvMode button").forEach(b=>b.onclick=()=>setPvMode(b.dataset.m));
+async function askMic(){if(MIC||!CAM||!navigator.mediaDevices)return;try{const s=await navigator.mediaDevices.getUserMedia({audio:true});if(CAM)MIC=s;else s.getTracks().forEach(x=>x.stop())}catch{MIC=null;setStatus(t("micOff"))}}
+function shutterPress(){if(PVMODE==="video"){REC?recStop():recStart();return}shoot()}
+/* filmer : le viseur (effets compris) passe dans un canvas de taille fixe, enregistré avec le micro */
+function recStart(){if(!CAM||REC)return;if(!canRec()){setStatus(t("noRec"),"err");return}const v=$("view");if(v.width<16){return}
+ const w=v.width&~1,h=v.height&~1,rc=document.createElement("canvas");rc.width=w;rc.height=h;const g=rc.getContext("2d");g.drawImage(v,0,0,w,h);
+ const st=rc.captureStream(VFPS);(MIC?MIC.getAudioTracks().filter(x=>x.readyState==="live"):[]).forEach(x=>st.addTrack(x));
+ const mt=pickMime(),rec=new MediaRecorder(st,mt?{mimeType:mt,videoBitsPerSecond:2500000}:{}),chunks=[];rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+ REC={rec,chunks,rc,g,mt,t0:performance.now()};rec.start(500);
+ $("shutter").classList.add("rec");$("shutter").setAttribute("aria-label",t("recStop"));document.querySelectorAll("#pvMode button").forEach(b=>b.disabled=true);setLabel();ecranSync();vtick(true)}
+async function recStop(discard){const R=REC;if(!R)return;REC=null;const done=new Promise(r=>R.rec.onstop=r);try{R.rec.stop()}catch{}await done;
+ const dur=(performance.now()-R.t0)/1000;$("shutter").classList.remove("rec");document.querySelectorAll("#pvMode button").forEach(b=>b.disabled=false);setPvMode(PVMODE);setLabel();ecranSync();
+ if(discard)return;const type=(R.rec.mimeType||R.mt||"video/webm").split(";")[0],blob=new Blob(R.chunks,{type});
+ try{await openVideo(blob,{kind:"clip",bare:true,dur});setStatus(t("clipDone",{s:dur.toFixed(1)}),"ok")}catch(e){setStatus(String(e.message||e),"err")}}
+
+/* enregistrer la vidéo courante avec la pile : 1) chaque image rendue à la taille choisie (JPEG en mémoire), 2) lecture en temps réel enregistrée */
+async function exportClip(){if(!VM||VBUSY)return;const L=vidLayers(),m=VM;
+ if(!L.length){download(m.blob,fname(extOf(m.blob.type)));prog(t("saved")+" "+LAST_NAME);$("status").className="status ok";return}
+ if(!canRec()){setStatus(t("noRec"),"err");return}
+ VBUSY=true;FULLQ=true;const was=!m.v.paused;m.v.pause();$("busy").hidden=false;const tmp=[];let ac=null;
+ try{const v=vEl(m.url,true);tmp.push(v);await vLoaded(v);const dur=m.dur||await vDur(v)||1;
+  const n=Math.max(1,Math.round(dur*VFPS)),sw=v.videoWidth,sh=v.videoHeight,k=EX.clip?Math.min(1,EX.clip/Math.max(sw,sh)):1,w=Math.max(2,Math.round(sw*k)&~1),h=Math.max(2,Math.round(sh*k)&~1);
+  const c=document.createElement("canvas");c.width=w;c.height=h;const g=c.getContext("2d",{willReadFrequently:true});const F=[];let oc=null,og=null;
+  for(let i=0;i<n;i++){prog(t("vidRender",{i:i+1,n}));await vSeek(v,Math.min(Math.max(0,dur-.001),i/VFPS));g.drawImage(v,0,0,w,h);
+   const out=await vchain(g.getImageData(0,0,w,h),L,false);if(!oc){oc=document.createElement("canvas");oc.width=Math.max(2,out.width&~1);oc.height=Math.max(2,out.height&~1);og=oc.getContext("2d")}
+   og.drawImage(FF.util.toCanvas(out),0,0,oc.width,oc.height);F.push(await new Promise(r=>oc.toBlob(r,"image/jpeg",.92)));if(i%4===3)await sleep(0)}
+  /* bande son d'origine : le fichier rejoué dans Web Audio, branché sur l'enregistreur seulement */
+  const st=oc.captureStream(VFPS);let a=null;
+  try{a=vEl(m.url,false);tmp.push(a);await vLoaded(a);ac=new (window.AudioContext||window.webkitAudioContext)();await ac.resume();const ms=ac.createMediaElementSource(a),d=ac.createMediaStreamDestination();ms.connect(d);d.stream.getAudioTracks().forEach(x=>st.addTrack(x))}catch(e){a=null}
+  const BM=new Map(),bm=async i=>{for(let j=i;j<Math.min(n,i+6);j++)if(!BM.has(j))BM.set(j,createImageBitmap(F[j]));for(const q of [...BM.keys()])if(q<i){BM.get(q).then(b=>b.close&&b.close());BM.delete(q)}return BM.get(i)};
+  og.drawImage(await bm(0),0,0);const mt=pickMime(),rec=new MediaRecorder(st,mt?{mimeType:mt,videoBitsPerSecond:Math.max(1e6,Math.round(oc.width*oc.height*VFPS*.12))}:{}),chunks=[];
+  rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};rec.start(250);const t0=performance.now();
+  if(a){try{a.currentTime=0;await a.play()}catch{a=null}}
+  let last=0;while(true){const tt=a?a.currentTime:(performance.now()-t0)/1000;if(tt>=dur-.5/VFPS||(a&&a.ended)||performance.now()-t0>dur*1000+3000)break;
+   const i=Math.min(n-1,Math.floor(tt*VFPS));if(i!==last){og.drawImage(await bm(i),0,0);last=i;prog(t("vidEnc",{s:Math.max(0,Math.ceil(dur-tt))}))}await sleep(4)}
+  og.drawImage(await bm(n-1),0,0);await sleep(80);const done=new Promise(r=>rec.onstop=r);rec.stop();await done;
+  const type=(rec.mimeType||mt||"video/webm").split(";")[0],blob=new Blob(chunks,{type});download(blob,fname(extOf(type)));
+  prog(t("vidDone",{k:Math.round(blob.size/1024)})+" · "+oc.width+" × "+oc.height+" px · "+LAST_NAME);$("status").className="status ok"}
+ catch(e){console.error(e);setStatus(String(e.message||e),"err")}
+ finally{tmp.forEach(x=>{x.pause();x.remove()});if(ac)ac.close().catch(()=>{});FULLQ=false;VBUSY=false;$("busy").hidden=true;if(was&&VM===m)m.v.play().catch(()=>{})}}
+
 
 /* ---------- Insert Koin : contrats de la page en ligne ---------- */
 /* KAPTURE (SKREEN, KAM) passe son image au site, qui l'ouvre ici */
@@ -8157,19 +8307,19 @@ window.__ffSaveRaw=saveRaw;
    rendu « camescope » pendant la lecture d'une vidéo : REC et compteur. Sans ik-ecran.js, la page reste telle quelle. */
 function ecranOn(){if(!window.IKEcran||!IKEcran.layout||ECRAN)return;document.documentElement.classList.add("ike-on");
  const app=$("app"),ctl=document.createElement("div");ctl.id="ctrl";ctl.className="ctrl";
- [document.querySelector("header.top"),$("shutterRow"),$("actions"),$("status"),$("inspector"),document.querySelector("footer.credit")].forEach(e=>{if(e)ctl.appendChild(e)});
+ [document.querySelector("header.top"),$("shutterRow"),$("vidBar"),$("actions"),$("status"),$("inspector"),document.querySelector("footer.credit")].forEach(e=>{if(e)ctl.appendChild(e)});
  app.appendChild($("stage"));app.appendChild(ctl);
  ECRAN=IKEcran.mount($("stage"),{program:"photo",z:4});
  IKEcran.layout(app,{screen:$("stage"),controls:ctl,onlayout:()=>fit()});
- const pl=$("player"),hms=x=>{x=Math.max(0,Math.floor(x||0));return Math.floor(x/3600)+":"+String(Math.floor(x/60)%60).padStart(2,"0")+":"+String(x%60).padStart(2,"0")};
- new MutationObserver(()=>{const v=!pl.hidden;IKEcran.mount($("stage"),{profile:v?"camescope":"photo"});if(v)ECRAN.osd({rec:true,counter:hms(pl.currentTime)})}).observe(pl,{attributes:true,attributeFilter:["hidden"]});
+ const pl=$("player");
+ new MutationObserver(()=>ecranSync()).observe(pl,{attributes:true,attributeFilter:["hidden"]});
  pl.addEventListener("timeupdate",()=>{if(!pl.hidden)ECRAN.osd({counter:hms(pl.currentTime)})});
  fit()}
 ecranOn();
 
 /* ---------- langue ---------- */
 $("bLang").onclick=()=>{LANG=LANG==="fr"?"en":"fr";LS.set("obturama.lang",LANG);try{localStorage.setItem("ik.lang",LANG)}catch{}applyLang()};
-function applyLang(){i18n();drawCtl();if(CAM)$("bShoot").querySelector("span").textContent=t("shutter");const b=$("bLang");b.title=LANG==="fr"?"Switch to English":"Passer en français";b.setAttribute("aria-label",LANG==="fr"?"Langue : français. Switch to English":"Language: English. Passer en français")}
+function applyLang(){i18n();drawCtl();if(CAM){$("bShoot").querySelector("span").textContent=t("shutter");setPvMode(PVMODE)}const b=$("bLang");b.title=LANG==="fr"?"Switch to English":"Passer en français";b.setAttribute("aria-label",LANG==="fr"?"Langue : français. Switch to English":"Language: English. Passer en français")}
 try{if(window.top!==window)document.documentElement.classList.add("embedded")}catch{document.documentElement.classList.add("embedded")}
 
 /* ---------- démarrage ---------- */
@@ -8355,8 +8505,8 @@ function drawReel(){const box=$("film");box.textContent="";$("reel").hidden=!REE
   b.onclick=async e=>{if(e.target.classList.contains("x")){await DB.del(it.id);REEL=REEL.filter(x=>x!==it);if(CUR_VID===it)closeVideo();drawReel();return}
    if(it.type==="video")showVideo(it);else if(it.blob){pushHist();setSource(await readFile(new File([it.blob],"p.jpg",{type:it.blob.type})),true);closeVideo()}};
   box.appendChild(b)}}
-function showVideo(it){CUR_VID=it;const v=$("player");v.src=srcOf(it);v.hidden=false;$("closeVid").hidden=false;$("lbName").textContent=t("video");v.play().catch(()=>{})}
-function closeVideo(){const v=$("player");if(v.hidden)return;v.pause();v.hidden=true;$("closeVid").hidden=true;CUR_VID=null;setLabel()}
+function showVideo(it){if(it.blob){openVideo(it.blob,{kind:"faunai",bare:true,it}).then(()=>{CUR_VID=it}).catch(e=>setStatus(String(e.message||e),"err"));return}CUR_VID=it;const v=$("player");v.src=srcOf(it);v.hidden=false;$("closeVid").hidden=false;$("lbName").textContent=t("video");v.play().catch(()=>{})}
+function closeVideo(){CUR_VID=null;if(VM)vclose();const v=$("player");if(v.hidden)return;v.pause();v.hidden=true;$("closeVid").hidden=true;setLabel()}
 $("closeVid").onclick=closeVideo;
 
 /* ---------- clés, recensement des moteurs ---------- */
