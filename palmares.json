@@ -1,10 +1,10 @@
 {
- "updated": "2026-10-23T19:17Z",
+ "updated": "2026-10-24T01:38Z",
  "relays": {
-  "wss://relay.damus.io": 0,
-  "wss://nos.lol": 18,
-  "wss://relay.primal.net": 18,
-  "wss://nostr.mom": 18
+  "wss://relay.damus.io": 14,
+  "wss://nos.lol": 20,
+  "wss://relay.primal.net": 20,
+  "wss://nostr.mom": 20
  },
  "korong": [
   {
@@ -86,7 +86,7 @@
   {
    "who": "515d1f59029568f92203b036679dbd033a010db2748ae3eaa4904327ec96c52a",
    "name": "MAU",
-   "t": 1792782412,
+   "t": 1792804001,
    "c": {
     "ka": 0,
     "kb": 0,
@@ -97,9 +97,27 @@
     "c4": 0,
     "hg": 0,
     "mm": 0,
-    "ko": 16
+    "ko": 21
    },
-   "pts": 962
+   "pts": 967
+  },
+  {
+   "who": "15151a25622743692dc1a75c8b2c74aa8aeb1ec169bcc345ca982c40b173731d",
+   "name": "AAA",
+   "t": 1792801820,
+   "c": {
+    "ka": 0,
+    "kb": 0,
+    "du": 0,
+    "fi": 410,
+    "cl": 0,
+    "er": 0,
+    "c4": 0,
+    "hg": 0,
+    "mm": 0,
+    "ko": 2
+   },
+   "pts": 43
   },
   {
    "who": "e58102657028d4be2d116dda3f1190b943fa5909a3cf1f33999ec383f332a409",
