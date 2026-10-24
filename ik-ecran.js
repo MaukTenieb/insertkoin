@@ -8,7 +8,7 @@
  * training artificial intelligence. Contact: mauktenieb@gmail.com
  */
 /*
- * Écran — the one screen of Insert Koin. v2.0.0
+ * Écran — the one screen of Insert Koin. v2.1.0
  *
  * One screen for every program: the same 4:3 picture, the same size, the same place
  * in the program's view, the same frame. Only two things change from one program to
@@ -22,7 +22,7 @@
  * panel of a KG module laid over the calque: both fill the same frame of the site,
  * under its bar). IKEcran.geometry(width, height) gives the rectangles in it:
  *  - wide view (width >= 700 and width >= height): the screen on the left, as large
- *    as the height allows; the controls on the right, 300 to 460 px wide (30 %);
+ *    as the height allows; the controls on the right, 340 to 480 px wide (30 %);
  *  - narrow view (phone, portrait tablet): the screen on top, full width; the
  *    controls below, scrolling.
  * The numbers are whole pixels and depend on the box alone, so two programs shown in
@@ -87,7 +87,7 @@
   "use strict";
   if (window.IKEcran) return;
 
-  const VERSION = "2.0.0";
+  const VERSION = "2.1.0";
   const ROLL_DURATION = 700;
 
   /* ------------------------------------------------------------------ *
@@ -1109,7 +1109,7 @@
   const ASPECT = 4 / 3;
   const LAY = {
     wideMin: 700,                                    // narrower views stack the screen over the controls
-    wide: { pad: 12, bezel: 12, gap: 12, ctrlK: 0.3, ctrlMin: 300, ctrlMax: 460 },
+    wide: { pad: 12, bezel: 12, gap: 12, ctrlK: 0.3, ctrlMin: 340, ctrlMax: 480 },
     narrow: { pad: 0, bezel: 8, gap: 8 },
   };
 
