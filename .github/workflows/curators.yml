@@ -1,9 +1,9 @@
-# CURATORS: every Monday, after the watch of MaukTenieb/curators, the VHS deck gets the new cassettes.
+# CURATORS: every day at 9:19 UTC, the VHS deck gets the cassettes of MaukTenieb/curators when they changed.
 name: curators
 
 on:
   schedule:
-    - cron: "19 9 * * 1"   # Monday, 9:19 UTC, after the 6:49 watch
+    - cron: "19 9 * * *"   # every day, 9:19 UTC: the Monday watch, and any extra run of the curators repo
   workflow_dispatch:
 
 permissions:
