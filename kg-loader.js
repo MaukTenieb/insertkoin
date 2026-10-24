@@ -41,9 +41,11 @@
     chess:{faces:false},
     erratic:{faces:true},
     faunarratics:{faces:true},
-    kapture:{faces:false},
-    vhs:{faces:false}
+    kapture:{faces:false,ecran:true},
+    vhs:{faces:false,ecran:true}
   };
+  /* [IK] the shared screen (ik-ecran.js) loads before the modules that show one */
+  var ECRAN=BASE.replace(/kg-$/,'')+'ik-ecran.js';
   // game -> modules (after core), entry point, panels whose visibility defines "open"
   var GAMES={
     chess:       {mods:['chess'],             roots:['chess'],                          entry:function(){window.openChess();}},
@@ -124,7 +126,7 @@
     modDone[m]=Promise.all([css,html]).then(function(r){
       inject(r[1]);
       return MODS[m].faces?loadFaces():null;
-    }).then(function(){return loadJs(BASE+m+'.js');}).then(function(){if(HOOKS[m])HOOKS[m]();});
+    }).then(function(){return MODS[m].ecran?loadJs(ECRAN):null;}).then(function(){return loadJs(BASE+m+'.js');}).then(function(){if(HOOKS[m])HOOKS[m]();});
     return modDone[m];
   }
 

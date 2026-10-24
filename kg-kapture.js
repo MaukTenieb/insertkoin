@@ -12,7 +12,9 @@
 /* KG module "kapture" -- KAPTURE camera: a live view, one shot, and the photo goes to Photofauna
    (window.ikToPhotofauna, set by the host page). Outside Insert Koin the photo is saved as a file.
    The screenshot (SKREEN) is the host page's job: it has to be taken before any panel opens.
-   The former 5-second video recorder stays in the git history (kg-kapture.js before 20 Oct 2026). */
+   The former 5-second video recorder stays in the git history (kg-kapture.js before 20 Oct 2026).
+   The viewfinder is the shared screen (ik-ecran.js, profile "photo"): framing marks and glass over the
+   live view, the video itself untouched, so the shot drawn from it stays clean. */
 (function(){
   var st=null,facing='environment';
   function $(id){return document.getElementById(id);}
@@ -34,7 +36,10 @@
     var a=document.createElement('a'),u=URL.createObjectURL(blob);a.href=u;a.download=name||(window.ikName?ikName('kapture','jpg'):'kapture.jpg');
     document.body.appendChild(a);a.click();setTimeout(function(){a.remove();URL.revokeObjectURL(u);},2000);window.kaptureClose();
   }
-  window.kaptureStart=function(){var o=$('kapture-overlay');if(o)o.style.display='block';st={};startCam();};
+  var ecran=null;
+  window.kaptureStart=function(){var o=$('kapture-overlay');if(o)o.style.display='block';st={};
+    if(o&&window.IKEcran)ecran=window.IKEcran.mount(o,{program:'kapture',content:'#kapture-video',z:2});
+    startCam();};
   window.kaptureFlip=function(){facing=facing==='environment'?'user':'environment';startCam();};
   window.kaptureShoot=function(){
     var v=$('kapture-video');
@@ -45,5 +50,5 @@
     var o=$('kapture-overlay');if(o){o.classList.remove('flash');void o.offsetWidth;o.classList.add('flash');}
     c.toBlob(function(b){if(b)deliver(b,window.ikName?ikName('kapture','jpg'):'kapture.jpg');},'image/jpeg',.94);
   };
-  window.kaptureClose=function(){stopCam();st=null;var o=$('kapture-overlay');if(o){o.style.display='none';o.classList.remove('flash');}};
+  window.kaptureClose=function(){stopCam();st=null;if(ecran)ecran.sleep();var o=$('kapture-overlay');if(o){o.style.display='none';o.classList.remove('flash');}};
 })();

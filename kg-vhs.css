@@ -61,17 +61,12 @@
 
 /* ---- the television ----------------------------------------------------- */
 
+/* casing, badge and LED: ik-ecran.js, profile "vhs" */
 .vhs-tv {
   padding: clamp(10px, 2.2vw, 22px) clamp(10px, 2.2vw, 22px) 8px;
-  border-radius: 14px;
-  background:
-    radial-gradient(120% 90% at 50% 0%, rgba(255,255,255,.05), transparent 60%),
-    linear-gradient(180deg, #24211e, #151311);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.07), inset 0 -2px 0 rgba(0,0,0,.5), 0 18px 40px rgba(0,0,0,.55);
 }
 .vhs-tv-foot { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 8px 4px 0; }
-.vhs-tv-led { width: 5px; height: 5px; border-radius: 50%; background: #3a120a; box-shadow: none; }
-.vhs[data-mode] .vhs-tv-led { background: #ff3b1f; box-shadow: 0 0 6px #ff3b1f; }
+.vhs-tv-badge { margin-right: auto; }
 
 /* ---- the deck ----------------------------------------------------------- */
 
@@ -218,14 +213,7 @@
   border-radius: 18px / 14px;
   background: #000;
 }
-/* the glass: a soft reflection and a vignette, over everything on the tube */
-.vhs-screen::after {
-  content: ""; position: absolute; inset: 0; z-index: 7; pointer-events: none; border-radius: inherit;
-  background:
-    radial-gradient(120% 90% at 30% 10%, rgba(255,255,255,.07), transparent 45%),
-    radial-gradient(ellipse at center, transparent 58%, rgba(0,0,0,.55) 100%);
-  box-shadow: inset 0 0 40px rgba(0,0,0,.7);
-}
+/* the glass (reflection, vignette): ik-ecran.js, profile "vhs" */
 
 /* Tape swap on source change: the picture collapses to a horizontal line,
    like the deck grabbing the tape again. */
@@ -854,35 +842,9 @@
 }
 
 /* ---- [IK] tape wear over the YouTube catalogue -------------------------- */
-/* YouTube's pixels never reach the WebGL shader (other origin), so the wear is
-   laid over the player: a softened, slightly washed picture, scanlines, grain,
-   a tracking band that drifts up, head-switching noise at the bottom. */
-.vhs-wear { position: absolute; inset: 0; z-index: 4; pointer-events: none; display: none; overflow: hidden; }
-.vhs[data-mode="catalogue"] .vhs-wear { display: block; }
-.vhs[data-mode="catalogue"] .vhs-youtube iframe { filter: saturate(.78) contrast(1.08) brightness(1.03) blur(.45px) sepia(.06); }
-.vhs-wear::before { /* scanlines */
-  content: ""; position: absolute; inset: 0;
-  background: repeating-linear-gradient(0deg, rgba(0,0,0,.22) 0 1px, transparent 1px 3px);
-}
-.vhs-grain { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .55; mix-blend-mode: screen; transition: opacity .4s; }
-.vhs.is-loaded .vhs-grain { opacity: .07; }
-.vhs-band {
-  position: absolute; left: 0; right: 0; height: 7%; top: 100%;
-  backdrop-filter: blur(1.6px) saturate(1.7) brightness(1.18);
-  -webkit-backdrop-filter: blur(1.6px) saturate(1.7) brightness(1.18);
-  background: repeating-linear-gradient(0deg, rgba(255,255,255,.10) 0 1px, transparent 1px 4px);
-  animation: vhs-band 47s linear infinite;
-}
-/* the tracking band passes rarely: once every forty-odd seconds, in two seconds */
-@keyframes vhs-band { 0%, 95% { top: 105%; } 100% { top: -10%; } }
-.vhs-head {
-  position: absolute; left: 0; right: 0; bottom: 0; height: 3.2%;
-  backdrop-filter: blur(2.2px) hue-rotate(-14deg) brightness(1.2);
-  -webkit-backdrop-filter: blur(2.2px) hue-rotate(-14deg) brightness(1.2);
-  background: repeating-linear-gradient(0deg, rgba(255,255,255,.18) 0 1px, rgba(0,0,0,.25) 1px 2px);
-}
-.vhs[data-mode="catalogue"] .vhs-screen.is-wobble .vhs-youtube { animation: vhs-wobble .18s steps(3) 1; }
-@keyframes vhs-wobble { 33% { transform: translateX(-2px); } 66% { transform: translateX(1.5px); } }
+/* YouTube's pixels never reach a shader (other origin): ik-ecran.js lays the
+   wear over the player (softened picture, scanlines, grain, tracking band,
+   head-switching noise, a rare jolt), profile "vhs", DOM mode. */
 
 /* ---- [IK] the shelf, the find field, the tapes --------------------------- */
 .vhs-source-tabs { margin-top: 18px; }

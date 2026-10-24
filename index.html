@@ -1778,7 +1778,8 @@ function domShot(){return new Promise(res=>{const d=Math.min(2,devicePixelRatio|
   collect(document,0,0);
   Promise.all(bgs.map(([u,X,Y,w,h])=>new Promise(ok=>{const im=new Image();im.onload=()=>{const k=Math.max(w/im.naturalWidth,h/im.naturalHeight),dw=im.naturalWidth*k,dh=im.naturalHeight*k;
     x.save();x.beginPath();x.rect(X,Y,w,h);x.clip();x.drawImage(im,X+(w-dw)/2,Y+(h-dh)/2,dw,dh);x.restore();ok();};im.onerror=ok;im.src=u;}))).then(()=>{paint(document,0,0);try{c.toBlob(res,'image/png');}catch(e){res(null);}});
-  const paint=(doc,ox,oy)=>{doc.querySelectorAll('canvas,img,video,iframe').forEach(el=>{const r=vis(el);if(!r)return;
+  /* the shared screen's dressing (ik-ecran.js, data-ike-dress) stays out: the picture underneath goes in clean */
+  const paint=(doc,ox,oy)=>{doc.querySelectorAll('canvas,img,video,iframe').forEach(el=>{if(el.closest('[data-ike-dress]'))return;const r=vis(el);if(!r)return;
     try{if(el.tagName==='IFRAME'){const dd=el.contentDocument;if(dd)paint(dd,ox+r.left,oy+r.top);return;}
       if(el.tagName==='IMG'&&(!el.complete||(new URL(el.currentSrc||el.src,location.href).origin!==location.origin&&!el.crossOrigin)))return;x.globalAlpha=+getComputedStyle(el).opacity||1;x.drawImage(el,ox+r.left,oy+r.top,r.width,r.height);x.globalAlpha=1;}catch(e){}});};
 });}

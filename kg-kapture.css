@@ -108,8 +108,8 @@
 /* [IK] Kapture camera: live view, shutter, flip, close */
 :where(.kg-layer) #kapture-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;}
 :where(.kg-layer) #kapture-video.mirror{transform:scaleX(-1);}
-:where(.kg-layer) #kapture-msg{position:absolute;left:0;right:0;top:40%;text-align:center;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.2em;color:rgba(201,168,76,.8);pointer-events:none;}
-:where(.kg-layer) #kapture-bar{position:absolute;left:0;right:0;bottom:calc(22px + env(safe-area-inset-bottom,0px));display:flex;gap:28px;justify-content:center;align-items:center;}
+:where(.kg-layer) #kapture-msg{z-index:3;position:absolute;left:0;right:0;top:40%;text-align:center;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.2em;color:rgba(201,168,76,.8);pointer-events:none;}
+:where(.kg-layer) #kapture-bar{z-index:3;position:absolute;left:0;right:0;bottom:calc(22px + env(safe-area-inset-bottom,0px));display:flex;gap:28px;justify-content:center;align-items:center;}
 :where(.kg-layer) #kapture-bar button{font-family:'DM Mono',monospace;color:#c9a84c;background:rgba(7,5,4,.6);border:1px solid rgba(201,168,76,.5);border-radius:50%;width:48px;height:48px;font-size:18px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
 :where(.kg-layer) #kapture-bar #kapture-shoot{width:72px;height:72px;font-size:34px;color:#ff3333;border-color:#c9a84c;border-width:2px;}
 :where(.kg-layer) #kapture-bar button:focus-visible{outline:2px solid #c9a84c;outline-offset:3px;}
