@@ -8,10 +8,15 @@
  * training artificial intelligence. Contact: mauktenieb@gmail.com
  */
 /*
- * VHS cabinet — original code for Insert Koin. v2.2.0
+ * VHS cabinet — original code for Insert Koin. v2.4.0
  *
- * Third-party code: none. The YIQ matrices are the standard NTSC constants;
- * the integer hash is the MurmurHash3 32-bit finalizer (public domain).
+ * Third-party code: none.
+ *
+ * The television's screen is the shared screen of Insert Koin, ik-ecran.js:
+ * the same frame, size and place as in every program (IKEcran.layout: the
+ * screen on the left or on top, the deck and the catalogue in the controls
+ * slot), with the "vhs" rendering (glass, tape shader, wear over YouTube);
+ * the loader loads it before this file.
  *
  * Integration notes (kg-loader):
  *  - Fixed full-viewport panel inside the 0x0 .kg-layer (same convention as
@@ -33,7 +38,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "2.2.0";
+  const VERSION = "2.3.0";
   const ROOT_SELECTOR = "[data-vhs-root]";
   const YT_API = "https://www.youtube.com/iframe_api";
 
@@ -47,9 +52,6 @@
     NTSC: { lines: 480, std: 1, label: "NTSC" },
   };
   const REDUCED_MOTION_FACTOR = 0.55;
-  const PAUSE_FRAME_INTERVAL = 1000 / 24;
-  const ROLL_DURATION = 700;
-  const MAX_DRAW_FAILURES = 3;
 
   /* ------------------------------------------------------------------ *
    * i18n. English source strings, translated by the repository's own
@@ -66,190 +68,6 @@
     }
     return key;
   }
-
-  /* ------------------------------------------------------------------ *
-   * Shaders (GLSL ES 3.00)
-   * ------------------------------------------------------------------ */
-
-  const SHADER_VS = `#version 300 es
-    in vec2 aPosition;
-    in vec2 aUV;
-    out vec2 vUV;
-    void main() {
-      vUV = aUV;
-      gl_Position = vec4(aPosition, 0.0, 1.0);
-    }
-  `;
-
-  const SHADER_FS = `#version 300 es
-    precision highp float;
-    precision highp int;
-
-    uniform sampler2D uTex;
-    uniform vec2  uRes;        // canvas size in pixels
-    uniform float uAspect;     // video width / height
-    uniform float uTime;       // seconds; 0 when motion is reduced
-    uniform float uIntensity;  // 0..~0.6 (SP / LP / EP)
-    uniform float uStd;        // 0 = PAL, 1 = NTSC
-    uniform float uPause;      // 1 when the picture is frozen
-    uniform float uRoll;       // 0..1 vertical-hold slip
-
-    in vec2 vUV;
-    out vec4 outColor;
-
-    // MurmurHash3 32-bit finalizer (public domain).
-    uint hashU(uint x) {
-      x ^= x >> 16;
-      x *= 0x85ebca6bu;
-      x ^= x >> 13;
-      x *= 0xc2b2ae35u;
-      x ^= x >> 16;
-      return x;
-    }
-
-    // Uniform random number in [0,1). Arguments must be >= 0.
-    float rnd(float a, float b, float c) {
-      uint h = hashU(uint(a) + 0x9e3779b9u * hashU(uint(b) + 0x7f4a7c15u * (uint(c) + 1u)));
-      return float(h >> 8) * (1.0 / 16777216.0);
-    }
-
-    vec3 rgbToYiq(vec3 c) {
-      return vec3(
-        dot(c, vec3(0.2990,  0.5870,  0.1140)),
-        dot(c, vec3(0.5959, -0.2746, -0.3213)),
-        dot(c, vec3(0.2115, -0.5227,  0.3112))
-      );
-    }
-
-    vec3 yiqToRgb(vec3 c) {
-      return vec3(
-        c.x + 0.9563 * c.y + 0.6210 * c.z,
-        c.x - 0.2721 * c.y - 0.6474 * c.z,
-        c.x - 1.1070 * c.y + 1.7046 * c.z
-      );
-    }
-
-    vec3 fetchYiq(vec2 uv) {
-      return rgbToYiq(textureLod(uTex, uv, 0.0).rgb);
-    }
-
-    void main() {
-      float k = uIntensity;
-
-      // --- CRT screen curvature + rounded bezel (drawn on the canvas UVs so
-      //     the video inside stays undeformed).
-      vec2 c2 = vUV - 0.5;
-      vec2 curved = 0.5 + c2 * (1.0 + 0.055 * dot(c2, c2) * 4.0);
-      // Rounded-rectangle mask, like a real tube.
-      vec2 q2 = abs(c2) - vec2(0.488, 0.482);
-      float corner = length(max(q2, 0.0)) + min(max(q2.x, q2.y), 0.0) - 0.012;
-      if (corner > 0.0) { outColor = vec4(0.0, 0.0, 0.0, 1.0); return; }
-
-      // --- Letterbox: map the screen into the picture (keeps video aspect).
-      float canvasAspect = uRes.x / uRes.y;
-      vec2 sc = vec2(1.0);
-      if (uAspect > canvasAspect) sc.y = canvasAspect / uAspect;
-      else                        sc.x = uAspect / canvasAspect;
-      vec2 p = (curved - 0.5) / sc + 0.5;
-
-      if (p.x < 0.0 || p.x > 1.0 || p.y < 0.0 || p.y > 1.0) {
-        outColor = vec4(0.0, 0.0, 0.0, 1.0);
-        return;
-      }
-
-      float line = floor(vUV.y * uRes.y);
-      float t25  = floor(uTime * 25.0);
-
-      // --- Vertical-hold roll (applied BEFORE sampling so it is visible).
-      float seam = 1.0;
-      if (uRoll > 0.001) {
-        float seamDist = abs(p.y - (1.0 - uRoll));
-        seam = mix(0.15, 1.0, smoothstep(0.0, 0.04, seamDist));
-        p.y = fract(p.y + uRoll);
-      }
-
-      // --- Horizontal line displacement (all in picture-width units).
-      float dx = (rnd(line, t25, 1.0) - 0.5) * 0.009 * k;
-
-      // Tracking band drifting upwards.
-      float bandC = fract(uTime * 0.035 + 0.35);
-      float band  = smoothstep(0.07, 0.0, abs(p.y - bandC)) * smoothstep(0.84, 0.88, fract(uTime * 0.021)) * (1.0 - smoothstep(0.97, 1.0, fract(uTime * 0.021)));
-      dx += (rnd(line, t25, 2.0) - 0.5) * 0.05 * band * k;
-      dx += band * 0.02 * k * sin(p.y * 80.0 + uTime * 5.0);
-
-      // Head-switching skew at the bottom of the picture.
-      float hs = smoothstep(0.05, 0.0, p.y);
-      dx += hs * hs * 0.07 * k + hs * (rnd(line, t25, 3.0) - 0.5) * 0.02 * k;
-
-      // Extra wobble while rolling or paused.
-      dx += (rnd(line, t25, 9.0)  - 0.5) * 0.03  * uRoll;
-      dx += (rnd(line, t25, 10.0) - 0.5) * 0.004 * uPause;
-
-      // --- Luma: slightly soft.
-      float ld = 0.0008 + 0.0016 * k;
-      float yy = 0.50 * fetchYiq(vec2(p.x + dx,      p.y)).x
-               + 0.25 * fetchYiq(vec2(p.x + dx - ld, p.y)).x
-               + 0.25 * fetchYiq(vec2(p.x + dx + ld, p.y)).x;
-
-      // --- Chroma: delayed and much blurrier than luma.
-      // Triangular kernel, normalised by its real weight sum.
-      float cShift = mix(0.0018, 0.0034, uStd) * (0.6 + 2.0 * k);
-      float cStep  = 0.0026 + 0.004 * k;
-      vec2 iq = vec2(0.0);
-      float wsum = 0.0;
-      for (int n = -6; n <= 6; n++) {
-        float w = 1.0 - abs(float(n)) / 7.0;
-        vec3 s = fetchYiq(vec2(p.x + dx + cShift + float(n) * cStep, p.y));
-        iq += s.yz * w;
-        wsum += w;
-      }
-      iq /= wsum;
-      iq *= 1.0 - 0.3 * k;
-
-      vec3 col = yiqToRgb(vec3(yy, iq));
-
-      // --- Tape noise (smeared horizontally, like real FM noise).
-      float gx = floor(vUV.x * uRes.x * 0.5);
-      col += (rnd(gx, line, t25 + 11.0) - 0.5) * 0.22 * k;
-
-      // --- Head-to-tape slant: the recorded tracks are diagonal stripes, so
-      // the noise organises itself along them (helical scan).
-      float slant = p.x * 0.10 + p.y * 2.2;
-      float stripe = smoothstep(0.55, 1.0, sin(slant * 160.0) * 0.5 + 0.5);
-      col += (rnd(gx, line, t25 + 13.0) - 0.5) * 0.10 * k * stripe;
-
-      // Noise burst inside the tracking band (smeared along the tracks).
-      float bandStripe = smoothstep(0.45, 1.0, sin((p.x * 0.10 + bandC * 2.2) * 160.0) * 0.5 + 0.5);
-      col += band * (rnd(gx, line, t25 + 17.0) - 0.5) * 0.9 * k * (0.55 + 0.45 * bandStripe);
-
-      // --- Dropouts: short bright horizontal streaks on one or two lines.
-      float lb = floor(line * 0.5);
-      float tb = floor(uTime * 6.0);
-      if (rnd(lb, tb, 4.0) < 0.0012 + 0.004 * k) {
-        float x0  = rnd(lb, tb, 5.0);
-        float len = 0.01 + 0.09 * rnd(lb, tb, 6.0);
-        float inside = step(x0, p.x) * step(p.x, x0 + len);
-        col = mix(col, vec3(0.92), inside * 0.85);
-      }
-
-      // --- Pause: desaturated frozen frame with a drifting noise band.
-      if (uPause > 0.5) {
-        float pc = fract(uTime * 0.16);
-        float pb = smoothstep(0.09, 0.0, abs(p.y - pc));
-        float nz = rnd(gx, line, t25 + 23.0);
-        col = mix(col, vec3(nz), pb * clamp(0.25 + k, 0.0, 0.7));
-        col = mix(col, vec3(dot(col, vec3(0.299, 0.587, 0.114))), 0.25);
-      }
-
-      col *= seam;
-
-      // --- Tube vignette: corners fall into the black bezel.
-      float vig = 1.0 - 0.4 * clamp(dot(c2, c2) * 3.4, 0.0, 1.0);
-      col *= vig;
-
-      outColor = vec4(clamp(col, 0.0, 1.0), 1.0);
-    }
-  `;
 
   /* ------------------------------------------------------------------ *
    * State. A fresh object per open(); callbacks from an old session
@@ -294,29 +112,10 @@
       video: null,
       canvas: null,
 
-      // WebGL
-      glTried: false,
+      // Screen (ik-ecran.js)
+      ecran: null,
       glOk: false,
       fallback: false,
-      contextLost: false,
-      gl: null,
-      program: null,
-      buffer: null,
-      vao: null,
-      texture: null,
-      uniforms: null,
-
-      // Render loop
-      raf: 0,
-      frames: 0,
-      lastDraw: 0,
-      lastT: -1,
-      t0: 0,
-      forceUpload: true,
-      dirty: true,
-      aspect: 16 / 9,
-      rollStart: 0,
-      drawFailures: 0,
 
       rootVisible: true,
     };
@@ -325,7 +124,7 @@
   let state = makeState();
   let ytPromise = null;
   let retryRaf = 0;
-  const counters = { players: 0, contexts: 0 };
+  const counters = { players: 0 };
 
   const live = (s) => s === state && !s.destroyed;
 
@@ -526,6 +325,7 @@
     }
     setText(s, "[data-vhs-osd-track]", label);
     if (s.root) s.root.classList.toggle("is-loaded", label !== "\u2014");
+    if (s.ecran) s.ecran.set({ snow: label === "\u2014" });
     heartState(s);
 
     const mark = (selector, active) => {
@@ -609,19 +409,15 @@
     setMessage(s, "");
     updateTrackUI(s);
     s.video.src = file.url;
-    s.forceUpload = true;
-    s.dirty = true;
-    s.lastT = -1;
     setCounter(s, 0);
     setSeek(s, 0);
 
-    if (!s.reducedMotion && s.glOk && !s.fallback) s.rollStart = performance.now();
+    if (s.ecran) { s.ecran.refresh(); if (!s.reducedMotion && s.glOk && !s.fallback) s.ecran.pulse("roll"); }
 
     if (autoplay !== false) {
       const p = s.video.play();
       if (p && typeof p.catch === "function") p.catch(() => { if (live(s)) setStatus(s, "Pause"); });
     }
-    syncLoop(s);
   }
 
   function step(s, delta) {
@@ -895,27 +691,6 @@
     return api;
   })();
 
-  /* [IK] grain + an occasional horizontal jolt over the YouTube catalogue */
-  function wearLoop(s) {
-    const cv = s.root && s.root.querySelector(".vhs-grain");
-    if (!cv || s.wearRaf) return;
-    const c = cv.getContext("2d"), img = c.createImageData(cv.width, cv.height), d = img.data;
-    let last = 0;
-    const tick = (now) => {
-      if (!live(s)) { s.wearRaf = 0; return; }
-      s.wearRaf = requestAnimationFrame(tick);
-      if (s.source !== "youtube" || s.reducedMotion || now - last < 70) return;
-      last = now;
-      for (let i = 0; i < d.length; i += 4) { const v = Math.random() * 255 | 0; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; }
-      c.putImageData(img, 0, 0);
-      if (Math.random() < 0.003) {
-        const sc = s.root.querySelector("[data-vhs-screen]");
-        if (sc) { sc.classList.remove("is-wobble"); void sc.offsetWidth; sc.classList.add("is-wobble"); }
-      }
-    };
-    s.wearRaf = requestAnimationFrame(tick);
-  }
-
   /* ------------------------------------------------------------------ *
    * Transport
    * ------------------------------------------------------------------ */
@@ -1011,7 +786,7 @@
     if (stateLabel) setText(s, "[data-vhs-osd-state]", dir < 0 ? "REW" : "FFW");
     const status = q(s, "[data-vhs-status]");
     if (status) status.textContent = dir < 0 ? "REW" : "FFW";
-    s.dirty = true;
+    if (s.ecran) s.ecran.refresh();
 
     // The actual tape move: n seconds of programme, clamped to the reel.
     if (s.source === "local" && s.video && Number.isFinite(s.video.duration) && s.video.duration > 0) {
@@ -1121,8 +896,6 @@
     // One source at a time: never leave the other one playing.
     if (source === "local") {
       pauseYouTube(s);
-      ensureGL(s);
-      resizeCanvas(s);
       const video = s.video;
       setStatus(s, video && video.src && !video.paused ? "Play" : video && video.src ? "Pause" : "Stop");
       setCounter(s, video && video.src ? video.currentTime : 0);
@@ -1138,127 +911,39 @@
     }
 
     updateTrackUI(s);
-    syncLoop(s);
+    screenSource(s);
   }
 
   /* ------------------------------------------------------------------ *
-   * WebGL
+   * Screen: ik-ecran.js, profile "vhs". The local files go through its
+   * WebGL tape shader (the decoded <video> is the source); the YouTube
+   * catalogue, whose pixels cannot reach a shader, gets the DOM wear.
    * ------------------------------------------------------------------ */
 
-  function compile(gl, type, source) {
-    const shader = gl.createShader(type);
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      const log = gl.getShaderInfoLog(shader);
-      gl.deleteShader(shader);
-      throw new Error(log || "Shader compilation failed.");
-    }
-    return shader;
+  function mountScreen(s) {
+    const screen = q(s, "[data-vhs-screen]");
+    if (!screen || !window.IKEcran) return;
+    if (window.IKEcran.layout) s.layout = window.IKEcran.layout(s.root, { screen, controls: s.root.querySelector(".vhs-shell") });
+    s.ecran = window.IKEcran.mount(screen, {
+      program: "vhs",
+      canvas: s.canvas,
+      content: ".vhs-youtube",
+      zUnder: 4, // the wear stays under the boot snow (z 6) and the search bars (z 5)
+      lines: STANDARDS[s.standard].lines,
+      source: null,
+      state: () => ({ pause: !isPlaying(s), intensity: SPEED_INTENSITY[s.speed], std: STANDARDS[s.standard].std }),
+      onfallback: (off) => { if (!live(s) || s.source !== "local") return; if (off) enterFallback(s); else exitFallback(s); },
+    });
   }
 
-  function buildProgram(gl) {
-    const vs = compile(gl, gl.VERTEX_SHADER, SHADER_VS);
-    const fs = compile(gl, gl.FRAGMENT_SHADER, SHADER_FS);
-    const program = gl.createProgram();
-    gl.attachShader(program, vs);
-    gl.attachShader(program, fs);
-    gl.linkProgram(program);
-    gl.deleteShader(vs);
-    gl.deleteShader(fs);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      const log = gl.getProgramInfoLog(program);
-      gl.deleteProgram(program);
-      throw new Error(log || "Program linking failed.");
-    }
-    return program;
-  }
-
-  function buildGLResources(s) {
-    const gl = s.gl;
-    s.program = buildProgram(gl);
-
-    s.buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, s.buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-      -1, -1, 0, 0,
-       1, -1, 1, 0,
-      -1,  1, 0, 1,
-       1,  1, 1, 1,
-    ]), gl.STATIC_DRAW);
-
-    s.vao = gl.createVertexArray();
-    gl.bindVertexArray(s.vao);
-    const posLoc = gl.getAttribLocation(s.program, "aPosition");
-    const uvLoc = gl.getAttribLocation(s.program, "aUV");
-    gl.enableVertexAttribArray(posLoc);
-    gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 16, 0);
-    gl.enableVertexAttribArray(uvLoc);
-    gl.vertexAttribPointer(uvLoc, 2, gl.FLOAT, false, 16, 8);
-    gl.bindVertexArray(null);
-
-    s.texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, s.texture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-
-    const names = ["uTex", "uRes", "uAspect", "uTime", "uIntensity", "uStd", "uPause", "uRoll"];
-    s.uniforms = {};
-    names.forEach((name) => { s.uniforms[name] = gl.getUniformLocation(s.program, name); });
-  }
-
-  function releaseGLResources(s) {
-    const gl = s.gl;
-    if (!gl) return;
-    try {
-      if (s.texture) gl.deleteTexture(s.texture);
-      if (s.buffer) gl.deleteBuffer(s.buffer);
-      if (s.vao) gl.deleteVertexArray(s.vao);
-      if (s.program) gl.deleteProgram(s.program);
-    } catch (_) { /* context may already be lost */ }
-    s.texture = s.buffer = s.vao = s.program = s.uniforms = null;
-  }
-
-  function setupGL(s) {
-    if (!s.canvas) return false;
-    let gl = null;
-    try {
-      gl = s.canvas.getContext("webgl2", {
-        alpha: false,
-        antialias: false,
-        depth: false,
-        stencil: false,
-      });
-    } catch (_) { gl = null; }
-    if (!gl) return false;
-
-    s.gl = gl;
-    try {
-      buildGLResources(s);
-    } catch (error) {
-      console.error("[VHS] WebGL init failed:", error);
-      releaseGLResources(s);
-      s.gl = null;
-      return false;
-    }
-    counters.contexts++;
-    return true;
-  }
-
-  function ensureGL(s) {
-    if (s.glTried) return;
-    s.glTried = true;
-
-    s.glOk = setupGL(s);
-    if (s.glOk) {
-      on(s, s.canvas, "webglcontextlost", (event) => onContextLost(s, event), false);
-      on(s, s.canvas, "webglcontextrestored", () => onContextRestored(s), false);
-      exitFallback(s);
+  function screenSource(s) {
+    if (!live(s) || !s.ecran) return;
+    if (s.source === "local") {
+      const mode = s.ecran.setSource(s.video);
+      s.glOk = mode === "gl";
+      if (s.glOk) exitFallback(s); else enterFallback(s);
     } else {
-      enterFallback(s);
+      s.ecran.setSource(null);
     }
   }
 
@@ -1267,7 +952,6 @@
     s.root.dataset.gl = "off";
     if (s.video) s.video.controls = true;
     setMessage(s, "WebGL2 unavailable; showing the source video.");
-    syncLoop(s);
   }
 
   function exitFallback(s) {
@@ -1275,185 +959,6 @@
     s.root.dataset.gl = "on";
     if (s.video) s.video.controls = false;
     if (s.messageKey === "WebGL2 unavailable; showing the source video.") setMessage(s, "");
-    syncLoop(s);
-  }
-
-  function onContextLost(s, event) {
-    if (!live(s)) return;
-    event.preventDefault(); // required, otherwise the context is never restored
-    s.contextLost = true;
-    enterFallback(s);
-  }
-
-  function onContextRestored(s) {
-    if (!live(s)) return;
-    s.contextLost = false;
-    // Objects created before the loss are dead: drop them, do not delete
-    // them (deleting on the restored context raises INVALID_OPERATION).
-    s.texture = s.buffer = s.vao = s.program = s.uniforms = null;
-    try {
-      buildGLResources(s);
-      s.glOk = true;
-      s.forceUpload = true;
-      s.dirty = true;
-      exitFallback(s);
-    } catch (error) {
-      console.error("[VHS] WebGL restore failed:", error);
-      s.glOk = false;
-      enterFallback(s);
-    }
-  }
-
-  function teardownGL(s) {
-    stopLoop(s);
-    releaseGLResources(s);
-    // NOTE: never loseContext() here. The panel (and its canvas) survive a
-    // close — the loader reuses the same DOM on reopen — and a context lost
-    // through WEBGL_lose_context can never be revived via getContext(), so
-    // the next session would be stuck in fallback forever. An idle context
-    // with released resources is cheap enough.
-    s.gl = null;
-    s.glOk = false;
-  }
-
-  function resizeCanvas(s) {
-    if (!s.canvas || !s.gl) return;
-    // Layout size, not the on-screen box: the arcade's CRT switch-on squashes the
-    // whole frame for 0.4 s, and measuring then froze a 32000 x 120 canvas.
-    const rect = { width: s.canvas.clientWidth, height: s.canvas.clientHeight };
-    if (!rect.width || !rect.height || rect.height < 40) return;
-
-    // Internal resolution follows the broadcast standard (576 / 480 lines),
-    // capped by what the screen can actually show. Cheaper and more VHS.
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const height = Math.max(120, Math.min(STANDARDS[s.standard].lines, Math.round(rect.height * dpr)));
-    const width = Math.max(160, Math.round(height * rect.width / rect.height));
-
-    if (s.canvas.width !== width || s.canvas.height !== height) {
-      s.canvas.width = width;
-      s.canvas.height = height;
-    }
-    s.gl.viewport(0, 0, width, height);
-    s.dirty = true;
-  }
-
-  function uploadFrame(s) {
-    const gl = s.gl;
-    const video = s.video;
-    try {
-      gl.bindTexture(gl.TEXTURE_2D, s.texture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
-    } catch (error) {
-      // SecurityError = tainted (cross-origin, no CORS) video: unrecoverable.
-      console.warn("[VHS] texture upload failed:", error && error.name);
-      s.drawFailures += error && error.name === "SecurityError" ? MAX_DRAW_FAILURES : 1;
-      return false;
-    }
-    if (video.videoWidth && video.videoHeight) s.aspect = video.videoWidth / video.videoHeight;
-    s.lastT = video.currentTime;
-    s.forceUpload = false;
-    return true;
-  }
-
-  function draw(s, now) {
-    const gl = s.gl;
-    const u = s.uniforms;
-    const playing = isPlaying(s);
-
-    let roll = 0;
-    if (!s.reducedMotion && s.rollStart) {
-      const k = 1 - (now - s.rollStart) / ROLL_DURATION;
-      if (k > 0) roll = k * k;
-      else s.rollStart = 0;
-    }
-
-    gl.useProgram(s.program);
-    gl.bindVertexArray(s.vao);
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, s.texture);
-
-    gl.uniform1i(u.uTex, 0);
-    gl.uniform2f(u.uRes, s.canvas.width, s.canvas.height);
-    gl.uniform1f(u.uAspect, s.aspect);
-    gl.uniform1f(u.uTime, s.reducedMotion ? 0 : (now - s.t0) / 1000);
-    gl.uniform1f(u.uIntensity, effectiveIntensity(s));
-    gl.uniform1f(u.uStd, STANDARDS[s.standard].std);
-    gl.uniform1f(u.uPause, playing ? 0 : 1);
-    gl.uniform1f(u.uRoll, roll);
-
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    gl.bindVertexArray(null);
-    s.lastDraw = now;
-    s.dirty = false;
-  }
-
-  function frame(s, now) {
-    if (!live(s) || !s.raf) return;
-    s.raf = requestAnimationFrame((t) => frame(s, t));
-    s.frames++;
-
-    const video = s.video;
-    if (!s.gl || s.contextLost || !video || video.readyState < 2) return;
-
-    const playing = isPlaying(s);
-
-    // Paused: keep the noise band alive, but at a relaxed rate. With reduced
-    // motion the picture is static, so only redraw when something changed.
-    if (!playing) {
-      if (s.reducedMotion && !s.dirty && !s.forceUpload && !s.rollStart) return;
-      if (!s.forceUpload && !s.dirty && now - s.lastDraw < PAUSE_FRAME_INTERVAL) return;
-    }
-
-    if (playing || s.forceUpload || video.currentTime !== s.lastT) {
-      if (!uploadFrame(s)) {
-        if (s.drawFailures >= MAX_DRAW_FAILURES) {
-          stopLoop(s);
-          enterFallback(s);
-        }
-        return;
-      }
-    }
-
-    try {
-      draw(s, now);
-      s.drawFailures = 0;
-    } catch (error) {
-      console.error("[VHS] draw failed:", error);
-      if (++s.drawFailures >= MAX_DRAW_FAILURES) {
-        stopLoop(s);
-        enterFallback(s);
-      }
-    }
-  }
-
-  function wantsLoop(s) {
-    return live(s) &&
-      s.source === "local" &&
-      s.glOk && !s.fallback && !s.contextLost &&
-      s.rootVisible &&
-      document.visibilityState !== "hidden";
-  }
-
-  function startLoop(s) {
-    if (s.raf) return;
-    s.t0 = s.t0 || performance.now();
-    s.raf = requestAnimationFrame((t) => frame(s, t));
-  }
-
-  function stopLoop(s) {
-    if (s.raf) cancelAnimationFrame(s.raf);
-    s.raf = 0;
-  }
-
-  function syncLoop(s) {
-    if (!live(s)) return;
-    if (wantsLoop(s)) {
-      s.forceUpload = true;
-      s.dirty = true;
-      startLoop(s);
-    } else {
-      stopLoop(s);
-    }
   }
 
   /* ------------------------------------------------------------------ *
@@ -1470,17 +975,16 @@
     on(s, video, "pause", () => {
       // Pausing media is part of the scan itself, never a reason to stop it.
       if (s.source === "local" && !video.ended && !s.scanDir) setStatus(s, "Pause");
-      s.dirty = true;
+      if (s.ecran) s.ecran.refresh();
     });
     on(s, video, "ended", () => {
       if (s.source !== "local") return;
       setStatus(s, "Stop");
       if (s.localFiles.length > 1) step(s, 1);
     });
-    on(s, video, "seeked", () => { s.forceUpload = true; s.dirty = true; });
+    on(s, video, "seeked", () => { if (s.ecran) s.ecran.refresh(); });
     on(s, video, "loadedmetadata", () => {
-      if (video.videoWidth && video.videoHeight) s.aspect = video.videoWidth / video.videoHeight;
-      s.forceUpload = true;
+      if (s.ecran) s.ecran.refresh();
     });
     on(s, video, "timeupdate", () => {
       if (s.source !== "local") return;
@@ -1651,13 +1155,7 @@
       s.cleanups.push(() => language.disconnect());
     }
 
-    // 3. Screen size changes.
-    if (typeof ResizeObserver === "function") {
-      const screen = q(s, "[data-vhs-screen]");
-      const resize = new ResizeObserver(() => { if (live(s)) resizeCanvas(s); });
-      if (screen) resize.observe(screen);
-      s.cleanups.push(() => resize.disconnect());
-    }
+    // 3. Screen size changes: ik-ecran.js watches the screen itself.
 
     // 4. Root hidden but not removed (loader hides the layer): stop everything.
     if (typeof IntersectionObserver === "function") {
@@ -1668,14 +1166,12 @@
         if (visible === s.rootVisible) return;
         s.rootVisible = visible;
         if (!visible) pauseAllMedia(s);
-        syncLoop(s);
       });
       visibility.observe(s.root);
       s.cleanups.push(() => visibility.disconnect());
     }
 
-    // 5. Tab visibility: no drawing for a hidden tab.
-    on(s, document, "visibilitychange", () => syncLoop(s));
+    // 5. Tab visibility: ik-ecran.js draws nothing for a hidden tab.
 
     // 6. prefers-reduced-motion, live.
     if (window.matchMedia) {
@@ -1684,7 +1180,6 @@
         if (!live(s)) return;
         s.reducedMotion = mq.matches;
         s.root.classList.toggle("is-reduced-motion", mq.matches);
-        s.dirty = true;
       };
       if (mq.addEventListener) {
         mq.addEventListener("change", onChange);
@@ -1731,6 +1226,7 @@
     s.reducedMotion = !!(window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     root.classList.toggle("is-reduced-motion", s.reducedMotion);
+    mountScreen(s);
 
     // The KG layer is 0x0 with touch-action:none (the canvas games need that).
     // The VHS panel scrolls, so give the layer back its touch panning while the
@@ -1828,7 +1324,6 @@
     // Cassette boot: random snow burst, then the tape slides in. The panels
     // underneath stay usable: the overlay only covers the screen area.
     startBoot(s, () => {});
-    wearLoop(s);
 
     try { root.focus({ preventScroll: true }); } catch (_) { /* ignore */ }
     window.dispatchEvent(new CustomEvent("kg-vhs:open"));
@@ -1875,15 +1370,8 @@
       s.root.style.pointerEvents = "none"; // nothing clickable during the slide
     }
 
-    // Last VHS roll on the way out (never under reduced motion).
-    if (!s.reducedMotion && s.glOk && !s.fallback && s.rollStart === 0) {
-      s.rollStart = performance.now();
-    }
     window.dispatchEvent(new CustomEvent("kg-vhs:eject"));
     VSND.whirStop();
-    if (s.wearRaf) { cancelAnimationFrame(s.wearRaf); s.wearRaf = 0; }
-
-    stopLoop(s);
     s.cleanups.splice(0).forEach((fn) => { try { fn(); } catch (_) { /* ignore */ } });
     destroyPlayer(s);
 
@@ -1893,7 +1381,9 @@
       try { s.video.load(); } catch (_) { /* ignore */ }
     }
 
-    teardownGL(s);
+    // The screen sleeps (GL objects released, context kept): the panel and its
+    // canvas survive a close and the next open wakes the same screen.
+    if (s.ecran) s.ecran.sleep();
     if (s.layerTouch) {
       s.layerTouch.style.touchAction = "";
       s.layerTouch = null;
@@ -1911,12 +1401,10 @@
       standard: s.standard,
       speed: s.speed,
       status: s.status,
-      gl: !!s.gl,
+      gl: !!(s.ecran && s.ecran.mode === "gl"),
       glOk: s.glOk,
       fallback: s.fallback,
-      contextLost: s.contextLost,
-      loop: !!s.raf,
-      frames: s.frames,
+      screen: s.ecran ? s.ecran.debug() : null,
       player: !!s.player,
       playerReady: s.playerReady,
       tracks: s.tracks.length,
@@ -1927,7 +1415,6 @@
       reducedMotion: s.reducedMotion,
       rootVisible: s.rootVisible,
       playersCreatedTotal: counters.players,
-      contextsCreatedTotal: counters.contexts,
       apiScripts: document.querySelectorAll('script[src="' + YT_API + '"]').length,
       message: s.messageKey,
     };

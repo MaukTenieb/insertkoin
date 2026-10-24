@@ -8,40 +8,35 @@
  * training artificial intelligence. Contact: mauktenieb@gmail.com
 -->
 <div id="vhs" class="vhs is-fresh" data-vhs-root data-atelier="page" tabindex="-1" role="region" aria-label="VHS">
+  <!-- The screen: the shared screen of Insert Koin (ik-ecran.js), same frame, size and place as in
+       every program; profile "vhs" (glass, tape shader, wear over YouTube). -->
+  <div class="vhs-screen" data-vhs-screen>
+    <div class="vhs-boot" data-vhs-boot aria-hidden="true">
+      <div class="vhs-boot-snow"></div>
+      <div class="vhs-boot-flap"></div>
+      <svg class="vhs-boot-tape" viewBox="0 0 120 78" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="6" width="116" height="66" rx="5" fill="#141414" stroke="#2c2c2c" stroke-width="2"/>
+        <rect x="14" y="12" width="92" height="30" rx="3" fill="#1e1e1e" stroke="#333" stroke-width="1"/>
+        <rect x="18" y="16" width="84" height="22" rx="2" fill="#0c0c0c"/>
+        <circle cx="34" cy="52" r="11" fill="#0a0a0a" stroke="#3a3a3a" stroke-width="2"/>
+        <circle cx="86" cy="52" r="11" fill="#0a0a0a" stroke="#3a3a3a" stroke-width="2"/>
+        <circle cx="34" cy="52" r="4.5" fill="#181818" stroke="#555" stroke-width="1.5"/>
+        <circle cx="86" cy="52" r="4.5" fill="#181818" stroke="#555" stroke-width="1.5"/>
+        <rect x="52" y="49" width="16" height="6" rx="1.5" fill="#0f0f0f" stroke="#3a3a3a"/>
+        <rect x="8" y="8" width="104" height="2.5" rx="1" fill="#b9d84a" opacity="0.55"/>
+      </svg>
+    </div>
+    <div class="vhs-scan" data-vhs-scan hidden aria-hidden="true"></div>
+    <div class="vhs-youtube" data-vhs-youtube></div>
+    <video class="vhs-video" data-vhs-video playsinline preload="metadata"></video>
+    <canvas class="vhs-canvas" data-vhs-canvas aria-hidden="true"></canvas>
+  </div>
+
+  <!-- The controls slot: the deck and the catalogue. -->
   <div class="vhs-shell">
 
-    <!-- The television: the tube, a mute key under it. -->
-    <div class="vhs-tv">
-      <div class="vhs-screen-wrap">
-        <div class="vhs-screen" data-vhs-screen>
-          <div class="vhs-boot" data-vhs-boot aria-hidden="true">
-          <div class="vhs-boot-snow"></div>
-          <div class="vhs-boot-flap"></div>
-          <svg class="vhs-boot-tape" viewBox="0 0 120 78" xmlns="http://www.w3.org/2000/svg">
-            <rect x="2" y="6" width="116" height="66" rx="5" fill="#141414" stroke="#2c2c2c" stroke-width="2"/>
-            <rect x="14" y="12" width="92" height="30" rx="3" fill="#1e1e1e" stroke="#333" stroke-width="1"/>
-            <rect x="18" y="16" width="84" height="22" rx="2" fill="#0c0c0c"/>
-            <circle cx="34" cy="52" r="11" fill="#0a0a0a" stroke="#3a3a3a" stroke-width="2"/>
-            <circle cx="86" cy="52" r="11" fill="#0a0a0a" stroke="#3a3a3a" stroke-width="2"/>
-            <circle cx="34" cy="52" r="4.5" fill="#181818" stroke="#555" stroke-width="1.5"/>
-            <circle cx="86" cy="52" r="4.5" fill="#181818" stroke="#555" stroke-width="1.5"/>
-            <rect x="52" y="49" width="16" height="6" rx="1.5" fill="#0f0f0f" stroke="#3a3a3a"/>
-            <rect x="8" y="8" width="104" height="2.5" rx="1" fill="#b9d84a" opacity="0.55"/>
-          </svg>
-          
-        </div>
-          <div class="vhs-scan" data-vhs-scan hidden aria-hidden="true"></div>
-          <div class="vhs-youtube" data-vhs-youtube></div>
-          <video class="vhs-video" data-vhs-video playsinline preload="metadata"></video>
-          <canvas class="vhs-canvas" data-vhs-canvas aria-hidden="true"></canvas>
-          <!-- Tape wear over the YouTube catalogue (its pixels cannot reach the shader). -->
-          <div class="vhs-wear" aria-hidden="true"><canvas class="vhs-grain" width="320" height="240"></canvas><i class="vhs-band"></i><i class="vhs-head"></i></div>
-        </div>
-      </div>
-      <div class="vhs-tv-foot">
-        <span class="vhs-tv-led" aria-hidden="true"></span>
-        <button type="button" class="vhs-tv-key" data-vhs-action="mute" data-vhs-i18n-aria="Mute / unmute" aria-label="Mute / unmute" aria-pressed="false">MUTE</button>
-      </div>
+    <div class="vhs-tv-foot">
+      <button type="button" class="vhs-tv-key" data-vhs-action="mute" data-vhs-i18n-aria="Mute / unmute" aria-label="Mute / unmute" aria-pressed="false">MUTE</button>
     </div>
 
     <!-- The deck: cassette slot, display, keys. -->

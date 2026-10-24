@@ -1,60 +1,124 @@
 <!doctype html>
 <!-- 3615 — Mauk Tenieb. Code: MIT (see LICENSE). Korhogo material: Copyright © Mauk Tenieb & Korhogo, all rights reserved.
      Repli local du terminal quand /3615/ n'est pas servi à la même origine que l'arcade :
-     même contrat que le 3615 en ligne, en plus sobre (pas de passerelle ici). -->
+     même contrat que le 3615 en ligne, en plus sobre (pas de passerelle ici).
+     L'écran est l'écran commun d'Insert Koin (ik-ecran.js) : même cadre, même taille, même place que dans
+     chaque programme, rendu « minitel » (verre bombé, reflet, phosphore) ; le boîtier blanc du Minitel du 3615
+     remplit la vue et le clavier occupe la case des commandes. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>3615</title>
+<link rel="stylesheet" href="fonts.css">
 <style>
-:root{color-scheme:dark}
-html,body{margin:0;height:100%}
-body{background:#07060a;color:#ece4d2;font-family:"DM Mono",ui-monospace,monospace;display:grid;place-items:center}
-main{width:min(92vw,560px)}
-.screen{background:#0b0f0b;border:1px solid rgba(127,220,138,.4);box-shadow:0 0 30px rgba(127,220,138,.12) inset,0 0 24px rgba(0,0,0,.6);padding:26px 24px 30px;min-height:340px;position:relative}
-.screen::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 2px,transparent 2px 4px)}
-.top{display:flex;justify-content:space-between;font-size:.62rem;letter-spacing:.18em;color:#7fdc8a;opacity:.85}
-.out{margin:26px 0 0;font-size:15px;line-height:2;white-space:pre-wrap;color:#dfffe4;text-shadow:0 0 8px rgba(127,220,138,.45)}
-.out b{color:#ffe08a;text-shadow:0 0 10px rgba(255,224,138,.6);font-weight:400}
-.bar{display:flex;gap:8px;margin-top:18px}
-input{flex:1;background:#0b0f0b;border:1px solid rgba(127,220,138,.4);color:#dfffe4;font:inherit;font-size:14px;padding:9px 12px;letter-spacing:.08em;outline:none}
-input:focus{border-color:#7fdc8a;box-shadow:0 0 12px rgba(127,220,138,.25)}
-button{background:rgba(127,220,138,.12);border:1px solid rgba(127,220,138,.5);color:#dfffe4;font:inherit;font-size:.66rem;letter-spacing:.16em;padding:9px 16px;cursor:pointer}
-button:hover,button:focus-visible{background:rgba(127,220,138,.28);outline:none}
-.hint{margin:14px 2px 0;font-size:.6rem;letter-spacing:.16em;color:#8f8672}
-.lang{position:absolute;top:10px;right:12px;font:inherit;font-size:.6rem;letter-spacing:.14em;background:none;border:0;color:#8f8672;cursor:pointer}
-.lang:hover{color:#ffe08a}
+:root{color-scheme:dark;--desk:#191613;--shell:#ddd5c3;--shell-lo:#c7bda7;--shell-edge:#a89d86;--bezel:#33281f;--key:#4d4034;--key-lo:#2a2019;--key-ink:#f1e9d8;--fkey:#a39e92;--fkey-lo:#6f6a60;--fkey-ink:#221c16;--label:#6c604f;--ph:#e4ebe2;--ph2:#aab5a8;--hi:#ffffff;--fs:15px}
+html,body{margin:0;height:100%;overflow:hidden}
+body{background:var(--desk);color:#3a3026;font-family:"DM Mono",ui-monospace,monospace}
+/* the white casing of the Minitel fills the view; the shared screen sits in it, the keyboard beside or below */
+#prog{position:fixed;inset:0;background:linear-gradient(180deg,#e7e0d0 0%,var(--shell) 40%,var(--shell-lo) 100%);border-radius:26px 26px 14px 14px;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.7),inset 0 -4px 0 rgba(0,0,0,.12)}
+#prog>.ike-frame{box-shadow:inset 0 1px 0 rgba(255,255,255,.07),inset 0 0 0 1px rgba(201,168,76,.2),0 3px 0 rgba(255,255,255,.55),0 8px 18px rgba(60,45,30,.35)}
+/* the screen: a Videotex page of 40 columns, 24 rows, scaled to the screen (--fs, set by scale()) */
+.screen{position:relative;background:#040504;overflow:hidden}
+#vtx{position:absolute;inset:6% 7%;display:flex;flex-direction:column;font-size:var(--fs);line-height:1.3;color:var(--ph);text-shadow:0 0 .45em rgba(226,240,230,.4)}
+.top{display:flex;justify-content:space-between;letter-spacing:.18em;color:var(--ph2);font-size:.8em}
+.out{margin-top:1.2em;white-space:pre-wrap;flex:1;min-height:0;overflow:hidden}
+.out b{color:#0a0c0a;background:var(--ph);text-shadow:none;font-weight:400;padding:0 .3em}
+.ask{letter-spacing:.06em}
+.ask i{font-style:normal;display:inline-block;width:.62em;height:1.05em;vertical-align:-.15em;background:var(--ph);animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+/* the controls: the plate, the input line, the keyboard of the Minitel */
+.ctl{display:flex;flex-direction:column;gap:10px;padding:4px 2px 14px}
+.plate{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:0 4px}
+.plate b{font:400 26px/1 "Bebas Neue",Impact,sans-serif;letter-spacing:.06em;color:var(--bezel)}
+.plate span{font:600 10px/1 Archivo,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--label)}
+.bar{display:flex;gap:8px;align-items:center}
+.bar input{flex:1;min-width:0;background:#16110d;border:0;border-radius:5px;box-shadow:inset 0 2px 5px rgba(0,0,0,.7),0 1px 0 rgba(255,255,255,.6);color:var(--ph);font:inherit;font-size:14px;padding:10px 12px;letter-spacing:.08em;outline:none;text-transform:uppercase}
+.bar input:focus{box-shadow:inset 0 2px 5px rgba(0,0,0,.7),0 0 0 2px var(--bezel)}
+.lang{font:600 12px/1 Archivo,sans-serif;letter-spacing:.12em;background:var(--shell-edge);border:0;border-radius:6px;color:#3a3026;padding:10px 12px;cursor:pointer;box-shadow:inset 0 1px 3px rgba(0,0,0,.35)}
+.lang:hover,.lang:focus-visible{background:var(--bezel);color:var(--key-ink);outline:none}
+.kb{display:flex;flex-direction:column;gap:6px;padding:12px;background:linear-gradient(180deg,#cfc6b1 0%,#bdb39c 100%);border-radius:10px 10px 22px 22px;
+  box-shadow:0 10px 22px rgba(60,45,30,.35),inset 0 2px 0 rgba(255,255,255,.35),inset 0 -3px 0 rgba(0,0,0,.12)}
+.fn{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:6px}
+.row{display:flex;gap:4px;justify-content:center}
+.k{flex:1 1 0;min-width:0;height:38px;padding:0;border:0;border-radius:6px;background:linear-gradient(180deg,#5a4b3e,var(--key));color:var(--key-ink);font:600 15px/1 Archivo,sans-serif;cursor:pointer;
+  box-shadow:0 3px 0 var(--key-lo),inset 0 1px 0 rgba(255,255,255,.14);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.k:active{transform:translateY(2px);box-shadow:0 1px 0 var(--key-lo)}
+.k:focus-visible{outline:2px solid #f1dc3c;outline-offset:2px}
+.fn .k{height:40px;font:700 10px/1.05 Archivo,sans-serif;letter-spacing:.06em;color:var(--fkey-ink);background:linear-gradient(180deg,#b3aea2,var(--fkey));box-shadow:0 3px 0 var(--fkey-lo),inset 0 1px 0 rgba(255,255,255,.35)}
+.fn .k:active{box-shadow:0 1px 0 var(--fkey-lo)}
+.fn .k.send{position:relative;z-index:0}
+.fn .k.send::before{content:"";position:absolute;inset:-7px;z-index:-1;border-radius:12px;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(255,130,55,.55) 0%,rgba(255,130,55,.2) 45%,rgba(255,130,55,0) 72%);animation:sendglow 4.5s ease-in-out infinite}
+@keyframes sendglow{0%,100%{opacity:.45;transform:scale(.97)}50%{opacity:.85;transform:scale(1)}}
+.k.sp{flex:5 1 0;font-size:12px;letter-spacing:.2em}
+.hint{margin:0 4px;font:600 10px/1.4 Archivo,sans-serif;letter-spacing:.16em;color:var(--label)}
+/* without ik-ecran.js: the same arrangement, drawn by this page alone */
+#prog:not(.ike-prog){display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px;overflow:auto;box-sizing:border-box}
+#prog:not(.ike-prog) .screen{width:min(100%,640px);aspect-ratio:4/3;flex:none;border-radius:10px;box-shadow:0 0 0 12px var(--bezel),0 0 0 13px rgba(0,0,0,.4)}
+#prog:not(.ike-prog) .screen{margin:13px 0 6px}
+#prog:not(.ike-prog) .ctl{width:min(100%,640px)}
+@media (prefers-reduced-motion:reduce){.ask i,.fn .k.send::before{animation:none}}
 </style>
 </head>
 <body>
-<main>
-  <div class="screen">
-    <div class="top"><span>3615</span><button class="lang" id="lg" type="button">FR</button></div>
-    <div class="out" id="out"></div>
+<div id="prog">
+  <div class="screen" id="scr">
+    <div id="vtx">
+      <div class="top"><span>3615</span><span id="clock"></span></div>
+      <div class="out" id="out"></div>
+      <div class="ask" id="ask"></div>
+    </div>
   </div>
-  <form class="bar" id="form">
-    <input id="cmd" autocomplete="off" spellcheck="false" maxlength="40" aria-label="3615">
-    <button type="submit">ENVOI</button>
-  </form>
-  <p class="hint" id="hint"></p>
-</main>
+  <div class="ctl" id="ctl">
+    <div class="plate"><b>VT·40</b><span id="kind">Videotex terminal</span></div>
+    <form class="bar" id="form">
+      <input id="cmd" autocomplete="off" spellcheck="false" maxlength="40" aria-label="3615">
+      <button class="lang" id="lg" type="button">FR</button>
+    </form>
+    <div class="kb" id="kb" role="group" aria-label="Minitel">
+      <div class="fn">
+        <button class="k" type="button" data-f="sommaire">SOMMAIRE</button>
+        <button class="k" type="button" data-f="annulation">ANNULATION</button>
+        <button class="k" type="button" data-f="retour">RETOUR</button>
+        <button class="k" type="button" data-f="repetition">RÉPÉTITION</button>
+        <button class="k" type="button" data-f="guide">GUIDE</button>
+        <button class="k" type="button" data-f="correction">CORRECTION</button>
+        <button class="k" type="button" data-f="suite">SUITE</button>
+        <button class="k send" type="button" data-f="envoi">ENVOI</button>
+      </div>
+      <div class="row" data-keys="1234567890"></div>
+      <div class="row" data-keys="AZERTYUIOP"></div>
+      <div class="row" data-keys="QSDFGHJKLM"></div>
+      <div class="row" data-keys="WXCVBN.-"></div>
+      <div class="row"><button class="k sp" type="button" data-c=" " aria-label="Espace">ESPACE</button></div>
+    </div>
+    <p class="hint" id="hint"></p>
+  </div>
+</div>
+<script>
+/* the shared screen of Insert Koin, next to this page */
+document.write('<script src="ik-ecran.js"><\/script>');
+</script>
 <script>
 (function(){
 'use strict';
 var LANG='en';try{LANG=localStorage.getItem('ik.lang')||localStorage.getItem('vdx.lang')||'en';}catch(e){}
 if(LANG!=='fr')LANG='en';
 var T={
- en:{ready:'3615  READY',balance:function(n){return 'Truce checks your balance: '+n+'.';},won:'You won 1 Koin!',menu:'1  KOINS   2  KORHOGO',cmd:'Code or n° ?',offline:'MINITEL: not wired here (local).',bad:'UNKNOWN CODE',hint:'3615 KOINS · 3615 KORHOGO',korhogo:'KORHOGO  https://mauktenieb.github.io/3615/'},
- fr:{ready:'3615  PRÊT',balance:function(n){return 'Truce vérifie ton solde : '+n+'.';},won:'Tu gagnes 1 Koin !',menu:'1  KOINS   2  KORHOGO',cmd:'Code ou n° ?',offline:'MINITEL : non câblé ici (local).',bad:'CODE INCONNU',hint:'3615 KOINS · 3615 KORHOGO',korhogo:'KORHOGO  https://mauktenieb.github.io/3615/'}};
+ en:{kind:'Videotex terminal',ready:'3615  READY',balance:function(n){return 'Truce checks your balance: '+n+'.';},won:'You won 1 Koin!',menu:'1  KOINS   2  KORHOGO',cmd:'Code or n° ?',offline:'MINITEL: not wired here (local).',bad:'UNKNOWN CODE',hint:'3615 KOINS · 3615 KORHOGO',korhogo:'KORHOGO  https://mauktenieb.github.io/3615/',guide:'GUIDE\n1 or KOINS    one Koin\n2 or KORHOGO  the service\nSOMMAIRE      this menu\nCORRECTION    erase a letter\nANNULATION    erase the line'},
+ fr:{kind:'Terminal vidéotex',ready:'3615  PRÊT',balance:function(n){return 'Truce vérifie ton solde : '+n+'.';},won:'Tu gagnes 1 Koin !',menu:'1  KOINS   2  KORHOGO',cmd:'Code ou n° ?',offline:'MINITEL : non câblé ici (local).',bad:'CODE INCONNU',hint:'3615 KOINS · 3615 KORHOGO',korhogo:'KORHOGO  https://mauktenieb.github.io/3615/',guide:'GUIDE\n1 ou KOINS    un Koin\n2 ou KORHOGO  le service\nSOMMAIRE      ce menu\nCORRECTION    efface une lettre\nANNULATION    efface la ligne'}};
 function t(k){return T[LANG][k];}
-var out=document.getElementById('out'),cmd=document.getElementById('cmd');
-function line(html){var d=document.createElement('div');d.innerHTML=html;out.appendChild(d);}
-function say(html){out.innerHTML='';line(html);}
+var out=document.getElementById('out'),cmd=document.getElementById('cmd'),ask=document.getElementById('ask');
+var page='',pages=[];
+function esc(s){return String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+function say(html,keep){if(page&&!keep)pages.push(page);if(pages.length>20)pages.shift();page=html;out.innerHTML=html;}
+function echo(){ask.innerHTML=esc(t('cmd'))+' '+esc(cmd.value.toUpperCase())+'<i></i>';}
 function koins(){try{var s=localStorage.getItem('ik.koins');var n=s==null?3:parseInt(s,10);return isNaN(n)||n<0?0:n;}catch(e){return 3;}}
 function grant(){try{var n=koins();localStorage.setItem('ik.koins',String(n+1));localStorage.setItem('ik.freeAt','0');return true;}catch(e){return false;}}
-function home(){say('<b>'+t('ready')+'</b>\n'+t('balance')(koins())+'\n'+t('menu'));document.getElementById('hint').textContent=t('hint');}
+function home(){say('<b>'+t('ready')+'</b>\n'+t('balance')(koins())+'\n'+t('menu'));document.getElementById('hint').textContent=t('hint');document.getElementById('kind').textContent=t('kind');echo();}
 function dial(svc){
   svc=String(svc||'').trim().toUpperCase().replace(/^3615\s*/,'');
   if(svc==='KOINS'||svc==='3'||svc==='1'){
@@ -64,16 +128,42 @@ function dial(svc){
   }
   if(svc==='KORHOGO'||svc==='2'){say('<b>'+t('korhogo')+'</b>');return;}
   if(svc==='MINITEL'||svc==='SNCF'||svc==='METEO'||svc==='ENCYCLO'){say(t('offline'));return;}
+  if(svc==='GUIDE'){say(esc(t('guide')));return;}
   if(svc===''){home();return;}
   say('<b>'+t('bad')+'</b>\n'+t('menu'));
 }
-document.getElementById('form').addEventListener('submit',function(e){e.preventDefault();dial(cmd.value);cmd.select();});
+function send(){dial(cmd.value);cmd.value='';echo();}
+document.getElementById('form').addEventListener('submit',function(e){e.preventDefault();send();});
+cmd.addEventListener('input',echo);
+/* the keyboard: letters into the line, the function keys of the Minitel */
+Array.prototype.forEach.call(document.querySelectorAll('[data-keys]'),function(r){r.dataset.keys.split('').forEach(function(c){var b=document.createElement('button');b.type='button';b.className='k';b.dataset.c=c;b.textContent=c;r.appendChild(b);});});
+var FN={
+  envoi:send,
+  sommaire:function(){cmd.value='';home();},
+  annulation:function(){cmd.value='';echo();},
+  correction:function(){cmd.value=cmd.value.slice(0,-1);echo();},
+  repetition:function(){out.innerHTML=page;},
+  retour:function(){var p=pages.pop();if(p){page=p;out.innerHTML=p;}else home();},
+  guide:function(){say(esc(t('guide')));},
+  suite:function(){say('<b>'+t('ready')+'</b>\n'+t('menu'));}
+};
+document.getElementById('kb').addEventListener('click',function(e){var b=e.target.closest('.k');if(!b)return;
+  if(b.dataset.f){FN[b.dataset.f]();return;}
+  if(b.dataset.c&&cmd.value.length<40){cmd.value+=b.dataset.c;echo();}});
 document.getElementById('lg').addEventListener('click',function(){LANG=LANG==='fr'?'en':'fr';try{localStorage.setItem('vdx.lang',LANG);localStorage.setItem('ik.lang',LANG);}catch(e){}this.textContent=LANG==='en'?'FR':'EN';home();});
+/* the clock of the top row */
+function tick(){var d=new Date(),p=function(n){return (n<10?'0':'')+n;};document.getElementById('clock').textContent=p(d.getHours())+':'+p(d.getMinutes());}
+tick();setInterval(tick,15000);
+/* the screen: shared frame, size and place; the Videotex page follows the screen's height (25 rows) */
+var scr=document.getElementById('scr');
+function scale(){var h=scr.clientHeight||300,w=scr.clientWidth||400;document.documentElement.style.setProperty('--fs',Math.min(h*0.88/(24*1.3),w*0.86/(40*0.62)).toFixed(2)+'px');}
+if(window.IKEcran){IKEcran.layout('#prog',{screen:scr,controls:'#ctl',onlayout:scale});IKEcran.mount(scr,{program:'terminal',content:'#vtx'});}
+scale();addEventListener('resize',scale);
 var q=new URLSearchParams(location.search).get('svc');
 document.getElementById('lg').textContent=LANG==='en'?'FR':'EN';
 home();
 if(String(q||'').toLowerCase()==='koins')dial('KOINS');
-cmd.focus();
+if(!matchMedia('(pointer:coarse)').matches)cmd.focus();
 })();
 </script>
 </body>
