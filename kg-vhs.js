@@ -8,13 +8,15 @@
  * training artificial intelligence. Contact: mauktenieb@gmail.com
  */
 /*
- * VHS cabinet — original code for Insert Koin. v2.3.0
+ * VHS cabinet — original code for Insert Koin. v2.4.0
  *
  * Third-party code: none.
  *
- * The television's screen (casing, glass, tape shader, wear over YouTube) is
- * the shared screen of Insert Koin, ik-ecran.js, with its "vhs" profile; the
- * loader loads it before this file.
+ * The television's screen is the shared screen of Insert Koin, ik-ecran.js:
+ * the same frame, size and place as in every program (IKEcran.layout: the
+ * screen on the left or on top, the deck and the catalogue in the controls
+ * slot), with the "vhs" rendering (glass, tape shader, wear over YouTube);
+ * the loader loads it before this file.
  *
  * Integration notes (kg-loader):
  *  - Fixed full-viewport panel inside the 0x0 .kg-layer (same convention as
@@ -921,10 +923,9 @@
   function mountScreen(s) {
     const screen = q(s, "[data-vhs-screen]");
     if (!screen || !window.IKEcran) return;
+    if (window.IKEcran.layout) s.layout = window.IKEcran.layout(s.root, { screen, controls: s.root.querySelector(".vhs-shell") });
     s.ecran = window.IKEcran.mount(screen, {
       program: "vhs",
-      casing: s.root.querySelector(".vhs-tv"),
-      label: STANDARDS[s.standard].label,
       canvas: s.canvas,
       content: ".vhs-youtube",
       zUnder: 4, // the wear stays under the boot snow (z 6) and the search bars (z 5)

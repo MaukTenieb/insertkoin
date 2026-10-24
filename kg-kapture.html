@@ -7,11 +7,11 @@
  * MIT licence and remain the property of the author. No use of that material for
  * training artificial intelligence. Contact: mauktenieb@gmail.com
 -->
-<!-- KG fragment: KAPTURE camera (#kapture-overlay). The screenshot (SKREEN) is taken by the host page itself, without this module. -->
+<!-- KG fragment: KAPTURE camera (#kapture-overlay). The screenshot (SKREEN) is taken by the host page itself, without this module.
+     #kapture-screen is the shared screen (ik-ecran.js), #kapture-bar its controls slot. -->
 <div id="kapture-overlay">
-  <video id="kapture-video" playsinline muted></video>
+  <div id="kapture-screen"><video id="kapture-video" playsinline muted></video><div id="kapture-msg"></div></div>
   <canvas id="kapture-canvas" hidden></canvas>
-  <div id="kapture-msg"></div>
   <div id="kapture-bar">
     <button id="kapture-flip" type="button" data-action="kaptureFlip()" aria-label="Flip camera">⇄</button>
     <button id="kapture-shoot" type="button" data-action="kaptureShoot()" aria-label="Kapture">●</button>

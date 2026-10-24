@@ -101,7 +101,7 @@ Photofauna, the photo editor of Insert Koin, reproduces the looks of the photo a
 
 ## The screen
 
-`ik-ecran.js` draws the screen of the machines. A profile per program sets the casing (frame, badge, LED) and the glass (curvature, raster, phosphor mask, halo, tape noise, tracking band, colour, OSD). A canvas, a video or an image goes through one WebGL pass; a page made of HTML, or the YouTube player, gets layers laid over it. The dressing stays on its own layers, so saved images keep the program's own picture. FX OFF and reduced motion freeze the noise and the bands; a phone gets a lighter screen.
+`ik-ecran.js` draws the one screen of the machines: the same 4:3 picture, the same frame, the same size and the same place in every program. On a wide screen it stands on the left, as large as the height allows, and the program's controls stand on the right; on a phone it stands on top, full width, and the controls follow below. Each program changes only the rendering of the glass (VHS tape wear; the Minitel's bulging tube, reflection and phosphor; the clean viewfinder of the camera; the camcorder's REC and counter) and its controls: the deck of the VHS, the keyboard of the Minitel, the modes, shutter, looks and settings of Photofauna. A canvas, a video or an image goes through one WebGL pass; a page made of HTML, or the YouTube player, gets layers laid over it. The dressing stays on its own layers, so saved images keep the program's own picture. FX OFF and reduced motion freeze the noise and the bands; a phone gets a lighter screen.
 
 ## Saved files
 
@@ -138,7 +138,7 @@ Every file is at the top level; the folders are `tor/`, `notes/`, `tools/` and `
 | `manifest.webmanifest`, `sw.js`, `icon.png`, `favicon.png` | installation and offline use (`sw.js`: pages and code from the network first, images from the cache) |
 | `robots.txt`, `sitemap.xml`, `llms.txt` | robots.txt welcomes search and answer engines and turns away training crawlers |
 | `ik-name.js` | names every saved file by the Republican calendar (`fotofauna.html` has its own copy) |
-| `ik-ecran.js` | the shared screen: a casing and a glass for each program (VHS, Minitel, viewfinder, camcorder, Korong!, Katabatik, Skoporhogo, plain programs); the VHS television and the Kapture viewfinder use it |
+| `ik-ecran.js` | the shared screen: one layout (screen rectangle, controls slot) and one glass rendering per program (VHS, Minitel, viewfinder, camcorder, Korong!, Katabatik, Skoporhogo, plain programs); the VHS, Kapture, the local 3615 and the Photofauna test build (`fotofauna-test.html`) use it |
 | `build-fr.py` | builds `fr.html` from `index.html` |
 
 ### Workflows (`.github/workflows/`)

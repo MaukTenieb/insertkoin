@@ -17,6 +17,9 @@
 -->
 <script>/* la langue suit le site : ik.lang (Insert Koin) recopiée dans obturama.lang, clé que lit le site (photoLang) */
 try{var _l=localStorage.getItem('ik.lang');if(_l)localStorage.setItem('obturama.lang',JSON.stringify(_l==='fr'?'fr':'en'));}catch(e){}</script>
+<script>/* l'écran commun d'Insert Koin (ik-ecran.js, à côté de la page sur le site) : chargé quand la page est servie ;
+   ouverte depuis le disque (file:), la page garde sa propre disposition */
+if(location.protocol!=='file:')document.write('<script src="ik-ecran.js"><\/script>');</script>
 <style>
 :root{--bg:#07060a;--bg2:#0a0906;--panel:#0b0a08;--raise:#151209;--raise2:#1c180e;--line:#2c271e;--line2:#4a3d22;--ink:#f4efdf;--ink2:#d9d1be;--mute:#a89f8a;--faint:#6b6455;
  --acc:#c9a84c;--acc2:#ffe08a;--acc-ink:#0b0805;--accSoft:rgba(201,168,76,.16);--edge:#e8742a;--pencil:#d9341f;--ok:#9fd3c0;--err:#ff8f7a;--hd:58px;
@@ -203,6 +206,30 @@ dialog.sheet::backdrop{background:rgba(0,0,0,.6)}
  .actions{gap:6px;width:100%}.actions .key{flex:1 1 0;padding:8px 4px;letter-spacing:.08em;min-width:0}.actions .key.prim{margin-left:0}
 }
 @media (max-width:340px){header .key span{display:none}.logo .word{display:none}}
+/* écran commun d'Insert Koin (ik-ecran.js) : la scène occupe le rectangle d'écran partagé par tous les programmes,
+   tout le reste (prise de vue, déclencheur, actions, rendus, réglages, Labo, FaunAI) va dans la case des commandes */
+html.ike-on,html.ike-on body{height:100%;overflow:hidden}
+html.ike-on .app{position:fixed;inset:0;display:block;min-height:0;background:var(--pebble)}
+html.ike-on main#work{display:none}
+html.ike-on .stage{padding:0;display:flex;align-items:center;justify-content:center;background:#000}
+html.ike-on .stage::before,html.ike-on .stage::after{display:none}
+html.ike-on .stage video#player{inset:0;width:100%;height:100%}
+html.ike-on .badge{left:10px;top:10px}
+html.ike-on #closeVid{right:10px;top:10px}
+html.ike-on .busy{left:0;right:0;bottom:0}
+html.ike-on .ctrl{display:flex;flex-direction:column;gap:10px;background:var(--panel);border-radius:6px;box-shadow:inset 0 0 0 1px #221e17}
+html.ike-on .ctrl header.top{position:relative;top:auto;height:auto;min-height:50px;padding:6px 10px;border-radius:6px 6px 0 0;flex:none;flex-wrap:wrap;row-gap:6px}
+html.ike-on .ctrl .logo .word{font-size:18px;letter-spacing:.24em}
+html.ike-on .ctrl .shutterRow{flex:none;padding:2px 0}
+html.ike-on .ctrl .actions{flex:none;padding:0 10px;flex-wrap:wrap}
+html.ike-on .ctrl .status{flex:none;padding:0 10px}
+html.ike-on .ctrl .inspector{border-top:1px solid #000;border-left:0;box-shadow:inset 0 1px 0 #221e17;height:auto}
+html.ike-on .ctrl .dock{position:sticky;top:0;z-index:12}
+html.ike-on .ctrl .credit{position:static;max-width:none;padding:6px 12px 12px;white-space:normal;text-align:left}
+html.ike-on .app[data-ike-layout=wide] .ctrl{overflow:hidden!important}
+html.ike-on .app[data-ike-layout=wide] .ctrl .inspector{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+html.ike-on .app[data-ike-layout=wide] .ctrl .pane{flex:1;min-height:0;overflow-y:auto}
+html.ike-on .app[data-ike-layout=narrow] .ctrl{border-radius:0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -7901,8 +7928,11 @@ async function render(){if(!S.prev||CAM)return;const tok=++REND.tok;$("busy").hi
  try{const out=await renderAt(S.prev,layersNow(),"prev");if(tok!==REND.tok)return;paint(S.cmp?S.prev:out);S.lastView=FF.util.toCanvas(out);if(!STOP)setStatus("")}
  catch(e){console.error(e);setStatus(String(e.message||e),"err")} finally{if(tok===REND.tok)$("busy").hidden=true}setLabel()}
 function paint(img){const c=$("view");if(c.width!==img.width||c.height!==img.height){c.width=img.width;c.height=img.height}c.getContext("2d").putImageData(img,0,0);fit()}
+let ECRAN=null; /* l'écran commun d'Insert Koin, quand le site le fournit (voir ecranOn) */
 /* le viseur occupe toute la place disponible, à l'échelle, petites images agrandies */
-function fit(){const c=$("view"),col=$("stageCol");if(!c.width||!col)return;const desk=matchMedia("(min-width:1000px)").matches,pad=desk?28:16;
+function fit(){const c=$("view"),col=$("stageCol");if(!c.width||!col)return;
+ if(ECRAN){const s=$("stage"),w=s.clientWidth,h=s.clientHeight;if(!w||!h)return;const k=Math.max(.05,Math.min(w/c.width,h/c.height,4));c.style.width=Math.floor(c.width*k)+"px";c.style.height=Math.floor(c.height*k)+"px";return}
+ const desk=matchMedia("(min-width:1000px)").matches,pad=desk?28:16;
  let W=col.clientWidth-(desk?48:20)-pad,H;
  if(desk){const cs=getComputedStyle(col),used=$("actions").offsetHeight+$("status").offsetHeight+($("shutterRow").hidden?0:$("shutterRow").offsetHeight+12)+parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom)+28;H=col.clientHeight-used-pad}
  else H=Math.round(Math.min(innerHeight,screen.height||innerHeight)*.42)-pad;
@@ -8119,6 +8149,23 @@ window.__ikImport=async(blob,how)=>{try{S.own=true;await openBlob(new File([blob
 window.__ffPoster=async()=>{if(S.own)return;try{const u=window.__pfStart;window.__pfStart=ikMask();const im=await startImage();window.__pfStart=u;if(!S.own)await setSource(im,false)}catch{}};
 window.__ffKeep=keepLayer;
 window.__ffSaveRaw=saveRaw;
+
+/* ---------- Insert Koin : l'écran commun (ik-ecran.js) ----------
+   Sur le site, la scène devient l'écran partagé par tous les programmes (même cadre, même taille, même place) ;
+   la prise de vue, le déclencheur, les actions, les rendus et leurs réglages, le Labo et FaunAI passent dans la case
+   des commandes. Rendu « photo » : les pixels tels que Photofauna les dessine, repères de cadrage discrets ;
+   rendu « camescope » pendant la lecture d'une vidéo : REC et compteur. Sans ik-ecran.js, la page reste telle quelle. */
+function ecranOn(){if(!window.IKEcran||!IKEcran.layout||ECRAN)return;document.documentElement.classList.add("ike-on");
+ const app=$("app"),ctl=document.createElement("div");ctl.id="ctrl";ctl.className="ctrl";
+ [document.querySelector("header.top"),$("shutterRow"),$("actions"),$("status"),$("inspector"),document.querySelector("footer.credit")].forEach(e=>{if(e)ctl.appendChild(e)});
+ app.appendChild($("stage"));app.appendChild(ctl);
+ ECRAN=IKEcran.mount($("stage"),{program:"photo",z:4});
+ IKEcran.layout(app,{screen:$("stage"),controls:ctl,onlayout:()=>fit()});
+ const pl=$("player"),hms=x=>{x=Math.max(0,Math.floor(x||0));return Math.floor(x/3600)+":"+String(Math.floor(x/60)%60).padStart(2,"0")+":"+String(x%60).padStart(2,"0")};
+ new MutationObserver(()=>{const v=!pl.hidden;IKEcran.mount($("stage"),{profile:v?"camescope":"photo"});if(v)ECRAN.osd({rec:true,counter:hms(pl.currentTime)})}).observe(pl,{attributes:true,attributeFilter:["hidden"]});
+ pl.addEventListener("timeupdate",()=>{if(!pl.hidden)ECRAN.osd({counter:hms(pl.currentTime)})});
+ fit()}
+ecranOn();
 
 /* ---------- langue ---------- */
 $("bLang").onclick=()=>{LANG=LANG==="fr"?"en":"fr";LS.set("obturama.lang",LANG);try{localStorage.setItem("ik.lang",LANG)}catch{}applyLang()};

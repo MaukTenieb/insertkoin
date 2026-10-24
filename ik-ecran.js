@@ -8,14 +8,27 @@
  * training artificial intelligence. Contact: mauktenieb@gmail.com
  */
 /*
- * Écran — the one screen of Insert Koin. v1.0.0
+ * Écran — the one screen of Insert Koin. v2.0.0
  *
- * One component dresses the screen of every program; a profile per program sets
- * the casing (frame, label, LED) and the rendering of the glass (curvature, bulge,
- * phosphor mask, scanlines, bloom, tape noise, tracking, chroma bleed, jitter,
- * vignette, colour response, flicker, OSD).
+ * One screen for every program: the same 4:3 picture, the same size, the same place
+ * in the program's view, the same frame. Only two things change from one program to
+ * the next: the rendering of the glass (a profile: VHS tape wear, the Minitel's
+ * bulging tube with its reflection and phosphor, the clean viewfinder of the camera,
+ * the camcorder's REC and counter, a plain glass…) and the surroundings, which the
+ * program lays in the controls slot (the deck of the VHS, the keyboard of the
+ * Minitel, the modes, shutter, looks and settings of Photofauna).
  *
- * Two modes, chosen by the source:
+ * Layout (IKEcran.layout): the program view is a box (an <iframe>'s window, or the
+ * panel of a KG module laid over the calque: both fill the same frame of the site,
+ * under its bar). IKEcran.geometry(width, height) gives the rectangles in it:
+ *  - wide view (width >= 700 and width >= height): the screen on the left, as large
+ *    as the height allows; the controls on the right, 300 to 460 px wide (30 %);
+ *  - narrow view (phone, portrait tablet): the screen on top, full width; the
+ *    controls below, scrolling.
+ * The numbers are whole pixels and depend on the box alone, so two programs shown in
+ * the same frame put their screen on the very same pixels.
+ *
+ * Rendering (IKEcran.mount), two modes chosen by the source:
  *  - GL: a <canvas>, <video> or <img> source goes through one WebGL2 pass drawn on
  *    a canvas laid over it (the VHS shader of kg-vhs.js v2.2.0, generalised: with
  *    the "vhs" profile it computes the same picture).
@@ -34,14 +47,18 @@
  * slower grain. `?ecran=full|lite|calm` in the address, or IKEcran.force(), sets it.
  *
  * Public API (window.IKEcran):
+ *   IKEcran.layout(root, opts) -> layout      root: element or selector, the program view
+ *     opts.screen    the element that becomes the screen (placed on the screen rectangle)
+ *     opts.controls  the element that becomes the controls slot
+ *     opts.onlayout  function(geometry), after every placement
+ *   layout.update() layout.geometry -> { mode: "wide"|"narrow", frame, screen, controls } layout.destroy()
+ *   IKEcran.geometry(width, height) -> the same rectangles, {x, y, w, h} each, in the view
  *   IKEcran.mount(screen, opts) -> handle     screen: element or selector, the box of the picture
  *     opts.program   "vhs" | "terminal" | "photo" | "kapture" | "korong" | "katabatik" | "chess" | …
  *     opts.profile   profile name or object (wins over program)
  *     opts.source    canvas | video | img | null      (null: DOM mode)
  *     opts.canvas    an existing canvas for the GL output (default: one is created)
  *     opts.fit       "contain" (default for video/img) | "fill" (default for canvas)
- *     opts.casing    element dressed as the casing (badge, LED, frame)
- *     opts.label     casing badge text (false: none)
  *     opts.content   element or selector inside screen: gets the DOM-mode filter and wobble
  *     opts.z         z-index of the glass, marks and OSD (default 7)
  *     opts.zUnder    z-index of the scanlines, mask, grain and bands (default: z)
@@ -53,21 +70,15 @@
  *   handle.sleep() handle.wake() handle.destroy() handle.debug()
  *   IKEcran.profiles, IKEcran.programs, IKEcran.level(), IKEcran.force(level|null), IKEcran.get(screen)
  *
- * Photofauna (fotofauna.html, same origin, container #stageWrap):
- *   <script src="ik-ecran.js"></script>
- *   const ecran = IKEcran.mount("#stageWrap", { program: "photo", casing: <its frame>, label: "FOTOFAUNA" });
- *   - live view and renders: profile "photo" has gl: null, so marks and glass lie over the
- *     stage and its pixels stay as Photofauna draws them;
- *   - video: IKEcran.mount("#stageWrap", { profile: "camescope", source: <canvas|video> })
- *     switches the same screen to the camcorder; ecran.osd({ rec: true, counter: "0:00:12" });
- *   - saving: from Photofauna's own canvas, as now; ecran.snapshot() only to keep the dressed screen.
- *   Inside the arcade's frame, FX OFF reaches the module through window.parent.__ikFx.
- *
- * 3615 (repository MaukTenieb/3615, served at /3615/ on the same origin as /insertkoin/):
- *   <script src="/insertkoin/ik-ecran.js"></script>   (served on its own: ../insertkoin/ik-ecran.js)
- *   canvas screen: IKEcran.mount(<screen box>, { program: "terminal", source: <canvas>, casing: <frame> })
- *   HTML screen:   IKEcran.mount(<screen box>, { program: "terminal", content: <text element>, casing: <frame> })
- *   localStorage "ik.fx" is shared on the origin, so FX OFF holds there too.
+ * Programs:
+ *   VHS (kg-vhs.*): layout(#vhs, { screen: .vhs-screen, controls: .vhs-shell }), profile "vhs".
+ *   Photofauna (fotofauna.html, same folder): loads ik-ecran.js when served (not from file://);
+ *     #stage becomes the screen, the camera keys, shutter, looks, settings and FaunAI the
+ *     controls; profile "photo" (gl: null: the pixels stay as Photofauna draws them), and
+ *     "camescope" while a video plays (REC, counter). Without ik-ecran.js it keeps its own page.
+ *   3615 (3615-local.html here; the 3615 repository at /3615/ can load /insertkoin/ik-ecran.js):
+ *     the Videotex page is the screen, the keyboard the controls; profile "minitel".
+ *   Kapture (kg-kapture.*): the live view is the screen, the shutter keys the controls.
  *
  * Third-party code: none. YIQ matrices: standard NTSC constants; integer hash:
  * MurmurHash3 32-bit finalizer (public domain).
@@ -76,7 +87,7 @@
   "use strict";
   if (window.IKEcran) return;
 
-  const VERSION = "1.0.0";
+  const VERSION = "2.0.0";
   const ROLL_DURATION = 700;
 
   /* ------------------------------------------------------------------ *
@@ -93,12 +104,12 @@
     filter: "none", scan: "", scanO: 1, mask: "", maskO: 0, grain: 0, snow: 0,
     band: false, head: false, wobble: 0, marks: false, thirds: false,
   };
-  const GLASS_BASE = { hi: 0.04, hiAt: "30% 10%", hiShape: "120% 90%", vig: 0.3, vigFrom: "60%", inset: 24, insetA: 0.5 };
+  const GLASS_BASE = { hi: 0.04, hiAt: "30% 10%", hiShape: "120% 90%", sheen: 0, vig: 0.3, vigFrom: "60%", inset: 24, insetA: 0.5 };
 
   const P = {
     // The VHS television (kg-vhs). gl = the v2.2.0 shader values, dom = the former tape wear.
     vhs: {
-      label: "PAL·SECAM", led: "#ff3b1f", radius: "18px / 14px",
+      tube: "4% / 5%",
       gl: { curve: 0.22, corner: [0.488, 0.482, 0.012], tape: 1, k: 0.18, chroma: 1, vig: 0.4, vigK: 3.4, calmK: 0.55, cap: 576 },
       dom: {
         filter: "saturate(.78) contrast(1.08) brightness(1.03) blur(.45px) sepia(.06)",
@@ -107,27 +118,28 @@
       },
       glass: { hi: 0.07, hiAt: "30% 10%", hiShape: "120% 90%", vig: 0.55, vigFrom: "58%", inset: 40, insetA: 0.7 },
     },
-    // The Minitel of the 3615: strong bulge, round corners, one phosphor in eight levels, visible raster, halo.
+    // The Minitel of the 3615: a bulging tube (round corners, dark rim, a reflection on the
+    // curve of the glass), one phosphor in eight levels, a visible raster, a halo.
     minitel: {
-      label: "3615", led: "", radius: "34px / 28px",
+      tube: "9% / 12%",
       gl: { curve: 0.42, corner: [0.474, 0.466, 0.05], scan: 0.55, lines: 250, bloom: 0.55, vig: 0.5, vigK: 2.6,
             mono: 1, levels: 8, tint: [0.86, 1.0, 0.89], con: 1.08, flicker: 0.035, noise: 0.018, cap: 1000 },
       dom: {
         filter: "drop-shadow(0 0 2.5px rgba(170,255,190,.42)) contrast(1.05)",
         scan: "rgba(0,0,0,.30) 0 2px, transparent 2px 4px", grain: 0.035,
       },
-      glass: { hi: 0.13, hiAt: "32% 14%", hiShape: "90% 70%", vig: 0.72, vigFrom: "52%", inset: 60, insetA: 0.8 },
+      glass: { hi: 0.14, hiAt: "30% 14%", hiShape: "80% 60%", sheen: 0.045, vig: 0.78, vigFrom: "50%", inset: 70, insetA: 0.85 },
     },
-    // Photo viewfinder (Photofauna, Kapture): flat LCD, framing marks, the picture untouched.
+    // Photo viewfinder (Photofauna, Kapture): the picture as it is, sharp, with discreet framing marks.
     photo: {
-      label: "FOTOFAUNA", led: "#6dff8a", radius: "4px",
+      tube: "0",
       gl: null,
-      dom: { marks: true, thirds: true },
-      glass: { hi: 0.035, hiAt: "20% 0%", hiShape: "140% 60%", vig: 0, vigFrom: "70%", inset: 10, insetA: 0.45 },
+      dom: { marks: true },
+      glass: { hi: 0.02, hiAt: "20% 0%", hiShape: "140% 60%", vig: 0, vigFrom: "70%", inset: 6, insetA: 0.35 },
     },
     // Camcorder viewfinder: REC and counter, light lines, a little tape.
     camescope: {
-      label: "KAM", led: "#ff2a1a", radius: "10px", osd: { rec: true, counter: "auto" },
+      tube: "2% / 3%", osd: { rec: true, counter: "auto" },
       gl: { curve: 0.06, corner: [0.492, 0.488, 0.01], tape: 1, k: 0.07, chroma: 0.6, scan: 0.18, lines: 480,
             bloom: 0.15, vig: 0.35, sat: 0.92, con: 1.04, calmK: 0.6 },
       dom: {
@@ -138,7 +150,7 @@
     },
     // Korong!: a colour monitor of 1988, the years of Shufflepuck Café.
     korong: {
-      label: "KORONG!", led: "#7dff6a", radius: "16px / 12px",
+      tube: "4% / 5%",
       gl: { curve: 0.12, corner: [0.486, 0.481, 0.02], scan: 0.3, lines: 343, mask: 0.22, maskType: 2, bloom: 0.25,
             vig: 0.35, sat: 1.05 },
       dom: {
@@ -149,7 +161,7 @@
     },
     // Katabatik and FaunInvaders: an arcade tube, aperture grille, bright bloom.
     arcade: {
-      label: "KATABATIK", led: "#c9a84c", radius: "14px / 11px",
+      tube: "4% / 5%",
       gl: { curve: 0.16, corner: [0.486, 0.48, 0.03], scan: 0.45, lines: 320, mask: 0.32, maskType: 1, bloom: 0.45,
             vig: 0.45, sat: 1.1, con: 1.08 },
       dom: {
@@ -160,15 +172,15 @@
     },
     // Skoporhogo: the room watched through a monitor, camera and clock on screen.
     skopo: {
-      label: "SKOPORHOGO", led: "#ff3b1f", radius: "12px / 10px", osd: { text: "CAM 01", clock: true },
+      tube: "2% / 3%", osd: { text: "CAM 01", clock: true },
       gl: { curve: 0.1, corner: [0.488, 0.484, 0.016], scan: 0.25, lines: 480, noise: 0.035, jitter: 0.5,
             flicker: 0.03, bloom: 0.1, vig: 0.45, sat: 0.8, con: 1.1 },
       dom: { filter: "saturate(.85) contrast(1.06)", scan: "rgba(0,0,0,.14) 0 1px, transparent 1px 3px", grain: 0.06 },
       glass: { hi: 0.05, vig: 0.5, vigFrom: "58%", inset: 34, insetA: 0.6 },
     },
-    // Plain programs: a dark frame, a gold hairline, a faint glass.
+    // Plain programs: a plain glass.
     neutre: {
-      label: "", led: "", radius: "6px",
+      tube: "0",
       gl: null,
       dom: {},
       glass: { hi: 0.025, vig: 0.22, vigFrom: "65%", inset: 18, insetA: 0.4 },
@@ -195,9 +207,7 @@
     else name = p.name || "custom";
     return {
       name,
-      label: p.label || "",
-      led: p.led || "",
-      radius: p.radius || "0",
+      tube: p.tube || "0",
       osd: Object.assign({}, p.osd || {}),
       gl: p.gl ? Object.assign({}, GL_BASE, p.gl) : null,
       dom: Object.assign({}, DOM_BASE, p.dom || {}),
@@ -238,7 +248,7 @@
    * ------------------------------------------------------------------ */
 
   const CSS = `
-.ike-screen{overflow:hidden;border-radius:var(--ike-radius,0);isolation:isolate}
+.ike-screen{overflow:hidden;border-radius:3px;isolation:isolate;background:#000}
 .ike-fx{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:inherit}
 .ike-fx>*{position:absolute;inset:0;pointer-events:none;z-index:var(--ike-z,7)}
 .ike-fx>.ike-u{z-index:var(--ike-z-under,var(--ike-z,7))}
@@ -255,18 +265,19 @@
 .ike-head{inset:auto 0 0 0;height:3.2%;
   backdrop-filter:blur(2.2px) hue-rotate(-14deg) brightness(1.2);-webkit-backdrop-filter:blur(2.2px) hue-rotate(-14deg) brightness(1.2);
   background:repeating-linear-gradient(0deg,rgba(255,255,255,.18) 0 1px,rgba(0,0,0,.25) 1px 2px)}
-.ike-glass{border-radius:inherit;
+.ike-glass{border-radius:var(--ike-tube,0);
   background:radial-gradient(var(--ike-hi-shape,120% 90%) at var(--ike-hi-at,30% 10%),rgba(255,255,255,var(--ike-hi,.05)),transparent 45%),
+    linear-gradient(158deg,transparent 52%,rgba(255,255,255,var(--ike-sheen,0)) 60%,transparent 70%),
     radial-gradient(ellipse at center,transparent var(--ike-vig-from,60%),rgba(0,0,0,var(--ike-vig,.3)) 100%);
-  box-shadow:inset 0 0 var(--ike-inset,24px) rgba(0,0,0,var(--ike-inset-a,.5))}
-.ike-marks{inset:6%;--m:rgba(255,255,255,.78);
-  background:linear-gradient(var(--m),var(--m)) 0 0/22px 1.5px,linear-gradient(var(--m),var(--m)) 0 0/1.5px 22px,
-    linear-gradient(var(--m),var(--m)) 100% 0/22px 1.5px,linear-gradient(var(--m),var(--m)) 100% 0/1.5px 22px,
-    linear-gradient(var(--m),var(--m)) 0 100%/22px 1.5px,linear-gradient(var(--m),var(--m)) 0 100%/1.5px 22px,
-    linear-gradient(var(--m),var(--m)) 100% 100%/22px 1.5px,linear-gradient(var(--m),var(--m)) 100% 100%/1.5px 22px;
+  box-shadow:0 0 0 60vmax #000,inset 0 0 var(--ike-inset,24px) rgba(0,0,0,var(--ike-inset-a,.5))}
+.ike-marks{inset:5%;--m:rgba(255,255,255,.5);
+  background:linear-gradient(var(--m),var(--m)) 0 0/16px 1px,linear-gradient(var(--m),var(--m)) 0 0/1px 16px,
+    linear-gradient(var(--m),var(--m)) 100% 0/16px 1px,linear-gradient(var(--m),var(--m)) 100% 0/1px 16px,
+    linear-gradient(var(--m),var(--m)) 0 100%/16px 1px,linear-gradient(var(--m),var(--m)) 0 100%/1px 16px,
+    linear-gradient(var(--m),var(--m)) 100% 100%/16px 1px,linear-gradient(var(--m),var(--m)) 100% 100%/1px 16px;
   background-repeat:no-repeat;filter:drop-shadow(0 0 1px rgba(0,0,0,.8))}
-.ike-marks::after{content:"";position:absolute;left:50%;top:50%;width:16px;height:16px;transform:translate(-50%,-50%);
-  background:linear-gradient(var(--m),var(--m)) center/16px 1px no-repeat,linear-gradient(var(--m),var(--m)) center/1px 16px no-repeat}
+.ike-marks::after{content:"";position:absolute;left:50%;top:50%;width:10px;height:10px;transform:translate(-50%,-50%);
+  background:linear-gradient(var(--m),var(--m)) center/10px 1px no-repeat,linear-gradient(var(--m),var(--m)) center/1px 10px no-repeat}
 .ike-thirds{--t:rgba(255,255,255,.16);
   background:linear-gradient(90deg,transparent calc(33.333% - .5px),var(--t) calc(33.333% - .5px) calc(33.333% + .5px),transparent calc(33.333% + .5px) calc(66.666% - .5px),var(--t) calc(66.666% - .5px) calc(66.666% + .5px),transparent calc(66.666% + .5px)),
     linear-gradient(0deg,transparent calc(33.333% - .5px),var(--t) calc(33.333% - .5px) calc(33.333% + .5px),transparent calc(33.333% + .5px) calc(66.666% - .5px),var(--t) calc(66.666% - .5px) calc(66.666% + .5px),transparent calc(66.666% + .5px))}
@@ -287,32 +298,15 @@
 @keyframes ike-wobble{33%{transform:translateX(-2px)}66%{transform:translateX(1.5px)}}
 @media (prefers-reduced-motion:reduce){.ike-band{animation:none;display:none}.ike-rec::before{animation:none}.ike-content.ike-wobble{animation:none}}
 
-/* casings */
-.ike-casing{position:relative}
-.ike-badge{font:400 9px/1 "DM Mono",ui-monospace,monospace;letter-spacing:.24em;color:var(--ike-badge-c,#8c867d);text-transform:uppercase;user-select:none;pointer-events:none}
-.ike-badge.ike-made{position:absolute;left:clamp(10px,2.2vw,22px);bottom:clamp(4px,.8vw,8px)}
-.ike-led{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ike-led,#3a120a);box-shadow:0 0 6px var(--ike-led,transparent)}
-.ike-led.ike-made{position:absolute;right:clamp(10px,2.2vw,22px);bottom:clamp(6px,1vw,10px)}
-.ike-casing[data-ike-profile="vhs"]{border-radius:14px;--ike-badge-c:#8c867d;
-  background:radial-gradient(120% 90% at 50% 0%,rgba(255,255,255,.05),transparent 60%),linear-gradient(180deg,#24211e,#151311);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),inset 0 -2px 0 rgba(0,0,0,.5),0 18px 40px rgba(0,0,0,.55)}
-.ike-casing[data-ike-profile="minitel"]{border-radius:30px 30px 20px 20px;--ike-badge-c:#d8c7a4;
-  background:radial-gradient(130% 80% at 50% 0%,rgba(255,236,200,.08),transparent 55%),linear-gradient(180deg,#4a3b2f,#2c221a 70%,#241b14);
-  box-shadow:inset 0 2px 0 rgba(255,255,255,.08),inset 0 -3px 0 rgba(0,0,0,.5),0 18px 40px rgba(0,0,0,.55)}
-.ike-casing[data-ike-profile="photo"]{border-radius:10px;--ike-badge-c:#c9a84c;
-  background:radial-gradient(rgba(255,255,255,.035) 1px,transparent 1.4px) 0 0/4px 4px,linear-gradient(180deg,#1b1a19,#0e0d0c);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 12px 30px rgba(0,0,0,.55)}
-.ike-casing[data-ike-profile="camescope"]{border-radius:14px;--ike-badge-c:#9a978f;
-  background:repeating-linear-gradient(90deg,rgba(255,255,255,.02) 0 2px,transparent 2px 5px),linear-gradient(180deg,#232325,#141416);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 12px 30px rgba(0,0,0,.6)}
-.ike-casing[data-ike-profile="korong"]{border-radius:12px;--ike-badge-c:#e6dcc6;
-  background:linear-gradient(180deg,#3d3831,#2a2621);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 -2px 0 rgba(0,0,0,.45),0 16px 36px rgba(0,0,0,.55)}
-.ike-casing[data-ike-profile="arcade"]{border-radius:6px;--ike-badge-c:#c9a84c;background:linear-gradient(180deg,#0e0c09,#070605);
-  box-shadow:inset 0 0 0 1px rgba(201,168,76,.32),0 14px 34px rgba(0,0,0,.6)}
-.ike-casing[data-ike-profile="skopo"]{border-radius:8px;--ike-badge-c:#a9b0b4;
-  background:repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 1px,transparent 1px 3px),linear-gradient(180deg,#2e3234,#1c1f21);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 14px 32px rgba(0,0,0,.55)}
-.ike-casing[data-ike-profile="neutre"]{border-radius:6px;background:#0d0b09;box-shadow:inset 0 0 0 1px rgba(201,168,76,.25)}
+/* the layout: one frame, one screen rectangle, one controls slot, the same for every program */
+.ike-prog{overflow:hidden}
+.ike-prog>.ike-frame{position:absolute;z-index:0;pointer-events:none;border-radius:10px;box-sizing:border-box;
+  background:radial-gradient(120% 60% at 50% 0%,rgba(255,255,255,.045),transparent 60%),linear-gradient(180deg,#1c1a17,#100f0d);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),inset 0 0 0 1px rgba(201,168,76,.2),0 14px 34px rgba(0,0,0,.55)}
+.ike-prog[data-ike-layout="narrow"]>.ike-frame{border-radius:8px}
+.ike-prog>.ike-slot-screen{box-sizing:border-box;z-index:1;
+  box-shadow:0 0 0 1px #000,0 0 0 2px rgba(255,255,255,.045),inset 0 0 0 1px rgba(0,0,0,.6)}
+.ike-prog>.ike-slot-controls{box-sizing:border-box;z-index:1;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
 `;
   function injectCss(doc) {
     if (doc.getElementById("ike-css")) return;
@@ -689,8 +683,6 @@
       this.countStart = performance.now();
       this.cleanups = [];
       this.contents = [];
-      this.casing = null;
-      this.made = [];
 
       screen.classList.add("ike-screen");
       try { if (getComputedStyle(screen).position === "static") { screen.style.position = "relative"; this.posSet = true; } } catch (_) { /* ignore */ }
@@ -727,7 +719,7 @@
       this.profile = pr;
       const s = this.screen;
       s.dataset.ikeProfile = pr.name;
-      s.style.setProperty("--ike-radius", pr.radius);
+      s.style.setProperty("--ike-tube", pr.tube);
       s.style.setProperty("--ike-z", String(o.z == null ? 7 : o.z));
       s.style.setProperty("--ike-z-under", String(o.zUnder == null ? (o.z == null ? 7 : o.z) : o.zUnder));
       const d = pr.dom, g = pr.glass;
@@ -741,6 +733,7 @@
       s.style.setProperty("--ike-hi", String(g.hi));
       s.style.setProperty("--ike-hi-at", g.hiAt);
       s.style.setProperty("--ike-hi-shape", g.hiShape);
+      s.style.setProperty("--ike-sheen", String(g.sheen));
       s.style.setProperty("--ike-vig", String(g.vig));
       s.style.setProperty("--ike-vig-from", g.vigFrom);
       s.style.setProperty("--ike-inset", g.inset + "px");
@@ -769,39 +762,9 @@
       this.osdState.text = osd.text || "";
       this.renderOsd(performance.now(), true);
 
-      this.decorateCasing();
       this.applyLevel();
       if ("source" in opts) this.setSource(opts.source);
       else this.setSource(this.source);
-    }
-
-    decorateCasing() {
-      const c = this.opts.casing ? (typeof this.opts.casing === "string" ? this.doc.querySelector(this.opts.casing) : this.opts.casing) : null;
-      this.undecorate();
-      if (!c) return;
-      this.casing = c;
-      const pr = this.profile;
-      c.classList.add("ike-casing");
-      c.dataset.ikeProfile = pr.name;
-      const text = this.opts.label === false ? "" : (this.opts.label || pr.label);
-      let badge = c.querySelector("[data-ike-badge]");
-      if (!badge && text) { badge = this.doc.createElement("span"); badge.className = "ike-made"; badge.setAttribute("aria-hidden", "true"); c.appendChild(badge); this.made.push(badge); }
-      if (badge) { badge.classList.add("ike-badge"); badge.textContent = text; badge.hidden = !text; }
-      let led = c.querySelector("[data-ike-led]");
-      if (!led && pr.led) { led = this.doc.createElement("i"); led.className = "ike-made"; led.setAttribute("aria-hidden", "true"); c.appendChild(led); this.made.push(led); }
-      if (led) { led.classList.add("ike-led"); led.hidden = !pr.led; }
-      if (pr.led) c.style.setProperty("--ike-led", pr.led); else c.style.removeProperty("--ike-led");
-    }
-
-    undecorate() {
-      this.made.forEach((e) => e.remove());
-      this.made = [];
-      const c = this.casing;
-      if (!c) return;
-      c.classList.remove("ike-casing");
-      delete c.dataset.ikeProfile;
-      c.style.removeProperty("--ike-led");
-      this.casing = null;
     }
 
     applyLevel() {
@@ -923,7 +886,6 @@
       if (!p) return;
       Object.keys(p).forEach((key) => { this.params[key] = p[key]; });
       if ("snow" in p) this.screen.classList.toggle("ike-snow", !!p.snow);
-      if ("led" in p && this.casing) { const l = this.casing.querySelector(".ike-led"); if (l) l.style.opacity = p.led ? "" : "0.15"; }
       if ("rec" in p) { this.osdState.rec = !!p.rec; this.renderOsd(performance.now(), true); }
       this.dirty = true;
       kick();
@@ -1117,7 +1079,6 @@
     destroy() {
       this.sleep();
       this.cleanups.splice(0).forEach((fn) => { try { fn(); } catch (_) { /* ignore */ } });
-      this.undecorate();
       this.contents.forEach((e) => e.classList.remove("ike-content", "ike-wobble"));
       this.fx.remove();
       if (this.canvas) {
@@ -1139,6 +1100,143 @@
         canvas: this.canvas ? this.canvas.width + "x" + this.canvas.height : null,
       };
     }
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Layout: the screen rectangle and the controls slot in the program view
+   * ------------------------------------------------------------------ */
+
+  const ASPECT = 4 / 3;
+  const LAY = {
+    wideMin: 700,                                    // narrower views stack the screen over the controls
+    wide: { pad: 12, bezel: 12, gap: 12, ctrlK: 0.3, ctrlMin: 300, ctrlMax: 460 },
+    narrow: { pad: 0, bezel: 8, gap: 8 },
+  };
+
+  function geometry(W, H) {
+    W = Math.max(0, Math.floor(W)); H = Math.max(0, Math.floor(H));
+    const wide = W >= LAY.wideMin && W >= H;
+    const r = (x, y, w, h) => ({ x, y, w, h });
+    if (wide) {
+      const o = LAY.wide;
+      const ctrl = Math.max(o.ctrlMin, Math.min(o.ctrlMax, Math.round(W * o.ctrlK)));
+      const aw = W - 2 * o.pad - o.gap - ctrl, ah = H - 2 * o.pad;
+      const inner = Math.max(40, Math.min(aw - 2 * o.bezel, (ah - 2 * o.bezel) * ASPECT));
+      const w = Math.floor(inner / 4) * 4, h = w * 3 / 4;
+      const fw = w + 2 * o.bezel, fh = h + 2 * o.bezel;
+      const fx = o.pad, fy = o.pad + Math.max(0, Math.floor((ah - fh) / 2));
+      const cx = fx + fw + o.gap;
+      return { mode: "wide", view: r(0, 0, W, H), frame: r(fx, fy, fw, fh), screen: r(fx + o.bezel, fy + o.bezel, w, h), controls: r(cx, o.pad, Math.max(0, W - cx - o.pad), ah) };
+    }
+    const o = LAY.narrow;
+    const w = Math.max(40, Math.floor((W - 2 * o.pad - 2 * o.bezel) / 4) * 4), h = w * 3 / 4;
+    const fw = w + 2 * o.bezel, fh = h + 2 * o.bezel;
+    const fx = Math.floor((W - fw) / 2), fy = o.pad;
+    const cy = fy + fh + o.gap;
+    return { mode: "narrow", view: r(0, 0, W, H), frame: r(fx, fy, fw, fh), screen: r(fx + o.bezel, fy + o.bezel, w, h), controls: r(0, cy, W, Math.max(0, H - cy)) };
+  }
+
+  const layouts = new WeakMap();
+  const pin = (e, q) => {
+    if (!e) return;
+    const st = e.style;
+    ["inset", "right", "bottom", "transform"].forEach((k) => st.removeProperty(k));
+    st.setProperty("position", "absolute", "important");
+    st.setProperty("left", q.x + "px", "important");
+    st.setProperty("top", q.y + "px", "important");
+    st.setProperty("right", "auto", "important");
+    st.setProperty("bottom", "auto", "important");
+    st.setProperty("width", q.w + "px", "important");
+    st.setProperty("height", q.h + "px", "important");
+    st.setProperty("margin", "0", "important");
+    st.setProperty("max-width", "none", "important");
+    st.setProperty("max-height", "none", "important");
+    st.setProperty("min-width", "0", "important");
+    st.setProperty("min-height", "0", "important");
+    st.setProperty("aspect-ratio", "auto", "important");
+  };
+  const PINNED = ["position", "left", "top", "right", "bottom", "width", "height", "margin", "max-width", "max-height", "min-width", "min-height", "aspect-ratio"];
+
+  class Layout {
+    constructor(root, opts) {
+      this.root = root;
+      this.doc = root.ownerDocument;
+      injectCss(this.doc);
+      root.classList.add("ike-prog");
+      try { if (getComputedStyle(root).position === "static") { root.style.position = "relative"; this.posSet = true; } } catch (_) { /* ignore */ }
+      root.style.setProperty("overflow", "hidden", "important");
+      const fr = this.doc.createElement("div");
+      fr.className = "ike-frame";
+      fr.setAttribute("data-ike-dress", "");
+      fr.setAttribute("aria-hidden", "true");
+      root.insertBefore(fr, root.firstChild);
+      this.frame = fr;
+      this.opts = {};
+      this.geometry = null;
+      this.onResize = () => this.update();
+      if (typeof ResizeObserver === "function") { this.ro = new ResizeObserver(this.onResize); this.ro.observe(root); }
+      (this.doc.defaultView || window).addEventListener("resize", this.onResize);
+      this.set(opts);
+    }
+
+    set(opts) {
+      Object.assign(this.opts, opts || {});
+      const pick = (v) => (typeof v === "string" ? this.root.querySelector(v) : v) || null;
+      const sc = pick(this.opts.screen), ct = pick(this.opts.controls);
+      if (this.screen && this.screen !== sc) this.release(this.screen, "ike-slot-screen");
+      if (this.controls && this.controls !== ct) this.release(this.controls, "ike-slot-controls");
+      this.screen = sc;
+      this.controls = ct;
+      if (sc) sc.classList.add("ike-slot-screen");
+      if (ct) ct.classList.add("ike-slot-controls");
+      this.update();
+      return this;
+    }
+
+    release(e, cls) {
+      e.classList.remove(cls);
+      PINNED.forEach((k) => e.style.removeProperty(k));
+    }
+
+    update() {
+      const W = this.root.clientWidth, H = this.root.clientHeight;
+      if (!W || !H) return this.geometry;
+      const g = geometry(W, H);
+      const old = this.geometry;
+      this.geometry = g;
+      this.root.dataset.ikeLayout = g.mode;
+      pin(this.frame, g.frame);
+      pin(this.screen, g.screen);
+      pin(this.controls, g.controls);
+      if (!old || JSON.stringify(old) !== JSON.stringify(g)) {
+        if (typeof this.opts.onlayout === "function") { try { this.opts.onlayout(g); } catch (e) { console.error("[ecran]", e); } }
+        try { this.root.dispatchEvent(new CustomEvent("ike-layout", { detail: g })); } catch (_) { /* old browsers */ }
+      }
+      return g;
+    }
+
+    destroy() {
+      if (this.ro) this.ro.disconnect();
+      (this.doc.defaultView || window).removeEventListener("resize", this.onResize);
+      if (this.screen) this.release(this.screen, "ike-slot-screen");
+      if (this.controls) this.release(this.controls, "ike-slot-controls");
+      this.frame.remove();
+      this.root.classList.remove("ike-prog");
+      this.root.style.removeProperty("overflow");
+      if (this.posSet) this.root.style.position = "";
+      delete this.root.dataset.ikeLayout;
+      layouts.delete(this.root);
+    }
+  }
+
+  function layout(root, opts) {
+    if (typeof root === "string") root = document.querySelector(root);
+    if (!root) return null;
+    let l = layouts.get(root);
+    if (l) return l.set(opts);
+    l = new Layout(root, opts || {});
+    layouts.set(root, l);
+    return l;
   }
 
   /* ------------------------------------------------------------------ *
@@ -1168,6 +1266,8 @@
 
   window.IKEcran = {
     mount,
+    layout,
+    geometry,
     get: (screen) => registry.get(typeof screen === "string" ? document.querySelector(screen) : screen) || null,
     profiles: P,
     programs: PROGRAMS,

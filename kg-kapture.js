@@ -13,8 +13,9 @@
    (window.ikToPhotofauna, set by the host page). Outside Insert Koin the photo is saved as a file.
    The screenshot (SKREEN) is the host page's job: it has to be taken before any panel opens.
    The former 5-second video recorder stays in the git history (kg-kapture.js before 20 Oct 2026).
-   The viewfinder is the shared screen (ik-ecran.js, profile "photo"): framing marks and glass over the
-   live view, the video itself untouched, so the shot drawn from it stays clean. */
+   The viewfinder is the shared screen (ik-ecran.js): the same frame, size and place as in every program,
+   the keys in the controls slot; profile "photo": framing marks and glass over the live view, the video
+   itself untouched, so the shot drawn from it stays clean. */
 (function(){
   var st=null,facing='environment';
   function $(id){return document.getElementById(id);}
@@ -38,7 +39,8 @@
   }
   var ecran=null;
   window.kaptureStart=function(){var o=$('kapture-overlay');if(o)o.style.display='block';st={};
-    if(o&&window.IKEcran)ecran=window.IKEcran.mount(o,{program:'kapture',content:'#kapture-video',z:2});
+    if(o&&window.IKEcran){if(window.IKEcran.layout)window.IKEcran.layout(o,{screen:'#kapture-screen',controls:'#kapture-bar'});
+      ecran=window.IKEcran.mount('#kapture-screen',{program:'kapture',content:'#kapture-video',z:2});}
     startCam();};
   window.kaptureFlip=function(){facing=facing==='environment'?'user':'environment';startCam();};
   window.kaptureShoot=function(){
