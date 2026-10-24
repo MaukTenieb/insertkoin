@@ -1517,7 +1517,7 @@ document.addEventListener('keydown',function(e){var p=document.getElementById('h
       ctx.fillStyle='#8a8174';ctx.fillText(T('go'),W/2,H*.53);
       if(S.mode==='over'&&S.rank&&window.IKP){ctx.font='12px "DM Mono",monospace';ctx.fillStyle='#c9a84c';ctx.fillText(IKP.line(S.rank),W/2,H*.6);}}
     ctx.restore();}
-  function shown(){var p=document.getElementById('fi-panel');return p&&p.style.display!=='none'&&p.offsetParent!==null;}
+  function shown(){var p=document.getElementById('fi-panel');return p&&p.style.display!=='none'&&p.getClientRects().length>0;}
   function loop(now){if(!shown()){raf=0;return;}acc+=Math.min(100,now-last);last=now;while(acc>=1000/60){acc-=1000/60;tick();}draw();raf=requestAnimationFrame(loop);}
   function start(){if(S.mode!=='play'&&Date.now()-S.endT>600){newGame();}}
   function bind(){
