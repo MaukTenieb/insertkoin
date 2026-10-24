@@ -1930,7 +1930,7 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
   let cur=NM[(Math.random()*NM.length)|0];const h=document.querySelector('.heroText .logo'),br=$('brand'),rf=$('refresh');
   [h,br,rf].forEach(el=>{if(el)el.textContent=cur;});
   /* Bio, now and then BioGraphik or BioTenieb */
-  const r=Math.random(),bio=r<.5?'BIO':r<.75?'BIOGRAPHIK':'BIOTENIEB';document.querySelectorAll('[data-swap="bio"] b, a[data-swap="bio"]').forEach(el=>{el.textContent=bio;});
+  const r=Math.random(),bio=r<.5?'BIO':r<.75?'BIOGRAPHIK':'BIOTENIEB';const tail=bio.slice(3);document.querySelectorAll('[data-swap="bio"] b').forEach(el=>{el.innerHTML=tail?'BIO<small style="font-size:1em;color:#7ccf80;text-shadow:0 0 10px rgba(102,187,106,.55)">'+tail+'</small>':'BIO';});document.querySelectorAll('a[data-swap="bio"]').forEach(el=>{el.innerHTML=tail?'BIO<span style="color:#f3ead2;text-shadow:0 0 8px rgba(243,234,210,.45)">'+tail+'</span>':'BIO';});
   const titles={'INSERT KOIN':'Insert Koin','INTERSEKTION':'Intersektion','NOIR INSEKT':'Noir Insekt','SEKTOR INN':'Sektor Inn'},T=document.title;
   document.addEventListener('visibilitychange',()=>{document.title=document.hidden?titles[pick(cur)]:T;});
   if(!h||matchMedia('(prefers-reduced-motion:reduce)').matches)return;

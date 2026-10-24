@@ -219,6 +219,8 @@ function bbVoice(ac,vi,time){
 
 function bbTick(){
   if(!_bbPlaying||!_bbAC||_bbAC.state==='suspended')return;
+  var _bp=document.getElementById('bb-panel');
+  if(!_bp||_bp.style.display==='none'||!_bp.getClientRects().length){bbStop();try{bbRender();}catch(_e){}return;}
   var now=_bbAC.currentTime+.02;
   _bbTracks.forEach(function(tr,ti){
     if(tr.steps[_bbStep])bbVoice(_bbAC,ti,now);
