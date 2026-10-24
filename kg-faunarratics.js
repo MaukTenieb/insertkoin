@@ -249,7 +249,7 @@ function kkRenderDots(){
 }
 window.kkRenderDots=kkRenderDots;
 
-// --- Cards: five blocks of the sheet dealt face down per Mask; a tap turns one over and takes it ---
+// --- Cards: every block of the sheet face down; a tap turns one over and takes it (three at most); the portrait and the stats stay blocks too ---
 var kkSpriteOk={};
 var kkDeal=null, kkDealFor=-1, kkOpen={}, kkFrame=0, kkTexts={};
 var KK_GLYPH={'Formula':'\u222b','Appearance':'\u25c9','Faction':'\u2691','Masks':'\u25c8','Motto':'\u275d','Profile':'\u25ce','Powers':'\u03df','Maskomatics':'\u2736','Hexagram':'\u268c','Mini-stories':'\u00b6','Krewsmatics':'\u29c9'};
@@ -267,12 +267,13 @@ function kkCard(label,inner){
 }
 function kkDealCards(labels){
   var avail=labels.filter(function(l){return kkTexts[l];});
-  kkDeal=kkShuffle(avail).slice(0,5);kkDealFor=kkIdx+':'+kkOrder[kkIdx];kkOpen={};
+  kkDeal=avail;kkDealFor=kkIdx+':'+kkOrder[kkIdx];kkOpen={};
 }
-function kkRedeal(){
+function kkShowAll(){
   if(typeof sndBtn==='function')sndBtn();
-  kkSecs=kkSecs.filter(function(l){return l==='Image'||l==='Stats';});
-  kkDeal=null;kkShowMask();kkSyncBoxFromSecs();kkUpdateAddBtn();
+  var all=kkDeal&&kkDeal.every(function(l){return kkOpen[l]||kkSecHas(l);});
+  kkOpen={};if(!all)kkDeal.forEach(function(l){kkOpen[l]=1;});
+  kkShowMask();
 }
 function kkTapCard(label){
   if(!kkSecHas(label)&&kkSecs.length>=3){kkOpen[label]=1;kkShowMask();kkFlashMax();return;}
@@ -290,7 +291,7 @@ function kkReact(){
   if(w){w.classList.remove('kk-react');void w.offsetWidth;w.classList.add('kk-react');}
   kkFlash(_pick(KK_B_LINES));
 }
-window.kkTapCard=kkTapCard;window.kkRedeal=kkRedeal;
+window.kkTapCard=kkTapCard;window.kkShowAll=kkShowAll;
 document.addEventListener('click',function(e){
   var c=e.target.closest&&e.target.closest('#kk-fiche [data-card]');
   if(c){e.stopPropagation();kkTapCard(c.getAttribute('data-card'));}
@@ -343,7 +344,7 @@ function kkShowMask(){
   kkDeal.forEach(function(l){var r=R.filter(function(x){return x[0]===l;})[0];
     var html=kkRub(r[0],r[1],r[2],r[3],r[4],r[5]).replace(/^<div class="kk-rub[^"]*" data-rub="[^"]*"><div class="kk-rub-lbl">[^<]*<\/div>/,'').replace(/<\/div>$/,'');
     if(kkSecHas(l)||kkOpen[l])opened+=kkCard(l,html);else closed+=kkCard(l,html);});
-  var body='<div class="kk-cards" style="--c:'+c+'">'+closed+'</div><div class="kk-opened" style="--c:'+c+'">'+opened+'</div><button type="button" class="kk-redeal" onclick="kkRedeal()">\u21bb DEAL AGAIN</button>';
+  var body='<div class="kk-cards" style="--c:'+c+'">'+closed+'</div><div class="kk-opened" style="--c:'+c+'">'+opened+'</div><button type="button" class="kk-redeal" onclick="kkShowAll()">'+(kkDeal.every(function(l){return kkOpen[l]||kkSecHas(l);})?'HIDE ALL':'SHOW ALL')+'</button>';
   var imgOn=kkSecHas('Image')?' kk-rub-on':'';
   var statsOn=kkSecHas('Stats')?' kk-rub-on':'';
   var fiche=document.getElementById('kk-fiche');
