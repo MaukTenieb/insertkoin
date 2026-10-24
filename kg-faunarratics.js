@@ -63,7 +63,7 @@ function kkEnter(){
   kkClearSave();
   kkOrder=kkShuffle(FAUNA.map(function(_,i){return i;}));
   kkIdx=0;kkTotal=3;kkEntries=[];
-  kkSecs=[];kkFlow=null;kkIdleClear();kkIdleFired=false;
+  kkSecs=[];kkFlow=null;kkIdleClear();kkIdleFired=false;kkDeal=null;
   var feed=document.getElementById('kk-feed');
   if(feed){
     feed.innerHTML='<div class="kk-feedlbl">KEREMA</div>';
@@ -249,6 +249,58 @@ function kkRenderDots(){
 }
 window.kkRenderDots=kkRenderDots;
 
+// --- Cards: five blocks of the sheet dealt face down per Mask; a tap turns one over and takes it ---
+var kkSpriteOk={};
+var kkDeal=null, kkDealFor=-1, kkOpen={}, kkFrame=0, kkTexts={};
+var KK_GLYPH={'Formula':'\u222b','Appearance':'\u25c9','Faction':'\u2691','Masks':'\u25c8','Motto':'\u275d','Profile':'\u25ce','Powers':'\u03df','Maskomatics':'\u2736','Hexagram':'\u268c','Mini-stories':'\u00b6','Krewsmatics':'\u29c9'};
+function kkSlug(n){return String(n).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/'/g,'').replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');}
+function kkGlyph(label){
+  var tx=kkTexts[label]||'';
+  if(label==='Hexagram'){var h=/Hexagram\s+(\d{1,2})/.exec(tx);if(h){var n=+h[1];if(n>=1&&n<=64)return String.fromCharCode(0x4DC0+n-1);}}
+  return KK_GLYPH[label]||'\u2726';
+}
+function kkCard(label,inner){
+  var on=kkSecHas(label), open=on||kkOpen[label];
+  return '<div class="kk-card'+(open?' kk-open':'')+(on?' kk-rub-on':'')+'" data-card="'+kkEsc(label)+'" role="button" tabindex="0" aria-label="'+kkEsc(label)+'">'
+    +'<div class="kk-card-in"><div class="kk-card-back"><span class="kk-card-g">'+kkGlyph(label)+'</span><span class="kk-card-l">'+kkEsc(label)+'</span></div>'
+    +'<div class="kk-card-face"><div class="kk-rub-lbl">'+kkGlyph(label)+' '+kkEsc(label)+'</div>'+inner+'</div></div></div>';
+}
+function kkDealCards(labels){
+  var avail=labels.filter(function(l){return kkTexts[l];});
+  kkDeal=kkShuffle(avail).slice(0,5);kkDealFor=kkIdx+':'+kkOrder[kkIdx];kkOpen={};
+}
+function kkRedeal(){
+  if(typeof sndBtn==='function')sndBtn();
+  kkSecs=kkSecs.filter(function(l){return l==='Image'||l==='Stats';});
+  kkDeal=null;kkShowMask();kkSyncBoxFromSecs();kkUpdateAddBtn();
+}
+function kkTapCard(label){
+  if(!kkSecHas(label)&&kkSecs.length>=3){kkOpen[label]=1;kkShowMask();kkFlashMax();return;}
+  kkOpen[label]=1;
+  var had=kkSecHas(label);
+  kkPickRubric(label);
+  if(!had&&kkSecHas(label))kkReact();
+}
+function kkReact(){
+  var m=FAUNA[kkOrder[kkIdx]];if(!m)return;
+  var f=kkFrame;while(f===kkFrame)f=Math.floor(Math.random()*8);kkFrame=f;
+  var sp=document.querySelector('#kk-fiche .kk-sprite');
+  if(sp){sp.style.backgroundPosition=(kkFrame/7*100)+'% 50%';}
+  var w=document.querySelector('#kk-fiche .kk-imgwrap');
+  if(w){w.classList.remove('kk-react');void w.offsetWidth;w.classList.add('kk-react');}
+  kkFlash(_pick(KK_B_LINES));
+}
+window.kkTapCard=kkTapCard;window.kkRedeal=kkRedeal;
+document.addEventListener('click',function(e){
+  var c=e.target.closest&&e.target.closest('#kk-fiche [data-card]');
+  if(c){e.stopPropagation();kkTapCard(c.getAttribute('data-card'));}
+},true);
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Enter'&&e.key!==' ')return;
+  var c=e.target.closest&&e.target.closest('#kk-fiche [data-card]');
+  if(c){e.preventDefault();kkTapCard(c.getAttribute('data-card'));}
+});
+
 function kkShowMask(){
   var m=FAUNA[kkOrder[kkIdx]];if(!m)return;
   // Tire un nouveau flux si pas encore fait pour cette carte
@@ -270,25 +322,28 @@ function kkShowMask(){
   var fp=(typeof FP!=='undefined'&&FP[m.name])?FP[m.name]:{};
   var motto=fp.motto||m.motto||'';
   var img=m.face?'<img src="data:image/jpeg;base64,'+m.face+'" alt="">':'<span class="kk-ph">?</span>';
+  var spr='sprite-'+kkSlug(m.name)+'.webp';
+  if(kkSpriteOk[spr])img='<div class="kk-sprite" style="background-image:url('+spr+');background-position:'+(kkFrame/7*100)+'% 50%"></div>';
+  else if(kkSpriteOk[spr]!==false){var pi=new Image();pi.onload=function(){kkSpriteOk[spr]=true;var w=document.querySelector('#kk-fiche .kk-imgwrap');if(w&&FAUNA[kkOrder[kkIdx]]===m)w.innerHTML='<div class="kk-sprite" style="background-image:url('+spr+');background-position:'+(kkFrame/7*100)+'% 50%"></div>';};pi.onerror=function(){kkSpriteOk[spr]=false;};pi.src=spr;}
   var sk=['STR','DEX','INT','WIS','CHA','CON'];var st=fp.stats||m.stats||{};
   var barsHtml='';
   sk.forEach(function(k){if(!st[k])return;var pct=(st[k]/10*100).toFixed(0);barsHtml+='<div class="bw"><div class="bv">'+st[k]+'</div><div class="bt"><div class="bf" style="height:'+pct+'%;background:'+c+'"></div></div><div class="bl">'+k+'</div></div>';});
-  var body='';
-  body+=kkRub('Formula',fp.formula,false,c,true,true);
-  body+=kkRub('Appearance',fp.appearance,true,'rgba(237,229,216,.78)');
   var line1='';
   if(fp.faction)line1+=fp.faction;
   if(fp.emojis)line1+=(line1?' \u00b7 ':'')+fp.emojis;
   if(fp.attributes)line1+=(line1?' \u2014 ':'')+fp.attributes;
-  body+=kkRub('Faction',line1,false,'#ede5d8');
-  body+=kkRub('Masks',fp.archetypes,true,'rgba(237,229,216,.68)');
-  body+=kkRub('Motto',motto,false,c);
-  body+=kkRub('Profile',fp.profile||m.bio,false,'#ede5d8');
-  body+=kkRub('Powers',fp.powers||m.pow,false,'rgba(237,229,216,.88)');
-  body+=kkRub('Maskomatics',fp.cosmo,false,'rgba(237,229,216,.72)');
-  body+=kkRub('Hexagram',fp.hexagram,true,'rgba(237,229,216,.68)');
-  body+=kkRub('Mini-stories',fp.ministories,false,'rgba(237,229,216,.82)');
-  body+=kkRub('Krewsmatics',fp.synergy,false,'rgba(237,229,216,.82)');
+  var R=[['Formula',fp.formula,false,c,true,true],['Appearance',fp.appearance,true,'rgba(237,229,216,.78)'],['Faction',line1,false,'#ede5d8'],
+    ['Masks',fp.archetypes,true,'rgba(237,229,216,.68)'],['Motto',motto,false,c],['Profile',fp.profile||m.bio,false,'#ede5d8'],
+    ['Powers',fp.powers||m.pow,false,'rgba(237,229,216,.88)'],['Maskomatics',fp.cosmo,false,'rgba(237,229,216,.72)'],
+    ['Hexagram',fp.hexagram,true,'rgba(237,229,216,.68)'],['Mini-stories',fp.ministories,false,'rgba(237,229,216,.82)'],
+    ['Krewsmatics',fp.synergy,false,'rgba(237,229,216,.82)']];
+  kkTexts={};R.forEach(function(r){if(r[1])kkTexts[r[0]]=String(r[1]);});
+  if(!kkDeal||kkDealFor!==kkIdx+':'+kkOrder[kkIdx]){kkDealCards(R.map(function(r){return r[0];}));kkFrame=0;}
+  var closed='',opened='';
+  kkDeal.forEach(function(l){var r=R.filter(function(x){return x[0]===l;})[0];
+    var html=kkRub(r[0],r[1],r[2],r[3],r[4],r[5]).replace(/^<div class="kk-rub[^"]*" data-rub="[^"]*"><div class="kk-rub-lbl">[^<]*<\/div>/,'').replace(/<\/div>$/,'');
+    if(kkSecHas(l)||kkOpen[l])opened+=kkCard(l,html);else closed+=kkCard(l,html);});
+  var body='<div class="kk-cards" style="--c:'+c+'">'+closed+'</div><div class="kk-opened" style="--c:'+c+'">'+opened+'</div><button type="button" class="kk-redeal" onclick="kkRedeal()">\u21bb DEAL AGAIN</button>';
   var imgOn=kkSecHas('Image')?' kk-rub-on':'';
   var statsOn=kkSecHas('Stats')?' kk-rub-on':'';
   var fiche=document.getElementById('kk-fiche');
@@ -302,7 +357,8 @@ function kkRenderSections(){
   if(kkSecs.length){
     var html='';
     for(var i=0;i<kkSecs.length;i++){
-      html+='<button class="kk-chip on" data-rub="'+kkEsc(kkSecs[i])+'">'+kkEsc(kkSecs[i].toUpperCase())+' \u00d7</button>';
+      var L=kkSecs[i],tx=kkTexts[L]||'';
+      html+='<button class="kk-chip on" data-rub="'+kkEsc(L)+'">'+(KK_GLYPH[L]||L==='Hexagram'?kkGlyph(L)+' ':'')+kkEsc(L.toUpperCase())+' \u00d7'+(tx?'<span class="kk-chip-tx">'+kkEsc(tx)+'</span>':'')+'</button>';
     }
     el.innerHTML=html;
   } else {
