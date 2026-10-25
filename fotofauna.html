@@ -121,6 +121,7 @@ main.left{background:var(--pebble);min-width:0}
 .search{display:flex;gap:8px}#q{flex:1;min-width:0;font:400 13px var(--sans)}#q::placeholder,#prompt::placeholder{color:var(--faint)}
 .rail{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -14px;padding:2px 14px 6px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 24px),transparent)}
 .rail::-webkit-scrollbar{display:none}
+#fams{scroll-snap-type:x proximity;scroll-padding-left:14px;-webkit-mask-image:linear-gradient(90deg,transparent 9px,#000 14px,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,transparent 9px,#000 14px,#000 calc(100% - 24px),transparent)}#fams .fam{scroll-snap-align:start}
 .fam,.gchip{flex:none;display:inline-flex;align-items:baseline;gap:6px;background:transparent;border:1px solid var(--line);border-radius:2px;font:500 10.5px/1 var(--num);letter-spacing:.12em;text-transform:uppercase;color:#b9b1a0;min-height:30px;padding:7px 10px}
 .fam small,.gchip small{font:400 9.5px var(--num);letter-spacing:.04em;color:var(--faint)}
 .fam:hover,.gchip:hover{border-color:var(--line2);color:var(--ink)}
@@ -169,6 +170,7 @@ main.left{background:var(--pebble);min-width:0}
 .hint{font-size:12px;color:var(--mute);margin:0;line-height:1.4}
 .layers{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--ink2)}
 .layers li{display:flex;gap:8px;align-items:center;justify-content:space-between}
+.layers .fx{display:flex;flex-direction:column;gap:2px;min-width:0}.layers .det{font:400 11px/1.35 var(--num);color:var(--mute);letter-spacing:.04em}.layers li.cur{opacity:.85}
 .layers li::marker{font:500 10px var(--num);color:var(--acc)}
 .ask{display:flex;gap:8px;flex-wrap:wrap}
 #prompt{flex:1 1 100%;min-height:42px;font-size:14px}
@@ -244,6 +246,22 @@ html.ike-on .app[data-ike-layout=wide] .ctrl{overflow:hidden!important}
 html.ike-on .app[data-ike-layout=wide] .ctrl .inspector{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden}
 html.ike-on .app[data-ike-layout=wide] .ctrl .pane{flex:1;min-height:0;overflow-y:auto}
 html.ike-on .app[data-ike-layout=narrow] .ctrl{border-radius:0}
+/* dans le site : la rangée du site nomme déjà Photofauna, la barre au logo s'efface ; ses touches (prise de vue, ouvrir, ⋯) forment la rangée principale */
+html.ike-on.embedded .ctrl header.top{background:none;border:0;box-shadow:none;min-height:0;padding:10px 10px 0;border-radius:0;flex-wrap:nowrap;gap:8px}
+html.ike-on.embedded .ctrl header.top::after,html.ike-on.embedded .ctrl .logo{display:none}
+html.ike-on.embedded .ctrl header.top #bShoot,html.ike-on.embedded .ctrl header.top #bOpen{flex:1 1 0;justify-content:center}
+html.ike-on.embedded .ctrl .shutterRow{padding-top:10px}
+/* case des commandes : textes lisibles */
+html.ike-on .ctrl .key{font-size:11.5px;letter-spacing:.12em}
+html.ike-on .ctrl .chip{font-size:11px}
+html.ike-on .ctrl .fam{font-size:11.5px;min-height:32px}
+html.ike-on .ctrl .fam small,html.ike-on .ctrl .gchip small{font-size:11px;color:var(--mute)}
+html.ike-on .ctrl .gchip{font-size:11.5px;min-height:30px}
+html.ike-on .ctrl .count{font-size:11.5px;color:var(--mute)}
+html.ike-on .ctrl .frame b{font-size:12px}
+html.ike-on .ctrl .frame i{font-size:11px;color:var(--mute)}
+html.ike-on .ctrl .dock button{font-size:12px}
+html.ike-on .ctrl .credit{font-size:11px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -353,6 +371,22 @@ FF.register = function(app, table){
   FF.apps[app] = Object.assign(FF.apps[app]||{}, table);
   for(const k in table){ const d = table[k]; d.id = app+'.'+k; d.app = app; d.params = d.params||{}; FF.ops[d.id] = d; }
 };
+// Ressources des modules (pf/…) : la page lit pf/files.json, la liste des fichiers présents à côté d'elle.
+// Un fichier absent de la liste répond 404 sans requête réseau : le module prend son repli procédural, la console reste propre.
+// Sans liste (page isolée sans pf/files.json), tout passe au réseau comme avant.
+(function(){
+  if(typeof window==='undefined'||typeof fetch!=='function'||typeof Response==='undefined'||typeof document==='undefined'||!document.baseURI) return;
+  const nat=window.fetch.bind(window), root=new URL('pf/',document.baseURI).href;
+  let list=null;
+  const man=()=>list||(list=nat(root+'files.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(j=>j&&Array.isArray(j.files)?new Set(j.files):null).catch(()=>null));
+  window.fetch=function(u,o){ const s=typeof u==='string'?u:(u&&u.url)||'';
+    let a=''; try{ a=new URL(s,document.baseURI).href; }catch(e){}
+    if(!a.startsWith(root)||a===root+'files.json') return nat(u,o);
+    const rel=decodeURIComponent(a.slice(root.length).split(/[?#]/)[0]);
+    return man().then(set=>set&&!set.has(rel)?new Response(null,{status:404,statusText:'absent'}):nat(u,o)); };
+  FF.assetList=man;
+})();
+
 FF.defaults = function(op){ const o={}; for(const k in op.params) o[k]=op.params[k].def; return o; };
 
 // PRNG déterministe (mulberry32) avec l'API utile aux portages Java (nextInt, nextBoolean)
@@ -6030,14 +6064,23 @@ async function compose(src,ver,file,shadow,fallbackSt){
 // Shaders GPUImage (version 2014) : base = 1re entrée branchée (addTarget:), calque = texture (addTarget:atTextureLocation: ≥ 1).
 // Textures GPUImagePicture prémultipliées, étirées à la taille de l'image ; tampons RGBA8 entre passes.
 const V4='423';
-function gpu2(a,b,fn){ const o=FI(a.w,a.h),A=a.d,B=b.d,O=o.d; for(let i=0;i<A.length;i+=4) fn(A,B,O,i); return q8(o); }
+// Repli procédural d'une texture absente : valeur neutre du mode de fusion, vignette chaude et marbrure douce d'émulsion
+function PT(a,nv){ const w=a.w,h=a.h,o=FI(w,h),d=o.d,R=FF.prng(4231),gx=[],N=6; for(let i=0;i<(N+1)*(N+1);i++) gx.push(R.f()-.5);
+  const tint=[1,.96,.86], dev=nv>=1?-.28:nv<=0?.14:-.13;
+  for(let y=0;y<h;y++) for(let x=0;x<w;x++){ const u=x/(w-1||1),v=y/(h-1||1),r=Math.min(1,Math.hypot(u-.5,v-.5)/.7071);
+    const fx=u*N,fy=v*N,ix=Math.min(N-1,fx|0),iy=Math.min(N-1,fy|0),tx=fx-ix,ty=fy-iy,g=(i,j)=>gx[j*(N+1)+i];
+    const m=(g(ix,iy)*(1-tx)+g(ix+1,iy)*tx)*(1-ty)+(g(ix,iy+1)*(1-tx)+g(ix+1,iy+1)*tx)*ty;
+    const k=nv<=0?(1-r)*(1-r):r*r, i=(y*w+x)*4;
+    for(let c=0;c<3;c++){ const t=nv+dev*k*(nv<=0?tint[c]:2-tint[c])+m*.05; d[i+c]=t<0?0:t>1?1:t; } d[i+3]=1; }
+  return o; }
+function gpu2(a,b,fn,nv){ if(!b){ if(nv===undefined) return q8(cloneF(a)); b=PT(a,nv); } const o=FI(a.w,a.h),A=a.d,B=b.d,O=o.d; for(let i=0;i<A.length;i+=4) fn(A,B,O,i); return q8(o); }
 const G={
-  screen:(a,b)=>gpu2(a,b,(A,B,O,i)=>{ for(let c=0;c<4;c++) O[i+c]=1-(1-B[i+c])*(1-A[i+c]); }),
-  multiply:(a,b)=>gpu2(a,b,(A,B,O,i)=>{ const aa=A[i+3],ba=B[i+3]; for(let c=0;c<4;c++) O[i+c]=B[i+c]*A[i+c]+B[i+c]*(1-aa)+A[i+c]*(1-ba); }),
-  overlay:(a,b)=>gpu2(a,b,(A,B,O,i)=>{ const aa=A[i+3],ba=B[i+3]; for(let c=0;c<3;c++){ const x=A[i+c],y=B[i+c]; O[i+c]=(2*x<aa?2*y*x:ba*aa-2*(aa-x)*(ba-y))+y*(1-aa)+x*(1-ba); } O[i+3]=1; }),
-  hardlight:(a,b)=>gpu2(a,b,(A,B,O,i)=>{ const aa=A[i+3],ba=B[i+3]; for(let c=0;c<3;c++){ const x=A[i+c],y=B[i+c]; O[i+c]=(2*y<ba?2*y*x:ba*aa-2*(aa-x)*(ba-y))+y*(1-aa)+x*(1-ba); } O[i+3]=1; }),
-  softlight:(a,b)=>gpu2(a,b,(A,B,O,i)=>{ const aa=A[i+3],ba=B[i+3]; for(let c=0;c<4;c++){ const x=A[i+c],y=B[i+c],u=aa>0?x/aa:0; O[i+c]=x*(ba*u+2*y*(1-u))+y*(1-aa)+x*(1-ba); } }),
-  darken:(a,b)=>gpu2(a,b,(A,B,O,i)=>{ const aa=A[i+3],ba=B[i+3]; for(let c=0;c<3;c++) O[i+c]=Math.min(B[i+c]*aa,A[i+c]*ba)+B[i+c]*(1-aa)+A[i+c]*(1-ba); O[i+3]=1; }),
+  screen:(a,b)=>gpu2(a,b,(A,B,O,i)=>{ for(let c=0;c<4;c++) O[i+c]=1-(1-B[i+c])*(1-A[i+c]); },0),
+  multiply:(a,b)=>gpu2(a,b,(A,B,O,i)=>{ const aa=A[i+3],ba=B[i+3]; for(let c=0;c<4;c++) O[i+c]=B[i+c]*A[i+c]+B[i+c]*(1-aa)+A[i+c]*(1-ba); },1),
+  overlay:(a,b)=>gpu2(a,b,(A,B,O,i)=>{ const aa=A[i+3],ba=B[i+3]; for(let c=0;c<3;c++){ const x=A[i+c],y=B[i+c]; O[i+c]=(2*x<aa?2*y*x:ba*aa-2*(aa-x)*(ba-y))+y*(1-aa)+x*(1-ba); } O[i+3]=1; },0.5),
+  hardlight:(a,b)=>gpu2(a,b,(A,B,O,i)=>{ const aa=A[i+3],ba=B[i+3]; for(let c=0;c<3;c++){ const x=A[i+c],y=B[i+c]; O[i+c]=(2*y<ba?2*y*x:ba*aa-2*(aa-x)*(ba-y))+y*(1-aa)+x*(1-ba); } O[i+3]=1; },0.5),
+  softlight:(a,b)=>gpu2(a,b,(A,B,O,i)=>{ const aa=A[i+3],ba=B[i+3]; for(let c=0;c<4;c++){ const x=A[i+c],y=B[i+c],u=aa>0?x/aa:0; O[i+c]=x*(ba*u+2*y*(1-u))+y*(1-aa)+x*(1-ba); } },0.5),
+  darken:(a,b)=>gpu2(a,b,(A,B,O,i)=>{ const aa=A[i+3],ba=B[i+3]; for(let c=0;c<3;c++) O[i+c]=Math.min(B[i+c]*aa,A[i+c]*ba)+B[i+c]*(1-aa)+A[i+c]*(1-ba); O[i+3]=1; },1),
   normal:(a,b)=>gpu2(a,b,(A,B,O,i)=>{ const ca=B[i+3]; for(let c=0;c<3;c++) O[i+c]=B[i+c]+A[i+c]*A[i+3]*(1-ca); O[i+3]=ca+A[i+3]*(1-ca); }),
   opacity:(a,k)=>{ const o=cloneF(a); for(let i=3;i<o.d.length;i+=4) o.d[i]*=k; return q8(o); },
   brightness:(a,k)=>{ const o=cloneF(a),d=o.d; for(let i=0;i<d.length;i+=4){ d[i]+=k; d[i+1]+=k; d[i+2]+=k; } return q8(o); },
@@ -7858,7 +7901,7 @@ const trO=s=>{if(LANG==="fr")return s;s=String(s);if(TR_L[s])return TR_L[s];
  if(/^(Cadre \d+|LD\d+) · /.test(s)||/ \((filtre de cadre|substituée)\)$/.test(s))return trWords(s);return s};
 
 const t=(k,v)=>{let s=(W[LANG]&&W[LANG][k])??W.fr[k]??k;if(v)for(const[a,b] of Object.entries(v))s=s.split("{"+a+"}").join(b);return s};
-Object.assign(W.fr,{keepL:"Valider",dice:"Tirer",layers:"Couches",noLayer:"Image d'origine",drop:"Retirer",seconds:"Images d'appoint",pour:"Verser",secondOpen:"Seconde photo",photosOpen:"Photos (collage)",variants:"variantes",apps:"applis",
+Object.assign(W.fr,{curFx:"en cours",status:"statut",keepL:"Valider",dice:"Tirer",layers:"Couches",noLayer:"Image d'origine",drop:"Retirer",seconds:"Images d'appoint",pour:"Verser",secondOpen:"Seconde photo",photosOpen:"Photos (collage)",variants:"variantes",apps:"applis",
  shoot:"Prendre",undo:"Défaire",compare:"Comparer",labo:"Labo",t_looks:"Rendus",shuffle:"Au hasard",close:"Fermer",live:"En direct",
  ai_hint:"Image : une phrase devient la photo à travailler. Vidéo : l'image à l'écran s'anime.",
  exPhoto:"Enregistrer la photo",exOrig:"Taille d'origine",exAnim:"Animation",exGif:"GIF",exVid:"Vidéo 15 s",exVidSize:"Taille de la vidéo",
@@ -7870,7 +7913,7 @@ Object.assign(W.fr,{keepL:"Valider",dice:"Tirer",layers:"Couches",noLayer:"Image
  clipDone:"Clip de {s} s, effets compris.",vidBad:"Vidéo illisible dans ce navigateur.",stillOnly:"image fixe seulement",stillSkip:"Image fixe seulement, hors vidéo : {n}",
  exClip:"Enregistrer la vidéo",exClipHint:"Toute la vidéo passe dans la pile d'effets, à la taille choisie, avec sa bande son.",vidRender:"Rendu : image {i} / {n}",vidEnc:"Encodage : {s} s",
  frameN:"Image {i} / {n}…",recording:"Enregistrement : {s} s",gifDone:"GIF : {k} Ko",vidDone:"Vidéo : {k} Ko",noRec:"Ce navigateur enregistre la vidéo hors de MediaRecorder : export vidéo indisponible.",rawSaved:"Photo brute enregistrée : "});
-Object.assign(W.en,{keepL:"Keep",dice:"Roll",layers:"Layers",noLayer:"Original image",drop:"Remove",seconds:"Extra images",pour:"Pour",secondOpen:"Second photo",photosOpen:"Photos (collage)",variants:"variants",apps:"apps",
+Object.assign(W.en,{curFx:"current",status:"status",keepL:"Keep",dice:"Roll",layers:"Layers",noLayer:"Original image",drop:"Remove",seconds:"Extra images",pour:"Pour",secondOpen:"Second photo",photosOpen:"Photos (collage)",variants:"variants",apps:"apps",
  shoot:"Take",undo:"Undo",compare:"Compare",labo:"Lab",t_looks:"Looks",shuffle:"Shuffle",close:"Close",live:"Live",
  ai_hint:"Image: a sentence becomes the photo to work on. Video: the picture on screen comes alive.",
  exPhoto:"Save the photo",exOrig:"Original size",exAnim:"Animation",exGif:"GIF",exVid:"15 s video",exVidSize:"Video size",
@@ -7977,23 +8020,27 @@ function visibleCards(){const q=S.q.toLowerCase();return CARDS.filter(c=>q?(c.na
 function drawFams(){const box=$("fams");box.innerHTML="";
  let r=$("bRand");if(!r){r=document.createElement("button");r.type="button";r.className="fam shuf";r.id="bRand";r.onclick=randomLook;$("q").after(r)}r.innerHTML=`<svg class="ic" aria-hidden="true"><use href="#i-dice"/></svg>${esc(t("shuffle"))}`;
  for(const [id] of FAMS){const n=CARDS.filter(c=>famOf(c.op)===id).length;if(!n)continue;const b=document.createElement("button");b.type="button";b.className="fam";b.setAttribute("aria-pressed",String(!S.q&&S.fam===id));b.innerHTML=`<span>${esc(famName(id))}</span><small>${n}</small>`;b.onclick=()=>{S.fam=id;S.sub=null;S.q="";$("q").value="";LS.set("pf_fam",id);drawFams();drawGrid();b.scrollIntoView({block:"nearest",inline:"nearest"})};box.appendChild(b)}
- const on=box.querySelector(".fam[aria-pressed=true]");if(on){const x=on.getBoundingClientRect().left-box.getBoundingClientRect().left+box.scrollLeft;box.scrollLeft=x+on.offsetWidth>box.clientWidth-20?x-14:0}
+ /* rangée des familles : la famille active en vue, la rangée calée sur le bord gauche d'une puce (aucune puce coupée à gauche) */
+ const on=box.querySelector(".fam[aria-pressed=true]");if(on){const L0=box.getBoundingClientRect().left-box.scrollLeft,pad=parseFloat(getComputedStyle(box).paddingLeft)||0,e=on.getBoundingClientRect().left-L0+on.offsetWidth+24;let sl=0;
+  if(e>box.clientWidth)for(const f of box.querySelectorAll(".fam")){const x=f.getBoundingClientRect().left-L0-pad;if(x>0&&e-x<=box.clientWidth){sl=x;break}if(f===on){sl=x;break}}box.scrollLeft=sl}
  $("count").textContent=CARDS.length+" "+(LANG==="fr"?"rendus":"looks")+" · "+Object.keys(FF.apps).filter(a=>a!=="__").length+" "+t("apps")}
 function drawGrid(){const g=$("genres");g.innerHTML="";const subs=[...new Set(CARDS.filter(c=>famOf(c.op)===S.fam).map(c=>subOf(c.op)))].filter(Boolean).sort((a,b)=>SUBORD(a)-SUBORD(b));
  if(!S.q&&subs.length>1){const ch=document.createElement("div");ch.className="rail";
   [[null,t("all")]].concat(subs.map(s=>[s,subName(s)])).forEach(([s,n])=>{const b=document.createElement("button");b.type="button";b.className="gchip";b.setAttribute("aria-pressed",String(S.sub===s));const k=CARDS.filter(c=>famOf(c.op)===S.fam&&(!s||subOf(c.op)===s)).length;b.innerHTML=`${esc(n)} <small>${k}</small>`;b.onclick=()=>{S.sub=s;drawGrid()};ch.appendChild(b)});g.appendChild(ch)}
  const grid=$("grid");grid.innerHTML="";for(const c of visibleCards()){const b=document.createElement("button");b.type="button";b.className="frame spec";b.dataset.k=c.k;b.setAttribute("aria-pressed",String(!!S.cur&&(S.cur.id+(S.cur.pi>=0?"#"+S.cur.pi:""))===c.k));
-  if(c.note&&LANG==="fr")b.title=c.note;b.innerHTML=`<div class="ph"></div><b>${labelHTML(c.op,c.name)}</b><i>${esc(APPN[c.op.app]||c.op.app)}${c.pi<0&&c.op.presets&&c.op.presets.length?" · "+(c.op.presets.length+1)+" "+t("variants"):""}${statusOf(c)?" · "+esc(statusOf(c)):""}</i>`;b.onclick=()=>pick(c);b._c=c;grid.appendChild(b);IO.observe(b)}}
+  if(c.note&&LANG==="fr")b.title=c.note;b.innerHTML=`<div class="ph"></div><b>${labelHTML(c.op,c.name)}</b><i>${esc(APPN[c.op.app]||c.op.app)}${c.pi<0&&c.op.presets&&c.op.presets.length?" · "+(c.op.presets.length+1)+" "+t("variants"):""}</i>`;b.onclick=()=>pick(c);b._c=c;grid.appendChild(b);IO.observe(b)}}
 const IO=new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting){IO.unobserve(e.target);thumbQ.push(e.target);pumpThumbs()}},{rootMargin:"300px"});
 const thumbQ=[];let thumbRun=0;
+/* vignette quasi noire (différence, soustraction…) : niveaux étirés pour que la fiche montre la structure du rendu */
+function lift(im){const d=im.data;let mx=0,s=0;for(let i=0;i<d.length;i+=4){const v=Math.max(d[i],d[i+1],d[i+2]);s+=v;if(v>mx)mx=v}if(s/(d.length/4)>=12||mx<4)return im;const o=new ImageData(new Uint8ClampedArray(d),im.width,im.height),k=Math.min(8,200/mx);for(let i=0;i<o.data.length;i+=4){o.data[i]*=k;o.data[i+1]*=k;o.data[i+2]*=k}return o}
 async function pumpThumbs(){if(thumbRun||!S.tiny)return;thumbRun=1;try{while(thumbQ.length){const el=thumbQ.shift();if(!el.isConnected)continue;const c=el._c,key=S.ver+"|"+S.stack.map(layerKey).join("|")+"|"+c.k;let url=THUMBS.get(key);
- if(!url){try{const base=await renderAt(S.tiny,S.stack,"tiny");if(c.op.kind==="interactive"&&!c.op.preview){url=""}else{const L={id:c.op.id,p:c.pi>=0?c.op.presets[c.pi].p:{},seed:7,pi:c.pi};const out=await applyLayer(base,L);url=FF.util.toCanvas(scaleTo(out,200)).toDataURL("image/jpeg",.8)}}catch(e){url="";console.warn(c.k,e)}THUMBS.set(key,url)}
+ if(!url){try{const base=await renderAt(S.tiny,S.stack,"tiny");const L={id:c.op.id,p:c.pi>=0?c.op.presets[c.pi].p:{},seed:7,pi:c.pi};const out=lift(scaleTo(await applyLayer(base,L),200));url=FF.util.toCanvas(out).toDataURL("image/jpeg",.8)}catch(e){url="";console.warn(c.k,e)}THUMBS.set(key,url)}
  const ph=el.querySelector(".ph");if(ph&&url){const im=new Image();im.src=url;im.alt="";ph.replaceWith(im)}await sleep(0)}}finally{thumbRun=0}}
 
 /* ---------- choix d'un effet, réglages ---------- */
 function pick(c){endSession();if(CAM){/* caméra ouverte : l'effet s'applique au viseur en direct */}const op=c.op;S.cur={id:op.id,p:c.pi>=0?Object.assign({},op.presets[c.pi].p):{},seed:S.cur&&S.cur.id===op.id?S.cur.seed:1+Math.floor(Math.random()*1e6),pi:c.pi};
  document.querySelectorAll(".spec[aria-pressed=true]").forEach(e=>e.setAttribute("aria-pressed","false"));const el=$("grid").querySelector(`[data-k="${CSS.escape(c.k)}"]`);if(el)el.setAttribute("aria-pressed","true");
- drawCtl();setLabel();if(op.session&&Object.assign(FF.defaults(op),S.cur.p).auto===false)startSession(op);else render()}
+ drawCtl();setLabel();if(S.pane==="lab")drawLayers();if(op.session&&Object.assign(FF.defaults(op),S.cur.p).auto===false)startSession(op);else render()}
 const rng=inp=>{const a=+inp.min,b=+inp.max,v=+inp.value;inp.style.setProperty("--p",(b>a?(v-a)/(b-a)*100:0)+"%")};
 function drawCtl(){const box=$("ctl");box.innerHTML="";if(!S.cur){setLabel();return}const op=FF.ops[S.cur.id];const row=document.createElement("div");row.className="ctlrow";const P=Object.assign(FF.defaults(op),S.cur.p);
  const bools=document.createElement("div");bools.className="ctlbools";
@@ -8050,9 +8097,12 @@ $("bMenu").onclick=()=>{showPane(S.pane==="lab"?"looks":"lab");if(!matchMedia("(
 function layerName(L){if(L.id==="__baked")return "Koloid";if(L.id==="__lut")return "LUT · "+(L.name||"");const op=FF.ops[L.id];return op?op.label+(L.pi>=0&&op.presets&&op.presets[L.pi]?" · "+labelTxt(op,op.presets[L.pi].label):"")+" — "+(APPN[op.app]||op.app):L.id}
 function el(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
 function btn(txt,fn,cls){const b=el("button",cls||"chip",txt);b.type="button";b.onclick=fn;return b}
+/* Labo : nom de l'effet, puis sa ligne de détails (appli, statut du portage : code, documenté, nom seul) */
+function fxStatus(L){const op=FF.ops[L.id];if(!op)return "";const pv=L.pi>=0&&op.presets?op.presets[L.pi]:null;const s=(pv&&(pv.status||(itemOf(op,pv.label)||{}).status))||op.status;return s&&STAT[s]?STAT[s][LANG==="fr"?0:1]:""}
+function fxLine(L,name){const w=el("span","fx");w.appendChild(el("span",null,name));const op=FF.ops[L.id],st=fxStatus(L);if(op)w.appendChild(el("small","det",t("status")+" : "+(st||"—")));return w}
 function drawLayers(){const box=$("laboBody");if(!box)return;box.innerHTML="";
  const t1=el("div","tool");t1.appendChild(el("h3",null,t("layers")));const ol=el("ol","layers");ol.appendChild(el("li",null,t("noLayer")));
- S.stack.forEach((L,i)=>{const li=el("li",null,layerName(L)+((CAM||VM)&&stillOnly(L)?" · "+t("stillOnly"):""));li.appendChild(btn(t("drop"),()=>{pushHist();S.stack.splice(i,1);THUMBS.clear();drawLayers();drawGrid();render()}));ol.appendChild(li)});t1.appendChild(ol);box.appendChild(t1);
+ S.stack.forEach((L,i)=>{const li=el("li");li.appendChild(fxLine(L,layerName(L)+((CAM||VM)&&stillOnly(L)?" · "+t("stillOnly"):"")));li.appendChild(btn(t("drop"),()=>{pushHist();S.stack.splice(i,1);THUMBS.clear();drawLayers();drawGrid();render()}));ol.appendChild(li)});if(S.cur){const li=el("li","cur");li.appendChild(fxLine(S.cur,layerName(S.cur)+" · "+t("curFx")));ol.appendChild(li)}t1.appendChild(ol);box.appendChild(t1);
  const t2=el("div","tool");t2.appendChild(el("h3",null,t("seconds")));const r2=el("div","row");
  r2.append(btn(t("secondOpen")+(S.second?" ✓":""),()=>$("fSecond").click()),btn(t("photosOpen")+(S.images.length?" ("+S.images.length+")":""),()=>$("fPhotos").click()),btn(t("lut"),pickLut));t2.appendChild(r2);box.appendChild(t2);
  const t3=el("div","tool");t3.appendChild(el("h3",null,t("recipe")));const r3=el("div","row");r3.append(btn(t("recExport"),exportRecipe),btn(t("recImport"),importRecipe));t3.append(r3,el("p","hint",t("recHint")));box.appendChild(t3)}
@@ -8307,7 +8357,7 @@ window.__ffSaveRaw=saveRaw;
    rendu « camescope » pendant la lecture d'une vidéo : REC et compteur. Sans ik-ecran.js, la page reste telle quelle. */
 function ecranOn(){if(!window.IKEcran||!IKEcran.layout||ECRAN)return;document.documentElement.classList.add("ike-on");
  const app=$("app"),ctl=document.createElement("div");ctl.id="ctrl";ctl.className="ctrl";
- [document.querySelector("header.top"),$("shutterRow"),$("vidBar"),$("actions"),$("status"),$("inspector"),document.querySelector("footer.credit")].forEach(e=>{if(e)ctl.appendChild(e)});
+ [$("shutterRow"),document.querySelector("header.top"),$("vidBar"),$("actions"),$("status"),$("inspector"),document.querySelector("footer.credit")].forEach(e=>{if(e)ctl.appendChild(e)});
  app.appendChild($("stage"));app.appendChild(ctl);
  ECRAN=IKEcran.mount($("stage"),{program:"photo",z:4});
  IKEcran.layout(app,{screen:$("stage"),controls:ctl,onlayout:()=>fit()});
