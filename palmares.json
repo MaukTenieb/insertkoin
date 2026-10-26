@@ -1,10 +1,10 @@
 {
- "updated": "2026-10-26T06:22Z",
+ "updated": "2026-10-26T14:19Z",
  "relays": {
-  "wss://relay.damus.io": 22,
-  "wss://nos.lol": 31,
-  "wss://relay.primal.net": 31,
-  "wss://nostr.mom": 31
+  "wss://relay.damus.io": 0,
+  "wss://nos.lol": 39,
+  "wss://relay.primal.net": 39,
+  "wss://nostr.mom": 39
  },
  "korong": [
   {
@@ -50,12 +50,28 @@
    "run": "korhogo-palmares:fauninvaders:mvk95e2j9c3mpd"
   },
   {
+   "ini": "3VC",
+   "a": 4480,
+   "b": 3,
+   "t": 1793021419,
+   "who": "dfd5e6d679a623b63e63345a528f05d204738fbb59e6c0cf006966eeeede8088",
+   "run": "korhogo-palmares:fauninvaders:mvpano9lk7kgzr"
+  },
+  {
    "ini": "HAC",
    "a": 4440,
    "b": 3,
    "t": 1792719160,
    "who": "dfd5e6d679a623b63e63345a528f05d204738fbb59e6c0cf006966eeeede8088",
    "run": "korhogo-palmares:fauninvaders:mvkap3uw8vn9is"
+  },
+  {
+   "ini": "008",
+   "a": 3900,
+   "b": 3,
+   "t": 1793021621,
+   "who": "dfd5e6d679a623b63e63345a528f05d204738fbb59e6c0cf006966eeeede8088",
+   "run": "korhogo-palmares:fauninvaders:mvparycfe3dgnd"
   },
   {
    "ini": "JAU",
@@ -74,35 +90,19 @@
    "run": "korhogo-palmares:fauninvaders:mvht2lykgc3dn6"
   },
   {
-   "ini": "3VC",
-   "a": 2130,
-   "b": 2,
-   "t": 1792945455,
-   "who": "dfd5e6d679a623b63e63345a528f05d204738fbb59e6c0cf006966eeeede8088",
-   "run": "korhogo-palmares:fauninvaders:mvo1fhtt2w7vb2"
-  },
-  {
    "ini": "JAU",
    "a": 1720,
    "b": 2,
    "t": 1792568715,
    "who": "f59755a108b9d37535a1b8e31ba14a7db9c876c8384794c54d70fa7c382d1d0a",
    "run": "korhogo-palmares:fauninvaders:mvht4kk4g0zvdi"
-  },
-  {
-   "ini": "3VC",
-   "a": 1400,
-   "b": 1,
-   "t": 1792945283,
-   "who": "dfd5e6d679a623b63e63345a528f05d204738fbb59e6c0cf006966eeeede8088",
-   "run": "korhogo-palmares:fauninvaders:mvo1b2j1m5779m"
   }
  ],
  "kave": [
   {
    "who": "515d1f59029568f92203b036679dbd033a010db2748ae3eaa4904327ec96c52a",
    "name": "KIK",
-   "t": 1792977251,
+   "t": 1793022518,
    "c": {
     "ka": 0,
     "kb": 0,
@@ -113,27 +113,27 @@
     "c4": 0,
     "hg": 0,
     "mm": 0,
-    "ko": 33
+    "ko": 36
    },
-   "pts": 979
+   "pts": 982
   },
   {
    "who": "dfd5e6d679a623b63e63345a528f05d204738fbb59e6c0cf006966eeeede8088",
    "name": "TEST",
-   "t": 1792978877,
+   "t": 1793024251,
    "c": {
     "ka": 0,
     "kb": 0,
     "du": 0,
-    "fi": 2130,
+    "fi": 4480,
     "cl": 0,
     "er": 0,
     "c4": 0,
     "hg": 0,
     "mm": 0,
-    "ko": 37
+    "ko": 52
    },
-   "pts": 250
+   "pts": 500
   },
   {
    "who": "15151a25622743692dc1a75c8b2c74aa8aeb1ec169bcc345ca982c40b173731d",
