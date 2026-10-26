@@ -1,7 +1,7 @@
 {
- "updated": "2026-10-26T14:19Z",
+ "updated": "2026-10-26T20:32Z",
  "relays": {
-  "wss://relay.damus.io": 0,
+  "wss://relay.damus.io": 27,
   "wss://nos.lol": 39,
   "wss://relay.primal.net": 39,
   "wss://nostr.mom": 39
@@ -101,8 +101,8 @@
  "kave": [
   {
    "who": "515d1f59029568f92203b036679dbd033a010db2748ae3eaa4904327ec96c52a",
-   "name": "KIK",
-   "t": 1793022518,
+   "name": "IGM",
+   "t": 1793034623,
    "c": {
     "ka": 0,
     "kb": 0,
@@ -113,14 +113,14 @@
     "c4": 0,
     "hg": 0,
     "mm": 0,
-    "ko": 36
+    "ko": 41
    },
-   "pts": 982
+   "pts": 987
   },
   {
    "who": "dfd5e6d679a623b63e63345a528f05d204738fbb59e6c0cf006966eeeede8088",
    "name": "TEST",
-   "t": 1793024251,
+   "t": 1793039027,
    "c": {
     "ka": 0,
     "kb": 0,
@@ -131,9 +131,9 @@
     "c4": 0,
     "hg": 0,
     "mm": 0,
-    "ko": 52
+    "ko": 56
    },
-   "pts": 500
+   "pts": 504
   },
   {
    "who": "15151a25622743692dc1a75c8b2c74aa8aeb1ec169bcc345ca982c40b173731d",
