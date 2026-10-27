@@ -1,10 +1,10 @@
 {
- "updated": "2026-10-27T06:20Z",
+ "updated": "2026-10-27T18:45Z",
  "relays": {
   "wss://relay.damus.io": 0,
-  "wss://nos.lol": 39,
-  "wss://relay.primal.net": 40,
-  "wss://nostr.mom": 40
+  "wss://nos.lol": 43,
+  "wss://relay.primal.net": 44,
+  "wss://nostr.mom": 44
  },
  "korong": [
   {
@@ -42,6 +42,14 @@
    "run": "korhogo-palmares:fauninvaders:mvkzuabbyot1ua"
   },
   {
+   "ini": "597",
+   "a": 7740,
+   "b": 5,
+   "t": 1793125367,
+   "who": "ad2d5b7b61d646f7955c720e86ea2bb2d3f4c0116b81a10fa62f09611c78531f",
+   "run": "korhogo-palmares:fauninvaders:mvr0jkxues8ayy"
+  },
+  {
    "ini": "MAU",
    "a": 6670,
    "b": 4,
@@ -74,6 +82,14 @@
    "run": "korhogo-palmares:fauninvaders:mvparycfe3dgnd"
   },
   {
+   "ini": "8A9",
+   "a": 3900,
+   "b": 3,
+   "t": 1793124866,
+   "who": "ad2d5b7b61d646f7955c720e86ea2bb2d3f4c0116b81a10fa62f09611c78531f",
+   "run": "korhogo-palmares:fauninvaders:mvr08svtda6kp3"
+  },
+  {
    "ini": "JAU",
    "a": 3830,
    "b": 3,
@@ -88,14 +104,6 @@
    "t": 1792568632,
    "who": "f59755a108b9d37535a1b8e31ba14a7db9c876c8384794c54d70fa7c382d1d0a",
    "run": "korhogo-palmares:fauninvaders:mvht2lykgc3dn6"
-  },
-  {
-   "ini": "JAU",
-   "a": 1720,
-   "b": 2,
-   "t": 1792568715,
-   "who": "f59755a108b9d37535a1b8e31ba14a7db9c876c8384794c54d70fa7c382d1d0a",
-   "run": "korhogo-palmares:fauninvaders:mvht4kk4g0zvdi"
   }
  ],
  "kave": [
@@ -118,9 +126,27 @@
    "pts": 993
   },
   {
+   "who": "ad2d5b7b61d646f7955c720e86ea2bb2d3f4c0116b81a10fa62f09611c78531f",
+   "name": "597",
+   "t": 1793125367,
+   "c": {
+    "ka": 0,
+    "kb": 0,
+    "du": 0,
+    "fi": 7740,
+    "cl": 0,
+    "er": 0,
+    "c4": 0,
+    "hg": 0,
+    "mm": 0,
+    "ko": 11
+   },
+   "pts": 785
+  },
+  {
    "who": "dfd5e6d679a623b63e63345a528f05d204738fbb59e6c0cf006966eeeede8088",
    "name": "TEST",
-   "t": 1793066884,
+   "t": 1793118274,
    "c": {
     "ka": 0,
     "kb": 0,
@@ -131,9 +157,9 @@
     "c4": 0,
     "hg": 0,
     "mm": 0,
-    "ko": 72
+    "ko": 74
    },
-   "pts": 520
+   "pts": 522
   },
   {
    "who": "15151a25622743692dc1a75c8b2c74aa8aeb1ec169bcc345ca982c40b173731d",
