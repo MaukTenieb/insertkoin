@@ -1,9 +1,9 @@
 {
- "updated": "2026-10-29T16:11Z",
+ "updated": "2026-10-29T21:10Z",
  "relays": {
   "wss://relay.damus.io": 0,
   "wss://nos.lol": 43,
-  "wss://relay.primal.net": 44,
+  "wss://relay.primal.net": 45,
   "wss://nostr.mom": 44
  },
  "korong": [
@@ -146,20 +146,20 @@
   {
    "who": "dfd5e6d679a623b63e63345a528f05d204738fbb59e6c0cf006966eeeede8088",
    "name": "TEST",
-   "t": 1793284917,
+   "t": 1793298051,
    "c": {
     "ka": 0,
     "kb": 0,
     "du": 0,
-    "fi": 4480,
+    "fi": 5160,
     "cl": 3,
     "er": 0,
     "c4": 0,
     "hg": 0,
     "mm": 0,
-    "ko": 88
+    "ko": 94
    },
-   "pts": 686
+   "pts": 760
   },
   {
    "who": "15151a25622743692dc1a75c8b2c74aa8aeb1ec169bcc345ca982c40b173731d",
