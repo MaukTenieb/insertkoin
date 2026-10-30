@@ -20,6 +20,11 @@
     TAG: 'korhogo-palmares',
     RELAYS: ['wss://relay.damus.io', 'wss://nos.lol', 'wss://relay.primal.net', 'wss://nostr.mom'],
     SINCE: 1792454400, /* 20 October 2026 */
+    /* from 31 October 2026, each entry and each card carries a proof of work (NIP-13): its id starts with 16 zero bits,
+       about 65,000 tries, a second or so in a browser, a cost multiplied for anyone who forges by the thousand */
+    POW: 16, POW_SINCE: 1793404800,
+    bits: function (id) { var n = 0; for (var i = 0; i < 64; i++) { var v = parseInt(id[i], 16); if (isNaN(v)) return 0; if (v === 0) { n += 4; continue; } n += v < 2 ? 3 : v < 4 ? 2 : v < 8 ? 1 : 0; break; } return n; },
+    worked: function (e) { return e.created_at < P.POW_SINCE || (typeof e.id === 'string' && P.bits(e.id) >= P.POW); },
     GAMES: {
       korong: { ok: function (a, b) { return a >= 1 && a <= 18 && b >= 0 && b <= 2000; }, better: function (x, y) { return x.a - y.a || y.b - x.b; } },
       fauninvaders: { ok: function (a, b) { return b >= 1 && b <= 999 && a >= 10 && a <= 1710 * b && a % 10 === 0; }, better: function (x, y) { return x.a - y.a || x.b - y.b; } }
@@ -27,7 +32,7 @@
     tag: function (e, k) { for (var i = 0; i < e.tags.length; i++) if (e.tags[i][0] === k) return e.tags[i][1]; return null; },
     /* one checked entry from an event, or null */
     entry: function (e) {
-      if (!e || e.kind !== P.KIND || !e.tags || e.created_at < P.SINCE) return null;
+      if (!e || e.kind !== P.KIND || !e.tags || e.created_at < P.SINCE || !P.worked(e)) return null;
       var g = P.tag(e, 'game'), d = P.tag(e, 'd') || '', G = P.GAMES[g];
       if (!G || d.indexOf(P.TAG + ':' + g + ':') !== 0) return null;
       var ini = String(P.tag(e, 'ini') || '').toUpperCase(), a = +P.tag(e, 'a'), b = +P.tag(e, 'b');
@@ -51,14 +56,15 @@
        cl sum of the levels of the chess AIs beaten · er Erratik grids · c4 hg mm Konnect4, Akasztófa, Mastermind wins
        ko Koins earned since the first visit.
        Points: 100 per Mask of the best run minus 1 per goal let in (0 to 1,800) · 20 per duel · best FaunInvaders score ÷ 10
-       · 50 per chess level beaten · 30 per Erratik grid · 20 per Konnect4, Akasztófa or Mastermind win · 1 per Koin earned. */
+       · 50 per chess level beaten · 30 per Erratik grid · 20 per Konnect4, Akasztófa or Mastermind win.
+       ko stays on the card and counts zero points since 30 October 2026: a Koin balance lives in the browser, anyone can rewrite it. */
     KAVE: 'korhogo-kave',
     CAP: { ka: 18, kb: 2000, du: 100000, fi: 1708290, cl: 300000, er: 100000, c4: 100000, hg: 100000, mm: 100000, ko: 1000000 },
     points: function (c) {
-      return Math.max(0, Math.min(1800, 100 * c.ka - (c.ka ? c.kb : 0))) + 20 * c.du + Math.floor(c.fi / 10) + 50 * c.cl + 30 * c.er + 20 * (c.c4 + c.hg + c.mm) + c.ko;
+      return Math.max(0, Math.min(1800, 100 * c.ka - (c.ka ? c.kb : 0))) + 20 * c.du + Math.floor(c.fi / 10) + 50 * c.cl + 30 * c.er + 20 * (c.c4 + c.hg + c.mm);
     },
     card: function (e) {
-      if (!e || e.kind !== P.KIND || !e.tags || e.created_at < P.SINCE || P.tag(e, 'd') !== P.KAVE) return null;
+      if (!e || e.kind !== P.KIND || !e.tags || e.created_at < P.SINCE || P.tag(e, 'd') !== P.KAVE || !P.worked(e)) return null;
       var raw; try { raw = JSON.parse(e.content || '{}'); } catch (x) { return null; }
       var c = {};
       for (var k in P.CAP) { var v = +(raw[k] || 0); if (!isFinite(v) || v < 0 || v !== Math.floor(v) || v > P.CAP[k]) return null; c[k] = v; }
@@ -66,11 +72,15 @@
       var name = String(P.tag(e, 'name') || '').replace(/[^\w\- .'À-ÿ]/g, '').slice(0, 16) || 'KORHOGO';
       return { who: e.pubkey, name: name, t: e.created_at, c: c, pts: P.points(c) };
     },
+    /* a total grows at a human pace: BASE points at the first card, then RATE points an hour at most since the key's first event
+       (first: { pubkey: unix time }, kept by the hourly routine in palmares.json) */
+    BASE: 2000, RATE: 1500,
+    plausible: function (x, first) { var f = (first && first[x.who]) || x.t; return x.pts <= P.BASE + P.RATE * Math.max(0, x.t - Math.min(f, x.t)) / 3600; },
     /* the twenty: the last card of each key, best total first */
-    hall: function (cards) {
+    hall: function (cards, first) {
       var by = {};
       cards.forEach(function (x) { if (x && (!by[x.who] || x.t > by[x.who].t)) by[x.who] = x; });
-      return Object.keys(by).map(function (k) { return by[k]; }).filter(function (x) { return x.pts > 0; })
+      return Object.keys(by).map(function (k) { var x = by[k]; return Object.assign({}, x, { pts: P.points(x.c) }); }).filter(function (x) { return x.pts > 0 && P.plausible(x, first); })
         .sort(function (x, y) { return y.pts - x.pts || x.t - y.t; }).slice(0, 20);
     }
   };

@@ -32,7 +32,7 @@ The 3615 shows the twenty best players of all the games, one total per key. Each
 | Fauna Chess | levels of the AIs beaten (1 to 3) | 50 per level |
 | Erratik | grids finished | 30 each |
 | Konnect4, Akasztófa, Mastermind | wins | 20 each |
-| Koins | Koins earned since the first visit | 1 each |
+| Koins | Koins earned since the first visit | zero points since 30 October 2026: each browser holds and rewrites its own balance |
 
 `palmares-rules.js` gives the ranges and the formula (`card`, `points`, `hall`); the hourly routine writes the twenty to `palmares.json` under `kave`.
 
@@ -40,6 +40,8 @@ The 3615 shows the twenty best players of all the games, one total per key. Each
 
 - A signature that fails, a figure outside its range, a FaunInvaders score off the ten-point grid: the entry goes.
 - Everything stays public and checkable: the events on the relays, the code, the history of `palmares.json` in the commits.
-- The arcade runs in the browser, so a determined player can forge a score. The ranges and the limit of three lines per key keep the board readable; the commit history keeps every past state.
+- From 31 October 2026, each entry and each card carries a proof of work (NIP-13, 16 bits): its id starts with sixteen zero bits. The arcade works it out in a background thread, in about a second.
+- A total grows at a human pace: 2,000 points at the first card, then 1,500 points an hour at most since the first event of the key. The routine keeps that first event of each key in `palmares.json` (`first`); the keys listed on 30 October 2026 count from the opening of the palmarès.
+- The arcade runs in the browser: the ranges, the proof of work, the pace and the limit of three lines per key keep the board readable; the commit history keeps every past state.
 
 Code: MIT licence, Mauk Tenieb & Korhogo (see [LICENSE](LICENSE)). nostr-tools: public domain (Unlicense), fiatjaf and contributors. Korhogo material: © Mauk Tenieb & Korhogo, all rights reserved.

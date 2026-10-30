@@ -32,8 +32,13 @@ for (const g of Object.keys(R.GAMES)) {
   const prev = (old[g] || []).map((x) => ({ game: g, ...x }));     // an entry a relay dropped stays in the ten
   out[g] = R.top(prev.concat(entries), g).map(({ ini, a, b, t, who, run }) => ({ ini, a, b, t, who, run }));
 }
+// first event of each key, kept from run to run: the pace rule of the HALL OF KAVE reads it
+out.first = { ...(old.first || {}) };
+// the first run of the pace rule (30 October 2026): every key already listed counts from the opening of the palmarès
+if (!old.first) for (const x of [...(old.kave || []), ...Object.keys(R.GAMES).flatMap((g) => old[g] || [])]) if (x.who) out.first[x.who] = R.SINCE;
+for (const e of valid) if (!out.first[e.pubkey] || e.created_at < out.first[e.pubkey]) out.first[e.pubkey] = e.created_at;
 // HALL OF KAVE: the twenty best totals; a card a relay dropped stays until a newer card of the same key replaces it
-out.kave = R.hall((old.kave || []).map((x) => ({ ...x })).concat(cards)).map(({ who, name, t, c, pts }) => ({ who, name, t, c, pts }));
+out.kave = R.hall((old.kave || []).map((x) => ({ ...x })).concat(cards), out.first).map(({ who, name, t, c, pts }) => ({ who, name, t, c, pts }));
 const same = JSON.stringify({ ...old, updated: 0, relays: 0 }) === JSON.stringify({ ...out, updated: 0, relays: 0 });
 if (!same) writeFileSync(OUT, JSON.stringify(out, null, 1) + '\n');
 console.log(same ? 'unchanged' : 'written', JSON.stringify(out.relays), Object.keys(R.GAMES).map((g) => g + ':' + out[g].length).join(' '), 'kave:' + out.kave.length);

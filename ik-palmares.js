@@ -20,7 +20,8 @@
   function key(){var h=null;try{h=JSON.parse(localStorage.getItem('vdx.nostr.sk'));}catch(e){}
     if(!h||!/^[0-9a-f]{64}$/.test(h)){var b=NT.generateSecretKey();h=Array.prototype.map.call(b,function(x){return('0'+x.toString(16)).slice(-2);}).join('');try{localStorage.setItem('vdx.nostr.sk',JSON.stringify(h));}catch(e){}}
     var u=new Uint8Array(32);for(var i=0;i<32;i++)u[i]=parseInt(h.substr(i*2,2),16);return u;}
-  function official(){return fetch('palmares.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():{};}).catch(function(){return {};});}
+  /* the routine writes /insertkoin/palmares.json ; the arcade cabinet (/borne/) reads the same file */
+  function official(){return fetch((location.pathname.indexOf('/borne/')>=0?'/insertkoin/':'')+'palmares.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():{};}).catch(function(){return {};});}
   function relays(){var pool=new NT.SimplePool();
     return pool.querySync(R.RELAYS,{kinds:[R.KIND],'#t':[R.TAG],since:R.SINCE,limit:500},{maxWait:4000})
       .then(function(evs){try{pool.close(R.RELAYS);}catch(e){}return evs.filter(function(e){try{return NT.verifyEvent(e);}catch(x){return false;}}).map(R.entry).filter(Boolean);})
@@ -28,9 +29,15 @@
   function top(game){return libs().then(function(){return Promise.all([official(),relays()]);}).then(function(r){
     var off=(r[0][game]||[]).map(function(x){return Object.assign({game:game},x);});LIVE=r[1];
     return R.top(off.concat(LIVE),game);}).catch(function(){return [];});}
-  function send(game,e){var sk=key(),ev=NT.finalizeEvent({kind:R.KIND,created_at:Math.floor(Date.now()/1000),content:'',
-      tags:[['d',R.TAG+':'+game+':'+e.run],['t',R.TAG],['game',game],['ini',e.ini],['a',String(e.a)],['b',String(e.b)]]},sk);
-    var pool=new NT.SimplePool();return Promise.allSettled(pool.publish(R.RELAYS,ev)).then(function(){try{pool.close(R.RELAYS);}catch(x){}return R.entry(ev);});}
+  /* proof of work (NIP-13, R.POW bits) worked out in a background thread, so the game keeps its pace */
+  function mine(t){var here=function(){return NT.nip13.minePow(t,R.POW);};return new Promise(function(ok){try{
+      var src=new URL('nostr-tools.js',document.querySelector('script[src*="nostr-tools"]')?document.querySelector('script[src*="nostr-tools"]').src:location.href).href;
+      var w=new Worker(URL.createObjectURL(new Blob(["importScripts('"+src+"');onmessage=function(m){postMessage(NostrTools.nip13.minePow(m.data,"+R.POW+"));};"],{type:'text/javascript'})));
+      w.onmessage=function(m){w.terminate();ok(m.data);};w.onerror=function(){w.terminate();ok(here());};w.postMessage(t);}catch(e){ok(here());}});}
+  function sign(t,sk){t.pubkey=NT.getPublicKey(sk);return mine(t).then(function(m){return NT.finalizeEvent({kind:m.kind,created_at:m.created_at,content:m.content,tags:m.tags},sk);});}
+  function send(game,e){var sk=key();return sign({kind:R.KIND,created_at:Math.floor(Date.now()/1000),content:'',
+      tags:[['d',R.TAG+':'+game+':'+e.run],['t',R.TAG],['game',game],['ini',e.ini],['a',String(e.a)],['b',String(e.b)]]},sk).then(function(ev){
+    var pool=new NT.SimplePool();return Promise.allSettled(pool.publish(R.RELAYS,ev)).then(function(){try{pool.close(R.RELAYS);}catch(x){}return R.entry(ev);});});}
   /* three letters, arcade style: ▲ ▼ on each slot, or type them */
   function ask(cb){
     var o=document.createElement('div'),L=lastIni().split(''),A='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',k=0;
@@ -84,8 +91,8 @@
   function kvPut(){kvSave();clearTimeout(kvT);kvT=setTimeout(kvSend,5000);}
   function kvName(){var n='';try{n=JSON.parse(localStorage.getItem('vdx.nick'))||'';}catch(e){}if(!n)n=lastIni();return String(n).replace(/[^\w\- .'À-ÿ]/g,'').slice(0,16)||'KORHOGO';}
   function kvSend(){libs().then(function(){var c={};Object.keys(R.CAP).forEach(function(k){c[k]=Math.min(R.CAP[k],kvGet()[k]);});
-    var ev=NT.finalizeEvent({kind:R.KIND,created_at:Math.floor(Date.now()/1000),content:JSON.stringify(c),tags:[['d',R.KAVE],['t',R.KAVE],['name',kvName()]]},key());
-    var pool=new NT.SimplePool();return Promise.allSettled(pool.publish(R.RELAYS,ev)).then(function(){try{pool.close(R.RELAYS);}catch(x){}});}).catch(function(){});}
+    return sign({kind:R.KIND,created_at:Math.floor(Date.now()/1000),content:JSON.stringify(c),tags:[['d',R.KAVE],['t',R.KAVE],['name',kvName()]]},key()).then(function(ev){
+    var pool=new NT.SimplePool();return Promise.allSettled(pool.publish(R.RELAYS,ev)).then(function(){try{pool.close(R.RELAYS);}catch(x){}});});}).catch(function(){});}
   var kave={
     /* a Kompete! run: the card keeps the best one (more Masks, then fewer goals) */
     run:function(masks,goals){var c=kvGet();if(masks>c.ka||(masks===c.ka&&masks>0&&goals<c.kb)){c.ka=masks;c.kb=goals;kvPut();}},
