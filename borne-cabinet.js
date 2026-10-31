@@ -81,7 +81,7 @@
     /* le côté des mini-jeux : le dé, puis chaque mini-jeu sous sa face */
     var DIMG=['de-a.webp','de-b.webp','de-c.webp'],die=el('button','b-die','<img class="b-dimg" alt="" src="'+DIMG[0]+'"><span>'+DICE[0]+'</span><b>KATABATIK</b>');die.type='button';die.setAttribute('aria-label','Katabatik');
     KG.minis=[die].concat(MINIS.map(function(m){return ktile(m[0],m[1],m[2],m[3],m[4]);}));KG.minis.forEach(function(c){store.appendChild(c);});
-    var rolling=false;die.onclick=function(){if(rolling)return;rolling=true;var n=0,N=9,pick=MINIS[Math.floor(Math.random()*MINIS.length)],f=pick[4],sp=die.querySelector('span');
+    var rolling=false;die.onclick=function(){if(rolling)return;rolling=true;var n=0,N=9,pick=(function(){/* le dé tombe toujours sur un autre mini-jeu que la fois précédente (mémoire 20 oct.) */var last=null;try{last=sessionStorage.getItem('borne.dice');}catch(e){}var pool=MINIS.filter(function(m){return m[0]!==last;});var q=pool[Math.floor(Math.random()*pool.length)]||MINIS[0];try{sessionStorage.setItem('borne.dice',q[0]);}catch(e){}return q;})(),f=pick[4],sp=die.querySelector('span');
       var iv=setInterval(function(){var x=++n>=N?f:Math.floor(Math.random()*6);var di=die.querySelector('.b-dimg');di.src=DIMG[n%3];di.style.transform='rotate('+(n>=N?0:Math.round((Math.random()-.5)*120))+'deg)';sp.textContent=DICE[x];sp.style.setProperty('--r',(n>=N?0:(Math.random()-.5)*90)+'deg');
         try{IK().tone&&IK().tone(300+Math.random()*500,.03,'square',.02);}catch(e){}
         if(n>=N){clearInterval(iv);var g=pick[0];

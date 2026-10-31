@@ -387,3 +387,103 @@ html.borne .b-date{background:rgba(6,5,4,.82)!important}
 /* l'écran se loge dans un renfoncement noir, sur toute la largeur de la façade */
 html.borne:not([data-prog]):not([data-mode=device]):not([data-habit=fauneye]):not(.b-immersion) .b-bezel .b-screen{background:#060605!important}
 
+/* 31 oct., lot 1.1 (boucle PDCA, itération 1, champ g) : capitales dans l'interface des programmes (g4), corps de 12 px au moins (g2), zones de frappe de 44 px au toucher (g3).
+   Le contenu de lecture garde sa casse : récits de Faunarratik, pages du BakuBook, titres de morceaux venus des données, saisie du visiteur. */
+html.borne .vhs :is(button,label):not(.vhs-shelf *):not(.vhs-tape *){text-transform:uppercase!important}
+html.borne #kg-root #mm-panel button{text-transform:uppercase!important}
+/* points de groupe : 44 px de large, zone de 44 px de haut autour du point de 9 px */
+/* boutons ronds de la barre : le bouton garde ses 36 px, sa zone de frappe fait 44 px ; un pas de 44 px entre deux boutons */
+html.borne .b-bezelfoot :is(.b-px,.b-imm){position:relative!important;overflow:visible!important}
+html.borne .b-bezelfoot :is(.b-px,.b-imm)::after{content:"";position:absolute;inset:-4px;border-radius:50%}
+@media (max-width:700px){html.borne[data-prog] .b-bezelfoot .b-pfx.b-pfx{gap:8px!important}html.borne[data-prog] .b-bezelfoot .b-imm.b-imm{margin:0 0 0 5px!important}html.borne[data-prog] .b-bezelfoot .b-boom.b-boom{margin-left:5px!important}}
+@media (max-height:520px) and (orientation:landscape){html.borne[data-prog] .b-bezelfoot .b-pfx.b-pfx{gap:8px!important}}
+/* Korong! : chaque Mask du tableau a une zone de 44 px au moins, centrée sur sa silhouette */
+html.borne #select .lobby .spot::before{content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%)}
+/* VHS : touches de la télé et du magnétoscope, zone de 44 px */
+html.borne .vhs :is(.vhs-tv-key,.vhs-key){position:relative}
+html.borne .vhs :is(.vhs-tv-key,.vhs-key)::after{content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%)}
+/* Akasztófa, MaskerMind, Musik (Katabatik) : le jeu tient dans l'écran à sa taille de lecture, sans réduction ; lettres et pions de 44 px au toucher */
+html.borne #kg-root :is(#hang-panel,#mm-panel,#bb-panel){container-type:size}
+html.borne #kg-root #hang-panel #hang-tr:empty{display:none!important}
+html.borne #kg-root #hang-panel #hang-keys{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;justify-content:center!important;gap:3px!important;max-width:none!important}
+html.borne #kg-root #hang-panel .hang-row{display:contents!important}
+html.borne #kg-root #hang-panel .hang-key{width:44px!important;min-width:44px!important;height:44px!important;min-height:44px!important}
+html.borne #kg-root #hang-panel #hang-cv{width:auto!important;max-width:none!important;aspect-ratio:440/560}
+html.borne #kg-root #mm-board .mm-row{min-height:0!important}
+html.borne #kg-root #mm-palette .mm-peg{width:44px!important;height:44px!important}
+html.borne #kg-root #mm-panel .mm-lv{min-height:44px!important}
+html.borne #kg-root #mm-board .mm-fb :is(b,i,s){font-size:12px!important}
+html.borne #kg-root #bb-panel .bb-step{min-height:0!important}
+html.borne #kg-root #bb-panel .bb-label{font-size:12px!important;line-height:1!important}
+html.borne #kg-root #bb-panel input[type=range]#bb-bpm{height:44px!important;border:0!important;box-shadow:none!important;padding:0!important;background:linear-gradient(rgba(201,168,76,.3),rgba(201,168,76,.3)) center/100% 2px no-repeat!important}
+html.borne #kg-root #bb-panel #bb-controls button{min-height:44px!important}
+/* debout : une colonne ; potence à la hauteur qui reste, clavier de 7 lettres par rangée */
+@media (orientation:portrait){
+  html.borne #kg-root #hang-panel{gap:8px!important;padding:12px!important}
+  html.borne #kg-root #hang-panel #hang-cv{height:clamp(110px,calc(100cqh - 490px),280px)!important}
+  html.borne #kg-root #hang-panel #hang-keys{width:326px!important}
+  html.borne #kg-root #mm-board{gap:4px!important}
+  html.borne #kg-root #mm-board .mm-peg{width:30px!important;height:30px!important}
+  html.borne #kg-root #mm-board .mm-peg .mm-g{font-size:17px!important}
+  html.borne #kg-root #bb-panel .bb-step{height:24px!important}
+}
+/* couché : deux colonnes ; à gauche la potence (Akasztófa), les commandes (MaskerMind, Musik), à droite le jeu */
+@media (orientation:landscape){
+  html.borne #kg-root #hang-panel:not([style*="display: none"]):not([style*="display:none"]){display:grid!important;grid-template-columns:auto auto;grid-auto-rows:min-content;align-content:center;justify-content:center;justify-items:center;column-gap:28px;row-gap:6px;padding:8px 12px!important}
+  html.borne #kg-root #hang-panel>#hang-head{grid-column:1;grid-row:1/span 2;align-self:end}
+  html.borne #kg-root #hang-panel>#hang-cv{grid-column:1;grid-row:3/span 6;align-self:start;height:min(280px,calc(100cqh - 110px))!important}
+  html.borne #kg-root #hang-panel>:not(#hang-head):not(#hang-cv){grid-column:2}
+  html.borne #kg-root #hang-panel>#hang-cat{grid-row:1;align-self:end}
+  html.borne #kg-root #hang-panel>#hang-word{grid-row:2}
+  html.borne #kg-root #hang-panel>.kb-foot{position:absolute!important;margin:0!important}
+  html.borne #kg-root #hang-panel #hang-keys{width:467px!important}
+  html.borne #kg-root #mm-panel:not([style*="display: none"]):not([style*="display:none"]){display:grid!important;grid-template-columns:auto auto;grid-auto-rows:min-content;align-content:center;justify-content:center;justify-items:center;column-gap:32px;row-gap:10px;padding:8px 12px!important}
+  html.borne #kg-root #mm-panel>:not(#mm-board){grid-column:1}
+  html.borne #kg-root #mm-panel>#mm-board{grid-column:2;grid-row:1/span 6;gap:3px!important}
+  html.borne #kg-root #mm-board .mm-peg{width:min(34px,calc((100cqh - 50px) / 10 - 5px))!important;height:min(34px,calc((100cqh - 50px) / 10 - 5px))!important}
+  html.borne #kg-root #mm-board .mm-peg .mm-g{font-size:max(13px,min(19px,calc((100cqh - 50px) / 20)))!important}
+  html.borne #kg-root #mm-board .mm-cur{padding:1px 6px!important}
+  html.borne #kg-root #bb-panel:not([style*="display: none"]):not([style*="display:none"]){display:grid!important;grid-template-columns:auto auto;grid-auto-rows:min-content;align-content:center;justify-content:center;column-gap:24px;row-gap:4px;padding:8px 12px!important}
+  html.borne #kg-root #bb-panel>#bb-motto{grid-column:1/-1}
+  html.borne #kg-root #bb-panel>#bb-grid{grid-column:1;grid-row:2;gap:2px!important;width:min(520px,calc(100cqw - 300px))!important}
+  html.borne #kg-root #bb-panel #bb-grid .bb-row{gap:2px!important}
+  html.borne #kg-root #bb-panel>#bb-controls{grid-column:2;grid-row:2;flex-direction:column!important;align-self:center;flex-wrap:nowrap!important}
+  html.borne #kg-root #bb-panel .bb-step{height:max(13px,calc((100cqh - 60px) / 18 - 2px))!important}
+}
+/* porte, téléphone couché : l'étiquette de la fente passe en VT323 (lettrage de pixels étroit) à 12 px au moins, dans la largeur de la plaque */
+@media (orientation:landscape) and (max-height:500px){
+  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-door>.b-slot b{font-family:'VT323',monospace!important;font-size:clamp(12px,11.5cqi,16px)!important;letter-spacing:.04em!important}
+}
+/* lot 1.1, reprise : zones de frappe de 44 px au moins, sans changer l'aspect (touches du pendu, points des programmes) */
+html.borne #kg-root #hang-panel .hang-key{position:relative}
+html.borne #kg-root #hang-panel .hang-key::after{content:"";position:absolute;inset:-3px}
+html.borne .b-dots .b-dot::before{content:"";position:absolute;inset:-7px 0}
+
+
+/* 31 oct. — reprise du lot 1.1, cibles et corps relevés à la remesure : zone sensible élargie, dessin inchangé */
+html.borne .b-panel .cab .hit[data-go="terminal"] b{font-size:max(12.5px,1em)!important}
+@media (pointer:coarse){
+  html.borne .bar .dock #radio-toggle{position:relative;overflow:visible!important}
+  html.borne .bar .dock #radio-toggle::before{content:"";position:absolute;inset:-14px 0!important}
+  html.borne .bar .dock .b-bell::after{content:"";position:absolute;inset:-8px!important}
+  html.borne .b-door .b-sticker::after{content:"";position:absolute;inset:-6px}
+  html.borne .b-plate{overflow:visible!important}
+  html.borne .bar .dock.b-mag{overflow:visible!important}
+  html.borne .b-pfx .b-px::after{content:"";position:absolute;inset:-5px -4px}
+}
+/* 31 oct. — pendu, téléphone couché : douze lettres par rangée, trois rangées ; le jeu tient sans réduction */
+@media (orientation:landscape) and (max-height:520px){
+  html.borne #kg-root #hang-panel #hang-keys{width:550px!important;gap:2px!important}
+  html.borne #kg-root #hang-panel:not([style*="display: none"]):not([style*="display:none"]){column-gap:8px!important;padding-left:8px!important;padding-right:8px!important;justify-content:center!important}
+  html.borne #kg-root #hang-panel>#hang-cv{height:172px!important}
+  html.borne #kg-root #hang-panel>#hang-head{max-width:132px!important}
+  html.borne #kg-root #hang-panel{row-gap:6px!important}
+}
+/* 31 oct. — téléphone, en jeu : 8 px entre les boutons du pied, chaque bouton garde 44 px au doigt */
+@media (max-width:700px){html.borne[data-prog] .b-pfx{gap:10px!important;padding-left:6px!important}}
+/* 31 oct. — pied de borne : zone sensible de 44 px en largeur, bord à bord avec la voisine (8 px d'écart) */
+html.borne .b-bezelfoot :is(.b-pfx .b-px,.b-imm)::after{inset:-7px -5px!important}
+/* 31 oct. — VHS, téléphone debout : 6 px au-dessus des touches du téléviseur, leur zone sensible de 44 px reste dans le cadre */
+@media (max-width:700px){html.borne .vhs .vhs-tv-foot{padding-top:6px}}
+/* 31 oct. — Musik en deux colonnes : colonnes à la largeur de leur contenu, l'ensemble sur l'axe de l'écran */
+html.borne #kg-root #bb-panel:not([style*="display: none"]):not([style*="display:none"]){grid-template-columns:max-content max-content!important;justify-content:center!important}

@@ -27,7 +27,7 @@ html.b-charte[data-ch=diktat] button:not(#rec):active{background:var(--ch-acc);c
 
 /* ---------- Reporhogo ---------- */
 html.b-charte[data-ch=reporhogo] h1{color:var(--ch-title)!important;text-shadow:0 0 14px rgba(255,167,38,.55),0 2px 0 #000!important}
-html.b-charte[data-ch=reporhogo] h1 span{color:inherit!important}
+html.b-charte[data-ch=reporhogo] h1 span{color:#efe6cf!important}/* « Repo » d'une couleur, « rhogo » d'une autre (mémoire, insert-koin) */
 html.b-charte[data-ch=reporhogo]{--muted:#b3aa93}
 html.b-charte[data-ch=reporhogo] .btn,html.b-charte[data-ch=reporhogo] .btn.ghost{min-height:44px!important;padding:0 18px!important;border:1px solid var(--ch-line)!important;border-radius:4px!important;
   background:var(--ch-btn)!important;color:var(--ch-ink)!important;font:400 13px/1.2 'DM Mono',ui-monospace,monospace!important;letter-spacing:.14em!important;text-transform:uppercase!important;box-shadow:var(--ch-sh)!important}
@@ -101,3 +101,27 @@ html.b-charte[data-ch=skopo] .row .rm{grid-column:3;grid-row:2}
   html.b-charte[data-ch=skopo] .row .vb,html.b-charte[data-ch=skopo] .row .rm{font-size:13px!important}
   html.b-charte[data-ch=skopo] #cname{font-size:32px!important}
 }
+
+/* ---------- 31 oct., lot 1.1 (boucle PDCA, itération 1, champ g) : capitales dans l'interface, zones de frappe de 44 px au toucher ----------
+   Le contenu de lecture garde sa casse : les pages du BakuBook, la saisie du visiteur, la liste rendue par RepoRhogo. */
+html.b-charte[data-ch=bakubook] :is(nav.tabs,nav.tabs *,.bar button){text-transform:uppercase!important}
+html.b-charte[data-ch=bakubook] :is(.bar .brass,#src a,nav.tabs button,.bar input){position:relative}
+html.b-charte[data-ch=bakubook] :is(.bar .brass,#src a,nav.tabs button,.bar input)::after{content:"";position:absolute;left:50%;top:50%;width:max(100%,52px);height:max(100%,52px);transform:translate(-50%,-50%)}
+html.b-charte[data-ch=fotofauna] :is(.logo .word,.logo .word *,.gchip,.gchip *,.fam,.fam *,#count,.dock button,.key){text-transform:uppercase!important}
+html.b-charte[data-ch=fotofauna] #q::placeholder{text-transform:uppercase}
+html.b-charte[data-ch=fotofauna] :is(.logo[role=button],.key,.dock button,#bRand){position:relative}
+html.b-charte[data-ch=fotofauna] :is(.logo[role=button],.key,.dock button,#bRand)::after{content:"";position:absolute;left:50%;top:50%;width:max(100%,52px);height:max(100%,52px);transform:translate(-50%,-50%)}
+html.b-charte[data-ch=fotofauna] #q{min-height:44px;box-sizing:border-box}
+html.b-charte[data-ch=reporhogo] :is(h1,h1 *,.tile b,.label){text-transform:uppercase!important}
+html.b-charte[data-ch=reporhogo] :is(#q,#out)::placeholder{text-transform:uppercase}
+html.b-charte[data-ch=reporhogo] .tile{min-height:44px;box-sizing:border-box}
+html.b-charte[data-ch=diktat] input[type=range]{height:44px}
+html.b-charte[data-ch=skopo] .b-open::after{content:"";position:absolute;left:50%;top:50%;width:44px;height:44px;transform:translate(-50%,-50%)}
+/* SkopoRhogo : filets ambre sourds à la place des filets blancs (audit it. 1, j2) */
+html.b-charte[data-ch=skopo] header{border-bottom:1px solid rgba(255,190,90,.22)!important}
+html.b-charte[data-ch=skopo] #view{border:1px solid rgba(255,190,90,.22)!important}
+html.b-charte[data-ch=skopo] aside{border-left:1px solid rgba(255,190,90,.22)!important}
+html.b-charte[data-ch=skopo] #card{border:1px solid rgba(255,190,90,.3)!important}
+
+/* 31 oct. — BakuBook : la zone sensible du lien de la source s'étend vers le haut, au-dessus de la barre qui le suit */
+html.b-charte[data-ch=bakubook] #src a::after{top:auto!important;bottom:0!important;height:44px!important;transform:translate(-50%,0)!important}
