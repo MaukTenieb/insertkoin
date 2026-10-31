@@ -21,9 +21,9 @@ html.b-charte #kg-root :is(#chess,#mem,#mm-panel,#konklave-panel,#c4-panel,#bb-p
 html.b-charte #kg-root :is(#chess,#mem,#mm-panel) :is(h1,h2),
 html.b-charte #kg-root #konklave-panel :is(h1,h2,.kk-title,.kk-top-title),
 html.b-charte #kg-root #hang-gift .hang-work{font-family:'Bebas Neue',Impact,sans-serif!important;font-weight:400!important;letter-spacing:.08em!important;color:var(--ch-title)!important;
-  text-shadow:0 0 14px rgba(255,167,38,.55),0 2px 0 #000!important}
+  text-shadow:0 0 14px color-mix(in srgb,var(--pal-accent,var(--pal-accent,#ffa726)) 55%,transparent),0 2px 0 #000!important}
 html.b-charte #kg-root :is(#chess,#mem,#mm-panel) :is(h1,h2){font-size:clamp(34px,5.2vw,72px)!important;line-height:1!important}
-html.b-charte #kg-root #konklave-panel [style*="Bebas"]{color:var(--ch-title)!important;text-shadow:0 0 14px rgba(255,167,38,.55),0 2px 0 #000}
+html.b-charte #kg-root #konklave-panel [style*="Bebas"]{color:var(--ch-title)!important;text-shadow:0 0 14px color-mix(in srgb,var(--pal-accent,var(--pal-accent,#ffa726)) 55%,transparent),0 2px 0 #000}
 
 /* ---------- libellés et textes secondaires : 13 px, atténués lisibles ---------- */
 html.b-charte #kg-root :is(#chess,#mem,#mm-panel) :is(.ch-sel-label,.sub,.m-stat,.ch-player,.w-sub,.w-score),
@@ -106,7 +106,7 @@ html.b-charte #kg-root #bb-panel #bb-motto{font-size:12px!important;letter-spaci
 html.b-charte #kg-root :is(#chess,#mem,#mm-panel) :is(h1,h2),
 html.b-charte #kg-root #konklave-panel :is(h1,h2,.kk-title,.kk-top-title),
 html.b-charte #kg-root #hang-gift .hang-work{font-family:'Press Start 2P',monospace!important;letter-spacing:.02em!important;line-height:1.25!important;
-  text-shadow:3px 3px 0 #6b2a00,6px 6px 0 rgba(0,0,0,.6),0 0 16px rgba(255,167,38,.45)!important}
+  text-shadow:3px 3px 0 #6b2a00,6px 6px 0 rgba(0,0,0,.6),0 0 16px color-mix(in srgb,var(--pal-accent,var(--pal-accent,#ffa726)) 45%,transparent)!important}
 html.b-charte #kg-root :is(#chess,#mem,#mm-panel) :is(h1,h2){font-size:clamp(20px,3.1vw,46px)!important}
 html.b-charte #kg-root #konklave-panel :is(.kk-title,.kk-top-title){font-size:clamp(13px,1.3vw,18px)!important}
 html.b-charte #kg-root :is(#chess,#mem,#mm-panel) :is(.ch-sel-btn,.ch-go-btn,.m-btn,.w-btn,.mm-lv),
@@ -125,6 +125,6 @@ html.b-charte #kg-root #konklave-panel :is(.kk-big):is(:hover,:focus-visible)::b
 html.b-charte #kg-root :is(#chess,#mem,#mm-panel,#hang-panel,#bb-panel,#konklave-panel) button:not(.mm-peg):not(.hang-key):not(.sq):active{transform:translateY(2px);box-shadow:inset 0 2px 4px rgba(0,0,0,.6),0 1px 0 #000!important}
 @media (prefers-reduced-motion:reduce){html.b-charte #kg-root button::before{animation:none!important}}
 /* VHS : le tri des cassettes en commande de la machine, plus en menu natif du navigateur (audit it. 1, i1) */
-html.b-charte .vhs-find-sort{-webkit-appearance:none;appearance:none;min-height:44px;padding:0 34px 0 12px;border:1px solid rgba(255,190,90,.35);border-radius:3px;background:#0d0b08 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23ffb54a'/%3E%3C/svg%3E") no-repeat right 12px center;color:#ffb54a;font:500 12px/1 'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
-html.b-charte .vhs-find-sort:focus-visible{outline:1px solid #ffb54a;outline-offset:2px}
-html.b-charte .vhs-find-sort option{background:#0d0b08;color:#ffb54a}
+html.b-charte .vhs-find-sort{-webkit-appearance:none;appearance:none;min-height:44px;padding:0 34px 0 12px;border:1px solid rgba(255,190,90,.35);border-radius:3px;background:#0d0b08 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23ffb54a'/%3E%3C/svg%3E") no-repeat right 12px center;color:var(--pal-accent,#ffb54a);font:500 12px/1 'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+html.b-charte .vhs-find-sort:focus-visible{outline:1px solid var(--pal-accent,#ffb54a);outline-offset:2px}
+html.b-charte .vhs-find-sort option{background:#0d0b08;color:var(--pal-accent,#ffb54a)}
