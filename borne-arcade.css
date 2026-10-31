@@ -375,3 +375,15 @@ html.borne .b-bezel .b-screen::before{display:none!important}
 html.borne[data-bfit]:not([data-prog]):not([data-mode=device]):not([data-habit=fauneye]):not(.b-immersion) .b-bezel .b-screen,
 html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion):not([data-habit=fauneye]) .b-bezel .b-screen{padding:0!important}
 @media (max-width:700px){html.borne:not([data-prog]):not([data-mode=device]):not([data-habit=fauneye]):not(.b-immersion) .b-glass{width:var(--gw)!important;height:calc(var(--gw) * .75)!important}}
+/* boutons gris de la barre (son, PL, Kapture, immersion) : le dôme de la photo a son sommet en haut à gauche du disque ; le pictogramme se pose au centre du dôme */
+html.borne .b-bezelfoot .b-pfx .b-px,html.borne .b-bezelfoot .b-imm{padding:0 3px 7px 0!important}
+html.borne .b-bezelfoot .b-pfx .b-px-pl{padding:0 3px 2px 1px!important;letter-spacing:.02em!important}
+/* pendant le chargement, rien du meuble ne perce le voile (barre des Koins comprise) */
+html.borne:not(.borne-ready) :is(#koins,.koins,.b-bezelfoot,.b-bezelfoot *){visibility:hidden!important}
+/* la date de la borne, lisible sur la chambre */
+html.borne .b-date{background:rgba(6,5,4,.82)!important}
+/* zéro vitre imprimée au téléphone non plus (la règle des petites fenêtres la remettait) */
+@media (max-width:700px){html.borne:not([data-prog]):is([data-skin=bois],[data-skin=metal]):not([data-mode=device]):not([data-habit=fauneye]):not(.b-immersion) .b-bezel .b-screen{border-image:none!important;border-width:0!important}}
+/* l'écran se loge dans un renfoncement noir, sur toute la largeur de la façade */
+html.borne:not([data-prog]):not([data-mode=device]):not([data-habit=fauneye]):not(.b-immersion) .b-bezel .b-screen{background:#060605!important}
+
