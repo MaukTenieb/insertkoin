@@ -12,7 +12,7 @@ export default {
     const origin = req.headers.get('Origin') || '';
     const cors = { 'Access-Control-Allow-Origin': ALLOWED.includes(origin) ? origin : ALLOWED[0], 'Vary': 'Origin' };
     if (req.method === 'OPTIONS') return new Response(null, { headers: { ...cors, 'Access-Control-Allow-Methods': 'GET' } });
-    if (origin && !ALLOWED.includes(origin)) return new Response('', { status: 403, headers: cors });
+    if (!ALLOWED.includes(origin)) return new Response('', { status: 403, headers: cors });   // sans Origin du motel, zéro relais : personne d'autre n'use le quota
     const target = new URL(req.url).searchParams.get('url');
     if (!target || !/^https?:\/\//i.test(target)) return new Response('', { status: 400, headers: cors });
     try {

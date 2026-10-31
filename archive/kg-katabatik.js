@@ -1,0 +1,1567 @@
+
+/*
+ * Code: MIT licence, Copyright (c) 2026 Mauk Tenieb (see LICENSE).
+ * Korhogo material: Copyright © Mauk Tenieb & Korhogo, all rights reserved. Korhogo™,
+ * Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™,
+ * Korong!™ and any related material — characters, names, symbols, rules, lore, texts,
+ * images and music, in any form or medium, including inside this file — stay out of the
+ * MIT licence and remain the property of the author. No use of that material for
+ * training artificial intelligence. Contact: mauktenieb@gmail.com
+ */
+
+/* KG module "katabatik" -- KATABATIK: hub + Connect-4 / Sampler / Hungarian Hangman / Mastermind (panels #c4-panel, #bb-panel, #hang-panel, #mm-panel) + BakuBoom helpers. Connect-4 and the BakuBoom helpers are copied verbatim from kofa.js (Korhogo); the Sampler, the Hangman and Mastermind are Insert Koin additions. The dormant Pairs panel was purged (memory lives in Erratik). */
+
+// ============================================================
+// KATABATIK hub -- four games under one roof; Connect 4 stays the entry point.
+// ============================================================
+function kbShow(which){
+  if(typeof kkClick==='function')try{kkClick();}catch(_e){}
+  ['c4-panel','bb-panel','hang-panel','mm-panel','fi-panel'].forEach(function(id){
+    var p=document.getElementById(id);if(p)p.style.display='none';
+  });
+  var _tt=document.getElementById('title');
+  if(_tt)_tt.style.visibility='hidden';
+  kbTabs(which);
+  if(which==='bb'){beatboxOpen(_bbCtxMode||'chess');return;}
+  if(which==='hang'){
+    var hp=document.getElementById('hang-panel');if(hp)hp.style.display='flex';
+    hangMaybeNew();return;
+  }
+  if(which==='mm'){
+    var mp=document.getElementById('mm-panel');if(mp)mp.style.display='flex';
+    mmMaybeNew();return;
+  }
+  if(which==='fi'){
+    var fp=document.getElementById('fi-panel');if(fp)fp.style.display='flex';
+    if(window.fiOpen)window.fiOpen();return;
+  }
+  var c4=document.getElementById('c4-panel');
+  if(c4)c4.style.display='flex';
+}
+window.kbShow=kbShow;
+function kbTabs(which){
+  var tabs=document.querySelectorAll('.kb-tab');
+  tabs.forEach(function(t){
+    var go=t.getAttribute('data-action')||'';
+    t.className='kb-tab'+(go.indexOf("'"+which+"'")>=0?' on':'');
+  });
+}
+
+// ============================================================
+// SAMPLER v2 -- 18 tracks, one per Mask, 8 large steps, rewritten synthesis.
+// beatboxOpen('kk') is still called by Faunarratics; 'chess' is the hub path.
+// ============================================================
+function beatboxOpen(ctx){
+  var _bbCtx=ctx||'chess';
+  var panel=document.getElementById('bb-panel');
+  if(!panel)return;
+  panel.style.display='flex';
+  var _tt=document.getElementById('title');
+  if(_tt)_tt.style.visibility='hidden';
+  kbTabs('bb');
+  // Creer AudioContext ici -- tap utilisateur direct
+  if(!_bbAC){
+    try{_bbAC=new(window.AudioContext||window.webkitAudioContext)();}catch(_e){}
+  }
+  if(_bbAC&&_bbAC.state==='suspended')_bbAC.resume();
+  bbInit(_bbCtx);
+  // Kerema : Touched by a muse?
+  if(_bbCtx==='kk'){
+    var feed=document.getElementById('kk-feed');
+    if(feed&&typeof KK_HDR!=='undefined'&&typeof kkKBody!=='undefined'){
+      var ec=document.createElement('div');ec.className='kk-kerema';
+      ec.innerHTML=KK_HDR+kkKBody('Touched by a muse?');
+      feed.appendChild(ec);feed.scrollTop=feed.scrollHeight;
+    }
+  }
+}
+function beatboxClose(){
+  var panel=document.getElementById('bb-panel');
+  if(panel)panel.style.display='none';
+  var _tt=document.getElementById('title');
+  if(_tt)_tt.style.visibility='';
+  bbStop();
+}
+window.beatboxOpen=beatboxOpen;
+window.beatboxClose=beatboxClose;
+
+var _bbAC=null, _bbSeqTimer=null, _bbStep=0, _bbPlaying=false;
+var _bbBPM=90, _bbCtxMode='chess';
+var _bbTracks=null;
+
+// Voice + root (A minor pentatonic) per Mask, FAUNA order; curated default patterns.
+var BB_VOICES=['kick','kick2','sub','bass','snare','tom','bell','clap','hat','pluck','rim','conga','pad','stab','bass2','lead','shaker','zap'];
+var BB_ROOTS=[0,0,33,45,0,38,57,0,0,64,0,0,48,60,43,72,0,0];
+var BB_SEEDS=[
+  [1,0,0,0,1,0,0,0],[0,0,0,0,0,0,1,0],[1,0,0,0,0,0,0,0],[0,0,1,0,0,0,1,0],
+  [0,0,1,0,0,0,1,0],[0,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,1],[0,0,0,0,0,0,1,0],
+  [1,0,1,0,1,0,1,0],[0,1,0,0,0,1,0,1],[0,0,0,1,0,0,0,0],[0,1,0,0,0,0,1,0],
+  [1,0,0,0,0,0,0,0],[0,0,0,0,0,1,0,0],[1,0,0,1,0,0,0,0],[0,0,0,1,0,0,0,0],
+  [0,1,0,1,0,1,0,1],[0,0,0,0,0,0,0,0]
+];
+var _PENT=[0,3,5,7,10,12,15,17,19,22,24];
+function bbBuildTracks(){
+  _bbTracks=[];
+  /* [IK] tracks in the canonical order of the Fauna; each Mask keeps its own voice */
+  var CANON=['Unkle Maukie','dogXim','C7H5N3O6','Naphta',"Ts'ui Pên",'Honey Buzzard','Hátra Lövés','Croisière Noire','Aube','Silent Pact','Maiden Call','Plague of Justinian','Poisoned Well','Cadaver Synod','Truce','Auvergne','Grand Colonel','Malika'];
+  var key=function(n){return String(n||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/gi,'').toLowerCase();};
+  var ord=[];if(typeof FAUNA!=='undefined'){CANON.forEach(function(nm){for(var q=0;q<FAUNA.length;q++)if(key(FAUNA[q].name)===key(nm)){ord.push(q);break;}});}
+  if(ord.length!==18){ord=[];for(var q2=0;q2<18;q2++)ord.push(q2);}
+  for(var j=0;j<18;j++){
+    var i=ord[j];
+    var m=(typeof FAUNA!=='undefined'&&FAUNA[i])?FAUNA[i]:null;
+    _bbTracks.push({
+      name:m?m.name:'MASK '+(i+1),
+      color:m?(m.c||'#c9a84c'):'#c9a84c',
+      voice:BB_VOICES[i]||'rim',
+      root:BB_ROOTS[i]||45,
+      steps:BB_SEEDS[i].slice(),
+      pitch:null,deg:0
+    });
+  }
+}
+function bbPitched(v){return v==='sub'||v==='bass'||v==='bass2'||v==='tom'||v==='bell'||v==='pluck'||v==='pad'||v==='stab'||v==='lead';}
+function bbDicePitches(tr){
+  if(!bbPitched(tr.voice)){tr.pitch=null;return;}
+  tr.pitch=[];
+  var d=tr.deg||0;
+  for(var s=0;s<8;s++){
+    d=Math.max(0,Math.min(_PENT.length-1,d+Math.floor(Math.random()*5)-2));
+    tr.pitch.push(tr.root+_PENT[d]);
+  }
+  tr.deg=d;
+}
+
+// -- synthesis engine v2: one voice per Mask, soft and musical, context-agnostic --
+// (the very same bbVoice renders live AND into the OfflineAudioContext of Kave)
+function bbNoise(ac){
+  if(!ac.__ikNoise){
+    var b=ac.createBuffer(1,ac.sampleRate,ac.sampleRate),d=b.getChannelData(0);
+    for(var i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+    ac.__ikNoise=b;
+  }
+  return ac.__ikNoise;
+}
+function bbOut(ac){
+  if(!ac.__ikBus){
+    var c=ac.createDynamicsCompressor();
+    c.threshold.value=-20;c.knee.value=18;c.ratio.value=4;c.attack.value=.004;c.release.value=.24;
+    c.connect(ac.destination);
+    ac.__ikBus=c;
+  }
+  return ac.__ikBus;
+}
+function bbFreq(m){return 440*Math.pow(2,(m-69)/12);}
+function bbVoice(ac,vi,time){
+  var tr=_bbTracks[vi],v=tr.voice,out=bbOut(ac);
+  var midi=tr.pitch?tr.pitch[_bbStep%8]:tr.root,f=bbFreq(midi);
+  var g=ac.createGain();g.connect(out);
+  function env(peak,att,dec){
+    g.gain.setValueAtTime(0,time);
+    g.gain.linearRampToValueAtTime(peak,time+att);
+    g.gain.exponentialRampToValueAtTime(.0008,time+att+dec);
+  }
+  function osc(type,freq,dest){
+    var o=ac.createOscillator();o.type=type;o.frequency.setValueAtTime(freq,time);
+    o.connect(dest||g);o.start(time);return o;
+  }
+  function filt(type,fr,q){
+    var fl=ac.createBiquadFilter();fl.type=type;fl.frequency.value=fr;if(q)fl.Q.value=q;
+    fl.connect(g);return fl;
+  }
+  function nz(){var s=ac.createBufferSource();s.buffer=bbNoise(ac);s.loop=true;return s;}
+  switch(v){
+    case 'kick':{var o=osc('sine',115);o.frequency.exponentialRampToValueAtTime(36,time+.12);env(.9,.002,.3);o.stop(time+.32);break;}
+    case 'kick2':{var o2=osc('sine',88);o2.frequency.exponentialRampToValueAtTime(30,time+.16);env(.72,.002,.4);o2.stop(time+.42);break;}
+    case 'sub':{var o3=osc('sine',f);env(.5,.012,.55);o3.stop(time+.58);break;}
+    case 'bass':{var lp=filt('lowpass',750,1);var o4=osc('triangle',f,lp);env(.55,.008,.4);o4.stop(time+.45);break;}
+    case 'snare':{
+      var nt=ac.createOscillator();nt.type='sine';nt.frequency.setValueAtTime(196,time);
+      var ng=ac.createGain();ng.gain.setValueAtTime(.26,time);ng.gain.exponentialRampToValueAtTime(.0008,time+.09);
+      nt.connect(ng);ng.connect(out);nt.start(time);nt.stop(time+.1);
+      var bp=filt('bandpass',1900,.9);var ns=nz();ns.connect(bp);env(.4,.001,.18);ns.start(time);ns.stop(time+.2);break;}
+    case 'tom':{var o5=osc('sine',f);o5.frequency.exponentialRampToValueAtTime(f*.45,time+.2);env(.5,.002,.24);o5.stop(time+.26);break;}
+    case 'bell':{
+      var o6=osc('sine',f);env(.2,.004,1.1);o6.stop(time+1.15);
+      var g7=ac.createGain();g7.gain.setValueAtTime(0,time);g7.gain.linearRampToValueAtTime(.07,time+.004);
+      g7.gain.exponentialRampToValueAtTime(.0008,time+.55);g7.connect(out);
+      var o7=osc('sine',f*2.756,g7);o7.stop(time+.6);break;}
+    case 'clap':{
+      for(var ci=0;ci<3;ci++)(function(ct){
+        var s=ac.createBufferSource();s.buffer=bbNoise(ac);s.loop=true;
+        var bp2=ac.createBiquadFilter();bp2.type='bandpass';bp2.frequency.value=1150;bp2.Q.value=1;
+        var cg=ac.createGain();cg.gain.setValueAtTime(0,ct);cg.gain.linearRampToValueAtTime(.38,ct+.002);
+        cg.gain.exponentialRampToValueAtTime(.0008,ct+.09);
+        s.connect(bp2);bp2.connect(cg);cg.connect(out);s.start(ct);s.stop(ct+.1);
+      })(time+ci*.014);break;}
+    case 'hat':{var hp=filt('highpass',7500);var ns2=nz();ns2.connect(hp);env(.24,.001,.05);ns2.start(time);ns2.stop(time+.06);break;}
+    case 'rim':{var o8=osc('square',1100);env(.14,.001,.035);o8.stop(time+.04);break;}
+    case 'conga':{var o9=osc('sine',330);o9.frequency.exponentialRampToValueAtTime(185,time+.13);env(.36,.002,.16);o9.stop(time+.18);break;}
+    case 'pad':{
+      var lp2=filt('lowpass',800,1);
+      var pa=osc('sawtooth',f,lp2);pa.detune.value=-6;
+      var pb=osc('sawtooth',f,lp2);pb.detune.value=6;
+      g.gain.setValueAtTime(0,time);g.gain.linearRampToValueAtTime(.1,time+.3);
+      g.gain.setValueAtTime(.1,time+1.6);g.gain.linearRampToValueAtTime(0,time+2.5);
+      pa.stop(time+2.6);pb.stop(time+2.6);break;}
+    case 'stab':{
+      var lp3=ac.createBiquadFilter();lp3.type='lowpass';lp3.frequency.value=1500;lp3.Q.value=1;lp3.connect(g);
+      [0,7,12].forEach(function(iv){var o10=ac.createOscillator();o10.type='sawtooth';o10.frequency.setValueAtTime(bbFreq(midi+iv),time);o10.connect(lp3);o10.start(time);o10.stop(time+.24);});
+      env(.13,.004,.2);break;}
+    case 'bass2':{var lp4=filt('lowpass',520,1);var o11=osc('square',f,lp4);env(.3,.006,.32);o11.stop(time+.36);break;}
+    case 'lead':{
+      var o12=osc('triangle',f);var o13=osc('triangle',f);o13.detune.value=5;
+      env(.2,.005,.3);o12.stop(time+.33);o13.stop(time+.33);break;}
+    case 'shaker':{var bp3=filt('bandpass',5800,1.4);var ns3=nz();ns3.connect(bp3);env(.17,.002,.06);ns3.start(time);ns3.stop(time+.08);break;}
+    case 'zap':{var lp5=filt('lowpass',900,1);var o14=osc('sawtooth',f*2,lp5);o14.frequency.exponentialRampToValueAtTime(f*.22,time+.18);env(.14,.003,.2);o14.stop(time+.22);break;}
+  }
+}
+
+function bbTick(){
+  if(!_bbPlaying||!_bbAC||_bbAC.state==='suspended')return;
+  var _bp=document.getElementById('bb-panel');
+  if(!_bp||_bp.style.display==='none'||!_bp.getClientRects().length){bbStop();try{bbRender();}catch(_e){}return;}
+  var now=_bbAC.currentTime+.02;
+  _bbTracks.forEach(function(tr,ti){
+    if(tr.steps[_bbStep])bbVoice(_bbAC,ti,now);
+  });
+  bbRenderStep(_bbStep);
+  _bbStep=(_bbStep+1)%8;
+  _bbSeqTimer=setTimeout(bbTick,60000/(_bbBPM*2));
+}
+
+function bbStop(){
+  _bbPlaying=false;
+  if(_bbSeqTimer){clearTimeout(_bbSeqTimer);_bbSeqTimer=null;}
+  _bbStep=0;
+}
+
+function bbPlay(){
+  if(!_bbAC)try{_bbAC=new(window.AudioContext||window.webkitAudioContext)();}catch(_e){}
+  if(_bbAC&&_bbAC.state==='suspended')_bbAC.resume();
+  _bbPlaying=true;
+  bbTick();
+}
+
+function bbToggleStep(track,step){
+  if(typeof kkClick==='function')try{kkClick();}catch(_e){}
+  if(!_bbTracks||!_bbTracks[track])return;
+  var tr=_bbTracks[track];
+  tr.steps[step]=tr.steps[step]?0:1;
+  bbRender();
+  // instant feedback: hear the step as soon as it is armed
+  if(tr.steps[step]){
+    if(!_bbAC){try{_bbAC=new(window.AudioContext||window.webkitAudioContext)();}catch(_e){}}
+    if(_bbAC){
+      if(_bbAC.state==='suspended')_bbAC.resume();
+      var keep=_bbStep;_bbStep=step;bbVoice(_bbAC,track,_bbAC.currentTime+.01);_bbStep=keep;
+    }
+  }
+}
+window.bbToggleStep=bbToggleStep;
+
+function bbTogglePlay(){
+  if(typeof kkClick==='function')try{kkClick();}catch(_e){}
+  if(_bbPlaying){
+    bbStop();bbRenderStep(-1);
+    var btn=document.getElementById('bb-play-btn');
+    if(btn)btn.textContent='PLAY';
+  } else {
+    bbPlay();
+    var btn2=document.getElementById('bb-play-btn');
+    if(btn2)btn2.textContent='STOP';
+  }
+}
+window.bbTogglePlay=bbTogglePlay;
+
+function bbSetBPM(val){
+  _bbBPM=Math.max(60,Math.min(180,parseInt(val)||90));
+  var lbl=document.getElementById('bb-bpm-lbl');
+  if(lbl)lbl.textContent=_bbBPM+' BPM';
+}
+window.bbSetBPM=bbSetBPM;
+
+function bbRenderStep(cur){
+  if(!_bbTracks)return;
+  var rows=document.querySelectorAll('.bb-row');
+  rows.forEach(function(row,ti){
+    var cells=row.querySelectorAll('.bb-step');
+    cells.forEach(function(cell,si){
+      cell.classList.toggle('bb-active',!!_bbTracks[ti].steps[si]);
+      cell.classList.toggle('bb-cursor',si===cur);
+    });
+  });
+}
+
+function bbRender(){
+  var grid=document.getElementById('bb-grid');
+  if(!grid)return;
+  if(!_bbTracks)bbBuildTracks();
+  var h='';
+  _bbTracks.forEach(function(tr,ti){
+    h+='<div class="bb-row">';
+    h+='<div class="bb-label" style="color:'+tr.color+'">'+tr.name+'</div>';
+    for(var s=0;s<8;s++){
+      h+='<div class="bb-step'+(tr.steps[s]?' bb-active':'')+'" style="--mk:'+tr.color+'" data-action="bbToggleStep('+ti+','+s+')"></div>';
+    }
+    h+='</div>';
+  });
+  grid.innerHTML=h;
+}
+
+
+function bbKave(){
+  if(typeof kkClick==='function')try{kkClick();}catch(_e){}
+  if(!_bbTracks)bbBuildTracks();
+  var SR=44100;
+  var stepDur=60/(_bbBPM*2); // duree d'un step (croches)
+  var totalDur=stepDur*8+2.6; // + queue (pad, cloche)
+  var offCtx=new(window.OfflineAudioContext||window.webkitOfflineAudioContext)(1,Math.ceil(SR*totalDur),SR);
+  bbOut(offCtx);bbNoise(offCtx);
+  for(var t=0;t<8;t++){
+    for(var i=0;i<_bbTracks.length;i++){
+      if(!_bbTracks[i].steps[t])continue;
+      var keep=_bbStep;_bbStep=t;
+      bbVoice(offCtx,i,t*stepDur+.05);
+      _bbStep=keep;
+    }
+  }
+  offCtx.startRendering().then(function(rendered){
+    var ch=rendered.getChannelData(0);
+    // Encode WAV PCM 16-bit mono
+    var numSamples=ch.length;
+    var buf=new ArrayBuffer(44+numSamples*2);
+    var view=new DataView(buf);
+    function str(off,s){for(var i=0;i<s.length;i++)view.setUint8(off+i,s.charCodeAt(i));}
+    function u32(off,v){view.setUint32(off,v,true);}
+    function u16(off,v){view.setUint16(off,v,true);}
+    str(0,'RIFF');u32(4,36+numSamples*2);str(8,'WAVE');
+    str(12,'fmt ');u32(16,16);u16(20,1);u16(22,1);
+    u32(24,SR);u32(28,SR*2);u16(32,2);u16(34,16);
+    str(36,'data');u32(40,numSamples*2);
+    var off=44;
+    for(var i=0;i<numSamples;i++){
+      var s2=Math.max(-1,Math.min(1,ch[i]));
+      view.setInt16(off,s2<0?s2*32768:s2*32767,true);
+      off+=2;
+    }
+    var blob=new Blob([buf],{type:'audio/wav'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;a.download=window.ikName?ikName('sampler','wav'):'katabatik.wav';
+    document.body.appendChild(a);a.click();
+    setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
+  }).catch(function(e){console.warn('bbKave render error',e);});
+}
+window.bbKave=bbKave;
+
+function bbRefresh(){
+  if(typeof kkClick==='function')try{kkClick();}catch(_e){}
+  if(!_bbTracks)bbBuildTracks();
+  _bbTracks.forEach(function(tr){
+    var v=tr.voice;
+    if(v==='kick'||v==='kick2'){
+      tr.steps=[1,0,0,0,0,0,0,0];
+      if(Math.random()<.85)tr.steps[4]=1;
+      if(Math.random()<.4)tr.steps[6]=1;
+      if(Math.random()<.25)tr.steps[3]=1;
+    } else if(v==='snare'||v==='clap'){
+      tr.steps=[0,0,1,0,0,0,1,0];
+      if(Math.random()<.3)tr.steps[7]=1;
+    } else if(v==='hat'||v==='shaker'){
+      tr.steps=[0,0,0,0,0,0,0,0];
+      var mode=Math.floor(Math.random()*3);
+      for(var s=0;s<8;s++)tr.steps[s]=(mode===0)?1:(mode===1?(s%2===0?1:0):(s%2===1?1:0));
+    } else if(v==='rim'||v==='zap'){
+      tr.steps=[0,0,0,0,0,0,0,0];
+      if(Math.random()<.5)tr.steps[Math.floor(Math.random()*8)]=1;
+    } else if(v==='sub'||v==='pad'){
+      tr.steps=[1,0,0,0,0,0,0,0];
+    } else {
+      tr.steps=[0,0,0,0,0,0,0,0];
+      var n=1+Math.floor(Math.random()*3);
+      for(var k=0;k<n;k++)tr.steps[Math.floor(Math.random()*8)]=1;
+      if(!tr.steps[0]&&Math.random()<.4)tr.steps[0]=1;
+    }
+    bbDicePitches(tr);
+  });
+  bbRender();
+}
+window.bbRefresh=bbRefresh;
+
+function bbBakuBoom(){
+  if(typeof kkClick==='function')try{kkClick();}catch(_e){}
+  bbStop();
+  var _tt=document.getElementById('title');
+  if(_tt)_tt.style.visibility='';
+  if(_bbCtxMode==='kk'){
+    // Injecter message Kerema dans kk-feed
+    var feed=document.getElementById('kk-feed');
+    if(feed&&typeof KK_HDR!=='undefined'&&typeof kkKBody!=='undefined'){
+      // Aleatoire : Stay tuned. ou motto Unkle Maukie
+      var ec=document.createElement('div');ec.className='kk-kerema';
+      ec.innerHTML=KK_HDR+kkKBody('U gotta stay TUNEd...');
+      feed.appendChild(ec);feed.scrollTop=feed.scrollHeight;
+    }
+    if(typeof _bakuGlitch==='function'){
+      _bakuGlitch(function(){
+        var panel=document.getElementById('bb-panel');
+        if(panel)panel.style.display='none';
+        if(typeof kkSynth==='function')kkSynth();
+      });
+    }
+  } else {
+    if(typeof _bakuGlitch==='function'){
+      _bakuGlitch(function(){
+        var panel=document.getElementById('bb-panel');
+        if(panel)panel.style.display='none';
+        if(typeof bakuBoomToChessMenu==='function') bakuBoomToChessMenu();
+      });
+    }
+  }
+}
+window.bbBakuBoom=bbBakuBoom;
+
+function bbInit(ctxMode){
+  _bbCtxMode=ctxMode||'chess';
+  _bbStep=0;
+  _bbBPM=90;
+  _bbPlaying=false;
+  if(_bbSeqTimer){clearTimeout(_bbSeqTimer);_bbSeqTimer=null;}
+  // Motifs curés de départ (musicaux), hauteurs pentatoniques tirées
+  if(!_bbTracks)bbBuildTracks();
+  _bbTracks.forEach(function(tr,i){
+    tr.steps=BB_SEEDS[i].slice();
+    tr.deg=0;
+    bbDicePitches(tr);
+  });
+  bbRender();
+  // Motto du Mask courant
+  var mottoEl=document.getElementById('bb-motto');
+  if(mottoEl){
+    var _bbMask=null,_bbMotto='',_bbColor='#c9a84c';
+    try{
+      if(typeof FAUNA!=='undefined'&&FAUNA.length){
+        _bbMask=FAUNA[Math.floor(Math.random()*FAUNA.length)];
+        var _bbFP=(typeof FP!=='undefined'&&FP[_bbMask.name])?FP[_bbMask.name]:{};
+        _bbMotto=_bbFP.motto||_bbMask.motto||'';
+        _bbColor=_bbMask.c||'#c9a84c';
+      }
+    }catch(_e){}
+    mottoEl.textContent=_bbMotto;
+    mottoEl.style.color=_bbColor;
+    // Voix du Mask
+    if(_bbMotto&&typeof speakMotto==='function') speakMotto(_bbMotto);
+  }
+  var lbl=document.getElementById('bb-bpm-lbl');
+  if(lbl)lbl.textContent=_bbBPM+' BPM';
+  var btn=document.getElementById('bb-play-btn');
+  if(btn)btn.textContent='PLAY';
+}
+
+// ============================================================
+// CONNECT 4 -- triggered by Mask button in Fauna Chess
+// ============================================================
+var C4 = null;
+
+
+
+function bakuBoomToChessMenu(){
+  var feed=document.getElementById('kk-feed');
+  if(feed&&typeof KK_HDR!=='undefined'){
+    var el=document.createElement('div');el.className='kk-kerema';
+    el.innerHTML=KK_HDR+'<span class="kk-kerema-body">(Dante was a Krew, btw.)</span>';
+    feed.appendChild(el);feed.scrollTop=feed.scrollHeight;
+  }
+  _bakuGlitch(function(){
+    ['c4-panel','bb-panel','hang-panel','mm-panel','fi-panel','og-panel'].forEach(function(id){
+      var p=document.getElementById(id);if(p)p.style.display='none';
+    });
+    if(typeof OG!=='undefined'&&OG){try{OG.cleanup();}catch(_e){}OG=null;}
+    var sel=document.getElementById('chess-sel');
+    if(sel)sel.style.display='flex';
+    chInGame=false;
+    var _tt=document.getElementById('title');
+    if(_tt)_tt.style.visibility='';
+  });
+}
+window.bakuBoomToChessMenu=bakuBoomToChessMenu;
+
+function bakuBoomToSynth(won){
+  _bakuGlitch(function(){
+    ['c4-panel','bb-panel','hang-panel','mm-panel','og-panel'].forEach(function(id){
+      var p=document.getElementById(id);if(p)p.style.display='none';
+    });
+    if(typeof OG!=='undefined'&&OG){try{OG.cleanup();}catch(_e){}OG=null;}
+    // Message Kerema sur fond noir
+    var wm="U think u won? C'mon. Be serious. Sculpt the tale by urself \u2014 and make The Fauna fuckin\u2019 proud.";
+    var lm="Oh, u lost. Pack ur tale by urself, honey bunny.";
+    var msg=document.createElement('div');
+    msg.style.cssText='position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:32px;background:rgba(0,0,0,0.92);';
+    msg.innerHTML='<div style="font-family:\'DM Mono\',monospace;font-size:13px;line-height:1.7;color:rgba(201,168,76,0.85);text-align:center;max-width:320px;letter-spacing:.04em;">'+(won?wm:lm)+'</div>';
+    document.body.appendChild(msg);
+    setTimeout(function(){
+      msg.style.transition='opacity 0.6s';
+      msg.style.opacity='0';
+      setTimeout(function(){
+        if(msg.parentNode)msg.parentNode.removeChild(msg);
+        if(typeof kkSynth==='function')kkSynth();
+      },600);
+    },2800);
+  });
+}
+window.bakuBoomToSynth=bakuBoomToSynth;
+
+function branobelBoom(panelId,cb){
+  if(typeof kkClick==='function')try{kkClick();}catch(_e){}
+  var panel=document.getElementById(panelId);
+  if(!panel){if(cb)cb();return;}
+  var flash=document.createElement('div');
+  flash.style.cssText='position:fixed;inset:0;z-index:99999;background:#fff;pointer-events:none;opacity:0;transition:opacity .05s;';
+  document.body.appendChild(flash);
+  setTimeout(function(){flash.style.opacity='1';},10);
+  var shakes=0,shakeIv=setInterval(function(){
+    var dx=(Math.random()-0.5)*18,dy=(Math.random()-0.5)*18;
+    panel.style.transform='translate('+dx+'px,'+dy+'px)';
+    flash.style.opacity=(Math.random()*0.7).toFixed(2);
+    shakes++;
+    if(shakes>22){
+      clearInterval(shakeIv);panel.style.transform='';
+      flash.style.background='#000';flash.style.transition='opacity 0.6s';flash.style.opacity='1';
+      setTimeout(function(){
+        panel.style.display='none';flash.style.opacity='0';
+        setTimeout(function(){if(flash.parentNode)flash.parentNode.removeChild(flash);if(cb)cb();},600);
+      },300);
+    }
+  },60);
+}
+window.branobelBoom=branobelBoom;
+
+
+
+
+
+
+function chRandomMask(){
+  if(typeof kkClick==='function')try{kkClick();}catch(_e){}
+  c4Open('chess');
+}
+window.chRandomMask=chRandomMask;
+// BakuBoom depuis Katabasis pre-synth: rappeler kkSynth apres
+var _kkBakuBoom_orig=null;
+function kkBakuBoom(panelId){
+  branobelBoom(panelId,function(){
+    if(typeof kkSynth==='function')kkSynth();
+  });
+}
+window.kkBakuBoom=kkBakuBoom;
+
+
+function c4Refresh(){
+  if(typeof kkClick==='function') try{kkClick();}catch(_e){}
+  c4Init();
+}
+window.c4Open=c4Open;
+window.c4Close=c4Close;
+window.c4Refresh=c4Refresh;
+
+// C4 contexte : 'chess' -> retour menu Chess, 'kk' -> synthese
+var _c4Ctx='chess';
+function c4Open(ctx){
+  _c4Ctx=ctx||'chess';
+  var p=document.getElementById('c4-panel');
+  if(p)p.style.display='flex';
+  var _tt=document.getElementById('title');
+  if(_tt)_tt.style.visibility='hidden';
+  c4Init();
+}
+function c4Close(){
+  if(typeof C4!=='undefined'&&C4&&C4.raf){cancelAnimationFrame(C4.raf);C4=null;}
+  var p=document.getElementById('c4-panel');if(p)p.style.display='none';
+}
+window.c4Open=c4Open;window.c4Close=c4Close;
+
+function c4Init(){
+  var canvas=document.getElementById('c4-canvas');
+  if(!canvas) return;
+  var COLS=7,ROWS=6;
+  var W=Math.min(window.innerWidth-32,440);
+  var CW=Math.floor(W/COLS);
+  var H=CW*(ROWS+1);
+  canvas.width=W; canvas.height=H;
+  canvas.style.width=W+'px'; canvas.style.height=H+'px';
+
+  // Pick two random Mask colors
+  var col1='#c9a84c', col2='#d32f2f';
+  if(typeof FAUNA!=='undefined'&&FAUNA.length>=2){
+    var _c4Name1='Player',_c4Name2='Mask';
+  var picks=[];
+    while(picks.length<2){
+      var r=Math.floor(Math.random()*FAUNA.length);
+      if(picks.indexOf(r)<0) picks.push(r);
+    }
+    col1=FAUNA[picks[0]].c||col1;
+    col2=FAUNA[picks[1]].c||col2;
+    _c4Name1=FAUNA[picks[0]].name||'Player';
+    _c4Name2=FAUNA[picks[1]].name||'Mask';
+  }
+
+  var grid=[];
+  for(var r=0;r<ROWS;r++){grid.push([]);for(var c=0;c<COLS;c++)grid[r].push(0);}
+
+  // Difficulty pick: shown until a level is clicked, then the board starts.
+  var levelNames=['Easy','Medium','Hard'];
+  var levelDepths=[1,4,7];
+  var levelIndex=1; // default: Medium
+
+  var state={
+    grid:grid,COLS:COLS,ROWS:ROWS,CW:CW,W:W,H:H,
+    turn:1, over:false, winner:0,
+    col1:col1, col2:col2,
+    name1:_c4Name1, name2:_c4Name2,
+    hover:-1, dropping:null, winLine:null,
+    levelIndex:levelIndex, levelDepths:levelDepths, levelNames:levelNames,
+    levelPicked:false
+  };
+
+  function hexToRgb(hex){
+    hex=(hex||'#c9a84c').replace('#','');
+    if(hex.length===3)hex=hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+    return{r:parseInt(hex.slice(0,2),16),g:parseInt(hex.slice(2,4),16),b:parseInt(hex.slice(4,6),16)};
+  }
+
+  var ctx=canvas.getContext('2d');
+
+  function draw(){
+    ctx.fillStyle='#050302';
+    ctx.fillRect(0,0,W,H);
+
+    // Top row: drop indicator
+    if(!state.over&&state.hover>=0){
+      var dc=state.turn===1?col1:col2;
+      var rgb=hexToRgb(dc);
+      ctx.beginPath();
+      ctx.arc(state.hover*CW+CW/2,CW/2,CW*0.36,0,Math.PI*2);
+      ctx.fillStyle='rgba('+rgb.r+','+rgb.g+','+rgb.b+',0.5)';
+      ctx.fill();
+    }
+
+    // Board background
+    ctx.fillStyle='rgba(201,168,76,0.08)';
+    ctx.beginPath();
+    ctx.roundRect(0,CW,W,CW*ROWS,6);
+    ctx.fill();
+
+    // Cells
+    for(var r=0;r<ROWS;r++){
+      for(var c=0;c<COLS;c++){
+        var val=state.grid[r][c];
+        var cx=c*CW+CW/2, cy=(r+1)*CW+CW/2;
+        var rad=CW*0.38;
+
+        // Hole background
+        ctx.beginPath();ctx.arc(cx,cy,rad,0,Math.PI*2);
+        ctx.fillStyle='rgba(0,0,0,0.55)';
+        ctx.fill();
+
+        if(val!==0){
+          var col=val===1?col1:col2;
+          var rgb2=hexToRgb(col);
+          // Glow for win line
+          var onWin=false;
+          if(state.winLine){
+            for(var wi=0;wi<state.winLine.length;wi++){
+              if(state.winLine[wi][0]===r&&state.winLine[wi][1]===c){onWin=true;break;}
+            }
+          }
+          var grd=ctx.createRadialGradient(cx-rad*0.2,cy-rad*0.2,rad*0.05,cx,cy,rad);
+          var alpha=onWin?1:0.9;
+          grd.addColorStop(0,'rgba('+Math.min(255,rgb2.r+60)+','+Math.min(255,rgb2.g+60)+','+Math.min(255,rgb2.b+60)+','+alpha+')');
+          grd.addColorStop(1,'rgba('+rgb2.r+','+rgb2.g+','+rgb2.b+','+alpha+')');
+          ctx.beginPath();ctx.arc(cx,cy,rad,0,Math.PI*2);
+          ctx.fillStyle=grd;
+          ctx.fill();
+          if(onWin){
+            ctx.shadowColor=col;ctx.shadowBlur=16;
+            ctx.beginPath();ctx.arc(cx,cy,rad,0,Math.PI*2);
+            ctx.strokeStyle=col;ctx.lineWidth=2;ctx.stroke();
+            ctx.shadowBlur=0;
+          }
+        }
+
+        // Cell border
+        ctx.beginPath();ctx.arc(cx,cy,rad,0,Math.PI*2);
+        ctx.strokeStyle='rgba(201,168,76,0.12)';ctx.lineWidth=0.5;ctx.stroke();
+      }
+    }
+
+    if(state.dropping){
+      var dcl=state.dropping.p===1?col1:col2,drg=hexToRgb(dcl),fx=state.dropping.c*CW+CW/2,fy=state.dropping.y,frad=CW*0.38;
+      var fg=ctx.createRadialGradient(fx-frad*0.2,fy-frad*0.2,frad*0.05,fx,fy,frad);
+      fg.addColorStop(0,'rgba('+Math.min(255,drg.r+60)+','+Math.min(255,drg.g+60)+','+Math.min(255,drg.b+60)+',.95)');fg.addColorStop(1,'rgba('+drg.r+','+drg.g+','+drg.b+',.95)');
+      ctx.beginPath();ctx.arc(fx,fy,frad,0,Math.PI*2);ctx.fillStyle=fg;ctx.fill();
+    }
+    // Level picker (before the first move of a fresh board)
+    if(!state.levelPicked&&state.turn===1&&!state.over){
+      var ln=function(s){if(window.KGI18N){var _t=window.KGI18N.t(s);return _t&&_t!==s?_t:s;}return s;};
+      ctx.textAlign='center';
+      ctx.font='bold '+Math.round(CW*0.42)+'px "Bebas Neue",sans-serif';
+      ctx.fillStyle='rgba(201,168,76,.85)';
+      ctx.fillText(ln('KATABATIK'),W/2,CW*0.5);
+      ctx.font=Math.round(CW*0.26)+'px "DM Mono",monospace';
+      ctx.fillStyle='rgba(201,168,76,.55)';
+      var _li=state.hover>=0?(state.hover<2?0:(state.hover<5?1:2)):state.levelIndex;
+      ctx.fillText(ln(state.levelNames[_li]),W/2,CW*0.78);
+      ctx.textAlign='left';
+    }
+
+    // Status
+    ctx.textAlign='center';
+    if(state.over){
+      if(state.winner){
+        var wc=state.winner===1?col1:col2;
+        var wrgb=hexToRgb(wc);
+        ctx.font='bold '+Math.round(CW*0.55)+'px "Bebas Neue",sans-serif';
+        ctx.fillStyle='rgba('+wrgb.r+','+wrgb.g+','+wrgb.b+',0.9)';
+        ctx.fillText(state.winner===1?state.name1.toUpperCase()+' WINS':state.name2.toUpperCase()+' WINS',W/2,CW*0.72);
+      } else {
+        ctx.font='bold '+Math.round(CW*0.5)+'px "Bebas Neue",sans-serif';
+        ctx.fillStyle='rgba(201,168,76,0.7)';
+        ctx.fillText('DRAW',W/2,CW*0.72);
+      }
+    } else if(state.levelPicked||state.turn!==1){
+      ctx.font=Math.round(CW*0.3)+'px "DM Mono",monospace';
+      ctx.fillStyle='rgba(201,168,76,0.35)';
+      var turnLine=state.turn===1?'your turn':'thinking\u2026';
+      if(window.KGI18N){var _tr=window.KGI18N.t(turnLine);if(_tr&&_tr!==turnLine)turnLine=_tr;}
+      ctx.fillText(turnLine,W/2,CW*0.72);
+    }
+    ctx.textAlign='left';
+  }
+
+  function drop(col){
+    if(state.over||state.turn!==1) return;
+    // Level strip: the top area picks the difficulty until the game starts.
+    // Three labels over seven columns: 0-1 Easy, 2-4 Medium, 5-6 Hard.
+    if(!state.levelPicked){
+      state.levelIndex=col<2?0:(col<5?1:2);
+      state.levelPicked=true;
+      draw();
+      return;
+    }
+    if(state.dropping)return;
+    for(var r=ROWS-1;r>=0;r--){
+      if(state.grid[r][col]===0){
+        fall(col,r,1,function(){
+        state.grid[r][col]=1;
+        var win=checkWin(state.grid,r,col,1);
+        if(win){state.over=true;state.winner=1;state.winLine=win;draw();if(window.KG&&KG.win)KG.win('katabatik',{game:'c4'});return;}
+        if(isFull()){state.over=true;draw();return;}
+        state.turn=2;draw();
+        setTimeout(aiMove,420);
+        });
+        return;
+      }
+    }
+  }
+  /* a disc falls down its column, bounces, settles — then the move counts */
+  function fall(col,row,p,done){
+    var y=CW/2,ty=(row+1)*CW+CW/2,vy=0,hit=0,last=performance.now();
+    if(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches){kbSfx('clack',.6);done();return;}
+    state.dropping={c:col,y:y,p:p};
+    (function step(now){
+      var dt=Math.min(.033,(now-last)/1000);last=now;
+      vy+=CW*38*dt;y+=vy*dt;
+      if(y>=ty){y=ty;if(hit===0){kbSfx('clack',Math.min(1,.45+row*.1));vy=-vy*.28;hit=1;}else if(hit===1&&Math.abs(vy)>CW*.6){kbSfx('clack',.25);vy=-vy*.25;hit=2;}else{state.dropping=null;draw();done();return;}}
+      state.dropping.y=y;draw();requestAnimationFrame(step);
+    })(last);
+  }
+
+  function aiMove(){
+    if(state.over) return;
+    var best=pickBest();
+    if(best<0) return;
+    for(var r=ROWS-1;r>=0;r--){
+      if(state.grid[r][best]===0){
+        (function(r){fall(best,r,2,function(){
+        state.grid[r][best]=2;
+        var win=checkWin(state.grid,r,best,2);
+        if(win){state.over=true;state.winner=2;state.winLine=win;draw();return;}
+        if(isFull()){state.over=true;draw();return;}
+        state.turn=1;draw();
+        });})(r);
+        return;
+      }
+    }
+  }
+
+function scoreWindow(a,b,c,d,p){
+    var cnt=0,empty=0,opp=0;
+    [a,b,c,d].forEach(function(v){if(v===p)cnt++;else if(v===0)empty++;else opp++;});
+    if(opp>0)return 0;
+    if(cnt===4)return 1000;
+    if(cnt===3&&empty===1)return 5;
+    if(cnt===2&&empty===2)return 2;
+    return 0;
+  }
+  function evalGrid(g,p){
+    var score=0,op=p===1?2:1;
+    var COL=COLS,ROW=ROWS;
+    // Centre
+    for(var r=0;r<ROW;r++)if(g[r][Math.floor(COL/2)]===p)score+=3;
+    // Horizontal
+    for(var r2=0;r2<ROW;r2++)for(var c2=0;c2<COL-3;c2++){
+      var w=[g[r2][c2],g[r2][c2+1],g[r2][c2+2],g[r2][c2+3]];
+      score+=scoreWindow(w[0],w[1],w[2],w[3],p);
+      score-=scoreWindow(w[0],w[1],w[2],w[3],op);
+    }
+    // Vertical
+    for(var r3=0;r3<ROW-3;r3++)for(var c3=0;c3<COL;c3++){
+      var w2=[g[r3][c3],g[r3+1][c3],g[r3+2][c3],g[r3+3][c3]];
+      score+=scoreWindow(w2[0],w2[1],w2[2],w2[3],p);
+      score-=scoreWindow(w2[0],w2[1],w2[2],w2[3],op);
+    }
+    // Diag
+    for(var r4=0;r4<ROW-3;r4++)for(var c4=0;c4<COL-3;c4++){
+      var w3=[g[r4][c4],g[r4+1][c4+1],g[r4+2][c4+2],g[r4+3][c4+3]];
+      score+=scoreWindow(w3[0],w3[1],w3[2],w3[3],p);
+      score-=scoreWindow(w3[0],w3[1],w3[2],w3[3],op);
+    }
+    for(var r5=3;r5<ROW;r5++)for(var c5=0;c5<COL-3;c5++){
+      var w4=[g[r5][c5],g[r5-1][c5+1],g[r5-2][c5+2],g[r5-3][c5+3]];
+      score+=scoreWindow(w4[0],w4[1],w4[2],w4[3],p);
+      score-=scoreWindow(w4[0],w4[1],w4[2],w4[3],op);
+    }
+    return score;
+  }
+  function mmCopy(g){return g.map(function(row){return row.slice();});}
+  function mmDrop(g,col,p){
+    for(var r=ROWS-1;r>=0;r--)if(g[r][col]===0){g[r][col]=p;return r;}
+    return -1;
+  }
+  function mmWin(g,r,c,p){return checkWin(g,r,c,p);}
+  function minimax(g,depth,alpha,beta,maximizing){
+    // Terminal
+    var validCols=[];
+    for(var c=0;c<COLS;c++)if(g[0][c]===0)validCols.push(c);
+    if(!validCols.length)return {score:0};
+    if(depth===0)return {score:evalGrid(g,2)-evalGrid(g,1)};
+    var order=[3,2,4,1,5,0,6];
+    var cols=order.filter(function(c){return g[0][c]===0;});
+    if(maximizing){
+      var best2={score:-Infinity,col:cols[0]};
+      for(var i=0;i<cols.length;i++){
+        var col=cols[i];
+        var gc=mmCopy(g);
+        var row=mmDrop(gc,col,2);
+        if(row>=0&&mmWin(gc,row,col,2)){if(depth>=1)return {score:100000,col:col};}
+        var res=minimax(gc,depth-1,alpha,beta,false);
+        if(res.score>best2.score){best2.score=res.score;best2.col=col;}
+        alpha=Math.max(alpha,best2.score);
+        if(alpha>=beta)break;
+      }
+      return best2;
+    } else {
+      var worst={score:Infinity,col:cols[0]};
+      for(var i2=0;i2<cols.length;i2++){
+        var col2=cols[i2];
+        var gc2=mmCopy(g);
+        var row2=mmDrop(gc2,col2,1);
+        if(row2>=0&&mmWin(gc2,row2,col2,1)){if(depth>=1)return {score:-100000,col:col2};}
+        var res2=minimax(gc2,depth-1,alpha,beta,true);
+        if(res2.score<worst.score){worst.score=res2.score;worst.col=col2;}
+        beta=Math.min(beta,worst.score);
+        if(alpha>=beta)break;
+      }
+      return worst;
+    }
+  }
+  function pickBest(){
+    var depth=state.levelDepths[state.levelIndex]||4;
+    var result=minimax(state.grid,depth,-Infinity,Infinity,true);
+    return result.col>=0?result.col:-1;
+  }
+
+  function topRow(col){
+    for(var r=ROWS-1;r>=0;r--){if(state.grid[r][col]===0)return r;}
+    return -1;
+  }
+
+  function isFull(){
+    for(var c=0;c<COLS;c++)if(topRow(c)>=0)return false;
+    return true;
+  }
+
+  function checkWin(g,r,c,p){
+    var dirs=[[0,1],[1,0],[1,1],[1,-1]];
+    for(var d=0;d<dirs.length;d++){
+      var dr=dirs[d][0],dc=dirs[d][1],line=[[r,c]];
+      for(var s=1;s<4;s++){var nr=r+dr*s,nc=c+dc*s;if(nr>=0&&nr<ROWS&&nc>=0&&nc<COLS&&g[nr][nc]===p)line.push([nr,nc]);else break;}
+      for(var s2=1;s2<4;s2++){var nr2=r-dr*s2,nc2=c-dc*s2;if(nr2>=0&&nr2<ROWS&&nc2>=0&&nc2<COLS&&g[nr2][nc2]===p)line.push([nr2,nc2]);else break;}
+      if(line.length>=4)return line;
+    }
+    return null;
+  }
+
+  // Input
+  function getCol(clientX){
+    var rect=canvas.getBoundingClientRect();
+    var x=(clientX-rect.left)*(W/rect.width);
+    return Math.floor(x/CW);
+  }
+
+  function onClick(e){
+    if(typeof kkClick==='function') try{kkClick();}catch(_ce){}
+    if(state.over){
+      if(state.winner!==0){
+        var won=(state.winner===1);
+        setTimeout(function(){
+          if(typeof _c4Ctx!=='undefined'&&_c4Ctx==='kk') bakuBoomToSynth(won);
+          else bakuBoomToChessMenu();
+        },1800);
+      } else { kbSfx('rattle'); c4Init(); }
+      return;
+    }
+    var col=getCol(e.clientX||e.touches[0].clientX);
+    if(col>=0&&col<COLS) drop(col);
+  }
+
+  function onMove(e){
+    var col=getCol(e.clientX||(e.touches&&e.touches[0]?e.touches[0].clientX:-999));
+    state.hover=(col>=0&&col<COLS)?col:-1;
+    if(!state.over) draw();
+  }
+
+  canvas.addEventListener('click',onClick);
+  canvas.addEventListener('touchend',function(e){e.preventDefault();onClick(e.changedTouches[0]||e);},{passive:false});
+  canvas.addEventListener('mousemove',onMove);
+  canvas.addEventListener('touchmove',function(e){onMove(e);e.preventDefault();},{passive:false});
+
+  if(C4) C4=null;
+  C4={canvas:canvas};
+  draw();
+}
+
+// ============================================================
+// HANGMAN HONGROIS -- présidé par Plague of Justinian.
+// Mots réels uniquement (noms, adjectifs, verbes à l'infinitif),
+// embarqués hors ligne ; clavier = alphabet hongrois.
+// ============================================================
+function kbT(s){if(window.KGI18N){var t=window.KGI18N.t(s);if(t&&t!==s)return t;}return s;}
+var HANG_WORDS={
+  noun:['kalap','kút','tenger','madár','könyv','hajó','város','erdő','kard','korona','hajnal','hold','szív','vér','alma','asztal','ablak','ajtó','ház','kenyér','víz','tűz','föld','ég','nap','csillag','felhő','eső','hó','szél','folyó','tó','hegy','völgy','virág','levél','kő','homok','tükör','kulcs','zár','híd','út','vonat','kutya','macska','ló','farkas','róka','medve','nyúl','hal','kígyó','pók','méh','lepke','holló','bagoly','sas','galamb','kakas','tojás','sajt','bor','sör','tej','méz','só','cukor','leves','óra','idő','álom','árnyék','csend','zene','dal','hang','szó','nyelv','kéz','láb','fej','szem','fül','száj','orr','haj','csont','lélek','barát','ellenség','király','királynő','katona','pap','orvos','tanár','gyerek','anya','apa','templom','vár','kapu','torony','börtön','piac','pénz','arany','ezüst','vas','gyertya','lámpa','ágy','szék','tányér','kés','kanál','pohár','papír','ceruza','kép','tánc','játék','sakk','kocka','maszk','csontváz','halál','élet','szerelem','háború','béke','tél','nyár','tavasz','ősz','reggel','este','éjszaka'],
+  adj:['gyors','szép','hideg','meleg','hosszú','rövid','sötét','világos','nehéz','könnyű','vörös','zöld','kék','fekete','nagy','kicsi','magas','alacsony','széles','keskeny','vastag','vékony','erős','gyenge','okos','buta','boldog','szomorú','fiatal','öreg','új','régi','gazdag','szegény','tiszta','piszkos','édes','savanyú','keserű','sós','csendes','hangos','lassú','üres','mély','kerek','egyenes','ferde','puha','kemény','száraz','nedves','fehér','sárga','barna','szürke','lila','vad','szelíd','bátor','gyáva','furcsa','vidám','komoly','éhes','szomjas','fáradt','beteg','híres','titkos','rejtett','vak','süket','néma','részeg','józan','drága','olcsó','kedves','csúnya','tökéletes','halott','élő','ismeretlen','idegen','végtelen','örök','szent','bűnös','ártatlan','őszinte','hamis','igaz','ravasz','gonosz','jó','rossz'],
+  verb:['futni','enni','inni','aludni','olvasni','írni','énekelni','táncolni','mosni','főzni','látni','beszélni','gondolkodni','vinni','menni','jönni','állni','ülni','feküdni','járni','úszni','repülni','ugrani','mászni','esni','nevetni','sírni','hallani','érezni','tudni','akarni','szeretni','gyűlölni','félni','várni','keresni','találni','adni','kapni','venni','eladni','fizetni','dolgozni','játszani','tanulni','tanítani','kérdezni','válaszolni','mondani','hívni','nyitni','zárni','építeni','rombolni','vágni','varrni','festeni','rajzolni','számolni','felejteni','emlékezni','álmodni','ébredni','élni','halni','születni','nőni','ölni','lőni','harcolni','győzni','veszíteni','elrejteni','mutatni','nézni','figyelni','hinni','hazudni','lopni','ütni','dobni','fogni','húzni','tolni','sütni','fújni','égni','fagyni','olvadni','utazni','fütyülni','suttogni','kiabálni','imádkozni']
+};
+var HANG_KEYS='AÁBCDEÉFGHIÍJKLMNOÓÖŐPQRSTUÚÜŰVWXYZ';
+/* the keys sit as on a Hungarian keyboard (QWERTZ: Ö Ü Ó on the number row, Ő Ú and É Á Ű on the right, Í before Y) */
+var HANG_ROWS=['ÖÜÓ','QWERTZUIOPŐÚ','ASDFGHJKLÉÁŰ','ÍYXCVBNM'];
+/* HANG_GIFT: put the author's chosen quotations in each c:[ ] (one string each); when c holds any, a win shows one of them instead of a title.
+   a win brings a few lines: József Attila's own stanzas (Tiszta szívvel, 1925), or one work of Tarr Béla, Krasznahorkai László, Ligeti György or Lukács György, with a link to read more */
+var HANG_JA=[['Nincsen apám, se anyám,','se istenem, se hazám,','se bölcsőm, se szemfedőm,','se csókom, se szeretőm.'],
+ ['Harmadnapja nem eszek,','se sokat, se keveset.','Húsz esztendőm hatalom,','húsz esztendőm eladom.'],
+ ['Hogyha nem kell senkinek,','hát az ördög veszi meg.','Tiszta szívvel betörök,','ha kell, embert is ölök.'],
+ ['Elfognak és felkötnek,','áldott földdel elfödnek','s halált hozó fű terem','gyönyörűszép szívemen.']];
+var HANG_GIFT=[
+ {who:'Tarr Béla',c:[/* the author's quotations: 'text', 'text' … */],u:'https://hu.wikipedia.org/wiki/Tarr_B%C3%A9la',l:'Wikipédia',k:{en:'film',fr:'film'},w:[['Kárhozat',1988],['Sátántangó',1994],['Werckmeister harmóniák',2000],['A torinói ló',2011]]},
+ {who:'Krasznahorkai László',c:[/* the author's quotations: 'text', 'text' … */],u:'https://hu.wikipedia.org/wiki/Krasznahorkai_L%C3%A1szl%C3%B3',l:'Wikipédia',k:{en:'novel',fr:'roman'},w:[['Sátántangó',1985],['Az ellenállás melankóliája',1989],['Háború és háború',1999],['Báró Wenckheim hazatér',2016]]},
+ {who:'Ligeti György',c:[/* the author's quotations: 'text', 'text' … */],u:'https://hu.wikipedia.org/wiki/Ligeti_Gy%C3%B6rgy',l:'Wikipédia',k:{en:'music',fr:'musique'},w:[['Atmosphères',1961],['Lux aeterna',1966],['Lontano',1967],['Le Grand Macabre',1978]]},
+ {who:'Lukács György',c:[/* the author's quotations: 'text', 'text' … */],u:'https://en.wikiquote.org/wiki/Gy%C3%B6rgy_Luk%C3%A1cs',l:'Wikiquote',k:{en:'essay',fr:'essai'},w:[['A lélek és a formák',1910],['Die Theorie des Romans',1916],['Geschichte und Klassenbewusstsein',1923]]}];
+/* József Attila's poems up to 1928, in verse and in prose (public domain), from the ELTE Poetry Corpus (MEK edition): kg-hang-ja.json, loaded on the first win */
+var HANG_POOL=null;
+function hangPool(cb){if(HANG_POOL)return cb(HANG_POOL);try{fetch('kg-hang-ja.json').then(function(r){return r.json();}).then(function(d){HANG_POOL=d&&d.length?d:[HANG_JA];cb(HANG_POOL);}).catch(function(){cb([HANG_JA]);});}catch(e){cb([HANG_JA]);}}
+function hangGift(){
+  /* one voice at a time, its origin kept hidden: a few stanzas of one poem, taken at random, or one of the author's own quotations (c:[ ] above) */
+  var g=document.getElementById('hang-gift');if(!g)return;
+  var esc=function(t){return String(t).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});};
+  var show=function(body){g.innerHTML='<p>„'+body+'”</p>';g.style.display='block';};
+  var others=HANG_GIFT.filter(function(a){return a.c&&a.c.length;}),k=Math.floor(Math.random()*(others.length+1));
+  if(k<others.length){var a=others[k];show(esc(a.c[Math.floor(Math.random()*a.c.length)]));return;}
+  hangPool(function(P){
+    /* a short quotation: two to four sentences, fewer when they run long */
+    for(var tries=0;tries<12;tries++){var poem=P[Math.floor(Math.random()*P.length)],txt=poem.map(function(st){return st.join('\n');}).join('\n'),
+        sen=txt.match(/[^.!?…]+(?:[.!?…]+[»”"’)]*|$)/g)||[];sen=sen.filter(function(x){return x.replace(/[\s\W]/g,'').length>2;});
+      if(sen.length<2)continue;var i=Math.floor(Math.random()*(sen.length-1)),out=[sen[i],sen[i+1]];
+      for(var j=i+2;j<sen.length&&out.length<4&&(out.join('').length+sen[j].length)<=240;j++)out.push(sen[j]);
+      var q=out.join('').replace(/[ \t]*\n\s*/g,'\n').trim();if(q.length>320)continue;
+      show(esc(q).replace(/\n/g,'<br>'));return;}
+    show(esc(P[0][0].join('\n')).replace(/\n/g,'<br>'));});
+}
+window.hangGift=hangGift;
+var HANG_MAX=6;
+var HANG_FAM=['AÁ','EÉ','IÍ','OÓÖŐ','UÚÜŰ'];
+/* sens des mots, révélé à la fin de la partie — FR puis EN */
+var HANG_TR={
+ kalap:{fr:'chapeau',en:'hat'},kút:{fr:'puits',en:'well'},tenger:{fr:'mer',en:'sea'},madár:{fr:'oiseau',en:'bird'},
+ könyv:{fr:'livre',en:'book'},hajó:{fr:'bateau',en:'ship'},város:{fr:'ville',en:'city'},erdő:{fr:'forêt',en:'forest'},
+ kard:{fr:'épée',en:'sword'},korona:{fr:'couronne',en:'crown'},hajnal:{fr:'aube',en:'dawn'},hold:{fr:'lune',en:'moon'},
+ szív:{fr:'cœur',en:'heart'},vér:{fr:'sang',en:'blood'},
+ gyors:{fr:'rapide',en:'fast'},szép:{fr:'beau',en:'beautiful'},hideg:{fr:'froid',en:'cold'},meleg:{fr:'chaud',en:'warm'},
+ hosszú:{fr:'long',en:'long'},rövid:{fr:'court',en:'short'},sötét:{fr:'sombre',en:'dark'},világos:{fr:'clair',en:'bright'},
+ nehéz:{fr:'lourd',en:'heavy'},könnyű:{fr:'léger',en:'light'},vörös:{fr:'rouge',en:'red'},zöld:{fr:'vert',en:'green'},
+ kék:{fr:'bleu',en:'blue'},fekete:{fr:'noir',en:'black'},
+ futni:{fr:'courir',en:'to run'},enni:{fr:'manger',en:'to eat'},inni:{fr:'boire',en:'to drink'},aludni:{fr:'dormir',en:'to sleep'},
+ olvasni:{fr:'lire',en:'to read'},írni:{fr:'écrire',en:'to write'},énekelni:{fr:'chanter',en:'to sing'},táncolni:{fr:'danser',en:'to dance'},
+ mosni:{fr:'laver',en:'to wash'},főzni:{fr:'cuisiner',en:'to cook'},látni:{fr:'voir',en:'to see'},beszélni:{fr:'parler',en:'to speak'},
+ gondolkodni:{fr:'penser',en:'to think'},vinni:{fr:'porter',en:'to carry'},
+ alma:{fr:'pomme',en:'apple'},asztal:{fr:'table',en:'table'},ablak:{fr:'fenêtre',en:'window'},ajtó:{fr:'porte',en:'door'},ház:{fr:'maison',en:'house'},kenyér:{fr:'pain',en:'bread'},víz:{fr:'eau',en:'water'},tűz:{fr:'feu',en:'fire'},föld:{fr:'terre',en:'earth'},ég:{fr:'ciel',en:'sky'},nap:{fr:'soleil',en:'sun'},csillag:{fr:'étoile',en:'star'},felhő:{fr:'nuage',en:'cloud'},eső:{fr:'pluie',en:'rain'},hó:{fr:'neige',en:'snow'},szél:{fr:'vent',en:'wind'},folyó:{fr:'fleuve',en:'river'},tó:{fr:'lac',en:'lake'},hegy:{fr:'montagne',en:'mountain'},völgy:{fr:'vallée',en:'valley'},virág:{fr:'fleur',en:'flower'},levél:{fr:'feuille, lettre',en:'leaf, letter'},kő:{fr:'pierre',en:'stone'},homok:{fr:'sable',en:'sand'},tükör:{fr:'miroir',en:'mirror'},kulcs:{fr:'clé',en:'key'},zár:{fr:'serrure',en:'lock'},híd:{fr:'pont',en:'bridge'},út:{fr:'route',en:'road'},vonat:{fr:'train',en:'train'},kutya:{fr:'chien',en:'dog'},macska:{fr:'chat',en:'cat'},ló:{fr:'cheval',en:'horse'},farkas:{fr:'loup',en:'wolf'},róka:{fr:'renard',en:'fox'},medve:{fr:'ours',en:'bear'},nyúl:{fr:'lapin',en:'rabbit'},hal:{fr:'poisson',en:'fish'},kígyó:{fr:'serpent',en:'snake'},pók:{fr:'araignée',en:'spider'},méh:{fr:'abeille',en:'bee'},lepke:{fr:'papillon',en:'butterfly'},holló:{fr:'corbeau',en:'raven'},bagoly:{fr:'hibou',en:'owl'},sas:{fr:'aigle',en:'eagle'},galamb:{fr:'pigeon',en:'pigeon'},kakas:{fr:'coq',en:'rooster'},tojás:{fr:'œuf',en:'egg'},sajt:{fr:'fromage',en:'cheese'},bor:{fr:'vin',en:'wine'},sör:{fr:'bière',en:'beer'},tej:{fr:'lait',en:'milk'},méz:{fr:'miel',en:'honey'},só:{fr:'sel',en:'salt'},cukor:{fr:'sucre',en:'sugar'},leves:{fr:'soupe',en:'soup'},óra:{fr:'horloge, heure',en:'clock, hour'},idő:{fr:'temps',en:'time, weather'},álom:{fr:'rêve',en:'dream'},árnyék:{fr:'ombre',en:'shadow'},csend:{fr:'silence',en:'silence'},zene:{fr:'musique',en:'music'},dal:{fr:'chanson',en:'song'},hang:{fr:'son, voix',en:'sound, voice'},szó:{fr:'mot',en:'word'},nyelv:{fr:'langue',en:'tongue, language'},kéz:{fr:'main',en:'hand'},láb:{fr:'pied, jambe',en:'foot, leg'},fej:{fr:'tête',en:'head'},szem:{fr:'œil',en:'eye'},fül:{fr:'oreille',en:'ear'},száj:{fr:'bouche',en:'mouth'},orr:{fr:'nez',en:'nose'},haj:{fr:'cheveux',en:'hair'},csont:{fr:'os',en:'bone'},lélek:{fr:'âme',en:'soul'},barát:{fr:'ami',en:'friend'},ellenség:{fr:'ennemi',en:'enemy'},király:{fr:'roi',en:'king'},királynő:{fr:'reine',en:'queen'},katona:{fr:'soldat',en:'soldier'},pap:{fr:'prêtre',en:'priest'},orvos:{fr:'médecin',en:'doctor'},tanár:{fr:'professeur',en:'teacher'},gyerek:{fr:'enfant',en:'child'},anya:{fr:'mère',en:'mother'},apa:{fr:'père',en:'father'},templom:{fr:'église',en:'church'},vár:{fr:'château fort',en:'castle'},kapu:{fr:'portail',en:'gate'},torony:{fr:'tour',en:'tower'},börtön:{fr:'prison',en:'prison'},piac:{fr:'marché',en:'market'},pénz:{fr:'argent',en:'money'},arany:{fr:'or',en:'gold'},ezüst:{fr:'argent (métal)',en:'silver'},vas:{fr:'fer',en:'iron'},gyertya:{fr:'bougie',en:'candle'},lámpa:{fr:'lampe',en:'lamp'},ágy:{fr:'lit',en:'bed'},szék:{fr:'chaise',en:'chair'},tányér:{fr:'assiette',en:'plate'},kés:{fr:'couteau',en:'knife'},kanál:{fr:'cuillère',en:'spoon'},pohár:{fr:'verre',en:'glass'},papír:{fr:'papier',en:'paper'},ceruza:{fr:'crayon',en:'pencil'},kép:{fr:'image',en:'picture'},tánc:{fr:'danse',en:'dance'},játék:{fr:'jeu, jouet',en:'game, toy'},sakk:{fr:'échecs',en:'chess'},kocka:{fr:'cube, dé',en:'cube, die'},maszk:{fr:'masque',en:'mask'},csontváz:{fr:'squelette',en:'skeleton'},halál:{fr:'mort',en:'death'},élet:{fr:'vie',en:'life'},szerelem:{fr:'amour',en:'love'},háború:{fr:'guerre',en:'war'},béke:{fr:'paix',en:'peace'},tél:{fr:'hiver',en:'winter'},nyár:{fr:'été',en:'summer'},tavasz:{fr:'printemps',en:'spring'},ősz:{fr:'automne',en:'autumn'},reggel:{fr:'matin',en:'morning'},este:{fr:'soir',en:'evening'},éjszaka:{fr:'nuit',en:'night'},nagy:{fr:'grand',en:'big'},kicsi:{fr:'petit',en:'small'},magas:{fr:'haut',en:'tall'},alacsony:{fr:'bas',en:'low'},széles:{fr:'large',en:'wide'},keskeny:{fr:'étroit',en:'narrow'},vastag:{fr:'épais',en:'thick'},vékony:{fr:'mince',en:'thin'},erős:{fr:'fort',en:'strong'},gyenge:{fr:'faible',en:'weak'},okos:{fr:'intelligent',en:'clever'},buta:{fr:'bête',en:'stupid'},boldog:{fr:'heureux',en:'happy'},szomorú:{fr:'triste',en:'sad'},fiatal:{fr:'jeune',en:'young'},öreg:{fr:'vieux',en:'old'},új:{fr:'nouveau',en:'new'},régi:{fr:'ancien',en:'former, old'},gazdag:{fr:'riche',en:'rich'},szegény:{fr:'pauvre',en:'poor'},tiszta:{fr:'propre, pur',en:'clean, pure'},piszkos:{fr:'sale',en:'dirty'},édes:{fr:'sucré, doux',en:'sweet'},savanyú:{fr:'acide',en:'sour'},keserű:{fr:'amer',en:'bitter'},sós:{fr:'salé',en:'salty'},csendes:{fr:'calme',en:'quiet'},hangos:{fr:'bruyant',en:'loud'},lassú:{fr:'lent',en:'slow'},üres:{fr:'vide',en:'empty'},mély:{fr:'profond',en:'deep'},kerek:{fr:'rond',en:'round'},egyenes:{fr:'droit',en:'straight'},ferde:{fr:'oblique',en:'slanted'},puha:{fr:'mou',en:'soft'},kemény:{fr:'dur',en:'hard'},száraz:{fr:'sec',en:'dry'},nedves:{fr:'mouillé',en:'wet'},fehér:{fr:'blanc',en:'white'},sárga:{fr:'jaune',en:'yellow'},barna:{fr:'brun',en:'brown'},szürke:{fr:'gris',en:'grey'},lila:{fr:'violet',en:'purple'},vad:{fr:'sauvage',en:'wild'},szelíd:{fr:'doux, apprivoisé',en:'gentle, tame'},bátor:{fr:'courageux',en:'brave'},gyáva:{fr:'lâche',en:'cowardly'},furcsa:{fr:'étrange',en:'strange'},vidám:{fr:'joyeux',en:'cheerful'},komoly:{fr:'sérieux',en:'serious'},éhes:{fr:'affamé',en:'hungry'},szomjas:{fr:'assoiffé',en:'thirsty'},fáradt:{fr:'fatigué',en:'tired'},beteg:{fr:'malade',en:'ill'},híres:{fr:'célèbre',en:'famous'},titkos:{fr:'secret',en:'secret'},rejtett:{fr:'caché',en:'hidden'},vak:{fr:'aveugle',en:'blind'},süket:{fr:'sourd',en:'deaf'},néma:{fr:'muet',en:'mute'},részeg:{fr:'ivre',en:'drunk'},józan:{fr:'sobre',en:'sober'},drága:{fr:'cher',en:'expensive, dear'},olcsó:{fr:'bon marché',en:'cheap'},kedves:{fr:'gentil',en:'kind'},csúnya:{fr:'laid',en:'ugly'},tökéletes:{fr:'parfait',en:'perfect'},halott:{fr:'mort',en:'dead'},élő:{fr:'vivant',en:'living'},ismeretlen:{fr:'inconnu',en:'unknown'},idegen:{fr:'étranger',en:'foreign'},végtelen:{fr:'infini',en:'endless'},örök:{fr:'éternel',en:'eternal'},szent:{fr:'saint',en:'holy'},bűnös:{fr:'coupable',en:'guilty'},ártatlan:{fr:'innocent',en:'innocent'},őszinte:{fr:'sincère',en:'sincere'},hamis:{fr:'faux',en:'false'},igaz:{fr:'vrai',en:'true'},ravasz:{fr:'rusé',en:'cunning'},gonosz:{fr:'méchant',en:'wicked'},jó:{fr:'bon',en:'good'},rossz:{fr:'mauvais',en:'bad'},menni:{fr:'aller',en:'to go'},jönni:{fr:'venir',en:'to come'},állni:{fr:'être debout',en:'to stand'},ülni:{fr:'être assis',en:'to sit'},feküdni:{fr:'être couché',en:'to lie down'},járni:{fr:'marcher',en:'to walk'},úszni:{fr:'nager',en:'to swim'},repülni:{fr:'voler (en l’air)',en:'to fly'},ugrani:{fr:'sauter',en:'to jump'},mászni:{fr:'grimper',en:'to climb'},esni:{fr:'tomber',en:'to fall'},nevetni:{fr:'rire',en:'to laugh'},sírni:{fr:'pleurer',en:'to cry'},hallani:{fr:'entendre',en:'to hear'},érezni:{fr:'sentir',en:'to feel'},tudni:{fr:'savoir',en:'to know'},akarni:{fr:'vouloir',en:'to want'},szeretni:{fr:'aimer',en:'to love'},gyűlölni:{fr:'haïr',en:'to hate'},félni:{fr:'avoir peur',en:'to fear'},várni:{fr:'attendre',en:'to wait'},keresni:{fr:'chercher',en:'to look for'},találni:{fr:'trouver',en:'to find'},adni:{fr:'donner',en:'to give'},kapni:{fr:'recevoir',en:'to receive'},venni:{fr:'prendre, acheter',en:'to take, to buy'},eladni:{fr:'vendre',en:'to sell'},fizetni:{fr:'payer',en:'to pay'},dolgozni:{fr:'travailler',en:'to work'},játszani:{fr:'jouer',en:'to play'},tanulni:{fr:'apprendre',en:'to learn'},tanítani:{fr:'enseigner',en:'to teach'},kérdezni:{fr:'demander',en:'to ask'},válaszolni:{fr:'répondre',en:'to answer'},mondani:{fr:'dire',en:'to say'},hívni:{fr:'appeler',en:'to call'},nyitni:{fr:'ouvrir',en:'to open'},zárni:{fr:'fermer',en:'to close'},építeni:{fr:'construire',en:'to build'},rombolni:{fr:'détruire',en:'to destroy'},vágni:{fr:'couper',en:'to cut'},varrni:{fr:'coudre',en:'to sew'},festeni:{fr:'peindre',en:'to paint'},rajzolni:{fr:'dessiner',en:'to draw'},számolni:{fr:'compter',en:'to count'},felejteni:{fr:'oublier',en:'to forget'},emlékezni:{fr:'se souvenir',en:'to remember'},álmodni:{fr:'rêver',en:'to dream'},ébredni:{fr:'se réveiller',en:'to wake'},élni:{fr:'vivre',en:'to live'},halni:{fr:'mourir',en:'to die'},születni:{fr:'naître',en:'to be born'},nőni:{fr:'grandir',en:'to grow'},ölni:{fr:'tuer',en:'to kill'},lőni:{fr:'tirer (au fusil)',en:'to shoot'},harcolni:{fr:'combattre',en:'to fight'},győzni:{fr:'vaincre',en:'to win'},veszíteni:{fr:'perdre',en:'to lose'},elrejteni:{fr:'cacher',en:'to hide'},mutatni:{fr:'montrer',en:'to show'},nézni:{fr:'regarder',en:'to look'},figyelni:{fr:'observer',en:'to watch'},hinni:{fr:'croire',en:'to believe'},hazudni:{fr:'mentir',en:'to lie'},lopni:{fr:'voler (dérober)',en:'to steal'},ütni:{fr:'frapper',en:'to hit'},dobni:{fr:'lancer',en:'to throw'},fogni:{fr:'tenir, attraper',en:'to hold, to catch'},húzni:{fr:'tirer',en:'to pull'},tolni:{fr:'pousser',en:'to push'},sütni:{fr:'cuire au four',en:'to bake'},fújni:{fr:'souffler',en:'to blow'},égni:{fr:'brûler',en:'to burn'},fagyni:{fr:'geler',en:'to freeze'},olvadni:{fr:'fondre',en:'to melt'},utazni:{fr:'voyager',en:'to travel'},fütyülni:{fr:'siffler',en:'to whistle'},suttogni:{fr:'chuchoter',en:'to whisper'},kiabálni:{fr:'crier',en:'to shout'},imádkozni:{fr:'prier',en:'to pray'}};
+var _hang=null;
+function hangMaybeNew(){
+  var panel=document.getElementById('hang-panel');if(!panel)return;
+  panel.style.display='flex';
+  var _tt=document.getElementById('title');if(_tt)_tt.style.visibility='hidden';
+  if(!_hang||_hang.over)hangNew();else hangDraw();
+}
+function hangNew(){
+  var cats=['noun','adj','verb'];
+  var cat=cats[Math.floor(Math.random()*cats.length)];
+  var list=HANG_WORDS[cat];
+  var word=list[Math.floor(Math.random()*list.length)].toUpperCase();
+  _hang={word:word,cat:cat,guessed:{},miss:0,over:false,won:false};
+  _hangPartAt=0;
+  var again=document.getElementById('hang-again');
+  if(again)again.style.display='none';
+  var gf=document.getElementById('hang-gift');if(gf){gf.style.display='none';gf.innerHTML='';}
+  hangDraw();
+}
+function hangDraw(){
+  if(!_hang)return;
+  var wEl=document.getElementById('hang-word'),kEl=document.getElementById('hang-keys'),
+      cEl=document.getElementById('hang-cat'),mEl=document.getElementById('hang-misses'),
+      sEl=document.getElementById('hang-status');
+  if(!wEl)return;
+  var cats={noun:'NOUN',adj:'ADJECTIVE',verb:'VERB - INFINITIVE'};
+  cEl.textContent=kbT(cats[_hang.cat]);
+  var h='';
+  for(var i=0;i<_hang.word.length;i++){
+    var ch=_hang.word[i];
+    h+='<span class="hang-cell'+(_hang.guessed[ch]?' hang-on':'')+'">'+(_hang.guessed[ch]?ch:'')+'</span>';
+  }
+  wEl.innerHTML=h;
+  var m='';
+  for(var j=0;j<HANG_MAX;j++)m+='<span class="hang-miss'+(j<_hang.miss?' hang-x':'')+'"></span>';
+  mEl.innerHTML=m;
+  if(kEl){
+    var kh='';
+    for(var r2=0;r2<HANG_ROWS.length;r2++){kh+='<div class="hang-row">';for(var k2=0;k2<HANG_ROWS[r2].length;k2++)(function(L){
+      var used=_hang.guessed[L]!==undefined||_hang.over;
+      kh+='<button class="hang-key'+(used?' hang-used':'')+'"'+(used?' disabled':'')+' data-action="hangGuess(\''+L+'\')">'+L+'</button>';
+    })(HANG_ROWS[r2][k2]);kh+='</div>';}
+    kEl.innerHTML=kh;
+  }
+  if(sEl){
+    if(_hang.over)sEl.textContent=_hang.won?kbT('SOLVED'):kbT('THE WORD WAS')+' — '+_hang.word;
+    else sEl.textContent=kbT('MISSES')+' '+_hang.miss+'/'+HANG_MAX;
+  }
+  var tEl=document.getElementById('hang-tr');
+  if(tEl){
+    if(_hang.over){
+      var tr=HANG_TR[_hang.word.toLowerCase()];
+      var lg=(document.documentElement.lang||'en')==='fr'?'fr':'en';
+      tEl.textContent=tr?('« '+_hang.word+' » — '+(lg==='fr'?'sens : ':'meaning: ')+tr[lg]):'';
+    } else tEl.textContent='';
+  }
+  hangFigKick();
+}
+function hangGuess(L){
+  if(typeof kkClick==='function')try{kkClick();}catch(_e){}
+  if(!_hang||_hang.over||_hang.guessed[L]!==undefined)return;
+  /* a vowel counts with or without its accents: A finds Á, O finds Ó Ö Ő, and so on */
+  var fam=HANG_FAM.filter(function(f){return f.indexOf(L)>=0;})[0]||L,hit=false;
+  for(var f=0;f<fam.length;f++){var on=_hang.word.indexOf(fam[f])>=0;_hang.guessed[fam[f]]=on;if(on)hit=true;}
+  if(!hit)_hang.guessed[L]=false;
+  if(!hit){_hang.miss++;_hangPartAt=Date.now();hangFall(L);}else kbSfx('tick',6);
+  var done=true;
+  for(var i=0;i<_hang.word.length;i++)if(!_hang.guessed[_hang.word[i]]){done=false;break;}
+  if(done){
+    _hang.over=true;_hang.won=true;if(window.KG&&KG.win)KG.win('katabatik',{game:'hang'});hangGift();
+    var again=document.getElementById('hang-again');if(again)again.style.display='inline-block';
+    hangArp(true);
+  } else if(_hang.miss>=HANG_MAX){
+    _hang.over=true;_hang.won=false;
+    for(var w2=0;w2<_hang.word.length;w2++)_hang.guessed[_hang.word[w2]]=true;
+    var again2=document.getElementById('hang-again');if(again2)again2.style.display='inline-block';
+    hangArp(false);
+  }
+  hangDraw();
+}
+window.hangNew=hangNew;window.hangGuess=hangGuess;
+function hangArp(win){
+  try{
+    /* [IK] one context for the hangman, kept: a new one per game ran out after a dozen games */
+    var ac=hangArp.ac||(hangArp.ac=new(window.AudioContext||window.webkitAudioContext)());
+    if(ac.state==='suspended'&&(!window.__ikFx||window.__ikFx.on()))try{ac.resume();}catch(_r){}
+    var t0=ac.currentTime+.03;
+    var seq=win?[440,554,659,880]:[220,208,196,185];
+    seq.forEach(function(f,i){
+      var o=ac.createOscillator();o.type='triangle';o.frequency.value=f;
+      var g=ac.createGain();g.gain.setValueAtTime(0,t0+i*.11);
+      g.gain.linearRampToValueAtTime(.06,t0+i*.11+.02);
+      g.gain.exponentialRampToValueAtTime(.0008,t0+i*.11+.3);
+      o.connect(g);g.connect(ac.destination);o.start(t0+i*.11);o.stop(t0+i*.11+.32);
+    });
+    /* the context is kept for the next game */
+  }catch(_e){}
+}
+
+// ============================================================
+// Figure du pendu : potence dorée ; la tête est le portrait de Plague
+// of Justinian (sprite de l'arcade), le corps apparaît échec après échec,
+// et l'ensemble se balance doucement à la corde. reduced-motion = statique.
+// ============================================================
+var _hangImg=null,_hangImgOk=false,_hangRaf=0,_hangPartAt=0;
+function hangSpriteUrl(){
+  var dir='';
+  try{if(window.KG&&KG.base)dir=String(KG.base).replace(/kg-$/,'');}catch(_e){}
+  return dir+'sprite-cadaver_synod.webp';
+}
+function hangLoadImg(){
+  if(_hangImg)return;
+  try{
+    _hangImg=new Image();
+    _hangImg.onload=function(){_hangImgOk=true;};
+    _hangImg.src=hangSpriteUrl();
+  }catch(_e){_hangImg=null;}
+}
+function hangFig(){
+  var cv=document.getElementById('hang-cv');if(!cv)return;
+  var ctx=cv.getContext('2d');if(!ctx)return;
+  var W=cv.width,Hh=cv.height;
+  ctx.clearRect(0,0,W,Hh);
+  var gold='#c9a84c';
+  ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=8;ctx.strokeStyle=gold;
+  var sx=W*0.5,beamY=Hh*0.10;
+  ctx.globalAlpha=.92;
+  ctx.beginPath();
+  ctx.moveTo(W*0.10,Hh*0.92);ctx.lineTo(W*0.34,Hh*0.92);ctx.lineTo(W*0.34,beamY);ctx.lineTo(sx,beamY);
+  ctx.stroke();
+  ctx.beginPath();ctx.moveTo(W*0.34,Hh*0.30);ctx.lineTo(W*0.44,beamY);ctx.stroke();
+  ctx.globalAlpha=1;
+  var miss=_hang?_hang.miss:0,over=_hang&&_hang.over,won=_hang&&_hang.won;
+  var part=Math.min(miss,6);
+  var lost=over&&!won;
+  var red=false;try{red=matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(_e){}
+  var t=Date.now()/1000;
+  var ang=red?0:Math.sin(t*(lost?4.4:2.0))*(lost?0.11:0.012+0.015*part);
+  var pop=Math.max(0,Math.min(1,(Date.now()-_hangPartAt)/320));
+  ctx.save();
+  ctx.translate(sx,beamY);ctx.rotate(ang);ctx.translate(-sx,-beamY);
+  ctx.beginPath();ctx.moveTo(sx,beamY);ctx.lineTo(sx,beamY+34);ctx.stroke();
+  if(part>=1){ctx.globalAlpha=part>1?1:pop;ctx.beginPath();ctx.arc(sx,beamY+44,9,0,6.2832);ctx.stroke();ctx.globalAlpha=1;}
+  if(part>=2){
+    var a2=part>2?1:pop;ctx.globalAlpha=a2;
+    var hr=36,hy=beamY+88;
+    ctx.save();
+    ctx.beginPath();ctx.arc(sx,hy,hr,0,6.2832);ctx.closePath();ctx.clip();
+    if(_hangImgOk&&_hangImg.complete&&_hangImg.naturalWidth){
+      var iw=_hangImg.naturalWidth,ih=_hangImg.naturalHeight;
+      var cols=iw>=ih*6?8:4,fw=iw/cols,fh=ih/(cols===8?1:2);
+      ctx.drawImage(_hangImg,0,0,fw,fh,sx-hr*1.3,hy-hr*1.3,hr*2.6,hr*2.6);
+    }else{ctx.fillStyle='#3b3128';ctx.fillRect(sx-hr,hy-hr,hr*2,hr*2);}
+    ctx.restore();
+    ctx.lineWidth=5;
+    if(won&&over&&!red){ctx.shadowColor='#c9a84c';ctx.shadowBlur=16;}
+    ctx.beginPath();ctx.arc(sx,hy,hr+4,0,6.2832);ctx.stroke();
+    ctx.shadowBlur=0;ctx.lineWidth=8;ctx.globalAlpha=1;
+  }
+  if(part>=3){                                                                      /* cou, épaules, cage */
+    var a3=part>3?1:pop;ctx.globalAlpha=a3;
+    ctx.lineWidth=7;
+    ctx.beginPath();ctx.moveTo(sx,beamY+124);ctx.lineTo(sx,beamY+138);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(sx-44,beamY+148);ctx.lineTo(sx+44,beamY+148);ctx.stroke();
+    ctx.lineWidth=4;ctx.strokeStyle='#8a7434';
+    ctx.beginPath();ctx.moveTo(sx,beamY+150);ctx.lineTo(sx,beamY+186);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(sx-30,beamY+158);ctx.quadraticCurveTo(sx,beamY+164,sx+30,beamY+158);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(sx-26,beamY+168);ctx.quadraticCurveTo(sx,beamY+174,sx+26,beamY+168);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(sx-22,beamY+178);ctx.quadraticCurveTo(sx,beamY+184,sx+22,beamY+178);ctx.stroke();
+    ctx.strokeStyle=gold;ctx.lineWidth=7;
+    ctx.beginPath();ctx.moveTo(sx-30,beamY+192);ctx.quadraticCurveTo(sx,beamY+206,sx+30,beamY+192);ctx.stroke();
+    ctx.beginPath();ctx.arc(sx,beamY+210,26,0.35,Math.PI-0.35);ctx.stroke();
+    ctx.globalAlpha=1;
+  }
+  if(part>=4){                                                                      /* bras articulés + mains */
+    var a4=part>4?1:pop;ctx.globalAlpha=a4;
+    ctx.lineWidth=7;
+    ctx.beginPath();ctx.moveTo(sx-44,beamY+150);ctx.lineTo(sx-60,beamY+186);ctx.lineTo(sx-54,beamY+222);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(sx+44,beamY+150);ctx.lineTo(sx+60,beamY+186);ctx.lineTo(sx+54,beamY+222);ctx.stroke();
+    ctx.lineWidth=5;
+    ctx.beginPath();ctx.arc(sx-54,beamY+229,6,0,6.2832);ctx.stroke();
+    ctx.beginPath();ctx.arc(sx+54,beamY+229,6,0,6.2832);ctx.stroke();
+    ctx.globalAlpha=1;
+  }
+  if(part>=5){                                                                      /* jambes : hanche-genou-tibia */
+    var a5=part>5?1:pop;ctx.globalAlpha=a5;
+    ctx.lineWidth=7;
+    ctx.beginPath();ctx.moveTo(sx-14,beamY+214);ctx.lineTo(sx-18,beamY+256);ctx.lineTo(sx-16,beamY+300);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(sx+14,beamY+214);ctx.lineTo(sx+18,beamY+256);ctx.lineTo(sx+16,beamY+300);ctx.stroke();
+    ctx.globalAlpha=1;
+  }
+  if(part>=6){                                                                      /* pieds qui pendent */
+    var a6=part>=6?1:pop;ctx.globalAlpha=a6;
+    ctx.lineWidth=5;
+    ctx.beginPath();ctx.moveTo(sx-16,beamY+300);ctx.lineTo(sx-22,beamY+312);ctx.lineTo(sx-12,beamY+314);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(sx+16,beamY+300);ctx.lineTo(sx+22,beamY+312);ctx.lineTo(sx+12,beamY+314);ctx.stroke();
+    ctx.globalAlpha=1;
+  }
+  ctx.restore();
+}
+function hangFigKick(){
+  hangLoadImg();
+  var step=function(){
+    var hp=document.getElementById('hang-panel');
+    if(!hp||hp.style.display==='none'||!hp.isConnected||!_hang){_hangRaf=0;return;}
+    hangFig();
+    _hangRaf=requestAnimationFrame(step);
+  };
+  if(!_hangRaf)_hangRaf=requestAnimationFrame(step);
+}
+window.hangFigKick=hangFigKick;
+
+// ============================================================
+// MASTERMIND -- 3 niveaux ; chaque pion est un Mask : sa couleur et son signe du Substack (MOVEMENT 3 et 4).
+// Le premier essai est tiré au hasard et noté d'office ; le joueur reprend au deuxième.
+// ============================================================
+var MM_COLORS=['#d32f2f','#4fc3f7','#66bb6a','#ffd54f','#ab47bc','#ff7043','#78909c','#f48fb1'];
+var MM_MASKS=[['Honey Buzzard','\u{1313F}'],['C7H5N3O6','\u2658'],['Auvergne','\u2656'],['Truce','\u2658'],['Poisoned Well','\u265D'],["Ts'ui P\u00ean",'\u2657'],['Silent Pact','\u265C'],['Aube','\u2655']];
+function mmPegIn(c){return '<i class="mm-g" aria-hidden="true">'+MM_MASKS[c][1]+'</i>';}
+function mmRandRow(L,avoid){var g,tries=0;do{g=[];for(var s=0;s<L.slots;s++){var c;do{c=Math.floor(Math.random()*L.colors);}while(!L.dup&&g.indexOf(c)>=0);g.push(c);}tries++;}while(avoid&&g.join()===avoid.join()&&tries<50);return g;}
+var MM_LEVELS=[
+  {slots:4,colors:6,rows:10,dup:false},
+  {slots:4,colors:8,rows:10,dup:true},
+  {slots:5,colors:8,rows:10,dup:true}
+];
+var _mm=null;
+function mmMaybeNew(){
+  var panel=document.getElementById('mm-panel');if(!panel)return;
+  panel.style.display='flex';
+  var _tt=document.getElementById('title');if(_tt)_tt.style.visibility='hidden';
+  if(!_mm||_mm.over)mmNew(_mm?_mm.level:0);else mmDraw();
+}
+function mmNew(lv){
+  var L=MM_LEVELS[lv||0];
+  var secret=[];
+  for(var s=0;s<L.slots;s++){
+    var c;
+    do{c=Math.floor(Math.random()*L.colors);}while(!L.dup&&secret.indexOf(c)>=0);
+    secret.push(c);
+  }
+  _mm={level:lv||0,secret:secret,rows:[],cur:[],over:false,won:false};
+  /* the first row is imposed by chance, scored like any other, and never the code itself */
+  var first=mmRandRow(L,secret);_mm.rows.push({guess:first,fb:mmScore(first,secret),dealt:true});
+  var tabs=document.querySelectorAll('.mm-lv');
+  tabs.forEach(function(t,i){t.className='mm-lv'+(i===(lv||0)?' on':'');});
+  mmDraw();
+}
+function mmLevel(lv){if(typeof kkClick==='function')try{kkClick();}catch(_e){}mmNew(lv);}
+function mmScore(guess,secret){
+  var ex=0,near=0,sc={},gc={};
+  for(var i=0;i<secret.length;i++){
+    if(guess[i]===secret[i])ex++;
+    else{sc[secret[i]]=(sc[secret[i]]||0)+1;gc[guess[i]]=(gc[guess[i]]||0)+1;}
+  }
+  Object.keys(gc).forEach(function(k){if(sc[k])near+=Math.min(sc[k],gc[k]);});
+  return{ex:ex,near:near};
+}
+function mmPegs(g,cur){
+  var L=MM_LEVELS[_mm.level],h='';
+  for(var i=0;i<L.slots;i++){
+    if(g&&g[i]!==undefined){
+      h+='<span class="mm-peg"'+(cur?' data-action="mmPop()"':'')+' style="background:'+MM_COLORS[g[i]]+'" title="'+MM_MASKS[g[i]][0]+'">'+mmPegIn(g[i])+'</span>';
+    } else {
+      h+='<span class="mm-peg mm-empty"></span>';
+    }
+  }
+  return h;
+}
+function mmFb(fb,L){
+  var h='<span class="mm-fb">';
+  if(fb){
+    var no=L.slots-fb.ex-fb.near;
+    h+='<b class="mm-ex" title="'+kbT('well placed')+'">'+fb.ex+'</b>';
+    h+='<i class="mm-near" title="'+kbT('wrong spot')+'">'+fb.near+'</i>';
+    h+='<s class="mm-no" title="'+kbT('absent')+'">'+no+'</s>';
+    h+='<em>'+fb.ex+' '+kbT('well placed')+', '+fb.near+' '+kbT('wrong spot')+', '+no+' '+kbT('absent')+'</em>';
+  }
+  return h+'</span>';
+}
+function mmDraw(){
+  if(!_mm)return;
+  var L=MM_LEVELS[_mm.level];
+  var bEl=document.getElementById('mm-board'),pEl=document.getElementById('mm-palette'),
+      sEl=document.getElementById('mm-status'),okEl=document.getElementById('mm-ok');
+  if(!bEl)return;
+  var h='<div class="mm-legend"><b class="mm-ex"></b>'+kbT('well placed')+'<i class="mm-near"></i>'+kbT('wrong spot')+'<s class="mm-no"></s>'+kbT('absent')+'</div>';
+  for(var r=0;r<_mm.rows.length;r++){
+    h+='<div class="mm-row'+(_mm.rows[r].dealt?' mm-dealt':'')+'">'+mmPegs(_mm.rows[r].guess,false)+mmFb(_mm.rows[r].fb,L)+'</div>';
+  }
+  if(!_mm.over){
+    h+='<div class="mm-row mm-cur">'+mmPegs(_mm.cur,true)+mmFb(null,L)+'</div>';
+    var left=L.rows-_mm.rows.length-1;
+    for(var e=0;e<left;e++)h+='<div class="mm-row">'+mmPegs(null,false)+mmFb(null,L)+'</div>';
+  } else {
+    h+='<div class="mm-row mm-cur">'+mmPegs(_mm.secret,false)+mmFb(null,L)+'</div>';
+  }
+  bEl.innerHTML=h;
+  if(pEl){
+    var ph='';
+    if(!_mm.over){for(var c=0;c<L.colors;c++)ph+='<button class="mm-peg" style="background:'+MM_COLORS[c]+'" data-action="mmPick('+c+')" title="'+MM_MASKS[c][0]+'" aria-label="'+MM_MASKS[c][0]+'">'+mmPegIn(c)+'</button>';}
+    pEl.innerHTML=ph;
+  }
+  if(sEl){
+    if(_mm.over)sEl.textContent=_mm.won?kbT('CRACKED'):kbT('THE CODE');
+    else sEl.textContent=kbT('TRY')+' '+(_mm.rows.length+1)+'/'+L.rows;
+  }
+  if(okEl)okEl.style.display=(!_mm.over&&_mm.cur.length===L.slots)?'inline-block':'none';
+}
+function mmPick(c){
+  if(typeof kkClick==='function')try{kkClick();}catch(_e){}
+  if(!_mm||_mm.over)return;
+  var L=MM_LEVELS[_mm.level];
+  if(_mm.cur.length>=L.slots)return;
+  _mm.cur.push(c);
+  mmDraw();
+  kbSfx('tick',c);
+  try{var ps=document.querySelectorAll('#mm-board .mm-cur .mm-peg:not(.mm-empty)'),pg=ps[ps.length-1];if(pg&&pg.animate&&!matchMedia('(prefers-reduced-motion:reduce)').matches)pg.animate([{transform:'translateY(-26px) scale(.7)',opacity:.2},{transform:'translateY(2px) scale(1.06)',opacity:1,offset:.75},{transform:'none'}],{duration:220,easing:'cubic-bezier(.5,0,.9,.5)'});}catch(_e){}
+}
+function mmPop(){
+  if(typeof kkClick==='function')try{kkClick();}catch(_e){}
+  if(!_mm||_mm.over)return;
+  _mm.cur.pop();
+  mmDraw();
+}
+function mmSubmit(){
+  if(typeof kkClick==='function')try{kkClick();}catch(_e){}
+  if(!_mm||_mm.over)return;
+  var L=MM_LEVELS[_mm.level];
+  if(_mm.cur.length<L.slots)return;
+  var fb=mmScore(_mm.cur,_mm.secret);
+  _mm.rows.push({guess:_mm.cur.slice(),fb:fb});
+  _mm.cur=[];
+  if(fb.ex===L.slots){_mm.over=true;_mm.won=true;if(window.KG&&KG.win)KG.win('katabatik',{game:'mm'});}
+  else if(_mm.rows.length>=L.rows){_mm.over=true;_mm.won=false;}
+  mmDraw();
+  for(var q=0;q<fb.ex+fb.near;q++)(function(q,hi){setTimeout(function(){kbSfx('tick',hi?10:2);},90+q*85);})(q,q<fb.ex);
+}
+window.mmNew=mmNew;window.mmLevel=mmLevel;window.mmPick=mmPick;window.mmPop=mmPop;window.mmSubmit=mmSubmit;
+
+/* [IK] things fall in Katabatik: one small sound kit, one context (the site's FX switch reaches it) */
+function kbSfx(kind,v){
+  try{
+    var ac=kbSfx.ac||(kbSfx.ac=new(window.AudioContext||window.webkitAudioContext)());
+    if(ac.state==='suspended'&&(!window.__ikFx||window.__ikFx.on()))try{ac.resume();}catch(_r){}
+    if(window.__ikFx&&!window.__ikFx.on())return;
+    var t=ac.currentTime+.005,o,g,f,n,b,d,i;
+    function noise(dur){var len=Math.ceil(ac.sampleRate*dur);if(!kbSfx.nb||kbSfx.nb.length<len){kbSfx.nb=ac.createBuffer(1,Math.ceil(ac.sampleRate*.6),ac.sampleRate);d=kbSfx.nb.getChannelData(0);for(i=0;i<d.length;i++)d[i]=Math.random()*2-1;}var s=ac.createBufferSource();s.buffer=kbSfx.nb;return s;}
+    function env(node,peak,dur){var gg=ac.createGain();gg.gain.setValueAtTime(peak,t);gg.gain.exponentialRampToValueAtTime(.0004,t+dur);node.connect(gg);gg.connect(ac.destination);return gg;}
+    v=v==null?1:v;
+    if(kind==='clack'){ /* a disc lands in the column: plastic on plastic, deeper after a long fall */
+      n=noise(.08);f=ac.createBiquadFilter();f.type='bandpass';f.frequency.value=1700+Math.random()*700;f.Q.value=3;n.connect(f);env(f,.22*v,.07);n.start(t);n.stop(t+.09);
+      o=ac.createOscillator();o.type='triangle';o.frequency.setValueAtTime(180+Math.random()*40,t);o.frequency.exponentialRampToValueAtTime(90,t+.09);env(o,.12*v,.1);o.start(t);o.stop(t+.12);
+    } else if(kind==='tick'){ /* a peg drops into its hole */
+      o=ac.createOscillator();o.type='square';o.frequency.setValueAtTime(1400+(v||0)*90,t);o.frequency.exponentialRampToValueAtTime(700,t+.03);env(o,.04,.05);o.start(t);o.stop(t+.06);
+      n=noise(.03);f=ac.createBiquadFilter();f.type='highpass';f.frequency.value=3000;n.connect(f);env(f,.06,.03);n.start(t);n.stop(t+.04);
+    } else if(kind==='thud'){ /* a letter falls off the keyboard and hits the floor */
+      o=ac.createOscillator();o.type='sine';o.frequency.setValueAtTime(120,t);o.frequency.exponentialRampToValueAtTime(48,t+.18);env(o,.22,.22);o.start(t);o.stop(t+.24);
+      n=noise(.12);f=ac.createBiquadFilter();f.type='lowpass';f.frequency.value=600;n.connect(f);env(f,.18,.12);n.start(t);n.stop(t+.13);
+    } else if(kind==='rattle'){ /* the board is emptied */
+      for(i=0;i<9;i++){(function(k){var tt=t+k*.035+Math.random()*.02;var nn=noise(.05),ff=ac.createBiquadFilter();ff.type='bandpass';ff.frequency.value=1500+Math.random()*1200;ff.Q.value=2.5;nn.connect(ff);var gg=ac.createGain();gg.gain.setValueAtTime(.12,tt);gg.gain.exponentialRampToValueAtTime(.0004,tt+.05);ff.connect(gg);gg.connect(ac.destination);nn.start(tt);nn.stop(tt+.06);})(i);}
+    }
+  }catch(_e){}
+}
+/* a wrong letter falls off the hangman's keyboard */
+function hangFall(L){
+  try{
+    if(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches){kbSfx('thud');return;}
+    var k=document.querySelector('[data-action="hangGuess(\''+L+'\')"]');if(!k)return;
+    var r=k.getBoundingClientRect(),c=k.cloneNode(true);c.removeAttribute('data-action');c.disabled=true;
+    c.style.cssText='position:fixed;left:'+r.left+'px;top:'+r.top+'px;width:'+r.width+'px;height:'+r.height+'px;margin:0;z-index:9999;pointer-events:none;border-color:rgba(211,47,47,.7);color:#e57373';
+    (document.querySelector('.kg-layer')||document.body).appendChild(c);
+    var fall=Math.max(160,innerHeight-r.top+40),rot=(Math.random()-.5)*160;
+    var a=c.animate([{transform:'translate(0,0) rotate(0)'},{transform:'translate('+(Math.random()-.5)*40+'px,-14px) rotate('+rot*.1+'deg)',offset:.12},{transform:'translate('+(Math.random()-.5)*90+'px,'+fall+'px) rotate('+rot+'deg)',opacity:.85}],{duration:650+fall*.6,easing:'cubic-bezier(.45,0,.9,.55)',fill:'forwards'});
+    setTimeout(function(){kbSfx('thud');},Math.min(900,420+fall*.35));
+    a.onfinish=function(){c.remove();};
+  }catch(_e){}
+}
+
+/* the hangman also answers the physical keyboard (a Hungarian one types Ő, Ű… directly) */
+document.addEventListener('keydown',function(e){var p=document.getElementById('hang-panel');if(!p||p.style.display==='none'||!_hang||_hang.over||e.ctrlKey||e.metaKey||e.altKey)return;
+  var L=String(e.key||'').toUpperCase();if(L.length===1&&HANG_KEYS.indexOf(L)>=0){e.preventDefault();hangGuess(L);}});
+
+// ============================================================
+// FAUNINVADERS -- the 18 Masks in formation, each with the bomb of its Korong! signature.
+// Bottom row = first rungs of the Korong! ladder, top row = last rungs. A cleared wave is a win (1 Koin).
+// ============================================================
+(function(){
+  var MASKS=[["silent_pact","Silent Pact","#78909c",[7,6,8,9,5,8],"silent"],["honey_buzzard","Honey Buzzard","#d32f2f",[6,8,7,10,5,8],"entropy"],["maiden_call","Maiden Call","#42a5f5",[5,7,6,8,10,6],"drop"],["plague_of_justinian","Plague of Justinian","#546e7a",[7,6,8,5,10,8],"surge"],["poisoned_well","Poisoned Well","#ab47bc",[4,6,9,10,8,5],"lure"],["truce","Truce","#ffd54f",[6,8,8,7,8,6],"mirror"],["tsui_pen","Ts'ui Pên","#ff7043",[5,6,9,10,7,6],"haze"],["naphta","Naphta","#ef6c00",[7,8,9,7,8,6],"blaze"],["auvergne","Auvergne","#66bb6a",[7,6,8,9,9,6],"tell"],["cadaver_synod","Cadaver Synod","#8d6e63",[8,7,7,8,9,6],"judge"],["croisiere_noire","Croisière Noire","#bdbdbd",[9,6,8,7,5,10],"endless"],["hatra_loves","Hátra Lövés","#9e9e9e",[6,10,5,7,6,8],"bank"],["malika","Malika","#bf360c",[7,5,8,9,7,9],"grit"],["dogxim","dogXim","#e53935",[7,9,8,6,8,6],"wild"],["grand_colonel","Grand Colonel","#90a4ae",[10,6,5,7,9,8],"slash"],["c7h5n3o6","C7H5N3O6","#4fc3f7",[9,8,10,6,4,7],"fixed"],["aube","Aube","#f48fb1",[6,9,7,10,7,8],"armour"],["unkle_maukie","Unkle Maukie","#ffa726",[7,7,9,9,9,7],"rhythm"]]
+    .map(function(a,i){return{id:a[0],name:a[1],c:a[2],STR:a[3][0],DEX:a[3][1],INT:a[3][2],WIS:a[3][3],CHA:a[3][4],CON:a[3][5],sig:a[4],lv:i};});
+  var SPR={},W=480,H=640,GROUND=600,PY=572,COLS=6,ROWS=3,CW=66,CH=58,SW=52,SH=46,MARCH=[98,87,78,73];
+  var cv=null,ctx=null,S=null,K={},ptr=null,raf=0,acc=0,last=0,AC=null;
+  /* Tirs selon la caractérologie des Masks (24 oct. 2026, à l'essai) : Plague of Justinian, Ts'ui Pên, Honey Buzzard,
+     Hátra Lövés, Maiden Call, Croisière Noire, Malika, Grand Colonel, Auvergne, Aube. Les tirs d'avant (« classic ») restent
+     dans le code : ?fi=classic dans l'adresse, ou localStorage ik.fi = classic, les rétablit. */
+  var KAR=(function(){try{if(/[?&]fi=classic\b/.test(location.search))return false;return localStorage.getItem('ik.fi')!=='classic';}catch(e){return true;}})();
+  function fr(){try{return localStorage.getItem('ik.lang')==='fr';}catch(e){return false;}}
+  function T(k){var t={wave:['WAVE','VAGUE'],best:['BEST','RECORD'],over:['GAME OVER','FIN DE PARTIE'],go:['space / tap','espace / touche']}[k];return t[fr()?1:0];}
+  function fxOn(){return !window.__ikFx||window.__ikFx.on();}
+  function au(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}if(AC&&AC.state==='suspended'&&fxOn())try{AC.resume();}catch(e){}}
+  function tone(f1,f2,d,type,v){if(!AC||!fxOn())return;var t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.type=type||'square';o.connect(g);g.connect(AC.destination);
+    o.frequency.setValueAtTime(f1,t);o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(v||.05,t);g.gain.exponentialRampToValueAtTime(.0001,t+d+.04);o.start(t);o.stop(t+d+.05);}
+  function best(){try{return +localStorage.getItem('ik.fauninvaders.best')||0;}catch(e){return 0;}}
+  function saveBest(v){try{localStorage.setItem('ik.fauninvaders.best',String(v));}catch(e){}}
+  function fit(){if(!cv)return;var p=document.getElementById('fi-panel'),foot=p?p.querySelector('.kb-foot'):null,fh=foot?foot.offsetHeight+24:60;
+    var d=Math.min(2,window.devicePixelRatio||1),s=Math.min((p.clientWidth-20)/W,(p.clientHeight-fh-20)/H);s=Math.max(.3,s);
+    cv.style.width=Math.round(W*s)+'px';cv.style.height=Math.round(H*s)+'px';cv.width=Math.round(W*s*d);cv.height=Math.round(H*s*d);ctx.setTransform(cv.width/W,0,0,cv.height/H,0,0);}
+  function newGame(){S={mode:'play',score:0,lives:3,wave:0,inv:0,shot:null,bombs:[],embers:[],puddles:[],parts:[],tags:[],p:{x:W/2},beat:0,beatT:0,dir:1,shake:0,endT:0};nextWave();}
+  function nextWave(){S.wave++;S.bombs=[];S.shot=null;S.dir=1;S.beat=0;S.beatT=0;S.f=[];
+    for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++){var m=MASKS[(ROWS-1-r)*COLS+c];S.f.push({m:m,r:r,c:c,hp:m.sig==='rhythm'?3:(m.sig==='armour'||m.CON>=9)?2:1,alive:true,hit:0});}
+    S.ox=(W-COLS*CW)/2+4;S.oy=86+Math.min(5,S.wave-1)*16;S.bunk=[0,1,2,3].map(function(i){return barrel(52+i*(W-104)/3);});}
+  function barrel(cx){var cells=[],w=14,h=11;for(var y=0;y<h;y++)for(var x=0;x<w;x++){if((x===0||x===w-1)&&(y===0||y===h-1))continue;cells.push({x:cx-w*1.5+x*3,y:516+y*3,hoop:y===2||y===8});}return cells;}
+  function pos(a){return{x:S.ox+a.c*CW+CW/2,y:S.oy+a.r*CH+CH/2};}
+  function burst(x,y,col,n){for(var i=0;i<(n||14);i++){var a=Math.random()*6.28,v=1+Math.random()*3;S.parts.push({x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:30+Math.random()*20,col:col});}}
+  function erode(x,y,r){S.bunk.forEach(function(b){for(var i=b.length-1;i>=0;i--){var c=b[i];if((c.x+1.5-x)*(c.x+1.5-x)+(c.y+1.5-y)*(c.y+1.5-y)<r*r)b.splice(i,1);}});}
+  function bunkHit(x,y,w){for(var j=0;j<S.bunk.length;j++){var b=S.bunk[j];for(var i=0;i<b.length;i++){var c=b[i];if(x+w/2>c.x&&x-w/2<c.x+3&&y>c.y&&y<c.y+3)return true;}}return false;}
+  function isFront(a,live){return !live.some(function(b){return b!==a&&b.c===a.c&&b.r>a.r;});}
+  function drop(a){var m=a.m,p=pos(a),x=p.x,y=p.y,px=S.p.x,sp=1.7+m.STR*.11+S.wave*.08;
+    function B(o){var b={x:x,y:y+18,vx:0,vy:sp,m:m,w:5,h:12,t:0,r:9};for(var k in o)b[k]=o[k];S.bombs.push(b);}
+    function aim(acc){var t=(PY-y)/sp,err=(11-acc)*14*(Math.random()-.5);return(px+err-x)/t;}
+    if(KAR)switch(m.id){
+      case'plague_of_justinian':B({split:1,gen:0});tone(220,150,.05,'triangle',.025);return;
+      case'tsui_pen':B({fork:H*(.35+Math.random()*.25)});tone(220,150,.05,'triangle',.025);return;
+      case'honey_buzzard':B({freezeAt:40+Math.floor(Math.random()*50)});tone(220,150,.05,'triangle',.025);return;
+      case'hatra_loves':B({back:0});tone(220,150,.05,'triangle',.025);return;
+      case'maiden_call':B({follow:1});tone(220,150,.05,'triangle',.025);return;
+      case'croisiere_noire':B({grow:1});tone(220,150,.05,'triangle',.025);return;
+      case'malika':B({w:10,h:10,vy:sp*.7,r:14,trail:1,ember:1});tone(220,150,.05,'triangle',.025);return;
+      case'grand_colonel':var L2=S.f.filter(function(q){return q.alive;});L2.filter(function(q){return isFront(q,L2);}).forEach(function(q){var pq=pos(q);B({x:pq.x,y:pq.y+18,w:20,h:5,vy:sp*.9});});tone(140,140,.12,'square',.04);return;
+      case'auvergne':var d=50+Math.random()*30;B({x:Math.max(8,px-d)});B({x:Math.min(W-8,px+d)});tone(220,150,.05,'triangle',.025);return;}
+    switch(m.sig){
+      case'drop':B({x:x-7});B({x:x+7});break;
+      case'mirror':B({});B({x:W-x});break;
+      case'judge':B({vx:aim(m.INT)});break;
+      case'tell':B({vx:aim(m.INT)*1.6,vy:sp*.55,g:.035});break;
+      case'bank':B({vx:(px>x?1:-1)*(1.6+m.DEX*.12),vy:sp*1.1,bounceX:true});break;
+      case'blaze':B({vy:sp*1.45,trail:1});break;
+      case'slash':B({w:28,h:5,vy:sp*.9});break;
+      case'grit':B({w:10,h:10,vy:sp*.7,r:14,trail:1});break;
+      case'fixed':B({w:7,h:9,r:26,boom:1});break;
+      case'endless':B({floor:1});break;
+      case'surge':B({split:1});break;
+      case'lure':B({puddle:1});break;
+      case'rhythm':B({});B({vx:-.9});B({vx:.9});break;
+      default:B({});}
+    tone(220,150,.05,'triangle',.025);}
+  function die(m){S.lives--;S.inv=110;S.bombs=[];burst(S.p.x,PY,'#e9e2d4',30);burst(S.p.x,PY,m.c,20);S.shake=12;S.tags.push({x:S.p.x,y:PY-30,s:m.name,c:m.c,t:70});
+    tone(400,40,.7,'sawtooth',.07);if(S.lives<=0)over();}
+  function over(){S.mode='over';S.endT=Date.now();if(S.score>best())saveBest(S.score);S.top=null;S.rank=0;
+    /* palmarès: score, then wave */
+    if(window.IKP&&S.score>0&&IKP.kave)IKP.kave.fi(S.score);if(window.IKP&&S.score>0){var g=S;IKP.record('fauninvaders',{a:S.score,b:S.wave,run:Date.now().toString(36)+Math.random().toString(36).slice(2,8)},function(t,rank){g.top=t;g.rank=rank;});}}
+  function stepBombs(){
+    for(var i=S.bombs.length-1;i>=0;i--){var b=S.bombs[i],m=b.m;b.t++;
+      if(m.sig==='entropy')b.vx=Math.max(-2,Math.min(2,b.vx+(Math.random()-.5)*.6));
+      if(m.sig==='wild'&&b.t%14===0)b.vx=(Math.random()-.5)*4;
+      if(m.sig==='haze')b.x+=Math.sin(b.t*.18)*2.2;
+      if(b.freezeAt){if(b.t===b.freezeAt){b.fz=40;b.svy=b.vy;b.vy=0;}if(b.fz>0){b.fz--;b.ghost=b.fz<30;if(b.fz===0){b.y+=60;b.vy=b.svy*1.25;b.ghost=false;b.freezeAt=0;}}}
+      if(b.fork&&b.y>b.fork){b.fork=0;var real=Math.random()<.5;S.bombs.push({x:b.x,y:b.y,vx:real?1.3:-1.3,vy:b.vy,m:m,w:5,h:12,t:0,r:9,phantom:!real});b.vx=real?-1.3:1.3;b.phantom=real;}
+      if(b.follow){var dx=S.p.x-(S.lastPX==null?S.p.x:S.lastPX),tw=(S.p.x<b.x)?-1:1;b.vx=(dx!==0&&Math.sign(dx)===-tw)?tw*1.8:b.vx*.9;}
+      if(b.grow&&b.w<18){b.w+=.07;b.h+=.12;b.r+=.12;}
+      if(b.g)b.vy+=b.g;b.x+=b.vx;b.y+=b.vy;
+      if(b.bounceX&&(b.x<6||b.x>W-6)){b.vx*=-1;b.x=Math.max(6,Math.min(W-6,b.x));}
+      if(b.trail&&b.t%2===0)S.parts.push({x:b.x,y:b.y-4,vx:(Math.random()-.5)*.4,vy:-.3,l:14,col:m.c});
+      if(b.split&&b.y>H*.48){S.bombs.splice(i,1);[-1.1,0,1.1].forEach(function(v){S.bombs.push({x:b.x,y:b.y,vx:v,vy:b.vy*.9,m:m,w:4,h:4,t:0,r:6,gen:(b.gen==null?null:1)});});continue;}
+      if(b.phantom&&b.y>GROUND){S.bombs.splice(i,1);continue;}
+      if(b.phantom){if(b.y>PY+20)S.bombs.splice(i,1);continue;}
+      if(b.back===1){if(b.y<PY-70){S.bombs.splice(i,1);continue;}if(S.inv<=0&&Math.abs(b.x-S.p.x)<14+b.w/2&&Math.abs(b.y-PY)<12){S.bombs.splice(i,1);die(m);return;}continue;}
+      if(bunkHit(b.x,b.y,b.w)&&b.gen===1&&KAR){erode(b.x,b.y,b.r);S.bombs.splice(i,1);[-.9,.9].forEach(function(v){S.bombs.push({x:b.x,y:b.y-6,vx:v,vy:1.6,m:m,w:4,h:4,t:0,r:6,gen:2});});continue;}
+      if(bunkHit(b.x,b.y,b.w)){if(b.ember)S.embers.push({x:b.x,y:b.y,t:90,c:m.c,m:m});erode(b.x,b.y,b.r);if(b.boom){burst(b.x,b.y,m.c,22);tone(120,40,.3,'sawtooth',.05);}S.bombs.splice(i,1);continue;}
+      if(S.inv<=0&&!b.ghost&&Math.abs(b.x-S.p.x)<14+b.w/2&&b.y>PY-8&&b.y-b.h<PY+10){S.bombs.splice(i,1);die(m);return;}
+      if(b.y>GROUND){
+        if(b.back===0){b.back=1;b.y=GROUND-2;b.vy=-(2.2+m.DEX*.12);b.vx=(S.p.x>b.x?1:-1)*1.2;continue;}
+        if(b.ember)S.embers.push({x:b.x,y:GROUND-3,t:90,c:m.c,m:m});
+        if(b.floor&&!b.bounced){b.bounced=true;b.vy=-b.vy*.65;b.y=GROUND;continue;}
+        if(b.boom){burst(b.x,GROUND,m.c,22);tone(120,40,.3,'sawtooth',.05);if(S.inv<=0&&Math.abs(b.x-S.p.x)<26){S.bombs.splice(i,1);die(m);return;}}
+        if(b.puddle)S.puddles.push({x:b.x,t:240,c:m.c});
+        S.bombs.splice(i,1);}}}
+  function tick(){
+    if(S.mode!=='play')return;
+    var A=S.f.filter(function(a){return a.alive;});
+    var slow=S.puddles.some(function(p){return Math.abs(p.x-S.p.x)<20;})?.45:1,v=3.4*slow;
+    if(K.ArrowLeft||K.KeyA)S.p.x-=v;if(K.ArrowRight||K.KeyD)S.p.x+=v;
+    if(ptr)S.p.x+=Math.max(-v,Math.min(v,ptr.x-S.p.x));
+    S.p.x=Math.max(18,Math.min(W-18,S.p.x));if(S.inv>0)S.inv--;
+    if((K.Space||K.KeyW||K.ArrowUp||ptr)&&!S.shot&&S.inv<80){S.shot={x:S.p.x,y:PY-14};tone(880,220,.08,'square',.03);}
+    if(S.shot){S.shot.y-=8;var s=S.shot;
+      if(s.y<40)S.shot=null;
+      else if(bunkHit(s.x,s.y,2)){erode(s.x,s.y,5);S.shot=null;}
+      else for(var j=0;j<A.length;j++){var a=A[j],p=pos(a);if(Math.abs(s.x-p.x)<SW/2-4&&Math.abs(s.y-p.y)<SH/2){S.shot=null;a.hp--;a.hit=8;
+          if(a.hp<=0){a.alive=false;if(KAR&&a.m.id==='aube'&&!a.reborn){a.reborn=true;a.dawn=240;}S.score+=10*(a.m.lv+1);burst(p.x,p.y,a.m.c,26);S.tags.push({x:p.x,y:p.y,s:a.m.name,c:a.m.c,t:60});tone(300,60,.25,'sawtooth',.05);}
+          else{burst(p.x,p.y,'#e9e2d4',6);tone(500,300,.06,'square',.03);}break;}}
+      for(var i=S.bombs.length-1;S.shot&&i>=0;i--){var b=S.bombs[i];if(Math.abs(b.x-S.shot.x)<b.w/2+2&&Math.abs(b.y-S.shot.y)<b.h){S.bombs.splice(i,1);burst(b.x,b.y,b.m.c,6);S.shot=null;}}}
+    if(KAR)S.f.forEach(function(a){if(a.dawn>0&&--a.dawn===0){a.alive=true;a.hp=1;a.hit=16;var p=pos(a);burst(p.x,p.y,a.m.c,18);tone(660,990,.3,'triangle',.04);}});
+    var live=S.f.filter(function(a){return a.alive;});
+    if(!live.length&&!S.f.some(function(a){return a.dawn>0;})){if(window.KG&&KG.win)KG.win('katabatik',{game:'fi',wave:S.wave,score:S.score});nextWave();return;}
+    var period=Math.max(3,Math.round(4+live.length*2.3-S.wave));
+    if(++S.beatT>=period){S.beatT=0;S.beat++;tone(MARCH[S.beat%4],MARCH[S.beat%4]*.9,.07,'square',.04);
+      var minC=COLS,maxC=0;live.forEach(function(a){minC=Math.min(minC,a.c);maxC=Math.max(maxC,a.c);});
+      var L=S.ox+minC*CW+6,R=S.ox+(maxC+1)*CW-6;
+      if((S.dir>0&&R+8>W-6)||(S.dir<0&&L-8<6)){S.oy+=16;S.dir*=-1;}else S.ox+=8*S.dir;
+      live.forEach(function(a){if(a.m.sig==='rhythm'&&S.beat%4===0&&isFront(a,live)&&S.bombs.length<4+S.wave)drop(a);});
+      live.forEach(function(a){var p=pos(a);if(p.y+SH/2>510)erode(p.x,p.y+SH/2,SW/2);});
+      if(live.some(function(a){return pos(a).y+SH/2>PY-10;})){S.lives=0;over();return;}}
+    var cap=3+Math.min(5,S.wave);
+    for(var k=0;k<live.length;k++){var q=live[k];if(S.bombs.length>=cap)break;if(q.m.sig==='rhythm'||!isFront(q,live))continue;
+      if(Math.random()<.0016*(.55+q.m.DEX/10)*(1+S.wave*.18)*(1+(18-live.length)*.03))drop(q);}
+    stepBombs();S.lastPX=S.p.x;
+    (S.embers||[]).forEach(function(e){e.t--;if(e.t===0){burst(e.x,e.y,e.c,24);tone(110,50,.3,'sawtooth',.05);erode(e.x,e.y,16);if(S.inv<=0&&Math.abs(e.x-S.p.x)<24&&S.mode==='play')die(e.m);}});if(S.embers)S.embers=S.embers.filter(function(e){return e.t>0;});
+    S.puddles.forEach(function(p){p.t--;});S.puddles=S.puddles.filter(function(p){return p.t>0;});
+  }
+  function ship(x,y,k,col){ctx.fillStyle=col;ctx.fillRect(x-15*k,y,30*k,8*k);ctx.fillRect(x-11*k,y-4*k,22*k,4*k);ctx.fillRect(x-2*k,y-12*k,4*k,8*k);}
+  function draw(){
+    ctx.save();if(S.shake>0){ctx.translate((Math.random()-.5)*S.shake,(Math.random()-.5)*S.shake);S.shake*=.85;if(S.shake<.5)S.shake=0;}
+    var g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#07060a');g.addColorStop(.75,'#0c0907');g.addColorStop(1,'#2a1a0b');ctx.fillStyle=g;ctx.fillRect(-20,-20,W+40,H+40);
+    ctx.textBaseline='top';ctx.font='24px "Bebas Neue",Impact,sans-serif';ctx.fillStyle='#e9e2d4';ctx.textAlign='left';ctx.fillText(('00000'+S.score).slice(-5),16,14);
+    ctx.textAlign='center';ctx.fillStyle='#8a8174';ctx.font='12px "DM Mono",monospace';ctx.fillText(T('wave')+' '+S.wave+'   '+T('best')+' '+('00000'+Math.max(best(),S.score)).slice(-5),W/2,20);
+    for(var i=0;i<S.lives;i++)ship(W-24-i*26,26,.6,'#c9a84c');
+    var fr2=S.beat%2;
+    S.f.forEach(function(a){if(!a.alive)return;var p=pos(a),im=SPR[a.m.id];
+      if(im&&im.complete&&im.naturalWidth){var fw=im.naturalWidth/8;ctx.globalAlpha=a.hit>0&&a.hit%2?.35:1;ctx.drawImage(im,fr2*fw,0,fw,im.naturalHeight,p.x-SW/2,p.y-SH/2,SW,SH);ctx.globalAlpha=1;}
+      else{ctx.fillStyle=a.m.c;ctx.fillRect(p.x-14,p.y-14,28,28);}
+      if(a.hit>0)a.hit--;
+      if(a.hp>1){ctx.fillStyle=a.m.c;for(var k=0;k<a.hp;k++)ctx.fillRect(p.x-6+k*5,p.y+SH/2-2,3,3);}});
+    S.bunk.forEach(function(b){b.forEach(function(c){ctx.fillStyle=c.hoop?'#8a5a1c':'#4a3014';ctx.fillRect(c.x,c.y,3,3);});});
+    S.puddles.forEach(function(p){ctx.globalAlpha=Math.min(.7,p.t/60);ctx.fillStyle=p.c;ctx.beginPath();ctx.ellipse(p.x,GROUND-2,20,4,0,0,7);ctx.fill();ctx.globalAlpha=1;});
+    ctx.fillStyle='#c9a84c';ctx.fillRect(0,GROUND,W,2);
+    (S.embers||[]).forEach(function(e){ctx.globalAlpha=.5+.5*Math.abs(Math.sin(e.t*.3));ctx.fillStyle=e.c;ctx.beginPath();ctx.arc(e.x,e.y,3+(90-e.t)*.03,0,7);ctx.fill();ctx.globalAlpha=1;});
+    S.bombs.forEach(function(b){var al=1;if(b.m.sig==='silent')al=Math.max(.04,Math.min(1,(b.y-260)/220));if(b.ghost)al=Math.max(0,(b.fz-0)/40)*.2;if(b.phantom)al=.5;ctx.globalAlpha=al;ctx.fillStyle=b.m.c;
+      if(b.w>b.h)ctx.fillRect(b.x-b.w/2,b.y-b.h/2,b.w,b.h);
+      else{ctx.beginPath();ctx.moveTo(b.x,b.y-b.h);ctx.quadraticCurveTo(b.x+b.w,b.y-2,b.x,b.y+2);ctx.quadraticCurveTo(b.x-b.w,b.y-2,b.x,b.y-b.h);ctx.fill();}
+      if(b.boom){ctx.fillStyle='#fff';ctx.fillRect(b.x-1,b.y-b.h-3,2,3);}ctx.globalAlpha=1;});
+    if(S.mode==='play'&&!(S.inv>0&&Math.floor(S.inv/5)%2))ship(S.p.x,PY,1,'#e9e2d4');
+    if(S.shot){ctx.fillStyle='#fff6dc';ctx.fillRect(S.shot.x-1,S.shot.y-8,2,10);}
+    S.parts.forEach(function(q){q.x+=q.vx;q.y+=q.vy;q.vy+=.04;q.l--;ctx.globalAlpha=Math.max(0,q.l/40);ctx.fillStyle=q.col;ctx.fillRect(q.x,q.y,2,2);});ctx.globalAlpha=1;S.parts=S.parts.filter(function(q){return q.l>0;});
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='18px "Bebas Neue",Impact,sans-serif';
+    S.tags.forEach(function(t){ctx.globalAlpha=Math.min(1,t.t/30);ctx.fillStyle=t.c;ctx.fillText(t.s.toUpperCase(),t.x,t.y-(60-t.t)*.3);t.t--;});ctx.globalAlpha=1;S.tags=S.tags.filter(function(t){return t.t>0;});
+    if(S.mode!=='play'){ctx.fillStyle='rgba(7,6,10,.72)';ctx.fillRect(0,0,W,H);ctx.textAlign='center';
+      ctx.fillStyle='#c9a84c';ctx.font='64px "Bebas Neue",Impact,sans-serif';ctx.fillText(S.mode==='title'?'FAUNINVADERS':T('over'),W/2,H*.38);
+      ctx.fillStyle='#e9e2d4';ctx.font='13px "DM Mono",monospace';ctx.fillText(S.mode==='title'?'← → · SPACE':String(S.score),W/2,H*.47);
+      ctx.fillStyle='#8a8174';ctx.fillText(T('go'),W/2,H*.53);
+      if(S.mode==='over'&&S.rank&&window.IKP){ctx.font='12px "DM Mono",monospace';ctx.fillStyle='#c9a84c';ctx.fillText(IKP.line(S.rank),W/2,H*.6);}}
+    ctx.restore();}
+  function shown(){var p=document.getElementById('fi-panel');return p&&p.style.display!=='none'&&p.getClientRects().length>0;}
+  function loop(now){if(!shown()){raf=0;return;}acc+=Math.min(100,now-last);last=now;while(acc>=1000/60){acc-=1000/60;tick();}draw();raf=requestAnimationFrame(loop);}
+  function start(){if(S.mode!=='play'&&Date.now()-S.endT>600){newGame();}}
+  function bind(){
+    document.addEventListener('keydown',function(e){if(!shown())return;K[e.code]=true;if(['Space','ArrowLeft','ArrowRight','ArrowUp'].indexOf(e.code)>=0)e.preventDefault();au();if(e.code==='Space'||e.code==='Enter')start();});
+    document.addEventListener('keyup',function(e){K[e.code]=false;});
+    function toX(e){var r=cv.getBoundingClientRect();return(e.clientX-r.left)/r.width*W;}
+    cv.addEventListener('pointerdown',function(e){au();try{cv.setPointerCapture(e.pointerId);}catch(_e){}ptr={x:toX(e)};start();});
+    cv.addEventListener('pointermove',function(e){if(ptr)ptr.x=toX(e);});
+    cv.addEventListener('pointerup',function(){ptr=null;});cv.addEventListener('pointercancel',function(){ptr=null;});
+    window.addEventListener('resize',function(){if(shown())fit();});}
+  window.fiOpen=function(){
+    if(!cv){cv=document.getElementById('fi-canvas');if(!cv)return;ctx=cv.getContext('2d');bind();
+      MASKS.forEach(function(m){var im=new Image();im.src='sprite-'+m.id+'.webp';SPR[m.id]=im;});}
+    K={};ptr=null;
+    if(!S){newGame();S.mode='title';}
+    requestAnimationFrame(function(){fit();if(!raf){last=performance.now();acc=0;raf=requestAnimationFrame(loop);}});
+  };
+})();

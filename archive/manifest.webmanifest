@@ -1,0 +1,1 @@
+{"name": "Insert Koin", "short_name": "Insert Koin", "start_url": "./", "scope": "./", "display": "standalone", "orientation": "any", "background_color": "#07060a", "theme_color": "#07060a", "lang": "en", "icons": [{"src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}]}

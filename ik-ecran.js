@@ -8,7 +8,7 @@
  * training artificial intelligence. Contact: mauktenieb@gmail.com
  */
 /*
- * Écran — the one screen of Insert Koin. v2.1.0
+ * Écran — the one screen of Insert Koin. v2.0.0
  *
  * One screen for every program: the same 4:3 picture, the same size, the same place
  * in the program's view, the same frame. Only two things change from one program to
@@ -22,7 +22,7 @@
  * panel of a KG module laid over the calque: both fill the same frame of the site,
  * under its bar). IKEcran.geometry(width, height) gives the rectangles in it:
  *  - wide view (width >= 700 and width >= height): the screen on the left, as large
- *    as the height allows; the controls on the right, 340 to 480 px wide (30 %);
+ *    as the height allows; the controls on the right, 300 to 460 px wide (30 %);
  *  - narrow view (phone, portrait tablet): the screen on top, full width; the
  *    controls below, scrolling.
  * The numbers are whole pixels and depend on the box alone, so two programs shown in
@@ -87,7 +87,7 @@
   "use strict";
   if (window.IKEcran) return;
 
-  const VERSION = "2.1.0";
+  const VERSION = "2.0.0";
   const ROLL_DURATION = 700;
 
   /* ------------------------------------------------------------------ *
@@ -113,7 +113,7 @@
       gl: { curve: 0.22, corner: [0.488, 0.482, 0.012], tape: 1, k: 0.18, chroma: 1, vig: 0.4, vigK: 3.4, calmK: 0.55, cap: 576 },
       dom: {
         filter: "saturate(.78) contrast(1.08) brightness(1.03) blur(.45px) sepia(.06)",
-        scan: "rgba(0,0,0,.22) 0 1px, transparent 1px 3px", grain: 0.07, snow: 0.55,
+        scan: "rgba(0,0,0,0.11) 0 1px, transparent 1px 3px", grain: 0.042, snow: 0.55,
         band: true, head: true, wobble: 0.003,
       },
       glass: { hi: 0.07, hiAt: "30% 10%", hiShape: "120% 90%", vig: 0.55, vigFrom: "58%", inset: 40, insetA: 0.7 },
@@ -122,13 +122,13 @@
     // curve of the glass), one phosphor in eight levels, a visible raster, a halo.
     minitel: {
       tube: "9% / 12%",
-      gl: { curve: 0.42, corner: [0.474, 0.466, 0.05], scan: 0.55, lines: 250, bloom: 0.55, vig: 0.5, vigK: 2.6,
+      gl: { curve: 0.42, corner: [0.474, 0.466, 0.05], scan: 0.28, lines: 250, bloom: 0.55, vig: 0.5, vigK: 2.6,
             mono: 1, levels: 8, tint: [0.86, 1.0, 0.89], con: 1.08, flicker: 0.035, noise: 0.018, cap: 1000 },
       dom: {
         filter: "drop-shadow(0 0 2.5px rgba(170,255,190,.42)) contrast(1.05)",
-        scan: "rgba(0,0,0,.30) 0 2px, transparent 2px 4px", grain: 0.035,
+        scan: "rgba(0,0,0,0.15) 0 2px, transparent 2px 4px", grain: 0.021,
       },
-      glass: { hi: 0.14, hiAt: "30% 14%", hiShape: "80% 60%", sheen: 0.045, vig: 0.78, vigFrom: "50%", inset: 70, insetA: 0.85 },
+      glass: { hi: 0, hiAt: "30% 14%", hiShape: "80% 60%", sheen: 0, vig: 0.45, vigFrom: "60%", inset: 40, insetA: 0.5 },
     },
     // Photo viewfinder (Photofauna, Kapture): the picture as it is, sharp, with discreet framing marks.
     photo: {
@@ -140,21 +140,21 @@
     // Camcorder viewfinder: REC and counter, light lines, a little tape.
     camescope: {
       tube: "2% / 3%", osd: { rec: true, counter: "auto" },
-      gl: { curve: 0.06, corner: [0.492, 0.488, 0.01], tape: 1, k: 0.07, chroma: 0.6, scan: 0.18, lines: 480,
+      gl: { curve: 0.06, corner: [0.492, 0.488, 0.01], tape: 1, k: 0.07, chroma: 0.6, scan: 0.09, lines: 480,
             bloom: 0.15, vig: 0.35, sat: 0.92, con: 1.04, calmK: 0.6 },
       dom: {
-        filter: "saturate(.92) contrast(1.05)", scan: "rgba(0,0,0,.12) 0 1px, transparent 1px 3px",
-        grain: 0.05, head: true,
+        filter: "saturate(.92) contrast(1.05)", scan: "rgba(0,0,0,0.06) 0 1px, transparent 1px 3px",
+        grain: 0.030, head: true,
       },
       glass: { hi: 0.05, vig: 0.4, vigFrom: "62%", inset: 26, insetA: 0.6 },
     },
     // Korong!: a colour monitor of 1988, the years of Shufflepuck Café.
     korong: {
       tube: "4% / 5%",
-      gl: { curve: 0.12, corner: [0.486, 0.481, 0.02], scan: 0.3, lines: 343, mask: 0.22, maskType: 2, bloom: 0.25,
+      gl: { curve: 0.12, corner: [0.486, 0.481, 0.02], scan: 0.15, lines: 343, mask: 0.22, maskType: 2, bloom: 0.25,
             vig: 0.35, sat: 1.05 },
       dom: {
-        scan: "rgba(0,0,0,.16) 0 1px, transparent 1px 3px",
+        scan: "rgba(0,0,0,0.08) 0 1px, transparent 1px 3px",
         mask: "repeating-linear-gradient(90deg,rgba(255,60,60,.9) 0 1px,rgba(60,255,60,.9) 1px 2px,rgba(60,60,255,.9) 2px 3px)", maskO: 0.08,
       },
       glass: { hi: 0.06, vig: 0.42, vigFrom: "60%", inset: 34, insetA: 0.6 },
@@ -162,10 +162,10 @@
     // Katabatik and FaunInvaders: an arcade tube, aperture grille, bright bloom.
     arcade: {
       tube: "4% / 5%",
-      gl: { curve: 0.16, corner: [0.486, 0.48, 0.03], scan: 0.45, lines: 320, mask: 0.32, maskType: 1, bloom: 0.45,
+      gl: { curve: 0.16, corner: [0.486, 0.48, 0.03], scan: 0.23, lines: 320, mask: 0.32, maskType: 1, bloom: 0.45,
             vig: 0.45, sat: 1.1, con: 1.08 },
       dom: {
-        filter: "saturate(1.08) contrast(1.04)", scan: "rgba(0,0,0,.2) 0 1px, transparent 1px 3px",
+        filter: "saturate(1.08) contrast(1.04)", scan: "rgba(0,0,0,0.10) 0 1px, transparent 1px 3px",
         mask: "repeating-linear-gradient(90deg,rgba(255,60,60,.9) 0 1px,rgba(60,255,60,.9) 1px 2px,rgba(60,60,255,.9) 2px 3px)", maskO: 0.1,
       },
       glass: { hi: 0.06, vig: 0.5, vigFrom: "56%", inset: 40, insetA: 0.65 },
@@ -173,9 +173,9 @@
     // Skoporhogo: the room watched through a monitor, camera and clock on screen.
     skopo: {
       tube: "2% / 3%", osd: { text: "CAM 01", clock: true },
-      gl: { curve: 0.1, corner: [0.488, 0.484, 0.016], scan: 0.25, lines: 480, noise: 0.035, jitter: 0.5,
+      gl: { curve: 0.1, corner: [0.488, 0.484, 0.016], scan: 0.12, lines: 480, noise: 0.035, jitter: 0.5,
             flicker: 0.03, bloom: 0.1, vig: 0.45, sat: 0.8, con: 1.1 },
-      dom: { filter: "saturate(.85) contrast(1.06)", scan: "rgba(0,0,0,.14) 0 1px, transparent 1px 3px", grain: 0.06 },
+      dom: { filter: "saturate(.85) contrast(1.06)", scan: "rgba(0,0,0,0.07) 0 1px, transparent 1px 3px", grain: 0.036 },
       glass: { hi: 0.05, vig: 0.5, vigFrom: "58%", inset: 34, insetA: 0.6 },
     },
     // Plain programs: a plain glass.
@@ -1109,7 +1109,7 @@
   const ASPECT = 4 / 3;
   const LAY = {
     wideMin: 700,                                    // narrower views stack the screen over the controls
-    wide: { pad: 12, bezel: 12, gap: 12, ctrlK: 0.3, ctrlMin: 340, ctrlMax: 480 },
+    wide: { pad: 12, bezel: 12, gap: 12, ctrlK: 0.3, ctrlMin: 300, ctrlMax: 460 },
     narrow: { pad: 0, bezel: 8, gap: 8 },
   };
 
@@ -1119,7 +1119,7 @@
     const r = (x, y, w, h) => ({ x, y, w, h });
     if (wide) {
       const o = LAY.wide;
-      const ctrl = Math.max(o.ctrlMin, Math.min(o.ctrlMax, Math.round(W * o.ctrlK)));
+      const ctrl = Math.max(H <= 420 ? 210 : o.ctrlMin, Math.min(o.ctrlMax, Math.round(W * o.ctrlK)));  // borne : téléphone couché, l'écran d'abord (colonne de commandes à 210 px au moins)
       const aw = W - 2 * o.pad - o.gap - ctrl, ah = H - 2 * o.pad;
       const inner = Math.max(40, Math.min(aw - 2 * o.bezel, (ah - 2 * o.bezel) * ASPECT));
       const w = Math.floor(inner / 4) * 4, h = w * 3 / 4;

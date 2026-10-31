@@ -1,0 +1,122 @@
+/*
+ * Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna
+ * Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Korong!™ and any related
+ * material — including characters, names, symbols, rules, lore and texts, in any form or
+ * medium — are the exclusive property of Korhogo™. The source code of this site is
+ * published for reading, reflections, additions, requests, etc. - the lore, names, marks
+ * and works remain the property of the author. No use for training artificial
+ * intelligence. Contact: mauktenieb@gmail.com
+ */
+/* KG module "kapture" -- rules copied from the original Korhogo stylesheet, each selector scoped with :where(.kg-layer) (zero specificity). */
+:where(.kg-layer) #kapture-btn{
+  position:fixed;bottom:22px;right:16px;z-index:99999;
+  font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:2px;
+  padding:6px 10px;border-radius:16px;
+  border:1px solid rgba(201,168,76,.35);
+  background:rgba(7,5,4,.75);color:rgba(201,168,76,.7);
+  cursor:grab;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  transition:border-color .2s,color .2s,box-shadow .2s,opacity .2s;
+  -webkit-tap-highlight-color:transparent;
+  opacity:0.55;user-select:none;touch-action:none;
+}
+:where(.kg-layer) #kapture-btn:hover{opacity:1;border-color:rgba(201,168,76,.7);color:#c9a84c;}
+:where(.kg-layer) #kapture-btn:active{border-color:#c9a84c;color:#fff;box-shadow:0 0 18px rgba(201,168,76,.4);}
+:where(.kg-layer) #kapture-btn.recording{border-color:#ff3333;color:#ff3333;box-shadow:0 0 18px rgba(255,51,51,.4);animation:kpulse .6s infinite alternate;}
+:where(.kg-layer) #kapture-overlay{
+  display:none;position:fixed;inset:0;z-index:9100;
+  background:#000;
+}
+:where(.kg-layer) #kapture-canvas{width:100%;height:100%;display:block;}
+:where(.kg-layer) #kapture-hud{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;pointer-events:none;
+}
+:where(.kg-layer) #kapture-timer{
+  font-family:'Bebas Neue',sans-serif;font-size:22vw;line-height:1;
+  color:rgba(255,255,255,.08);
+}
+:where(.kg-layer) #kapture-label{
+  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.3em;
+  color:rgba(255,255,255,.18);margin-top:8px;
+}
+:where(.kg-layer) #kapture-done{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:18px;
+  background:rgba(0,0,0,.88);
+}
+:where(.kg-layer) #kapture-done-title{
+  font-family:'Bebas Neue',sans-serif;font-size:14vw;letter-spacing:.1em;
+  color:#c9a84c;text-shadow:0 0 40px rgba(201,168,76,.5);
+}
+:where(.kg-layer) #kapture-choose{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:16px;padding:24px;
+  background:rgba(4,3,2,.92);
+}
+:where(.kg-layer) #kapture-choose-sub{
+  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.2em;
+  color:rgba(201,168,76,.5);margin-bottom:8px;
+}
+:where(.kg-layer) #kapture-choose-btns{display:flex;gap:12px;}
+:where(.kg-layer) .kap-toggle{
+  font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:4px;
+  padding:14px 28px;border-radius:8px;
+  border:1px solid rgba(201,168,76,.3);background:rgba(7,5,4,.8);
+  color:rgba(201,168,76,.5);cursor:pointer;transition:all .18s;
+}
+:where(.kg-layer) .kap-toggle.on{
+  border-color:#c9a84c;background:rgba(201,168,76,.15);
+  color:#ffe08a;box-shadow:0 0 18px rgba(201,168,76,.3);
+}
+:where(.kg-layer) .kap-go{
+  font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:4px;
+  padding:12px 36px;border-radius:8px;margin-top:8px;
+  border:1px solid #c9a84c;background:rgba(201,168,76,.18);
+  color:#ffe08a;cursor:pointer;transition:all .18s;
+}
+:where(.kg-layer) .kap-nope{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;
+  padding:8px 16px;border-radius:6px;margin-top:4px;
+  border:1px solid rgba(255,255,255,.1);background:transparent;
+  color:rgba(255,255,255,.3);cursor:pointer;
+}
+:where(.kg-layer) #kapture-rec{
+  position:absolute;inset:0;pointer-events:none;
+}
+:where(.kg-layer) #kapture-hud{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;pointer-events:none;
+}
+:where(.kg-layer) #kapture-dl{
+  font-family:'DM Mono',monospace;font-size:13px;letter-spacing:.2em;
+  padding:12px 28px;border:1px solid #c9a84c;border-radius:6px;
+  color:#ffe08a;text-decoration:none;background:rgba(201,168,76,.12);
+}
+:where(.kg-layer) #kapture-close{
+  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.15em;
+  padding:8px 20px;border:1px solid rgba(255,255,255,.2);border-radius:6px;
+  color:rgba(255,255,255,.4);background:transparent;cursor:pointer;
+}
+
+/* keyframes */
+@keyframes kpulse{from{opacity:1}to{opacity:.5}}
+
+/* [KG] not in the original: the floating KAPTURE! button is only shown while the Kapture overlay is open
+   (the host page provides its own launcher; the loader toggles .kg-open-kapture on the layer). */
+.kg-layer:not(.kg-open-kapture) #kapture-btn{display:none}
+
+/* [IK] Kapture camera: live view, shutter, flip, close */
+:where(.kg-layer) #kapture-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;}
+:where(.kg-layer) #kapture-video.mirror{transform:scaleX(-1);}
+:where(.kg-layer) #kapture-msg{z-index:3;position:absolute;left:0;right:0;top:40%;text-align:center;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.2em;color:rgba(201,168,76,.8);pointer-events:none;}
+:where(.kg-layer) #kapture-bar{z-index:3;position:absolute;left:0;right:0;bottom:calc(22px + env(safe-area-inset-bottom,0px));display:flex;gap:28px;justify-content:center;align-items:center;}
+/* [IK] shared layout (IKEcran.layout): the live view in the screen rectangle, the keys in the controls slot */
+:where(.kg-layer) #kapture-screen{position:absolute;inset:0;overflow:hidden;background:#000;}
+:where(.kg-layer) #kapture-overlay.ike-prog{background:#080604;}
+:where(.kg-layer) #kapture-overlay.ike-prog #kapture-bar{flex-direction:column;justify-content:center;}
+:where(.kg-layer) #kapture-overlay.ike-prog[data-ike-layout="narrow"] #kapture-bar{flex-direction:row;align-items:flex-start;padding-top:22px;}
+:where(.kg-layer) #kapture-bar button{font-family:'DM Mono',monospace;color:#c9a84c;background:rgba(7,5,4,.6);border:1px solid rgba(201,168,76,.5);border-radius:50%;width:48px;height:48px;font-size:18px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+:where(.kg-layer) #kapture-bar #kapture-shoot{width:72px;height:72px;font-size:34px;color:#ff3333;border-color:#c9a84c;border-width:2px;}
+:where(.kg-layer) #kapture-bar button:focus-visible{outline:2px solid #c9a84c;outline-offset:3px;}
+:where(.kg-layer) #kapture-overlay.flash::after{content:"";position:absolute;inset:0;background:#fff;animation:kflash .25s ease-out forwards;pointer-events:none;}
+@keyframes kflash{from{opacity:.9}to{opacity:0}}

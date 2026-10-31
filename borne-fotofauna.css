@@ -1,0 +1,33 @@
+/* FotoFauna dans la borne : le logo devient le déclencheur ; le bouton rond s'efface */
+.logo.ff-trig{cursor:pointer;border-radius:30px;padding:4px 10px 4px 4px;margin-left:-4px;outline-offset:3px}
+.logo.ff-trig .mark{width:34px;height:34px;border-radius:50%;padding:4px;box-sizing:border-box;background:radial-gradient(circle at 40% 35%,#ffcf88,#e08a1e);color:#2a1404;box-shadow:0 2px 0 rgba(0,0,0,.35);transition:transform .1s}
+.logo.ff-trig:active .mark{transform:scale(.9)}
+.logo.ff-trig.live .mark{width:46px;height:46px;animation:ffp 1.6s ease-in-out infinite}
+.logo.ff-trig.vid .mark{background:radial-gradient(circle at 40% 35%,#ff8a72,#c8321e)}
+.logo.ff-trig.rec .mark{animation:ffr .8s steps(2) infinite}
+@keyframes ffp{50%{box-shadow:0 0 0 6px rgba(255,190,90,.25),0 2px 0 rgba(0,0,0,.35)}}
+@keyframes ffr{50%{box-shadow:0 0 0 7px rgba(255,80,50,.45)}}
+#shutter{display:none!important}
+.ff-modes button{white-space:nowrap}
+.ff-flip{font-size:20px;min-width:44px}
+.ff-flip.back{color:var(--acc)}
+.ff-done{font-size:18px;gap:6px;color:var(--acc)}
+.ff-done b{font:500 11px/1 var(--num);letter-spacing:.1em}
+.ff-ghost{position:absolute;z-index:3;pointer-events:none;opacity:.42;mix-blend-mode:screen}
+.ff-ghost[hidden]{display:none}
+.ff-strip{position:absolute;left:8px;right:8px;bottom:8px;z-index:4;display:flex;gap:6px;overflow-x:auto;padding:6px;border-radius:6px;background:rgba(10,9,6,.72)}
+.ff-strip[hidden]{display:none}
+.ff-shot{position:relative;flex:none;padding:0;border:0;border-radius:2px;background:#000;cursor:pointer;box-shadow:0 0 0 1px rgba(255,255,255,.25)}
+.ff-shot canvas{display:block;height:56px;width:auto}
+.ff-shot span{position:absolute;left:3px;bottom:2px;font:500 10px/1 var(--num,monospace);color:#fff;text-shadow:0 1px 2px #000}
+.shutterRow{flex-wrap:wrap!important;row-gap:8px!important;max-width:100%}
+/* le viseur déclenche : curseur de visée, cercle bref à l'endroit de l'appui */
+.stage.ff-live{cursor:crosshair}
+.ff-tap{position:absolute;z-index:6;width:70px;height:70px;margin:-35px 0 0 -35px;border-radius:50%;pointer-events:none;box-shadow:0 0 0 3px rgba(255,255,255,.85);animation:fftap .5s ease-out forwards}
+@keyframes fftap{from{transform:scale(.4);opacity:1}to{transform:scale(1.3);opacity:0}}
+
+/* grammaire commune : cibles de 44 px ; un seul déclencheur visible caméra ouverte ; le pied de page s'efface */
+.pvMode button,.key,.tabs button,.gchip,.fam{min-height:44px}
+.stageWrap.live~* #bShoot,html:has(.stageWrap.live) #bShoot{display:none!important}
+footer.credit{display:none!important}
+#fams{overflow-x:auto;max-width:100%;flex-wrap:nowrap}

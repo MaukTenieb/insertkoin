@@ -1,0 +1,80 @@
+<!--
+ * Code: MIT licence, Copyright (c) 2026 Mauk Tenieb (see LICENSE).
+ * Korhogo material: Copyright © Mauk Tenieb & Korhogo, all rights reserved. Korhogo™,
+ * Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™,
+ * Korong!™ and any related material — characters, names, symbols, rules, lore, texts,
+ * images and music, in any form or medium, including inside this file — stay out of the
+ * MIT licence and remain the property of the author. No use of that material for
+ * training artificial intelligence. Contact: mauktenieb@gmail.com
+-->
+<!-- KG fragment: KATABATIK panels (#c4-panel + #bb-panel + #hang-panel + #mm-panel + #fi-panel). Markup as parsed by the browser from the original index.html; the games are Insert Koin additions. -->
+<div id="c4-panel" style="display:none;position:fixed;inset:0;z-index:9200;background:rgba(3,2,1,.97);flex-direction:column;align-items:center;justify-content:center;gap:14px;overflow-y:auto;padding:16px 10px;">
+  <div id="kb-menu">
+    <button class="kb-tab on" data-action="kbShow('c4')" title="Konnect4" aria-label="Konnect4">⚀</button>
+    <button class="kb-tab" data-action="kbShow('bb')" title="Sampler" aria-label="Sampler">⚁</button>
+    <button class="kb-tab" data-action="kbShow('hang')" title="Akasztófa" aria-label="Akasztófa">⚂</button>
+    <button class="kb-tab" data-action="kbShow('mm')" title="Mastermind" aria-label="Mastermind">⚃</button>
+    <button class="kb-tab" data-action="kbShow('fi')" title="FaunInvaders" aria-label="FaunInvaders">⚄</button>
+  </div>
+  <canvas id="c4-canvas" style="display:block;touch-action:none;"></canvas>
+  <button data-action="bakuBoomToChessMenu()" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;color:rgba(201,168,76,.8);background:transparent;border:1px solid rgba(201,168,76,.4);border-radius:6px;padding:9px 22px;cursor:pointer;">Baku Boom</button>
+</div>
+<div id="bb-panel" style="display:none;position:fixed;inset:0;z-index:9200;background:rgba(3,2,1,.97);flex-direction:column;align-items:center;justify-content:flex-start;padding:12px 10px 10px;gap:8px;overflow:hidden;">
+  <div id="bb-motto" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.06em;text-align:center;opacity:.75;min-height:16px;padding:0 16px;"></div>
+  <div id="bb-grid"></div>
+  <div id="bb-controls">
+    <button id="bb-play-btn" data-action="bbTogglePlay()">PLAY</button>
+    <button data-action="bbRefresh()">Refresh</button>
+    <input type="range" id="bb-bpm" min="60" max="180" value="90" oninput="bbSetBPM(this.value)" ontouchend="bbSetBPM(this.value)">
+    <span id="bb-bpm-lbl">90 BPM</span>
+    <button data-action="bbKave()">Kave it!</button>
+  </div>
+  <div class="kb-foot">
+    <button class="kb-back" data-action="kbShow('c4')">← KATABATIK</button>
+    <button class="kb-boom" data-action="bbBakuBoom()">Baku Boom</button>
+  </div>
+</div>
+<div id="hang-panel" style="display:none;position:fixed;inset:0;z-index:9200;background:rgba(3,2,1,.97);flex-direction:column;align-items:center;justify-content:flex-start;gap:12px;overflow-y:auto;padding:18px 12px;">
+  <div id="hang-head">
+    <div id="hang-title">AKASZTÓFA</div>
+    <div id="hang-mask">PLAGUE OF JUSTINIAN</div>
+    <div id="hang-motto">In contagion strength</div>
+  </div>
+  <canvas id="hang-cv" width="440" height="560" style="width:220px;height:280px;max-width:70vw;display:block;"></canvas>
+  <div id="hang-cat"></div>
+  <div id="hang-word"></div>
+  <div id="hang-misses"></div>
+  <div id="hang-status"></div>
+  <div id="hang-tr"></div>
+  <div id="hang-gift" style="display:none"></div>
+  <div id="hang-keys"></div>
+  <button id="hang-again" data-action="hangNew()" style="display:none;">ANOTHER WORD →</button>
+  <div class="kb-foot">
+    <button class="kb-back" data-action="kbShow('c4')">← KATABATIK</button>
+    <button class="kb-boom" data-action="bakuBoomToChessMenu()">Baku Boom</button>
+  </div>
+</div>
+<div id="mm-panel" style="display:none;position:fixed;inset:0;z-index:9200;background:rgba(3,2,1,.97);flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;overflow-y:auto;padding:16px 12px;">
+  <div id="mm-levels">
+    <button class="mm-lv on" data-action="mmLevel(0)">Easy</button>
+    <button class="mm-lv" data-action="mmLevel(1)">Medium</button>
+    <button class="mm-lv" data-action="mmLevel(2)">Hard</button>
+  </div>
+  <div id="mm-board"></div>
+  <div id="mm-status"></div>
+  <div id="mm-palette"></div>
+  <div id="mm-actions">
+    <button id="mm-ok" data-action="mmSubmit()" style="display:none;">OK →</button>
+  </div>
+  <div class="kb-foot">
+    <button class="kb-back" data-action="kbShow('c4')">← KATABATIK</button>
+    <button class="kb-boom" data-action="bakuBoomToChessMenu()">Baku Boom</button>
+  </div>
+</div>
+<div id="fi-panel" style="display:none;position:fixed;inset:0;z-index:9200;background:rgba(3,2,1,.97);flex-direction:column;align-items:center;justify-content:center;gap:10px;overflow:hidden;padding:12px 10px;">
+  <canvas id="fi-canvas" width="480" height="640" style="display:block;touch-action:none;border:1px solid rgba(201,168,76,.18);"></canvas>
+  <div class="kb-foot">
+    <button class="kb-back" data-action="kbShow('c4')">← KATABATIK</button>
+    <button class="kb-boom" data-action="bakuBoomToChessMenu()">Baku Boom</button>
+  </div>
+</div>

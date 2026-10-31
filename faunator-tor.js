@@ -5,8 +5,7 @@
    - .onion:     webtor-wasm, andrewtheguy/webtor-rs (MIT)          → v3 onion services, http:// and ws://
    The files tor-web.js/.wasm and tor-onion.js/.wasm are built from those sources by
    .github/workflows/faunator-tor.yml and sit at the top level of the site.
-   Until they exist, the web client is loaded from its author's CDN; the onion client has none. */
-const CDN_WEB = 'https://webtor-wasm.53627.org/webtor-wasm/v0.5.7/webtor_wasm.js';
+   Both load from the site only: zero code from another host. */
 const here = (f) => new URL(f, import.meta.url).href;
 async function has(f) { try { const r = await fetch(here(f), { method: 'HEAD', cache: 'no-store' }); return r.ok; } catch (e) { return false; } }
 
@@ -44,8 +43,7 @@ export function web() {
   if (!webP) {
     webP = (async () => {
       let m;
-      if (await has('tor-web.js')) { m = await import(here('tor-web.js')); await m.default({ module_or_path: here('tor-web_bg.wasm') }); }
-      else { m = await import(CDN_WEB); await m.default(); }
+      m = await import(here('tor-web.js')); await m.default({ module_or_path: here('tor-web_bg.wasm') });
       try { m.setLogCallback((a, b) => { const t = String(b === undefined ? a : a + ' ' + b); if (/error|fail|timeout|refus|denied|closed/i.test(t)) note('web', t); }); } catch (e) {}
       /* roads to the Tor network, one after the other: Snowflake's own WebSocket bridges, then the WebRTC volunteers */
       const roads = [() => new m.TorClientOptions('wss://snowflake.torproject.net/'), () => new m.TorClientOptions('wss://snowflake.bamsoftware.com/'), () => m.TorClientOptions.snowflakeWebRtc()];

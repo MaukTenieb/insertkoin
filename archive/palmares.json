@@ -1,0 +1,209 @@
+{
+ "updated": "2026-10-30T19:28Z",
+ "relays": {
+  "wss://relay.damus.io": 0,
+  "wss://nos.lol": 43,
+  "wss://relay.primal.net": 47,
+  "wss://nostr.mom": 46
+ },
+ "korong": [
+  {
+   "ini": "LIO",
+   "a": 1,
+   "b": 10,
+   "t": 1792705059,
+   "who": "515d1f59029568f92203b036679dbd033a010db2748ae3eaa4904327ec96c52a",
+   "run": "korhogo-palmares:korong:dmvk2ays61h66fb"
+  },
+  {
+   "ini": "LIO",
+   "a": 1,
+   "b": 12,
+   "t": 1792704928,
+   "who": "515d1f59029568f92203b036679dbd033a010db2748ae3eaa4904327ec96c52a",
+   "run": "korhogo-palmares:korong:dmvk284kybxcpkb"
+  }
+ ],
+ "fauninvaders": [
+  {
+   "ini": "LIO",
+   "a": 9660,
+   "b": 6,
+   "t": 1792607692,
+   "who": "515d1f59029568f92203b036679dbd033a010db2748ae3eaa4904327ec96c52a",
+   "run": "korhogo-palmares:fauninvaders:mvigc0ukh3q1q0"
+  },
+  {
+   "ini": "MAU",
+   "a": 7960,
+   "b": 5,
+   "t": 1792761387,
+   "who": "515d1f59029568f92203b036679dbd033a010db2748ae3eaa4904327ec96c52a",
+   "run": "korhogo-palmares:fauninvaders:mvkzuabbyot1ua"
+  },
+  {
+   "ini": "597",
+   "a": 7740,
+   "b": 5,
+   "t": 1793125367,
+   "who": "ad2d5b7b61d646f7955c720e86ea2bb2d3f4c0116b81a10fa62f09611c78531f",
+   "run": "korhogo-palmares:fauninvaders:mvr0jkxues8ayy"
+  },
+  {
+   "ini": "KIK",
+   "a": 7540,
+   "b": 5,
+   "t": 1793373056,
+   "who": "dfd5e6d679a623b63e63345a528f05d204738fbb59e6c0cf006966eeeede8088",
+   "run": "korhogo-palmares:fauninvaders:mvv3zdrodc6h87"
+  },
+  {
+   "ini": "MAU",
+   "a": 6670,
+   "b": 4,
+   "t": 1792716574,
+   "who": "515d1f59029568f92203b036679dbd033a010db2748ae3eaa4904327ec96c52a",
+   "run": "korhogo-palmares:fauninvaders:mvk95e2j9c3mpd"
+  },
+  {
+   "ini": "3VC",
+   "a": 4480,
+   "b": 3,
+   "t": 1793021419,
+   "who": "dfd5e6d679a623b63e63345a528f05d204738fbb59e6c0cf006966eeeede8088",
+   "run": "korhogo-palmares:fauninvaders:mvpano9lk7kgzr"
+  },
+  {
+   "ini": "HAC",
+   "a": 4440,
+   "b": 3,
+   "t": 1792719160,
+   "who": "dfd5e6d679a623b63e63345a528f05d204738fbb59e6c0cf006966eeeede8088",
+   "run": "korhogo-palmares:fauninvaders:mvkap3uw8vn9is"
+  },
+  {
+   "ini": "8A9",
+   "a": 3900,
+   "b": 3,
+   "t": 1793124866,
+   "who": "ad2d5b7b61d646f7955c720e86ea2bb2d3f4c0116b81a10fa62f09611c78531f",
+   "run": "korhogo-palmares:fauninvaders:mvr08svtda6kp3"
+  },
+  {
+   "ini": "JAU",
+   "a": 3830,
+   "b": 3,
+   "t": 1792568865,
+   "who": "f59755a108b9d37535a1b8e31ba14a7db9c876c8384794c54d70fa7c382d1d0a",
+   "run": "korhogo-palmares:fauninvaders:mvht7vatguh9i2"
+  },
+  {
+   "ini": "J9R",
+   "a": 3240,
+   "b": 2,
+   "t": 1792568632,
+   "who": "f59755a108b9d37535a1b8e31ba14a7db9c876c8384794c54d70fa7c382d1d0a",
+   "run": "korhogo-palmares:fauninvaders:mvht2lykgc3dn6"
+  }
+ ],
+ "first": {
+  "515d1f59029568f92203b036679dbd033a010db2748ae3eaa4904327ec96c52a": 1792454400,
+  "ad2d5b7b61d646f7955c720e86ea2bb2d3f4c0116b81a10fa62f09611c78531f": 1792454400,
+  "dfd5e6d679a623b63e63345a528f05d204738fbb59e6c0cf006966eeeede8088": 1792454400,
+  "15151a25622743692dc1a75c8b2c74aa8aeb1ec169bcc345ca982c40b173731d": 1792454400,
+  "e58102657028d4be2d116dda3f1190b943fa5909a3cf1f33999ec383f332a409": 1792454400,
+  "f59755a108b9d37535a1b8e31ba14a7db9c876c8384794c54d70fa7c382d1d0a": 1792454400
+ },
+ "kave": [
+  {
+   "who": "515d1f59029568f92203b036679dbd033a010db2748ae3eaa4904327ec96c52a",
+   "name": "IGM",
+   "t": 1793050105,
+   "c": {
+    "ka": 0,
+    "kb": 0,
+    "du": 0,
+    "fi": 7960,
+    "cl": 3,
+    "er": 0,
+    "c4": 0,
+    "hg": 0,
+    "mm": 0,
+    "ko": 47
+   },
+   "pts": 946
+  },
+  {
+   "who": "dfd5e6d679a623b63e63345a528f05d204738fbb59e6c0cf006966eeeede8088",
+   "name": "TEST",
+   "t": 1793373226,
+   "c": {
+    "ka": 0,
+    "kb": 0,
+    "du": 0,
+    "fi": 7540,
+    "cl": 3,
+    "er": 0,
+    "c4": 0,
+    "hg": 0,
+    "mm": 0,
+    "ko": 110
+   },
+   "pts": 904
+  },
+  {
+   "who": "ad2d5b7b61d646f7955c720e86ea2bb2d3f4c0116b81a10fa62f09611c78531f",
+   "name": "597",
+   "t": 1793148827,
+   "c": {
+    "ka": 0,
+    "kb": 0,
+    "du": 0,
+    "fi": 7740,
+    "cl": 0,
+    "er": 0,
+    "c4": 0,
+    "hg": 0,
+    "mm": 0,
+    "ko": 12
+   },
+   "pts": 774
+  },
+  {
+   "who": "15151a25622743692dc1a75c8b2c74aa8aeb1ec169bcc345ca982c40b173731d",
+   "name": "AAA",
+   "t": 1792801820,
+   "c": {
+    "ka": 0,
+    "kb": 0,
+    "du": 0,
+    "fi": 410,
+    "cl": 0,
+    "er": 0,
+    "c4": 0,
+    "hg": 0,
+    "mm": 0,
+    "ko": 2
+   },
+   "pts": 41
+  },
+  {
+   "who": "e58102657028d4be2d116dda3f1190b943fa5909a3cf1f33999ec383f332a409",
+   "name": "AAA",
+   "t": 1792777998,
+   "c": {
+    "ka": 0,
+    "kb": 0,
+    "du": 0,
+    "fi": 0,
+    "cl": 0,
+    "er": 1,
+    "c4": 0,
+    "hg": 0,
+    "mm": 0,
+    "ko": 1
+   },
+   "pts": 30
+  }
+ ]
+}

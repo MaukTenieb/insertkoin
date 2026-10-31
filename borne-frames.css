@@ -1,0 +1,5 @@
+/* Borne Insert Koin : retouches des pages en cadre (Reporhogo, FaunaTor), grammaire commune : cibles de 44 px, résultat sous la recherche */
+.wrap:has(#tiles){display:flex;flex-direction:column}
+.wrap:has(#tiles)>h1{order:0}.wrap:has(#tiles)>#f{order:1}.wrap:has(#tiles)>.row{order:2}.wrap:has(#tiles)>#out{order:3;min-height:88px}.wrap:has(#tiles)>#note{order:4}.wrap:has(#tiles)>#sum{order:5}.wrap:has(#tiles)>#tiles{order:6}
+button,.btn,input[type=search],input[type=text]{min-height:44px}
+#copy{min-width:88px}

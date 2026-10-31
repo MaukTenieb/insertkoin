@@ -36,7 +36,10 @@ main{flex:1;position:relative;background:#000}
 #notice p{max-width:52ch;color:#d9d1be;font-size:12px;line-height:1.7;margin:0}
 #notice .tbtn{font-size:12px;padding:11px 22px}
 @media (max-width:640px){header{flex-wrap:wrap}.brand{font-size:18px}#url{width:100%;flex-basis:100%;order:9}}
+/* lettrage A (Mauk Tenieb, 30 oct.) : les capitales partout */
+header,#notice,header input,header input::placeholder,header button{text-transform:uppercase}
 </style>
+<link rel="stylesheet" href="borne-frames.css">
 </head>
 <body>
 <header>
@@ -126,6 +129,7 @@ function searchPage(){
   +'input{flex:1;background:#000;border:1px solid rgba(201,168,76,.5);border-radius:6px;color:#ffe08a;font:13px "DM Mono",monospace;padding:11px 12px;outline:none}'
   +'button{background:#c9a84c;color:#0b0805;border:0;border-radius:6px;font:bold 12px "DM Mono",monospace;letter-spacing:.1em;padding:0 18px;cursor:pointer}'
   +'p{color:#8a8272;font-size:11px;text-align:center;max-width:52ch;line-height:1.7;margin:0}'
+  +'input,input::placeholder,p,button{text-transform:uppercase}p{font-size:12px}'
   +'</style></head><body>'
   +'<form id="f"><input id="q" autofocus placeholder="'+esc(L('.onion, tags, mots-clés, URL — tape ce que tu veux.','.onion, tags, keywords, URL — type what you want.'))+'"><button aria-label="go">\u2192</button></form>'
   +'<script>document.getElementById("f").addEventListener("submit",function(e){e.preventDefault();var q=document.getElementById("q").value.trim();if(q&&parent.__torSearch)parent.__torSearch(q);});<\/script>'
@@ -140,7 +144,7 @@ var push0=false;
 /* ---- FaunaTor reads through relays: every public relay is raced, the first good answer wins.
    A relay of your own (a free Cloudflare Worker, see faunator-worker.js) goes first when set:
    localStorage 'tor.relay' = 'https://your-worker.workers.dev/?url=' ---- */
-var RELAY='';   /* ← your own relay, once deployed: 'https://faunator.<you>.workers.dev/?url=' */
+var RELAY='https://faunator.mauktenieb.workers.dev/?url=';   /* le relais de Mauk Tenieb (Cloudflare) ; les relais publics prennent le relais s'il ne répond pas */
 function own(){try{return localStorage.getItem('tor.relay')||RELAY;}catch(e){return RELAY;}}
 var RAW=[
   function(u){var o=own();return o?o+encodeURIComponent(u):null;},
@@ -162,8 +166,9 @@ function timed(url,ms,json){
 }
 function any(ps){return new Promise(function(res,rej){var n=ps.length,f=0;if(!n)rej(new Error('none'));ps.forEach(function(p){p.then(res,function(){if(++f===n)rej(new Error('all'));});});});}
 function fetchRaw(u){
-  var ps=RAW.map(function(f){var x=f(u);return x?timed(x,11000):Promise.reject(0);}).concat(JSONP.map(function(f){return timed(f(u),11000,true);}));
-  return any(ps);
+  /* le relais propre d'abord : l'adresse demandée reste chez Mauk Tenieb ; s'il tombe, les relais publics, tous ensemble */
+  function pub(){var ps=RAW.slice(1).map(function(f){var x=f(u);return x?timed(x,11000):Promise.reject(0);}).concat(JSONP.map(function(f){return timed(f(u),11000,true);}));return any(ps);}
+  var o=RAW[0](u);return o?timed(o,9000).catch(pub):pub();
 }
 /* Tor inside the page (faunator-tor.js): bootstraps as soon as FaunaTor opens */
 var TOR=null,torReady=import('./faunator-tor.js').then(function(m){TOR=m;try{m.warm();}catch(e){}return m;}).catch(function(e){torWhy='tor: '+(e&&e.message||'not loaded');return null;});

@@ -1,0 +1,34 @@
+/*
+ * Copyright © Mauk Tenieb & Korhogo. All rights reserved. Korhogo™, Korhogo Fauna™, Fauna
+ * Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Korong!™ and any related
+ * material — including characters, names, symbols, rules, lore and texts, in any form or
+ * medium — are the exclusive property of Korhogo™. The source code of this site is
+ * published for reading, reflections, additions, requests, etc. - the lore, names, marks
+ * and works remain the property of the author. No use for training artificial
+ * intelligence. Contact: mauktenieb@gmail.com
+ */
+/* KG core styles -- rules copied from the original Korhogo stylesheet, each selector scoped with :where(.kg-layer) (zero specificity). */
+/* [KG] The KG layer: holds the injected game panels. It takes no room in the host layout
+   and forms one stacking context above the host page (host bar uses z-index <= 60). The
+   panels inside keep their original z-index values (200..9400) relative to each other. */
+.kg-layer{position:fixed;top:0;left:0;width:0;height:0;overflow:visible;z-index:1000}
+/* [KG] Values the original page gave the panels through inheritance from html/body/:root */
+.kg-layer{--ink:#080604;--ink2:#0d0a06;--parch:#d4c4a0;--dim:#7a6a50;--gold:#c8922a;--gbr:#f0b84a;--blood:#7a1a0a;--oil:#1a1208;--rc:#c84030;--oc:#c86020;--gc:#507050;--pc:#7040a0;--bc:#3060a0;--wc:#b0a080;--yc:#908020;--pkc:#c06080;--gc2:#809090;
+  font-family:'Courier Prime',monospace;color:var(--parch);cursor:crosshair;
+  font-size:16px;line-height:normal;letter-spacing:normal;font-weight:400;font-style:normal;
+  text-transform:none;word-spacing:normal;white-space:normal;text-align:start;direction:ltr;
+  color-scheme:normal;-webkit-tap-highlight-color:transparent;touch-action:none}
+/* [KG] Site-wide overlays of the original page, shown only while a KG game is open */
+.kg-layer:not(.kg-on) #scanlines{display:none}
+.kg-layer.kg-on::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+
+:where(.kg-layer) *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:where(.kg-layer) *{margin:0;padding:0;box-sizing:border-box;}
+:where(.kg-layer) input,:where(.kg-layer) textarea,:where(.kg-layer) select{background:transparent;border:1px solid #2a2010;color:var(--parch);font-family:'Courier Prime',monospace;font-size:11px;padding:7px 10px;outline:none;width:100%;}
+:where(.kg-layer) input::placeholder,:where(.kg-layer) textarea::placeholder{color:var(--dim);}
+:where(.kg-layer) select option{background:var(--oil);color:var(--parch);}
+:where(.kg-layer) textarea{resize:vertical;line-height:1.7;}
+:where(.kg-layer) ::-webkit-scrollbar{width:3px;height:3px;}
+:where(.kg-layer) ::-webkit-scrollbar-track{background:var(--ink2);}
+:where(.kg-layer) ::-webkit-scrollbar-thumb{background:#2a1a08;}
+:where(.kg-layer) #scanlines{position:fixed;inset:0;z-index:600;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.06) 0,rgba(0,0,0,.06) 1px,transparent 1px,transparent 3px)}

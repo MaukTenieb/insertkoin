@@ -52,7 +52,7 @@
     // localStorage key for the offline cache (last good tracks).
     cacheKey: "kg.vhs-library.tracks.v1",
     // Maximum tracks loaded into KG_VHS_TRACKS (protects the cabinet memory).
-    maxTracks: 600,
+    maxTracks: 9801,
     // Replace the shared JUKE_TRACKS global as well (affects the jukebox!).
     mirrorToJukebox: false,
     // Fetch timeout (ms).
@@ -314,7 +314,9 @@
     var own = withLocal(tapes);
     tapes = withSnapshot(own);
     var tracks = [], all = 0;
+    tapes = tapes.slice(0, 99);
     for (var i = 0; i < tapes.length; i++) {
+      if (tapes[i] && tapes[i].tracks && tapes[i].tracks.length > 99) tapes[i].tracks = tapes[i].tracks.slice(0, 99);
       var tt = (tapes[i] && tapes[i].tracks) || [];
       all += tt.length;
       if (!tapes[i].shelf) tracks = tracks.concat(tt);
@@ -447,8 +449,8 @@
     /** [IK] keep a cassette recorded in the page; `over` (a channel) is erased first — record-over */
     saveLocal: function (tape, over) {
       var a = readLocal().filter(function (t) { return t && t.channel !== tape.channel && (!over || t.channel !== over); });
-      a.push({ channel: tape.channel, channel_url: tape.channel_url || "", count: tape.tracks.length, tracks: tape.tracks.slice(0, 5000) });
-      writeLocal(a);
+      a.push({ channel: tape.channel, channel_url: tape.channel_url || "", count: Math.min(99, tape.tracks.length), tracks: tape.tracks.slice(0, 99) });
+      writeLocal(a.slice(-99));
       state.lastFailureAt = 0; state.status = "idle";
     },
     /** [IK] erase a cassette recorded in this browser */

@@ -1,0 +1,176 @@
+/* Borne Insert Koin : troisième passe de direction artistique (26 oct.). Chargé après borne-da2.css.
+   L'enseigne devient une vraie enseigne de borne 1978-1988 : un plexi sérigraphié, éclairé par derrière par un tube fluorescent.
+   Zéro ampoule dessinée ; la lumière vient du tube de la photo, traverse l'encre, fait briller la tranche du plexi et tremble comme un vrai tube. */
+
+/* ---------- 1. l'enseigne : fenêtre du plexi et position du tube, par skin ---------- */
+html.borne{--mq-l:4.2%;--mq-r:4.2%;--mq-t:21.5%;--mq-b:20%;--mq-ty:50%;--mq-tw:36%;--mq-edge:255,214,150}
+html.borne[data-skin=metal]{--mq-l:4%;--mq-r:3.8%;--mq-t:18.5%;--mq-b:18.5%;--mq-ty:47%;--mq-tw:31%;--mq-edge:255,170,90}
+
+html.borne:is([data-skin=bois],[data-skin=metal]) .bar .brand{isolation:isolate;animation:none!important;
+  /* l'encre claire laisse passer la lumière : un halo serré, chaud, sans néon autour des lettres */
+  text-shadow:1px 1px 0 var(--sg-x1),2px 2px 0 var(--sg-x1),3px 3px 0 var(--sg-x2),4px 4px 0 var(--sg-x2),5px 5px 5px rgba(0,0,0,.5),
+    0 0 6px color-mix(in srgb,var(--sg-glow) 70%,transparent),0 0 22px color-mix(in srgb,var(--sg-glow) 55%,transparent)!important;
+  box-shadow:0 0 0 1px rgba(0,0,0,.85),0 6px 16px rgba(0,0,0,.6),0 0 34px -6px color-mix(in srgb,var(--sg-glow) 45%,transparent)!important}
+
+/* ::before : la lumière du tube posée sur le plexi et sur l'encre (multiplication) ; elle tombe vers les extrémités, elle tremble */
+html.borne:is([data-skin=bois],[data-skin=metal]) .bar .brand::before{content:"";position:absolute;z-index:2;pointer-events:none;
+  left:var(--mq-l);right:var(--mq-r);top:var(--mq-t);bottom:var(--mq-b);border-radius:1px;mix-blend-mode:multiply;
+  background:radial-gradient(ellipse 58% 120% at 50% var(--mq-ty),#fff 0,#fff 34%,#e9dccb 62%,#9c8a78 100%);
+  animation:bmqhum 23s steps(1,end) infinite}
+/* ::after : la tranche du plexi qui s'allume dans les cornières, la poussière sur la face, un reflet fixe de la salle (addition) */
+html.borne:is([data-skin=bois],[data-skin=metal]) .bar .brand::after{content:"";position:absolute;z-index:3;pointer-events:none;inset:auto;
+  left:var(--mq-l);right:var(--mq-r);top:var(--mq-t);bottom:var(--mq-b);border-radius:1px;mix-blend-mode:screen;opacity:1;filter:none;-webkit-mask:none;mask:none;
+  background:
+    radial-gradient(ellipse 40% 2px at 50% 0,rgba(var(--mq-edge),.95),rgba(var(--mq-edge),.35) 60%,transparent) top/100% 3px no-repeat,
+    radial-gradient(ellipse 40% 2px at 50% 100%,rgba(var(--mq-edge),.8),rgba(var(--mq-edge),.28) 60%,transparent) bottom/100% 3px no-repeat,
+    linear-gradient(90deg,rgba(var(--mq-edge),.32),transparent 2px) left/3px 100% no-repeat,
+    linear-gradient(270deg,rgba(var(--mq-edge),.32),transparent 2px) right/3px 100% no-repeat,
+    linear-gradient(180deg,rgba(255,250,240,.07) 0,rgba(255,250,240,.025) 38%,transparent 39%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .9 0 0 0 0 .75 0 0 0 16 -12.4'/%3E%3C/filter%3E%3Crect width='160' height='60' filter='url(%23n)' opacity='.32'/%3E%3C/svg%3E") 0 0/160px 60px;
+  animation:bmqedge 23s steps(1,end) infinite}
+/* l'allumage du tube : le starter claque deux fois, puis la lumière monte ; à l'arrivée et à chaque rallumage après un changement de nom */
+html.borne-ready.borne:is([data-skin=bois],[data-skin=metal]) .bar .brand:not(.b-dim)::before{animation:bmqstrike 1.5s steps(1,end),bmqhum 23s steps(1,end) 1.5s infinite}
+html.borne-ready.borne:is([data-skin=bois],[data-skin=metal]) .bar .brand:not(.b-dim)::after{animation:bmqstrike2 1.5s steps(1,end),bmqedge 23s steps(1,end) 1.5s infinite}
+@keyframes bmqstrike{0%{filter:brightness(.16)}7%{filter:brightness(1.05)}11%{filter:brightness(.2)}21%{filter:brightness(1)}25%{filter:brightness(.26)}36%{filter:brightness(.5)}52%{filter:brightness(.68)}70%{filter:brightness(.84)}86%{filter:brightness(.95)}100%{filter:brightness(1)}}
+@keyframes bmqstrike2{0%,11%,25%{opacity:0}7%,21%{opacity:.85}36%{opacity:.3}52%{opacity:.55}70%{opacity:.8}100%{opacity:1}}
+/* le tube vieillit : une fois en 23 s, il baisse et se reprend, irrégulier */
+@keyframes bmqhum{0%,100%{filter:brightness(1)}61%{filter:brightness(1)}61.4%{filter:brightness(.5)}61.8%{filter:brightness(1)}62.6%{filter:brightness(.72)}63%{filter:brightness(1)}88%{filter:brightness(1)}88.3%{filter:brightness(.85)}88.9%{filter:brightness(1)}}
+@keyframes bmqedge{0%,100%{opacity:1}61.4%{opacity:.3}61.8%{opacity:1}62.6%{opacity:.6}63%{opacity:1}88.3%{opacity:.75}88.9%{opacity:1}}
+
+/* changement de nom : le tube s'éteint, l'encre retombe dans le noir du plexi, puis le tube se rallume (bmqstrike) */
+html.borne:is([data-skin=bois],[data-skin=metal]) .bar .brand.b-dim{filter:none!important;color:var(--sg-fill)!important}
+html.borne:is([data-skin=bois],[data-skin=metal]) .bar .brand.b-dim::before{animation:none;filter:brightness(.16);transition:filter .7s ease-in}
+html.borne:is([data-skin=bois],[data-skin=metal]) .bar .brand.b-dim::after{animation:none;opacity:.12;transition:opacity .7s}
+
+@media (prefers-reduced-motion:reduce){html.borne .bar .brand::before,html.borne .bar .brand::after{animation:none!important}}
+
+/* téléphone : les lettres à la mesure du plexi, INTERSEKTION compris */
+@media (max-width:700px){html.borne:is([data-skin=bois],[data-skin=metal]) .bar .brand{font-size:clamp(1.15rem,8vw,2.4rem)!important}}
+@media (min-width:701px){html.borne:is([data-skin=bois],[data-skin=metal]) .bar .brand{font-size:clamp(1.15rem,min(4.4vh,3.4vw),2.7rem)!important}}
+
+/* ---------- 2. bois : la photo de l'enseigne recadrée sur son cadre ; la salle floue au-dessus du cadre (taches bleues et jaunes) disparaît ---------- */
+html.borne[data-skin=bois]:not([data-mode=device]):not([data-habit=fauneye]) .bar .brand{background-size:100% 107%!important;background-position:50% 100%!important}
+html.borne[data-skin=bois]{--mq-t:16.2%;--mq-b:21.4%;--mq-l:2.7%;--mq-r:2.7%}
+
+/* ---------- 3. la salle reste la même dans les programmes : zéro bande bleu nuit au-dessus du meuble ---------- */
+html.borne{background-color:#0b0908}
+
+/* ---------- 4. les bulles du guide : une plaque de verre fumé, la lettre en phosphore de la couleur du sujet ; zéro cadre d'un pixel ---------- */
+html.borne .gtip{border:0!important;border-radius:3px;padding:9px 13px 10px;
+  background:linear-gradient(180deg,rgba(255,255,255,.05),transparent 42%),linear-gradient(180deg,#15120f,#090807)!important;
+  box-shadow:0 0 0 1px #000,inset 0 1px 0 rgba(255,255,255,.1),inset 0 0 0 1px rgba(255,255,255,.035),inset 3px 0 0 color-mix(in srgb,var(--gc,#c9a84c) 70%,transparent),
+    0 10px 24px rgba(0,0,0,.65),0 0 26px color-mix(in srgb,var(--gc,#c9a84c) 16%,transparent)!important;color:#e6dcc6}
+html.borne .gtip b{text-shadow:0 0 8px color-mix(in srgb,var(--gc,#c9a84c) 55%,transparent)}
+
+/* ---------- pied de l'écran : la dalle noire devient une plaque de verre imprimée au dos (filet fin, coins vissés), sans reflet ---------- */
+html.borne .b-bezelfoot{position:relative}
+html.borne .b-bezelfoot::before{content:"";position:absolute;inset:4px 6px;pointer-events:none;border-radius:3px;
+  box-shadow:inset 0 0 0 1px rgba(214,170,110,.16),inset 0 0 0 3px rgba(0,0,0,.6),inset 0 0 0 4px rgba(214,170,110,.07);
+  background:radial-gradient(circle at 8px 50%,rgba(214,170,110,.22) 0 1.6px,transparent 2.2px),radial-gradient(circle at calc(100% - 8px) 50%,rgba(214,170,110,.22) 0 1.6px,transparent 2.2px)}
+
+/* ---------- 26 oct., 17 h 55 : haut-parleur entier ; touche son puis PL à sa droite ; libellés 🎶 et 🧤 ---------- */
+html.borne .bar .dock:first-of-type,html.borne .bar .dock:last-of-type{background-size:contain!important;background-position:center top!important;background-repeat:no-repeat!important;background-color:#0b0a09!important}
+html.borne .bar .dock:first-of-type .b-bell{grid-column:2!important}
+html.borne .bar .dock:first-of-type #export-pl{grid-column:3!important}
+@media (max-width:700px){html.borne .bar .dock:first-of-type .b-bell{grid-column:2!important}html.borne .bar .dock:first-of-type #export-pl{grid-column:3!important}}
+html.borne .b-knoblab{font-size:15px!important;letter-spacing:0!important;line-height:1}
+html.borne .b-knobw:last-child .b-knoblab{font-size:9px!important;letter-spacing:.12em!important}
+html.borne .bar .dock:first-of-type{background-size:auto calc(100% - 46px)!important;background-position:center 6px!important}
+@media (max-width:700px){html.borne .bar .dock:first-of-type{min-height:118px!important}}
+
+/* ---------- Burrows : lueurs intérieures ---------- */
+html.borne .b-lglow{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden;border-radius:inherit}
+html.borne .b-lglow i{position:absolute;border-radius:50%;mix-blend-mode:screen;opacity:0;background:radial-gradient(circle,rgba(var(--c),.55) 0,rgba(var(--c),.22) 38%,transparent 70%)}
+html.borne .b-lglow i.on{animation:bburlit var(--d,4s) ease-in-out}
+@keyframes bburlit{0%,100%{opacity:0}45%{opacity:1}}
+html.borne .b-lglow i.b-tv{opacity:.5;animation:bburtv 5.3s steps(1,end) infinite}
+@keyframes bburtv{0%{opacity:.5}14%{opacity:.62}15%{opacity:.42}38%{opacity:.56}60%{opacity:.46}61%{opacity:.7}63%{opacity:.5}88%{opacity:.58}}
+html.borne .b-land span{z-index:2}
+@media (prefers-reduced-motion:reduce){html.borne .b-lglow i{animation:none}}
+
+/* ---------- 26 oct., 18 h : aimant à droite, centré sur la hauteur de la porte ; haut-parleur entier au-dessus de la bande du titre ---------- */
+html.borne .b-dkhost{position:relative}
+html.borne .b-dekonect{top:auto!important;bottom:var(--dkb,90px)!important;right:calc(var(--inset,20px) + 8px)!important;transform:none;z-index:30}
+html.borne .b-dekonect:active{transform:scale(.92)}
+html.borne .b-dekonect.b-dklow{color:rgba(255,236,210,.28)!important}
+html.borne .bar .dock:first-of-type{background-size:auto calc(100% - 46px)!important;background-position:center 6px!important}
+@media (max-width:700px){html.borne .bar .dock:first-of-type{min-height:118px!important}}
+/* les lettres des touches suivent la taille de la touche : elles ne débordent plus quand l'écran est bas */
+html.borne #home .b-panel .cabinets>.cab{container-type:inline-size}
+html.borne #home .b-panel .cabinets>.cab b{font-size:min(clamp(1rem,1.7vw,1.45rem),16cqi)!important;white-space:nowrap}
+/* la manette garde la proportion des touches, même quand le meuble rapetisse */
+@media (min-width:701px){html.borne #home .b-panel .cabinets{container-type:inline-size}
+html.borne .b-panel .cabinets>.b-stick,html.borne .b-panel .cabinets>.b-stick i{width:clamp(48px,12.8cqi,140px)!important}}
+/* haut-parleurs sur ordinateur : l'image seule, sans caisson noir autour */
+@media (min-width:701px){
+html.borne .bar .dock:first-of-type,html.borne .bar .dock:last-of-type{background-color:transparent!important;box-shadow:none!important;filter:drop-shadow(0 5px 8px rgba(0,0,0,.6))}
+html.borne .bar .dock:last-of-type{background-position:center!important}
+html.borne .bar .dock:first-of-type.b-narrow{grid-template-columns:minmax(0,1fr) 32px 32px minmax(0,1fr)!important;grid-template-rows:minmax(0,1fr) 26px!important;row-gap:3px!important;padding:4px!important;background-image:none!important;position:relative}
+html.borne .bar .dock:first-of-type.b-narrow::after{content:"";position:absolute;inset:4px 4px 33px;background:center top/contain no-repeat;z-index:0;pointer-events:none}
+html.borne[data-skin=bois] .bar .dock:first-of-type.b-narrow::after{background-image:url(skin-bois-grille.webp)}
+html.borne[data-skin=metal] .bar .dock:first-of-type.b-narrow::after{background-image:url(skin-metal-grille.webp)}
+html.borne .bar .dock:first-of-type.b-narrow>*{position:relative;z-index:1}
+html.borne .bar .dock:first-of-type.b-narrow #radio-toggle{grid-row:1!important;grid-column:1 / -1!important;align-self:end;height:18px!important;min-height:18px!important;padding:0 6px!important}
+html.borne .bar .dock:first-of-type.b-narrow #radio-toggle .motel-l{font-size:9px!important}
+html.borne .bar .dock:first-of-type.b-narrow .b-bell,html.borne .bar .dock:first-of-type.b-narrow #export-pl{grid-row:2!important;height:26px!important;min-height:26px!important;width:32px!important}
+html.borne .bar .dock:first-of-type.b-narrow .b-bell{grid-column:2!important}
+html.borne .bar .dock:first-of-type.b-narrow #export-pl{grid-column:3!important}}
+/* passage d'un programme à l'autre : le faisceau du tube repeint l'image de haut en bas, à la couleur du programme qui arrive */
+html.borne{--tc:255,196,120}
+html.borne[data-habit=minitel]{--tc:150,240,170}
+html.borne[data-habit=vhs]{--tc:255,170,120}
+html.borne[data-habit=photo]{--tc:255,214,150}
+html.borne[data-habit=fauneye]{--tc:240,232,210}
+html.borne[data-habit=korong]{--tc:255,186,110}
+html.borne .b-morph .b-glass::before{inset:auto 0 auto 0!important;top:-18%;height:18%;transform:none!important;opacity:0;mix-blend-mode:screen;
+  background:linear-gradient(180deg,transparent 0,rgba(var(--tc),.08) 50%,rgba(var(--tc),.42) 86%,rgba(255,250,238,.95) 97%,transparent 100%)!important;
+  animation:bbeam .9s cubic-bezier(.45,0,.3,1) both!important}
+@keyframes bbeam{0%{top:-18%;opacity:0}6%{opacity:1}90%{opacity:1}100%{top:82%;opacity:0}}
+html.borne .b-morph .b-glass>*{animation:bpaint .9s cubic-bezier(.45,0,.3,1) both!important}
+@keyframes bpaint{0%{clip-path:inset(0 0 100% 0);filter:brightness(1.8) saturate(.5)}70%{filter:brightness(1.15) saturate(.9)}100%{clip-path:inset(0 0 0 0);filter:none}}
+/* zapping dans un groupe : une vraie neige de tube, grise, qui crépite et s'efface */
+html.borne .b-glass.b-snow::before{inset:0!important;transform:none!important;mix-blend-mode:normal;
+  background:linear-gradient(180deg,transparent 0 40%,rgba(0,0,0,.55) 46%,rgba(0,0,0,.55) 52%,transparent 58%) 0 0/100% 200%,
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='1.7 0 0 0 -.42 1.7 0 0 0 -.42 1.7 0 0 0 -.42 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") 0 0/180px 180px!important;
+  animation:bsnow2 .5s steps(1,end) forwards!important}
+@keyframes bsnow2{0%{opacity:.95;background-position:0 0,0 0}12%{background-position:0 20%,-63px 41px}25%{background-position:0 40%,37px -88px}37%{background-position:0 60%,-121px 17px}50%{opacity:.9;background-position:0 80%,74px 133px}62%{background-position:0 100%,-29px -54px}75%{opacity:.6;background-position:0 120%,111px 69px}100%{opacity:0;background-position:0 160%,-47px -101px}}
+@media (prefers-reduced-motion:reduce){html.borne .b-morph .b-glass::before,html.borne .b-morph .b-glass>*{animation:none!important}}
+/* plus aucun reflet balayé sur les touches */
+html.borne .cab .gleam,html.borne .menu .gleam{display:none!important}
+html.borne .cab.sweep{filter:none!important}
+html.borne .b-lore.b-onbox{z-index:20!important}
+
+/* la mini-manette du pied de l'écran suit le même modèle que la grande : socle fixe, tige et boule qui penchent */
+html.borne .b-bezelfoot .b-stick-mini{position:relative}
+html.borne .b-bezelfoot .b-stick-mini::before{content:""!important;display:block!important;position:absolute;inset:0;z-index:0;left:0!important;right:0!important;bottom:0!important;height:auto!important;border-radius:0!important;box-shadow:none!important;
+  background:var(--i-stick) center bottom/contain no-repeat!important;clip-path:inset(var(--stk-cut,60%) 0 0 0)}
+html.borne .b-bezelfoot .b-stick-mini i{z-index:1;clip-path:inset(0 0 calc(100% - var(--stk-cut,60%)) 0);filter:none!important}
+html.borne .b-bezelfoot .b-stick-mini::after{content:"";position:absolute;z-index:0;left:50%;bottom:calc(100% - var(--stk-cut,60%) - 6%);width:46%;height:12%;border-radius:50%;pointer-events:none;
+  background:radial-gradient(ellipse,rgba(0,0,0,.55),transparent 70%);transform:translateX(calc(-50% + var(--x,0) * 12px)) scaleX(calc(1 + var(--v,0) * .3));filter:blur(2px)}
+html.borne .b-bezelfoot .b-stick-mini i{background:none!important;clip-path:none!important;transform-origin:50% var(--stk-cut,60%)!important;
+  transform:rotate(calc(var(--x,0) * 15deg)) translateY(calc(var(--y,0) * 2px))!important}
+html.borne .b-bezelfoot .b-stick-mini i::before{content:"";position:absolute;inset:0;display:block!important;background:var(--i-stick) center bottom/contain no-repeat;
+  clip-path:inset(0 0 calc(100% - var(--ball-cut,36%)) 0);transform-origin:50% calc(var(--ball-cut,36%) / 1.9);transform:rotate(calc(var(--x,0) * -15deg));z-index:2}
+html.borne .b-bezelfoot .b-stick-mini i::after{content:""!important;display:block!important;position:absolute;left:calc(50% - 3.2%);width:6.4%;
+  top:calc(var(--ball-cut,36%) - 6%);height:calc(var(--stk-cut,60%) - var(--ball-cut,36%) + 7%);border-radius:3px;z-index:1;margin:0!important;
+  background:linear-gradient(90deg,#4a4844 0%,#d8d4cc 30%,#ffffff 42%,#9a968e 60%,#3a3834 100%)!important;box-shadow:none!important;transform:none!important}
+html.borne .b-bezelfoot .b-stick-mini i{transition:none!important}
+/* ordinateur : le meuble garde une taille lisible sur les écrans bas (portables), au lieu de rapetisser avec la hauteur de la fenêtre */
+@media (min-width:1100px){html.borne{--scrW:max(600px,min(calc(100vw - 80px),calc((100vh - 290px) * 4 / 3)))}}
+/* porte : fente et molettes côte à côte dès que le meuble a la place (600 px), au lieu de s'empiler */
+@container cab (min-width:600px) and (max-width:700px){
+  html.borne .b-door{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important}
+  html.borne .b-door>.b-slot{grid-column:2!important}
+  html.borne .b-door>.b-knobs{grid-column:3!important;justify-self:start!important}}
+/* les bandes invisibles des bords de l'écran ne volent plus les gestes des jeux : on change de programme par les points sous l'écran, la manette ou PageUp/PageDown */
+html.borne .b-edge{display:none!important}
+/* lisibilité des écrans : lignes de balayage et vignettage allégés ; dans un programme, l'image reste nette jusqu'aux bords */
+html.borne .b-glass::after{background:repeating-linear-gradient(0deg,rgba(0,0,0,.07) 0 1px,transparent 1px 3px)!important;box-shadow:inset 0 0 28px rgba(0,0,0,.4)!important}
+html.borne[data-prog] .b-glass::after{background:repeating-linear-gradient(0deg,rgba(0,0,0,.04) 0 1px,transparent 1px 3px)!important;box-shadow:inset 0 0 14px rgba(0,0,0,.35)!important}
+html.borne[data-mode=device] .b-glass::after,html.borne[data-habit=fauneye] .b-glass::after{background:none!important;box-shadow:none!important}
+html.borne .b-bezelfoot #koins.b-credit{pointer-events:auto}html.borne .b-bezelfoot #koins.b-credit *{pointer-events:none}
+/* la date de l'écran d'accueil sur un bandeau de verre fumé : lisible quel que soit le décor dessous */
+html.borne .b-date{padding:5px 9px;border-radius:3px;background:rgba(6,5,4,.62);box-shadow:0 0 0 1px rgba(255,233,168,.08);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+/* 🧤 et 🎶 gravés dans la plaque des molettes, comme FR · EN, au lieu de deux pastilles bleues */
+html.borne .b-knoblab{filter:grayscale(1) contrast(1.4) brightness(.42);text-shadow:0 1px 0 rgba(255,255,255,.45)}
+html.borne[data-skin=metal] .b-knoblab{filter:grayscale(1) brightness(2.1) contrast(.75);text-shadow:0 1px 0 rgba(0,0,0,.8)}

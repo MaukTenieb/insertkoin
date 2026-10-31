@@ -1,0 +1,51 @@
+<!--
+ * Code: MIT licence, Copyright (c) 2026 Mauk Tenieb (see LICENSE).
+ * Korhogo material: Copyright © Mauk Tenieb & Korhogo, all rights reserved. Korhogo™,
+ * Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™,
+ * Korong!™ and any related material — characters, names, symbols, rules, lore, texts,
+ * images and music, in any form or medium, including inside this file — stay out of the
+ * MIT licence and remain the property of the author. No use of that material for
+ * training artificial intelligence. Contact: mauktenieb@gmail.com
+-->
+<!-- KG fragment: ERRATIC memory game panel (#mem). Markup as parsed by the browser from the original index.html. -->
+<div id="mem">
+  <div class="m-screen" id="m-title">
+    <div class="motel-bar" style="display:flex;align-items:center;gap:.6rem;cursor:pointer;touch-action:auto;user-select:none;padding:10px 16px;justify-content:center;" data-action="toggleRadio()">
+  <div style="font-size:1.2rem;color:rgba(201,168,76,.5);">♪</div>
+  <span style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.2em;color:rgba(201,168,76,.5);">MOTEL SOUND</span>
+  <div class="motel-bar-note" style="font-size:.6rem;color:rgba(201,168,76,.4);letter-spacing:.1em;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
+</div>
+    <div class="sub">Korhogo · Memory</div>
+    <h1>THE FAUNA</h1>
+    <div class="m-grid">
+      <button class="m-btn" data-action="sndBtn();mStart(6)">6 pairs<br><small style="opacity:.5">Easy</small></button>
+      <button class="m-btn" data-action="sndBtn();mStart(9)">9 pairs<br><small style="opacity:.5">Medium</small></button>
+      <button class="m-btn" data-action="sndBtn();mStart(12)">12 pairs<br><small style="opacity:.5">Hard</small></button>
+      <button class="m-btn" data-action="sndBtn();mStart(18)">18 pairs<br><small style="opacity:.5">full Fauna</small></button>
+      <button class="m-btn full" data-action="sndClose();closeMem()">← BACK TO FAUNA</button>
+    </div>
+    <div id="m-scores"></div>
+  </div>
+  <div class="m-screen hidden" id="m-game">
+    <div id="m-hud">
+      <div style="display:flex;gap:1rem">
+        <div class="m-stat">PAIRS <b id="m-pairs">0/0</b></div>
+        <div class="m-stat">MOVES <b id="m-moves">0</b></div>
+        <div class="m-stat">TIME <b id="m-time">0:00</b></div>
+      </div>
+      <button id="m-quit" data-action="mMenuBack()">← MENU</button>
+    </div>
+    <div id="m-board"></div>
+    <div id="m-flash"><div id="m-flash-name"></div></div>
+  </div>
+  <div class="m-screen hidden" id="m-win">
+    <h2>FOUND!</h2>
+    <div class="w-sub">All pairs matched</div>
+    <div class="w-score" id="m-win-score"></div>
+    <div class="w-btns">
+      <button class="w-btn" data-action="sndBtn();mRestartSame()">Play Again</button>
+      <button class="w-btn" data-action="sndBtn();mMenuBack()">Menu</button>
+      <button class="w-btn" data-action="sndClose();closeMem()">← Exit</button>
+    </div>
+  </div>
+</div>

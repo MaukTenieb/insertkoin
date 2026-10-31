@@ -111,3 +111,16 @@ try{window.mStart=mStart;}catch(e){}
 try{
   window.openMem=openMem;
 }catch(e){}
+
+/* 30 oct. — clavier et manette : les flèches promènent un curseur sur les cartes, Espace ou Entrée retourne la carte */
+(function(){var cur=-1;
+  function cards(){return [].slice.call(document.querySelectorAll('#m-board .card'));}
+  function show(){cards().forEach(function(e,i){e.classList.toggle('kcur',i===cur);});}
+  document.addEventListener('keydown',function(e){var g=document.getElementById('m-game');if(!g||g.classList.contains('hidden')||!g.offsetParent)return;
+    var c=cards(),n=c.length;if(!n)return;var m=(document.getElementById('m-board').style.gridTemplateColumns.match(/repeat\((\d+)/)||[0,'4'])[1],cols=+m||4,k=e.key;
+    if(cur<0||cur>=n){if(/^Arrow/.test(k)){cur=0;e.preventDefault();show();}return;}
+    if(k==='ArrowRight')cur=(cur+1)%n;else if(k==='ArrowLeft')cur=(cur-1+n)%n;else if(k==='ArrowDown')cur=(cur+cols)%n;else if(k==='ArrowUp')cur=(cur-cols+n)%n;
+    else if(k===' '||k==='Enter'){e.preventDefault();c[cur].click();setTimeout(show,0);return;}else return;
+    e.preventDefault();show();});
+  document.addEventListener('pointerdown',function(){if(cur>=0){cur=-1;show();}},true);
+})();

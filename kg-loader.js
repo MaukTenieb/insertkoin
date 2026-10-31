@@ -225,7 +225,7 @@
     s.timer=setInterval(function(){
       if(anyVisible(name)){s.seen=true;s.hidden=0;return;}
       if(!s.seen){if(Date.now()-s.t0>5000){console.warn('KG: '+name+' panel never became visible');endSession(name);}return;}
-      if(++s.hidden>=2)endSession(name);  // hidden on two consecutive checks (~300 ms)
+      if(++s.hidden>=7)endSession(name);  // hidden on seven consecutive checks (~1 s)
     },150);
   }
 

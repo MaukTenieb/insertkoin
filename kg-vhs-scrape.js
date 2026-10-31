@@ -21,6 +21,7 @@
   "use strict";
   var enc = encodeURIComponent;
   var RELAYS = [
+    function (u) { return "https://faunator.mauktenieb.workers.dev/?url=" + enc(u); },   /* le relais de Mauk Tenieb (Cloudflare), en tête */
     function (u) { return "https://api.allorigins.win/raw?url=" + enc(u); },
     function (u) { return "https://api.cors.lol/?url=" + enc(u); },
     function (u) { return "https://cors.x2u.in/" + u; },
@@ -65,10 +66,14 @@
     }, function (e) { if (t) clearTimeout(t); throw e; }).then(function (x) { if (!x || x.length < 500) throw new Error("jina empty"); return x; });
   }
   function page(u) {
-    var ps = RELAYS.map(function (f) { return timed(f(u), 12000).then(function (x) { if (!x || x.length < 500) throw 0; return x; }); });
-    ps.unshift(jina(u));
-    ps.push(tor().then(function (m) { if (!m) throw 0; return m.get(u); }).then(function (r) { if (!r || !r.text || r.text.length < 500) throw 0; return r.text; }));
-    return any(ps);
+    /* le relais propre d'abord : l'adresse demandée reste chez Mauk Tenieb ; s'il tombe, toutes les autres routes ensemble */
+    function rest() {
+      var ps = RELAYS.slice(1).map(function (f) { return timed(f(u), 12000).then(function (x) { if (!x || x.length < 500) throw 0; return x; }); });
+      ps.unshift(jina(u));
+      ps.push(tor().then(function (m) { if (!m) throw 0; return m.get(u); }).then(function (r) { if (!r || !r.text || r.text.length < 500) throw 0; return r.text; }));
+      return any(ps);
+    }
+    return timed(RELAYS[0](u), 9000).then(function (x) { if (!x || x.length < 500) throw 0; return x; }).catch(rest);
   }
   function unesc(s) {
     try { return JSON.parse('"' + s + '"'); } catch (e) { return s.replace(/\\u0026/g, "&").replace(/\\"/g, '"'); }

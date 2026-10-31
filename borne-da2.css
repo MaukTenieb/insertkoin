@@ -1,0 +1,89 @@
+/* Borne Insert Koin : relecture de direction artistique (26 oct.). Chargé après borne-cabinet.css et borne-charte.css.
+   Une seule logique de matière et de lumière : un meuble posé au sol, dans une salle sombre, éclairé par son enseigne.
+   Bois et métal seulement ; le skin 1960 garde ses règles. */
+
+/* ---------- 1. la salle : l'enseigne éclaire le mur derrière le meuble ; le sol reçoit son ombre ---------- */
+html.borne body{background:radial-gradient(ellipse 62% 34% at 50% 0,rgba(255,138,48,.085),transparent 72%),#0b0908}
+
+/* ---------- 2. la moulure en T : un jonc arrondi (sombre aux bords, reflet au milieu), la même dans chaque programme ---------- */
+html.borne:is([data-skin=bois],[data-skin=metal]){
+  --tm0:#020202;--tm1:#0d0d0e;--tm2:#26272a;--tm3:#6a6d72}
+html.borne[data-skin=metal]{--tm0:#111214;--tm1:#474c52;--tm2:#9aa1a8;--tm3:#eef2f5}
+html.borne:is([data-skin=bois],[data-skin=metal]) .wrap{border-style:solid;border-color:var(--tm1)!important;
+  border-image-source:linear-gradient(90deg,var(--tm0) 0,var(--tm1) 1.5px,var(--tm2) 3px,var(--tm3) 4px,var(--tm2) 5px,var(--tm1) 6.5px,var(--tm0) 8px,transparent 8px,
+    transparent calc(100% - 8px),var(--tm0) calc(100% - 8px),var(--tm1) calc(100% - 6.5px),var(--tm2) calc(100% - 5px),var(--tm3) calc(100% - 4px),var(--tm2) calc(100% - 3px),var(--tm1) calc(100% - 1.5px),var(--tm0) 100%)!important;
+  border-image-slice:0 8!important;border-image-repeat:stretch!important;border-radius:3px 3px 2px 2px!important}
+
+/* ---------- 3. les flancs : un seul panneau, sans raccord ni vis répétées ---------- */
+/* bois : la planche de skin-bois-flanc.webp, vis retirées, mise en miroir verticalement (skin-bois-flanc-long.webp), à la largeur du meuble */
+html.borne.borne[data-skin=bois] .wrap.wrap{background-color:#2b1d14!important;background-image:url(skin-bois-flanc-long.webp)!important;
+  background-size:100% auto!important;background-repeat:repeat-y!important;background-position:center top!important}
+/* métal : la tôle à la largeur du meuble, une seule bande de lumière de chaque côté */
+html.borne.borne[data-skin=metal] .wrap.wrap{background-size:100% auto!important;background-repeat:repeat-y!important;background-position:center top!important}
+
+/* ---------- 4. le socle : une plinthe en retrait, le copyright imprimé dessus ; une ombre de contact au sol ---------- */
+html.borne{--kick:52px}
+@media (max-width:700px){html.borne{--kick:60px}}
+html.borne[data-prog]{--kick:20px}
+html.borne:is([data-skin=bois],[data-skin=metal]) .wrap{margin-bottom:36px!important;
+  box-shadow:inset 0 calc(-1 * var(--kick)) 0 rgba(0,0,0,.52),inset 0 calc(-1 * var(--kick) - 1px) 0 rgba(255,236,205,.07),inset 0 calc(-1 * var(--kick) - 7px) 7px -6px rgba(0,0,0,.6),
+    0 14px 10px -6px rgba(0,0,0,.9),0 34px 70px rgba(0,0,0,.75)!important;transition:width .75s cubic-bezier(.6,.05,.3,1),box-shadow .6s}
+html.borne:is([data-skin=bois],[data-skin=metal]) .b-copy{margin-top:calc(var(--s5,24px) + 4px)!important}
+html.borne[data-skin=metal] .b-copy{color:rgba(230,224,212,.4)!important}
+
+/* ---------- 5. la console : une tablette en trapèze, son bord avant exactement sous le rebord ; plus de pans qui dépassent ---------- */
+html.borne .b-panel::before{left:-3.2%;right:-3.2%;transform:none!important;clip-path:polygon(3.1% 0,96.9% 0,100% 100%,0 100%);
+  background:linear-gradient(180deg,rgba(0,0,0,.5),transparent 20%,transparent 78%,rgba(255,235,200,.07)),var(--pan,none) center/100% 100% no-repeat,var(--pan-c,#1a1816)}
+@media (max-width:700px){
+  html.borne .b-panel::before{left:0;right:0;clip-path:none}
+  html.borne .b-panel::after{left:0;right:0;border-radius:0 0 4px 4px}
+}
+
+/* ---------- 6. gravures lisibles sur la tôle sombre du skin métal ---------- */
+html.borne[data-skin=metal]{--eng-panel:#e2ddd2;--eng-panel-sh:0 1px 0 rgba(0,0,0,.9),0 0 5px rgba(0,0,0,.55)}
+
+/* ---------- 7. la plaque des molettes en métal : une tôle bronze à canon, les molettes gardent leur chrome ---------- */
+html.borne[data-skin=metal] .b-knobs{filter:none!important;
+  background:radial-gradient(circle at 7px 7px,#1c1b19 0 2px,transparent 2.6px),radial-gradient(circle at calc(100% - 7px) 7px,#1c1b19 0 2px,transparent 2.6px),
+    radial-gradient(circle at 7px calc(100% - 7px),#1c1b19 0 2px,transparent 2.6px),radial-gradient(circle at calc(100% - 7px) calc(100% - 7px),#1c1b19 0 2px,transparent 2.6px),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.045) 0 1px,transparent 1px 3px),linear-gradient(180deg,#6b655b,#4d483f 55%,#3d3932)!important;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.22),0 4px 10px rgba(0,0,0,.5)!important}
+html.borne[data-skin=metal] .b-knoblab{color:#e2ddd2!important;text-shadow:0 1px 0 rgba(0,0,0,.85)!important}
+
+/* ---------- 8. le pied du cadre : un seul langage de pièces ---------- */
+/* les Koins : la même fenêtre d'affichage sous verre fumé que le bloc son */
+html.borne .b-bezelfoot #koins.b-credit{background:linear-gradient(170deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,.02) 38%,transparent 40%),radial-gradient(ellipse at 50% 120%,rgba(255,150,40,.12),transparent 70%),#070605!important;
+  box-shadow:inset 0 2px 4px rgba(0,0,0,.95),inset 0 0 0 1px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.12),0 -1px 0 rgba(0,0,0,.5)!important}
+/* Immersion : une touche physique, la même que PL et le haut-parleur */
+html.borne .b-imm{border-radius:4px;background:linear-gradient(180deg,#3a3633 0%,#22201e 55%,#171513 100%);color:#d9cfbf;font-weight:600;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -2px 0 rgba(0,0,0,.5),0 0 0 1px #000,0 3px 0 #0b0a09,0 4px 6px rgba(0,0,0,.6);text-shadow:0 -1px 0 rgba(0,0,0,.8);transition:transform .06s,box-shadow .06s}
+html.borne .b-imm:hover{color:#fff4e0}
+html.borne .b-imm:active{transform:translateY(2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 0 1px #000,0 1px 0 #0b0a09,0 2px 3px rgba(0,0,0,.6)}
+
+/* ---------- 9. programmes : les points sous l'écran tiennent dans la largeur de l'écran (téléphone) ---------- */
+html.borne .b-dots{contain:inline-size;width:100%}
+html.borne .b-dot{flex:0 1 34px;min-width:0}
+/* téléphone étroit, programme ouvert : le pied du cadre (Koins, diode, manette, Immersion, Baku Boom) tient dans la largeur du meuble */
+@media (max-width:380px){
+  html.borne .b-bezelfoot{gap:var(--s1,4px)!important}
+  html.borne .b-bezelfoot #koins.b-credit{padding:0 var(--s2,8px)!important}
+  html.borne .b-imm{margin-right:0}
+  html.borne[data-prog] .b-bezelfoot .b-boom{margin-left:var(--s1,4px)}
+}
+
+/* ---------- 26 oct., 14 h 50 : choix de Mauk Tenieb ---------- */
+/* 1. la dynamite, atténuée : moins de blanc, plus de matière */
+html.borne .b-boom{filter:brightness(.78) saturate(.85) contrast(.95)!important}
+html.borne .b-boom:hover,html.borne .b-boom:focus-visible{filter:brightness(.95) saturate(1)!important}
+/* 3. dans les appareils, un peu d'air de chaque côté du meuble */
+@media (min-width:701px){html.borne[data-prog][data-mode=device] .wrap{width:calc(100vw - 40px)!important;max-width:calc(100vw - 40px)!important;margin-left:auto!important;margin-right:auto!important}}
+/* 4. l'étiquette INSERT KOIN, taillée à la mesure de son texte et logée sous la fente, sur chaque porte */
+html.borne .b-slot b{left:50%!important;right:auto!important;width:auto!important;top:auto!important;bottom:9%!important;height:auto!important;transform:translateX(-50%);
+  padding:4px 9px 3px!important;border-radius:2px!important;white-space:nowrap;font-size:clamp(6px,.62vw,8px)!important;line-height:1.2;letter-spacing:.08em;
+  background:#070605!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 0 0 1px #000,0 1px 0 rgba(255,255,255,.12)!important}
+/* 5. l'aimant Dekonect, à l'échelle de la porte : un tiers de la hauteur de la caisse à pièces */
+html.borne .b-dekonect{width:clamp(52px,4.6vw,74px)!important;height:clamp(52px,4.6vw,74px)!important;padding:6px!important;bottom:6px!important}
+@media (max-width:700px){html.borne .b-dekonect{width:52px!important;height:52px!important}}
+/* l'étiquette sous la fente, place exacte par porte */
+html.borne.borne[data-skin=bois] .b-slot b{left:51%!important;top:61%!important;bottom:auto!important;width:auto!important;height:auto!important;transform:translateX(-50%)!important}
+html.borne.borne[data-skin=metal] .b-slot b{left:50%!important;top:55%!important;bottom:auto!important;width:auto!important;height:auto!important;transform:translateX(-50%)!important}

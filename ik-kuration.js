@@ -12,7 +12,7 @@
    IKK.has(id) · IKK.toggle({id,title}) → true if kept · IKK.mine() → [{id,title}] · IKK.all() → Promise<[{pk,name,tracks,t}]>
    IKK.one(pk) → Promise<{pk,name,tracks,t}|null> · IKK.find(hex) → Promise<{…}|null> (8 to 64 hex) · IKK.url(pk) · IKK.pk() → own public key (hex) or null */
 (function () {
-  var KIND = 30078, TAG = 'korhogo-kuration', SINCE = 1792713600 /* 23 Oct 2026 */, MAX = 200,
+  var KIND = 30078, TAG = 'korhogo-kuration', SINCE = 1792713600 /* 23 Oct 2026 */, MAX = 99,
     RELAYS = ['wss://relay.damus.io', 'wss://nos.lol', 'wss://relay.primal.net', 'wss://nostr.mom'],
     NT = null, timer = 0, BASE = 'https://mauktenieb.github.io/insertkoin/';
   function get(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }
@@ -49,6 +49,7 @@
   function toggle(t) {
     if (!t || !/^[\w-]{11}$/.test(t.id)) return false;
     var list = mine(), on = !has(t.id);
+    if (on && list.length >= MAX) return false;
     list = on ? list.concat([{ id: t.id, title: String(t.title || t.id) }]) : list.filter(function (x) { return x.id !== t.id; });
     put('ik.kuration', list); shelf(list);
     clearTimeout(timer); timer = setTimeout(send, 4000);

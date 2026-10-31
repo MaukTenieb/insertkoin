@@ -9,8 +9,8 @@
  * training artificial intelligence. Contact: mauktenieb@gmail.com
  */
 
-/* KG module "kapture" -- KAPTURE camera: a live view, one shot, and the photo goes to Photofauna
-   (window.ikToPhotofauna, set by the host page). Outside Insert Koin the photo is saved as a file.
+/* KG module "kapture" -- KAPTURE camera: a live view, one shot, and the photo goes to FotoFauna
+   (window.ikToFotoFauna, set by the host page). Outside Insert Koin the photo is saved as a file.
    The screenshot (SKREEN) is the host page's job: it has to be taken before any panel opens.
    The former 5-second video recorder stays in the git history (kg-kapture.js before 20 Oct 2026).
    The viewfinder is the shared screen (ik-ecran.js): the same frame, size and place as in every program,
@@ -33,7 +33,7 @@
   function pickFile(){var f=$('kapture-file');if(!f)return;f.onchange=function(){var file=f.files&&f.files[0];f.value='';if(file)deliver(file,file.name);};f.click();}
   function deliver(blob,name){
     stopCam();
-    if(typeof window.ikToPhotofauna==='function'){window.kaptureClose();window.ikToPhotofauna(blob,'kam');return;}
+    if(typeof window.ikToFotoFauna==='function'){window.kaptureClose();window.ikToFotoFauna(blob,'kam');return;}
     var a=document.createElement('a'),u=URL.createObjectURL(blob);a.href=u;a.download=name||(window.ikName?ikName('kapture','jpg'):'kapture.jpg');
     document.body.appendChild(a);a.click();setTimeout(function(){a.remove();URL.revokeObjectURL(u);},2000);window.kaptureClose();
   }

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mauk Tenieb — Bio</title>
+<style>
+body{margin:0;background:#f4efe4;color:#1d1a16;font:16px/1.55 Georgia,"Times New Roman",serif}
+main{max-width:760px;margin:0 auto;padding:40px 28px 60px}
+h1{font:400 3rem/1 "Bebas Neue",Impact,sans-serif;letter-spacing:.04em;margin:0 0 6px}
+h2{font:400 1.5rem/1.1 "Bebas Neue",Impact,sans-serif;letter-spacing:.06em;margin:28px 0 8px;padding-top:10px;border-top:1px solid #cbbfa6}
+p{margin:.5em 0}
+ul{margin:.4em 0;padding-left:1.2em}
+li{margin:.25em 0}
+a{color:#7a3d06}
+.src{margin-top:36px;font-size:12px;color:#6b5f50}
+@media print{body{background:#fff}main{padding:0}a{color:#000;text-decoration:none}a::after{content:" (" attr(href) ")";font-size:10px;color:#555}.src{display:none}}
+</style>
+</head>
+<body>
+<main id="m"><p>…</p></main>
+<script>
+/* Bio : le profil GitHub de Mauk Tenieb, lu en direct (README de MaukTenieb/MaukTenieb), mis en page pour l'écran et l'impression. */
+(function(){
+  var SRC='https://raw.githubusercontent.com/MaukTenieb/MaukTenieb/main/README.md',m=document.getElementById('m');
+  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function inl(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g,'<a href="$2">$1</a>');}
+  function md(t){t=t.replace(/<!--[\s\S]*?-->/g,'');var out=[],list=false,para=[];
+    function flush(){if(para.length){out.push('<p>'+inl(para.join(' '))+'</p>');para=[];}}
+    t.split(/\r?\n/).forEach(function(l){var h=l.match(/^(#{1,3})\s+(.*)$/),li=l.match(/^\s*[-*]\s+(.*)$/);
+      if(h){flush();if(list){out.push('</ul>');list=false;}out.push('<h'+h[1].length+'>'+inl(h[2])+'</h'+h[1].length+'>');}
+      else if(li){flush();if(!list){out.push('<ul>');list=true;}out.push('<li>'+inl(li[1])+'</li>');}
+      else if(!l.trim()){flush();if(list){out.push('</ul>');list=false;}}
+      else para.push(l.trim());});
+    flush();if(list)out.push('</ul>');return out.join('\n');}
+  fetch(SRC,{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
+    m.innerHTML=md(t)+'<p class="src">github.com/MaukTenieb</p>';document.title=(m.querySelector('h1')||{}).textContent||document.title;
+  }).catch(function(){m.innerHTML='<h1>Mauk Tenieb</h1><p><a href="https://github.com/MaukTenieb">github.com/MaukTenieb</a></p>';});
+})();
+</script>
+</body>
+</html>

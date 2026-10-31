@@ -56,7 +56,7 @@ footer{color:var(--dim);font-size:11px;margin-top:40px}
   function day(t){return new Date(t*1000).toISOString().slice(0,10);}
   function n(x,en1,enN,fr1,frN){return x+' '+(fr?(x>1?frN:fr1):(x>1?enN:en1));}
   function card(k,me,solo){
-    var ids=k.tracks.slice(0,50).map(function(t){return t.id;}).join(',');
+    var ids=k.tracks.slice(0,99).map(function(t){return t.id;}).join(',');
     var page='kuration.html?k='+k.pk.slice(0,12);
     var list='<ol>'+k.tracks.map(function(t){return '<li><a href="https://youtu.be/'+t.id+'" target="_blank" rel="noopener">'+esc(t.title)+'</a></li>';}).join('')+'</ol>';
     return '<section class="k'+(k.pk===me?' me':'')+(solo?' solo':'')+'"><h2>'+(solo?esc(k.name):'<a href="'+page+'">'+esc(k.name)+'</a>')+'</h2>'+

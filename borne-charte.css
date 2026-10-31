@@ -1,0 +1,126 @@
+/* Borne Insert Koin — charte commune des programmes.
+   Allumée par défaut (classe b-charte sur la page, posée par borne-jeu.js) ; https://mauktenieb.github.io/insertkoin/#sanscharte l'éteint, #charte la rallume.
+   Titres : Bebas Neue, phosphore chaud #ffe3a0, halo ambre. Texte et commandes : DM Mono, 12 à 13 px au moins.
+   Boutons : 44 px de haut (32 px dans les claviers serrés des appareils), filet ambre de 1 px ; état actif rempli de l'accent, encre sombre.
+   Texte atténué : contraste de 4,5 au moins. Un accent par groupe de programmes (--nc) : KorhoGame #ffa726, FaunEye #e2c27a.
+   Les appareils gardent leur matière (Minitel, magnétoscope, FotoFauna, table de Korong!, carte de SkopoRhogo) : seuls les lettrages, les boutons et les tailles changent.
+   Les pages en cadre reçoivent borne-charte-frame.css. */
+html.borne.b-charte{--ch-ink:#f3e8d2;--ch-dim:#c4b9a4;--ch-acc:#ffa726;--ch-acc-ink:#1a0f05;--ch-line:rgba(255,167,38,.45);--ch-title:#ffe3a0}
+
+/* ---------- accents des groupes ---------- */
+html.b-charte #kg-root :is(#chess,#mem,#konklave-panel,#c4-panel,#bb-panel,#hang-panel,#mm-panel,#fi-panel),html.b-charte #select{--nc:#ffa726}
+html.b-charte #kg-root #vhs{--nc:#e2c27a}
+html.b-charte #kg-root :is(#chess,#mem,#konklave-panel,#c4-panel,#bb-panel,#hang-panel,#mm-panel,#fi-panel,#vhs){--ch-acc:var(--nc)}
+
+/* ---------- fond commun : DM Mono, encre claire ---------- */
+html.b-charte #kg-root{font-family:'DM Mono',ui-monospace,monospace}
+html.b-charte #kg-root :is(input,textarea,select){font-family:'DM Mono',ui-monospace,monospace!important;font-size:13px!important}
+html.b-charte #kg-root :is(#chess,#mem,#mm-panel,#konklave-panel,#c4-panel,#bb-panel,#hang-panel){color:var(--ch-ink);font-family:'DM Mono',ui-monospace,monospace}
+
+/* ---------- titres ---------- */
+html.b-charte #kg-root :is(#chess,#mem,#mm-panel) :is(h1,h2),
+html.b-charte #kg-root #konklave-panel :is(h1,h2,.kk-title,.kk-top-title),
+html.b-charte #kg-root #hang-gift .hang-work{font-family:'Bebas Neue',Impact,sans-serif!important;font-weight:400!important;letter-spacing:.08em!important;color:var(--ch-title)!important;
+  text-shadow:0 0 14px rgba(255,167,38,.55),0 2px 0 #000!important}
+html.b-charte #kg-root :is(#chess,#mem,#mm-panel) :is(h1,h2){font-size:clamp(34px,5.2vw,72px)!important;line-height:1!important}
+html.b-charte #kg-root #konklave-panel [style*="Bebas"]{color:var(--ch-title)!important;text-shadow:0 0 14px rgba(255,167,38,.55),0 2px 0 #000}
+
+/* ---------- libellés et textes secondaires : 13 px, atténués lisibles ---------- */
+html.b-charte #kg-root :is(#chess,#mem,#mm-panel) :is(.ch-sel-label,.sub,.m-stat,.ch-player,.w-sub,.w-score),
+html.b-charte #kg-root :is(#chess-status,#chess-over p,#m-scores,#m-hud,#hang-title,#hang-cat,#hang-motto,#bb-motto,#bb-bpm-lbl,#mm-status,#hang-status){font-family:'DM Mono',ui-monospace,monospace!important;font-size:13px!important;letter-spacing:.14em!important;color:var(--ch-dim)!important;opacity:1!important}
+html.b-charte #kg-root :is(#chess,#mem,#mm-panel) :is(.ch-sel-label,.sub,.m-stat,.ch-player,.w-sub,.w-score),html.b-charte #kg-root :is(#hang-title,#hang-cat){text-transform:uppercase}
+html.b-charte #kg-root #mem .m-stat b{color:var(--ch-acc)!important}
+html.b-charte #kg-root #hang-mask{text-shadow:0 0 1px #000,0 0 10px rgba(255,255,255,.18)}
+html.b-charte #kg-root #hang-gift cite,html.b-charte #kg-root #hang-gift .hang-wq{font-size:12px!important;color:var(--ch-dim)!important}
+html.b-charte #kg-root #chess-ai-badge{font-size:12px!important;color:#a9bcf2!important}
+html.b-charte #kg-root #chess-log{font-size:12px!important;color:var(--ch-dim)!important;max-height:3.4rem!important}
+html.b-charte #kg-root #chess-log .cm.w{color:#e0c060!important}
+html.b-charte #kg-root #chess-log .cm.b{color:#9fb4f0!important}
+html.b-charte #kg-root :is(#chess,#mem) .motel-bar-note,html.b-charte #kg-root :is(#chess,#mem) .motel-bar span{font-size:12px!important;color:var(--ch-dim)!important}
+
+/* ---------- boutons ---------- */
+html.b-charte #kg-root :is(#chess,#mem,#mm-panel) :is(.ch-sel-btn,.ch-go-btn,.m-btn,.w-btn,.mm-lv),
+html.b-charte #kg-root :is(#ch-kerema-btn,#m-quit,#mm-ok,#hang-again,#bb-play-btn,#bb-controls button,#c4-panel>button,#hang-panel>button,#mm-panel>button),
+html.b-charte #kg-root #konklave-panel :is(.kk-big,.kk-ghost,.kk-add,.kk-hand,.kk-fork-btn,.kk-redeal,.kk-exit){min-height:44px!important;min-width:96px;padding:0 18px!important;box-sizing:border-box;border-radius:4px!important;
+  border:1px solid var(--ch-line)!important;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.25))!important;color:var(--ch-ink)!important;
+  font-family:'DM Mono',ui-monospace,monospace!important;font-size:13px!important;font-weight:400!important;letter-spacing:.14em!important;text-transform:uppercase!important;line-height:1.2!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 2px 0 #000!important;transition:background .15s,box-shadow .15s,color .15s!important;cursor:pointer;opacity:1!important}
+html.b-charte #kg-root #konklave-panel :is(.kk-hand,.kk-ghost){text-transform:none!important;letter-spacing:.08em!important}
+html.b-charte #kg-root #konklave-panel .kk-exit{min-width:44px;padding:0 12px!important}
+html.b-charte #kg-root #konklave-panel .kk-count{font-family:'DM Mono',ui-monospace,monospace!important;font-size:12.5px!important;color:var(--ch-dim)!important;letter-spacing:.14em!important}
+html.b-charte #kg-root #konklave-panel :is(.kk-big,.kk-ghost,.kk-add,.kk-hand,.kk-fork-btn,.kk-redeal,.kk-exit):disabled,html.b-charte #kg-root #konklave-panel .kk-add[disabled]{opacity:.55!important;cursor:default}
+html.b-charte #kg-root :is(#chess,#mem,#mm-panel) :is(.ch-sel-btn,.ch-go-btn,.m-btn,.w-btn,.mm-lv):hover,
+html.b-charte #kg-root :is(#ch-kerema-btn,#m-quit,#mm-ok,#hang-again,#bb-play-btn,#bb-controls button):hover,
+html.b-charte #kg-root #konklave-panel :is(.kk-big,.kk-ghost,.kk-add,.kk-hand,.kk-fork-btn,.kk-redeal,.kk-exit):not(:disabled):hover{background:color-mix(in srgb,var(--ch-acc) 14%,transparent)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 0 14px color-mix(in srgb,var(--ch-acc) 35%,transparent)!important}
+html.b-charte #kg-root :is(#chess,#mem,#mm-panel) :is(.mm-lv.on,.ch-player.active,.m-btn.on,.ch-sel-btn.on),
+html.b-charte #kg-root #konklave-panel :is(.kk-chip.on),
+html.b-charte #kg-root :is(#chess,#mem,#mm-panel,#hang-panel,#bb-panel,#konklave-panel) button:not(.mm-peg):not(.hang-key):not(.sq):active{background:var(--ch-acc)!important;color:var(--ch-acc-ink)!important;border-color:var(--ch-acc)!important;box-shadow:0 0 16px color-mix(in srgb,var(--ch-acc) 55%,transparent)!important}
+html.b-charte #kg-root :is(#chess,#mem,#mm-panel) .m-btn :is(small,span,em){color:inherit!important;opacity:.85!important;font-size:12px!important}
+html.b-charte #kg-root #chess .ch-player{min-height:0!important;padding:.35em .8em!important}
+/* les touches de jeu (lettres du pendu, onglets à dés) : même filet, taille du clavier */
+html.b-charte #kg-root .hang-key{font-family:'DM Mono',ui-monospace,monospace!important;font-size:15px!important;color:var(--ch-ink)!important;border:1px solid var(--ch-line)!important;border-radius:4px!important}
+html.b-charte #kg-root .kb-tab{border:1px solid var(--ch-line)!important;color:var(--ch-ink)!important;border-radius:4px!important}
+html.b-charte #kg-root .kb-tab.on{background:var(--ch-acc)!important;color:var(--ch-acc-ink)!important;border-color:var(--ch-acc)!important}
+
+/* ---------- Faunarratik : les petits libellés à 12 px, lisibles ---------- */
+html.b-charte #kg-root #konklave-panel :is(.kk-rub-lbl,.kk-sub,.kk-choose-sub,.kk-feedlbl,.kk-kerema .kk-who,.kk-rapo .kk-who,.kk-bubble .kk-tag,.kk-bubble .kk-sec,.kk-th-n,.kk-ritem-lbl,.kk-card-l,.kk-rhd .kk-n,.kk-apart-line,.kk-apart,.kk-flow-mk-apart,.kk-ante-meta,.bl,.bv,.kk-counter){font-size:13px!important;opacity:1!important;color:var(--ch-dim)!important}
+html.b-charte #kg-root #konklave-panel :is(.kk-instr,.kk-flow-line){font-size:13px!important;color:var(--ch-dim)!important}
+html.b-charte #kg-root #konklave-panel .kk-chip{font-family:'DM Mono',ui-monospace,monospace!important;font-size:12px!important;min-height:32px;border-color:var(--ch-line)!important;color:var(--ch-ink)!important}
+html.b-charte #kg-root #konklave-panel .kk-chip.on{color:var(--ch-acc-ink)!important}
+html.b-charte #kg-root #konklave-panel .kk-chip :is(.n,.kk-chip-tx){font-size:12px!important;opacity:.85!important}
+html.b-charte #kg-root #konklave-panel .kk-bubble{font-size:13px!important}
+
+/* ---------- Katabatik : Sampler, Akasztófa ---------- */
+html.b-charte #kg-root #bb-panel .bb-label{font-size:12px!important}
+html.b-charte #kg-root #bb-motto{opacity:1!important}
+
+/* ---------- Korong! : la table et ses dessins restent ; l'étiquette du joueur à 13 px ---------- */
+html.b-charte #select #pick{font-size:13px!important}
+
+/* ---------- VHS : le magnétoscope garde sa matière ; lettrages DM Mono à 12 px, commandes de 44 px ---------- */
+html.b-charte #kg-root #vhs :is(.vhs-label,.vhs-boot-load,.vhs-shelf-title,.vhs-shelf-rubric,.vhs-shelf-empty,.vhs-rec-progress,.vhs-rec-hint,.vhs-find-count,.vhs-tapetools,.vhs-ttx-status,.vhs-ttx-hint,.vhs-message){font-size:12px!important}
+html.b-charte #kg-root #vhs :is(.vhs-shelf-title,.vhs-shelf-rubric,.vhs-find-count,.vhs-shelf-empty,.vhs-rec-hint){color:#b9b2a5!important}
+html.b-charte #kg-root #vhs .vhs-ttx-status,html.b-charte #kg-root #vhs .vhs-ttx-hint{color:#6fa3b8!important}
+html.b-charte #kg-root #vhs .vhs-tv-key{font-size:12px!important;color:#c4beb4!important;min-height:32px!important;padding:0 10px!important}
+html.b-charte #kg-root #vhs .vhs-key>span,html.b-charte #kg-root #vhs .vhs-vfd-state{font-size:12.5px!important}
+html.b-charte #kg-root #vhs :is(.vhs-find-input,.vhs-find-sort,.vhs-rec-input){font-size:13px!important;min-height:44px!important}
+html.b-charte #kg-root #vhs :is(.vhs-tab,.vhs-rec-btn,.vhs-rec-cancel,.vhs-tape-all,.vhs-tapetools-link,.vhs-tapetools-eject,.vhs-ttx-btn,.vhs-ttx-source,.vhs-ttx-close){min-height:44px!important;font-family:'DM Mono',ui-monospace,monospace!important;font-size:12.5px!important;letter-spacing:.14em!important;text-transform:uppercase}
+html.b-charte #kg-root #vhs :is(.vhs-rec-btn,.vhs-rec-cancel,.vhs-tape-all,.vhs-tapetools-link,.vhs-ttx-btn,.vhs-ttx-close){padding:0 14px!important;border-radius:4px!important;border:1px solid var(--ch-line)!important;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.25))!important;color:var(--ch-ink)!important}
+html.b-charte #kg-root #vhs .vhs-rec-btn :is(span,.vhs-rec-dot),html.b-charte #kg-root #vhs .vhs-tape-all *{font-size:12.5px!important}
+html.b-charte #kg-root #vhs .vhs-tab.is-active{color:var(--ch-acc)!important;border-bottom-color:var(--ch-acc)!important}
+html.b-charte #kg-root #vhs :is(.vhs-tracklist,.vhs-local-list) button{font-family:'DM Mono',ui-monospace,monospace!important;font-size:13px!important;min-height:44px!important}
+html.b-charte #kg-root #vhs .vhs-tape:not(.vhs-tape-k){font-size:12px!important;min-height:44px}
+html.b-charte #kg-root #vhs .vhs-tape-count{font-size:12.5px!important}
+/* étiquettes des cassettes : l'écriture au feutre reste, à 12 px, encre pleine */
+html.b-charte #kg-root #vhs .vhs-tape.vhs-tape-k :is(.vhs-tape-rep,.vhs-tape-count){font-size:12.5px!important;opacity:1!important}
+html.b-charte #kg-root #vhs .vhs-tape.vhs-tape-k .vhs-tape-count{color:#4d473a!important}
+
+/* ---------- la console en appareil Minitel : « Online Applicants » à l'encre sur la crème ---------- */
+html.b-charte[data-mode=device][data-habit=minitel] .b-online,html.b-charte[data-mode=device][data-habit=minitel] .b-online b{color:#3a3026!important}
+html.b-charte #kg-root #mm-panel .mm-fb .mm-no{color:#d0d0d0!important}
+html.b-charte #kg-root #mem .card-f-name{font-size:clamp(12px,1.6vw,.85rem)!important}
+html.b-charte #kg-root #konklave-panel #kk-counter{font-size:13px!important;opacity:1!important;color:var(--ch-dim)!important}
+html.b-charte #kg-root #bb-panel #bb-motto{font-size:12px!important;letter-spacing:.06em!important;line-height:1.35!important;min-height:0!important}
+
+/* ---------- charte d'arcade (DA.md) : titres en Press Start 2P, ombre portée en escalier ; boutons pleins et biseautés ; curseur ▶ qui clignote sur la sélection ---------- */
+html.b-charte #kg-root :is(#chess,#mem,#mm-panel) :is(h1,h2),
+html.b-charte #kg-root #konklave-panel :is(h1,h2,.kk-title,.kk-top-title),
+html.b-charte #kg-root #hang-gift .hang-work{font-family:'Press Start 2P',monospace!important;letter-spacing:.02em!important;line-height:1.25!important;
+  text-shadow:3px 3px 0 #6b2a00,6px 6px 0 rgba(0,0,0,.6),0 0 16px rgba(255,167,38,.45)!important}
+html.b-charte #kg-root :is(#chess,#mem,#mm-panel) :is(h1,h2){font-size:clamp(20px,3.1vw,46px)!important}
+html.b-charte #kg-root #konklave-panel :is(.kk-title,.kk-top-title){font-size:clamp(13px,1.3vw,18px)!important}
+html.b-charte #kg-root :is(#chess,#mem,#mm-panel) :is(.ch-sel-btn,.ch-go-btn,.m-btn,.w-btn,.mm-lv),
+html.b-charte #kg-root :is(#ch-kerema-btn,#m-quit,#mm-ok,#hang-again,#bb-play-btn,#bb-controls button,#c4-panel>button,#hang-panel>button,#mm-panel>button),
+html.b-charte #kg-root #konklave-panel :is(.kk-big,.kk-ghost,.kk-add,.kk-hand,.kk-fork-btn,.kk-redeal,.kk-exit){position:relative;border:2px solid color-mix(in srgb,var(--ch-acc) 55%,#000)!important;border-radius:3px!important;
+  background:linear-gradient(180deg,#2d2218 0%,#1b140d 55%,#120d08 100%)!important;
+  box-shadow:inset 0 2px 0 rgba(255,235,200,.16),inset 0 -3px 0 rgba(0,0,0,.55),0 3px 0 #000,0 5px 8px rgba(0,0,0,.45)!important;transition:transform .05s,box-shadow .05s,background .12s!important}
+html.b-charte #kg-root :is(#chess,#mem,#mm-panel) :is(.ch-sel-btn,.ch-go-btn,.m-btn,.w-btn,.mm-lv):is(:hover,:focus-visible),
+html.b-charte #kg-root :is(#ch-kerema-btn,#m-quit,#mm-ok,#hang-again,#bb-play-btn,#bb-controls button):is(:hover,:focus-visible),
+html.b-charte #kg-root #konklave-panel :is(.kk-big,.kk-ghost,.kk-add,.kk-fork-btn,.kk-redeal):not(:disabled):is(:hover,:focus-visible){border-color:var(--ch-acc)!important;outline:0!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--ch-acc) 22%,#2d2218) 0%,#1b140d 60%)!important;box-shadow:inset 0 2px 0 rgba(255,235,200,.22),inset 0 -3px 0 rgba(0,0,0,.55),0 3px 0 #000,0 0 14px color-mix(in srgb,var(--ch-acc) 40%,transparent)!important}
+html.b-charte #kg-root :is(#chess,#mem,#mm-panel) :is(.ch-sel-btn,.ch-go-btn,.m-btn,.w-btn,.mm-lv):is(:hover,:focus-visible)::before,
+html.b-charte #kg-root :is(#ch-kerema-btn,#mm-ok,#hang-again,#bb-play-btn):is(:hover,:focus-visible)::before,
+html.b-charte #kg-root #konklave-panel :is(.kk-big):is(:hover,:focus-visible)::before{content:"▶";position:absolute;left:-1.6em;top:50%;transform:translateY(-50%);font:12px/1 'Press Start 2P',monospace;color:var(--ch-acc);text-shadow:0 0 8px var(--ch-acc);animation:bcur 1s steps(1) infinite}
+@keyframes bcur{50%{opacity:0}}
+html.b-charte #kg-root :is(#chess,#mem,#mm-panel,#hang-panel,#bb-panel,#konklave-panel) button:not(.mm-peg):not(.hang-key):not(.sq):active{transform:translateY(2px);box-shadow:inset 0 2px 4px rgba(0,0,0,.6),0 1px 0 #000!important}
+@media (prefers-reduced-motion:reduce){html.b-charte #kg-root button::before{animation:none!important}}

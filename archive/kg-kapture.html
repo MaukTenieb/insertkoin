@@ -1,0 +1,21 @@
+<!--
+ * Code: MIT licence, Copyright (c) 2026 Mauk Tenieb (see LICENSE).
+ * Korhogo material: Copyright © Mauk Tenieb & Korhogo, all rights reserved. Korhogo™,
+ * Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™,
+ * Korong!™ and any related material — characters, names, symbols, rules, lore, texts,
+ * images and music, in any form or medium, including inside this file — stay out of the
+ * MIT licence and remain the property of the author. No use of that material for
+ * training artificial intelligence. Contact: mauktenieb@gmail.com
+-->
+<!-- KG fragment: KAPTURE camera (#kapture-overlay). The screenshot (SKREEN) is taken by the host page itself, without this module.
+     #kapture-screen is the shared screen (ik-ecran.js), #kapture-bar its controls slot. -->
+<div id="kapture-overlay">
+  <div id="kapture-screen"><video id="kapture-video" playsinline muted></video><div id="kapture-msg"></div></div>
+  <canvas id="kapture-canvas" hidden></canvas>
+  <div id="kapture-bar">
+    <button id="kapture-flip" type="button" data-action="kaptureFlip()" aria-label="Flip camera">⇄</button>
+    <button id="kapture-shoot" type="button" data-action="kaptureShoot()" aria-label="Kapture">●</button>
+    <button id="kapture-close" type="button" data-action="kaptureClose()" aria-label="Close">✕</button>
+  </div>
+  <input id="kapture-file" type="file" accept="image/*" capture="environment" hidden>
+</div>

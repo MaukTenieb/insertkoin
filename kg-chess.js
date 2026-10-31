@@ -123,14 +123,14 @@ function chRawMoves(r,c,board){
   if(p.t==='Q'){[[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]].forEach(function(d){slide(d[0],d[1]);});}
   return moves;
 }
-/* [IK] draws: the same position three times, or fifty moves each without a capture */
+/* [IK] draws: the same position three times, fifty moves each without a capture, or zero legal move for the side to play */
 var chSeen={},chQuiet=0;
 function chKey(board,turn){var k=turn;for(var r=0;r<8;r++)for(var c=0;c<8;c++){var p=board[r][c];k+=p?(p.col+p.t+(p.moved?'*':'')):'.';}return k;}
 function chDraw(why){
   chOver=true;
   document.getElementById('chess-over-h').textContent='Draw';
   document.getElementById('chess-over-h').style.color='#c9a84c';
-  document.getElementById('chess-over-p').textContent=why==='rep'?'\u2014 the same position, three times':'\u2014 fifty moves without a capture';
+  document.getElementById('chess-over-p').textContent=why==='rep'?'\u2014 the same position, three times':why==='pat'?'\u2014 stalemate':'\u2014 fifty moves without a capture';
   document.getElementById('chess-over').classList.add('show');
   document.getElementById('chess-status').textContent='GAME OVER';
   chRender();
@@ -157,6 +157,7 @@ function chDoMove(r1,c1,r2,c2,board,sim){
     chQuiet=cap?0:chQuiet+1;var pk=chKey(nb,chTurn);chSeen[pk]=(chSeen[pk]||0)+1;
     if(chSeen[pk]>=3){chDraw('rep');return nb;}
     if(chQuiet>=100){chDraw('fifty');return nb;}
+    if(!chAllMoves(chTurn,nb).length){chDraw('pat');return nb;}
     chRender();
     if(chMode==='ai'&&chTurn!==chPlayerColour&&!chOver){if(typeof chAiThink==='function')chAiThink();setTimeout(chAiMove,420);}
   }
@@ -421,3 +422,17 @@ try{window.closeCrazyChess=closeCrazyChess;}catch(e){}
 try{
   window.openChess=openChess;
 }catch(e){}
+
+/* 30 oct. — clavier et manette : les flèches promènent un curseur sur l'échiquier, Espace ou Entrée prend ou pose la pièce */
+(function(){var kr=-1,kc=0,R0=chRender;
+  function mark(){var bd=document.getElementById('chess-board');if(!bd)return;var s=bd.querySelectorAll('.sq'),n=Math.round(Math.sqrt(s.length))||8;
+    [].forEach.call(s,function(q,i){q.classList.toggle('kcur',kr>=0&&i===kr*n+kc);});}
+  chRender=function(){R0.apply(this,arguments);mark();};
+  document.addEventListener('keydown',function(e){var ch=document.getElementById('chess');if(!ch||!ch.classList.contains('open'))return;
+    var bd=document.getElementById('chess-board');if(!bd||bd.style.visibility==='hidden')return;var n=Math.round(Math.sqrt(bd.querySelectorAll('.sq').length))||8,k=e.key;
+    if(kr<0){if(/^Arrow/.test(k)){kr=n-1;kc=0;e.preventDefault();mark();}return;}
+    if(k==='ArrowRight')kc=(kc+1)%n;else if(k==='ArrowLeft')kc=(kc-1+n)%n;else if(k==='ArrowDown')kr=(kr+1)%n;else if(k==='ArrowUp')kr=(kr-1+n)%n;
+    else if(k===' '||k==='Enter'){e.preventDefault();chSqClick(kr,kc);mark();return;}else return;
+    e.preventDefault();mark();});
+  document.addEventListener('pointerdown',function(){if(kr>=0){kr=-1;mark();}},true);
+})();

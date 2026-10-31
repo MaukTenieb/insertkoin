@@ -1,0 +1,189 @@
+# Insert Koin
+
+Insert Koin, Mauk Tenieb's Korhogo world, games and machines in a browser.
+
+**Play: https://mauktenieb.github.io/insertkoin/archive/** · in French: https://mauktenieb.github.io/insertkoin/archive/fr.html
+
+Insert Koin runs in the visitor's browser on desktop and phone, held upright or on its side, in English and French.
+
+By Mauk Tenieb & Korhogo. Build guide: [method](https://github.com/MaukTenieb/method).
+
+---
+
+## The arcade
+
+The home screen is the motel painting, then the cabinets. Every visit draws its own arrangement: Reporhogo, Bio, Burrows, Faunarratik and Erratik stand either as big cabinets or as small chips under them, and the rows always come out full.
+
+| Cabinet | What it is |
+|---|---|
+| **Korong!** | Air-puck against the eighteen Masks of the Fauna, in the tradition of Shufflepuck Café (Brøderbund, 1988). |
+| **Fauna Chess** | Fairy chess against the Fauna. |
+| **Erratik** | The memory game. |
+| **Faunarratik** | A tale built with the Masks. Every block of a Mask's sheet (portrait, stats, formula, appearance, faction, masks, motto, profile, powers, Maskomatics, hexagram, mini-stories, Krewsmatics) is a card to pick; the text blocks lie face down, a tap turns one over and takes it, up to three, and the Mask changes expression. *Show all* turns every card over. *Let the Kerema wrap it* saves the tale as a text file. English only. |
+| **Katabatik** | A die is thrown on the cabinet: Konnect4, Sampler, Akasztófa (the Hungarian hangman, on a Hungarian keyboard; a vowel counts with its accents or bare; a win brings a short unsigned quotation to guess), Mastermind or FaunInvaders (the 18 Masks march and drop bombs; each Mask throws in its own way, after its character: Ts'ui Pên's bomb forks into two paths, one real; Honey Buzzard's stops in mid-air and comes back lower; Hátra Lövés's comes back from the ground; Maiden Call's comes to the player who comes to it; `?fi=classic` in the address brings back the throws of the first version). |
+| **3615** | The K Terminal, a Minitel emulator: https://mauktenieb.github.io/3615/ |
+| **VHS** | A television on a tape deck: Motel Sound and your own YouTube tapes. |
+| **Photofauna** | The photo editor: takes or opens a photo and applies 44 looks. |
+| **FaunaTor** | Opens web pages and v3 .onion sites through Tor clients that run in the page. |
+| **Skoporhogo** | The Fauna in an isometric hotel room. |
+| **Reporhogo** | Reporhogo searches forty-one code forges for a topic and collects the URLs of the repositories it finds. |
+| Bio · Burrows · Lore · TL · IG | Mauk Tenieb on GitHub · Korhogo Fauna (katabase) · the Substack · the Threadless store · Instagram. |
+
+Always there, on every screen: **Motel Sound** (the Korhogo jukebox, open to every visitor), **Kapture** (camera and microphone recorder), **Baku Boom** (back to the menu), **FX** on/off (remembered), **FR/EN**.
+
+### The home screen
+The painting takes the visitor's hour (bluish night, pink dawn, orange evening). The television flickers and changes channel in the snow; some visits bring a storm behind the window, with thunder when FX are on; Plague of Justinian's cloud rumbles; the scarab breathes; Aube's hands glint pink, Maiden Call's telephone blue, Auvergne's eyes green; the cigarette smokes; a beetle sometimes crosses the picture; the longer one stays, the more the picture wears (grain, tape tears, scratches). A light runs over the cabinets now and then, or one flickers; the neons of the chips falter; the devices of the motel call (the television leads to VHS, the telephone to 3615, the chessboard to Fauna Chess, the cards to Erratik, Unkle Maukie to Korong!, the Koins on the floor to 3615 KOINS, the lyre to Motel Sound, the window to FaunaTor, the boxes to Katabatik). On screen, the sign reads INSERT KOIN, INTERSEKTION, NOIR INSEKT or SEKTOR INN, drawn at random, and changes every few seconds under the visitor's eyes; the address stays insertkoin. The Bio tile reads BIO, BIOGRAPHIK or BIOTENIEB; the Koins sometimes read Kinos. Each time the title screen opens, it takes the faint colour of one Mask drawn at random: a soft wash over the picture, its lines and golds leaning a little toward it.
+
+### The guide
+A few seconds after the title screen opens, then now and then, a guide wanders along the cabinets, shining in its colour when it arrives: C7H5N3O6 (blue), Honey Buzzard (red), Ts'ui Pên (orange) or Croisière Noire (its own grey), drawn from their Korong! sprites. Touched, it walks every cabinet and chip, then Motel Sound and Kapture, lights each one and names it with one line. A click elsewhere, or Escape, stops it. The mouse or a finger also grabs it and throws it: it slides and bounces off the edges like the Korong! puck, silent, lighting up at each impact; after one or two impacts it lays a Koin that goes to the counter by itself (one or two Koins at most per visit, however long one plays). Now and then, hitting an edge, it swears. Thrown in the middle of a visit, it takes it up again a few seconds later. Every visit starts on any tile or menu, at random.
+
+---
+
+## Korong!
+
+- Move the paddle with the mouse, a finger or the arrow keys. Pull back, then drive through the puck to hit hard; hold the button or Space to catch it. The whole back line is the goal.
+- The mouse stays inside the table while playing; Enter or Esc lets it go.
+- Each Mask plays by its Korhogo stats (STR power, DEX speed, INT precision, WIS reading, CHA placing, CON stamina) and a signature move, and keeps its own fixed level.
+- Duel: click a Mask in the room, first to 15. Kompete! starts a tournament against the eighteen Masks, first to 11 each time; Continue picks a saved one up where it stopped.
+- The room is a painted motel room; its two paintings show Fauna drawn at random for each match, and the board on the left wall keeps the score. The CRT on the dresser switches at random and on every point between the Mask's motto, the score, its stats, the rally, its signature, your Koins, the hour, Motel Sound, test cards, snow and a few seconds of a Mauk Tenieb clip.
+- *The Kerema decides!* One tournament in two opens with a die that sets the applicant's swing, from −15% (⚀) to +15% (⚅); the face stays by the score. One match in two, a translucent die floats over the table once or twice (*Puck a boo!*, *On est joueur ?*, *Koquinette ou Koquinou ?*): touch it with the paddle to take the throw, or let it drift away. The Kerema leans toward those who earned their Koins: the more Koins, the higher the faces (about 7 Koins: even).
+- Now and then, after a point, the Kerema's sarcasm comes on the TV, in the visitor's language.
+- On a phone held upright, a phone sign turns over the table; on its side, the table takes the whole height; the score stays on the CRT and the board on the wall.
+
+## Palmarès and Hall of Kave
+
+The 3615 Minitel shows on its home screen (3615 KORHOGO) the five first of Korong! and of FaunInvaders, and in 3615 HALL the HALL OF KAVE: the twenty best players of all the games, one total per player, points of every game plus Koins earned. Results go out on the open Nostr network, the Minitel's own transport; the routine of this repository rewrites [`palmares.json`](palmares.json) every hour. Rules, points, transport and checks: [PALMARES.md](PALMARES.md).
+
+## Korhogo Kuration
+
+In the VHS deck, the key ♡ puts the track playing into the visitor's own cassette, « Korhogo Kuration », shown on the deck's shelf; the key ♥ takes it out again. The cassette goes out on the open Nostr network, signed with the Minitel's key (`ik-kuration.js`, one addressable event per visitor, kind 30078, `d` = `korhogo-kuration`); the browser key appears with the first ♡. Each cassette has a short address, `https://mauktenieb.github.io/k/<first 12 characters of the public key>`; the root site's 404 page sends it on to `insertkoin/?k=`, or to `fr.html?k=` for a French browser. [`kuration.html`](https://mauktenieb.github.io/insertkoin/archive/kuration.html) lists every cassette with a « play all » link on YouTube; `kuration.html?k=<key>` shows one cassette, its tracks and its author; the Minitel lists them in 3615 KURATIONS.
+
+## Koins
+
+- One Koin opens a game (a Korong! duel or run, a Korhogo game). The machines (3615, VHS, Photofauna, FaunaTor, Skoporhogo, Reporhogo) and Motel Sound are free.
+- Every win, in any game, brings one Koin. A win rains Koins on the screen.
+- In the 3615: 3 Koins at the first connection of the day to 3615 KOINS, then 1 per hour, 10 a day at most; 1 per Fauna profile read to its last page; 1 per message sent, 5 a day at most.
+- At 0, one Koin comes back after 30 seconds.
+- The 3615 shares the balance (same address, `ik.koins` in the browser).
+
+## VHS: REC
+
+Paste a YouTube channel (or playlist) link and press REC: the page records it onto a cassette inside the visitor's browser (`kg-vhs-scrape.js`). The page tries several roads and keeps the first that answers:
+
+1. YouTube's own Data API, with a key in `YT_KEY` (whole channel, with dates, durations, views, likes, comments);
+2. Piped (api.piped.private.coffee first) and Invidious, raced: the whole channel, page after page, its shorts and streams, and an artist's playlists when the uploads are few;
+3. the channel's pages rendered by r.jina.ai;
+4. the uploads playlist page or the RSS feed, through public relays or FaunaTor's Tor.
+
+The page asks a refusing source again, a few times; a cassette read in part shows its count (for example 56 / 200). Cassettes stay in the visitor's browser. Pick one on the shelf for its tools: CSV, JSON, XLSX, TXT and MD exports (title, link, publication, duration, views, likes, comments), and ERASE (press twice).
+
+## VHS: CURATORS
+
+A second row of the shelf, CURATORS, offers compilations of other artists' music on YouTube, chosen by eight curators. Each label shows, in marker, a genre and a date of the French Republican calendar (the day the cassette last changed), in an ink for each genre: Death metal in red, Black metal in black, Jazz in blue, Folk & chanson in green. The row offers a Top 60, one compilation per genre (99 videos at most; Pot-pourri for genres under 4 videos) and the 10 latest dated cassettes, one per genre and per weekly watch. Labels name genres and dates; hovering a cassette shows its criteria.
+
+A CURATORS cassette offers CSV, JSON, XLSX, TXT and MD exports by criteria (genre, date, Republican date, selection rule, ranking order, tracks, YouTube links) and YOUTUBE, which opens the cassette as YouTube playlists of 50 videos, YouTube's limit. File names follow the Republican calendar: `29-vendemiaire-235_curators_001.json`.
+
+The cassettes come from [Curators](https://github.com/MaukTenieb/curators) (page: https://mauktenieb.github.io/curators/): every Monday a watch reads the curators' public sources, ranks the artists (number of curators, then best rank in Rate Your Music's top 10,000, then number of mentions) and writes `kg-vhs-curations.js`; the workflow `curators` copies that file here. The deck loads it when the VHS cabinet opens.
+
+## FaunaTor and Tor
+
+FaunaTor runs Tor inside the page: two Tor clients compiled to WebAssembly reach the network through Snowflake, the Tor Project's own bridges (WebSocket first, WebRTC last); the page reaches Tor through the Snowflake broker and its volunteer proxies.
+
+- the web, through Tor exits: [privacy-ethereum/webtor-rs](https://github.com/privacy-ethereum/webtor-rs) (MIT) → `tor-web.js`, `tor-web_bg.wasm`
+- `.onion` (v3): [andrewtheguy/webtor-rs](https://github.com/andrewtheguy/webtor-rs) (MIT) → `tor-onion.js`, `tor-onion_bg.wasm`
+- a workflow fetches the Tor consensus from the directory authorities twice a day and publishes it on this site (`tor/`), so the web client reads it from here.
+
+A page out of reach shows *Your Kalabass was rejected. Apply later.*, with the reason in small type underneath.
+
+## Photofauna
+
+Photofauna, the photo editor of Insert Koin, reproduces the looks of the photo apps of 2008–2019: 44 looks (simulated film, toy cameras, historical processes, instants, glitch, painting, shapes…), an editor with adjustments, recipes kept inside the saved PNG, GIF export, deterministic renders. The camera opens on a Mask drawn at random. Photofauna saves every shot at once, untouched. Looks pile up: **Keep** fixes the current look into the picture and the next one goes on top; **Undo** steps back, last look first, then last layer. The saved PNG keeps the fixed layers in its recipe. `fotofauna.html` contains the whole app.
+
+## The screen
+
+`ik-ecran.js` draws the one screen of the machines: the same 4:3 picture, the same frame, the same size and the same place in every program. On a wide screen it stands on the left, as large as the height allows, and the program's controls stand on the right; on a phone it stands on top, full width, and the controls follow below. Each program changes only the rendering of the glass (VHS tape wear; the Minitel's bulging tube, reflection and phosphor; the clean viewfinder of the camera; the camcorder's REC and counter) and its controls: the deck of the VHS, the keyboard of the Minitel, the modes, shutter, looks and settings of Photofauna. A canvas, a video or an image goes through one WebGL pass; a page made of HTML, or the YouTube player, gets layers laid over it. The dressing stays on its own layers, so saved images keep the program's own picture. FX OFF and reduced motion freeze the noise and the bands; a phone gets a lighter screen.
+
+## Saved files
+
+Insert Koin names everything it saves (Photofauna, Faunarratik, the Sampler, Kapture, VHS exports, the Motel Sound list) by the French Republican calendar, then the program, then a counter of the day: `18-vendemiaire-235_photofauna_001.jpg`. The day is the visitor's own; years III, VII, XI and XV count as sextile, as in the calendar of the time; Romme's rule follows (`ik-name.js`).
+
+---
+
+## Files
+
+Every file is at the top level; the folders are `tor/`, `notes/`, `tools/` and `.github/`. One upload updates the site.
+
+| Files | Role |
+|---|---|
+| `index.html` | the site |
+| `fr.html` | the same page in French, built from `index.html`: edit `index.html`, then run `python3 build-fr.py` |
+| `fauna-*.html`, `fauna-*.webp` | one page per member of the Fauna |
+| `sprite-*.webp` | the Masks of Korong! (8 expressions each) |
+| `mask-*.webp` | the Masks' portraits (Photofauna, the paintings of the room) |
+| `thumb-*.jpg` | the cabinets (`thumb-bio-*.jpg`: the Bio cabinet draws one of the eighteen Masks) |
+| `poster*.{jpg,webp}`, `room.webp` | the painting and the pixel room |
+| `room-puck-1.webp` … `room-puck-6.webp` | the six painted motel rooms of Korong!, one drawn at random per match (the game lays the table, the Mask, the window's sky, the TV, the portraits and the score board over it, each room with its own measured zones); `room-puck.webp` is the former room |
+| `kg-hang-ja.json` | Akasztófa's stanzas |
+| `kg-*` | the Korhogo games, loaded on demand (`kg-loader.js`, `kg-core.*`, `kg-chess.*`, `kg-erratic.*`, `kg-faunarratics.*`, `kg-katabatik.*`, `kg-kapture.*`); `kg-faces.json` their portraits |
+| `kg-vhs.*`, `kg-vhs-library.js`, `kg-vhs-recorder.js`, `kg-vhs-scrape.js` | VHS: the deck, the cassette library, the shelf and REC bay, the in-page recorder |
+| `kg-vhs-curations.js` | VHS: the CURATORS cassettes, copied every Monday from [Curators](https://github.com/MaukTenieb/curators) |
+| `font-permanent-marker-latin-400-normal.woff2` | the marker of the CURATORS labels (Permanent Marker, Font Diner, Apache License 2.0) |
+| `ik-kuration.js`, `kuration.html` | Korhogo Kuration: the visitors' cassettes and their pages |
+| `palmares-rules.js`, `ik-palmares.js`, `palmares.json`, `tools/palmares.mjs`, `PALMARES.md` | palmarès and Hall of Kave: rules, arcade client, the hourly list, the routine, the method |
+| `fotofauna.html` | Photofauna |
+| `tor.html`, `faunator-tor.js`, `tor-web*`, `tor-onion*`, `tor/` | FaunaTor and its Tor clients; `faunator-worker.js`, an optional Cloudflare Worker relay |
+| `skoporhogo.html`, `three.min.js` | Skoporhogo and three.js r128 |
+| `reporhogo.html` | Reporhogo |
+| `fonts.css`, `font-*.woff2` | the fonts, served by the site |
+| `manifest.webmanifest`, `sw.js`, `icon.png`, `favicon.png` | installation and offline use (`sw.js`: pages and code from the network first, images from the cache) |
+| `robots.txt`, `sitemap.xml`, `llms.txt` | robots.txt welcomes search and answer engines and turns away training crawlers |
+| `ik-name.js` | names every saved file by the Republican calendar (`fotofauna.html` has its own copy) |
+| `ik-ecran.js` | the shared screen: one layout (screen rectangle, controls slot) and one glass rendering per program (VHS, Minitel, viewfinder, camcorder, Korong!, Katabatik, Skoporhogo, plain programs); the VHS, Kapture, the local 3615 and the Photofauna test build (`fotofauna-test.html`) use it |
+| `build-fr.py` | builds `fr.html` from `index.html` |
+
+### Workflows (`.github/workflows/`)
+- `faunator-tor.yml`: builds the two Tor clients and commits them.
+- `tor-consensus.yml`: refreshes the Tor consensus in `tor/` twice a day.
+- `palmares.yml`: every hour, reads the palmarès and the Hall of Kave cards on the Nostr relays and rewrites `palmares.json`.
+- `curators.yml`: every Monday at 9:19 UTC, copies the CURATORS cassettes from MaukTenieb/curators.
+- `vhs-probe.yml`: runs a real browser against the live site (every cabinet, desktop, French, phone upright and on its side, a real REC) and writes the result to the `probe-results` branch. Run it from Actions → vhs-probe → Run workflow.
+
+## Updating
+
+Edit, then commit to `main`: GitHub Pages publishes within a minute or two. After any change to `index.html`, run `python3 build-fr.py` so the French page follows, and bump the cache name at the top of `sw.js` so returning visitors get the new code.
+
+## Notes
+
+Notes on the making of Insert Koin, in English and French: https://mauktenieb.github.io/insertkoin/archive/notes/ · the whole method: https://github.com/MaukTenieb/method
+
+- [Catchlight: placing eye lights on sprite frames](https://mauktenieb.github.io/insertkoin/archive/notes/catchlight.html)
+- [Detour: cutting Midjourney portrait sheets into sprite strips](https://mauktenieb.github.io/insertkoin/archive/notes/detour.html)
+
+The notes follow the house prose rules of the method repo ([prose/RULES.md](https://github.com/MaukTenieb/method/blob/main/prose/RULES.md)), checked by `prose-lint.py`.
+
+<!-- network:start -->
+## Korhogo
+
+Mauk Tenieb's transmedia world. [Katabase](https://mauktenieb.github.io/katabase): concept albums, the 18 Masks, the lore · [3615 KORHOGO](https://mauktenieb.github.io/3615/): the Minitel terminal.
+
+[Bandcamp](https://mauktenieb.bandcamp.com): music and sales · [Substack](https://korhogo.substack.com): the journal · [YouTube](https://www.youtube.com/@mauktenieb): clips and mini-films.
+
+Index of Mauk Tenieb's sites: https://mauktenieb.github.io/
+<!-- network:end -->
+
+---
+
+## Rights
+
+Code under MIT, method under CC BY 4.0, Korhogo material reserved: Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Korong!™, the characters, names, symbols, rules, lore, texts, images, videos and music. Credit for any reuse: Mauk Tenieb & Korhogo. A person may use an AI assistant to read, explain and adapt the code and the method; training of AI models: reserved. Whoever reuses the code replaces the Korhogo material with their own. Details: [LICENSE](LICENSE).
+
+Third-party components:
+- Korong! runs on a JavaScript port of [PuffleHuck](https://github.com/iconidentify/pufflehuck) (MIT, see `LICENSE`).
+- FaunaTor's Tor clients: webtor-rs by privacy-ethereum and by andrewtheguy (MIT, see `TOR-LICENSES.txt`).
+- Akasztófa's stanzas: József Attila's poems up to 1928, in verse and in prose (public domain), taken from the [ELTE Poetry Corpus](https://github.com/ELTE-DH/poetry-corpus) (MEK edition) → `kg-hang-ja.json`.
+- Skoporhogo uses [three.js](https://threejs.org) r128 (MIT).
+- Fonts: Bebas Neue, DM Mono, Press Start 2P, Archivo, and one glyph of Noto Sans Egyptian Hieroglyphs (Honey Buzzard's sign in the Mastermind) (SIL Open Font License), served from the site.
+
+Characters, images and music: Mauk Tenieb. Motel Sound plays through YouTube.
+
+Contact: mauktenieb@gmail.com

@@ -24,7 +24,7 @@ body{background:var(--desk);color:#3a3026;font-family:"DM Mono",ui-monospace,mon
 .screen{position:relative;background:#040504;overflow:hidden}
 #vtx{position:absolute;inset:6% 7%;display:flex;flex-direction:column;font-size:var(--fs);line-height:1.3;color:var(--ph);text-shadow:0 0 .45em rgba(226,240,230,.4)}
 .top{display:flex;justify-content:space-between;letter-spacing:.18em;color:var(--ph2);font-size:.8em}
-.out{margin-top:1.2em;white-space:pre-wrap;flex:1;min-height:0;overflow:hidden}
+.out{margin-top:1.2em;white-space:pre-wrap;flex:1;min-height:0;overflow:hidden}@media (max-width:520px){.out{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}}
 .out b{color:#0a0c0a;background:var(--ph);text-shadow:none;font-weight:400;padding:0 .3em}
 .ask{letter-spacing:.06em}
 .ask i{font-style:normal;display:inline-block;width:.62em;height:1.05em;vertical-align:-.15em;background:var(--ph);animation:blink 1s steps(1) infinite}
@@ -156,7 +156,7 @@ function tick(){var d=new Date(),p=function(n){return (n<10?'0':'')+n;};document
 tick();setInterval(tick,15000);
 /* the screen: shared frame, size and place; the Videotex page follows the screen's height (25 rows) */
 var scr=document.getElementById('scr');
-function scale(){var h=scr.clientHeight||300,w=scr.clientWidth||400;document.documentElement.style.setProperty('--fs',Math.min(h*0.88/(24*1.3),w*0.86/(40*0.62)).toFixed(2)+'px');}
+function scale(){var h=scr.clientHeight||300,w=scr.clientWidth||400;document.documentElement.style.setProperty('--fs',(w<520?Math.max(11,Math.min(h*0.88/(15*1.3),w*0.86/(40*0.62))):Math.min(h*0.88/(24*1.3),w*0.86/(40*0.62))).toFixed(2)+'px');}
 if(window.IKEcran){IKEcran.layout('#prog',{screen:scr,controls:'#ctl',onlayout:scale});IKEcran.mount(scr,{program:'terminal',content:'#vtx'});}
 scale();addEventListener('resize',scale);
 var q=new URLSearchParams(location.search).get('svc');
