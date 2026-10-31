@@ -1,0 +1,243 @@
+/* Borne Insert Koin : grammaire responsive (grammaire.md). Géométrie seule : tailles, places, grilles, planchers du texte et des cibles.
+   Les matières restent dans les feuilles des skins ; cette feuille ne pose ni fond, ni dégradé, ni ombre, ni couleur.
+   À charger en dernier (borne-build.py, après borne-arcade.css).
+   Une unité : --r-u, un centième de la largeur de l'écran (--r-S). --r-uf : la même unité, tenue au-dessus de son plancher (--r-s0 / 100).
+   Trois dispositions, choisies par la forme de la fenêtre : D1 colonne (portrait), D2 borne (paysage), D3 pupitre (paysage large et bas).
+   Force : le préfixe :not(#r1):not(#r2) donne deux points d'identifiant à chaque règle ; elle prime sur toute règle normale des couches
+   anciennes sans !important. Les !important restants portent l'étiquette du paquet de migration.md qui les retire (« !Pn »). */
+
+@property --r-S{syntax:"<length>";inherits:true;initial-value:320px}
+@property --r-u{syntax:"<length>";inherits:true;initial-value:3.2px}
+@property --r-uf{syntax:"<length>";inherits:true;initial-value:5.72px}
+@property --r-M{syntax:"<length>";inherits:true;initial-value:320px}
+
+/* ---------- 1. les grandeurs, calculées une fois sur la racine ---------- */
+html.borne{
+  --r-g:min(1.2vmin,12px);                         /* marge de la fenêtre */
+  --r-b:clamp(4px,.8vmin,10px);                    /* flanc minimal du meuble */
+  --r-vh:100vh;
+  --r-hav:calc(var(--r-vh) - 2 * var(--r-g));      /* hauteur disponible */
+  --r-wav:calc(100vw - 2 * var(--r-g) - 2 * var(--r-b)); /* largeur disponible pour l'écran */
+  --r-s0:572px;                                    /* seuil : sous cette largeur d'écran, le chrome tient ses planchers */
+  --r-hit:24px;                                    /* cible minimale, souris */
+  --r-hitx:calc(var(--r-hit) * 1.16);              /* cible d'un objet incliné de 30° (touches, plaque) : 1 / cos 30° */
+  --r-fF:40px;                                     /* fronton minimal (D3) */
+  --r-k:.25;                                       /* part du chrome au-dessus et au-dessous de l'écran, en largeurs d'écran */
+  --r-S:min(calc(var(--r-hav) / (.75 + var(--r-k))),calc((var(--r-hav) - var(--r-k) * var(--r-s0)) / .75),var(--r-wav));
+  --r-u:calc(var(--r-S) / 100);
+  --r-uf:max(var(--r-u),calc(var(--r-s0) / 100));
+  --r-M:min(calc(var(--r-S) * 1.3),calc(100vw - 2 * var(--r-g)));
+  --r-gap:var(--r-uf);
+  --r-strip:max(var(--r-hit),calc(3 * var(--r-uf)));   /* bande d'affichage du fronton : titre à gauche, son et PL à droite */
+  --r-knob:max(var(--r-hit),calc(6 * var(--r-u)));     /* molette */
+}
+@supports (height:1svh){html.borne{--r-vh:100svh}}
+@media (pointer:coarse){html.borne{--r-s0:880px;--r-hit:44px;--r-fF:52px}}
+
+/* D1 colonne : la largeur manque, l'écran prend toute la largeur ; le fronton passe sur deux rangs (k = 0,31) */
+@media (orientation:portrait){
+  html.borne{--r-k:.31;--r-M:calc(100vw - 2 * var(--r-g))}
+}
+/* D3 pupitre : paysage large (16:9 et plus) et bas (sous le seuil des planchers) ; l'écran à gauche sous une enseigne mince, la console à droite */
+@media (orientation:landscape) and (min-aspect-ratio:16/9) and (max-height:585px),
+       (orientation:landscape) and (min-aspect-ratio:16/9) and (pointer:coarse) and (max-height:761px){
+  html.borne{--r-S:min(calc((var(--r-hav) - var(--r-fF) - 8px) / .75),calc((100vw - 2 * var(--r-g) - 8px) * .58));--r-M:calc(100vw - 2 * var(--r-g))}
+}
+
+/* ---------- 2. D2 borne, et la base commune ; « A » = l'accueil : ni programme, ni appareil, ni FaunEye, ni immersion ---------- */
+/* meuble */
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap{
+  width:var(--r-M)!important/* !P9 */;max-width:none!important/* !P9 */;margin:0 auto!important/* !P9 */;padding:0 0 calc(2 * var(--r-gap))!important/* !P9 */;box-sizing:border-box}
+
+/* toit : plante à gauche, caméra à droite, à une gouttière des flancs */
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-roof{
+  width:var(--r-M)!important/* !P3 */;max-width:none!important/* !P3 */;height:calc(5 * var(--r-uf))!important/* !P3 */;margin:var(--r-g) auto 0;
+  padding:0 calc(var(--r-b) + var(--r-uf))!important/* !P3 */;box-sizing:border-box;display:flex!important/* !P9 */;justify-content:space-between;align-items:flex-end}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-roof :is(.b-pot,.b-plant){height:100%}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-cam #kapture{
+  width:calc(5 * var(--r-uf))!important/* !P11 */;height:calc(5 * var(--r-uf))!important/* !P11 */}
+
+/* fronton : trois colonnes, les deux boîtes de même largeur par construction (1fr | enseigne | 1fr) */
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar{
+  display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important/* !P4 */;grid-template-rows:calc(7 * var(--r-uf))!important/* !P4 */;
+  column-gap:var(--r-gap);row-gap:var(--r-gap);width:calc(var(--r-M) - 2 * var(--r-b));height:auto!important/* !P9 */;min-height:0!important/* !P9 */;
+  margin:0 auto;padding:0!important/* !P4 */;box-sizing:border-box}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.brand{
+  grid-column:2;grid-row:1;height:100%!important/* !P9 */;min-width:0!important/* !P4 */;min-height:var(--r-hit)!important/* !P9 */;
+  padding:0 calc(2 * var(--r-uf))!important/* !P4 */;font-size:clamp(16px,calc(4.2 * var(--r-uf)),72px)!important/* !P4 */;line-height:1!important/* !P4 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.dock{
+  grid-row:1;height:100%!important/* !P9 */;min-height:0!important/* !P9 */;width:auto!important/* !P4 */;padding:var(--r-gap)!important/* !P4 */;box-sizing:border-box;
+  display:flex!important/* !P4 */;align-items:flex-end!important/* !P4 */;justify-content:stretch;gap:var(--r-gap)}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.dock:first-of-type{grid-column:1}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.dock:last-of-type{grid-column:3}
+/* la bande du titre à gauche, la paire son / PL à droite : même hauteur, même ligne de base, même largeur (celle de leur boîte) */
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .bar #radio-toggle{
+  flex:1 1 0;min-width:0!important/* !P4 */;height:var(--r-strip)!important/* !P4 */;min-height:var(--r-hit)!important/* !P4 */;box-sizing:border-box}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .bar .dock:last-of-type :is(.b-bell,#export-pl){
+  flex:1 1 0!important/* !P4 */;min-width:var(--r-hit);height:var(--r-strip)!important/* !P4 */;box-sizing:border-box!important/* !P4 */;display:flex!important/* !P4 */;align-items:center;justify-content:center}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .bar .b-bell svg{width:clamp(16px,calc(2.2 * var(--r-uf)),24px)!important/* !P4 */;height:clamp(16px,calc(2.2 * var(--r-uf)),24px)!important/* !P4 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .bar :is(.motel-l,#export-pl){
+  font-size:clamp(12px,calc(1.6 * var(--r-uf)),16px)!important/* style en ligne */;max-width:100%!important/* style en ligne */}
+
+/* cadre : Burrows, l'écran, le pied de l'écran, l'un sous l'autre, à la largeur de l'écran ; zéro décoration autour de l'image */
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) #home .b-bezel{
+  display:flex;flex-direction:column;align-items:center;gap:var(--r-gap)!important/* !P9 */;width:calc(var(--r-M) - 2 * var(--r-b));
+  margin:var(--r-gap) auto 0!important/* !P9 */;padding:0!important/* !P9 */;box-sizing:border-box}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-land{
+  width:var(--r-S);height:calc(5 * var(--r-uf))!important/* !P3 */;min-height:var(--r-hit);box-sizing:border-box}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-land span{
+  font-size:clamp(12px,calc(2.4 * var(--r-uf)),28px)!important/* !P11 */}
+/* la butée : le rebord du toit de l'écran, dans l'espace entre Burrows et l'écran, un peu plus large que l'écran ; elle ne couvre pas l'image */
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-butee{
+  width:calc(var(--r-S) + 2 * var(--r-uf));height:var(--r-gap)!important/* !P6 */;margin:calc(-1 * var(--r-gap)) 0}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-screen{
+  width:var(--r-S)!important/* !P5 */;max-width:none!important/* !P5 */;margin:0 auto;padding:0!important/* !P9 */;border-width:0!important/* !P5 */;box-sizing:border-box}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-glass{
+  width:var(--r-S)!important/* !P5 */;height:calc(var(--r-S) * .75)!important/* !P5 */;max-width:none;border-radius:calc(1.2 * var(--r-u))}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-glass .b-date{font-size:clamp(12px,calc(1.4 * var(--r-u)),16px)}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-bezelfoot{
+  width:var(--r-S);height:calc(5 * var(--r-uf));min-height:var(--r-hit);padding:0!important/* !P5 */;box-sizing:border-box;
+  display:flex;align-items:center;justify-content:space-between;gap:var(--r-gap)!important/* !P5 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezelfoot #koins.b-credit{
+  height:100%;font-size:clamp(12px,calc(1.8 * var(--r-uf)),20px)!important/* !P6 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezelfoot .b-boom{min-height:var(--r-hit);height:100%}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezelfoot .b-boom i{
+  width:calc(5 * var(--r-uf))!important/* !P11 */;height:calc(5 * var(--r-uf))!important/* !P11 */}
+
+/* console : départ (BC TL IG), puis la manette au milieu de deux paires de touches, puis la plaque Mauk Tenieb ; symétrique par la grille */
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) #home .b-panel{
+  width:calc(var(--r-M) - 2 * var(--r-b));margin:calc(2 * var(--r-gap)) auto 0!important/* !P9 */;
+  padding:calc(2 * var(--r-u)) calc(3 * var(--r-u))!important/* !P9 */;box-sizing:border-box}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-row2 .menu{
+  display:flex;justify-content:center;flex-wrap:wrap;gap:max(calc(3 * var(--r-u)),calc(var(--r-hit) - 5 * var(--r-u)))!important/* !P11 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .menu :is(a,button){
+  font-size:clamp(12px,calc(1.4 * var(--r-uf)),16px)!important/* !P11 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets{
+  display:grid!important/* !P11 */;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto minmax(0,1fr) minmax(0,1fr)!important/* !P11 */;align-items:center;
+  gap:calc(2 * var(--r-u))!important/* !P11 */;width:100%;max-width:var(--r-S);margin:0 auto!important/* !P9 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>*{grid-area:auto}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>.cab{justify-self:stretch!important/* !P11 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>.cab{
+  width:auto!important/* !P9 */;min-width:0;min-height:max(var(--r-hitx),calc(11 * var(--r-u)))!important/* !P11 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>.b-stick{
+  width:max(var(--r-hit),calc(11 * var(--r-u)))!important/* !P6 */;margin:0!important/* !P9 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-plate{margin-top:calc(2 * var(--r-gap))!important/* !P9 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-plate .b-badge{
+  width:clamp(140px,calc(26 * var(--r-u)),300px)!important/* !P6 */;height:max(var(--r-hitx),calc(6.5 * var(--r-u)))!important/* !P9 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-plate .b-badge b{
+  font-size:clamp(12px,calc(1.9 * var(--r-u)),20px)!important/* !P11 */}
+
+/* caisse : la fente sur l'axe du meuble, la plaque des molettes seule à sa droite, une colonne vide en miroir à gauche */
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door{
+  display:grid!important/* !P9 */;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;
+  column-gap:calc(2 * var(--r-u));width:calc(var(--r-M) - 2 * var(--r-b))!important/* !P9 */;max-width:none!important/* !P9 */;
+  margin:calc(2 * var(--r-gap)) auto 0!important/* !P9 */;padding:0 calc(3 * var(--r-u)) calc(4 * var(--r-u))!important/* !P9 */;box-sizing:border-box}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door>.b-slot{
+  grid-column:2;grid-row:1;width:clamp(180px,calc(34 * var(--r-u)),380px)!important/* !P9 */;height:auto!important/* !P9 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door>.b-knobs{
+  grid-column:3;grid-row:1;justify-self:start;display:grid;grid-template-columns:repeat(4,var(--r-knob));gap:calc(.5 * var(--r-knob))!important/* !P9 */;zoom:1!important/* !P9 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-knobs .b-knob{
+  width:var(--r-knob)!important/* !P7 */;height:var(--r-knob)!important/* !P7 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-knobs .b-knoblab{
+  font-size:clamp(12px,calc(1.4 * var(--r-uf)),14px)!important/* !P9 */}
+
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door>.b-slot b :is(em,u){font-size:max(12px,.8em)!important/* !P11 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door>.b-slot b{
+  font-size:clamp(12px,calc(2 * var(--r-u)),22px)!important/* !P11 */;white-space:nowrap}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-roof .b-care button{
+  font-size:clamp(12px,calc(1.4 * var(--r-uf)),14px)!important/* !P11 */}
+
+/* pied du meuble : la mention ©, l'aimant */
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-copy{
+  width:calc(var(--r-M) - 2 * var(--r-b));margin:calc(2 * var(--r-gap)) auto 0!important/* !P8 */;box-sizing:border-box;
+  font-size:clamp(12px,calc(1.2 * var(--r-uf)),14px)!important/* !P8 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-dekonect svg{width:80%!important/* !P8 */;height:80%!important/* !P8 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-dekonect{
+  width:max(var(--r-hit),calc(7 * var(--r-u)))!important/* !P9 */;height:max(var(--r-hit),calc(7 * var(--r-u)))!important/* !P9 */}
+
+/* ---------- 3. D1 colonne ---------- */
+@media (orientation:portrait){
+  /* fronton sur deux rangs : l'enseigne sur toute la largeur, puis la bande du titre et la paire son / PL, moitié chacune */
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important/* !P4 */;grid-template-rows:calc(7 * var(--r-uf)) calc(5 * var(--r-uf))!important/* !P4 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.brand{grid-column:1 / -1;grid-row:1}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.dock{grid-row:2}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.dock:last-of-type{grid-column:2}
+}
+/* touches en deux paires autour de la manette : téléphone debout (portrait étroit, 3:5 et moins) et pupitre (D3) */
+@media (orientation:portrait) and (max-aspect-ratio:3/5),
+       (orientation:landscape) and (min-aspect-ratio:16/9) and (max-height:585px),
+       (orientation:landscape) and (min-aspect-ratio:16/9) and (pointer:coarse) and (max-height:761px){
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important/* !P11 */;row-gap:calc(5 * var(--r-u))!important/* !P11 */;column-gap:calc(4 * var(--r-u))!important/* !P11 */;margin-top:calc(2 * var(--r-gap))!important/* !P9 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>.cab:nth-child(1){grid-area:1/1}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>.cab:nth-child(2){grid-area:1/3}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>.b-stick{grid-area:1/2/3/3}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>.cab:nth-child(4){grid-area:2/1}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>.cab:nth-child(5){grid-area:2/3}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>.cab{min-height:max(var(--r-hitx),calc(15 * var(--r-u)))!important/* !P11 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>.b-stick{width:max(var(--r-hit),calc(17 * var(--r-u)))!important/* !P6 */}
+  /* deux paires : les quatre touches au même niveau (le décalage des touches extrêmes sert la rangée unique) */
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>.cab:is(:nth-child(1),:last-child){transform:rotateX(30deg)!important/* !P6 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>.cab:is(:nth-child(1),:last-child).b-down{transform:rotateX(30deg) translateY(6px)!important/* !P6 */}
+}
+/* D1 téléphone : molettes en rangée sous la fente */
+@media (orientation:portrait) and (max-aspect-ratio:3/5){
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door{row-gap:calc(3 * var(--r-u))}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door>.b-slot{width:clamp(180px,calc(54 * var(--r-u)),380px)!important/* !P9 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door>.b-knobs{grid-column:1 / -1;grid-row:2;justify-self:center}
+}
+
+/* ---------- 4. D3 pupitre : enseigne mince sur toute la largeur ; à gauche l'écran, à droite Burrows, le pied de l'écran, la console, la caisse ---------- */
+@media (orientation:landscape) and (min-aspect-ratio:16/9) and (max-height:585px),
+       (orientation:landscape) and (min-aspect-ratio:16/9) and (pointer:coarse) and (max-height:761px){
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap{
+    display:grid!important/* !P9 */;grid-template-columns:var(--r-S) minmax(0,1fr)!important/* !P9 */;grid-template-rows:var(--r-fF) var(--r-hit) var(--r-hit) auto auto auto!important/* !P9 */;
+    grid-auto-rows:auto;gap:8px;align-items:start;height:auto!important/* !P9 */;margin:var(--r-g) auto 0!important/* !P9 */}
+  /* le corps rogne sans devenir un conteneur de défilement : l'écran collé suit alors la fenêtre */
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) body{overflow-x:clip!important/* !P2 */;overflow-y:visible!important/* !P2 */}
+  /* le toit se pose aux deux bouts de l'enseigne : plante à gauche, caméra à droite */
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-roof{
+    display:flex!important/* !P9 */;position:absolute;top:var(--r-g);left:var(--r-g);right:var(--r-g);width:auto!important/* !P3 */;height:var(--r-fF)!important/* !P3 */;
+    margin:0;padding:0!important/* !P3 */;z-index:3;pointer-events:none}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-roof>*{pointer-events:auto}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-cam #kapture{width:var(--r-fF)!important/* !P11 */;height:var(--r-fF)!important/* !P11 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar{
+    grid-column:1 / -1;grid-row:1;grid-template-rows:var(--r-fF)!important/* !P4 */;width:auto;padding:0 calc(var(--r-fF) + 8px)!important/* !P4 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.brand{font-size:clamp(16px,calc(.6 * var(--r-fF)),72px)!important/* !P4 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.dock{padding:4px!important/* !P4 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) :is(#home,#home .b-bezel){display:contents!important/* !P11 */}
+  /* colonne de gauche : l'écran, son pied (Koins), la mention ; colonne de droite : Burrows, la console, la caisse ; les deux colonnes de même hauteur */
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-screen{
+    grid-column:1;grid-row:2 / span 4;align-self:start!important/* !P5 */;position:sticky;top:var(--r-g)}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-butee{display:none!important/* !P9 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-land{
+    display:flex!important/* !P9 */;grid-column:2;grid-row:2;width:auto;height:var(--r-hit)!important/* !P3 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-bezelfoot{
+    grid-column:2;grid-row:3;width:auto;height:var(--r-hit)}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) #home .b-panel{
+    grid-column:2;grid-row:4;width:auto;margin:0!important/* !P9 */;padding:8px!important/* !P9 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door{
+    grid-column:2;grid-row:5;width:auto!important/* !P9 */;margin:0!important/* !P9 */;padding:0!important/* !P9 */;align-self:start}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) #home .b-panel .cabinets{max-width:calc(62 * var(--r-u));row-gap:calc(2 * var(--r-u))!important/* !P11 */;margin-top:0!important/* !P9 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) #home .b-panel .b-plate{margin-top:var(--r-gap)!important/* !P9 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door>.b-knobs{grid-template-columns:repeat(2,var(--r-knob));gap:4px calc(.5 * var(--r-knob))!important/* !P9 */;padding:4px 16px!important/* !P9 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-copy{
+    display:block!important/* !P9 */;grid-column:1 / -1;grid-row:6;width:auto;margin:0!important/* !P8 */;text-align:center}
+}
+
+/* ---------- 5. cibles au toucher : 44 px par la forme ; zone sensible transparente là où le dessin reste plus petit (::after libre) ---------- */
+@media (pointer:coarse){
+  html.borne:not(#r1):not(#r2) :is(.b-row2 .menu a,.b-care button){position:relative}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-door>.b-lore.b-onbox{width:126px!important/* !P7 */;height:auto!important/* !P7 */}
+  html.borne:not(#r1):not(#r2) :is(.b-row2 .menu a,.b-care button)::after{
+    content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%)}
+  html.borne:not(#r1):not(#r2) :is(.brand,#radio-toggle,.b-bell,#export-pl,.b-boom,.b-imm,.b-land,.b-slot,.b-knob,.b-dekonect,.b-badge,#kapture,.b-dot,.b-edge){
+    min-width:44px!important/* !P7 */;min-height:44px!important/* !P9 */}
+}
+
+/* ---------- 6. mode jeu (paquet P10, actif quand borne-build.py pose data-r-jeu) : l'écran prend la fenêtre moins une bande de commandes ---------- */
+html.borne[data-r-jeu][data-prog]:not(#r1):not(#r2){--r-band:max(var(--r-hit),calc(5 * var(--r-uf)))}
+html.borne[data-r-jeu][data-prog]:not(#r1):not(#r2) .b-bezel .b-glass{
+  width:calc(100vw - 2 * var(--r-g));height:calc(var(--r-vh) - 2 * var(--r-g) - var(--r-band) - 8px);max-width:none}
+html.borne[data-r-jeu][data-prog]:not(#r1):not(#r2) .b-bezel .b-bezelfoot{
+  width:calc(100vw - 2 * var(--r-g))!important/* !P10 */;height:var(--r-band)!important/* !P10 */;min-height:var(--r-hit)}

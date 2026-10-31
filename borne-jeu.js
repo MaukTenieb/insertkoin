@@ -37,7 +37,7 @@
     [].forEach.call(p.children,function(c){if(c.style.zoom)c.style.zoom='';});
     var ps=getComputedStyle(p),pv=(parseFloat(ps.paddingTop)||0)+(parseFloat(ps.paddingBottom)||0);
     /* la hauteur réelle du jeu : chaque élément compte pour ce qu'il montre, débordement compris */
-    function need(){var t=0,col=/column/.test(getComputedStyle(p).flexDirection)||getComputedStyle(p).display!=='flex';if(!col)return p.scrollHeight-pv;
+    function need(){var t=0,col=/column/.test(getComputedStyle(p).flexDirection)||getComputedStyle(p).display!=='flex';if(!col||getComputedStyle(p).display==='grid')return p.scrollHeight-pv;
       [].forEach.call(p.children,function(c){var cs=getComputedStyle(c);if(cs.display==='none'||/fixed|absolute/.test(cs.position))return;var z=parseFloat(c.style.zoom)||1;
         t+=Math.max(c.offsetHeight,c.scrollHeight)*z+((parseFloat(cs.marginTop)||0)+(parseFloat(cs.marginBottom)||0))*z;});
       var g=parseFloat(getComputedStyle(p).rowGap)||0;return t+g*Math.max(0,p.children.length-1);}
