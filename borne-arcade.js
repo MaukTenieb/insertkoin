@@ -224,3 +224,32 @@ addEventListener('keydown',function(e){var R=document.documentElement;if(!R.hasA
     /* le halo épouse la vitre : la vitre a pour parent positionné le cadre (borne-cabinet.css:552) */
     function fit(){if(!gl.offsetWidth){h.style.display='none';return;}h.style.display='';h.style.left=gl.offsetLeft+'px';h.style.top=gl.offsetTop+'px';h.style.width=gl.offsetWidth+'px';h.style.height=gl.offsetHeight+'px';h.style.borderRadius=getComputedStyle(gl).borderRadius;}
     fit();if(window.ResizeObserver)new ResizeObserver(fit).observe(gl);addEventListener('resize',fit);})();})();
+
+/* 31 oct., 12 h 40 — l'autocollant s'appelle au hasard LORE, TALES, KORHOGO ou DIEGESIS et change de couleur, de temps en temps, comme l'enseigne ; il mène toujours au Substack */
+(function(){var N=['LORE','TALES','KORHOGO','DIEGESIS'],K=[{h:'0deg',a:'#e8742a',b:'#9c1f17'},{h:'205deg',a:'#4fc3f7',b:'#1b5f86'},{h:'128deg',a:'#66bb6a',b:'#2c6a30'},{h:'40deg',a:'#ffa726',b:'#8a3f0f'}],G='ΞЖ#KOЯ%▒';
+  var cur=N[(Math.random()*N.length)|0],ck=K[(Math.random()*K.length)|0],busy=false;
+  function el(){return document.querySelector('.b-lore');}
+  function fit(l,s){var w=l.clientWidth,h=l.clientHeight;if(!w||!h)return;l.style.setProperty('--lfs',Math.min(h*.56,w*.76/(s.length*.47)).toFixed(1)+'px');}
+  function set(n,k){var l=el(),s=l&&l.querySelector('.b-lw');if(!s)return;s.textContent=n;l.setAttribute('aria-label',n);l.dataset.name=n;
+    l.style.setProperty('--lh',k.h);l.style.setProperty('--le1',k.a);l.style.setProperty('--le2',k.b);fit(l,n);}
+  function other(a,x){var o=a.filter(function(y){return y!==x;});return o[(Math.random()*o.length)|0];}
+  function morph(l,from,to,done){var s=l.querySelector('.b-lw'),i=0,n=Math.max(from.length,to.length),iv=setInterval(function(){i++;var o='';
+      for(var j=0;j<n;j++)o+=j<i-2?(to[j]||''):j<i?G[(Math.random()*G.length)|0]:(from[j]||'');s.textContent=o;if(i>n+2){clearInterval(iv);done();}},55);}
+  function later(){setTimeout(go,6000+Math.random()*12000);}
+  function go(){var l=el();if(busy||!l||document.hidden||document.documentElement.dataset.prog){later();return;}busy=true;
+    var nx=Math.random()<.75?other(N,cur):cur,nk=(nx===cur||Math.random()<.6)?other(K,ck):ck;
+    morph(l,cur,nx,function(){cur=nx;ck=nk;set(cur,ck);busy=false;later();});}
+  (function start(){var l=el();if(!l||!l.querySelector('.b-lw')||!l.clientWidth){setTimeout(start,400);return;}set(cur,ck);
+    if(window.ResizeObserver)new ResizeObserver(function(){fit(el(),cur);}).observe(l);
+    if(!matchMedia('(prefers-reduced-motion:reduce)').matches)later();})();})();
+/* 31 oct. — au toucher, la rangée des points de programmes se règle au doigt : toucher ou glisser le long de la rangée choisit le point le plus proche ; le dessin des points reste */
+(function(){if(!matchMedia('(pointer:coarse)').matches)return;
+  function bind(){var d=document.querySelector('.b-dots');if(!d){setTimeout(bind,500);return;}if(d._reg)return;d._reg=1;d.classList.add('b-reglette');
+    var act=null,last=null;
+    function near(x){var best=null,bd=1e9;[].forEach.call(d.querySelectorAll('.b-dot'),function(b){var r=b.getBoundingClientRect(),c=r.left+r.width/2,dd=Math.abs(c-x);if(dd<bd){bd=dd;best=b;}});return best;}
+    function pick(x){var b=near(x);if(b&&b!==last){last=b;b.classList.add('b-vise');setTimeout(function(){b.classList.remove('b-vise');},160);}}
+    d.addEventListener('pointerdown',function(e){act=e.pointerId;last=null;try{d.setPointerCapture(e.pointerId);}catch(_){}pick(e.clientX);e.preventDefault();});
+    d.addEventListener('pointermove',function(e){if(act===e.pointerId)pick(e.clientX);});
+    d.addEventListener('pointerup',function(e){if(act!==e.pointerId)return;act=null;var b=near(e.clientX);if(b&&!b.classList.contains('on'))b.click();});
+    d.addEventListener('pointercancel',function(){act=null;});}
+  bind();})();
