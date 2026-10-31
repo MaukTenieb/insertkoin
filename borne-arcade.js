@@ -197,7 +197,7 @@ addEventListener('keydown',function(e){var R=document.documentElement;if(!R.hasA
 /* 30 oct. — fronton : sur ordinateur et tablette, le son et PL passent au pied du haut-parleur droit ; l'afficheur du Motel Sound prend toute la largeur du pied du gauche */
 (function(){var mq=matchMedia('(min-width:701px)');
   function place(){var L=document.querySelector('.wrap .bar .dock:first-of-type'),Rd=document.querySelector('.wrap .bar .dock:last-of-type'),b=document.querySelector('.b-bell'),p=document.getElementById('export-pl');
-    if(!L||!Rd||!b||!p||L===Rd)return;var to=mq.matches?Rd:L;if(b.parentNode!==to){to.appendChild(b);to.appendChild(p);}document.documentElement.classList.toggle('b-sonadroite',mq.matches);}
+    if(!L||!Rd||!b||!p||L===Rd)return;if(b.parentNode!==Rd){Rd.appendChild(b);Rd.appendChild(p);}document.documentElement.classList.add('b-sonadroite');}
   if(mq.addEventListener)mq.addEventListener('change',place);else mq.addListener(place);
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',place);else place();setTimeout(place,600);})();
 
