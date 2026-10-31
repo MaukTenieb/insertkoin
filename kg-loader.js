@@ -252,7 +252,9 @@
       document.body.style.overflow='';
       var s=sessions[n];if(s){clearInterval(s.timer);delete sessions[n];}
       /* [IK] Kapture: voir endSession — BACK de l'arcade ne doit rien laisser tourner */
-      if(n==='kapture'&&window.kaptureClose){try{window.kaptureClose();}catch(e){}}});
+      if(n==='kapture'&&window.kaptureClose){try{window.kaptureClose();}catch(e){}}
+      /* [IK] roue K i4 : Musik se tait à la sortie, sans attendre le prochain bbTick */
+      if(n==='katabatik'&&window.bbStop){try{bbStop();}catch(e){}}});
     refreshLayerClasses();
   };
   window.KG=KG;
