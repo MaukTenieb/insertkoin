@@ -370,7 +370,7 @@
 
   /* ---------- Motel Sound joue dès l'arrivée, haut-parleur coupé ; la cloche barrée le rallume ---------- */
   var bell=el('button','b-bell','🔕');bell.type='button';bell.setAttribute('aria-label','Motel Sound : son coupé');bell.setAttribute('aria-pressed','false');
-  var docks=bar.querySelectorAll('.dock');(docks[0]||bar).appendChild(bell);
+  var docks=bar.querySelectorAll('.dock');(docks[1]||bar).appendChild(bell);
   var muted=true,jp=function(){try{return window.__juke&&window.__juke();}catch(e){return null;}};
   function applyMute(force){var p=jp();if(!p||!p.mute)return false;
     /* n'agit que si l'état du lecteur diffère : plus de volume forcé chaque seconde, la baisse pendant VHS ou la voix reste en place */
@@ -405,16 +405,6 @@
     new MutationObserver(function(){if(!l.querySelector('.b-tk')||l.childNodes.length!==1)build();else{var t=l.textContent;}}).observe(l,{childList:true,characterData:true,subtree:true});
     var setT=Object.getOwnPropertyDescriptor(Node.prototype,'textContent');
     setTimeout(build,50);addEventListener('resize',function(){cur='';build();});})();
-
-  /* fronton symétrique : la plaque du son et de PL prend la hauteur et la ligne de base du titre du Motel Sound */
-  (function(){function sym(){var t=document.querySelector('#radio-toggle'),d=document.querySelector('.bar .dock:last-of-type');if(!t||!d||!t.offsetHeight)return;
-      var tr=t.getBoundingClientRect(),dl=t.closest('.dock').getBoundingClientRect(),cs=getComputedStyle(t.querySelector('.motel-l')||t);d.style.setProperty('--b-tkh',Math.round(tr.height)+'px');d.style.setProperty('--b-tkw',Math.round(tr.width)+'px');d.style.setProperty('--b-tkb',Math.max(0,Math.round(dl.bottom-tr.bottom))+'px');d.style.setProperty('--b-tkf',cs.fontFamily);d.style.setProperty('--b-tks',cs.fontSize);
-      /* la paire son / PL se pose en miroir exact de la plaque du titre, par rapport à l'axe du meuble */
-      var b=d.querySelector('.b-bell'),pl=d.querySelector('#export-pl'),w=document.querySelector('.wrap');if(!b||!pl||!w||innerWidth<701||document.documentElement.hasAttribute('data-bland')){[b,pl].forEach(function(e){if(e)['position','left','top'].forEach(function(k){e.style.removeProperty(k)});});return;}
-      var ax=w.getBoundingClientRect(),cx=ax.left+ax.width/2,dr=d.getBoundingClientRect(),L=2*cx-tr.right,hw=tr.width/2;
-      if(getComputedStyle(d).position==='static')d.style.setProperty('position','relative');
-      [[b,L],[pl,L+hw]].forEach(function(q){var e=q[0];e.style.setProperty('position','absolute','important');e.style.setProperty('left',Math.round(q[1]-dr.left)+'px','important');e.style.setProperty('top',Math.round(tr.top-dr.top)+'px','important');});}
-    addEventListener('resize',function(){setTimeout(sym,120);});addEventListener('load',function(){setTimeout(sym,300);setTimeout(sym,1500);});setTimeout(sym,800);})();
 
   /* les psychopompes : premier arrêt Burrows ou la plaque Mauk Tenieb, au hasard ; jetés, ils rebondissent sur les bords de l'écran */
   land.dataset.grp='visit';badge.dataset.grp='bio';
@@ -598,10 +588,6 @@
     setTimeout(wake,1500+Math.random()*3500);}
   if(!RM)setTimeout(wake,1200);
 })();
-/* le bloc son étroit (écran d'ordinateur bas) : le titre passe sur sa propre ligne, au-dessus des touches */
-(function(){function go(){var d=document.querySelector('.bar .dock:first-of-type');if(!d||!window.ResizeObserver){setTimeout(go,600);return;}
-  new ResizeObserver(function(){d.classList.toggle('b-narrow',innerWidth>700&&d.offsetWidth<240);}).observe(d);}
-  go();})();
 /* grand écran d'ordinateur : les programmes dessinés pour un petit écran grandissent avec lui (zoom), au lieu de flotter tout petits au milieu */
 (function(){var Z={erratic:1,faunarratics:1,repo:1,tor:1},last='';
   function k(w){return Math.max(1,Math.min(1.5,w/940));}

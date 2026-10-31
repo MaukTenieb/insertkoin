@@ -74,9 +74,7 @@ html.borne .bar .dock:first-of-type .b-bell{grid-column:2!important}
 html.borne .bar .dock:first-of-type #export-pl{grid-column:3!important}
 @media (max-width:700px){html.borne .bar .dock:first-of-type .b-bell{grid-column:2!important}html.borne .bar .dock:first-of-type #export-pl{grid-column:3!important}}
 html.borne .b-knoblab{font-size:15px!important;letter-spacing:0!important;line-height:1}
-html.borne .b-knobw:last-child .b-knoblab{font-size:9px!important;letter-spacing:.12em!important}
-html.borne .bar .dock:first-of-type{background-size:auto calc(100% - 46px)!important;background-position:center 6px!important}
-@media (max-width:700px){html.borne .bar .dock:first-of-type{min-height:118px!important}}
+html.borne .b-knobw:last-child .b-knoblab{letter-spacing:.12em!important}
 
 /* ---------- Burrows : lueurs intérieures ---------- */
 html.borne .b-lglow{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden;border-radius:inherit}
@@ -92,7 +90,7 @@ html.borne .b-land span{z-index:2}
 html.borne .b-dkhost{position:relative}
 html.borne .b-dekonect{top:auto!important;bottom:var(--dkb,90px)!important;right:calc(var(--inset,20px) + 8px)!important;transform:none;z-index:30}
 html.borne .b-dekonect:active{transform:scale(.92)}
-html.borne .b-dekonect.b-dklow{color:rgba(255,236,210,.28)!important}
+
 html.borne .bar .dock:first-of-type{background-size:auto calc(100% - 46px)!important;background-position:center 6px!important}
 @media (max-width:700px){html.borne .bar .dock:first-of-type{min-height:118px!important}}
 /* les lettres des touches suivent la taille de la touche : elles ne débordent plus quand l'écran est bas */
@@ -111,7 +109,7 @@ html.borne[data-skin=bois] .bar .dock:first-of-type.b-narrow::after{background-i
 html.borne[data-skin=metal] .bar .dock:first-of-type.b-narrow::after{background-image:url(skin-metal-grille.webp)}
 html.borne .bar .dock:first-of-type.b-narrow>*{position:relative;z-index:1}
 html.borne .bar .dock:first-of-type.b-narrow #radio-toggle{grid-row:1!important;grid-column:1 / -1!important;align-self:end;height:18px!important;min-height:18px!important;padding:0 6px!important}
-html.borne .bar .dock:first-of-type.b-narrow #radio-toggle .motel-l{font-size:9px!important}
+
 html.borne .bar .dock:first-of-type.b-narrow .b-bell,html.borne .bar .dock:first-of-type.b-narrow #export-pl{grid-row:2!important;height:26px!important;min-height:26px!important;width:32px!important}
 html.borne .bar .dock:first-of-type.b-narrow .b-bell{grid-column:2!important}
 html.borne .bar .dock:first-of-type.b-narrow #export-pl{grid-column:3!important}}
@@ -144,7 +142,7 @@ html.borne .b-lore.b-onbox{z-index:20!important}
 html.borne .b-bezelfoot .b-stick-mini{position:relative}
 html.borne .b-bezelfoot .b-stick-mini::before{content:""!important;display:block!important;position:absolute;inset:0;z-index:0;left:0!important;right:0!important;bottom:0!important;height:auto!important;border-radius:0!important;box-shadow:none!important;
   background:var(--i-stick) center bottom/contain no-repeat!important;clip-path:inset(var(--stk-cut,60%) 0 0 0)}
-html.borne .b-bezelfoot .b-stick-mini i{z-index:1;clip-path:inset(0 0 calc(100% - var(--stk-cut,60%)) 0);filter:none!important}
+html.borne .b-bezelfoot .b-stick-mini i{z-index:1;filter:none!important}
 html.borne .b-bezelfoot .b-stick-mini::after{content:"";position:absolute;z-index:0;left:50%;bottom:calc(100% - var(--stk-cut,60%) - 6%);width:46%;height:12%;border-radius:50%;pointer-events:none;
   background:radial-gradient(ellipse,rgba(0,0,0,.55),transparent 70%);transform:translateX(calc(-50% + var(--x,0) * 12px)) scaleX(calc(1 + var(--v,0) * .3));filter:blur(2px)}
 html.borne .b-bezelfoot .b-stick-mini i{background:none!important;clip-path:none!important;transform-origin:50% var(--stk-cut,60%)!important;
@@ -170,7 +168,7 @@ html.borne[data-prog] .b-glass::after{background:repeating-linear-gradient(0deg,
 html.borne[data-mode=device] .b-glass::after,html.borne[data-habit=fauneye] .b-glass::after{background:none!important;box-shadow:none!important}
 html.borne .b-bezelfoot #koins.b-credit{pointer-events:auto}html.borne .b-bezelfoot #koins.b-credit *{pointer-events:none}
 /* la date de l'écran d'accueil sur un bandeau de verre fumé : lisible quel que soit le décor dessous */
-html.borne .b-date{padding:5px 9px;border-radius:3px;background:rgba(6,5,4,.62);box-shadow:0 0 0 1px rgba(255,233,168,.08);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+html.borne .b-date{padding:5px 9px;border-radius:3px;box-shadow:0 0 0 1px rgba(255,233,168,.08);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
 /* 🧤 et 🎶 gravés dans la plaque des molettes, comme FR · EN, au lieu de deux pastilles bleues */
 html.borne .b-knoblab{filter:grayscale(1) contrast(1.4) brightness(.42);text-shadow:0 1px 0 rgba(255,255,255,.45)}
-html.borne[data-skin=metal] .b-knoblab{filter:grayscale(1) brightness(2.1) contrast(.75);text-shadow:0 1px 0 rgba(0,0,0,.8)}
+html.borne[data-skin=metal] .b-knoblab{filter:grayscale(1) brightness(2.1) contrast(.75);}
