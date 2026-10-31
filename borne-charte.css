@@ -15,6 +15,7 @@ html.b-charte #kg-root :is(#chess,#mem,#konklave-panel,#c4-panel,#bb-panel,#hang
 /* ---------- fond commun : DM Mono, encre claire ---------- */
 html.b-charte #kg-root{font-family:'DM Mono',ui-monospace,monospace}
 html.b-charte #kg-root :is(input,textarea,select){font-family:'DM Mono',ui-monospace,monospace!important;font-size:13px!important}
+@media (pointer:coarse){html.b-charte #kg-root :is(input,textarea,select){font-size:16px!important}}
 html.b-charte #kg-root :is(#chess,#mem,#mm-panel,#konklave-panel,#c4-panel,#bb-panel,#hang-panel){color:var(--ch-ink);font-family:'DM Mono',ui-monospace,monospace}
 
 /* ---------- titres ---------- */
@@ -85,7 +86,7 @@ html.b-charte #kg-root #vhs .vhs-tv-key{font-size:12px!important;color:#c4beb4!i
 html.b-charte #kg-root #vhs .vhs-key>span,html.b-charte #kg-root #vhs .vhs-vfd-state{font-size:12.5px!important}
 html.b-charte #kg-root #vhs :is(.vhs-find-input,.vhs-find-sort,.vhs-rec-input){font-size:13px!important;min-height:44px!important}
 /* P2 (31 oct.) — au toucher, le champ ouvre le clavier du téléphone à 16 px : zéro zoom de la page à l'appui (iOS agrandit tout champ sous 16 px) */
-@media (pointer:coarse){html.b-charte #kg-root #vhs :is(.vhs-find-input,.vhs-rec-input){font-size:16px!important}}
+@media (pointer:coarse){html.b-charte #kg-root #vhs :is(.vhs-find-input,.vhs-find-sort,.vhs-rec-input){font-size:16px!important}}
 html.b-charte #kg-root #vhs :is(.vhs-tab,.vhs-rec-btn,.vhs-rec-cancel,.vhs-tape-all,.vhs-tapetools-link,.vhs-tapetools-eject,.vhs-ttx-btn,.vhs-ttx-source,.vhs-ttx-close){min-height:44px!important;font-family:'DM Mono',ui-monospace,monospace!important;font-size:12.5px!important;letter-spacing:.14em!important;text-transform:uppercase}
 html.b-charte #kg-root #vhs :is(.vhs-rec-btn,.vhs-rec-cancel,.vhs-tape-all,.vhs-tapetools-link,.vhs-ttx-btn,.vhs-ttx-close){padding:0 14px!important;border-radius:4px!important;border:1px solid var(--ch-line)!important;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.25))!important;color:var(--ch-ink)!important}
 html.b-charte #kg-root #vhs .vhs-rec-btn :is(span,.vhs-rec-dot),html.b-charte #kg-root #vhs .vhs-tape-all *{font-size:12.5px!important}

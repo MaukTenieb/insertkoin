@@ -35,6 +35,7 @@ html.b-charte[data-ch=reporhogo] .btn:hover{background:color-mix(in srgb,var(--c
 html.b-charte[data-ch=reporhogo] .btn:active{background:var(--ch-acc)!important;color:var(--ch-acc-ink)!important;border-color:var(--ch-acc)!important}
 html.b-charte[data-ch=reporhogo] :is(#q,select,#out){border:1px solid var(--ch-line)!important;border-radius:4px!important}
 html.b-charte[data-ch=reporhogo] :is(#q,select){font-size:14px!important;min-height:44px}
+@media (pointer:coarse){html.b-charte[data-ch=reporhogo] :is(#q,select,#out){font-size:16px!important}}
 html.b-charte[data-ch=reporhogo] .label{font-size:12px!important}
 html.b-charte[data-ch=reporhogo] .seg button{font-size:12px!important;min-height:32px}
 html.b-charte[data-ch=reporhogo] .seg button[aria-pressed="true"]{background:var(--ch-acc)!important;color:var(--ch-acc-ink)!important}

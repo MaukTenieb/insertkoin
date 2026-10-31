@@ -301,6 +301,8 @@ html.borne[data-prog] #kg-root #chess-body{min-height:0;container-type:size}
 html.borne[data-prog] #kg-root #chess-board{max-width:none!important;max-height:none!important;width:min(calc(100cqh - 90px),96cqw)!important;height:min(calc(100cqh - 90px),96cqw)!important;aspect-ratio:1;flex:none;container-type:inline-size;grid-template-rows:repeat(8,1fr)}
 html.borne[data-prog] #kg-root #chess-players{max-width:none!important;width:min(calc(100cqh - 90px),96cqw)!important}
 html.borne[data-prog] #kg-root #chess-board .piece{font-size:10cqw!important}
+/* 31 oct., 22 h 12 — E22 : le glyphe occupe 58 % de sa taille de police ; à 10cqw il ne remplit que 47 % de la case. scale 1,7 le porte à 80 % sans toucher la grille */
+html.borne[data-prog] #kg-root #chess-board .piece{scale:1.7}
 html.borne[data-prog] #kg-root #chess-body{position:relative;padding:2px!important}
 /* 31 oct., roue K h2 : écran large, l'échiquier prend toute la hauteur ; joueurs et journal passent sur les côtés (les 90 px réservés partent) */
 @container (min-aspect-ratio:27/20){
