@@ -301,6 +301,14 @@ html.borne[data-prog] #kg-root #chess-body{min-height:0;container-type:size}
 html.borne[data-prog] #kg-root #chess-board{max-width:none!important;max-height:none!important;width:min(calc(100cqh - 90px),96cqw)!important;height:min(calc(100cqh - 90px),96cqw)!important;aspect-ratio:1;flex:none;container-type:inline-size;grid-template-rows:repeat(8,1fr)}
 html.borne[data-prog] #kg-root #chess-players{max-width:none!important;width:min(calc(100cqh - 90px),96cqw)!important}
 html.borne[data-prog] #kg-root #chess-board .piece{font-size:10cqw!important}
+html.borne[data-prog] #kg-root #chess-body{position:relative;padding:2px!important}
+/* 31 oct., roue K h2 : écran large, l'échiquier prend toute la hauteur ; joueurs et journal passent sur les côtés (les 90 px réservés partent) */
+@container (min-aspect-ratio:27/20){
+  html.borne[data-prog] #kg-root #chess-board{width:min(calc(100cqh - 4px),96cqw)!important;height:min(calc(100cqh - 4px),96cqw)!important}
+  html.borne[data-prog] #kg-root #chess-players{position:absolute;left:.5rem;top:50%;transform:translateY(-50%);flex-direction:column;gap:.6rem;width:auto!important;align-items:flex-start}
+  html.borne[data-prog] #kg-root #chess-log{position:absolute;right:.5rem;bottom:.5rem;width:min(22cqw,220px)!important;max-height:40cqh!important}
+  html.borne[data-prog] #kg-root #chess-ai-badge{position:absolute;right:.5rem;top:.5rem}
+}
 /* 30 oct., 23 h 21 — bulles des psychopompes : texte de 12 à 14 px sur écran tactile (tablette, téléphone), 13 px à la souris */
 html.borne .gtip{font-size:13px!important}
 @media (pointer:coarse){html.borne .gtip{font-size:14px!important;max-width:min(300px,78vw)!important}}
