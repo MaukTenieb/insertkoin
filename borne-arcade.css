@@ -512,3 +512,24 @@ html.borne .b-plate .b-badge.b-badge.b-badge b{color:#2b241b!important;letter-sp
 @media (prefers-reduced-motion:reduce){html.borne .b-plate .b-badge.b-badge.b-badge{animation:none!important}}
 /* 31 oct. — champs de saisie à 16 px au toucher (le navigateur du téléphone garde l'échelle de la page) */
 @media (pointer:coarse){html.borne :is(.vhs-find-sort,#hang-kbd,#kk-box,#kk-story){font-size:16px!important}}
+/* 31 oct., 12 h 40 — l'autocollant (d10) : la base vient de l'image sans son mot (sticker-base.webp) ; le nom (LORE, TALES, KORHOGO, DIEGESIS) se pose en lettrage,
+   la couleur de la base tourne d'un tirage à l'autre (borne-arcade.js) */
+html.borne a.b-lore.b-lore.b-lore{background:none!important;isolation:isolate}
+html.borne a.b-lore.b-lore.b-lore::after{content:"";position:absolute;inset:0;z-index:-1;background:var(--i-lore) center/100% 100% no-repeat;filter:hue-rotate(var(--lh,0deg));transition:filter .25s steps(3)}
+html.borne .b-lore .b-lw{position:relative;z-index:1;display:block;margin:-.06em .04em 0 0;font-family:var(--f-sign);font-size:var(--lfs,22px);line-height:1;letter-spacing:.04em;white-space:nowrap;color:#f6ead0;
+  text-shadow:0 0 1px #1a0d08,.03em .03em 0 var(--le1,#e8742a),.06em .06em 0 var(--le1,#e8742a),.09em .09em 0 var(--le2,#9c1f17),.12em .12em 0 var(--le2,#9c1f17),.13em .15em 0 #120806}
+/* 31 oct. — réglette des points au toucher : la rangée entière reçoit le doigt sur 44 px de haut */
+@media (pointer:coarse){
+  html.borne .b-dots.b-reglette{min-height:44px;align-items:center;touch-action:none;cursor:pointer}
+  html.borne .b-dots.b-reglette .b-dot{pointer-events:none}
+  html.borne .b-dots.b-reglette .b-dot.b-vise::after{background:#9a8f7c}
+}
+/* 31 oct. — téléphone debout : la rangée des points (44 px) prend sa place au-dessus du bandeau fixe ; la vitre perd ces 44 px */
+@media (pointer:coarse) and (max-width:700px) and (orientation:portrait){
+  html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-screen:has(.b-dots.b-reglette:not([hidden])) .b-glass{height:calc(var(--r-vh) - 2 * var(--r-g) - var(--r-band) - 8px - 44px)!important}
+  html.borne[data-prog] .b-dots.b-reglette{margin-top:0}
+}
+/* 31 oct. — téléphone couché : même place pour la rangée des points au-dessus du bandeau */
+@media (pointer:coarse) and (orientation:landscape){
+  html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-screen:has(.b-dots.b-reglette:not([hidden])) .b-glass{height:calc(var(--r-vh) - 2 * var(--r-g) - var(--r-band) - 8px - 44px)!important}
+}
