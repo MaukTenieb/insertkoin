@@ -259,4 +259,7 @@ html.borne[data-r-jeu][data-prog]:not(#r1):not(#r2) .b-bezel .b-bezelfoot{
     position:fixed!important/* !P10 */;left:var(--r-g)!important/* !P10 */;right:var(--r-g)!important/* !P10 */;bottom:var(--r-g)!important/* !P10 */;top:auto!important/* !P10 */;
     width:auto!important/* !P10 */;height:var(--r-band)!important/* !P10 */;min-height:var(--r-hit)!important/* !P10 */;flex-direction:row!important/* !P10 */;flex-wrap:nowrap!important/* !P10 */;
     align-items:center!important/* !P10 */;justify-content:space-between!important/* !P10 */;margin:0!important/* !P10 */}
+  /* le son et PL se rangent en ligne dans la bande (cabinet.css:432 les empile en colonne et le son mord sur le bas du verre) */
+  html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezelfoot .b-pfx{
+    flex-direction:row!important/* !P10 */;flex-wrap:nowrap!important/* !P10 */;align-items:center!important/* !P10 */;gap:8px!important/* !P10 */;width:auto!important/* !P10 */;order:0!important/* !P10 */}
 }

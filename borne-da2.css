@@ -79,10 +79,10 @@ html.borne .b-boom:hover,html.borne .b-boom:focus-visible{filter:brightness(.95)
 @media (min-width:701px){html.borne[data-prog][data-mode=device] .wrap{width:calc(100vw - 40px)!important;max-width:calc(100vw - 40px)!important;margin-left:auto!important;margin-right:auto!important}}
 /* 4. l'étiquette INSERT KOIN, taillée à la mesure de son texte et logée sous la fente, sur chaque porte */
 html.borne .b-slot b{left:50%!important;right:auto!important;width:auto!important;top:auto!important;bottom:9%!important;height:auto!important;transform:translateX(-50%);
-  padding:4px 9px 3px!important;border-radius:2px!important;white-space:nowrap;font-size:clamp(6px,.62vw,8px)!important;line-height:1.2;letter-spacing:.08em;
+  padding:4px 9px 3px!important;border-radius:2px!important;white-space:nowrap;line-height:1.2;letter-spacing:.08em;
   background:#070605!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 0 0 1px #000,0 1px 0 rgba(255,255,255,.12)!important}
 /* 5. l'aimant Dekonect, à l'échelle de la porte : un tiers de la hauteur de la caisse à pièces */
-html.borne .b-dekonect{width:clamp(52px,4.6vw,74px)!important;height:clamp(52px,4.6vw,74px)!important;padding:6px!important;bottom:6px!important}
+html.borne .b-dekonect{width:clamp(52px,4.6vw,74px)!important;height:clamp(52px,4.6vw,74px)!important;padding:6px!important;}
 @media (max-width:700px){html.borne .b-dekonect{width:52px!important;height:52px!important}}
 /* l'étiquette sous la fente, place exacte par porte */
 html.borne.borne[data-skin=bois] .b-slot b{left:51%!important;top:61%!important;bottom:auto!important;width:auto!important;height:auto!important;transform:translateX(-50%)!important}
