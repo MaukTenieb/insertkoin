@@ -1110,7 +1110,7 @@
   const LAY = {
     wideMin: 700,                                    // narrower views stack the screen over the controls
     wide: { pad: 12, bezel: 12, gap: 12, ctrlK: 0.3, ctrlMin: 300, ctrlMax: 460 },
-    narrow: { pad: 0, bezel: 8, gap: 8 },
+    narrow: { pad: 0, bezel: 4, gap: 8 },
   };
 
   function geometry(W, H) {

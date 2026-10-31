@@ -12,7 +12,10 @@
       +'#card{position:fixed!important;right:10px;top:10px;z-index:20;width:min(300px,46vw);background:rgba(10,9,8,.86)!important;backdrop-filter:blur(3px);font-size:13px}'
       +'#card #hint{display:none!important}#card #cbody{grid-template-columns:72px 1fr!important}#card #pcv{width:72px!important;height:72px!important}#card #cname{font-size:20px!important}'
       +'#zoom{position:fixed!important;left:10px;bottom:10px;z-index:20;display:flex!important;gap:6px}html body #zoom button,html body .b-open{width:34px!important;height:34px!important;min-width:0!important;min-height:0!important;padding:0!important;border-radius:50%!important;border:1px solid rgba(255,224,138,.35)!important;background:rgba(10,9,8,.55)!important;box-shadow:none!important;color:rgba(255,224,138,.85)!important;font:16px/1 monospace!important;cursor:pointer;opacity:.8;text-shadow:none!important}html body #zoom button:hover,html body .b-open:hover{opacity:1}html body #zoom button::after,html body .b-open::after{content:"";position:absolute;inset:-5px}html body #zoom button,html body .b-open{position:relative}@media (pointer:coarse),(max-width:520px){html body #zoom{display:none!important}html body .b-open{left:10px!important;top:10px!important;bottom:auto!important}}'
-      +'html body .b-open{position:fixed!important;left:92px;bottom:10px;z-index:20}';
+      +'html body .b-open{position:fixed!important;left:92px;bottom:10px;z-index:20}'
+      /* la chambre paraît d'un bloc, déjà cadrée et rejouée, en fondu */
+      +'#view{opacity:0;transition:opacity .6s ease}html.sk-ready #view{opacity:1}';
+    setTimeout(function(){document.documentElement.classList.add('sk-ready');},6000);
     document.head.appendChild(st);}
   function nowMin(){var d=new Date();return d.getHours()*60+d.getMinutes()+d.getSeconds()/60;}
   /* minutes du jeu : jour 1 à 00:00 = 0 ; le jour courant est le jour 2 */
@@ -20,7 +23,7 @@
   function catchUp(to){var R=window.__room;if(!R)return;var g=to-R.tMin;if(g<=0)return;g=Math.min(g,26*60);
     /* rattrapage : la marche reprend le pas du jeu le temps de rejouer les heures */
     var w=window.__walk;window.__walk=1;while(g>0){var s=Math.min(g,.2);R.step(s);g-=s;}window.__walk=w;}
-  function cover(){if(!attract)return;var v=document.getElementById('view');if(!v)return;var k=Math.max(innerWidth/800,innerHeight/500);
+  function cover(){if(!attract)return;var v=document.getElementById('view');if(!v)return;var k=Math.min(innerWidth/800,innerHeight/500);/* la chambre entière, centrée, le noir de la scène se fond dans celui de l'écran */
     v.style.setProperty('width',Math.ceil(800*k)+'px','important');v.style.setProperty('height',Math.ceil(500*k)+'px','important');}
   function init(){var R=window.__room;if(!R||!R.SPEEDS)return setTimeout(init,80);
     var m=nowMin();R.tMin=m>=390?1440+390:18*60;catchUp(target());try{R.updateRoster&&R.updateRoster();}catch(e){}
@@ -38,7 +41,8 @@
       op.onclick=function(){try{parent.postMessage({borne:'open'},'*');}catch(_){}};document.body.appendChild(op);}
     pinch(R);
     if(!attract){var st2=document.createElement('style');st2.textContent='header button,aside button,#zoom button{min-height:44px;min-width:44px}';document.head.appendChild(st2);}
-    cover();addEventListener('resize',function(){setTimeout(cover,0);});setTimeout(cover,300);setTimeout(cover,1500);}
+    cover();addEventListener('resize',function(){setTimeout(cover,0);});setTimeout(cover,300);setTimeout(cover,1500);
+    if(attract)requestAnimationFrame(function(){requestAnimationFrame(function(){cover();document.documentElement.classList.add('sk-ready');});});}
   /* pincement à deux doigts : la loupe suit les doigts */
   function pinch(R){var v=document.getElementById('view'),P={},d0=0;if(!v||!R.zoomAt)return;
     v.addEventListener('pointerdown',function(e){P[e.pointerId]=[e.clientX,e.clientY];var k=Object.keys(P);if(k.length===2){var a=P[k[0]],b=P[k[1]];d0=Math.hypot(a[0]-b[0],a[1]-b[1]);}});

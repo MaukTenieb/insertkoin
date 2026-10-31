@@ -395,11 +395,13 @@
     function build(){var raw=(l.dataset.raw!=null&&l.querySelector('.b-tk'))?null:l.textContent.trim();if(raw===null)return;
       if(!raw||/^(wait a sec\.*|motel sound)$/i.test(raw)){pick();raw=window.__jukeNow||raw;}
       if(raw===cur&&l.querySelector('.b-tk'))return;cur=raw;l.dataset.raw=raw;
-      var u=raw.toUpperCase()+'\u2003\u25C6\u2003';while(u.length<56)u+=u;l.innerHTML='<span class="b-tk"><span>'+u.replace(/</g,'&lt;')+'</span><span aria-hidden="true">'+u.replace(/</g,'&lt;')+'</span></span>';
-      var w=l.querySelector('.b-tk span').offsetWidth,d=Math.max(6,w/42);l.style.setProperty('--tkd',d.toFixed(2)+'s');
+      /* chaque titre défile, quelle que soit sa longueur (Mauk Tenieb, 31 oct., 8 h 58) : il entre par la droite, traverse la bande et sort à gauche, puis revient ; une seule occurrence à la fois */
+      var esc=raw.toUpperCase().replace(/</g,'&lt;');l.classList.remove('b-fit');l.innerHTML='<span class="b-tk b-one"><span>'+esc+'</span></span>';
+      var tk=l.querySelector('.b-tk'),tw=tk.firstChild.offsetWidth,bw=l.clientWidth,d=Math.max(5,(tw+bw)/38);
+      l.style.setProperty('--tkf',bw+'px');l.style.setProperty('--tkt',(-tw)+'px');l.style.setProperty('--tkd',d.toFixed(2)+'s');
       /* le bandeau ne repart jamais de zéro : il reprend là où il en était */
       if(!window.__tk0||window.__tkRaw!==raw){window.__tk0=performance.now();window.__tkRaw=raw;}
-      l.querySelector('.b-tk').style.animationDelay=(-(((performance.now()-window.__tk0)/1000)%d)).toFixed(3)+'s';}
+      tk.style.animationDelay=(-(((performance.now()-window.__tk0)/1000)%d)).toFixed(3)+'s';}
     new MutationObserver(function(){if(!l.querySelector('.b-tk')||l.childNodes.length!==1)build();else{var t=l.textContent;}}).observe(l,{childList:true,characterData:true,subtree:true});
     var setT=Object.getOwnPropertyDescriptor(Node.prototype,'textContent');
     setTimeout(build,50);addEventListener('resize',function(){cur='';build();});})();
@@ -413,8 +415,12 @@
   (function(){var slot=document.querySelector('.b-slot');if(!slot)return;
     lore.addEventListener('click',function(e){e.stopPropagation();});
     function place(){if(!slot.offsetWidth){setTimeout(place,300);return;}var P=slot.getBoundingClientRect(),door=slot.closest('.b-door')||slot.parentElement,S=door.getBoundingClientRect(),avoid=[];var BL=document.documentElement.hasAttribute('data-bland');[slot.querySelector('b'),slot.querySelector('i')].filter(Boolean).forEach(function(x){var r=x.getBoundingClientRect();for(var z=0;z<(BL?30:6);z++)avoid.push({left:r.left-8,top:r.top-8,right:r.right+8,bottom:r.bottom+8});});
-      /* téléphone couché (data-bland) : placement propre à ce mode (landPlace) */
-      if(BL){landPlace(P,S,door);return;}
+      /* partout (Mauk Tenieb, 31 oct., 8 h 50) : LORE collé au hasard sur la caisse à pièces, la fenêtre de la fente toujours nue ; l'ancien placement sert de repli */
+      if(landPlace(P,S,door,BL))return;
+      /* repli, hors du téléphone couché : à cheval sur le bord gauche de la plaque, à mi-hauteur */
+      if(!BL){var w0=lore.offsetWidth||84,h0=lore.offsetHeight||38;lore.classList.remove('b-stuck');lore.classList.add('b-onbox');
+        lore.style.setProperty('--lx',(P.left-S.left-w0/2).toFixed(1)+'px');lore.style.setProperty('--ly',(P.top-S.top+P.height/2-h0/2).toFixed(1)+'px');
+        lore.style.setProperty('--ls',1);lore.style.setProperty('--lr',((Math.random()*2-1)*6).toFixed(1)+'deg');door.appendChild(lore);return;}
       /* la fente et la serrure de chaque porte (en % de la porte) */
       var OPEN={bois:[[30,14,72,60],[60,62,86,92]],metal:[[40,14,60,52],[66,58,86,86]]}[document.documentElement.dataset.skin]||[];
       for(var z0=0;z0<(BL?0:3);z0++)avoid.push({left:P.left-6,top:P.top-6,right:P.right+6,bottom:P.bottom+6});/* sur le bois de la caisse, hors de la plaque */
@@ -433,21 +439,26 @@
       for(var k=0;k<C.length;k++){
         if(true){lore.classList.remove('b-stuck');lore.classList.add('b-onbox');lore.style.setProperty('--lx',C[k][0]+'%');lore.style.setProperty('--ly',C[k][1]+'%');
           lore.style.setProperty('--lr',((Math.random()*2-1)*(BL?6:12)).toFixed(1)+'deg');door.appendChild(lore);return;}}}
-    function landPlace(P,S,door){var sk=document.documentElement.dataset.skin,w=lore.offsetWidth||92,h=lore.offsetHeight||44;
+    function landPlace(P,S,door,BL){var sk=document.documentElement.dataset.skin,w=lore.offsetWidth||92,h=lore.offsetHeight||44;
       /* la fenêtre sombre de la fente (en % de la plaque) ; son cadre compte comme plaque (décision du 31 oct.) */
       var OP={bois:[31,19,70,60],metal:[46,26,54,45]}[sk]||[31,19,70,60];
       function ov(a,x,y,W,H){return Math.max(0,Math.min(x+W,a.r)-Math.max(x,a.l))*Math.max(0,Math.min(y+H,a.b)-Math.max(y,a.t));}
       var O={l:P.left+P.width*OP[0]/100-6,t:P.top+P.height*OP[1]/100-6,r:P.left+P.width*OP[2]/100+6,b:P.top+P.height*OP[3]/100+6};
-      var lb=slot.querySelector('b'),Lr=lb&&lb.getBoundingClientRect(),LB=Lr&&{l:Lr.left,t:Lr.top,r:Lr.right,b:Lr.bottom},LA=LB?(LB.r-LB.l)*(LB.b-LB.t):0;
+      var lb=slot.querySelector('b'),Lr=lb&&lb.getBoundingClientRect(),LB=Lr&&{l:Lr.left-(BL?0:4),t:Lr.top-(BL?0:4),r:Lr.right+(BL?0:4),b:Lr.bottom+(BL?0:4)},LA=LB?(LB.r-LB.l)*(LB.b-LB.t):0;
+      /* la serrure (en % de la plaque), libre à 4 px */
+      var KHp={bois:[60,62,86,92],metal:[66,58,86,86]}[sk]||[60,62,86,92],KH={l:P.left+P.width*KHp[0]/100-4,t:P.top+P.height*KHp[1]/100-4,r:P.left+P.width*KHp[2]/100+4,b:P.top+P.height*KHp[3]/100+4},PL={l:P.left,t:P.top,r:P.right,b:P.bottom};
       var kn=document.querySelector('.b-door .b-knobs'),KR=kn&&kn.getBoundingClientRect(),KN=KR&&{l:KR.left-4,t:KR.top-4,r:KR.right+4,b:KR.bottom+4};
       var pn=document.querySelector('#home .b-panel'),bz=document.querySelector('#home .b-bezel'),WR=document.querySelector('.wrap').getBoundingClientRect();
-      var top=(pn?pn.getBoundingClientRect().bottom:P.top)+3,bot=Math.min(innerHeight,WR.bottom)-3,lft=Math.max(S.left,bz?bz.getBoundingClientRect().right:0)+3,rgt=Math.min(S.right,WR.right)-3;
+      var top=(pn?pn.getBoundingClientRect().bottom:P.top)+3,bot=(BL?Math.min(innerHeight,WR.bottom):Math.min(WR.bottom,P.bottom+P.height*.12))-3,lft=Math.max(S.left,BL&&bz?bz.getBoundingClientRect().right:WR.left+8)+3,rgt=Math.min(S.right,WR.right-8)-3;
       /* LORE au hasard sur la caisse : la fenêtre de la fente nue (6 px), l'étiquette couverte à 15 % au plus, 45 % de sa largeur au plus hors de la plaque, sur le bois de la caisse, sous le rebord du panneau */
       /* 0,6 au plus bas sous 800 px de large, et en bois jusqu'à 900 px (décision du 31 oct.) */
-      var sc=(innerWidth<800||(sk==='bois'&&innerWidth<900))?[.8,.75,.6]:[.8,.75];
+      var sc=!BL?[1,.9,.8]:(innerWidth<800||(sk==='bois'&&innerWidth<900))?[.8,.75,.6]:[.8,.75];
       for(var i=0;i<sc.length;i++){var W=w*sc[i]+4,H=h*sc[i]+6,C=[];
         for(var x=lft;x<=rgt-W;x+=2){var out=Math.max(0,P.left-x)+Math.max(0,x+W-P.right);if(out>.45*W)continue;
-          for(var y=top;y<=bot-H;y+=2){if(ov(O,x,y,W,H)||(KN&&ov(KN,x,y,W,H))||(LB&&ov(LB,x,y,W,H)>.15*LA))continue;C.push([x,y]);}}
+          for(var y=top;y<=bot-H;y+=2){if(ov(O,x,y,W,H)||(KN&&ov(KN,x,y,W,H))||(LB&&ov(LB,x,y,W,H)>(BL?.15*LA:0)))continue;
+            /* hors du téléphone couché : l'autocollant chevauche le bord de la plaque (35 à 65 % de sa surface dessus), la serrure libre */
+            if(!BL){var f=ov(PL,x,y,W,H)/(W*H);if(f<.35||f>.65||ov(KH,x,y,W,H))continue;}
+            C.push([x,y]);}}
         if(!C.length)continue;var k=C[Math.floor(Math.random()*C.length)];
         lore.classList.remove('b-stuck');lore.classList.add('b-onbox');
         lore.style.setProperty('--lx',(k[0]+W/2-w/2-S.left).toFixed(1)+'px');lore.style.setProperty('--ly',(k[1]+H/2-h/2-S.top).toFixed(1)+'px');
@@ -461,6 +472,8 @@
       lore.style.setProperty('--lx',(k3[0]+W3/2-w/2-S.left).toFixed(1)+'px');lore.style.setProperty('--ly',(k3[1]+H3/2-h/2-S.top).toFixed(1)+'px');
       lore.style.setProperty('--ls',s3);lore.style.setProperty('--lr','0deg');door.appendChild(lore);return true;}
     setTimeout(place,500);
+    /* la caisse change de taille (mesure de l'écran, téléphone couché, skin) : l'autocollant se recolle sur sa nouvelle place */
+    if(window.ResizeObserver){var rsT,rs0='';new ResizeObserver(function(){var r=slot.getBoundingClientRect(),k=Math.round(r.width)+'x'+Math.round(r.height)+(document.documentElement.hasAttribute('data-bland')?'L':'');if(k===rs0)return;rs0=k;clearTimeout(rsT);rsT=setTimeout(place,350);}).observe(slot);}
     var RW=innerWidth;addEventListener('resize',function(){if(Math.abs(innerWidth-RW)>40){RW=innerWidth;clearTimeout(lore._rt);lore._rt=setTimeout(place,500);}});
     /* un autre skin, une autre caisse : l'autocollant se recolle hors de la fente et de son étiquette */
     new MutationObserver(function(){if(lore.classList.contains('b-onbox'))setTimeout(place,450);}).observe(document.documentElement,{attributes:true,attributeFilter:['data-skin']});})();
@@ -471,7 +484,9 @@
   dress('repos');
   /* la page d'origine reste voilée jusqu'ici : le visiteur voit la borne d'emblée */
   /* la borne se montre quand elle est montée entière (images, mesures de l'écran) : borne-arcade.js lève le voile ; sinon, tout de suite */
-  requestAnimationFrame(function(){if(!window.__borneFit)root.classList.add('borne-ready');});
+  /* les scripts de la borne arrivent l'un après l'autre : le voile attend la fin du chargement (borne-arcade.js le lève, matières décodées) ; 4 s au plus */
+  addEventListener('load',function(){setTimeout(function(){if(!window.__borneFit)root.classList.add('borne-ready');},0);});
+  setTimeout(function(){root.classList.add('borne-ready');},4000);
 })();
 
 /* ---------- éclats et reflets (25 oct.) : les boutons scintillent de temps en temps ; les autocollants et les plaques prennent un reflet qui suit la souris, le doigt ou le défilement ---------- */

@@ -116,10 +116,10 @@ html.borne[data-prog] .b-dekonect{display:block!important}
   html.borne[data-bfit]:not([data-prog]):not([data-mode=device]):not([data-habit=fauneye]) .wrap,
   html.borne[data-bfit]:not([data-prog]):not([data-mode=device]):not([data-habit=fauneye]) .b-roof{width:var(--wc)!important;max-width:calc(100vw - 16px)!important}
   html.borne[data-bfit]:not([data-prog]):not([data-mode=device]):not([data-habit=fauneye]):not(.b-immersion) .b-bezel .b-screen{width:100%!important;max-width:none!important;align-self:stretch!important;display:flex!important;justify-content:center;
-    padding:calc(var(--gw) * .086) 0 calc(var(--gw) * .089)!important;background:radial-gradient(ellipse 70% 80% at 50% 45%,#1f201b,#151612 70%,#10110e)!important}
+    padding:calc(var(--gw) * .040) 0 calc(var(--gw) * .042)!important;background:radial-gradient(ellipse 70% 80% at 50% 45%,#1f201b,#151612 70%,#10110e)!important}
   html.borne[data-bfit]:not([data-prog]):not([data-mode=device]):not([data-habit=fauneye]):not(.b-immersion) .b-bezel .b-screen::before{content:"";position:absolute;z-index:3;top:0;left:0;right:0;
-    height:calc(var(--gw) * .925);box-sizing:border-box;pointer-events:none;
-    border-style:solid;border-width:calc(var(--gw) * .086) var(--bzs,calc(var(--gw) * .179)) calc(var(--gw) * .089);border-image:url(art-bezel-fin.webp) 50 104 52 104 stretch}
+    height:calc(var(--gw) * .832);box-sizing:border-box;pointer-events:none;
+    border-style:solid;border-width:calc(var(--gw) * .040) var(--bzs,calc(var(--gw) * .083)) calc(var(--gw) * .042);border-image:url(art-bezel-fin.webp) 50 104 52 104 stretch}
   html.borne[data-bfit]:not([data-prog]) .b-roof{height:clamp(52px,6.6vh,120px)!important}
   html.borne[data-bfit]:not([data-prog]):not([data-mode=device]) .wrap .bar :is(.brand,.dock){min-height:clamp(64px,8.2vh,104px)!important;height:clamp(64px,8.2vh,104px)!important}
   html.borne[data-bfit]:is([data-skin=bois],[data-skin=metal]):not([data-prog]):not([data-habit=fauneye]):not(.b-immersion) .b-bezel .b-screen{border-width:0!important;border-image:none!important}
@@ -128,7 +128,7 @@ html.borne[data-prog] .b-dekonect{display:block!important}
 /* pendant la mesure de l'écran, le meuble change de taille d'un coup ; le contenu des programmes garde ses propres transitions */
 html.borne[data-fitting] :is(.wrap,.b-roof,.b-roof *,.bar,.bar *,.b-land,.b-butee,.b-bezel,.b-screen,.b-glass,.b-bezelfoot){transition:none!important}
 @media (max-width:700px){
-  html.borne:not([data-prog]):is([data-skin=bois],[data-skin=metal]):not([data-mode=device]):not([data-habit=fauneye]):not(.b-immersion) .b-bezel .b-screen{border-style:solid!important;border-image:url(art-bezel-fin.webp) 50 104 52 104 stretch!important;border-width:12px 16px!important;border-radius:0!important}
+  html.borne:not([data-prog]):is([data-skin=bois],[data-skin=metal]):not([data-mode=device]):not([data-habit=fauneye]):not(.b-immersion) .b-bezel .b-screen{border-style:solid!important;border-image:url(art-bezel-fin.webp) 50 104 52 104 stretch!important;border-width:calc(var(--gw) * .040) calc(var(--gw) * .083) calc(var(--gw) * .042)!important;border-radius:0!important}
   html.borne:not([data-prog]):is([data-skin=bois],[data-skin=metal]):not([data-mode=device]):not([data-habit=fauneye]):not(.b-immersion) .b-glass{width:calc(var(--gw) - 32px)!important;height:calc((var(--gw) - 32px) * .75)!important}}
 /* le titre du morceau reste dans le fronton, à l'écart de la tranche peinte */
 @media (min-width:701px){html.borne:not([data-mode=device]) .wrap .bar{padding-left:calc(clamp(12px,1.5vw,22px) + 6px)!important;padding-right:calc(clamp(12px,1.5vw,22px) + 6px)!important}}
@@ -323,9 +323,9 @@ html.borne[data-prog] .b-scrlight,html.borne.b-immersion .b-scrlight{display:non
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) #home .b-bezel{grid-column:1;grid-row:1}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) #home .b-panel{grid-column:2;grid-row:1}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .wrap>.b-door{grid-column:2;grid-row:2;align-self:end;z-index:2;margin:0 0 4px!important}
-  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion):not([data-habit=fauneye]) .b-bezel .b-screen{padding:calc(var(--gw) * .05) 0!important}
-  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion):not([data-habit=fauneye]) .b-bezel .b-screen::before{height:calc(var(--gw) * .85)!important;
-    border-width:calc(var(--gw) * .05) calc(var(--gw) * .08)!important}
+  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion):not([data-habit=fauneye]) .b-bezel .b-screen{padding:calc(var(--gw) * .040) 0 calc(var(--gw) * .042)!important}
+  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion):not([data-habit=fauneye]) .b-bezel .b-screen::before{height:calc(var(--gw) * .832)!important;
+    border-width:calc(var(--gw) * .040) calc(var(--gw) * .083) calc(var(--gw) * .042)!important}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .wrap>.bar{padding-top:3px!important;padding-bottom:3px!important;min-height:0!important;height:auto!important}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-butee{display:none!important}
   /* la ligne Online réduite à son point et à son nombre ; la barre finit au ras de la dynamite */
@@ -369,3 +369,11 @@ html.borne[data-prog] .b-scrlight,html.borne.b-immersion .b-scrlight{display:non
 @media (orientation:landscape) and (max-height:500px) and (max-width:799px){
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-door>.b-knobs{gap:3px!important;padding:7px 6px 5px!important}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .wrap>.b-door{padding-left:2px!important}}
+/* boutons gris de la barre (son, PL, Kapture, immersion) : le dôme de la photo a son sommet en haut à gauche du disque ; le pictogramme se pose au centre du dôme (1,5 px à gauche, 3,5 px plus haut) */
+html.borne .b-bezelfoot .b-pfx .b-px,html.borne .b-bezelfoot .b-imm{padding:0 3px 7px 0!important}
+html.borne .b-bezelfoot .b-pfx .b-px-pl{padding:0 3px 2px 1px!important;letter-spacing:.02em!important}
+/* 31 oct., 9 h : une seule vitre imprimée, la même image et les mêmes proportions sur toutes les fenêtres ; bords minces (4 % en haut et en bas, 8,3 % sur les côtés), l'image d'écran y gagne sa place */
+/* pendant le chargement, rien du meuble ne perce le voile (barre des Koins comprise) */
+html.borne:not(.borne-ready) :is(#koins,.koins,.b-bezelfoot,.b-bezelfoot *){visibility:hidden!important}
+/* la date de la borne, lisible sur la chambre */
+html.borne .b-date{background:rgba(6,5,4,.82)!important}

@@ -1150,3 +1150,10 @@ html.borne .b-door>.b-lore.b-onbox:hover{transform:rotate(var(--lr,-6deg)) scale
 html.borne #home .b-panel{z-index:2}
 /* 31 oct. — la plaque des molettes tient dans la caisse (elle débordait du flanc droit sous 1500 px) */
 @media (max-width:1500px) and (min-width:701px){html.borne .b-door>.b-knobs{zoom:.86}}
+/* bandeau du Motel Sound : chaque titre traverse la bande de droite à gauche, une occurrence à la fois, bords fondus */
+html.borne .motel-l .b-tk.b-one{display:inline-block;animation:btkone var(--tkd,10s) linear infinite}
+@keyframes btkone{from{transform:translateX(var(--tkf,200px))}to{transform:translateX(var(--tkt,-200px))}}
+@media (prefers-reduced-motion:reduce){html.borne .motel-l .b-tk.b-one{animation:none;transform:none}}
+/* LORE sur la caisse à pièces, partout : son échelle suit la place trouvée */
+html.borne .b-door>.b-lore.b-onbox{transform:rotate(var(--lr,-6deg)) scale(var(--ls,1))}
+html.borne .b-door>.b-lore.b-onbox:hover{transform:rotate(var(--lr,-6deg)) scale(calc(var(--ls,1) * 1.06))}
