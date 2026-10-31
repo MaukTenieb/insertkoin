@@ -98,7 +98,7 @@ html.borne #home .b-panel .cabinets>.cab{container-type:inline-size}
 html.borne #home .b-panel .cabinets>.cab b{font-size:min(clamp(1rem,1.7vw,1.45rem),16cqi)!important;white-space:nowrap}
 /* la manette garde la proportion des touches, même quand le meuble rapetisse */
 @media (min-width:701px){html.borne #home .b-panel .cabinets{container-type:inline-size}
-html.borne .b-panel .cabinets>.b-stick,html.borne .b-panel .cabinets>.b-stick i{width:clamp(48px,12.8cqi,140px)!important}}
+html.borne .b-panel .cabinets>.b-stick{width:clamp(48px,12.8cqi,140px)!important}}
 /* haut-parleurs sur ordinateur : l'image seule, sans caisson noir autour */
 @media (min-width:701px){
 html.borne .bar .dock:first-of-type,html.borne .bar .dock:last-of-type{background-color:transparent!important;box-shadow:none!important;filter:drop-shadow(0 5px 8px rgba(0,0,0,.6))}

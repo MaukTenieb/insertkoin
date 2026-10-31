@@ -511,7 +511,7 @@ html.borne .b-bezelfoot :is(.b-pfx .b-px,.b-imm)::after{inset:-7px -5px!importan
 html.borne #kg-root #bb-panel:not([style*="display: none"]):not([style*="display:none"]){grid-template-columns:max-content max-content!important;justify-content:center!important}
 /* 31 oct., 12 h 40 — la plaque Mauk Tenieb intègre les clous qui la fixent (d9) : plaque et clous viennent de plaque-mauk.webp (R4),
    bords de l'image tenus sans déformation (border-image), lettrage posé sur la plaque ; zéro clou ni cadre dessinés en CSS ; le halo passe en lumière seule */
-html.borne .b-plate .b-badge.b-badge.b-badge{background:none!important;border-style:solid!important;border-width:0 18px!important;border-image:url(plaque-mauk.webp) 0 61 fill / 0 18px stretch!important;
+html.borne .b-plate .b-badge.b-badge.b-badge{background:none!important;border-style:solid!important;border-width:0 18px!important;border-image:url(plaque-mauk-droite.webp) 0 59 fill / 0 18px stretch!important;
   border-radius:0!important;box-shadow:none!important;height:44px!important;padding:0 8px!important;box-sizing:border-box!important;filter:drop-shadow(0 4px 4px rgba(0,0,0,.5))!important;animation:bplatel 9s ease-in-out infinite!important}
 html.borne .b-plate .b-badge.b-badge.b-badge::after{content:none!important}
 html.borne .b-plate .b-badge.b-badge.b-badge::before{content:""!important;position:absolute!important;inset:-6px -18px!important;background:none!important;box-shadow:none!important;border-radius:0!important;width:auto!important;height:auto!important;margin:0!important}
