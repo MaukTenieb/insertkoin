@@ -1140,6 +1140,8 @@ html.borne .kdrop{font-size:0!important;width:18px;height:18px;background:url(ko
 html.borne .gkoin{font-size:0!important;width:24px;height:24px;background:url(koin.webp) center/contain no-repeat!important;text-shadow:none!important;border:0!important;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}
 /* molette 👣 sur arrêt : les psychopompes quittent la borne */
 html.borne.b-nopsy .guide,html.borne.b-nopsy .gtip{display:none!important}
+/* 31 oct. — psychopompe assis sur la cible : il cesse de flotter, sa ligne de base reste sur le bord haut de la cible */
+html.borne .guide.b-sit:not(.walk):not(.fling){animation:none!important}
 /* le copyright laisse la place de l'aimant Dekonect, en bas à droite */
 html.borne .b-copy{padding-right:max(var(--inset,12px),64px)!important}
 /* 31 oct. — Lore posé sur la caisse (la porte), plus sur la plaque de la fente */
