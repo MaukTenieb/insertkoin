@@ -34,7 +34,7 @@
   var foot=el('div','b-bezelfoot');
   var badge=el('button','b-sticker b-badge','<b>MAUK TENIEB</b>');badge.type='button';badge.setAttribute('aria-label','Mauk Tenieb');
   var menu=home.querySelector('.menu'),loreHref=((menu&&menu.querySelector('a[href*="substack"]'))||{}).href||'https://mauktenieb.substack.com';
-  var lore=el('a','b-sticker b-lore','<span class="b-sr">LORE</span>');lore.href=loreHref;lore.target='_blank';lore.rel='noopener';
+  var lore=el('a','b-sticker b-lore','<span class="b-lw">LORE</span>');lore.setAttribute('aria-label','LORE');lore.href=loreHref;lore.target='_blank';lore.rel='noopener';
   if($('koins')){$('koins').classList.add('b-credit');foot.appendChild($('koins'));}lore.classList.add('b-stuck');
   var butee=el('div','b-butee');butee.setAttribute('aria-hidden','true');
   bezel.appendChild(land);bezel.appendChild(butee);bezel.appendChild(scr);bezel.appendChild(foot);bezel.appendChild(lore);
@@ -122,7 +122,7 @@
     s.setProperty('--v-panneau','url('+pick(V1960.panneau)+')');s.setProperty('--v-porte','url('+p[0]+')');s.setProperty('--v-pr',p[1]);s.setProperty('--v-sx',p[2]);s.setProperty('--v-sy',p[3]);s.setProperty('--v-sw',p[4]);s.setProperty('--v-sh',p[5]);}
   variants();
   /* pièces tirées au hasard à chaque visite : l'autocollant Lore, la caméra, la manette */
-  (function(){var s=root.style;s.setProperty('--i-lore','url('+pick(['sticker-lore-a.webp','sticker-lore-b.webp'])+')');
+  (function(){var s=root.style;s.setProperty('--i-lore','url(sticker-base.webp)');
     s.setProperty('--i-cam','url('+pick(['camera-a.webp','camera-c.webp'])+')');/* caméras du toit : la webcam à pied et lentille bleue, ou la compacte Korhogo (décision de Mauk Tenieb, 30 oct., 22 h 40) */var mt='manette-a.webp';/* la manette courte, à embase (décision de Mauk Tenieb, 30 oct., 23 h 33 : plus réaliste) */s.setProperty('--i-stick','url('+mt+')');s.setProperty('--stk-cut',mt==='manette-a.webp'?'50%':'76%');s.setProperty('--ball-cut',mt==='manette-a.webp'?'39.5%':'37.5%');})();
   var sw=el('div','b-knobw'),sb=el('button','b-knob b-skin');sb.type='button';sb.setAttribute('aria-label','Skin');sb.dataset.pos=SKINS.indexOf(skin);
   sw.appendChild(sb);sw.appendChild(el('span','b-knoblab','🧤'));knobs.appendChild(sw);
@@ -179,7 +179,8 @@
     setTimeout(relayout,820);}
   var CAMGO=0;
   window.__borneGo=function(k){var C=window.__borneCam;
-    try{window.__borneTourStop&&window.__borneTourStop();}catch(e){}
+    /* un programme s'ouvre : la visite se fige et reprend au retour à l'accueil (__borneHome) */
+    try{(window.__borneTourPause||window.__borneTourStop||function(){})();}catch(e){}
     /* les mini-jeux et DiktatFaune passent par leur vraie touche : le dé de Katabatik, le calque de DiktatFaune */
     if(KATA.indexOf(k)>=0){kata(k);return true;}if(k==='diktat'){play('diktat');return true;}
     if(!CAMGO&&C&&C.ok()&&root.dataset.habit==='repos'&&!root.dataset.prog&&k!=='visit'){C.zoomIn(function(){CAMGO=1;try{IK().go(k);}finally{CAMGO=0;}});return true;}
@@ -193,7 +194,7 @@
   /* l'écran de la page commande l'habit : de retour à l'accueil (programme refusé, retour), la borne reprend son habit de repos */
   new MutationObserver(function(){var home=document.body.className.indexOf('on-home')>=0;
     if(home&&root.dataset.habit!=='repos'&&!SWAP){dress('repos');mark(null);setBig('');}else if(!home&&root.dataset.habit==='repos')dress('arcade');}).observe(document.body,{attributes:true,attributeFilter:['class']});
-  window.__borneHome=function(){if(SWAP)return;CUR=null;paintDots();fold();dress('repos');mark(null);setBig('');scrollTo({top:0,behavior:'smooth'});};
+  window.__borneHome=function(){if(SWAP)return;setTimeout(function(){try{if(!root.dataset.prog&&!window.__borneNoPsy&&window.__borneTourResume)window.__borneTourResume();}catch(e){}},4000);CUR=null;paintDots();fold();dress('repos');mark(null);setBig('');scrollTo({top:0,behavior:'smooth'});};
   window.__borneGame=function(k){if(k==='kapture')dress('photo',true);};
 
   /* ---------- d'un programme à l'autre : un glissé depuis le bord de l'écran, ou Page préc. / Page suiv. ; des points sous l'écran, comme les chaînes d'un téléviseur ----------
@@ -416,9 +417,14 @@
       [[b,L],[pl,L+hw]].forEach(function(q){var e=q[0];e.style.setProperty('position','absolute','important');e.style.setProperty('left',Math.round(q[1]-dr.left)+'px','important');e.style.setProperty('top',Math.round(tr.top-dr.top)+'px','important');});}
     addEventListener('resize',function(){setTimeout(sym,120);});addEventListener('load',function(){setTimeout(sym,300);setTimeout(sym,1500);});setTimeout(sym,800);})();
 
-  /* les psychopompes : premier arrêt Burrows ou la plaque Mauk Tenieb, au hasard ; jetés, ils rebondissent sur les bords de l'écran */
+  /* les psychopompes (Mauk Tenieb, 31 oct., 12 h 27) : premier arrêt l'autocollant Lore ou Burrows, au hasard, deuxième arrêt la plaque Mauk Tenieb, puis le hasard ; jetés, ils rebondissent sur les bords de l'écran */
   land.dataset.grp='visit';badge.dataset.grp='bio';
-  window.__borneFirst=function(){var a=[land,badge];if(Math.random()<.5)a.reverse();return a;};
+  window.__borneFirst=function(){var v=function(x){return x&&x.isConnected&&x.getClientRects().length;},a=[lore,land].filter(v);if(Math.random()<.5)a.reverse();return a.length?[a[0],badge].concat(a.slice(1)):[badge];};
+  /* la ligne de base de chaque psychopompe : la plus basse rangée opaque (alpha > 40) de chaque image de sa planche de 8, en part de sa hauteur ; mesurée une fois au chargement */
+  (function(){var C={};window.__borneBase=function(who,f){var k=who+'/'+f;if(k in C)return C[k];C[k]=0;var im=new Image();
+    im.onload=function(){try{var fw=Math.floor(im.naturalWidth/8),h=im.naturalHeight,c=document.createElement('canvas');c.width=fw;c.height=h;var x=c.getContext('2d',{willReadFrequently:true});x.drawImage(im,f*fw,0,fw,h,0,0,fw,h);var d=x.getImageData(0,0,fw,h).data;
+      for(var y=h-1;y>=0;y--)for(var i=0;i<fw;i++)if(d[(y*fw+i)*4+3]>40){C[k]=(h-1-y)/h;return;}}catch(_){}};im.src='sprite-'+who+'.webp';return 0;};
+    ['c7h5n3o6','honey_buzzard','croisiere_noire','tsui_pen'].forEach(function(w){window.__borneBase(w,4);});})();
   window.__borneScreen=function(){return {left:0,top:0,right:innerWidth,bottom:innerHeight,width:innerWidth,height:innerHeight};};
 
   /* l'autocollant Lore, collé au hasard n'importe où sur la caisse à pièces, de travers (Mauk Tenieb, 31 oct. : il ne fait pas partie de la plaque de la fente) */
@@ -620,6 +626,7 @@
   function hand(){window.__borneHandHold=Date.now()+4000;if(!window.__borneTour&&!T)return;window.__borneTourByHand=true;
     if(window.__borneTour&&window.__borneTourPause){try{window.__borneTourPause();}catch(_){}try{scrollTo({top:scrollY,behavior:'instant'});}catch(_){}}
     clearTimeout(T);T=setTimeout(function(){T=0;if(window.__borneNoPsy||document.documentElement.dataset.prog)return;window.__borneTourByHand=false;try{window.__borneTourResume&&window.__borneTourResume();}catch(_){}},4000);}
+  window.__borneHand=hand;
   addEventListener('wheel',hand,{passive:true,capture:true});addEventListener('touchmove',hand,{passive:true,capture:true});
   addEventListener('keydown',function(e){if(/^(Arrow|Page|Home|End| )/.test(e.key))hand();},true);
   /* la molette 👣 */
@@ -629,7 +636,9 @@
     var l=document.createElement('span');l.className='b-knoblab';l.textContent='👣';w.appendChild(b);w.appendChild(l);knobs.appendChild(w);
     function apply(){b.dataset.on=on?'1':'0';b.dataset.pos=on?1:0;window.__borneNoPsy=!on;document.documentElement.classList.toggle('b-nopsy',!on);
       if(!on){try{window.__borneTourStop&&window.__borneTourStop();}catch(_){}}try{localStorage.setItem('borne.psy',on?'1':'0');}catch(_){}}
-    b.addEventListener('click',function(){on=!on;try{window.__borneSon&&window.__borneSon.detent(2);}catch(_){}apply();});apply();}
+    b.addEventListener('click',function(){on=!on;try{window.__borneSon&&window.__borneSon.detent(2);}catch(_){}apply();
+      /* molette remise sur marche : la visite repart */
+      if(on){try{(window.__borneTourResume&&window.__borneTourResume())||(window.__guide&&window.__guide.go());}catch(_){}}});apply();}
   knob();
 })();
 

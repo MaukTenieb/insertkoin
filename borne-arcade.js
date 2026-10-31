@@ -217,4 +217,28 @@ addEventListener('keydown',function(e){var R=document.documentElement;if(!R.hasA
   function mix(r,g,b){cur=[cur[0]*.6+r*.4,cur[1]*.6+g*.4,cur[2]*.6+b*.4];var L=(cur[0]+cur[1]+cur[2])/765,mx=Math.max(1,cur[0],cur[1],cur[2]);/* la teinte de l'image, portée à pleine lumière ; l'intensité suit la luminosité */
       R.style.setProperty('--scr',Math.round(cur[0]*255/mx)+','+Math.round(cur[1]*255/mx)+','+Math.round(cur[2]*255/mx));R.style.setProperty('--scr-a',Math.min(.75,.3+L*1.6).toFixed(3));}
   setInterval(tick,450);
-  (function put(){var p=document.querySelector('#home .b-panel');if(!p){setTimeout(put,500);return;}if(p.querySelector('.b-scrlight'))return;var l=document.createElement('i');l.className='b-scrlight';l.setAttribute('aria-hidden','true');p.appendChild(l);})();})();
+  (function put(){var p=document.querySelector('#home .b-panel');if(!p){setTimeout(put,500);return;}if(p.querySelector('.b-scrlight'))return;var l=document.createElement('i');l.className='b-scrlight';l.setAttribute('aria-hidden','true');p.appendChild(l);
+    /* 31 oct. — la même lumière sur le cadre (tout autour de la vitre) et sur le haut de la caisse */
+    var d=document.querySelector('.b-door');if(d&&!d.querySelector('.b-scrlight')){var m=document.createElement('i');m.className='b-scrlight b-scrdoor';m.setAttribute('aria-hidden','true');d.appendChild(m);}
+    var bz=document.querySelector('#home .b-bezel'),gl=bz&&bz.querySelector('.b-glass');if(!gl)return;var h=document.createElement('i');h.className='b-scrhalo';h.setAttribute('aria-hidden','true');bz.appendChild(h);
+    /* le halo épouse la vitre : la vitre a pour parent positionné le cadre (borne-cabinet.css:552) */
+    function fit(){if(!gl.offsetWidth){h.style.display='none';return;}h.style.display='';h.style.left=gl.offsetLeft+'px';h.style.top=gl.offsetTop+'px';h.style.width=gl.offsetWidth+'px';h.style.height=gl.offsetHeight+'px';h.style.borderRadius=getComputedStyle(gl).borderRadius;}
+    fit();if(window.ResizeObserver)new ResizeObserver(fit).observe(gl);addEventListener('resize',fit);})();})();
+
+/* 31 oct., 12 h 40 — l'autocollant s'appelle au hasard LORE, TALES, KORHOGO ou DIEGESIS et change de couleur, de temps en temps, comme l'enseigne ; il mène toujours au Substack */
+(function(){var N=['LORE','TALES','KORHOGO','DIEGESIS'],K=[{h:'0deg',a:'#e8742a',b:'#9c1f17'},{h:'205deg',a:'#4fc3f7',b:'#1b5f86'},{h:'128deg',a:'#66bb6a',b:'#2c6a30'},{h:'40deg',a:'#ffa726',b:'#8a3f0f'}],G='ΞЖ#KOЯ%▒';
+  var cur=N[(Math.random()*N.length)|0],ck=K[(Math.random()*K.length)|0],busy=false;
+  function el(){return document.querySelector('.b-lore');}
+  function fit(l,s){var w=l.clientWidth,h=l.clientHeight;if(!w||!h)return;l.style.setProperty('--lfs',Math.min(h*.56,w*.76/(s.length*.47)).toFixed(1)+'px');}
+  function set(n,k){var l=el(),s=l&&l.querySelector('.b-lw');if(!s)return;s.textContent=n;l.setAttribute('aria-label',n);l.dataset.name=n;
+    l.style.setProperty('--lh',k.h);l.style.setProperty('--le1',k.a);l.style.setProperty('--le2',k.b);fit(l,n);}
+  function other(a,x){var o=a.filter(function(y){return y!==x;});return o[(Math.random()*o.length)|0];}
+  function morph(l,from,to,done){var s=l.querySelector('.b-lw'),i=0,n=Math.max(from.length,to.length),iv=setInterval(function(){i++;var o='';
+      for(var j=0;j<n;j++)o+=j<i-2?(to[j]||''):j<i?G[(Math.random()*G.length)|0]:(from[j]||'');s.textContent=o;if(i>n+2){clearInterval(iv);done();}},55);}
+  function later(){setTimeout(go,6000+Math.random()*12000);}
+  function go(){var l=el();if(busy||!l||document.hidden||document.documentElement.dataset.prog){later();return;}busy=true;
+    var nx=Math.random()<.75?other(N,cur):cur,nk=(nx===cur||Math.random()<.6)?other(K,ck):ck;
+    morph(l,cur,nx,function(){cur=nx;ck=nk;set(cur,ck);busy=false;later();});}
+  (function start(){var l=el();if(!l||!l.querySelector('.b-lw')||!l.clientWidth){setTimeout(start,400);return;}set(cur,ck);
+    if(window.ResizeObserver)new ResizeObserver(function(){fit(el(),cur);}).observe(l);
+    if(!matchMedia('(prefers-reduced-motion:reduce)').matches)later();})();})();

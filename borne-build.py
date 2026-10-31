@@ -27,7 +27,7 @@ assert len(_re.findall(r'  const SAY=\{.*?\};\n',s))==1
 s=_re.sub(r'(  const SAY=\{.*?\};\n)',lambda m:m.group(1)+_say+'\n'+'  window.__borneSAY=function(){try{return SAY[LANG]||SAY.en;}catch(e){return SAY.en;}};\n',s,count=1)
 s = once(s, "const go=(el.querySelector('[data-go]')||el).dataset.go||(el.id==='kapture'", "const go=el.dataset.grp||(el.querySelector('[data-go]')||el).dataset.go||(/bandcamp/.test(hr)?'bc':'')||(el.id==='kapture'")
 # psychopompes de la borne : premier arrêt Burrows ou Mauk Tenieb ; rebonds sur les bords de l'écran, trois au moins
-s = once(s, "    TQ=stops;\n", "    if(!(resume&&resume.length)&&window.__borneFirst){const F=window.__borneFirst();stops=stops.filter(x=>F.indexOf(x)<0);stops.splice(1+Math.floor(Math.random()*stops.length),0,F[1]);stops.unshift(F[0]);}\n    /* la visite commence par ce que la fenêtre montre, au hasard, puis descend la borne de haut en bas : la page bouge peu, une seule fois */\n    if(!(resume&&resume.length)){const V=x=>{const q=x.getBoundingClientRect();return q.bottom>0&&q.top<innerHeight;},a=stops.filter(V),b=stops.filter(x=>!V(x)).sort((x,y)=>x.getBoundingClientRect().top-y.getBoundingClientRect().top);stops=a.concat(b);}\n    TQ=stops;\n")
+s = once(s, "    TQ=stops;\n", "    /* Lore ou Burrows, puis Mauk Tenieb ; le reste au hasard (Mauk Tenieb, 31 oct., 12 h 27) */\n    if(!(resume&&resume.length)&&window.__borneFirst){const F=window.__borneFirst();stops=stops.filter(x=>F.indexOf(x)<0);for(const x of F.slice(2))stops.splice(Math.floor(Math.random()*(stops.length+1)),0,x);stops=F.slice(0,2).concat(stops);}\n    TQ=stops;\n")
 s = once(s, "el.scrollIntoView({block:'center',behavior:RMg?'auto':'smooth'});await W(RMg?60:420);", "{const q=el.getBoundingClientRect(),m=28,d=q.top<m?q.top-m:q.bottom>innerHeight-m?Math.min(q.bottom-innerHeight+m,q.top-m):0;if(Math.abs(d)>2){scrollBy({top:d,behavior:RMg?'auto':'smooth'});await W(RMg?60:420);}}")
 s = once(s, "function bounds(){const b=home.getBoundingClientRect(),gw=parseFloat(g.style.getPropertyValue('--gw'))||60;return{", "function bounds(){const b=home.getBoundingClientRect(),gw=parseFloat(g.style.getPropertyValue('--gw'))||60;const S=window.__borneScreen&&window.__borneScreen();if(S)return{x0:S.left-b.left,x1:Math.max(S.left-b.left,S.right-b.left-gw),y0:S.top-b.top,y1:Math.max(S.top-b.top,S.bottom-b.top-H)};return{")
 s = once(s, "fl={vx:vx*k,vy:vy*k,t:performance.now()", "const s0=sp*k,an=sp<1?Math.random()*6.283:Math.atan2(vy,vx),S0=Math.max(window.__borneScreen?1500:0,s0);fl={vx:Math.cos(an)*S0,vy:Math.sin(an)*S0,t:performance.now()")
@@ -245,6 +245,41 @@ s7 = once(s7, "if(performance.now()-window.__borneReadyT<3500){g._tourT=setTimeo
 s7 = once(s7, "async function tour(resume){if(touring||window.__borneNoPsy)return;", "async function tour(resume){if(touring||window.__borneNoPsy)return;if(!resume&&(window.__borneHandHold||0)>Date.now())return;")
 s7 = once(s7, "say(el,go==='motel'?'':nm,said)", "say(el,go==='motel'?'MOTEL SOUND':nm,said)")  # chaque bulle a son titre : l'arrêt de la radio prend le nom de la radio
 wr("index.html", s7)
+# visite des psychopompes (Mauk Tenieb, 31 oct., 12 h 27) : complète par défaut ; un geste de l'opérateur la fige 4 s sur place, bulle comprise, puis elle reprend ;
+# elle reprend aussi après une projection contre les bords et au retour d'un programme ; seule la molette 👣 l'arrête ; une seule course à la fois (RUN)
+s8 = rd("index.html")
+s8 = once(s8, "let TQ=[],TI=0;", "let TQ=[],TI=0,RUN=0;")
+s8 = once(s8, "window.__borneTourStop=function(){clearTimeout(g._tourT);stop();};", "window.__borneTourStop=function(){clearTimeout(g._tourT);pending=null;stop();};")
+s8 = once(s8, "window.__borneTourPause=function(){if(touring){pending=TQ.slice(TI);stop();}};", "window.__borneTourPause=function(){if(touring){pending=TQ.slice(TI);const on=tip.classList.contains('on'),cs=getComputedStyle(g),x=parseFloat(cs.left),y=parseFloat(cs.top);stop();g.style.transition='none';place(x,y);void g.offsetWidth;g.style.transition='';g.classList.remove('walk');if(on)tip.classList.add('on');}};")
+i8 = s8.index("async function tour(resume)"); j8 = s8.index("  function stop(){if(!touring)return;", i8); t8 = s8[i8:j8]
+assert t8.count("if(!touring)break") == 3 and t8.endswith("    stop();}\n")
+t8 = t8.replace("TI=i;if(!touring)break;", "if(!touring||run!==RUN)break;TI=i;").replace("if(!touring)break", "if(!touring||run!==RUN)break")
+t8 = t8.replace("touring=true;window.__borneTour=1;", "touring=true;window.__borneTour=1;const run=++RUN;", 1)
+t8 = t8.replace("said.length*55)));if(isCab)", "said.length*55)));if(run!==RUN)break;if(isCab)", 1)
+t8 = t8[:-len("    stop();}\n")] + "    if(run===RUN)stop();}\n"
+s8 = s8[:i8] + t8 + s8[j8:]
+s8 = once(s8, "function stop(){if(!touring)return;touring=false;", "function stop(){if(!touring)return;touring=false;RUN++;")
+s8 = once(s8, "if(!touring&&!away&&!g._drag&&!g.classList.contains('fling')&&!$('home').hidden&&!document.hidden)tour();};", "if(g._drag||fl||g.classList.contains('fling')){g._tourT=setTimeout(goT,700);return;}if(!touring&&!away&&!$('home').hidden&&!document.hidden)tour();};")
+H8 = "(window.__borneHand?window.__borneHand():stop())"
+s8 = once(s8, "document.addEventListener('click',e=>{if(touring&&!g.contains(e.target))stop();},true);", "document.addEventListener('click',e=>{if(touring&&!g.contains(e.target))" + H8 + ";},true);")
+s8 = once(s8, "addEventListener('keydown',e=>{if(e.key==='Escape')stop();});", "addEventListener('keydown',e=>{if(e.key==='Escape'&&touring)" + H8 + ";});")
+s8 = once(s8, "g.addEventListener('click',e=>{e.stopPropagation();if(dragged){dragged=false;return;}touring?stop():tour();});", "g.addEventListener('click',e=>{e.stopPropagation();if(dragged){dragged=false;return;}if(touring)" + H8 + ";else if(!(window.__borneTourResume&&window.__borneTourResume()))tour();});")
+wr("index.html", s8)
+# la ligne de base du psychopompe s'assoit sur le haut de la cible (Mauk Tenieb, 31 oct., 12 h 27) : base mesurée dans l'image (__borneBase, borne-cabinet.js) ;
+# la page laisse au-dessus de la cible la hauteur du psychopompe ; il glisse le long du bord haut de la cible pour laisser libres l'enseigne et les commandes voisines ; assis, il cesse de flotter
+s9 = rd("index.html")
+s9 = once(s9, "{const q=el.getBoundingClientRect(),m=28,d=q.top<m?q.top-m:q.bottom>innerHeight-m?Math.min(q.bottom-innerHeight+m,q.top-m):0;", "{const q=el.getBoundingClientRect(),m=28,mt=H+12,d=q.top<mt?q.top-mt:q.bottom>innerHeight-m?Math.min(q.bottom-innerHeight+m,q.top-mt):0;")
+s9 = once(s9, "let tx=isCab?r.x+r.w-gw-6:inBar?r.x-gw*.55:r.x+r.w/2-gw/2,ty=isCab?r.y+r.h-H-4:(inBar||vt<H+10?r.y+r.h+8:r.y-H+6);", "let tx=isCab?r.x+r.w-gw-6:r.x+r.w/2-gw/2,ty=r.y-H+Math.round(H*((window.__borneBase&&window.__borneBase(who,4))||0));")
+s9 = once(s9, "for(let pass=0;pass<3;pass++)for(const f of F){if(tx<f.x+f.w&&tx+gw>f.x&&ty<f.y+f.h&&ty+H>f.y){const L=f.x-gw-6,Rr=f.x+f.w+6;if(L<4&&Rr+gw>HW-4){ty=f.y+f.h+4;}else tx=(L>=4&&(Math.abs(L-tx)<=Math.abs(Rr-tx)||Rr+gw>HW-4))?L:Rr;}}tx=Math.max(4,Math.min(HW-gw-4,tx));for(const f of F){if(tx<f.x+f.w&&tx+gw>f.x&&ty<f.y+f.h&&ty+H>f.y)ty=f.y+f.h+4;}}place(tx,ty);",
+  "const ov=x=>F.reduce((A,f)=>A+Math.max(0,Math.min(x+gw,f.x+f.w)-Math.max(x,f.x))*Math.max(0,Math.min(ty+H,f.y+f.h)-Math.max(ty,f.y)),0),m2=Math.min(gw,r.w)*.5,lo=Math.max(4,r.x-gw+m2),hi=Math.min(HW-gw-4,r.x+r.w-m2);if(ov(tx)>0){let bx=tx,bA=ov(tx);for(let x=lo;x<=hi;x+=4){const A=ov(x);if(A<bA||(A===bA&&Math.abs(x-tx)<Math.abs(bx-tx))){bA=A;bx=x;}}tx=bx;}}place(tx,ty);")
+s9 = once(s9, "g.classList.add('walk');face(r.x<parseFloat(g.style.left)?2:3);", "g.classList.remove('b-sit');g.classList.add('walk');face(r.x<parseFloat(g.style.left)?2:3);")
+s9 = once(s9, "g.classList.remove('walk');face(4);", "g.classList.remove('walk');face(4);g.classList.add('b-sit');")
+s9 = once(s9, "g.classList.remove('gone');g.classList.add('walk');", "g.classList.remove('gone','b-sit');g.classList.add('walk');")
+wr("index.html", s9)
+# la bulle émane du psychopompe (Mauk Tenieb, 31 oct., 12 h 27) : 24 px au plus entre la bulle et lui, sinon la place est refusée comme une place sur une commande
+s10 = rd("index.html")
+s10 = once(s10, "const bad=()=>{const t=tip.getBoundingClientRect();return Z.some(x=>{const m=x.getBoundingClientRect();return t.left<m.right-4&&t.right>m.left+4&&t.top<m.bottom-4&&t.bottom>m.top+4;});};", "const bad=()=>{const t=tip.getBoundingClientRect(),q=g.getBoundingClientRect();if(Math.max(0,q.left-t.right,t.left-q.right)>24||Math.max(0,q.top-t.bottom,t.top-q.bottom)>24)return true;return Z.some(x=>{const m=x.getBoundingClientRect();return t.left<m.right-4&&t.right>m.left+4&&t.top<m.bottom-4&&t.bottom>m.top+4;});};")
+wr("index.html", s10)
 # la borne en français : fr.html sort de la borne finie, avec la langue et l'en-tête français d'InsertKoin (fr-head.json)
 import json as _json
 f = rd("index.html")

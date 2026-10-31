@@ -310,6 +310,13 @@ html.borne{--scr:255,170,90;--scr-a:0}
 html.borne .b-scrlight{position:absolute;inset:0;pointer-events:none;z-index:5;mix-blend-mode:screen;border-radius:inherit;
   background:radial-gradient(120% 70% at 50% 0,rgba(var(--scr),calc(var(--scr-a) * .55)),rgba(var(--scr),calc(var(--scr-a) * .12)) 45%,transparent 75%);transition:background .45s linear}
 html.borne[data-prog] .b-scrlight,html.borne.b-immersion .b-scrlight{display:none}
+/* 31 oct. — n2, e3 : la console reçoit plus de lumière ; la caisse en reçoit le reste, plus loin de l'écran ;
+   sur le cadre, un halo autour de la vitre, ombre portée fondue en « screen » : de la lumière sur l'image du cadre, zéro matière dessinée */
+html.borne #home .b-panel>.b-scrlight{background:radial-gradient(130% 80% at 50% 0,rgba(var(--scr),calc(var(--scr-a) * .8)),rgba(var(--scr),calc(var(--scr-a) * .3)) 35%,rgba(var(--scr),calc(var(--scr-a) * .08)) 70%,transparent 95%)}
+html.borne .b-door>.b-scrdoor{background:linear-gradient(180deg,rgba(var(--scr),calc(var(--scr-a) * .22)),rgba(var(--scr),calc(var(--scr-a) * .06)) 40%,transparent 75%)}
+html.borne .b-scrhalo{position:absolute;z-index:4;pointer-events:none;mix-blend-mode:screen;
+  box-shadow:0 0 calc(var(--gw,600px) * .02) calc(var(--gw,600px) * .006) rgba(var(--scr),calc(var(--scr-a) * .7)),0 0 calc(var(--gw,600px) * .09) calc(var(--gw,600px) * .01) rgba(var(--scr),calc(var(--scr-a) * .3))}
+html.borne[data-prog] .b-scrhalo,html.borne.b-immersion .b-scrhalo,html.borne[data-mode=device] .b-scrhalo{display:none}
 /* 31 oct. — téléphone couché, à l'accueil (borne-arcade.js, fit : data-bland, --fitW, --wc) : l'enseigne en bandeau mince, puis deux colonnes.
    À gauche l'écran et son pied, aussi haut que la fenêtre le permet ; à droite le panneau de commande sur la porte à monnayeur. Le toit, Burrows et le copyright se retirent. */
 @media (orientation:landscape) and (max-height:500px){
@@ -399,6 +406,13 @@ html.borne .b-bezelfoot :is(.b-px,.b-imm)::after{content:"";position:absolute;in
 @media (max-height:520px) and (orientation:landscape){html.borne[data-prog] .b-bezelfoot .b-pfx.b-pfx{gap:8px!important}}
 /* Korong! : chaque Mask du tableau a une zone de 44 px au moins, centrée sur sa silhouette */
 html.borne #select .lobby .spot::before{content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%)}
+/* Korong!, hall au doigt (LISTE n°34) : l'image du motel s'agrandit autour du Mask touché, dans le cadre du hall ; agrandie, chaque silhouette tient 44 px par elle-même */
+html.borne #select .lobby{overflow:hidden}
+html.borne #select .lobby-in{position:absolute;inset:0;transform-origin:var(--ox,50%) var(--oy,50%);transition:transform .22s ease-out}
+html.borne #select .lobby.zoom .lobby-in{transform:scale(var(--z,1))}
+html.borne #select .lobby.zoom .spot::before{width:100%;height:100%}
+html.borne #select .lobby .spot.armed{background:radial-gradient(closest-side,color-mix(in srgb,var(--c) 55%,transparent),color-mix(in srgb,var(--c) 18%,transparent) 60%,transparent)!important;mix-blend-mode:screen}
+@media (prefers-reduced-motion:reduce){html.borne #select .lobby-in{transition:none}}
 /* VHS : touches de la télé et du magnétoscope, zone de 44 px */
 html.borne .vhs :is(.vhs-tv-key,.vhs-key){position:relative}
 html.borne .vhs :is(.vhs-tv-key,.vhs-key)::after{content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%)}
@@ -487,3 +501,25 @@ html.borne .b-bezelfoot :is(.b-pfx .b-px,.b-imm)::after{inset:-7px -5px!importan
 @media (max-width:700px){html.borne .vhs .vhs-tv-foot{padding-top:6px}}
 /* 31 oct. — Musik en deux colonnes : colonnes à la largeur de leur contenu, l'ensemble sur l'axe de l'écran */
 html.borne #kg-root #bb-panel:not([style*="display: none"]):not([style*="display:none"]){grid-template-columns:max-content max-content!important;justify-content:center!important}
+
+/* 31 oct., 12 h 40 — la plaque Mauk Tenieb intègre les clous qui la fixent (d9) : plaque et clous viennent de plaque-mauk.webp (R4),
+   bords de l'image tenus sans déformation (border-image), lettrage posé sur la plaque ; zéro clou ni cadre dessinés en CSS ; le halo passe en lumière seule */
+html.borne .b-plate .b-badge.b-badge.b-badge{background:none!important;border-style:solid!important;border-width:0 18px!important;border-image:url(plaque-mauk.webp) 0 61 fill / 0 18px stretch!important;
+  border-radius:0!important;box-shadow:none!important;height:44px!important;padding:0 8px!important;box-sizing:border-box!important;filter:drop-shadow(0 4px 4px rgba(0,0,0,.5))!important;animation:bplatel 9s ease-in-out infinite!important}
+html.borne .b-plate .b-badge.b-badge.b-badge::after{content:none!important}
+html.borne .b-plate .b-badge.b-badge.b-badge::before{content:""!important;position:absolute!important;inset:-6px -18px!important;background:none!important;box-shadow:none!important;border-radius:0!important;width:auto!important;height:auto!important;margin:0!important}
+html.borne .b-plate .b-badge.b-badge.b-badge b{color:#2b241b!important;letter-spacing:.24em!important;margin-right:-.24em!important;text-shadow:0 1px 0 rgba(255,250,235,.55),0 -1px 0 rgba(0,0,0,.25)!important;animation:none!important}
+@keyframes bplatel{0%,70%,100%{filter:drop-shadow(0 4px 4px rgba(0,0,0,.5))}80%{filter:drop-shadow(0 4px 4px rgba(0,0,0,.5)) drop-shadow(0 0 10px rgba(255,200,90,.65))}}
+@media (prefers-reduced-motion:reduce){html.borne .b-plate .b-badge.b-badge.b-badge{animation:none!important}}
+/* 31 oct., 12 h 40 — l'autocollant (d10) : la base vient de l'image sans son mot (sticker-base.webp) ; le nom (LORE, TALES, KORHOGO, DIEGESIS) se pose en lettrage,
+   la couleur de la base tourne d'un tirage à l'autre (borne-arcade.js) */
+html.borne a.b-lore.b-lore.b-lore{background:none!important;isolation:isolate}
+html.borne a.b-lore.b-lore.b-lore::after{content:"";position:absolute;inset:0;z-index:-1;background:var(--i-lore) center/100% 100% no-repeat;filter:hue-rotate(var(--lh,0deg));transition:filter .25s steps(3)}
+html.borne .b-lore .b-lw{position:relative;z-index:1;display:block;margin:-.06em .04em 0 0;font-family:var(--f-sign);font-size:var(--lfs,22px);line-height:1;letter-spacing:.04em;white-space:nowrap;color:#f6ead0;
+  text-shadow:0 0 1px #1a0d08,.03em .03em 0 var(--le1,#e8742a),.06em .06em 0 var(--le1,#e8742a),.09em .09em 0 var(--le2,#9c1f17),.12em .12em 0 var(--le2,#9c1f17),.13em .15em 0 #120806}
+/* 31 oct. — réglette des points au toucher : la rangée entière reçoit le doigt sur 44 px de haut */
+@media (pointer:coarse){
+  html.borne .b-dots.b-reglette{min-height:44px;align-items:center;touch-action:none;cursor:pointer}
+  html.borne .b-dots.b-reglette .b-dot{pointer-events:none}
+  html.borne .b-dots.b-reglette .b-dot.b-vise::after{background:#9a8f7c}
+}
