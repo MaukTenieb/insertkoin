@@ -241,3 +241,22 @@ html.borne[data-r-jeu][data-prog]:not(#r1):not(#r2) .b-bezel .b-glass{
   width:calc(100vw - 2 * var(--r-g));height:calc(var(--r-vh) - 2 * var(--r-g) - var(--r-band) - 8px);max-width:none}
 html.borne[data-r-jeu][data-prog]:not(#r1):not(#r2) .b-bezel .b-bezelfoot{
   width:calc(100vw - 2 * var(--r-g))!important/* !P10 */;height:var(--r-band)!important/* !P10 */;min-height:var(--r-hit)}
+
+/* ---------- 7. mode jeu au pupitre (D3) : l'écran prend la fenêtre moins la bande de commandes ; le chrome de l'accueil cède la place ---------- */
+@media (orientation:landscape) and (min-aspect-ratio:16/9) and (max-height:585px),
+       (orientation:landscape) and (min-aspect-ratio:16/9) and (pointer:coarse) and (max-height:761px){
+  html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2){--r-band:max(var(--r-hit),calc(5 * var(--r-uf)))}
+  html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap{
+    display:block!important/* !P10 */;width:calc(100vw - 2 * var(--r-g))!important/* !P10 */;max-width:none!important/* !P10 */;margin:var(--r-g) auto 0!important/* !P10 */;padding:0!important/* !P10 */;height:auto!important/* !P10 */}
+  html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2) :is(.b-land,.b-butee,.b-panel,.b-door,.b-copy){display:none!important/* !P10 */}
+  html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel{
+    width:calc(100vw - 2 * var(--r-g))!important/* !P10 */;margin:0 auto!important/* !P10 */;padding:0!important/* !P10 */;gap:0!important/* !P10 */}
+  html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-screen{
+    width:calc(100vw - 2 * var(--r-g))!important/* !P10 */;margin:0 auto!important/* !P10 */;position:static!important/* !P10 */}
+  html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-glass{
+    width:calc(100vw - 2 * var(--r-g))!important/* !P10 */;height:calc(var(--r-vh) - 2 * var(--r-g) - var(--r-band) - 8px)!important/* !P10 */;max-width:none}
+  html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezelfoot{
+    position:fixed!important/* !P10 */;left:var(--r-g)!important/* !P10 */;right:var(--r-g)!important/* !P10 */;bottom:var(--r-g)!important/* !P10 */;top:auto!important/* !P10 */;
+    width:auto!important/* !P10 */;height:var(--r-band)!important/* !P10 */;min-height:var(--r-hit)!important/* !P10 */;flex-direction:row!important/* !P10 */;flex-wrap:nowrap!important/* !P10 */;
+    align-items:center!important/* !P10 */;justify-content:space-between!important/* !P10 */;margin:0!important/* !P10 */}
+}
