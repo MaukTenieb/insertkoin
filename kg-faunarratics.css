@@ -205,3 +205,5 @@
 :where(.kg-layer) .kk-chip{max-width:100%;text-align:left;}
 :where(.kg-layer) .kk-chip-tx{display:block;margin-top:3px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0;text-transform:none;font-weight:300;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34ch;}
 @media (prefers-reduced-motion:reduce){:where(.kg-layer) .kk-card.kk-open .kk-card-face,:where(.kg-layer) .kk-imgwrap.kk-react,:where(.kg-layer) .kk-bars .bf{animation:none;}}
+/* P2 (31 oct.) — au toucher, l'écriture passe par le clavier du téléphone à 16 px : zéro zoom de la page à l'appui */
+@media (pointer:coarse){:where(.kg-layer) :is(.kk-box,.kk-synthbox){font-size:16px}}

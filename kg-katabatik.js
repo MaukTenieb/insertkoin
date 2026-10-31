@@ -1058,6 +1058,7 @@ function hangDraw(){
       kh+='<button class="hang-key'+(used?' hang-used':'')+'"'+(used?' disabled':'')+' data-action="hangGuess(\''+L+'\')">'+L+'</button>';
     })(HANG_ROWS[r2][k2]);kh+='</div>';}
     kEl.innerHTML=kh;
+    hangBand(kEl);
   }
   if(sEl){
     if(_hang.over)sEl.textContent=_hang.won?kbT('SOLVED'):kbT('THE WORD WAS')+' — '+_hang.word;
@@ -1396,6 +1397,23 @@ function hangFall(L){
 /* the hangman also answers the physical keyboard (a Hungarian one types Ő, Ű… directly) */
 document.addEventListener('keydown',function(e){var p=document.getElementById('hang-panel');if(!p||p.style.display==='none'||!_hang||_hang.over||e.ctrlKey||e.metaKey||e.altKey)return;
   var L=String(e.key||'').toUpperCase();if(L.length===1&&HANG_KEYS.indexOf(L)>=0){e.preventDefault();hangGuess(L);}});
+/* P2 (31 oct.) — au toucher, le clavier du téléphone tape les lettres ; la grille dessinée reste entière : elle montre les lettres jouées
+   et donne Ő, Ű, Í, absentes de la plupart des claviers de téléphone. Une bande au dessin des touches ouvre le clavier (même geste que le 3615). */
+function hangBand(kEl){
+  if(document.getElementById('hang-band')||!matchMedia('(pointer: coarse)').matches)return;
+  var fr=(document.documentElement.lang||'en')==='fr',b=document.createElement('button'),t=document.createElement('textarea'),SENT='  ';
+  b.type='button';b.id='hang-band';b.className='hang-key hang-band';b.setAttribute('aria-label',fr?'Ouvrir le clavier du téléphone':'Open the phone keyboard');
+  b.innerHTML='<b>Aa</b><small>'+(fr?'CLAVIER':'KEYBOARD')+'</small>';
+  t.id='hang-kbd';t.className='hang-kbd';t.spellcheck=false;t.setAttribute('autocapitalize','characters');t.setAttribute('autocomplete','off');t.setAttribute('autocorrect','off');
+  t.setAttribute('aria-label',fr?'Saisie des lettres':'Letter input');
+  kEl.parentNode.insertBefore(b,kEl);kEl.parentNode.appendChild(t);
+  function reset(){t.value=SENT;try{t.setSelectionRange(SENT.length,SENT.length);}catch(e){}}
+  reset();
+  b.addEventListener('click',function(){try{t.focus({preventScroll:true});}catch(e){t.focus();}reset();});
+  /* Android envoie « Unidentified » au keydown : la lettre arrive ici ; iOS l'envoie au keydown, déjà traité plus haut */
+  t.addEventListener('input',function(){var ins=t.value.slice(SENT.length).toUpperCase();reset();
+    for(var i=0;i<ins.length;i++)if(HANG_KEYS.indexOf(ins[i])>=0)hangGuess(ins[i]);});
+}
 
 // ============================================================
 // FAUNINVADERS -- the 18 Masks in formation, each with the bomb of its Korong! signature.

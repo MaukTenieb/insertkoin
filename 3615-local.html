@@ -54,6 +54,11 @@ body{background:var(--desk);color:#3a3026;font-family:"DM Mono",ui-monospace,mon
   background:radial-gradient(ellipse at center,rgba(255,130,55,.55) 0%,rgba(255,130,55,.2) 45%,rgba(255,130,55,0) 72%);animation:sendglow 4.5s ease-in-out infinite}
 @keyframes sendglow{0%,100%{opacity:.45;transform:scale(.97)}50%{opacity:.85;transform:scale(1)}}
 .k.sp{flex:5 1 0;font-size:12px;letter-spacing:.2em}
+/* P2 (31 oct.) — au toucher, comme au 3615 en ligne : la grille des lettres cède la place à une bande au dessin des touches, qui ouvre le clavier du téléphone ;
+   les touches de fonction restent ; la ligne de saisie passe à 16 px (zéro zoom à l'appui) */
+.lk-band{display:none}
+@media (pointer:coarse){.kb>.row:not(.lk-band){display:none}.kb>.lk-band{display:flex}.bar input{font-size:16px}
+  .k.keys-band{height:48px;display:flex;align-items:center;justify-content:center;gap:14px;letter-spacing:.2em}.k.keys-band b{font:600 20px/1 Archivo,sans-serif;letter-spacing:.04em}.k.keys-band small{font:600 13px/1 Archivo,sans-serif}}
 .hint{margin:0 4px;font:600 10px/1.4 Archivo,sans-serif;letter-spacing:.16em;color:var(--label)}
 /* without ik-ecran.js: the same arrangement, drawn by this page alone */
 #prog:not(.ike-prog){display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px;overflow:auto;box-sizing:border-box}
@@ -94,6 +99,7 @@ body{background:var(--desk);color:#3a3026;font-family:"DM Mono",ui-monospace,mon
       <div class="row" data-keys="QSDFGHJKLM"></div>
       <div class="row" data-keys="WXCVBN.-"></div>
       <div class="row"><button class="k sp" type="button" data-c=" " aria-label="Espace">ESPACE</button></div>
+      <div class="row lk-band"><button class="k keys-band" type="button" id="keys-band" aria-label="Ouvrir le clavier du téléphone"><b>Aa</b><small>CLAVIER</small></button></div>
     </div>
     <p class="hint" id="hint"></p>
   </div>
@@ -150,7 +156,10 @@ var FN={
 document.getElementById('kb').addEventListener('click',function(e){var b=e.target.closest('.k');if(!b)return;
   if(b.dataset.f){FN[b.dataset.f]();return;}
   if(b.dataset.c&&cmd.value.length<40){cmd.value+=b.dataset.c;echo();}});
-document.getElementById('lg').addEventListener('click',function(){LANG=LANG==='fr'?'en':'fr';try{localStorage.setItem('vdx.lang',LANG);localStorage.setItem('ik.lang',LANG);}catch(e){}this.textContent=LANG==='en'?'FR':'EN';home();});
+var kband=document.getElementById('keys-band');
+function kbl(){kband.setAttribute('aria-label',LANG==='en'?'Open the phone keyboard':'Ouvrir le clavier du téléphone');kband.querySelector('small').textContent=LANG==='en'?'KEYBOARD':'CLAVIER';}
+kbl();kband.addEventListener('click',function(){try{cmd.focus({preventScroll:true});}catch(e){cmd.focus();}});
+document.getElementById('lg').addEventListener('click',function(){LANG=LANG==='fr'?'en':'fr';kbl();try{localStorage.setItem('vdx.lang',LANG);localStorage.setItem('ik.lang',LANG);}catch(e){}this.textContent=LANG==='en'?'FR':'EN';home();});
 /* the clock of the top row */
 function tick(){var d=new Date(),p=function(n){return (n<10?'0':'')+n;};document.getElementById('clock').textContent=p(d.getHours())+':'+p(d.getMinutes());}
 tick();setInterval(tick,15000);

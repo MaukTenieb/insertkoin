@@ -217,4 +217,10 @@ addEventListener('keydown',function(e){var R=document.documentElement;if(!R.hasA
   function mix(r,g,b){cur=[cur[0]*.6+r*.4,cur[1]*.6+g*.4,cur[2]*.6+b*.4];var L=(cur[0]+cur[1]+cur[2])/765,mx=Math.max(1,cur[0],cur[1],cur[2]);/* la teinte de l'image, portée à pleine lumière ; l'intensité suit la luminosité */
       R.style.setProperty('--scr',Math.round(cur[0]*255/mx)+','+Math.round(cur[1]*255/mx)+','+Math.round(cur[2]*255/mx));R.style.setProperty('--scr-a',Math.min(.75,.3+L*1.6).toFixed(3));}
   setInterval(tick,450);
-  (function put(){var p=document.querySelector('#home .b-panel');if(!p){setTimeout(put,500);return;}if(p.querySelector('.b-scrlight'))return;var l=document.createElement('i');l.className='b-scrlight';l.setAttribute('aria-hidden','true');p.appendChild(l);})();})();
+  (function put(){var p=document.querySelector('#home .b-panel');if(!p){setTimeout(put,500);return;}if(p.querySelector('.b-scrlight'))return;var l=document.createElement('i');l.className='b-scrlight';l.setAttribute('aria-hidden','true');p.appendChild(l);
+    /* 31 oct. — la même lumière sur le cadre (tout autour de la vitre) et sur le haut de la caisse */
+    var d=document.querySelector('.b-door');if(d&&!d.querySelector('.b-scrlight')){var m=document.createElement('i');m.className='b-scrlight b-scrdoor';m.setAttribute('aria-hidden','true');d.appendChild(m);}
+    var bz=document.querySelector('#home .b-bezel'),gl=bz&&bz.querySelector('.b-glass');if(!gl)return;var h=document.createElement('i');h.className='b-scrhalo';h.setAttribute('aria-hidden','true');bz.appendChild(h);
+    /* le halo épouse la vitre : la vitre a pour parent positionné le cadre (borne-cabinet.css:552) */
+    function fit(){if(!gl.offsetWidth){h.style.display='none';return;}h.style.display='';h.style.left=gl.offsetLeft+'px';h.style.top=gl.offsetTop+'px';h.style.width=gl.offsetWidth+'px';h.style.height=gl.offsetHeight+'px';h.style.borderRadius=getComputedStyle(gl).borderRadius;}
+    fit();if(window.ResizeObserver)new ResizeObserver(fit).observe(gl);addEventListener('resize',fit);})();})();

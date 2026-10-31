@@ -1085,14 +1085,20 @@ $('export-pl').addEventListener('click',function(){exportPlaylist();});
 const DICE='⚀⚁⚂⚃⚄⚅';
 /* ---------- screens ---------- */
 function show(id){for(const s of['home','select','game','calque'])$(s).hidden=s!==id;document.body.className='on-'+id+(id==='game'?' playing':'');window.scrollTo(0,0);}
-function buildLobby(){roomLoad();const lb=$('lobby');lb.querySelectorAll('.spot').forEach(e=>e.remove());
+/* the hall under a finger (LISTE n°34): below 640 px wide, a first touch enlarges the motel picture around the Mask touched and names it; a second touch on that Mask opens the match; at 640 px every Mask keeps 46 px of its own */
+const LZ=640;function lobbyZ(){const w=$('lobby').clientWidth;return w&&w<LZ?LZ/w:1;}let lzT=0;
+function lobbyOut(){clearTimeout(lzT);const l=$('lobby');l.classList.remove('zoom');l.querySelectorAll('.spot.armed').forEach(x=>x.classList.remove('armed'));}
+function lobbyArm(b,z,ox,oy){const l=$('lobby');l.querySelectorAll('.spot.armed').forEach(x=>x.classList.remove('armed'));b.classList.add('armed');
+  if(!l.classList.contains('zoom')){l.style.setProperty('--z',z.toFixed(3));l.style.setProperty('--ox',ox+'%');l.style.setProperty('--oy',oy+'%');l.classList.add('zoom');}clearTimeout(lzT);lzT=setTimeout(lobbyOut,8000);}
+function buildLobby(){roomLoad();const l0=$('lobby');let lb=l0.querySelector('.lobby-in');if(!lb){lb=document.createElement('div');lb.className='lobby-in';lb.append(...l0.children);l0.appendChild(lb);
+    l0.addEventListener('click',e=>{if(!e.target.closest('.spot'))lobbyOut();});}lobbyOut();lb.querySelectorAll('.spot').forEach(e=>e.remove());
   const order=R.map((r,i)=>i).sort((a,b)=>{const A=R[a].box,B=R[b].box;return (B[2]-B[0])*(B[3]-B[1])-(A[2]-A[0])*(A[3]-A[1]);});
   for(const i of order){const r=R[i],[x0,y0,x1,y1]=r.box,b=document.createElement('button');b.type='button';b.className='spot'+(beaten.includes(r.id)?' won':'');b.setAttribute('aria-label',r.name);b.style.setProperty('--c',r.glow);
     Object.assign(b.style,{left:x0/12+'%',top:y0/8.96+'%',width:(x1-x0)/12+'%',height:(y1-y0)/8.96+'%'});
     const tg=document.createElement('span');tg.className='tag';tg.textContent=r.name;b.appendChild(tg);
     const say=()=>{$('tally').textContent='N° '+String(r.n).padStart(2,'0')+' · '+r.name.toUpperCase()+(beaten.includes(r.id)?' ✓':'');$('tally').style.color=r.glow;};b.onmouseenter=say;b.onfocus=say;b.onmouseleave=()=>{$('tally').style.color='';$('tally').textContent=beaten.length?`${tr('beaten')} ${beaten.length} / ${R.length}`:'';};
     b.onpointerdown=e=>{b._touch=e.pointerType==='touch';say();};
-    b.onclick=()=>{pickGuest(i);};lb.appendChild(b);}
+    b.onclick=()=>{const z=lobbyZ();if(b._touch&&z>1&&!b.classList.contains('armed')){lobbyArm(b,z,(x0+x1)/24,(y0+y1)/17.92);say();return;}lobbyOut();pickGuest(i);};lb.appendChild(b);}
   $('tally').textContent=beaten.length?`${tr('beaten')} ${beaten.length} / ${R.length}`:'';}
 
 /* ---------- the motel room (static) ---------- */

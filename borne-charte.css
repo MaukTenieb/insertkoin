@@ -84,12 +84,17 @@ html.b-charte #kg-root #vhs .vhs-ttx-status,html.b-charte #kg-root #vhs .vhs-ttx
 html.b-charte #kg-root #vhs .vhs-tv-key{font-size:12px!important;color:#c4beb4!important;min-height:32px!important;padding:0 10px!important}
 html.b-charte #kg-root #vhs .vhs-key>span,html.b-charte #kg-root #vhs .vhs-vfd-state{font-size:12.5px!important}
 html.b-charte #kg-root #vhs :is(.vhs-find-input,.vhs-find-sort,.vhs-rec-input){font-size:13px!important;min-height:44px!important}
+/* P2 (31 oct.) — au toucher, le champ ouvre le clavier du téléphone à 16 px : zéro zoom de la page à l'appui (iOS agrandit tout champ sous 16 px) */
+@media (pointer:coarse){html.b-charte #kg-root #vhs :is(.vhs-find-input,.vhs-rec-input){font-size:16px!important}}
 html.b-charte #kg-root #vhs :is(.vhs-tab,.vhs-rec-btn,.vhs-rec-cancel,.vhs-tape-all,.vhs-tapetools-link,.vhs-tapetools-eject,.vhs-ttx-btn,.vhs-ttx-source,.vhs-ttx-close){min-height:44px!important;font-family:'DM Mono',ui-monospace,monospace!important;font-size:12.5px!important;letter-spacing:.14em!important;text-transform:uppercase}
 html.b-charte #kg-root #vhs :is(.vhs-rec-btn,.vhs-rec-cancel,.vhs-tape-all,.vhs-tapetools-link,.vhs-ttx-btn,.vhs-ttx-close){padding:0 14px!important;border-radius:4px!important;border:1px solid var(--ch-line)!important;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.25))!important;color:var(--ch-ink)!important}
 html.b-charte #kg-root #vhs .vhs-rec-btn :is(span,.vhs-rec-dot),html.b-charte #kg-root #vhs .vhs-tape-all *{font-size:12.5px!important}
 html.b-charte #kg-root #vhs .vhs-tab.is-active{color:var(--ch-acc)!important;border-bottom-color:var(--ch-acc)!important}
 html.b-charte #kg-root #vhs :is(.vhs-tracklist,.vhs-local-list) button{font-family:'DM Mono',ui-monospace,monospace!important;font-size:13px!important;min-height:44px!important}
 html.b-charte #kg-root #vhs .vhs-tape:not(.vhs-tape-k){font-size:12px!important;min-height:44px}
+/* VHS, cassettes entières (i1.4) : l'étagère montre un nombre entier de rangées (cassette 56 px + 5 px d'écart) et s'arrête sur une rangée */
+html.b-charte #kg-root #vhs .vhs-shelf-row{--vhs-pitch:61px;max-height:max(56px,calc(round(down,21vh + 5px,var(--vhs-pitch)) - 5px))!important;scroll-snap-type:y mandatory}
+html.b-charte #kg-root #vhs .vhs-shelf-row>.vhs-tape{scroll-snap-align:start}
 html.b-charte #kg-root #vhs .vhs-tape-count{font-size:12.5px!important}
 /* étiquettes des cassettes : l'écriture au feutre reste, à 12 px, encre pleine */
 html.b-charte #kg-root #vhs .vhs-tape.vhs-tape-k :is(.vhs-tape-rep,.vhs-tape-count){font-size:12.5px!important;opacity:1!important}

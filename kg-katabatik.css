@@ -127,3 +127,9 @@
   :where(.kg-layer) #mm-board .mm-peg .mm-g{font-size:19px;}
   :where(.kg-layer) .mm-fb b,:where(.kg-layer) .mm-fb i,:where(.kg-layer) .mm-fb s{width:20px;height:20px;}
 }
+/* P2 (31 oct.) — la bande du clavier du téléphone, au dessin des touches du pendu ; la saisie cachée hors champ, à 16 px (zéro zoom à l'appui) */
+:where(.kg-layer) .hang-kbd{position:fixed;left:-200px;bottom:0;width:100px;height:20px;opacity:0;border:0;padding:0;font-size:16px;resize:none}
+:where(.kg-layer) .hang-key.hang-band,html.borne #kg-root #hang-panel .hang-key.hang-band{display:inline-flex;align-items:center;justify-content:center;gap:12px;flex:none;
+  width:min(326px,calc(100vw - 48px))!important;min-width:0!important;height:48px!important;min-height:48px!important;padding:0 16px!important;letter-spacing:.2em}
+:where(.kg-layer) .hang-band b{font-size:19px;letter-spacing:.04em}
+:where(.kg-layer) .hang-band small{font-size:13px}
