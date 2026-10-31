@@ -124,7 +124,14 @@
     var w=c.createOscillator(),wg=c.createGain();w.frequency.value=15734;wg.gain.value=.0012;w.connect(wg);wg.connect(g);w.start();
     /* crépitements rares */
     (function pop(){setTimeout(function(){if(C&&on()&&!document.hidden){var t=C.currentTime;var s=C.createBufferSource();s.buffer=nbuf(C);var f=C.createBiquadFilter();f.type='bandpass';f.frequency.value=j(3200,.4);f.Q.value=2;var e=C.createGain();env(e,t,.0005,j(.012,.5),j(.03,.5));s.connect(f);f.connect(e);e.connect(g);s.start(t,R()*.3);s.stop(t+.05);}pop();},7000+R()*18000);})();
-    setInterval(function(){if(!C)return;var t=C.currentTime;g.gain.setTargetAtTime(on()?1:0,t,.3);tg.gain.setTargetAtTime(.011+heat*.02,t,.6);},400);}
+    /* 31 oct. (Mauk Tenieb, 12 h 46) : l'activité sonore continue de la machine s'entend en permanence à l'accueil ; elle s'efface sous le Motel Sound
+       et quand on joue ou visite un programme pour de vrai, puis revient. Niveau relevé d'environ 12 dB (cible −30 à −24 dBFS au repos). */
+    function busy(){var R0=document.documentElement,b=document.querySelector('.b-bell');return !!(b&&b.classList.contains('on'))||(!!R0.dataset.prog&&Date.now()-lastAct<20000);}
+    /* usage réel d'un programme : un geste dans l'écran depuis moins de 20 s */
+    var lastAct=0;['pointerdown','keydown','wheel'].forEach(function(ev){document.addEventListener(ev,function(){if(document.documentElement.dataset.prog)lastAct=Date.now();},true);});
+    setInterval(function(){if(!C)return;var t=C.currentTime,lv=on()?(busy()?.15:4):0;g.gain.setTargetAtTime(lv,t,1.5);tg.gain.setTargetAtTime(.011+heat*.02,t,.6);},400);
+    /* les processus de la machine : relais, cliquetis, ressorts, chutes, souffles, tirés au hasard toutes les 4 à 12 s, hors des gestes */
+    (function proc(){setTimeout(function(){if(C&&on()&&!document.hidden&&!busy()){var K=['clack','tick','detent','knock','twang','drop','suck','buzz'],k=K[Math.floor(R()*K.length)];try{play(k,.18+R()*.22,C.currentTime+.02,.85+R()*.3)||hit(k,.2,C.currentTime+.02);}catch(e){}}proc();},4000+R()*8000);})();}
   /* relais et démagnétisation au lancement d'un programme */
   S.degauss=function(){var c=ctx();if(!c||!A)return;var t=c.currentTime+.02;hit('clack',.2,t);
     var o=c.createOscillator(),f=c.createBiquadFilter(),e=c.createGain(),m=c.createOscillator(),mg=c.createGain();o.type='square';o.frequency.value=50;f.type='lowpass';f.frequency.value=260;

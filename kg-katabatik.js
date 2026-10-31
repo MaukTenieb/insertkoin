@@ -1552,11 +1552,11 @@ document.addEventListener('keydown',function(e){var p=document.getElementById('h
     S.parts.forEach(function(q){q.x+=q.vx;q.y+=q.vy;q.vy+=.04;q.l--;ctx.globalAlpha=Math.max(0,q.l/40);ctx.fillStyle=q.col;ctx.fillRect(q.x,q.y,2,2);});ctx.globalAlpha=1;S.parts=S.parts.filter(function(q){return q.l>0;});
     ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='12px "Press Start 2P",monospace';
     S.tags.forEach(function(t){ctx.globalAlpha=Math.min(1,t.t/30);ctx.fillStyle=t.c;ctx.fillText(t.s.toUpperCase(),t.x,t.y-(60-t.t)*.3);t.t--;});ctx.globalAlpha=1;S.tags=S.tags.filter(function(t){return t.t>0;});
-    if(S.mode!=='play'){ctx.fillStyle='rgba(7,6,10,.72)';ctx.fillRect(0,0,W,H);ctx.textAlign='center';
-      ctx.fillStyle='#c9a84c';ctx.font='30px "Press Start 2P",monospace';ctx.fillText(S.mode==='title'?'FAUNINVADERS':T('over'),W/2,H*.38);
-      ctx.fillStyle='#e9e2d4';ctx.font='13px "DM Mono",monospace';ctx.fillText(S.mode==='title'?(matchMedia('(pointer:coarse)').matches?'← ● →':'← → · SPACE'):String(S.score),W/2,H*.47);
-      ctx.fillStyle='#8a8174';ctx.fillText(T('go'),W/2,H*.53);
-      if(S.mode==='over'&&S.rank&&window.IKP){ctx.font='12px "DM Mono",monospace';ctx.fillStyle='#c9a84c';ctx.fillText(IKP.line(S.rank),W/2,H*.6);}}
+    if(S.mode!=='play'){/* le titre et ses lignes sous la formation, plus sur la troisième rangée (audit it. 1, h3) */ctx.fillStyle='rgba(7,6,10,.72)';ctx.fillRect(0,0,W,H);ctx.textAlign='center';
+      ctx.fillStyle='#c9a84c';ctx.font='30px "Press Start 2P",monospace';ctx.fillText(S.mode==='title'?'FAUNINVADERS':T('over'),W/2,H*.62);
+      ctx.fillStyle='#e9e2d4';ctx.font='13px "DM Mono",monospace';ctx.fillText(S.mode==='title'?(matchMedia('(pointer:coarse)').matches?'← ● →':'← → · SPACE'):String(S.score),W/2,H*.70);
+      ctx.fillStyle='#8a8174';ctx.fillText(T('go'),W/2,H*.75);
+      if(S.mode==='over'&&S.rank&&window.IKP){ctx.font='12px "DM Mono",monospace';ctx.fillStyle='#c9a84c';ctx.fillText(IKP.line(S.rank),W/2,H*.81);}}
     ctx.restore();}
   function shown(){var p=document.getElementById('fi-panel');return p&&p.style.display!=='none'&&p.getClientRects().length>0;}
   function loop(now){if(!shown()){raf=0;return;}acc+=Math.min(100,now-last);last=now;while(acc>=1000/60){acc-=1000/60;tick();}draw();raf=requestAnimationFrame(loop);}

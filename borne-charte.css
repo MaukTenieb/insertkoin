@@ -124,3 +124,7 @@ html.b-charte #kg-root #konklave-panel :is(.kk-big):is(:hover,:focus-visible)::b
 @keyframes bcur{50%{opacity:0}}
 html.b-charte #kg-root :is(#chess,#mem,#mm-panel,#hang-panel,#bb-panel,#konklave-panel) button:not(.mm-peg):not(.hang-key):not(.sq):active{transform:translateY(2px);box-shadow:inset 0 2px 4px rgba(0,0,0,.6),0 1px 0 #000!important}
 @media (prefers-reduced-motion:reduce){html.b-charte #kg-root button::before{animation:none!important}}
+/* VHS : le tri des cassettes en commande de la machine, plus en menu natif du navigateur (audit it. 1, i1) */
+html.b-charte .vhs-find-sort{-webkit-appearance:none;appearance:none;min-height:44px;padding:0 34px 0 12px;border:1px solid rgba(255,190,90,.35);border-radius:3px;background:#0d0b08 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23ffb54a'/%3E%3C/svg%3E") no-repeat right 12px center;color:#ffb54a;font:500 12px/1 'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+html.b-charte .vhs-find-sort:focus-visible{outline:1px solid #ffb54a;outline-offset:2px}
+html.b-charte .vhs-find-sort option{background:#0d0b08;color:#ffb54a}
