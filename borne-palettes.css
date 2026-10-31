@@ -1,0 +1,84 @@
+/* borne-palettes.css — palettes chromatiques de la borne Insert Koin.
+   À charger en dernier, après borne-arcade.css. Valeurs tirées des images de la borne (releve.md, palettes.md).
+   La machine choisit la palette par html[data-palette] ; la durée du fondu passe par --pal-fondu (palettes.md, règle de passage).
+   Les encres de programme (--nc), des Masks (--mc, --c) et les couleurs de matière posées sous les images de skin (--wood, --tmold, --bezel…) restent à leurs règles. */
+
+
+/* Les vingt rôles --pal-* sont enregistrés par borne-cabinet.js (CSS.registerProperty) au moment où la machine pose data-palette : un @property déclaré ici donnerait une valeur initiale aux var(--pal-x,repli) et supprimerait le repli, donc le rendu actuel sans attribut. */
+
+/* ambre-noyer — skin bois (9 images) + captures home-* (8) */
+html.borne[data-palette="ambre-noyer"],html.borne[data-skin][data-palette="ambre-noyer"]{--pal-fond:#1a0600;--pal-fond-2:#341402;--pal-ligne:#6e3c16;--pal-bois:#963a00;--pal-metal:#b49468;--pal-scr:#f5c97e;--pal-neon:#fdcb8b;--pal-neon-trait:#410401;--pal-neon-x1:#c67629;--pal-neon-x2:#7e2b1f;--pal-neon-ampoule:#ffe3c2;--pal-titre:#ffe3c2;--pal-accent:#e18a2f;--pal-accent-2:#1fba9c;--pal-accent-encre:#1a0600;--pal-texte:#cdc8b3;--pal-texte-faible:#868683;--pal-succes:#6b9457;--pal-alerte:#db5c47;--pal-desactive:#5f5e5c;--pal-scr-rgb:245,201,126;--pal-bois-rgb:58,43,30;--pal-ombre-rgb:11,9,8}
+/* braise-acier — skin métal (9 images) */
+html.borne[data-palette="braise-acier"],html.borne[data-skin][data-palette="braise-acier"]{--pal-fond:#010812;--pal-fond-2:#0a1a32;--pal-ligne:#264264;--pal-bois:#285090;--pal-metal:#72acec;--pal-scr:#eea779;--pal-neon:#fec8a6;--pal-neon-trait:#3d0b00;--pal-neon-x1:#d14014;--pal-neon-x2:#6a1f06;--pal-neon-ampoule:#ffe1cf;--pal-titre:#ffe1cf;--pal-accent:#f29d2e;--pal-accent-2:#44ccfa;--pal-accent-encre:#010812;--pal-texte:#cac9c2;--pal-texte-faible:#8b8681;--pal-succes:#6b9457;--pal-alerte:#e6542c;--pal-desactive:#625e5a;--pal-scr-rgb:238,167,121;--pal-bois-rgb:73,67,58;--pal-ombre-rgb:10,9,6}
+/* creme-1960 — skin 1960 (13 images) + art-bezel.webp */
+html.borne[data-palette="creme-1960"],html.borne[data-skin][data-palette="creme-1960"]{--pal-fond:#1c1000;--pal-fond-2:#1f1a06;--pal-ligne:#665228;--pal-bois:#f0d886;--pal-metal:#d8d0aa;--pal-scr:#e4b377;--pal-neon:#e7dcbd;--pal-neon-trait:#420005;--pal-neon-x1:#cd5839;--pal-neon-x2:#520309;--pal-neon-ampoule:#f3e7c8;--pal-titre:#f3e7c8;--pal-accent:#e4b377;--pal-accent-2:#7aa2dc;--pal-accent-encre:#1c1000;--pal-texte:#e7dcbd;--pal-texte-faible:#b79a72;--pal-succes:#6b9457;--pal-alerte:#d66041;--pal-desactive:#725c42;--pal-scr-rgb:228,179,119;--pal-bois-rgb:214,194,160;--pal-ombre-rgb:19,6,0}
+/* sang-autocollant — plaques, autocollants, boutons (14 images) */
+html.borne[data-palette="sang-autocollant"],html.borne[data-skin][data-palette="sang-autocollant"]{--pal-fond:#260202;--pal-fond-2:#3a0a0a;--pal-ligne:#8c1618;--pal-bois:#5a0e0e;--pal-metal:#aa7c78;--pal-scr:#f79372;--pal-neon:#f1ebcf;--pal-neon-trait:#430005;--pal-neon-x1:#813125;--pal-neon-x2:#51040a;--pal-neon-ampoule:#efe9cd;--pal-titre:#efe9cd;--pal-accent:#f79372;--pal-accent-2:#10d8c0;--pal-accent-encre:#260202;--pal-texte:#f0eadb;--pal-texte-faible:#dac6ae;--pal-succes:#749284;--pal-alerte:#bf6e6a;--pal-desactive:#6f5e53;--pal-scr-rgb:247,147,114;--pal-bois-rgb:43,35,32;--pal-ombre-rgb:20,5,5}
+/* or-nocturne — images d'attente (27 images) */
+html.borne[data-palette="or-nocturne"],html.borne[data-skin][data-palette="or-nocturne"]{--pal-fond:#141200;--pal-fond-2:#1e1c00;--pal-ligne:#6e6010;--pal-bois:#a08210;--pal-metal:#5c64c4;--pal-scr:#dfb15c;--pal-neon:#fbcc77;--pal-neon-trait:#400500;--pal-neon-x1:#c32d09;--pal-neon-x2:#68180a;--pal-neon-ampoule:#ffe4b7;--pal-titre:#ffe4b7;--pal-accent:#dfb15c;--pal-accent-2:#947ef6;--pal-accent-encre:#141200;--pal-texte:#d9ccc0;--pal-texte-faible:#b29e73;--pal-succes:#6b9457;--pal-alerte:#e75233;--pal-desactive:#6d5f45;--pal-scr-rgb:223,177,92;--pal-bois-rgb:96,72,41;--pal-ombre-rgb:13,9,6}
+
+/* usure du formica (data-usure, borne-cabinet.js) : chroma des accents × (1 − 0,08 × palier), clarté relevée à 4,5:1 sur fond-2 */
+html.borne[data-palette="ambre-noyer"][data-usure="1"]{--pal-accent:#dc8d3e;--pal-accent-2:#38b89c;--pal-succes:#6d935b;--pal-alerte:#d5614d}
+html.borne[data-palette="ambre-noyer"][data-usure="2"]{--pal-accent:#d88f4a;--pal-accent-2:#48b69d;--pal-succes:#709260;--pal-alerte:#d06654}
+html.borne[data-palette="ambre-noyer"][data-usure="3"]{--pal-accent:#d39155;--pal-accent-2:#55b49d;--pal-succes:#729164;--pal-alerte:#ca6b59}
+html.borne[data-palette="braise-acier"][data-usure="1"]{--pal-accent:#ed9f41;--pal-accent-2:#55cbf5;--pal-succes:#6d935b;--pal-alerte:#e05b38}
+html.borne[data-palette="braise-acier"][data-usure="2"]{--pal-accent:#e9a24f;--pal-accent-2:#62caf0;--pal-succes:#709260;--pal-alerte:#d96141}
+html.borne[data-palette="braise-acier"][data-usure="3"]{--pal-accent:#e4a45c;--pal-accent-2:#6ec9eb;--pal-succes:#729164;--pal-alerte:#d3674a}
+html.borne[data-palette="creme-1960"][data-usure="1"]{--pal-accent:#e1b47d;--pal-accent-2:#7da2d7;--pal-succes:#6d935b;--pal-alerte:#d16548}
+html.borne[data-palette="creme-1960"][data-usure="2"]{--pal-accent:#deb584;--pal-accent-2:#81a2d3;--pal-succes:#709260;--pal-alerte:#cb694f}
+html.borne[data-palette="creme-1960"][data-usure="3"]{--pal-accent:#dbb68a;--pal-accent-2:#84a2ce;--pal-succes:#729164;--pal-alerte:#c66d55}
+html.borne[data-palette="sang-autocollant"][data-usure="1"]{--pal-accent:#f29678;--pal-accent-2:#3ad6c0;--pal-succes:#769184;--pal-alerte:#bb716d}
+html.borne[data-palette="sang-autocollant"][data-usure="2"]{--pal-accent:#ed997d;--pal-accent-2:#50d4bf;--pal-succes:#789185;--pal-alerte:#b7736f}
+html.borne[data-palette="sang-autocollant"][data-usure="3"]{--pal-accent:#e89c83;--pal-accent-2:#60d2bf;--pal-succes:#7a9085;--pal-alerte:#b37571}
+html.borne[data-palette="or-nocturne"][data-usure="1"]{--pal-accent:#dcb265;--pal-accent-2:#9481ee;--pal-succes:#6d935b;--pal-alerte:#e1593d}
+html.borne[data-palette="or-nocturne"][data-usure="2"]{--pal-accent:#d9b36e;--pal-accent-2:#9383e7;--pal-succes:#709260;--pal-alerte:#da6046}
+html.borne[data-palette="or-nocturne"][data-usure="3"]{--pal-accent:#d6b477;--pal-accent-2:#9385df;--pal-succes:#729164;--pal-alerte:#d4654e}
+
+/* correspondance des variables existantes vers les rôles */
+html.borne[data-palette]{
+  --bg:var(--pal-fond);--ink:var(--pal-fond);--panel:var(--pal-fond-2);--line:var(--pal-ligne);
+  --txt:var(--pal-texte);--dim:var(--pal-texte-faible);--gold:var(--pal-accent);--gold2:var(--pal-titre);--hot:var(--pal-alerte);
+  --lcd-bg:var(--pal-fond);--lcd-ink:var(--pal-accent);--lcd-dim:color-mix(in srgb,var(--pal-accent) 45%,transparent);--lcd-edge:var(--pal-ligne);
+  --pan-c:var(--pal-fond-2);--pan-lip:var(--pal-fond)}
+html.borne[data-skin][data-palette]{
+  --sg-fill:var(--pal-neon);--sg-line:var(--pal-neon-trait);--sg-x1:var(--pal-neon-x1);--sg-x2:var(--pal-neon-x2);
+  --sg-glow:color-mix(in srgb,var(--pal-neon-x1) 75%,transparent);--sg-bulb:var(--pal-neon-ampoule)}
+html.borne.b-charte[data-palette]{
+  --ch-ink:var(--pal-texte);--ch-dim:var(--pal-texte-faible);--ch-acc:var(--pal-accent);--ch-acc-ink:var(--pal-accent-encre);
+  --ch-line:color-mix(in srgb,var(--pal-accent) 45%,transparent);--ch-title:var(--pal-titre)}
+/* index.html redéfinit --line, --dim et --gold sur body.on-home avec l'encre du Mask (--mc) : même mélange, sur les rôles */
+html.borne[data-palette] body.on-home{
+  --line:color-mix(in srgb,var(--mc,var(--pal-ligne)) 16%,var(--pal-ligne));
+  --dim:color-mix(in srgb,var(--mc,var(--pal-texte-faible)) 10%,var(--pal-texte-faible));
+  --gold:color-mix(in srgb,var(--mc,var(--pal-accent)) 12%,var(--pal-accent))}
+
+/* fondu : les rôles enregistrés par @property se fondent ; la machine pose --pal-fondu avant de changer data-palette */
+html.borne[data-palette]{--pal-fondu:1.2s;transition-property:--pal-fond,--pal-fond-2,--pal-ligne,--pal-bois,--pal-metal,--pal-scr,--pal-neon,--pal-neon-trait,--pal-neon-x1,--pal-neon-x2,--pal-neon-ampoule,--pal-titre,--pal-accent,--pal-accent-2,--pal-accent-encre,--pal-texte,--pal-texte-faible,--pal-succes,--pal-alerte,--pal-desactive;transition-duration:var(--pal-fondu);transition-timing-function:ease-in-out}
+@media (prefers-reduced-motion:reduce){html.borne[data-palette]{--pal-fondu:0s}}
+
+/* roue C, it4 : teinte légère des images de matière. Une lumière unie (--pal-bois ou --pal-metal, 10 à 22 %) se fond en mode « color » sur l'image ; la matière reste l'image (R4). Sous [data-palette] seulement. */
+html.borne.borne[data-palette][data-skin="bois"] .wrap{isolation:isolate}
+html.borne.borne[data-palette][data-skin="bois"] .wrap::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:var(--pal-bois);mix-blend-mode:color;opacity:0.2}
+html.borne.borne[data-palette][data-skin="metal"] .wrap{isolation:isolate}
+html.borne.borne[data-palette][data-skin="metal"] .wrap::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:var(--pal-metal);mix-blend-mode:color;opacity:0.16}
+html.borne.borne[data-palette][data-skin="1960"] .wrap{isolation:isolate}
+html.borne.borne[data-palette][data-skin="1960"] .wrap::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:var(--pal-bois);mix-blend-mode:color;opacity:0.14}
+html.borne.borne[data-palette][data-skin="bois"]:not([data-mode=device]):not([data-habit=fauneye]) .bar .dock{background:linear-gradient(color-mix(in srgb,var(--pal-metal) 16%,transparent),color-mix(in srgb,var(--pal-metal) 16%,transparent)),url(skin-bois-grille.webp) center/100% 100% no-repeat,#111!important;background-blend-mode:color,normal!important}
+html.borne.borne[data-palette][data-skin="metal"]:not([data-mode=device]):not([data-habit=fauneye]) .bar .dock{background:linear-gradient(color-mix(in srgb,var(--pal-metal) 16%,transparent),color-mix(in srgb,var(--pal-metal) 16%,transparent)),url(skin-metal-grille.webp) center/100% 100% no-repeat,#3a3d41!important;background-blend-mode:color,normal!important}
+html.borne.borne[data-palette][data-skin="1960"]:not([data-mode=device]):not([data-habit=fauneye]) .bar .dock{background:linear-gradient(color-mix(in srgb,var(--pal-metal) 14%,transparent),color-mix(in srgb,var(--pal-metal) 14%,transparent)),url(skin-1960-grille.webp) center/100% 100% no-repeat,#c9b48a!important;background-blend-mode:color,normal!important}
+html.borne.borne[data-palette][data-skin="bois"]:not([data-mode=device]):not([data-habit=fauneye]) .bar .brand{background:linear-gradient(color-mix(in srgb,var(--pal-bois) 20%,transparent),color-mix(in srgb,var(--pal-bois) 20%,transparent)),url(skin-bois-fronton.webp) center/100% 100% no-repeat,#7c3c12!important;background-blend-mode:color,normal!important}
+html.borne.borne[data-palette][data-skin="metal"]:not([data-mode=device]):not([data-habit=fauneye]) .bar .brand{background:linear-gradient(color-mix(in srgb,var(--pal-metal) 16%,transparent),color-mix(in srgb,var(--pal-metal) 16%,transparent)),url(skin-metal-fronton.webp) center/100% 100% no-repeat,#1f3d5c!important;background-blend-mode:color,normal!important}
+html.borne.borne[data-palette][data-skin="bois"] .b-slot{background:linear-gradient(color-mix(in srgb,var(--pal-metal) 16%,transparent),color-mix(in srgb,var(--pal-metal) 16%,transparent)),url(skin-bois-porte.webp) center/100% 100% no-repeat,#1a1816!important;background-blend-mode:color,normal!important}
+html.borne.borne[data-palette][data-skin="metal"] .b-slot{background:linear-gradient(color-mix(in srgb,var(--pal-metal) 16%,transparent),color-mix(in srgb,var(--pal-metal) 16%,transparent)),url(skin-metal-porte.webp) center/100% 100% no-repeat,#3a3d41!important;background-blend-mode:color,normal!important}
+html.borne.borne[data-palette][data-skin="bois"] .b-panel{background:linear-gradient(color-mix(in srgb,var(--pal-bois) 22%,transparent),color-mix(in srgb,var(--pal-bois) 22%,transparent)),url(skin-bois-panneau.webp) center/cover no-repeat,#1a1816!important;background-blend-mode:color,normal!important}
+html.borne.borne[data-palette][data-skin="metal"] .b-panel{background:linear-gradient(color-mix(in srgb,var(--pal-metal) 16%,transparent),color-mix(in srgb,var(--pal-metal) 16%,transparent)),url(skin-metal-panneau.webp) center/cover no-repeat,#3a3d41!important;background-blend-mode:color,normal!important}
+html.borne.borne[data-palette][data-skin="bois"][data-usure="1"] .b-panel{background:linear-gradient(color-mix(in srgb,var(--pal-bois) 22%,transparent),color-mix(in srgb,var(--pal-bois) 22%,transparent)),url(skin-bois-panneau-u1.webp) center/cover no-repeat,#1a1816!important;background-blend-mode:color,normal!important}
+html.borne.borne[data-palette][data-skin="bois"][data-usure="2"] .b-panel{background:linear-gradient(color-mix(in srgb,var(--pal-bois) 22%,transparent),color-mix(in srgb,var(--pal-bois) 22%,transparent)),url(skin-bois-panneau-u2.webp) center/cover no-repeat,#1a1816!important;background-blend-mode:color,normal!important}
+html.borne.borne[data-palette][data-skin="bois"][data-usure="3"] .b-panel{background:linear-gradient(color-mix(in srgb,var(--pal-bois) 22%,transparent),color-mix(in srgb,var(--pal-bois) 22%,transparent)),url(skin-bois-panneau-u3.webp) center/cover no-repeat,#1a1816!important;background-blend-mode:color,normal!important}
+
+/* creme-1960 : le vert du 3615 (#66bb6a, posé en ligne sur la vignette) passe en vert désaturé tiré du succès et du texte faible de la palette */
+html.borne[data-palette="creme-1960"] .b-panel .cab:has([data-go="terminal"]){--nc:color-mix(in oklab,var(--pal-succes) 50%,var(--pal-texte-faible))!important}
+/* sang-autocollant : compteur KOINS (texte, halo, cerclage) en néon crème et rouge de LED au lieu de l'orange #ff9a3c */
+html.borne[data-palette="sang-autocollant"] #koins.b-credit{color:color-mix(in oklab,var(--pal-neon) 70%,var(--pal-accent))!important;text-shadow:0 0 8px color-mix(in srgb,var(--pal-neon-x1) 60%,transparent)!important}
+html.borne[data-palette="sang-autocollant"] .b-bezelfoot #koins.b-credit{box-shadow:inset 0 0 0 2px var(--pal-ligne)!important}
+html.borne[data-palette="sang-autocollant"] .b-slot em{color:color-mix(in oklab,var(--pal-neon) 70%,var(--pal-accent))}
