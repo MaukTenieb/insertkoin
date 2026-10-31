@@ -66,13 +66,21 @@ async def fenetre(b, url, out, w, h, mob, court):
         if i == 14: await pg.screenshot(path=os.path.join(out, f"{w}x{h}-visite.png"))
     R["visite"] = {"mouvements": sum(abs(a - c) > 4 for a, c in zip(ys, ys[1:])), "trajetPx": sum(abs(a - c) for a, c in zip(ys, ys[1:])), "ecranEntier": f"{entier}/{len(ys)}"}
     # geste du visiteur (décision de Mauk Tenieb) : la visite se fige, puis reprend où elle en était ; ici, figée 3 s au moins (pas de mesure : 0,5 s), puis reprise
-    await pg.mouse.move(w // 2, h - 30); await pg.mouse.wheel(0, 200); await pg.wait_for_timeout(300)
-    y0 = await pg.evaluate("Math.round(scrollY)"); fige = 0; reprise = False
-    for i in range(20):
-        await pg.wait_for_timeout(500)
+    # 31 oct. : le chrono part à l'arrêt du défilement doux (avant : 300 ms fixes, d'où des mesures de 0 s ou 2,8 s selon le passage)
+    await pg.mouse.move(w // 2, h - 30); await pg.mouse.wheel(0, 200)
+    prev = None
+    for _ in range(20):
+        await pg.wait_for_timeout(100)
+        cur = await pg.evaluate("Math.round(scrollY)")
+        if cur == prev: break
+        prev = cur
+    y0 = prev; fige = 0; reprise = False
+    for i in range(40):
+        await pg.wait_for_timeout(250)
         st = await pg.evaluate("[Math.round(scrollY),!!window.__borneTour&&String(window.__borneTour)!=='0']")
-        if not reprise and abs(st[0] - y0) <= 4 and not st[1]: fige = round(0.3 + (i + 1) * 0.5, 1)
-        if st[1]: reprise = True
+        if not reprise and abs(st[0] - y0) <= 4 and not st[1]: fige = round((i + 1) * 0.25, 2)
+        if st[1] or abs(st[0] - y0) > 4: reprise = True
+        if reprise: break
     R["geste"] = {"figeeS": fige, "reprise": reprise, "conforme": fige >= 3.0 and reprise}
     # psychopompe et bulle hors de la rangée de commandes (lieu de clarté absolue)
     sur = 0
