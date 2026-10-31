@@ -130,9 +130,10 @@ function searchPage(){
   +'button{background:#c9a84c;color:#0b0805;border:0;border-radius:6px;font:bold 12px "DM Mono",monospace;letter-spacing:.1em;padding:0 18px;cursor:pointer}'
   +'p{color:#8a8272;font-size:11px;text-align:center;max-width:52ch;line-height:1.7;margin:0}'
   +'input,input::placeholder,p,button{text-transform:uppercase}p{font-size:12px}'
+  +'@media (pointer:coarse){input{font-size:16px}}'
   +'</style></head><body>'
   +'<form id="f"><input id="q" autofocus placeholder="'+esc(L('.onion, tags, mots-clés, URL — tape ce que tu veux.','.onion, tags, keywords, URL — type what you want.'))+'"><button aria-label="go">\u2192</button></form>'
-  +'<script>document.getElementById("f").addEventListener("submit",function(e){e.preventDefault();var q=document.getElementById("q").value.trim();if(q&&parent.__torSearch)parent.__torSearch(q);});<\/script>'
+  +'<script>/* champ entier à 390 (j3.4) : sous 480 px, l\'invite garde sa première moitié, avant le tiret */var q0=document.getElementById("q");if(innerWidth<480)q0.placeholder=q0.placeholder.split(" \u2014 ")[0];document.getElementById("f").addEventListener("submit",function(e){e.preventDefault();var q=document.getElementById("q").value.trim();if(q&&parent.__torSearch)parent.__torSearch(q);});<\/script>'
   +'</body></html>';
   sandbox(true);$('view').src='about:blank';
   $('view').srcdoc=h;

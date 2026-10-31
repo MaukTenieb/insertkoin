@@ -10,6 +10,9 @@ html.b-charte[data-ch=diktat]{--ch-acc:#ffa726}
 html.b-charte[data-ch=skopo]{--ch-acc:#4fc3f7}
 html.b-charte[data-ch=minitel]{--ch-acc:#66bb6a}
 html.b-charte[data-ch=fotofauna]{--ch-acc:#e2c27a}
+/* FotoFauna, accents dans la palette (i3.5) : l'orange #e8742a et l'or du SAVE cèdent à l'encre de FaunEye #e2c27a */
+html.b-charte[data-ch=fotofauna]{--edge:var(--ch-acc);--acc:var(--ch-acc)}
+html.b-charte[data-ch=fotofauna] .key.prim{background:linear-gradient(180deg,#ecd49a,#c4a45c)!important}
 
 /* ---------- 3615 : le boîtier ivoire et son clavier restent ; lettrages DM Mono, 12 px, encre lisible sur la crème ---------- */
 html.b-charte[data-ch=minitel] .fn .k{font:500 12.5px/1.05 'DM Mono',ui-monospace,monospace!important;letter-spacing:0!important}
@@ -27,7 +30,9 @@ html.b-charte[data-ch=diktat] button:not(#rec):active{background:var(--ch-acc);c
 
 /* ---------- Reporhogo ---------- */
 html.b-charte[data-ch=reporhogo] h1{color:var(--ch-title)!important;text-shadow:0 0 14px rgba(255,167,38,.55),0 2px 0 #000!important}
-html.b-charte[data-ch=reporhogo] h1 span{color:#efe6cf!important}/* « Repo » d'une couleur, « rhogo » d'une autre (mémoire, insert-koin) */
+html.b-charte[data-ch=reporhogo] h1 span{color:var(--ch-acc)!important}/* « Repo » d'une couleur, « rhogo » d'une autre (mémoire, insert-koin) : phosphore #ffe3a0, puis l'encre de SurFauna #7fe0ff */
+html.b-charte[data-ch=reporhogo] .row{justify-content:flex-start}/* COPY sous COLLECT URLS, au même bord gauche */
+html.b-charte[data-ch=reporhogo] #out::placeholder{color:transparent}/* zéro explication écrite (j3.3) */
 html.b-charte[data-ch=reporhogo]{--muted:#b3aa93}
 html.b-charte[data-ch=reporhogo] .btn,html.b-charte[data-ch=reporhogo] .btn.ghost{min-height:44px!important;padding:0 18px!important;border:1px solid var(--ch-line)!important;border-radius:4px!important;
   background:var(--ch-btn)!important;color:var(--ch-ink)!important;font:400 13px/1.2 'DM Mono',ui-monospace,monospace!important;letter-spacing:.14em!important;text-transform:uppercase!important;box-shadow:var(--ch-sh)!important}

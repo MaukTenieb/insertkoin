@@ -162,3 +162,14 @@
   function scan(){document.querySelectorAll('.b-stick').forEach(wire);}
   setTimeout(scan,800);setTimeout(scan,3000);
 })();
+/* 31 oct. — au toucher, la rangée des points de programmes se règle au doigt : toucher ou glisser le long de la rangée choisit le point le plus proche ; le dessin des points reste */
+(function(){if(!matchMedia('(pointer:coarse)').matches)return;
+  function bind(){var d=document.querySelector('.b-dots');if(!d){setTimeout(bind,500);return;}if(d._reg)return;d._reg=1;d.classList.add('b-reglette');
+    var act=null,last=null;
+    function near(x){var best=null,bd=1e9;[].forEach.call(d.querySelectorAll('.b-dot'),function(b){var r=b.getBoundingClientRect(),c=r.left+r.width/2,dd=Math.abs(c-x);if(dd<bd){bd=dd;best=b;}});return best;}
+    function pick(x){var b=near(x);if(b&&b!==last){last=b;b.classList.add('b-vise');setTimeout(function(){b.classList.remove('b-vise');},160);}}
+    d.addEventListener('pointerdown',function(e){act=e.pointerId;last=null;try{d.setPointerCapture(e.pointerId);}catch(_){}pick(e.clientX);e.preventDefault();});
+    d.addEventListener('pointermove',function(e){if(act===e.pointerId)pick(e.clientX);});
+    d.addEventListener('pointerup',function(e){if(act!==e.pointerId)return;act=null;var b=near(e.clientX);if(b&&!b.classList.contains('on'))b.click();});
+    d.addEventListener('pointercancel',function(){act=null;});}
+  bind();})();

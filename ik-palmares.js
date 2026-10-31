@@ -55,6 +55,14 @@
       else if(e.key==='Backspace'){k=Math.max(0,k-1);paint();}else if(e.key==='Enter'){done();}else return;
       e.preventDefault();e.stopPropagation();}
     document.addEventListener('keydown',key,true);o.querySelector('.ikp-ok').onclick=done;paint();
+    /* P2 (31 oct.) — au toucher, la lettre d'une case ouvre le clavier du téléphone ; ▲ ▼ restent, le dessin des trois cases aussi */
+    if(matchMedia('(pointer: coarse)').matches){var t=document.createElement('input'),SENT='  ';t.className='ikp-kbd';t.spellcheck=false;
+      t.setAttribute('autocapitalize','characters');t.setAttribute('autocomplete','off');t.setAttribute('autocorrect','off');t.setAttribute('enterkeyhint','done');t.setAttribute('aria-label','PALMARÈS');o.appendChild(t);
+      var rs=function(){t.value=SENT;try{t.setSelectionRange(SENT.length,SENT.length);}catch(x){}};rs();
+      bs.forEach(function(b,i){b.addEventListener('click',function(){k=i;paint();try{t.focus({preventScroll:true});}catch(x){t.focus();}rs();});});
+      /* Android envoie « Unidentified » au keydown : la lettre arrive ici ; iOS l'envoie au keydown, déjà traité par key() */
+      t.addEventListener('input',function(){var v=t.value;if(v.length<SENT.length)k=Math.max(0,k-1);
+        else v.slice(SENT.length).toUpperCase().split('').forEach(function(c){if(A.indexOf(c)>=0){L[k]=c;k=Math.min(2,k+1);}});paint();rs();});}
   }
   function record(game,e,cb){
     top(game).then(function(t){
@@ -79,6 +87,7 @@
     '.ikp-slots b{font-size:30px;width:1.2em;text-align:center;border-bottom:2px solid transparent}.ikp-slots b.on{border-color:#c9a84c}'+
     '.ikp-ask button{font:inherit;font-size:12px;color:#c9a84c;background:transparent;border:1px solid rgba(201,168,76,.5);padding:8px 12px;cursor:pointer}.ikp-ask button:focus-visible{outline:2px solid #c9a84c}'+
     '.ikp-ask .ikp-ok{padding:10px 26px;background:#c9a84c;color:#0b0805}'+
+    '.ikp-kbd{position:fixed;left:-200px;bottom:0;width:100px;height:20px;opacity:0;border:0;padding:0;font-size:16px}@media (pointer:coarse){.ikp-slots b{cursor:text;padding:7px 4px}}'+
     '.ikp-top{border-collapse:collapse;margin:6px auto 0;font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.08em;color:#ece4d2;font-variant-numeric:tabular-nums}'+
     '.ikp-top caption{font-family:"Press Start 2P",monospace;font-size:9px;letter-spacing:.2em;color:#c9a84c;padding-bottom:6px}'+
     '.ikp-top th{font-weight:400;color:rgba(236,228,210,.5);font-size:9px;padding:2px 8px}.ikp-top td{padding:2px 8px;text-align:right}.ikp-top td:nth-child(2){text-align:left;letter-spacing:.2em}.ikp-top tr.me td{color:#c9a84c}';

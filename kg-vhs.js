@@ -172,6 +172,8 @@
     s.status = status;
     renderStatus(s);
     updatePlayButton(s);
+    // [IK] i1.4 : télé vivante au repos, la neige tient l'écran tant que le magnétoscope reste sur STOP
+    if (s.ecran) s.ecran.set({ snow: status === "Stop" || !(s.root && s.root.classList.contains("is-loaded")) });
   }
 
   function renderMessage(s) {
@@ -325,7 +327,7 @@
     }
     setText(s, "[data-vhs-osd-track]", label);
     if (s.root) s.root.classList.toggle("is-loaded", label !== "\u2014");
-    if (s.ecran) s.ecran.set({ snow: label === "\u2014" });
+    if (s.ecran) s.ecran.set({ snow: label === "\u2014" || s.status === "Stop" });
     heartState(s);
 
     const mark = (selector, active) => {

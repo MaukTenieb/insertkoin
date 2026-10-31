@@ -292,6 +292,7 @@
 .ike-text{left:5.5%;bottom:6%}
 .ike-clock{right:5.5%;bottom:6%}
 .ike-mode-gl .ike-scan,.ike-mode-gl .ike-mask,.ike-mode-gl .ike-grain,.ike-mode-gl .ike-band,.ike-mode-gl .ike-head{display:none}
+.ike-mode-gl.ike-snow .ike-grain{display:block}
 .ike-calm .ike-band,.ike-lite .ike-band,.ike-lite .ike-head,.ike-lite .ike-mask{display:none}
 .ike-calm .ike-rec::before{animation:none}
 .ike-content.ike-wobble{animation:ike-wobble .18s steps(3) 1}
@@ -951,6 +952,7 @@
         if (d.wobble && Math.random() < d.wobble) this.pulse("wobble");
         return;
       }
+      if (this.params.snow && !LV.calm && now - this.grainT >= (LV.lite ? 140 : 70)) { this.grainT = now; this.drawGrain(); }
       this.frameGL(now);
     }
 

@@ -1058,6 +1058,7 @@ function hangDraw(){
       kh+='<button class="hang-key'+(used?' hang-used':'')+'"'+(used?' disabled':'')+' data-action="hangGuess(\''+L+'\')">'+L+'</button>';
     })(HANG_ROWS[r2][k2]);kh+='</div>';}
     kEl.innerHTML=kh;
+    hangBand(kEl);
   }
   if(sEl){
     if(_hang.over)sEl.textContent=_hang.won?kbT('SOLVED'):kbT('THE WORD WAS')+' — '+_hang.word;
@@ -1396,6 +1397,23 @@ function hangFall(L){
 /* the hangman also answers the physical keyboard (a Hungarian one types Ő, Ű… directly) */
 document.addEventListener('keydown',function(e){var p=document.getElementById('hang-panel');if(!p||p.style.display==='none'||!_hang||_hang.over||e.ctrlKey||e.metaKey||e.altKey)return;
   var L=String(e.key||'').toUpperCase();if(L.length===1&&HANG_KEYS.indexOf(L)>=0){e.preventDefault();hangGuess(L);}});
+/* P2 (31 oct.) — au toucher, le clavier du téléphone tape les lettres ; la grille dessinée reste entière : elle montre les lettres jouées
+   et donne Ő, Ű, Í, absentes de la plupart des claviers de téléphone. Une bande au dessin des touches ouvre le clavier (même geste que le 3615). */
+function hangBand(kEl){
+  if(document.getElementById('hang-band')||!matchMedia('(pointer: coarse)').matches)return;
+  var fr=(document.documentElement.lang||'en')==='fr',b=document.createElement('button'),t=document.createElement('textarea'),SENT='  ';
+  b.type='button';b.id='hang-band';b.className='hang-key hang-band';b.setAttribute('aria-label',fr?'Ouvrir le clavier du téléphone':'Open the phone keyboard');
+  b.innerHTML='<b>Aa</b><small>'+(fr?'CLAVIER':'KEYBOARD')+'</small>';
+  t.id='hang-kbd';t.className='hang-kbd';t.spellcheck=false;t.setAttribute('autocapitalize','characters');t.setAttribute('autocomplete','off');t.setAttribute('autocorrect','off');
+  t.setAttribute('aria-label',fr?'Saisie des lettres':'Letter input');
+  kEl.parentNode.insertBefore(b,kEl);kEl.parentNode.appendChild(t);
+  function reset(){t.value=SENT;try{t.setSelectionRange(SENT.length,SENT.length);}catch(e){}}
+  reset();
+  b.addEventListener('click',function(){try{t.focus({preventScroll:true});}catch(e){t.focus();}reset();});
+  /* Android envoie « Unidentified » au keydown : la lettre arrive ici ; iOS l'envoie au keydown, déjà traité plus haut */
+  t.addEventListener('input',function(){var ins=t.value.slice(SENT.length).toUpperCase();reset();
+    for(var i=0;i<ins.length;i++)if(HANG_KEYS.indexOf(ins[i])>=0)hangGuess(ins[i]);});
+}
 
 // ============================================================
 // FAUNINVADERS -- the 18 Masks in formation, each with the bomb of its Korong! signature.
@@ -1565,9 +1583,13 @@ document.addEventListener('keydown',function(e){var p=document.getElementById('h
     document.addEventListener('keydown',function(e){if(!shown())return;K[e.code]=true;if(['Space','ArrowLeft','ArrowRight','ArrowUp'].indexOf(e.code)>=0)e.preventDefault();au();if(e.code==='Space'||e.code==='Enter')start();});
     document.addEventListener('keyup',function(e){K[e.code]=false;});
     function toX(e){var r=cv.getBoundingClientRect();return(e.clientX-r.left)/r.width*W;}
-    cv.addEventListener('pointerdown',function(e){au();try{cv.setPointerCapture(e.pointerId);}catch(_e){}ptr={x:toX(e)};start();});
-    cv.addEventListener('pointermove',function(e){if(ptr)ptr.x=toX(e);});
-    cv.addEventListener('pointerup',function(){ptr=null;});cv.addEventListener('pointercancel',function(){ptr=null;});
+    /* au doigt (h3.4, P2) : le doigt glisse n'importe où sur le panneau, au-dessus ou au-dessous du vaisseau, et le vaisseau suit son déplacement (gain 1,6), comme la raquette de Korong! ;
+       la souris garde la position absolue ; le tir part tant que le doigt reste posé */
+    var pad=cv.parentNode||cv;pad.style.touchAction='none';
+    pad.addEventListener('pointerdown',function(e){if(e.target.closest&&e.target.closest('button'))return;if(e.target!==cv&&e.pointerType!=='touch')return;au();try{pad.setPointerCapture(e.pointerId);}catch(_e){}start();
+      var x=toX(e);ptr=(e.pointerType==='touch'&&S&&S.p)?{x:S.p.x,x0:x,p0:S.p.x}:{x:x};});
+    pad.addEventListener('pointermove',function(e){if(!ptr)return;var x=toX(e);ptr.x=ptr.x0==null?x:Math.max(0,Math.min(W,ptr.p0+(x-ptr.x0)*1.6));});
+    pad.addEventListener('pointerup',function(){ptr=null;});pad.addEventListener('pointercancel',function(){ptr=null;});
     window.addEventListener('resize',function(){if(shown())fit();});}
   window.fiOpen=function(){
     if(!cv){cv=document.getElementById('fi-canvas');if(!cv)return;ctx=cv.getContext('2d');bind();
