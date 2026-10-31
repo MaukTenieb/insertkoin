@@ -369,3 +369,9 @@ html.borne[data-prog] .b-scrlight,html.borne.b-immersion .b-scrlight{display:non
 @media (orientation:landscape) and (max-height:500px) and (max-width:799px){
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-door>.b-knobs{gap:3px!important;padding:7px 6px 5px!important}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .wrap>.b-door{padding-left:2px!important}}
+/* 31 oct., 9 h 30 (Mauk Tenieb) : zéro décoration autour de l'écran ; la vitre imprimée disparaît, l'image prend sa place */
+html.borne .b-bezel .b-screen{border-image:none!important;border-width:0!important}
+html.borne .b-bezel .b-screen::before{display:none!important}
+html.borne[data-bfit]:not([data-prog]):not([data-mode=device]):not([data-habit=fauneye]):not(.b-immersion) .b-bezel .b-screen,
+html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion):not([data-habit=fauneye]) .b-bezel .b-screen{padding:0!important}
+@media (max-width:700px){html.borne:not([data-prog]):not([data-mode=device]):not([data-habit=fauneye]):not(.b-immersion) .b-glass{width:var(--gw)!important;height:calc(var(--gw) * .75)!important}}

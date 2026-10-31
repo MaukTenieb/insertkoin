@@ -80,7 +80,7 @@ addEventListener('keydown',function(e){var r=document.documentElement;if(r.datas
         var LW=innerWidth,LH=innerHeight,lw=Math.max(240,Math.min(900,LW-16)),lg=300,lmax=(lw-24-330)/1.16;
         R.setAttribute('data-bland','');R.setAttribute('data-bfit','');R.removeAttribute('data-bsmall');R.style.removeProperty('--bzs');R.style.setProperty('--wc',lw+'px');
         for(var j=0;j<4;j++){R.style.setProperty('--fitW',Math.round(lg)+'px');
-          var lb=(foot||scr).getBoundingClientRect().bottom,ln=Math.max(200,Math.min(lmax,lg+(LH-10-lb)/.85));
+          var lb=(foot||scr).getBoundingClientRect().bottom,ln=Math.max(200,Math.min(lmax,lg+(LH-10-lb)/.75));
           if(Math.abs(ln-lg)<1.5){lg=ln;break}lg=ln;}
         R.style.setProperty('--fitW',Math.round(lg)+'px');if(scrollY)scrollTo(0,0);arrived=1;try{window.__borneSeat&&window.__borneSeat();}catch(_){}return}
       if(R.hasAttribute('data-bland')){R.removeAttribute('data-bland');setTimeout(function(){try{window.__borneSeat&&window.__borneSeat();}catch(_){}},80);}
@@ -91,7 +91,7 @@ addEventListener('keydown',function(e){var r=document.documentElement;if(r.datas
         var r=scr.getBoundingClientRect(),top=r.top+scrollY+px(scr,'borderTopWidth'),bot=px(scr,'borderBottomWidth'),fh=foot?foot.getBoundingClientRect().height+16:60;
         /* fenêtre basse : le toit (plante, caméra) peut passer au-dessus du cadre, l'enseigne reste visible ; l'écran y gagne sa hauteur */
         var rf=document.querySelector('.b-roof'),off=H<760&&rf?Math.max(0,rf.getBoundingClientRect().bottom+scrollY-10):0;
-        var byH=(H-top+off-bot-fh-8)/.925,byW=(W-32-150)/(W<1000?1.2:1.357),ng=Math.max(Math.min(360,(H-72)/.925),Math.min(byH,byW,1100));
+        var byH=(H-top+off-bot-fh-8)/.75,byW=(W-32-150)/(W<1000?1.2:1.357),ng=Math.max(Math.min(360,(H-72)/.75),Math.min(byH,byW,1100));
         if(Math.abs(ng-gw)<1.5){gw=ng;break}gw=ng;
       }
       /* le meuble garde une largeur de borne ; la vitre imprimée s'étire sur les côtés d'une fois et demie au plus */
