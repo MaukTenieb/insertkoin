@@ -4,10 +4,12 @@
    Ramené près de sa place, le bloc s'y recolle. Positions gardées pour chaque skin, dans ce navigateur. */
 (function(){
   var root=document.documentElement;
+  /* la coupe de la manette (part haute = levier, part basse = socle) : lue sur --stk-cut, la même valeur que le dessin ; aimant.js et jeu.js la lisent ici */
+  window.__borneStickCut=function(el){var v=parseFloat(getComputedStyle(el).getPropertyValue('--stk-cut'));return (v>0&&v<100?v:60)/100;};
   var SEL=[
     ['plante','.b-pot'],['camera','.b-cam'],['fronton','.bar .brand'],['son','.bar .dock:first-of-type'],['hp','.bar .dock:last-of-type'],
     ['burrows','.b-land'],['lore','.b-lore'],['koins','.b-bezelfoot #koins'],['boom','.b-bezelfoot .b-boom'],
-    ['boutons','.b-row2 .menu'],['manette','.b-panel .cabinets > .b-stick'],['plaque','.b-plate .b-badge'],['fente','.b-slot'],['molettes','.b-knobs']
+    ['boutons','.b-row2 .menu'],['manette','.b-panel .cabinets > .b-stick'],['manette-mini','.b-bezelfoot .b-stick-mini'],['plaque','.b-plate .b-badge'],['fente','.b-slot'],['molettes','.b-knobs']
   ];
   var MAG=14,HOME=40,LONG=260;
   var blocks=[],drag=null,suppress=0;
@@ -43,9 +45,17 @@
   function grab(b,e){drag.on=true;try{window.__borneSon&&window.__borneSon.suck();}catch(_){}b.el.classList.add('b-held');root.classList.add('b-holding');
     try{b.el.setPointerCapture(e.pointerId);}catch(_){}
     if(navigator.vibrate)try{navigator.vibrate(12);}catch(_){}}
-  function down(e){if(e.button>0||drag)return;var b=of(e.target);if(!b)return;
-    if(b.id==='manette'){var rr=b.el.getBoundingClientRect();if(e.clientY<rr.top+rr.height*.74)return;}
-    drag={b:b,id:e.pointerId,x:e.clientX,y:e.clientY,dx:b.dx,dy:b.dy,on:false,touch:true,t:0};
+  /* le socle d'une manette au toucher fait 44 px de haut au moins : la part dessinée, plus une bande de prise sous elle (le doigt) */
+  var TOUCH=44;
+  function stickBlocks(){return blocks.filter(function(b){return b.id.indexOf('manette')===0&&b.el.offsetParent;});}
+  function socleHit(b,e){var r=b.el.getBoundingClientRect();if(!r.width||e.clientX<r.left||e.clientX>r.right)return false;
+    var cut=r.top+r.height*window.__borneStickCut(b.el),low=r.bottom+(e.pointerType==='mouse'?0:Math.max(0,TOUCH-(r.bottom-cut)));return e.clientY>=cut&&e.clientY<=low;}
+  function down(e){if(e.button>0||drag)return;var b=of(e.target);
+    if(b&&b.id.indexOf('manette')===0){if(!socleHit(b,e))return;}
+    else if(!b){stickBlocks().forEach(function(s){if(!b&&socleHit(s,e))b=s;});if(!b)return;}
+    if(!b)return;
+    /* souris : le socle se saisit dès 8 px de glissé ; doigt : appui long de 260 ms (le glissé du doigt sert le défilement et le levier) */
+    drag={b:b,id:e.pointerId,x:e.clientX,y:e.clientY,dx:b.dx,dy:b.dy,on:false,touch:!(e.pointerType==='mouse'&&b.id.indexOf('manette')===0),t:0};
     if(drag.touch)drag.t=setTimeout(function(){if(drag&&!drag.on&&!drag.moved)grab(b,e);},LONG);}
   function move(e){if(!drag||e.pointerId!==drag.id)return;var mx=e.clientX-drag.x,my=e.clientY-drag.y;
     if(!drag.on){if(Math.hypot(mx,my)>8){if(drag.touch){drag.moved=true;clearTimeout(drag.t);drag=null;return;}grab(drag.b,e);}else return;}

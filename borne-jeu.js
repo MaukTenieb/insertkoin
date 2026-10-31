@@ -127,7 +127,7 @@
   var AN={x:0,y:0,ax:0,ay:0,t:0};
   /* jeux d'action (Korong!, FaunInvaders) : flèche tenue au prorata de l'angle ; jeux de cases (échecs, Konnect4, menus) : un pas, répété d'autant plus vite que le levier penche */
   var CONT=/^(puck|fi)$/;
-  function analog(dx,dy){AN.x=Math.max(-1,Math.min(1,dx/38));AN.y=Math.max(-1,Math.min(1,dy/38));if(!AN.t)AN.t=setInterval(pwm,16);}
+  function analog(dx,dy,c){c=c||38;AN.x=Math.max(-1,Math.min(1,dx/c));AN.y=Math.max(-1,Math.min(1,dy/c));if(!AN.t)AN.t=setInterval(pwm,16);}
   function step(){var m=Math.max(Math.abs(AN.x),Math.abs(AN.y));if(m<.35){AN.next=0;return;}var n=performance.now();if(n<(AN.next||0))return;
     var k=Math.abs(AN.x)>=Math.abs(AN.y)?(AN.x<0?'ArrowLeft':'ArrowRight'):(AN.y<0?'ArrowUp':'ArrowDown');key('keydown',k);setTimeout(function(){key('keyup',k);},40);
     AN.next=n+(AN.next?420-260*Math.min(1,(m-.35)/.65):460);}
@@ -144,16 +144,16 @@
   window.__borneA=press;window.__borneMark=mark;
   function wire(stick){if(!stick||stick._jeu)return;stick._jeu=1;
     var st=null,lastStep=0;
-    stick.addEventListener('pointerdown',function(e){var r=stick.getBoundingClientRect();if(e.clientY>r.top+r.height*.74)return;/* le socle : il déplace la manette */
-      e.stopPropagation();e.preventDefault();st={x:e.clientX,y:e.clientY,id:e.pointerId,moved:false};try{stick.setPointerCapture(e.pointerId);}catch(_){}
+    stick.addEventListener('pointerdown',function(e){var r=stick.getBoundingClientRect();if(e.clientY>r.top+r.height*(window.__borneStickCut?window.__borneStickCut(stick):.6))return;/* le socle : il déplace la manette */
+      e.stopPropagation();e.preventDefault();st={x:e.clientX,y:e.clientY,id:e.pointerId,moved:false,c:Math.max(12,r.width*.4)};/* course du levier = 0,4 de la largeur de la manette ; seuils en proportion (14/38 et 10/38 de la course) */st.th=st.c*14/38;st.mv=st.c*10/38;try{stick.setPointerCapture(e.pointerId);}catch(_){}
       stick.classList.add('b-grip');if(window.__borneSon)window.__borneSon.press();},true);
     stick.addEventListener('pointermove',function(e){if(!st||e.pointerId!==st.id)return;var dx=e.clientX-st.x,dy=e.clientY-st.y,ax=Math.abs(dx),ay=Math.abs(dy);
-      if(window.__borneTilt)window.__borneTilt(dx/38,dy/38);
-      if((ax>14)!==!!st.sw){st.sw=ax>14;if(window.__borneSon)window.__borneSon.tick();}
-      if(ax>10||ay>10)st.moved=true;
-      var set=[];if(dx<-14)set.push('ArrowLeft');if(dx>14)set.push('ArrowRight');if(dy<-14)set.push('ArrowUp');if(dy>14)set.push('ArrowDown');
+      if(window.__borneTilt)window.__borneTilt(dx/st.c,dy/st.c);
+      if((ax>st.th)!==!!st.sw){st.sw=ax>st.th;if(window.__borneSon)window.__borneSon.tick();}
+      if(ax>st.mv||ay>st.mv)st.moved=true;
+      var set=[];if(dx<-st.th)set.push('ArrowLeft');if(dx>st.th)set.push('ArrowRight');if(dy<-st.th)set.push('ArrowUp');if(dy>st.th)set.push('ArrowDown');
       /* en jeu, la manette pilote le jeu, dans tous les programmes (Mauk Tenieb, 30 oct.) ; changer de programme : Page préc., Page suiv., les points */
-      if(inGame())analog(dx,dy);
+      if(inGame())analog(dx,dy,st.c);
       else{var n=performance.now();if(set.length&&n-lastStep>320){lastStep=n;mark(set.indexOf('ArrowLeft')>=0||set.indexOf('ArrowUp')>=0?-1:1);}}},true);
     function end(e){if(!st||e.pointerId!==st.id)return;var m=st.moved;st=null;stick.classList.remove('b-grip');if(window.__borneTilt)window.__borneTilt(0,0);if(m&&window.__borneSon)window.__borneSon.twang(1);AN.x=AN.y=0;hold([]);
       if(!m)press();}

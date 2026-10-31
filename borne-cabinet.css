@@ -178,7 +178,7 @@ html.borne .b-row1{align-items:center;gap:18px}
 html.borne .b-keys{flex:1;min-width:0}
 
 
-html.borne .b-stick{position:relative;flex:none;--x:0;--y:0}
+html.borne .b-stick{position:relative;flex:none;--x:0;--y:0;--stk-cut:60%}
 html.borne .b-stick::before{content:"";position:absolute;left:4px;right:4px;bottom:0;height:22px;border-radius:50%;background:radial-gradient(ellipse at 50% 40%,#3a3632,#0e0d0c 70%);box-shadow:0 3px 0 #070606}
 html.borne .b-stick i{position:absolute;margin-left:-4px;
   }
