@@ -1040,7 +1040,7 @@ html.borne .b-panel .cabinets,html.borne .b-panel .b-sub,html.borne .b-plate{per
 
 /* ---------- l'autocollant Lore de Midjourney : le mot est dans l'image ---------- */
 html.borne .b-lore .b-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-html.borne .b-slot .b-lore.b-onbox,html.borne .b-lore{background:var(--i-lore) center/contain no-repeat!important;aspect-ratio:600/262;height:auto!important;padding:0!important}
+html.borne .b-slot .b-lore.b-onbox,html.borne .b-lore{aspect-ratio:600/262;height:auto!important;padding:0!important}
 html.borne .b-slot .b-lore.b-onbox{width:104px!important}
 @media (max-width:700px){html.borne .b-slot .b-lore.b-onbox{width:92px!important}}
 
@@ -1137,7 +1137,7 @@ html.borne.b-nopsy .guide,html.borne.b-nopsy .gtip{display:none!important}
 html.borne .b-copy{padding-right:max(var(--inset,12px),64px)!important}
 /* 31 oct. — Lore posé sur la caisse (la porte), plus sur la plaque de la fente */
 html.borne .b-door{position:relative}
-html.borne .b-door>.b-lore.b-onbox{position:absolute;left:var(--lx,20%);top:var(--ly,10%);z-index:6;width:84px!important;height:38px!important;font-size:.9rem!important;}
+html.borne .b-door>.b-lore.b-onbox{position:absolute;left:var(--lx,20%);top:var(--ly,10%);z-index:6;width:108px!important;height:48px!important;font-size:.9rem!important;}
 
 /* 31 oct. — la console en perspective passe devant les bandes peintes des flancs (les tiges droites traversaient ses pans obliques) */
 html.borne #home .b-panel{z-index:2}
@@ -1185,3 +1185,13 @@ html.borne .b-door>.b-lore.b-onbox::before{content:"";position:absolute;inset:-1
 /* téléphone et tablette debout : la mention descend dans la bande du socle, centrée dans sa hauteur */
 @media (max-width:900px){html.borne:not([data-bland]) .b-copy{position:relative;top:20px}}
 @media (max-width:400px){html.borne .b-copy{padding-left:40px!important;padding-right:56px!important}}
+
+/* autocollant Lore : papier vierge teinté, mot en texte, déplacement à la main */
+html.borne .b-lore{position:relative;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none}
+html.borne .b-lore .b-paper{position:absolute;inset:0;background:var(--i-lore) center/contain no-repeat;filter:hue-rotate(var(--lh,0deg)) saturate(1.3) brightness(1.45);transition:filter .5s ease;pointer-events:none}
+html.borne .b-lore .b-word{position:relative;display:block;font-family:var(--f-sign);font-size:30px;line-height:1;letter-spacing:.05em;text-transform:uppercase;color:#f6ead0;-webkit-text-stroke:.045em #f6ead0;paint-order:stroke fill;white-space:nowrap;pointer-events:none;transition:opacity .17s ease,transform .17s ease;
+  text-shadow:.03em 0 0 #1b0b06,-.03em 0 0 #1b0b06,0 .03em 0 #1b0b06,0 -.03em 0 #1b0b06,.04em .04em 0 #1b0b06,.06em .06em 0 #e8641c,.09em .09em 0 #e8641c,.12em .12em 0 #c24d12,.14em .14em 0 #1b0b06}
+html.borne .b-lore.b-peel .b-word{opacity:0;transform:scaleY(.1) translateY(.15em)}
+html.borne .b-lore.b-peel .b-paper{filter:hue-rotate(var(--lh,0deg)) saturate(1.3) brightness(1.7)}
+html.borne .b-lore.b-drag{cursor:grabbing}
+html.borne .b-lore.b-back{transition:left .4s ease,top .4s ease}

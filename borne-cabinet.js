@@ -34,7 +34,7 @@
   var foot=el('div','b-bezelfoot');
   var badge=el('button','b-sticker b-badge','<b>MAUK TENIEB</b>');badge.type='button';badge.setAttribute('aria-label','Mauk Tenieb');
   var menu=home.querySelector('.menu'),loreHref=((menu&&menu.querySelector('a[href*="substack"]'))||{}).href||'https://mauktenieb.substack.com';
-  var lore=el('a','b-sticker b-lore','<span class="b-sr">LORE</span>');lore.href=loreHref;lore.target='_blank';lore.rel='noopener';
+  var lore=el('a','b-sticker b-lore','<i class="b-paper" aria-hidden="true"></i><span class="b-sr">LORE</span><span class="b-word" aria-hidden="true">LORE</span>');lore.href=loreHref;lore.target='_blank';lore.rel='noopener';
   if($('koins')){$('koins').classList.add('b-credit');foot.appendChild($('koins'));}lore.classList.add('b-stuck');
   var butee=el('div','b-butee');butee.setAttribute('aria-hidden','true');
   bezel.appendChild(land);bezel.appendChild(butee);bezel.appendChild(scr);bezel.appendChild(foot);bezel.appendChild(lore);
@@ -122,7 +122,7 @@
     s.setProperty('--v-panneau','url('+pick(V1960.panneau)+')');s.setProperty('--v-porte','url('+p[0]+')');s.setProperty('--v-pr',p[1]);s.setProperty('--v-sx',p[2]);s.setProperty('--v-sy',p[3]);s.setProperty('--v-sw',p[4]);s.setProperty('--v-sh',p[5]);}
   variants();
   /* pièces tirées au hasard à chaque visite : l'autocollant Lore, la caméra, la manette */
-  (function(){var s=root.style;s.setProperty('--i-lore','url('+pick(['sticker-lore-a.webp','sticker-lore-b.webp'])+')');
+  (function(){var s=root.style;s.setProperty('--i-lore','url('+pick(['sticker-lore-vide-a.webp','sticker-lore-vide-b.webp'])+')');
     s.setProperty('--i-cam','url('+pick(['camera-a.webp','camera-c.webp'])+')');/* caméras du toit : la webcam à pied et lentille bleue, ou la compacte Korhogo (décision de Mauk Tenieb, 30 oct., 22 h 40) */var mt='manette-a.webp';/* la manette courte, à embase (décision de Mauk Tenieb, 30 oct., 23 h 33 : plus réaliste) */s.setProperty('--i-stick','url('+mt+')');s.setProperty('--stk-cut',mt==='manette-a.webp'?'50%':'76%');s.setProperty('--ball-cut',mt==='manette-a.webp'?'39.5%':'37.5%');})();
   var sw=el('div','b-knobw'),sb=el('button','b-knob b-skin');sb.type='button';sb.setAttribute('aria-label','Skin');sb.dataset.pos=SKINS.indexOf(skin);
   sw.appendChild(sb);sw.appendChild(el('span','b-knoblab','🧤'));knobs.appendChild(sw);
@@ -424,9 +424,9 @@
   /* l'autocollant Lore, collé au hasard n'importe où sur la caisse à pièces, de travers (Mauk Tenieb, 31 oct. : il ne fait pas partie de la plaque de la fente) */
   (function(){var slot=document.querySelector('.b-slot');if(!slot)return;
     lore.addEventListener('click',function(e){e.stopPropagation();});
-    function place(){if(!slot.offsetWidth){setTimeout(place,300);return;}var P=slot.getBoundingClientRect(),door=slot.closest('.b-door')||slot.parentElement,S=door.getBoundingClientRect(),avoid=[];var BL=document.documentElement.hasAttribute('data-bland')&&!getComputedStyle(document.documentElement).getPropertyValue('--r-S');[slot.querySelector('b'),slot.querySelector('i')].filter(Boolean).forEach(function(x){var r=x.getBoundingClientRect();for(var z=0;z<(BL?30:6);z++)avoid.push({left:r.left-8,top:r.top-8,right:r.right+8,bottom:r.bottom+8});});
+    function place(){if(!slot.offsetWidth){setTimeout(place,300);return;}if(lore._moved){if(!restore())clampLore();return;}var P=slot.getBoundingClientRect(),door=slot.closest('.b-door')||slot.parentElement,S=door.getBoundingClientRect(),avoid=[];var BL=document.documentElement.hasAttribute('data-bland')&&!getComputedStyle(document.documentElement).getPropertyValue('--r-S');[slot.querySelector('b'),slot.querySelector('i')].filter(Boolean).forEach(function(x){var r=x.getBoundingClientRect();for(var z=0;z<(BL?30:6);z++)avoid.push({left:r.left-8,top:r.top-8,right:r.right+8,bottom:r.bottom+8});});
       /* partout (Mauk Tenieb, 31 oct., 8 h 50) : LORE collé au hasard sur la caisse à pièces, la fenêtre de la fente toujours nue ; l'ancien placement sert de repli */
-      if(landPlace(P,S,door,BL))return;
+      if(landPlace(P,S,door,BL)){if(!restore())setTimeout(settle,60);return;}
       /* repli, hors du téléphone couché : à cheval sur le bord gauche de la plaque, à mi-hauteur */
       if(!BL){var w0=lore.offsetWidth||84,h0=lore.offsetHeight||38;lore.classList.remove('b-stuck');lore.classList.add('b-onbox');
         lore.style.setProperty('--lx',(P.left-S.left-w0/2).toFixed(1)+'px');lore.style.setProperty('--ly',(P.top-S.top+P.height/2-h0/2).toFixed(1)+'px');
@@ -462,7 +462,7 @@
       var top=(pn?pn.getBoundingClientRect().bottom:P.top)+3,bot=(BL?Math.min(innerHeight,WR.bottom):Math.min(WR.bottom,P.bottom+P.height*.12))-3,lft=Math.max(S.left,BL&&bz?bz.getBoundingClientRect().right:WR.left+8)+3,rgt=Math.min(S.right,WR.right-8)-3;
       /* LORE au hasard sur la caisse : la fenêtre de la fente nue (6 px), l'étiquette couverte à 15 % au plus, 45 % de sa largeur au plus hors de la plaque, sur le bois de la caisse, sous le rebord du panneau */
       /* 0,6 au plus bas sous 800 px de large, et en bois jusqu'à 900 px (décision du 31 oct.) */
-      var sc=!BL?[1,.9,.8]:(innerWidth<800||(sk==='bois'&&innerWidth<900))?[.8,.75,.6,.5]:[.8,.75,.6];
+      var sc=!BL?[1,.9,.8]:(innerWidth<800||(sk==='bois'&&innerWidth<900))?[1,.9,.8,.7,.6,.5]:[1,.9,.8,.7,.6];
       for(var i=0;i<sc.length;i++){var W=w*sc[i]+4,H=h*sc[i]+6,C=[];
         for(var x=lft;x<=rgt-W;x+=2){var out=Math.max(0,P.left-x)+Math.max(0,x+W-P.right);if(out>.45*W)continue;
           for(var y=top;y<=bot-H;y+=2){if(ov(O,x,y,W,H)||(KN&&ov(KN,x,y,W,H))||(LB&&ov(LB,x,y,W,H)>0))continue;
@@ -484,6 +484,50 @@
     setTimeout(place,500);
     /* la caisse change de taille (mesure de l'écran, téléphone couché, skin) : l'autocollant se recolle sur sa nouvelle place */
     if(window.ResizeObserver){var rsT,rs0='',RO=new ResizeObserver(function(){var r=slot.getBoundingClientRect(),dr=(slot.closest('.b-door')||slot).getBoundingClientRect(),k=Math.round(r.width)+'x'+Math.round(r.height)+'/'+Math.round(dr.width)+'x'+Math.round(dr.height)+'/'+Math.round(r.left-dr.left)+'/'+Math.round(r.top-dr.top)+(document.documentElement.hasAttribute('data-bland')?'L':'');if(k===rs0)return;rs0=k;clearTimeout(rsT);rsT=setTimeout(place,350);});RO.observe(slot);RO.observe(slot.closest('.b-door')||slot);}
+    /* le mot de l'autocollant : LORE le plus souvent, Tales, Korhogo ou Diegesis de temps en temps, comme l'enseigne qui change de nom ; le papier change de teinte ; il se déplace à la main */
+    (function(){var W=['Tales','Korhogo','Diegesis'],H=[0,35,150,195,245,290,320],cw='Lore',ch=0,wd=lore.querySelector('.b-word'),sr=lore.querySelector('.b-sr'),RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+      function fit(){var w=lore.offsetWidth,h=lore.offsetHeight;if(!w||!h)return;wd.style.fontSize='100px';var w1=wd.offsetWidth||1;wd.style.fontSize=Math.max(8,Math.min(100*.76*w/w1,.5*h/.7)).toFixed(1)+'px';}
+      function show(t,hue){cw=t;wd.textContent=t;sr.textContent=t;lore.style.setProperty('--lh',hue+'deg');ch=hue;fit();}
+      /* tirage : Lore 64 %, Tales, Korhogo ou Diegesis 12 % chacun ; teinte prise dans la liste, jamais deux fois de suite */
+      function tick(){var t=Math.random()<.64?'Lore':W[(Math.random()*W.length)|0],o=H.filter(function(x){return x!==ch;}),hue=o[(Math.random()*o.length)|0];
+        if(RM){show(t,hue);}else{lore.classList.add('b-peel');setTimeout(function(){show(t,hue);},170);setTimeout(function(){lore.classList.remove('b-peel');},420);}
+        setTimeout(tick,20000+Math.random()*40000);}
+      lore._fit=fit;lore._tick=tick;fit();setTimeout(fit,700);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);setTimeout(tick,20000+Math.random()*40000);
+      /* glisser à la main : clic simple = lien ; au-delà de 6 px = déplacement ; l'aimant Dekonect ramène l'autocollant s'il est lâché dessus */
+      var st=null;lore.draggable=false;lore.addEventListener('dragstart',function(e){e.preventDefault();});
+      lore.addEventListener('pointerdown',function(e){if(!lore.classList.contains('b-onbox')||(e.button&&e.button!==0))return;lore._drag=false;st={x:e.clientX,y:e.clientY,l:lore.offsetLeft,t:lore.offsetTop,id:e.pointerId};});
+      lore.addEventListener('pointermove',function(e){if(!st||e.pointerId!==st.id)return;var dx=e.clientX-st.x,dy=e.clientY-st.y;
+        if(!lore._drag){if(Math.hypot(dx,dy)<=6)return;lore._drag=true;lore.classList.add('b-drag');try{lore.setPointerCapture(e.pointerId);}catch(x){}}
+        lore.style.setProperty('--lx',(st.l+dx).toFixed(1)+'px');lore.style.setProperty('--ly',(st.t+dy).toFixed(1)+'px');lore._moved=true;clampLore();});
+      function end(e){if(!st||(e&&e.pointerId!==st.id))return;var was=lore._drag;lore.classList.remove('b-drag');
+        if(was){var r=lore.getBoundingClientRect(),back=hit(r,zones())||['.b-dekonect','.b-knobs'].some(function(q){var d=document.querySelector(q);if(!d||!d.offsetWidth)return false;var k=d.getBoundingClientRect();return r.left<k.right+6&&r.right>k.left-6&&r.top<k.bottom+6&&r.bottom>k.top-6;});
+          if(back){lore.classList.add('b-back');lore.style.setProperty('--lx',st.l+'px');lore.style.setProperty('--ly',st.t+'px');setTimeout(function(){lore.classList.remove('b-back');},450);}else keep();}
+        st=null;}
+      lore.addEventListener('pointerup',end);lore.addEventListener('pointercancel',end);
+      lore.addEventListener('click',function(e){if(lore._drag){e.preventDefault();lore._drag=false;}},true);})();
+    /* zones interdites : fenêtre de la fente, étiquette INSERT, serrure (intersection 0, marge 3 px) ; vérifiées au repos et au relâché */
+    function zones(){var P=slot.getBoundingClientRect(),sk=document.documentElement.dataset.skin,OP={bois:[31,19,70,60],metal:[46,26,54,45]}[sk]||[31,19,70,60],KHp={bois:[60,62,86,92],metal:[66,58,86,86]}[sk]||[60,62,86,92],m=3,Z=[];
+      Z.push({l:P.left+P.width*OP[0]/100-m,t:P.top+P.height*OP[1]/100-m,r:P.left+P.width*OP[2]/100+m,b:P.top+P.height*OP[3]/100+m});
+      Z.push({l:P.left+P.width*KHp[0]/100-m,t:P.top+P.height*KHp[1]/100-m,r:P.left+P.width*KHp[2]/100+m,b:P.top+P.height*KHp[3]/100+m});
+      [slot.querySelector('b'),slot.querySelector('i')].forEach(function(x){if(x&&x.offsetWidth){var r=x.getBoundingClientRect();Z.push({l:r.left-m,t:r.top-m,r:r.right+m,b:r.bottom+m});}});return Z;}
+    /* place choisie à la main : gardée dans ce navigateur, par skin et par cadrage, en fraction de la caisse */
+    function posKey(){return (document.documentElement.dataset.skin||'')+(document.documentElement.hasAttribute('data-bland')?'L':'');}
+    function posAll(){try{return JSON.parse(localStorage.getItem('borne.lore')||'{}')||{};}catch(x){return {};}}
+    function keep(){var d=lore.closest('.b-door');if(!d||!d.offsetWidth)return;var a=posAll();a[posKey()]=[lore.offsetLeft/d.offsetWidth,lore.offsetTop/d.offsetHeight];try{localStorage.setItem('borne.lore',JSON.stringify(a));}catch(x){}}
+    function restore(){var d=lore.closest('.b-door'),v=posAll()[posKey()];if(!d||!v||!lore.classList.contains('b-onbox'))return false;var lx=lore.style.getPropertyValue('--lx'),ly=lore.style.getPropertyValue('--ly');
+      lore.style.setProperty('--lx',(v[0]*d.offsetWidth).toFixed(1)+'px');lore.style.setProperty('--ly',(v[1]*d.offsetHeight).toFixed(1)+'px');clampLore();
+      if(clearLore()){lore._moved=true;return true;}lore.style.setProperty('--lx',lx);lore.style.setProperty('--ly',ly);lore._moved=false;return false;}
+    function hit(r,Z){return Z.some(function(z){return r.left<z.r&&r.right>z.l&&r.top<z.b&&r.bottom>z.t;});}
+    function clearLore(){return !hit(lore.getBoundingClientRect(),zones());}
+    function settle(){if(!lore.classList.contains('b-onbox')||clearLore()){lore._try=0;return;}
+      if((lore._try=(lore._try||0)+1)<=8){lore._moved=false;place();return;}
+      var door=lore.closest('.b-door'),S=door.getBoundingClientRect(),Z=zones(),w=lore.offsetWidth,h=lore.offsetHeight,WR=(document.querySelector('.wrap')||document.body).getBoundingClientRect(),L=Math.max(S.left,WR.left+8),R=Math.min(S.right,WR.right-8,innerWidth),T=Math.max(S.top,0),B=Math.min(S.bottom,innerHeight),best=null;
+      [.8,.6,.5].some(function(sc){var W=w*sc+4,H=h*sc+6,C=[];for(var x=L;x<=R-W;x+=3)for(var y=T;y<=B-H;y+=3)if(!hit({left:x,top:y,right:x+W,bottom:y+H},Z))C.push([x,y,sc,W,H]);if(C.length){best=C[(Math.random()*C.length)|0];return true;}});
+      if(best){lore.style.setProperty('--lx',(best[0]+best[3]/2-w/2-S.left).toFixed(1)+'px');lore.style.setProperty('--ly',(best[1]+best[4]/2-h/2-S.top).toFixed(1)+'px');lore.style.setProperty('--ls',best[2]);lore.style.setProperty('--lr','0deg');}
+      lore._try=0;}
+    function clampLore(){var door=lore.closest('.b-door');if(!door||!lore.classList.contains('b-onbox'))return;var d=door.getBoundingClientRect(),r=lore.getBoundingClientRect(),L=Math.max(d.left,0),R=Math.min(d.right,innerWidth),T=Math.max(d.top,0),B=Math.min(d.bottom,innerHeight),dx=0,dy=0;
+      if(r.left<L)dx=L-r.left;else if(r.right>R)dx=R-r.right;if(r.top<T)dy=T-r.top;else if(r.bottom>B)dy=B-r.bottom;
+      if(dx||dy){lore.style.setProperty('--lx',(lore.offsetLeft+dx).toFixed(1)+'px');lore.style.setProperty('--ly',(lore.offsetTop+dy).toFixed(1)+'px');}}
     var RW=innerWidth;addEventListener('resize',function(){if(Math.abs(innerWidth-RW)>40){RW=innerWidth;clearTimeout(lore._rt);lore._rt=setTimeout(place,500);}});
     /* un autre skin, une autre caisse : l'autocollant se recolle hors de la fente et de son étiquette */
     new MutationObserver(function(){if(lore.classList.contains('b-onbox'))setTimeout(place,450);}).observe(document.documentElement,{attributes:true,attributeFilter:['data-skin']});})();

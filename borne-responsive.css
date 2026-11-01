@@ -228,7 +228,7 @@ html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion)
 /* ---------- 5. cibles au toucher : 44 px par la forme ; zone sensible transparente là où le dessin reste plus petit (::after libre) ---------- */
 @media (pointer:coarse){
   html.borne:not(#r1):not(#r2) :is(.b-row2 .menu a,.b-care button){position:relative}
-  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-door>.b-lore.b-onbox{width:76px!important/* !P7 ; zone de frappe 100 x 57 par ::before */;height:auto!important/* !P7 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-door>.b-lore.b-onbox{width:100px!important/* !P7 ; zone de frappe 100 x 57 par ::before */;height:auto!important/* !P7 */}
   html.borne:not(#r1):not(#r2) :is(.b-row2 .menu a,.b-care button)::after{
     content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%)}
   html.borne:not(#r1):not(#r2) :is(.brand,#radio-toggle,.b-bell,#export-pl,.b-boom,.b-imm,.b-land,.b-slot,.b-knob,.b-dekonect,.b-badge,#kapture,.b-dot,.b-edge){

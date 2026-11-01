@@ -369,7 +369,7 @@ html.borne[data-prog] .b-scrhalo,html.borne.b-immersion .b-scrhalo,html.borne[da
   /* cibles de 44 px et texte de 12 px au moins, dans ce cadrage où la porte entre dans la fenêtre */
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-panel .cabinets>.cab{min-height:60px!important}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-panel .cab .hit{inset:0!important}
-  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-door>.b-lore.b-onbox{width:92px!important;height:44px!important;transform:rotate(var(--lr,-4deg)) scale(var(--ls,1))!important}
+  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-door>.b-lore.b-onbox{width:108px!important;height:48px!important;transform:rotate(var(--lr,-4deg)) scale(var(--ls,1))!important}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-door>.b-lore.b-onbox:hover{transform:rotate(var(--lr,-4deg)) scale(calc(var(--ls,1) * 1.06))!important}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-door>.b-lore.b-onbox::before{content:"";position:absolute;inset:-8px}
   /* l'aimant laisse voir la vis du panneau de métal */
