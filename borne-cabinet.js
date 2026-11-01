@@ -646,3 +646,27 @@
   /* aperçu pour l'auteur : ?usure=1, 2 ou 3 montre un palier sans toucher au temps, avec le skin bois */
   try{var q=/[?&]usure=([0-3])/.exec(location.search);if(q){d.dataset.skin='bois';show(+q[1]);}}catch(e){}
   window.__borneUsure=function(){o=fresh();show(0);};})();
+
+/* 31 oct., 23 h 57 (LISTE-BORNE n°46) — la bulle d'un psychopompe se place à côté de lui : interdit dur sur toute commande et hors fenêtre,
+   puis hors de l'écran (vitre) tant qu'une place existe, puis le candidat le plus proche du psychopompe ; grille de 8 px sur la fenêtre */
+window.__borneTipPlace=function(tip,g,el,home){
+  var hb=home.getBoundingClientRect(),gq=g.getBoundingClientRect();tip.style.left='0px';tip.style.top='0px';
+  var tw=tip.offsetWidth,th=tip.offsetHeight,W=innerWidth,H=innerHeight,M=4,C=[],S=null;
+  function R(e){var r=e.getBoundingClientRect();return {l:r.left,t:r.top,r:r.right,b:r.bottom};}
+  var scr=document.querySelector('.b-screen');if(scr&&scr.getClientRects().length)S=R(scr);
+  [].slice.call(document.querySelectorAll('a,button,.cab,[role=button],.b-px,#radio-toggle,.b-bezelfoot,.b-stick,.b-knob,.b-sticker,.b-badge,#brand')).forEach(function(x){
+    if(x.closest('.guide,.gtip')||x===el||x.contains(el)||el.contains(x)||!x.getClientRects().length||!x.offsetWidth)return;C.push(R(x));});
+  function hit(t,z,m){return t.l<z.r-m&&t.r>z.l+m&&t.t<z.b-m&&t.b>z.t+m;}
+  /* règle 2, fenêtres dont le petit côté mesure 700 px ou plus : interdit dur sur toute commande, vitre interdite, puis le candidat le plus proche du psychopompe */
+  var best=null,bc=1e18,pass;
+  for(pass=0;pass<3&&!best;pass++){
+    for(var y=M;y<=H-th-M;y+=8){for(var x=M;x<=W-tw-M;x+=8){
+      var t={l:x,t:y,r:x+tw,b:y+th};
+      if(pass<2&&C.some(function(z){return hit(t,z,1);}))continue;
+      if(pass<1&&S&&hit(t,S,0))continue;
+      var dx=Math.max(gq.left-t.r,t.l-gq.right,0),dy=Math.max(gq.top-t.b,t.t-gq.bottom,0),d=Math.hypot(dx,dy)+(hit(t,R(g),0)?400:0);
+      if(pass===2){C.forEach(function(z){d+=Math.max(0,Math.min(t.r,z.r)-Math.max(t.l,z.l))*Math.max(0,Math.min(t.b,z.b)-Math.max(t.t,z.t));});}
+      if(d<bc){bc=d;best=[x,y];}}}}
+  if(!best)best=[Math.max(M,Math.min(W-tw-M,gq.right+6)),Math.max(M,Math.min(H-th-M,gq.top))];
+  tip.style.left=(best[0]-hb.left)+'px';tip.style.top=(best[1]-hb.top)+'px';tip.classList.add('on');
+  return {x:best[0],y:best[1],pass:pass};};
