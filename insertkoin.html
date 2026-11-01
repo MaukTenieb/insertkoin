@@ -2087,7 +2087,20 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
     if(Math.random()<.12&&!g.classList.contains('shine')){g.classList.remove('twink');void g.offsetWidth;g.classList.add('twink');setTimeout(()=>g.classList.remove('twink'),1700);}if(Math.random()<.18){face(1);setTimeout(()=>{if(!touring&&frame===1)face(0);},140);}else if(Math.random()<.06){const f=Math.random()<.5?2:3;face(f);setTimeout(()=>{if(!touring&&frame===f)face(0);},900);}},700);
   function say(el,name,text){const r=homeXY(el),gx=parseFloat(g.style.left),gw=parseFloat(g.style.getPropertyValue('--gw'))||60,W=home.clientWidth;
     tip.innerHTML='';if(name){const b=document.createElement('b');b.textContent=name;tip.appendChild(b);}if(text)text.split('\n').forEach(l=>{const d=document.createElement('div');d.textContent=l;tip.appendChild(d);});
-    const right=gx+gw+10+320<W;tip.style.left=(right?gx+gw+6:Math.max(4,gx-Math.min(320,W*.7)-6))+'px';tip.style.top=(parseFloat(g.style.top)+8)+'px';tip.classList.add('on');}
+    placeTip(el);tip.classList.add('on');}
+  /* la bulle se place à l'arrêt : collée au psychopompe, jamais sur une commande, ni sur la cible, dans la fenêtre ; sur la vitre seulement si aucune place libre à 26 px ou moins */
+  function placeTip(el){const hb=home.getBoundingClientRect(),G=g.getBoundingClientRect(),tw=tip.offsetWidth,th=tip.offsetHeight,VW=innerWidth,VH=innerHeight,tg=el.getBoundingClientRect();
+    const C=[...document.querySelectorAll('a,button,.cab,[role=button],.b-px,#radio-toggle,.b-bezelfoot,.b-stick,.b-knob,.b-sticker,.b-badge')].filter(x=>!x.closest('.guide,.gtip')&&!x.contains(el)&&!el.contains(x)&&x.getClientRects().length&&x.offsetWidth>0).map(x=>x.getBoundingClientRect());
+    const GL=[...document.querySelectorAll('.b-glass')].filter(x=>x.getClientRects().length).map(x=>x.getBoundingClientRect());
+    const ar=(a,m)=>Math.max(0,Math.min(a.r,m.right)-Math.max(a.l,m.left))*Math.max(0,Math.min(a.b,m.bottom)-Math.max(a.t,m.top));
+    let B=null,Bk=null;for(let gp=6;gp<=70;gp+=(gp<26?8:10)){const cs=[];
+      for(let y=G.top-th+8;y<=G.bottom-8;y+=8)cs.push([G.right+gp,y],[G.left-gp-tw,y]);
+      for(let x=G.left-tw+8;x<=G.right-8;x+=8)cs.push([x,G.top-gp-th]);
+      for(const c of cs){const x=c[0],y=c[1],a={l:x-3,t:y-3,r:x+tw+3,b:y+th+3};
+        const out=x<4||y<4||x+tw>VW-4||y+th>VH-4?1:0;let cm=0,gl=0;C.forEach(m=>cm+=ar(a,m));GL.forEach(m=>gl+=ar(a,m));
+        const k=[out,cm>0?1:0,ar(a,tg)>0?1:0,gp>26?1:0,gl>0?1:0,gp];
+        if(!Bk||k.some((v,i)=>{for(let j=0;j<i;j++)if(k[j]!==Bk[j])return false;return v<Bk[i];})&&true){Bk=k;B=[x,y];}}}
+    if(B){tip.style.left=(B[0]-hb.left)+'px';tip.style.top=(B[1]-hb.top)+'px';}}
   let TQ=[],TI=0;
   async function tour(resume){if(touring)return;touring=true;idleT=Infinity;ac();const W=ms=>new Promise(r=>setTimeout(r,ms));
     const cabs=[...home.querySelectorAll('.cabinets .cab')],chips=[...home.querySelectorAll('.menu a,.menu button')];
@@ -2100,8 +2113,7 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
       const r=homeXY(el),gw=parseFloat(g.style.getPropertyValue('--gw'))||60;g.classList.add('walk');face(r.x<parseFloat(g.style.left)?2:3);
       const vt=el.getBoundingClientRect().top,inBar=!!el.closest('.bar'),HW=home.clientWidth;
       /* up in the bar (Kapture), it stops a little short, below and to the left, and never leaves the frame */
-      let tx=isCab?r.x+r.w-gw-6:inBar?r.x-gw*.55:r.x+r.w/2-gw/2,ty=isCab?r.y+r.h-H-4:(inBar||vt<H+10?r.y+r.h+8:r.y-H+6);
-      tx=Math.max(4,Math.min(HW-gw-4,tx));place(tx,ty);tip.classList.remove('on');await W(950);if(!touring)break;g.classList.remove('walk');face(4);
+      let tx=r.x+r.w/2-gw/2,ty=(inBar||vt<H+2)?r.y+r.h+8:r.y-H+2.5;tx=Math.max(4,Math.min(HW-gw-4,tx));place(tx,ty);tip.classList.remove('on');await W(950);if(!touring)break;g.classList.remove('walk');face(4);
       if(isCab){el.classList.remove('lit','sweep');void el.offsetWidth;el.classList.add('lit','sweep');}else{el.classList.remove('sweep');void el.offsetWidth;el.classList.add('sweep');}
       if(AC&&sound){const n=drawNote();tone(330*Math.pow(2,n/12),.09,'triangle',.035);tone(660*Math.pow(2,n/12),.05,'sine',.017,0,.03);}
       const nm=(el.querySelector('b')||el).textContent.replace(/^[^A-Za-z0-9À-ÿ]+/,'').replace(/\s+/g,' ').trim();const said=go==='motel'?'The Kave sounds like this.'+(L.motel?'\n'+L.motel:''):(L[go]||'');say(el,go==='motel'?'':nm,said);/* the line stays as long as it takes to read */await W(Math.max(1500,Math.min(5600,1000+said.length*55)));if(isCab)el.classList.remove('lit');face(0);}
