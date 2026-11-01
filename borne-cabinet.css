@@ -1001,7 +1001,7 @@ html.borne .b-plate .b-badge{transform:rotateX(30deg)!important;box-shadow:0 0 0
 
 /* ---------- bloc son refait : une fenêtre d'affichage sous verre fumé (fluorescent ambre, trame de points), deux touches physiques à côté ---------- */
 html.borne .bar .dock:first-of-type{grid-template-columns:minmax(0,1fr) 34px 34px!important;column-gap:5px!important}
-html.borne .bar .dock:first-of-type #radio-toggle{position:relative;border-radius:3px!important;padding:0 10px!important;
+html.borne .bar .dock:first-of-type #radio-toggle{position:relative;border-radius:var(--b-kr,3px)!important;padding:0 10px!important;
   background:radial-gradient(ellipse at 50% 120%,rgba(255,150,40,.10),transparent 70%),#070605!important;
   box-shadow:inset 0 2px 4px rgba(0,0,0,.95),inset 0 0 0 1px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.14),0 -1px 0 rgba(0,0,0,.5)!important}
 html.borne .bar .dock:first-of-type #radio-toggle::after{content:"";position:absolute;inset:0;border-radius:3px;pointer-events:none;
@@ -1009,7 +1009,7 @@ html.borne .bar .dock:first-of-type #radio-toggle::after{content:"";position:abs
 html.borne .bar .dock:first-of-type #radio-toggle .motel-l{font-family:'DM Mono',monospace!important;font-weight:500;color:#ffb54a!important;
   text-shadow:0 0 2px #ff9a2a,0 0 8px rgba(255,140,30,.7)!important}
 html.borne .bar .dock:first-of-type #export-pl,html.borne .bar .dock:first-of-type .b-bell{position:relative;width:34px!important;height:30px!important;min-height:30px!important;padding:0!important;margin:0!important;
-  display:grid!important;place-items:center;border-radius:4px!important;cursor:pointer;
+  display:grid!important;place-items:center;border-radius:var(--b-kr,4px)!important;cursor:pointer;
   background:linear-gradient(180deg,#3a3633 0%,#22201e 55%,#171513 100%)!important;color:#d9cfbf!important;opacity:1!important;filter:none!important;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -2px 0 rgba(0,0,0,.5),0 0 0 1px #000,0 3px 0 #0b0a09,0 4px 6px rgba(0,0,0,.6)!important;
   font-family:'DM Mono',monospace!important;font-weight:600;font-size:10px!important;letter-spacing:.06em!important;text-shadow:0 -1px 0 rgba(0,0,0,.8)!important;transition:transform .06s,box-shadow .06s}

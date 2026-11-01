@@ -28,11 +28,11 @@ html.borne{
   --r-uf:max(var(--r-u),calc(var(--r-s0) / 100));
   --r-M:min(calc(var(--r-S) * 1.3),calc(100vw - 2 * var(--r-g)));
   --r-gap:var(--r-uf);
-  --r-strip:max(var(--r-hit),32px,calc(4 * var(--r-uf)));   /* bande d'affichage du fronton : titre à gauche, son et PL à droite */
+  --r-strip:max(var(--r-sf,28px),calc(3.2 * var(--r-uf)));   /* bande d'affichage du fronton : titre à gauche, son et PL à droite */
   --r-knob:max(var(--r-hit),calc(6 * var(--r-u)));     /* molette */
 }
 @supports (height:1svh){html.borne{--r-vh:100svh}}
-@media (pointer:coarse){html.borne{--r-s0:880px;--r-hit:44px;--r-fF:52px}}
+@media (pointer:coarse){html.borne{--r-s0:880px;--r-hit:44px;--r-fF:52px;--r-sf:34px}}
 
 /* D1 colonne : la largeur manque, l'écran prend toute la largeur ; le fronton passe sur deux rangs (k = 0,31) */
 @media (orientation:portrait){
@@ -66,18 +66,19 @@ html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion)
   grid-column:2;grid-row:1;height:100%!important/* !P9 */;min-width:0!important/* !P4 */;min-height:var(--r-hit)!important/* !P9 */;
   padding:0 calc(2 * var(--r-uf))!important/* !P4 */;font-size:clamp(16px,calc(4.2 * var(--r-uf)),72px)!important/* !P4 */;line-height:1!important/* !P4 */}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.dock{
-  grid-row:1;height:100%!important/* !P9 */;min-height:0!important/* !P9 */;width:auto!important/* !P4 */;padding:var(--r-gap)!important/* !P4 */;box-sizing:border-box;
+  grid-row:1;align-self:end;height:var(--r-dh,calc(5.5 * var(--r-uf)))!important/* !P9 */;min-height:0!important/* !P9 */;width:auto!important/* !P4 */;padding:var(--r-dp,var(--r-gap))!important/* !P4 */;box-sizing:border-box;
   display:flex!important/* !P4 */;align-items:flex-end!important/* !P4 */;justify-content:stretch;gap:var(--r-gap)}
-html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.dock:first-of-type{grid-column:1}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.dock:first-of-type{grid-column:1;gap:0}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.dock:last-of-type{grid-column:3}
 /* la bande du titre à gauche, la paire son / PL à droite : même hauteur, même ligne de base, même largeur (celle de leur boîte) */
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .bar #radio-toggle{
-  flex:1 1 0;margin-right:calc(2 * var(--r-strip));min-width:0!important/* !P4 */;height:var(--r-strip)!important/* !P4 */;min-height:var(--r-hit)!important/* !P4 */;box-sizing:border-box}
-html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .bar .dock:last-of-type :is(.b-bell,#export-pl){
-  flex:1 1 0!important/* !P4 */;min-width:var(--r-hit);height:var(--r-strip)!important/* !P4 */;box-sizing:border-box!important/* !P4 */;display:flex!important/* !P4 */;align-items:center;justify-content:center}
+  flex:1 1 0;margin-right:0;min-width:0!important/* !P4 */;height:var(--r-strip)!important/* !P4 */;min-height:var(--r-strip)!important/* !P4 */;--b-kr:4px 0 0 4px;box-sizing:border-box}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .bar .dock:first-of-type :is(.b-bell,#export-pl){
+  flex:0 0 var(--r-strip)!important/* !P4 */;min-width:0;--b-kr:0;height:var(--r-strip)!important/* !P4 */;box-sizing:border-box!important/* !P4 */;display:flex!important/* !P4 */;align-items:center;justify-content:center}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .bar .dock:first-of-type>.b-bell:last-child{--b-kr:0 4px 4px 0}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .bar .b-bell svg{width:clamp(16px,calc(2.2 * var(--r-uf)),24px)!important/* !P4 */;height:clamp(16px,calc(2.2 * var(--r-uf)),24px)!important/* !P4 */}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .bar :is(.motel-l,#export-pl){
-  font-size:clamp(16px,calc(2 * var(--r-uf)),22px)!important/* style en ligne */;max-width:100%!important/* style en ligne */}
+  font-size:clamp(12px,calc(1.4 * var(--r-uf)),15px)!important/* style en ligne */;max-width:100%!important/* style en ligne */}
 
 /* cadre : Burrows, l'écran, le pied de l'écran, l'un sous l'autre, à la largeur de l'écran ; zéro décoration autour de l'image */
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) #home .b-bezel{
@@ -159,9 +160,9 @@ html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion)
 @media (orientation:portrait){
   /* fronton sur deux rangs : l'enseigne sur toute la largeur, puis la bande du titre et la paire son / PL, moitié chacune */
   html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar{
-    grid-template-columns:minmax(0,var(--r-c1,1.7fr)) minmax(0,1fr)!important/* !P4 */;grid-template-rows:calc(7 * var(--r-uf)) calc(5 * var(--r-uf))!important/* !P4 */}
+    grid-template-columns:minmax(0,var(--r-c1,1.7fr)) minmax(0,1fr)!important/* !P4 */;grid-template-rows:calc(7 * var(--r-uf)) var(--r-strip)!important/* !P4 */}
   html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.brand{grid-column:1 / -1;grid-row:1}
-  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.dock{grid-row:2}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.dock{grid-row:2;--r-dh:100%;--r-dp:0}
   html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.dock:last-of-type{grid-column:2}
 }
 /* touches en deux paires autour de la manette : téléphone debout (portrait étroit, 3:5 et moins) et pupitre (D3) */
