@@ -321,7 +321,8 @@ html.borne .b-bezelfoot .b-boom span{font-size:.55rem}
 html.borne body:not(.on-home) .b-boom i{background:radial-gradient(circle at 40% 32%,#d0563f,#8a2216 60%,#3a0c08)}
 /* les Koins : sur le cadre, sous l'écran, visibles dans chaque programme */
 html.borne .b-bezelfoot #koins.b-credit{position:static;display:flex;align-items:center;gap:8px;
-  color:#ff9a3c;text-shadow:0 0 8px rgba(255,140,40,.6);visibility:visible!important;}
+  color:#ff9a3c;text-shadow:0 0 8px rgba(255,140,40,.6);}
+html.borne.borne-ready .b-bezelfoot #koins.b-credit{visibility:visible!important}/* 1er nov. (E47) : visible une fois la borne prête ; zéro mot KOINS sur la photo d attente */
 html.borne .b-bezelfoot #koins.b-credit::before{content:"KOINS"}
 /* le guide (le Mask en miniature) visite le panneau, et reste hors des programmes */
 html.borne body:not(.on-home) .guide{display:none!important}
@@ -648,7 +649,7 @@ html.borne .bar .brand,html.borne .bar .dock{border-radius:6px!important}
 
 html.borne .bar .dock{min-height:clamp(88px,11.5vh,112px)!important}
 html.borne .bar .dock:first-of-type{align-content:stretch;gap:0 var(--s2);padding:var(--s2)!important}
-html.borne .bar .dock:first-of-type::before{display:none}
+html.borne .bar .dock:first-of-type::before,html.borne .bar .dock:last-of-type::before{display:none}/* 1er nov. (E48) : son et PL remplissent leur boîte */
 html.borne .bar .dock:first-of-type #radio-toggle{align-self:end;box-sizing:border-box;
   border:0!important;}
 html.borne .bar .dock:first-of-type #radio-toggle .motel-l{max-width:100%!important}
@@ -1120,10 +1121,9 @@ html.borne .b-panel .cab .num,html.borne .b-store .cab .num{display:none!importa
 html.borne .b-panel .cabinets>.b-stick i{background:none!important;clip-path:none!important;transform-origin:50% var(--stk-cut,60%)!important;
   transform:rotate(calc(var(--x,0) * 15deg)) translateY(calc(var(--y,0) * 2px))!important}
 html.borne .b-panel .cabinets>.b-stick i::before{content:"";position:absolute;inset:0;display:block!important;background:var(--i-stick) center bottom/contain no-repeat;
-  clip-path:inset(0 0 calc(100% - var(--ball-cut,36%)) 0);transform-origin:50% calc(var(--ball-cut,36%) / 1.9);transform:rotate(calc(var(--x,0) * -15deg));z-index:2}
-html.borne .b-panel .cabinets>.b-stick i::after{content:""!important;display:block!important;position:absolute;left:calc(50% - 3.2%);width:6.4%;
-  top:calc(var(--ball-cut,36%) - 6%);height:calc(var(--stk-cut,60%) - var(--ball-cut,36%) + 7%);border-radius:3px;z-index:1;margin:0!important;
-  background:linear-gradient(90deg,#4a4844 0%,#d8d4cc 30%,#ffffff 42%,#9a968e 60%,#3a3834 100%)!important;box-shadow:none!important;transform:none!important}
+  clip-path:inset(0 0 calc(100% - var(--stk-cut,50%)) 0);z-index:2}
+/* 1er nov. (E47) : boule et tige viennent de manette-a.webp d'un seul tenant ; le levier pivote au col de l'anneau */
+html.borne .b-panel .cabinets>.b-stick i::after{content:none!important;display:none!important}
 
 /* en jeu, la pluie de Koins reste hors de l'écran (règle du 30 oct. : zéro décor qui prend de l'écran) ; elle tombe à l'accueil */
 html.borne[data-prog] .kdrop{display:none!important}
