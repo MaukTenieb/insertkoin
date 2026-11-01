@@ -217,6 +217,6 @@ addEventListener('keydown',function(e){var R=document.documentElement;if(!R.hasA
     /* 31 oct. — la même lumière sur le cadre (tout autour de la vitre) et sur le haut de la caisse */
     var d=document.querySelector('.b-door');if(d&&!d.querySelector('.b-scrlight')){var m=document.createElement('i');m.className='b-scrlight b-scrdoor';m.setAttribute('aria-hidden','true');d.appendChild(m);}
     var bz=document.querySelector('#home .b-bezel'),gl=bz&&bz.querySelector('.b-glass');if(!gl)return;var h=document.createElement('i');h.className='b-scrhalo';h.setAttribute('aria-hidden','true');bz.appendChild(h);
-    /* le halo épouse la vitre : la vitre a pour parent positionné le cadre (borne-cabinet.css:552) */
-    function fit(){if(!gl.offsetWidth){h.style.display='none';return;}h.style.display='';h.style.left=gl.offsetLeft+'px';h.style.top=gl.offsetTop+'px';h.style.width=gl.offsetWidth+'px';h.style.height=gl.offsetHeight+'px';h.style.borderRadius=getComputedStyle(gl).borderRadius;}
+    /* le halo épouse la vitre, mesurée dans le repère du cadre (M4 : offsetLeft partait de l'écran, le halo couvrait le cadre de x 78 à 955) */
+    function fit(){if(!gl.offsetWidth){h.style.display='none';return;}var a=gl.getBoundingClientRect(),b=bz.getBoundingClientRect();h.style.display='';h.style.left=Math.round(a.left-b.left-bz.clientLeft)+'px';h.style.top=Math.round(a.top-b.top-bz.clientTop)+'px';h.style.width=Math.round(a.width)+'px';h.style.height=Math.round(a.height)+'px';h.style.borderRadius=getComputedStyle(gl).borderRadius;}
     fit();if(window.ResizeObserver)new ResizeObserver(fit).observe(gl);addEventListener('resize',fit);})();})();

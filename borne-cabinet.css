@@ -667,7 +667,7 @@ html.borne .bar .dock:first-of-type .b-bell{align-self:end;}
 /* ---------- 4. le cadre : une vitre noire (ou laquee en 1960) ; l'illustration Burrows imprimee sous la vitre, aux bords de l'ecran ---------- */
 /* marge + rembourrage = 20 px : la largeur du meuble (ecran + 100 px) ne change pas */
 html.borne .b-bezel{margin:var(--s1) var(--edge) 0!important;padding:calc(var(--inset) - var(--edge))!important;gap:var(--s3)!important;border-radius:8px!important;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),0 0 0 3px rgba(0,0,0,.45)!important}
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06),inset 0 12px 16px -6px rgba(0,0,0,.75),inset 0 -1px 0 rgba(255,236,205,.06),0 0 0 2px rgba(0,0,0,.55),0 1px 0 2px rgba(255,228,186,.07),0 6px 14px rgba(0,0,0,.45)!important}
 html.borne:not([data-skin="1960"]) .b-bezel{background-image:linear-gradient(115deg,rgba(255,255,255,.05),transparent 28%,transparent 72%,rgba(255,255,255,.03))}
 html.borne .b-land{border-radius:3px!important;}
 html.borne .b-land span{left:var(--s4)!important;font-family:var(--f-sign);}
@@ -997,7 +997,10 @@ html.borne .b-panel .cabinets>.cab:nth-child(1),html.borne .b-panel .cabinets>.c
 html.borne .b-panel .cab.b-down{scale:1!important;transform:translateY(3px)!important;box-shadow:0 0 0 2px #050505,inset 0 1px 0 rgba(255,255,255,.1),0 3px 0 #0a0908,0 4px 0 #000,0 7px 10px rgba(0,0,0,.5)!important}
 html.borne .b-panel .cabinets>.cab:nth-child(1).b-down,html.borne .b-panel .cabinets>.cab:last-child.b-down{transform:translateY(3px)!important}
 html.borne .b-panel .cab.b-up{animation:none!important}
-html.borne .b-plate .b-badge{transform:none!important;box-shadow:0 0 0 1px #000,0 0 0 3px #a8885a,0 0 0 4px #4a3a24,inset 0 1px 0 rgba(255,255,255,.08),0 4px 0 #2a1e10,0 8px 12px rgba(0,0,0,.55)!important}
+/* plaque Mauk Tenieb vissée dans le bois (LISTE 58) : lumière d'en haut comme sur la caisse, tranche de 2 px sous le cadre laiton, ombre de contact courte, zéro halo */
+html.borne .b-plate .b-badge{transform:none!important;box-shadow:0 0 0 1px #000,0 0 0 3px #a8885a,0 -1px 0 3px #d9bb84,0 0 0 4px #4a3a24,0 2px 0 4px #2c1f0f,0 4px 2px 4px rgba(0,0,0,.55),0 9px 9px 2px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,232,190,.16),inset 0 -3px 5px rgba(0,0,0,.45)!important;animation:none}
+html.borne .b-plate .b-badge b{animation:none}
+html.borne .b-badge .b-sheen{display:none}
 
 /* ---------- bloc son refait : une fenêtre d'affichage sous verre fumé (fluorescent ambre, trame de points), deux touches physiques à côté ---------- */
 html.borne .bar .dock:first-of-type{grid-template-columns:minmax(0,1fr) 34px 34px!important;column-gap:5px!important}

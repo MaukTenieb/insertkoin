@@ -9,10 +9,20 @@ html.borne body{background:radial-gradient(ellipse 62% 34% at 50% 0,rgba(255,138
 html.borne:is([data-skin=bois],[data-skin=metal]){
   --tm0:#020202;--tm1:#0d0d0e;--tm2:#26272a;--tm3:#6a6d72}
 html.borne[data-skin=metal]{--tm0:#111214;--tm1:#474c52;--tm2:#9aa1a8;--tm3:#eef2f5}
-html.borne:is([data-skin=bois],[data-skin=metal]) .wrap{border-style:solid;border-color:var(--tm1)!important;
-  border-image-source:linear-gradient(90deg,var(--tm0) 0,var(--tm1) 1.5px,var(--tm2) 3px,var(--tm3) 4px,var(--tm2) 5px,var(--tm1) 6.5px,var(--tm0) 8px,transparent 8px,
-    transparent calc(100% - 8px),var(--tm0) calc(100% - 8px),var(--tm1) calc(100% - 6.5px),var(--tm2) calc(100% - 5px),var(--tm3) calc(100% - 4px),var(--tm2) calc(100% - 3px),var(--tm1) calc(100% - 1.5px),var(--tm0) 100%)!important;
-  border-image-slice:0 8!important;border-image-repeat:stretch!important;border-radius:3px 3px 2px 2px!important}
+/* M4 (1er nov.) : la moulure dessinée en dégradé (R4) cède la place à la tranche des flancs, tirée de l'image du skin ; seule la lumière vient du code */
+html.borne:is([data-skin=bois],[data-skin=metal]) .wrap{border-style:solid;border-color:transparent!important;border-left-width:0;border-right-width:0;border-radius:3px 3px 2px 2px!important}
+html.borne:is([data-skin=bois],[data-skin=metal]):not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion) .wrap::before,
+html.borne:is([data-skin=bois],[data-skin=metal]):not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion) .wrap::after{
+  content:"";position:absolute;top:0;bottom:0;width:var(--r-b,8px);z-index:6;pointer-events:none;border-radius:3px 3px 2px 2px;
+  background:linear-gradient(90deg,rgba(0,0,0,.72),rgba(255,228,186,.2) 22%,rgba(255,228,186,.07) 62%,rgba(0,0,0,.62)),var(--flanc-img) left top/auto 100% repeat-x;
+  box-shadow:5px 0 9px -3px rgba(0,0,0,.6)}
+html.borne:is([data-skin=bois],[data-skin=metal]) .wrap::before{left:0}
+html.borne:is([data-skin=bois],[data-skin=metal]) .wrap::after{right:0;transform:scaleX(-1)}
+html.borne[data-skin=bois]{--flanc-img:url(skin-bois-flanc-long.webp)}
+html.borne[data-skin=metal]{--flanc-img:url(skin-metal-flanc.webp)}
+html.borne[data-skin=bois][data-usure="1"]{--flanc-img:url(skin-bois-flanc-long-u1.webp)}
+html.borne[data-skin=bois][data-usure="2"]{--flanc-img:url(skin-bois-flanc-long-u2.webp)}
+html.borne[data-skin=bois][data-usure="3"]{--flanc-img:url(skin-bois-flanc-long-u3.webp)}
 
 /* ---------- 3. les flancs : un seul panneau, sans raccord ni vis répétées ---------- */
 /* bois : la planche de skin-bois-flanc.webp, vis retirées, mise en miroir verticalement (skin-bois-flanc-long.webp), à la largeur du meuble */
