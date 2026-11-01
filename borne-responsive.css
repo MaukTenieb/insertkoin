@@ -259,7 +259,7 @@ html.borne[data-r-jeu][data-prog]:not(#r1):not(#r2) .b-bezel .b-bezelfoot{
   html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-screen{
     width:calc(100vw - 2 * var(--r-g))!important/* !P10 */;margin:0 auto!important/* !P10 */;position:static!important/* !P10 */}
   html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-glass{
-    width:calc(100vw - 2 * var(--r-g))!important/* !P10 */;height:calc(var(--r-vh) - 2 * var(--r-g) - var(--r-band) - 8px)!important/* !P10 */;max-width:none}
+    width:calc(100vw - 2 * var(--r-g))!important/* !P10 */;height:calc(var(--r-vh) - 2 * var(--r-g) - var(--r-band) - 8px - var(--r-dots,0px))!important/* !P10 */;max-width:none}
   html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezelfoot{
     position:fixed!important/* !P10 */;left:var(--r-g)!important/* !P10 */;right:var(--r-g)!important/* !P10 */;bottom:var(--r-g)!important/* !P10 */;top:auto!important/* !P10 */;
     width:auto!important/* !P10 */;height:var(--r-band)!important/* !P10 */;min-height:var(--r-hit)!important/* !P10 */;flex-direction:row!important/* !P10 */;flex-wrap:nowrap!important/* !P10 */;
@@ -270,5 +270,5 @@ html.borne[data-r-jeu][data-prog]:not(#r1):not(#r2) .b-bezel .b-bezelfoot{
 }
 
 /* 1er nov. : les points des programmes restent au-dessus du pied d'écran fixe, au doigt comme à la souris (plainte de Mauk Tenieb, 04:46) */
-html.borne[data-prog] .b-dots{position:relative;z-index:72;pointer-events:none;width:fit-content;margin-inline:auto}
+html.borne[data-prog] .b-dots{position:relative;z-index:72;pointer-events:none;width:fit-content;max-width:100%;contain:none;margin-inline:auto}
 html.borne[data-prog] .b-dots>*{pointer-events:auto}

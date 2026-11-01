@@ -207,7 +207,21 @@
   var dots=el('div','b-dots');dots.setAttribute('role','tablist');scr.appendChild(dots);
   function paintDots(){dots.innerHTML='';var G=null;GRP.forEach(function(g){if(g.indexOf(CUR)>=0)G=g;});if(!G||G.length<2){dots.hidden=true;return;}dots.hidden=false;
     G.forEach(function(g){var b=el('button','b-dot'+(g===CUR?' on':''));b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-selected',String(g===CUR));b.setAttribute('aria-label',NAME[g]);b.title=NAME[g];
-      b.onclick=function(){if(g!==CUR)swap(ORDER.indexOf(g)>ORDER.indexOf(CUR)?1:-1,g);};dots.appendChild(b);});}
+      b.onclick=function(){if(g!==CUR)swap(ORDER.indexOf(g)>ORDER.indexOf(CUR)?1:-1,g);};dots.appendChild(b);});dotFit();}
+  /* 1er nov. — la rangée de points tient entre le bas de l'écran et la bande basse : l'écran cède la hauteur qui manque, jamais les points ni la bande */
+  function dotFit(){if(root.hasAttribute('data-fitting'))return;root.setAttribute('data-fitting','');try{dotFit1();}finally{requestAnimationFrame(function(){requestAnimationFrame(function(){root.removeAttribute('data-fitting');});});}}
+  function dotFit1(){var old=root.style.getPropertyValue('--gh'),oldw=root.style.getPropertyValue('--gw');root.style.removeProperty('--gh');root.style.removeProperty('--gw');root.style.removeProperty('--r-dots');
+    if(dots.hidden||!root.hasAttribute('data-prog')||root.classList.contains('b-immersion'))return;
+    var d=dots.getBoundingClientRect(),ft=document.querySelector('.b-bezelfoot'),lim=innerHeight-2;if(!d.height){if(old)root.style.setProperty('--gh',old,'important');if(oldw)root.style.setProperty('--gw',oldw,'important');return;}
+    if(ft){var f=ft.getBoundingClientRect();if(f.width&&f.left<d.right&&f.right>d.left&&f.bottom>d.top)lim=Math.min(lim,f.top-2);}
+    var over=d.bottom-lim;if(over>0){var g0=glass.getBoundingClientRect(),T=Math.max(160,Math.round(g0.height-over));root.style.setProperty('--gh',T+'px','important');
+      /* écran large : sa hauteur suit sa largeur ; la largeur cède alors dans la même proportion */
+      var g1=glass.getBoundingClientRect();if(g1.height>T+1)root.style.setProperty('--gw',Math.round(g1.width*T/g1.height)+'px','important');
+      /* pupitre couché : la hauteur de l'écran se calcule sur la bande ; la rangée de points s'y retranche */
+      var g2=glass.getBoundingClientRect();if(g2.height>T+1)root.style.setProperty('--r-dots',Math.round(g2.height-T)+'px');}}
+  function dotLater(){clearTimeout(dotFit.t);dotFit.t=setTimeout(dotFit,60);}
+  addEventListener('resize',dotLater);new MutationObserver(dotLater).observe(root,{attributes:true,attributeFilter:['data-prog','data-habit','data-mode','data-big','class']});
+  setInterval(function(){if(root.hasAttribute('data-prog')&&!dots.hidden&&!document.hidden)dotFit();},400);
   var label=el('div','b-chan');glass.appendChild(label);
   /* un seul niveau : la touche lance le premier programme de son groupe ; la manette ou un glissé zappe dans le groupe */
   var FIRST={korhogame:'puck',fauneye:'fauneye',surf:'repo'};
