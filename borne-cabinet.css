@@ -1213,3 +1213,11 @@ html.borne .b-lore.b-peel .b-word{opacity:0;transform:scaleY(.1) translateY(.15e
 html.borne .b-lore.b-peel .b-paper{filter:hue-rotate(var(--lh,0deg)) saturate(1.3) brightness(1.7)}
 html.borne .b-lore.b-drag{cursor:grabbing}
 html.borne .b-lore.b-back{transition:left .4s ease,top .4s ease}
+
+/* barre son d'une pièce (1er nov.) : INSERT KOIN à gauche, puis le titre qui défile, PL, son et haut-parleur joints à droite */
+@media (min-width:701px){
+  html.borne:not([data-prog]) #bar.bar{grid-template-columns:auto minmax(0,1fr) minmax(0,150px)!important;column-gap:0!important}
+  html.borne:not([data-prog]) #bar.bar>#brand{grid-area:1/1!important;margin-right:12px;width:clamp(220px,24vw,320px)!important;max-width:320px!important}
+  html.borne:not([data-prog]) #bar.bar>.dock:not(:last-child){grid-area:1/2!important;justify-self:stretch!important;width:100%!important;max-width:none!important;min-width:0!important;margin:0!important;border-top-right-radius:0!important;border-bottom-right-radius:0!important;border-right:0!important}
+  html.borne:not([data-prog]) #bar.bar>.dock:last-child{grid-area:1/3!important;width:auto!important;max-width:150px!important;margin:0!important;border-top-left-radius:0!important;border-bottom-left-radius:0!important;border-left:0!important}
+}
