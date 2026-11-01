@@ -294,11 +294,23 @@
 
   /* ---------- l'entretien de la plante : l'eau, le soleil, la taille ; elle s'en souvient d'une visite à l'autre ----------
      sans eau depuis quatre jours ou sans soleil depuis six, elle s'affaisse et jaunit ; chaque taille la rend plus touffue, jusqu'à trois. */
-  var DAY=864e5,cs=function(){var c={};try{c=JSON.parse(localStorage.getItem('borne.plant')||'{}')||{};}catch(e){}var n=Date.now();
-    if(!c.water)c.water=n;if(!c.sun)c.sun=n;if(c.cut==null)c.cut=0;return c;};
-  function health(){var c=cs(),n=Date.now();return Math.max(0,Math.min(1,1.25-Math.max((n-c.water)/(4*DAY),(n-c.sun)/(6*DAY))));}
+  var DAY=864e5,CL=function(x){return Math.max(0,Math.min(1,x));};
+  /* état stocké (borne.plant) : water, sun (dernier soin), cut (tailles, 0 à 3), cutAt, d (densité 0..1), g (pousse 0..1), t (dernier relevé), v (dernière visite).
+     Les valeurs d et g déclinent lentement avec le temps ; cs() rend l'état déjà décliné. */
+  var cs=function(){var c={};try{c=JSON.parse(localStorage.getItem('borne.plant')||'{}')||{};}catch(e){}var n=Date.now();
+    if(!c.water)c.water=n;if(!c.sun)c.sun=n;if(c.cut==null)c.cut=0;if(!c.cutAt)c.cutAt=0;if(c.t==null)c.t=n;if(!c.v)c.v=0;
+    var dt=Math.max(0,(n-c.t)/DAY),dry=Math.max((n-c.water)/(4*DAY),(n-c.sun)/(6*DAY));
+    c.d=CL((c.d==null?.2:c.d)-.06*dt);c.g=CL((c.g==null?.1:c.g)-.012*dt*(dry>.5?1:.25));c.t=n;return c;};
+  function save(c){try{localStorage.setItem('borne.plant',JSON.stringify(c));}catch(_){}}
+  /* manque de soin : progressif, de 0 (soignée) à 1 (assoiffée, jamais morte) ; l'eau compte après deux jours, le soleil après trois */
+  function neglect(c){var n=Date.now();return CL((Math.max((n-c.water)/(4*DAY),(n-c.sun)/(6*DAY))-.5)/1.5);}
+  function health(){return 1-neglect(cs());}
+  /* une visite (au plus une toutes les quatre heures) : bien soignée, elle pousse un peu ; négligée, elle recule un peu */
+  (function visit(){var c=cs(),n=Date.now();if(n-c.v<4*36e5)return;c.v=n;c.g=CL(c.g+(neglect(c)<.3?.015:-.01));save(c);})();
   pot.addEventListener('click',function(e){var b=e.target.closest('[data-care]');if(!b){pot.classList.toggle('open');return;}
-    var c=cs(),a=b.dataset.care;if(a==='cut')c.cut=Math.min(3,c.cut+1);else c[a]=Date.now();try{localStorage.setItem('borne.plant',JSON.stringify(c));}catch(_){}
+    var c=cs(),a=b.dataset.care,n=Date.now();
+    if(a==='cut'){c.cut=Math.min(3,c.cut+1);c.cutAt=n;}else if(a==='water'){c.water=n;c.d=CL(c.d+.3);}else{c.sun=n;c.g=CL(c.g+.12);}
+    save(c);
     try{a==='water'?IK().tone(520,.18,'sine',.03,-200):a==='sun'?IK().tone(880,.25,'triangle',.025,300):IK().tone(1500,.04,'square',.02);}catch(_){}
     pot.classList.remove('fx-water','fx-sun','fx-cut');void pot.offsetWidth;pot.classList.add('fx-'+a);lastM=-1;tick();});
   pot.addEventListener('mouseleave',function(){pot.classList.remove('open');});
@@ -310,7 +322,12 @@
     7:[3,0,0,'#9fd36a',0,0],8:[6,3,0,'#6fb04a','#f7a8c8',0],9:[8,5,0,'#4f9a3a','#fff1a8',0],10:[8,2,0,'#3f8030','#ffd54f',0],11:[8,0,2,'#3f7a2e','#9ccc65',0],
     12:[7,0,5,'#4a7a30','#e0442e',0],13:[6,0,3,'#7a8a30','#e0442e',0]};
   var PIMG={7:'germinal',8:'floreal',9:'floreal',10:'messidor',11:'messidor',12:'fructidor',1:'fructidor',13:'fructidor',2:'brumaire',3:'brumaire',4:'brumaire',5:'brumaire',6:'brumaire'};
-  function plantImg(r){var m=r?r.month:2,n=health()<.5?'assoiffee':PIMG[m]||'brumaire';return '<img alt="" src="plante-'+n+'.webp">';}
+  /* la plante : deux piles d'images existantes (le mois, puis la plante assoiffée qui se fond dessus selon le manque de soin) ; le pot reste, le feuillage se redresse, s'épaissit, verdit, se taille par transformations et filtres */
+  function unit(src,x){return '<span class="p-u'+(x?' p-x':'')+'"><img class="p-pot" alt="" src="'+src+'"><span class="p-fo"><span class="p-mid">'+(x?'':'<img class="p-dn" alt="" src="'+src+'">')+'<img class="p-m" alt="" src="'+src+'"></span></span></span>';}
+  function plantRender(r){var m=r?r.month:2,c=cs(),nn=neglect(c),n=Date.now(),ps=Math.max(CL(1-(n-c.cutAt)/(12*DAY))*(c.cutAt?1:0),.2*c.cut*(c.cutAt?1:0));
+    var st=plant.style;st.setProperty('--pd',c.d.toFixed(3));st.setProperty('--pg',c.g.toFixed(3));st.setProperty('--pn',nn.toFixed(3));st.setProperty('--ps',ps.toFixed(3));
+    plant.dataset.dry=nn>.5?'1':'';
+    if(plant.dataset.mk!==String(m)){plant.dataset.mk=String(m);plant.innerHTML=unit('plante-'+(PIMG[m]||'brumaire')+'.webp')+unit('plante-assoiffee.webp',1);}}
   function bornePlant(r){var m=r?r.month:2,d=r?r.day:1,p=P[m]||P[2],f=Math.min(1,(d||1)/30),s='',hl=health(),ex=cs().cut,droop=(1-hl)*35;
     var grow=m===7?.45+.55*f:m===6?.4:1,H=48*grow*(.8+.2*hl),L=(m===7?Math.max(1,Math.round(p[0]*f)):p[0])+(p[0]?ex:0);
     var pts=[];for(var i=0;i<9;i++){var t=(i+1)/10;pts.push([60+Math.sin(t*3)*5,62-t*H]);}
@@ -333,8 +350,12 @@
   var lastM=-1;
   function tick(){var d=new Date(),r=window.ikRep?window.ikRep(d):null,h=d.getHours(),m=d.getMinutes();
     date.firstChild.textContent=(r?(r.month===13?'jour '+r.day+' des sans-culottides an '+r.year:r.day+' '+MO[r.month-1]+' '+r.year)+' · ':'')+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
-    var key=(r?r.month*40+r.day:0)+'/'+Math.round(health()*10)+'/'+cs().cut;if(key!==lastM){lastM=key;plant.innerHTML=plantImg(r);plant.title=r?MO[r.month-1]:'';}}
+    var c0=cs(),key=(r?r.month*40+r.day:0)+'/'+Math.round(c0.d*50)+'/'+Math.round(c0.g*50)+'/'+Math.round(neglect(c0)*50)+'/'+c0.cut+'/'+Math.round((Date.now()-c0.cutAt)/(DAY/4));if(key!==lastM){lastM=key;plantRender(r);plant.title=r?MO[r.month-1]:'';}}
   tick();setInterval(tick,15000);
+  /* taille de la plante : 8,5 % de la hauteur du meuble (toit + corps), posée sur le toit ; le toit prend cette hauteur (--p2h) */
+  function plantSize(){var w=document.querySelector('.wrap');if(!w)return;var h=w.offsetHeight;if(!h)return;
+    document.documentElement.style.setProperty('--p2h',Math.max(48,Math.round(h*.093))+'px');}
+  plantSize();addEventListener('resize',plantSize);try{new ResizeObserver(plantSize).observe(document.querySelector('.wrap'));}catch(_){}setTimeout(plantSize,1500);
 
   /* ---------- Échap vaut Baku Boom, partout, même dans les programmes en cadre ; un programme qui s'en sert d'abord (fermer un tiroir, quitter une partie d'échecs) garde la main ---------- */
   function escHome(e){if(e.key!=='Escape'||e.defaultPrevented)return;if(document.querySelector('.b-full')||document.pointerLockElement)return;

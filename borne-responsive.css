@@ -51,7 +51,7 @@ html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion)
 
 /* toit : plante à gauche, caméra à droite, à une gouttière des flancs */
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-roof{
-  width:var(--r-M)!important/* !P3 */;max-width:none!important/* !P3 */;height:calc(5 * var(--r-uf))!important/* !P3 */;margin:var(--r-g) auto 0;
+  width:var(--r-M)!important/* !P3 */;max-width:none!important/* !P3 */;height:var(--p2h,calc(5 * var(--r-uf)))!important/* !P3 */;margin:var(--r-g) auto 0;
   padding:0 calc(var(--r-b) + var(--r-uf))!important/* !P3 */;box-sizing:border-box;display:flex!important/* !P9 */;justify-content:space-between;align-items:flex-end}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-roof :is(.b-pot,.b-plant){height:100%}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-cam #kapture{
