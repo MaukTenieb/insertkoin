@@ -270,4 +270,5 @@ html.borne[data-r-jeu][data-prog]:not(#r1):not(#r2) .b-bezel .b-bezelfoot{
 }
 
 /* 1er nov. : les points des programmes restent au-dessus du pied d'écran fixe, au doigt comme à la souris (plainte de Mauk Tenieb, 04:46) */
-html.borne[data-prog] .b-dots{position:relative;z-index:72}
+html.borne[data-prog] .b-dots{position:relative;z-index:72;pointer-events:none;width:fit-content;margin-inline:auto}
+html.borne[data-prog] .b-dots>*{pointer-events:auto}
