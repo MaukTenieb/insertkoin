@@ -177,7 +177,7 @@ html.borne .b-sc{font-size:.76em;letter-spacing:inherit;vertical-align:baseline}
 @media (pointer:coarse){
   html.borne .bar .dock:first-of-type #radio-toggle::before{content:"";position:absolute;inset:-7px 0}
   html.borne .b-plate .b-sticker{position:relative}
-  html.borne .b-plate .b-sticker::after{content:"";position:absolute;inset:-4px -2px}
+  html.borne .b-plate .b-sticker:not(.b-badge)::after{content:"";position:absolute;inset:-4px -2px}
 }
 
 /* 30 oct. — texte lisible : 12 px au moins sur toute inscription de la borne (afficheur du Motel Sound, compteurs, sigles) */
@@ -509,14 +509,5 @@ html.borne .b-bezelfoot :is(.b-pfx .b-px,.b-imm)::after{inset:-7px -5px!importan
 @media (max-width:700px){html.borne .vhs .vhs-tv-foot{padding-top:6px}}
 /* 31 oct. — Musik en deux colonnes : colonnes à la largeur de leur contenu, l'ensemble sur l'axe de l'écran */
 html.borne #kg-root #bb-panel:not([style*="display: none"]):not([style*="display:none"]){grid-template-columns:max-content max-content!important;justify-content:center!important}
-/* 31 oct., 12 h 40 — la plaque Mauk Tenieb intègre les clous qui la fixent (d9) : plaque et clous viennent de plaque-mauk.webp (R4),
-   bords de l'image tenus sans déformation (border-image), lettrage posé sur la plaque ; zéro clou ni cadre dessinés en CSS ; le halo passe en lumière seule */
-html.borne .b-plate .b-badge.b-badge.b-badge{background:none!important;border-style:solid!important;border-width:0 18px!important;border-image:url(plaque-mauk-marron.webp) 0 59 fill / 0 18px stretch!important;
-  border-radius:0!important;box-shadow:none!important;height:44px!important;padding:0 8px!important;box-sizing:border-box!important;filter:drop-shadow(0 4px 4px rgba(0,0,0,.5))!important;animation:bplatel 9s ease-in-out infinite!important}
-html.borne .b-plate .b-badge.b-badge.b-badge::after{content:none!important}
-html.borne .b-plate .b-badge.b-badge.b-badge::before{content:""!important;position:absolute!important;inset:-6px -18px!important;background:none!important;box-shadow:none!important;border-radius:0!important;width:auto!important;height:auto!important;margin:0!important}
-html.borne .b-plate .b-badge.b-badge.b-badge b{color:#e2c48a!important;letter-spacing:.24em!important;margin-right:-.24em!important;text-shadow:0 -1px 0 rgba(0,0,0,.9),0 1px 0 rgba(255,230,180,.18)!important;animation:none!important}
-@keyframes bplatel{0%,70%,100%{filter:drop-shadow(0 4px 4px rgba(0,0,0,.5))}80%{filter:drop-shadow(0 4px 4px rgba(0,0,0,.5)) drop-shadow(0 0 10px rgba(255,200,90,.65))}}
-@media (prefers-reduced-motion:reduce){html.borne .b-plate .b-badge.b-badge.b-badge{animation:none!important}}
 /* 31 oct. — champs de saisie à 16 px au toucher (le navigateur du téléphone garde l'échelle de la page) */
 @media (pointer:coarse){html.borne :is(.vhs-find-sort,#hang-kbd,#kk-box,#kk-story){font-size:16px!important}}
