@@ -178,7 +178,7 @@ html.borne .b-row1{align-items:center;gap:18px}
 html.borne .b-keys{flex:1;min-width:0}
 
 
-html.borne .b-stick{position:relative;flex:none;--x:0;--y:0;--stk-cut:60%}
+html.borne .b-stick{position:relative;flex:none;--x:0;--y:0}
 html.borne .b-stick::before{content:"";position:absolute;left:4px;right:4px;bottom:0;height:22px;border-radius:50%;background:radial-gradient(ellipse at 50% 40%,#3a3632,#0e0d0c 70%);box-shadow:0 3px 0 #070606}
 html.borne .b-stick i{position:absolute;margin-left:-4px;
   }
@@ -321,7 +321,8 @@ html.borne .b-bezelfoot .b-boom span{font-size:.55rem}
 html.borne body:not(.on-home) .b-boom i{background:radial-gradient(circle at 40% 32%,#d0563f,#8a2216 60%,#3a0c08)}
 /* les Koins : sur le cadre, sous l'écran, visibles dans chaque programme */
 html.borne .b-bezelfoot #koins.b-credit{position:static;display:flex;align-items:center;gap:8px;
-  color:#ff9a3c;text-shadow:0 0 8px rgba(255,140,40,.6);visibility:visible!important;}
+  color:#ff9a3c;text-shadow:0 0 8px rgba(255,140,40,.6);}
+html.borne.borne-ready .b-bezelfoot #koins.b-credit{visibility:visible!important}/* 1er nov. (E47) : visible une fois la borne prête ; zéro mot KOINS sur la photo d attente */
 html.borne .b-bezelfoot #koins.b-credit::before{content:"KOINS"}
 /* le guide (le Mask en miniature) visite le panneau, et reste hors des programmes */
 html.borne body:not(.on-home) .guide{display:none!important}
@@ -648,7 +649,7 @@ html.borne .bar .brand,html.borne .bar .dock{border-radius:6px!important}
 
 html.borne .bar .dock{min-height:clamp(88px,11.5vh,112px)!important}
 html.borne .bar .dock:first-of-type{align-content:stretch;gap:0 var(--s2);padding:var(--s2)!important}
-html.borne .bar .dock:first-of-type::before{display:none}
+html.borne .bar .dock:first-of-type::before,html.borne .bar .dock:last-of-type::before{display:none}/* 1er nov. (E48) : son et PL remplissent leur boîte */
 html.borne .bar .dock:first-of-type #radio-toggle{align-self:end;box-sizing:border-box;
   border:0!important;}
 html.borne .bar .dock:first-of-type #radio-toggle .motel-l{max-width:100%!important}
@@ -985,8 +986,8 @@ html.borne[data-skin=metal] .b-butee{background-image:url(butee-metal.webp)}
 
 
 /* ---------- la manette à l'échelle des touches : un peu plus haute qu'elles ---------- */
-html.borne .b-panel .cabinets>.b-stick,html.borne .b-panel .cabinets>.b-stick i{height:auto!important;aspect-ratio:76/100!important}
-@media (max-width:700px){html.borne .b-panel .cabinets>.b-stick,html.borne .b-panel .cabinets>.b-stick i{width:clamp(66px,22vw,100px)!important}}
+html.borne .b-panel .cabinets>.b-stick{height:auto!important;aspect-ratio:76/100!important}
+@media (max-width:700px){html.borne .b-panel .cabinets>.b-stick{width:clamp(66px,22vw,100px)!important}}
 
 
 /* ---------- perspective unique du panneau : on le regarde de face, un peu d'en haut, comme les boutons BC TL IG et la manette ---------- */
@@ -1108,7 +1109,8 @@ html.borne .b-dekonect{left:auto!important;}
 html.borne .b-panel .cabinets>.b-stick{position:relative}
 html.borne .b-panel .cabinets>.b-stick::before{content:""!important;display:block!important;position:absolute;inset:0;z-index:0;left:0!important;right:0!important;bottom:0!important;height:auto!important;border-radius:0!important;box-shadow:none!important;
   background:var(--i-stick) center bottom/contain no-repeat!important;clip-path:inset(var(--stk-cut,60%) 0 0 0)}
-html.borne .b-panel .cabinets>.b-stick i{z-index:1;filter:none!important}
+html.borne .b-panel .cabinets>.b-stick i{z-index:1;filter:none!important;left:0;top:0;bottom:auto;width:100%;height:100%}
+/* 1er nov. (E42) : le levier occupe le cadre exact du socle ; boule, tige et anneau tirés de la même image, à la même échelle */
 html.borne .b-panel .cabinets>.b-stick::after{content:"";position:absolute;z-index:0;left:50%;bottom:calc(100% - var(--stk-cut,60%) - 6%);width:46%;height:12%;border-radius:50%;pointer-events:none;
   background:radial-gradient(ellipse,rgba(0,0,0,.55),transparent 70%);transform:translateX(calc(-50% + var(--x,0) * 26px)) scaleX(calc(1 + var(--v,0) * .3));filter:blur(2px)}
 /* ---------- les touches de la borne sans le numéro d'ordre des anciennes tuiles d'Insert Koin ---------- */
@@ -1119,10 +1121,9 @@ html.borne .b-panel .cab .num,html.borne .b-store .cab .num{display:none!importa
 html.borne .b-panel .cabinets>.b-stick i{background:none!important;clip-path:none!important;transform-origin:50% var(--stk-cut,60%)!important;
   transform:rotate(calc(var(--x,0) * 15deg)) translateY(calc(var(--y,0) * 2px))!important}
 html.borne .b-panel .cabinets>.b-stick i::before{content:"";position:absolute;inset:0;display:block!important;background:var(--i-stick) center bottom/contain no-repeat;
-  clip-path:inset(0 0 calc(100% - var(--ball-cut,36%)) 0);transform-origin:50% calc(var(--ball-cut,36%) / 1.9);transform:rotate(calc(var(--x,0) * -15deg));z-index:2}
-html.borne .b-panel .cabinets>.b-stick i::after{content:""!important;display:block!important;position:absolute;left:calc(50% - 3.2%);width:6.4%;
-  top:calc(var(--ball-cut,36%) - 6%);height:calc(var(--stk-cut,60%) - var(--ball-cut,36%) + 7%);border-radius:3px;z-index:1;margin:0!important;
-  background:linear-gradient(90deg,#4a4844 0%,#d8d4cc 30%,#ffffff 42%,#9a968e 60%,#3a3834 100%)!important;box-shadow:none!important;transform:none!important}
+  clip-path:inset(0 0 calc(100% - var(--stk-cut,50%)) 0);z-index:2}
+/* 1er nov. (E47) : boule et tige viennent de manette-a.webp d'un seul tenant ; le levier pivote au col de l'anneau */
+html.borne .b-panel .cabinets>.b-stick i::after{content:none!important;display:none!important}
 
 /* en jeu, la pluie de Koins reste hors de l'écran (règle du 30 oct. : zéro décor qui prend de l'écran) ; elle tombe à l'accueil */
 html.borne[data-prog] .kdrop{display:none!important}

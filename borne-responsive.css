@@ -28,7 +28,7 @@ html.borne{
   --r-uf:max(var(--r-u),calc(var(--r-s0) / 100));
   --r-M:min(calc(var(--r-S) * 1.3),calc(100vw - 2 * var(--r-g)));
   --r-gap:var(--r-uf);
-  --r-strip:max(var(--r-hit),calc(3 * var(--r-uf)));   /* bande d'affichage du fronton : titre à gauche, son et PL à droite */
+  --r-strip:max(var(--r-hit),32px,calc(4 * var(--r-uf)));   /* bande d'affichage du fronton : titre à gauche, son et PL à droite */
   --r-knob:max(var(--r-hit),calc(6 * var(--r-u)));     /* molette */
 }
 @supports (height:1svh){html.borne{--r-vh:100svh}}
@@ -59,7 +59,7 @@ html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion)
 
 /* fronton : trois colonnes, les deux boîtes de même largeur par construction (1fr | enseigne | 1fr) */
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar{
-  display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important/* !P4 */;grid-template-rows:calc(7 * var(--r-uf))!important/* !P4 */;
+  display:grid;grid-template-columns:minmax(0,var(--r-c1,2.2fr)) auto minmax(0,1fr)!important/* !P4 */;grid-template-rows:calc(7 * var(--r-uf))!important/* !P4 */;
   column-gap:var(--r-gap);row-gap:var(--r-gap);width:calc(var(--r-M) - 2 * var(--r-b));height:auto!important/* !P9 */;min-height:0!important/* !P9 */;
   margin:0 auto;padding:0!important/* !P4 */;box-sizing:border-box}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.brand{
@@ -72,12 +72,12 @@ html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion)
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.dock:last-of-type{grid-column:3}
 /* la bande du titre à gauche, la paire son / PL à droite : même hauteur, même ligne de base, même largeur (celle de leur boîte) */
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .bar #radio-toggle{
-  flex:1 1 0;min-width:0!important/* !P4 */;height:var(--r-strip)!important/* !P4 */;min-height:var(--r-hit)!important/* !P4 */;box-sizing:border-box}
+  flex:1 1 0;margin-right:calc(2 * var(--r-strip));min-width:0!important/* !P4 */;height:var(--r-strip)!important/* !P4 */;min-height:var(--r-hit)!important/* !P4 */;box-sizing:border-box}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .bar .dock:last-of-type :is(.b-bell,#export-pl){
   flex:1 1 0!important/* !P4 */;min-width:var(--r-hit);height:var(--r-strip)!important/* !P4 */;box-sizing:border-box!important/* !P4 */;display:flex!important/* !P4 */;align-items:center;justify-content:center}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .bar .b-bell svg{width:clamp(16px,calc(2.2 * var(--r-uf)),24px)!important/* !P4 */;height:clamp(16px,calc(2.2 * var(--r-uf)),24px)!important/* !P4 */}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .bar :is(.motel-l,#export-pl){
-  font-size:clamp(12px,calc(1.6 * var(--r-uf)),16px)!important/* style en ligne */;max-width:100%!important/* style en ligne */}
+  font-size:clamp(16px,calc(2 * var(--r-uf)),22px)!important/* style en ligne */;max-width:100%!important/* style en ligne */}
 
 /* cadre : Burrows, l'écran, le pied de l'écran, l'un sous l'autre, à la largeur de l'écran ; zéro décoration autour de l'image */
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) #home .b-bezel{
@@ -99,7 +99,7 @@ html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion)
   width:var(--r-S);height:calc(5 * var(--r-uf));min-height:var(--r-hit);padding:0!important/* !P5 */;box-sizing:border-box;
   display:flex;align-items:center;justify-content:space-between;gap:var(--r-gap)!important/* !P5 */}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezelfoot #koins.b-credit{
-  height:100%;font-size:clamp(12px,calc(1.8 * var(--r-uf)),20px)!important/* !P6 */}
+  height:100%;font-size:clamp(12px,calc(1.3 * var(--r-uf)),15px)!important/* !P6 */}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezelfoot .b-boom{min-height:var(--r-hit);height:100%}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezelfoot .b-boom i{
   width:calc(5 * var(--r-uf))!important/* !P11 */;height:calc(5 * var(--r-uf))!important/* !P11 */}
@@ -159,7 +159,7 @@ html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion)
 @media (orientation:portrait){
   /* fronton sur deux rangs : l'enseigne sur toute la largeur, puis la bande du titre et la paire son / PL, moitié chacune */
   html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar{
-    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important/* !P4 */;grid-template-rows:calc(7 * var(--r-uf)) calc(5 * var(--r-uf))!important/* !P4 */}
+    grid-template-columns:minmax(0,var(--r-c1,1.7fr)) minmax(0,1fr)!important/* !P4 */;grid-template-rows:calc(7 * var(--r-uf)) calc(5 * var(--r-uf))!important/* !P4 */}
   html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.brand{grid-column:1 / -1;grid-row:1}
   html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.dock{grid-row:2}
   html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.dock:last-of-type{grid-column:2}
@@ -228,7 +228,7 @@ html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion)
 /* ---------- 5. cibles au toucher : 44 px par la forme ; zone sensible transparente là où le dessin reste plus petit (::after libre) ---------- */
 @media (pointer:coarse){
   html.borne:not(#r1):not(#r2) :is(.b-row2 .menu a,.b-care button){position:relative}
-  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-door>.b-lore.b-onbox{width:126px!important/* !P7 */;height:auto!important/* !P7 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-door>.b-lore.b-onbox{width:76px!important/* !P7 ; zone de frappe 100 x 57 par ::before */;height:auto!important/* !P7 */}
   html.borne:not(#r1):not(#r2) :is(.b-row2 .menu a,.b-care button)::after{
     content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%)}
   html.borne:not(#r1):not(#r2) :is(.brand,#radio-toggle,.b-bell,#export-pl,.b-boom,.b-imm,.b-land,.b-slot,.b-knob,.b-dekonect,.b-badge,#kapture,.b-dot,.b-edge){
