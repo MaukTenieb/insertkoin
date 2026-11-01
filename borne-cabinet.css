@@ -1122,7 +1122,7 @@ html.borne #snd.b-knob[data-pos="2"]{transform:rotate(40deg)}
 html.borne .b-dekonect{left:auto!important;}
 /* ---------- la manette : socle fixe, seule la tige et la boule penchent ; l'ombre de la boule glisse sur le panneau, à l'opposé de la lumière ---------- */
 html.borne .b-panel .cabinets>.b-stick{position:relative}
-html.borne .b-panel .cabinets>.b-stick::before{content:""!important;display:block!important;position:absolute;inset:0;z-index:0;left:0!important;right:0!important;bottom:0!important;height:auto!important;border-radius:0!important;box-shadow:none!important;
+html.borne .b-panel .cabinets>.b-stick::before{content:none!important;display:none!important;position:absolute;inset:0;z-index:0;left:0!important;right:0!important;bottom:0!important;height:auto!important;border-radius:0!important;box-shadow:none!important;
   background:var(--i-stick) center bottom/contain no-repeat!important;clip-path:inset(var(--stk-cut,60%) 0 0 0)}
 html.borne .b-panel .cabinets>.b-stick i{z-index:1;filter:none!important;left:0;top:0;bottom:auto;width:100%;height:100%}
 /* 1er nov. (E42) : le levier occupe le cadre exact du socle ; boule, tige et anneau tirés de la même image, à la même échelle */
@@ -1133,11 +1133,11 @@ html.borne .b-panel .cab .num,html.borne .b-store .cab .num{display:none!importa
 
 /* ---------- manette, révisée : socle fixe (image), tige chromée dessinée qui pivote au col du socle, boule (image) qui suit la tige
    en gardant sa lumière fixe (contre-rotation) ; l'ombre de la boule glisse au sol ---------- */
-html.borne .b-panel .cabinets>.b-stick i{background:none!important;clip-path:none!important;transform-origin:50% var(--stk-cut,60%)!important;
-  transform:rotate(calc(var(--x,0) * 15deg)) translateY(calc(var(--y,0) * 2px))!important}
+html.borne .b-panel .cabinets>.b-stick i{background:none!important;clip-path:none!important;transform-origin:50% 74%!important;
+  transform:perspective(400px) rotateX(calc(var(--y,0) * -12deg)) rotate(calc(var(--x,0) * 15deg))!important}
 html.borne .b-panel .cabinets>.b-stick i::before{content:"";position:absolute;inset:0;display:block!important;background:var(--i-stick) center bottom/contain no-repeat;
-  clip-path:inset(0 0 calc(100% - var(--stk-cut,50%)) 0);z-index:2}
-/* 1er nov. (E47) : boule et tige viennent de manette-a.webp d'un seul tenant ; le levier pivote au col de l'anneau */
+  clip-path:none;z-index:2}
+/* 1er nov., 05 h 13 (LISTE 59) : manette-a.webp entière, d'une seule pièce, sans coupe ; elle penche d'un bloc autour de son pivot au centre de l'anneau (74 %) */
 html.borne .b-panel .cabinets>.b-stick i::after{content:none!important;display:none!important}
 
 /* en jeu, la pluie de Koins reste hors de l'écran (règle du 30 oct. : zéro décor qui prend de l'écran) ; elle tombe à l'accueil */
