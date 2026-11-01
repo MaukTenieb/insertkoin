@@ -1250,7 +1250,7 @@ html.borne .b-lore .b-lustre{position:absolute;inset:0;pointer-events:none;opaci
   background:linear-gradient(110deg,transparent 30%,rgba(255,250,230,.0) 38%,rgba(255,252,240,.85) 50%,rgba(255,250,230,.0) 62%,transparent 70%) -140% 0/260% 100% no-repeat;mix-blend-mode:screen}
 html.borne .b-lore.b-shine .b-lustre{animation:b-lustre 1.2s ease-out}
 @keyframes b-lustre{0%{opacity:1;background-position:-140% 0}85%{opacity:1}100%{opacity:0;background-position:140% 0}}
-@media (prefers-reduced-motion:reduce){html.borne .b-lore .b-lustre{display:none}}
+
 
 /* 1er nov., 10 h 50 — bloc son d'une pièce : une plaque continue sous les deux boîtes, le haut-parleur rond dans sa boîte, sans cadre propre */
 html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock{background-size:auto,var(--bk-w,100%) 100%,auto!important;background-repeat:no-repeat!important}
@@ -1289,9 +1289,32 @@ html.borne .b-bezelfoot #koins#koins .b-kicon{width:14px!important;height:14px!i
   html.borne:not([data-prog]) .b-doorrow.b-doorrow.b-doorrow:not(#r1):not(#r2)>.b-knobs{grid-column:1!important;grid-row:2!important}}
 /* 1er nov., 11 h 35 — caisse et rack disjoints partout : 24 px d'écart, en ligne comme en colonne */
 html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2){column-gap:24px!important;row-gap:24px!important}
-@media (max-width:700px) and (orientation:portrait){html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2){grid-template-columns:auto!important;justify-content:center!important;justify-items:center!important}
-  html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2)>.b-door{grid-column:1!important;grid-row:1!important}html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2)>.b-knobs{grid-column:1!important;grid-row:2!important}}
+/* 1er nov., 12 h 35 — téléphone debout : le rack seul à droite de la caisse (référentiel, n°4), en plaque compacte de deux rangées, 18 px d'écart ; deux objets distincts */
+@media (max-width:700px) and (orientation:portrait){html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2){grid-template-columns:auto auto!important;justify-content:center!important;align-items:center!important;column-gap:18px!important}
+  html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2)>.b-door{grid-column:1!important;grid-row:1!important;max-width:calc(100vw - 196px)!important}
+  html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2)>.b-knobs{grid-column:2!important;grid-row:1!important;grid-template-columns:repeat(2,auto)!important;width:auto!important;justify-self:start!important}}
 /* 1er nov., 12 h — zéro défilement horizontal parasite (décors en pseudo-éléments qui dépassaient de 18 à 33 px au téléphone couché) */
 html.borne .b-roof{overflow-x:clip;overflow-y:visible}
 /* 1er nov., 12 h — téléphone couché : l'enseigne prend la largeur de son nom entier */
 @media (min-width:701px){html.borne[data-bland]:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>#brand{width:auto!important;max-width:none!important;padding-inline:12px!important}}
+
+/* 1er nov., 12 h 30 — bloc son refait (LISTE 50, 53, 57) : un seul bloc, moins haut ; à gauche le titre qui défile sur la plus grande part ;
+   à droite, bien casés, deux boutons-baffles (PL, son) : chacun un haut-parleur rond pris dans l'image de la grille, sa marque imprimée dessus ; zéro haut-parleur à part */
+html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:last-child{display:none!important}
+html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:not(:last-child){grid-column:1/-1!important;align-self:center!important;height:38px!important;min-height:0!important;padding:3px 4px 3px 8px!important;gap:5px!important;
+  border-radius:6px!important;border-right:inherit!important;background-size:auto,100% 100%,auto!important;background-position:0 0,center,0 0!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 -1px 0 rgba(0,0,0,.6),0 4px 10px rgba(0,0,0,.55)!important}
+html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:not(:last-child) #radio-toggle{height:30px!important;min-height:0!important;align-self:center!important}
+html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:not(:last-child) :is(#export-pl,.b-bell){flex:0 0 32px!important;width:32px!important;height:32px!important;max-width:32px!important;min-width:0!important;min-height:0!important;max-height:32px!important;border-radius:50%!important;border:0!important;margin:0!important;
+  background:url(skin-metal-grille.webp) center/185% no-repeat!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.75),inset 0 0 6px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.14)!important;
+  color:#f6ead0!important;text-shadow:0 0 3px #000,0 0 6px #000!important;font-size:12px!important;display:grid!important;place-items:center!important;padding:0!important;position:relative!important;align-self:center!important;transform:none!important;inset:auto!important;vertical-align:middle!important}
+html.borne[data-skin=bois]:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:not(:last-child) :is(#export-pl,.b-bell){background:url(skin-bois-grille.webp) center/auto 320% no-repeat!important}
+html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:not(:last-child) .b-bell :is(svg,img,i){filter:drop-shadow(0 0 2px #000) drop-shadow(0 0 3px #000)}
+@media (max-width:700px){html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2){grid-template-columns:minmax(0,1fr)!important}}
+@media (max-width:700px) and (orientation:portrait){html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2)>.b-dekonect{left:auto!important;right:10px!important;top:auto!important;bottom:4px!important;transform:none!important}}
+@media (max-width:700px) and (orientation:portrait){html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2):not(#r3):not(#r4){padding-bottom:52px!important}}
+
+/* 1er nov., 12 h 40 — Lore vivant : lustre ou petit frémissement toutes les 3 à 8 s, mot et couleur toutes les 6 à 12 s ; plante plus grande au téléphone */
+html.borne .b-lore.b-wob{animation:b-wob .9s ease-in-out}
+@keyframes b-wob{0%,100%{rotate:0deg;scale:1}30%{rotate:-3deg;scale:1.06}60%{rotate:2deg;scale:1.03}}
+@media (max-width:700px){html.borne:not([data-prog]) .b-roof.b-roof:not(#r1):not(#r2):not(#r3){height:calc(1.4 * var(--p2h,120px))!important}}

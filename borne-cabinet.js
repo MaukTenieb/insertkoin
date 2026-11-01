@@ -527,12 +527,12 @@
       /* tirage : Lore 64 %, Tales, Korhogo ou Diegesis 12 % chacun ; teinte prise dans la liste, jamais deux fois de suite */
       function tick(){var t=Math.random()<.64?'Lore':W[(Math.random()*W.length)|0],o=H.filter(function(x){return x!==ch;}),hue=o[(Math.random()*o.length)|0];
         if(RM){show(t,hue);}else{lore.classList.add('b-peel');setTimeout(function(){show(t,hue);},170);setTimeout(function(){lore.classList.remove('b-peel');},420);}
-        setTimeout(tick,9000+Math.random()*11000);}
+        setTimeout(tick,6000+Math.random()*6000);}
       /* 1er nov. : un lustre passe de temps en temps sur l'autocollant, découpé à sa forme (masque de l'image du papier) */
       var lu=document.createElement('i');lu.className='b-lustre';lu.setAttribute('aria-hidden','true');lore.appendChild(lu);
-      function shine(){if(!RM&&!document.hidden){lore.classList.remove('b-shine');void lore.offsetWidth;lore.classList.add('b-shine');setTimeout(function(){lore.classList.remove('b-shine');},1300);}setTimeout(shine,7000+Math.random()*11000);}
+      function shine(){if(!document.hidden){lore.classList.remove('b-shine','b-wob');void lore.offsetWidth;lore.classList.add(Math.random()<.5?'b-shine':'b-wob');setTimeout(function(){lore.classList.remove('b-shine','b-wob');},1300);}setTimeout(shine,3500+Math.random()*5000);}
       setTimeout(shine,2500+Math.random()*4000);
-      lore._fit=fit;lore._tick=tick;fit();setTimeout(fit,700);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);setTimeout(tick,3000+Math.random()*3000);/* 1er nov., 10 h 50 : vivant dès l'arrivée */
+      lore._fit=fit;lore._tick=tick;fit();setTimeout(fit,700);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);setTimeout(tick,2000+Math.random()*2000);/* 1er nov. : vivant dès l'arrivée */
       /* glisser à la main : clic simple = lien ; au-delà de 6 px = déplacement ; l'aimant Dekonect ramène l'autocollant s'il est lâché dessus */
       var st=null;lore.draggable=false;lore.addEventListener('dragstart',function(e){e.preventDefault();});
       lore.addEventListener('pointerdown',function(e){if(!lore.classList.contains('b-onbox')||(e.button&&e.button!==0))return;lore._drag=false;st={x:e.clientX,y:e.clientY,l:lore.offsetLeft,t:lore.offsetTop,id:e.pointerId};});

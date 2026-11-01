@@ -97,7 +97,7 @@ async def main():
     url, out = sys.argv[1], sys.argv[2]; court = "--court" in sys.argv
     os.makedirs(out, exist_ok=True)
     async with async_playwright() as p:
-        b = await p.chromium.launch()
+        b = await (p.chromium.connect_over_cdp(os.environ["BORNE_CDP"]) if os.environ.get("BORNE_CDP") else p.chromium.launch())
         res = [await fenetre(b, url, out, w, h, m, court) for w, h, m in FEN]  # une fenêtre à la fois : images par seconde comparables
         await b.close()
     json.dump(res, open(os.path.join(out, "controle.json"), "w"), ensure_ascii=False, indent=1)
