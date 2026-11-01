@@ -140,15 +140,15 @@ html.borne .b-lore.b-onbox{z-index:20!important}
 
 /* la mini-manette du pied de l'écran suit le même modèle que la grande : socle fixe, tige et boule qui penchent */
 html.borne .b-bezelfoot .b-stick-mini{position:relative}
-html.borne .b-bezelfoot .b-stick-mini::before{content:""!important;display:block!important;position:absolute;inset:0;z-index:0;left:0!important;right:0!important;bottom:0!important;height:auto!important;border-radius:0!important;box-shadow:none!important;
+html.borne .b-bezelfoot .b-stick-mini::before{content:none!important;display:none!important;position:absolute;inset:0;z-index:0;left:0!important;right:0!important;bottom:0!important;height:auto!important;border-radius:0!important;box-shadow:none!important;
   background:var(--i-stick) center bottom/contain no-repeat!important;clip-path:inset(var(--stk-cut,60%) 0 0 0)}
 html.borne .b-bezelfoot .b-stick-mini i{z-index:1;filter:none!important}
 html.borne .b-bezelfoot .b-stick-mini::after{content:"";position:absolute;z-index:0;left:50%;bottom:calc(100% - var(--stk-cut,60%) - 6%);width:46%;height:12%;border-radius:50%;pointer-events:none;
   background:radial-gradient(ellipse,rgba(0,0,0,.55),transparent 70%);transform:translateX(calc(-50% + var(--x,0) * 12px)) scaleX(calc(1 + var(--v,0) * .3));filter:blur(2px)}
-html.borne .b-bezelfoot .b-stick-mini i{background:none!important;clip-path:none!important;transform-origin:50% var(--stk-cut,60%)!important;
-  transform:rotate(calc(var(--x,0) * 15deg)) translateY(calc(var(--y,0) * 2px))!important}
+html.borne .b-bezelfoot .b-stick-mini i{background:none!important;clip-path:none!important;transform-origin:50% 74%!important;
+  transform:perspective(400px) rotateX(calc(var(--y,0) * -12deg)) rotate(calc(var(--x,0) * 15deg))!important}
 html.borne .b-bezelfoot .b-stick-mini i::before{content:"";position:absolute;inset:0;display:block!important;background:var(--i-stick) center bottom/contain no-repeat;
-  clip-path:inset(0 0 calc(100% - var(--stk-cut,50%)) 0);z-index:2}
+  clip-path:none;z-index:2}
 html.borne .b-bezelfoot .b-stick-mini i::after{content:none!important;display:none!important}
 html.borne .b-bezelfoot .b-stick-mini i{transition:none!important}
 /* ordinateur : le meuble garde une taille lisible sur les écrans bas (portables), au lieu de rapetisser avec la hauteur de la fenêtre */
