@@ -14,7 +14,7 @@
 /* ---------- 1. les grandeurs, calculées une fois sur la racine ---------- */
 html.borne{
   --r-g:min(1.2vmin,12px);                         /* marge de la fenêtre */
-  --r-b:clamp(4px,.8vmin,10px);                    /* flanc minimal du meuble */
+  --r-b:clamp(6px,1.2vmin,14px);                   /* flanc minimal du meuble : la tranche du flanc */
   --r-vh:100vh;
   --r-hav:calc(var(--r-vh) - 2 * var(--r-g));      /* hauteur disponible */
   --r-wav:calc(100vw - 2 * var(--r-g) - 2 * var(--r-b)); /* largeur disponible pour l'écran */
@@ -84,6 +84,9 @@ html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion)
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) #home .b-bezel{
   display:flex;flex-direction:column;align-items:center;gap:var(--r-gap)!important/* !P9 */;width:calc(var(--r-M) - 2 * var(--r-b));
   margin:var(--r-gap) auto 0!important/* !P9 */;padding:0!important/* !P9 */;box-sizing:border-box}
+/* M4 : le cadre noir du moniteur prend la largeur de l'écran plus un rebord ; le bois du meuble reste visible de part et d'autre */
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion,[data-bland]):is([data-skin=bois],[data-skin=metal]):not(#r1):not(#r2) #home .b-bezel{
+  width:min(calc(var(--r-M) - 2 * var(--r-b)),calc(var(--r-S) + 2 * max(var(--r-b),calc(2.4 * var(--r-u)))))}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-land{
   width:var(--r-S);height:calc(5 * var(--r-uf))!important/* !P3 */;min-height:var(--r-hit);box-sizing:border-box}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-land span{
