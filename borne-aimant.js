@@ -23,15 +23,19 @@
     var keys=[].slice.call(document.querySelectorAll('.b-panel .cabinets > .cab'));
     var list=SEL.map(function(s){return [s[0],document.querySelector(s[1])];});
     keys.forEach(function(k,i){list.push(['touche'+(i+1),k]);});
+    /* P5 : chaque bloc à module se déclare au bus (window.__borne.magnet) ; sa déclaration passe devant la liste */
+    var BUS=window.__borne,dec={};if(BUS)BUS.magnets().forEach(function(m){dec[m.id]=m;});list=Object.keys(dec).map(function(k){return [k,dec[k].el,dec[k]];}).concat(list);
     var saved=load(),seen={};
     blocks=list.filter(function(x){return x[1]&&!seen[x[0]]&&(seen[x[0]]=1);}).map(function(x){
-      var b={id:x[0],el:x[1],dx:0,dy:0};x[1].classList.add('b-mag');var s=saved[x[0]];if(s)put(b,s[0],s[1],false);return b;});
+      var b={id:x[0],el:x[1],dx:0,dy:0,hit:x[2]&&x[2].hit,rest:x[2]&&x[2].rest};if(!b.rest)x[1].classList.add('b-mag');/* l'écran prend la classe b-mag seulement saisi : au repos, son style reste le sien */var s=saved[x[0]];if(s)put(b,s[0],s[1],false);return b;});
     var lost=false;blocks.forEach(function(b){if((b.dx||b.dy)&&!inside(b)){put(b,0,0,false);lost=true;}});if(lost)save();
   }
   /* un bloc doit rester sur le meuble, aux deux tiers au moins : sinon il revient à sa place */
+  /* le meuble = le caisson (.wrap) et son toit (.b-roof : plante, caméra), posé au-dessus du caisson */
   function inside(b){var w=document.querySelector('.wrap');if(!w||!b.el.offsetParent)return true;var W=w.getBoundingClientRect(),r=b.el.getBoundingClientRect();if(!r.width)return true;
+    var rf=document.querySelector('.b-roof'),R=rf&&rf.offsetParent&&rf.getBoundingClientRect();if(R&&R.width)W={left:Math.min(W.left,R.left),top:Math.min(W.top,R.top),right:Math.max(W.right,R.right),bottom:Math.max(W.bottom,R.bottom)};
     var ix=Math.max(0,Math.min(r.right,W.right)-Math.max(r.left,W.left)),iy=Math.max(0,Math.min(r.bottom,W.bottom)-Math.max(r.top,W.top));return ix*iy>=r.width*r.height*.66;}
-  function of(t){for(var i=0;i<blocks.length;i++)if(blocks[i].el===t||blocks[i].el.contains(t))return blocks[i];return null;}
+  function of(t){var f=null;for(var i=0;i<blocks.length;i++)if((blocks[i].el===t||blocks[i].el.contains(t))&&(!f||f.el.contains(blocks[i].el)))f=blocks[i];return f;}
   /* l'aimant : bords contre bords, bords alignés, axes alignés ; et la place d'origine */
   function snap(b,x,y){
     var r=b.el.getBoundingClientRect(),w=r.width,h=r.height,l0=r.left-b.dx,t0=r.top-b.dy,L=l0+x,T=t0+y,bx=null,by=null,dbx=MAG+1,dby=MAG+1;
@@ -42,7 +46,7 @@
     });
     return [bx!=null?bx:x,by!=null?by:y,false];
   }
-  function grab(b,e){drag.on=true;try{window.__borneSon&&window.__borneSon.suck();}catch(_){}b.el.classList.add('b-held');root.classList.add('b-holding');
+  function grab(b,e){drag.on=true;if(b.rest)b.el.classList.add('b-mag');try{window.__borneSon&&window.__borneSon.suck();}catch(_){}b.el.classList.add('b-held');root.classList.add('b-holding');
     try{b.el.setPointerCapture(e.pointerId);}catch(_){}
     if(navigator.vibrate)try{navigator.vibrate(12);}catch(_){}}
   /* le socle d'une manette au toucher fait 44 px de haut au moins : la part dessinée, plus une bande de prise sous elle (le doigt) */
@@ -51,6 +55,7 @@
   function socleHit(b,e){var r=b.el.getBoundingClientRect();if(!r.width||e.clientX<r.left||e.clientX>r.right)return false;
     var cut=r.top+r.height*window.__borneStickCut(b.el),low=r.bottom+(e.pointerType==='mouse'?0:Math.max(0,TOUCH-(r.bottom-cut)));return e.clientY>=cut&&e.clientY<=low;}
   function down(e){if(e.button>0||drag)return;var b=of(e.target);
+    if(b&&b.rest&&(root.dataset.prog||(e.target.closest&&e.target.closest('.b-screen'))))return;
     if(b&&b.id.indexOf('manette')===0){if(!socleHit(b,e))return;}
     else if(!b){stickBlocks().forEach(function(s){if(!b&&socleHit(s,e))b=s;});if(!b)return;}
     if(!b)return;
@@ -62,7 +67,7 @@
     e.preventDefault();var s=snap(drag.b,drag.dx+mx,drag.dy+my);put(drag.b,s[0],s[1],false);drag.b.el.classList.toggle('b-docked',s[2]);}
   function up(e){if(!drag||e.pointerId!==drag.id)return;clearTimeout(drag.t);var d=drag;drag=null;
     if(!d.on)return;suppress=Date.now();d.b.el.classList.remove('b-held','b-docked');root.classList.remove('b-holding');
-    var s=snap(d.b,d.b.dx,d.b.dy);put(d.b,s[0],s[1],false);if(!inside(d.b))s=[0,0];put(d.b,s[0],s[1],true);save();try{window.__borneSon&&setTimeout(window.__borneSon.clack,120);}catch(_){}}
+    var s=snap(d.b,d.b.dx,d.b.dy);put(d.b,s[0],s[1],false);if(!inside(d.b))s=[0,0];put(d.b,s[0],s[1],true);save();if(d.b.rest)setTimeout(function(){if(!d.b.el.classList.contains('b-held'))d.b.el.classList.remove('b-mag');},420);try{window.__borneSon&&setTimeout(window.__borneSon.clack,120);}catch(_){}}
   document.addEventListener('pointerdown',down,true);
   document.addEventListener('pointermove',move,{capture:true,passive:false});
   document.addEventListener('pointerup',up,true);document.addEventListener('pointercancel',up,true);
@@ -88,6 +93,10 @@
     document.addEventListener('wheel',function(e){var l=el();if(!l||!l.contains(e.target)||!(e.shiftKey||e.altKey))return;e.preventDefault();set(rot()+(e.deltaY>0?6:-6));},{passive:false});
     setTimeout(function(){try{var v=localStorage.getItem('borne.lore.rot');if(v!=null&&el())el().style.setProperty('--lr',v+'deg');}catch(_){}},1500);})();
 
+  /* un programme s'ouvre : l'écran revient à sa place ; à l'accueil, il reprend la sienne */
+  new MutationObserver(function(){blocks.forEach(function(b){if(!b.rest)return;var sv=load()[b.id]||[0,0];if(root.dataset.prog)put(b,0,0,false);else put(b,sv[0],sv[1],true);});}).observe(root,{attributes:true,attributeFilter:['data-prog']});
+  /* Dekonect déboîte les tronçons du meuble : un tronçon aimanté reprend sa place d'origine avant le déboîtement (comportement de Dekonect conservé) */
+  if(window.__borne)window.__borne.on('dekonect',function(els){var ch=false;blocks.forEach(function(b){if(els.indexOf(b.el)>=0&&(b.dx||b.dy)){b.dx=b.dy=0;b.el.classList.remove('b-moved');ch=true;}});if(ch)save();});
   /* un autre skin, d'autres places */
   new MutationObserver(function(){var saved=load();blocks.forEach(function(b){var s=saved[b.id]||[0,0];put(b,s[0],s[1],true);});}).observe(root,{attributes:true,attributeFilter:['data-skin']});
   function start(){collect();}

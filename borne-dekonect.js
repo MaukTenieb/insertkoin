@@ -11,6 +11,7 @@
   function son(k){try{window.__borneSon&&window.__borneSon[k]&&window.__borneSon[k]();}catch(e){}}
   function reset(anim){parts().forEach(function(e){e.style.transition=anim?'translate .45s cubic-bezier(.2,1.4,.4,1),rotate .45s':'';e.style.translate='';e.style.rotate='';e.style.zIndex='';});order=null;}
   function press(){if(busy||root.dataset.prog)return;busy=true;var P=parts();if(P.length<2){busy=false;return;}
+    try{window.__borne&&window.__borne.emit('dekonect',P);}catch(_){}
     /* les places d'origine : on mesure sans décalage */
     P.forEach(function(e){e.style.transition='none';e.style.translate='';e.style.rotate='';});
     var top=Infinity,rects=P.map(function(e){var r=e.getBoundingClientRect();top=Math.min(top,r.top);return r;});

@@ -12,22 +12,16 @@
   var el=function(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;};
 
   /* ---------- le toit : la plante et la caméra ---------- */
-  var roof=el('div','b-roof'),pot=el('div','b-pot'),plant=el('div','b-plant'),care=el('div','b-care'),cam=el('div','b-cam');
-  pot.tabIndex=0;pot.setAttribute('role','group');pot.setAttribute('aria-label','Plante');
-  /* les soins de la plante suivent la langue de la borne (FR · EN) */
-  [['water','💧','EAU','WATER'],['sun','☀','SOLEIL','SUN'],['cut','✂','TAILLE','PRUNE']].forEach(function(a){var b=el('button',null,'<i>'+a[1]+'</i><span data-fr="'+a[2]+'" data-en="'+a[3]+'">'+a[3]+'</span>');b.type='button';b.dataset.care=a[0];care.appendChild(b);});
-  function careLang(){var fr=document.documentElement.lang==='fr';[].forEach.call(care.querySelectorAll('span[data-fr]'),function(x){x.textContent=fr?x.dataset.fr:x.dataset.en;});}
-  careLang();new MutationObserver(careLang).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
-  pot.appendChild(care);pot.appendChild(plant);roof.appendChild(pot);if($('kapture'))cam.appendChild($('kapture'));roof.appendChild(cam);
+  var roof=el('div','b-roof'),BUS=window.__borne;
+  if(BUS){BUS.mount('plante',roof);BUS.mount('camera',roof);}
   wrap.parentNode.insertBefore(roof,wrap);
 
   /* ---------- le fronton : l'enseigne, et l'habit en petit dessous ---------- */
-  var brand=$('brand'),hab=el('span','b-habit');hab.setAttribute('aria-hidden','true');if(brand)brand.appendChild(hab);
+  var HAB=function(t,tilt){if(BUS)BUS.emit('habit',{t:t,tilt:tilt});};if(BUS&&$('brand'))BUS.mount('insertkoin',$('brand'));
 
   /* ---------- le cadre et l'écran ---------- */
-  var bezel=el('div','b-bezel'),scr=el('div','b-screen'),glass=el('div','b-glass');glass.id='b-glass';scr.appendChild(glass);
-  var att=el('div','b-attract'),skf=document.createElement('iframe');skf.title='SkopoRhogo';skf.setAttribute('tabindex','-1');att.appendChild(skf);glass.appendChild(att);
-  var date=el('div','b-date','<b></b>');glass.appendChild(date);
+  var EC=BUS&&BUS.mount('ecran',home)||{},bezel=EC.el,scr=EC.scr,glass=EC.glass;
+  var wake=function(){BUS.emit('ecran:wake');},sleep=function(){BUS.emit('ecran:sleep');};BUS.on('ecran:open',function(k){IK().go&&IK().go(k);});
   
   ['select','game','calque'].forEach(function(id){if($(id))glass.appendChild($(id));});
   var land=el('button','b-sticker b-land','<span>BURROWS</span>');land.type='button';land.setAttribute('aria-label','Burrows');
@@ -37,8 +31,7 @@
   var lore=el('a','b-sticker b-lore','<span class="b-sr">LORE</span>');lore.href=loreHref;lore.target='_blank';lore.rel='noopener';
   if($('koins')){$('koins').classList.add('b-credit');foot.appendChild($('koins'));}lore.classList.add('b-stuck');
   var butee=el('div','b-butee');butee.setAttribute('aria-hidden','true');
-  bezel.appendChild(land);bezel.appendChild(butee);bezel.appendChild(scr);bezel.appendChild(foot);bezel.appendChild(lore);
-  home.insertBefore(bezel,home.firstChild);
+  bezel.insertBefore(land,scr);bezel.insertBefore(butee,scr);bezel.appendChild(foot);bezel.appendChild(lore);
 
   /* ---------- le panneau ---------- */
   var panel=el('div','b-panel'),cabs=home.querySelector('.cabinets');home.insertBefore(panel,bezel.nextSibling);
@@ -107,7 +100,7 @@
 
   /* ---------- la porte : la fente, le son, la langue ---------- */
   var door=el('div','b-door'),slot=el('button','b-slot','<b><em>INSERT</em> <u>KOIN</u></b><i></i>');slot.type='button';slot.setAttribute('aria-label','Insert Koin · 3615 KOINS');
-  var knobs=el('div','b-knobs');door.appendChild(slot);door.appendChild(knobs);
+  door.appendChild(slot);
   /* le bouton SKIN : le meuble en bois, en métal, ou en jeu électromécanique des années 1960 */
   var SKINS=['bois','metal'],skin=null;/* un skin tiré au hasard à chaque arrivée ; le bouton SKIN change ensuite */
   /* première visite : un skin au hasard ; ensuite, celui que le visiteur a choisi */
@@ -123,22 +116,11 @@
   variants();
   /* pièces tirées au hasard à chaque visite : l'autocollant Lore, la caméra, la manette */
   (function(){var s=root.style;s.setProperty('--i-lore','url('+pick(['sticker-lore-a.webp','sticker-lore-b.webp'])+')');
-    s.setProperty('--i-cam','url('+pick(['camera-a.webp','camera-c.webp'])+')');/* caméras du toit : la webcam à pied et lentille bleue, ou la compacte Korhogo (décision de Mauk Tenieb, 30 oct., 22 h 40) */var mt='manette-a.webp';/* la manette courte, à embase (décision de Mauk Tenieb, 30 oct., 23 h 33 : plus réaliste) */s.setProperty('--i-stick','url('+mt+')');s.setProperty('--stk-cut',mt==='manette-a.webp'?'50%':'76%');s.setProperty('--ball-cut',mt==='manette-a.webp'?'39.5%':'37.5%');})();
-  var sw=el('div','b-knobw'),sb=el('button','b-knob b-skin');sb.type='button';sb.setAttribute('aria-label','Skin');sb.dataset.pos=SKINS.indexOf(skin);
-  sw.appendChild(sb);sw.appendChild(el('span','b-knoblab','🧤'));knobs.appendChild(sw);
-  sb.onclick=function(){try{window.__borneUsure&&window.__borneUsure();}catch(e){}skin=SKINS[(SKINS.indexOf(skin)+1)%SKINS.length];sb.dataset.pos=SKINS.indexOf(skin);try{localStorage.setItem('borne.skin',skin);}catch(e){}
+    if(BUS)BUS.emit('tirage',pick);var mt='manette-a.webp';/* la manette courte, à embase (décision de Mauk Tenieb, 30 oct., 23 h 33 : plus réaliste) */s.setProperty('--i-stick','url('+mt+')');s.setProperty('--stk-cut',mt==='manette-a.webp'?'50%':'76%');s.setProperty('--ball-cut',mt==='manette-a.webp'?'39.5%':'37.5%');})();
+  if(BUS)BUS.mount('palette',door,{pos:SKINS.indexOf(skin)});
+  if(BUS)BUS.on('skin:next',function(d){try{window.__borneUsure&&window.__borneUsure();}catch(e){}skin=SKINS[(SKINS.indexOf(skin)+1)%SKINS.length];d.pos=SKINS.indexOf(skin);try{localStorage.setItem('borne.skin',skin);}catch(e){}
     try{IK().tone&&IK().tone(220,.05,'square',.03);IK().tone&&IK().tone(330,.05,'square',.03,0,.06);}catch(e){}
-    scr.classList.remove('b-morph');void scr.offsetWidth;scr.classList.add('b-morph');setTimeout(function(){if(skin==='1960')variants();root.dataset.skin=skin;},250);};
-  /* VOL : la molette du volume de la machine (sons des jeux et de la mécanique) ; trois crans, 0, moyen, fort */
-  (function(){var b=$('snd');if(!b)return;var lv=2;try{var v=localStorage.getItem('borne.vol');if(v!=null)lv=+v?2:0;}catch(e){}
-    function isOn(){return /ON/i.test(b.textContent||'');}
-    function apply(){if((lv>0)!==isOn())HTMLElement.prototype.click.call(b);window.__borneVol=[0,.45,1][lv];try{window.__borneSon&&window.__borneSon.vol&&window.__borneSon.vol(window.__borneVol);}catch(e){}
-      b.dataset.pos=lv;try{localStorage.setItem('borne.vol',lv);}catch(e){}}
-    b.addEventListener('click',function(e){if(e.isTrusted||e.detail){e.preventDefault();e.stopImmediatePropagation();lv=lv?0:2;apply();try{window.__borneMusic&&window.__borneMusic(lv>0);}catch(_){}}},true);
-    setTimeout(apply,300);})();
-  [['snd','🎶'],['lang','FR · EN']].forEach(function(p){var b=$(p[0]);if(!b)return;var w=el('div','b-knobw');b.classList.add('b-knob');b.setAttribute('aria-label',p[1]);w.appendChild(b);w.appendChild(el('span','b-knoblab',p[1]));knobs.appendChild(w);
-    var sync=function(){var t=(b.textContent||'').toUpperCase();b.dataset.on=(p[0]==='snd'?/ON/.test(t):/FR/.test(t))?'1':'0';};sync();
-    new MutationObserver(sync).observe(b,{childList:true,characterData:true,subtree:true});});
+    scr.classList.remove('b-morph');void scr.offsetWidth;scr.classList.add('b-morph');setTimeout(function(){if(skin==='1960')variants();root.dataset.skin=skin;},250);});
   if($('kal'))door.appendChild($('kal'));
   wrap.appendChild(door);
   /* le copyright, petit, tout en bas du meuble */
@@ -166,7 +148,7 @@
     /* la caméra fait déjà le passage : le faisceau du tube sert seulement aux changements de programme sans caméra (zapping) */
     if(change&&!root.hasAttribute('data-cam')&&!matchMedia('(prefers-reduced-motion:reduce)').matches){scr.classList.remove('b-morph');void scr.offsetWidth;scr.classList.add('b-morph');
       clearTimeout(morphT);morphT=setTimeout(function(){scr.classList.remove('b-morph');},1000);}
-    root.dataset.habit=h;root.dataset.mode=mode;if(h==='repos')delete root.dataset.prog;else{root.dataset.prog='1';[60,700].forEach(function(t){setTimeout(function(){scrollTo({top:0,behavior:t>100?'smooth':'auto'});},t);});}hab.classList.remove('tilt');hab.textContent=LABEL[h]||'';
+    root.dataset.habit=h;root.dataset.mode=mode;if(h==='repos')delete root.dataset.prog;else{root.dataset.prog='1';[60,700].forEach(function(t){setTimeout(function(){scrollTo({top:0,behavior:t>100?'smooth':'auto'});},t);});}HAB(LABEL[h]||'');
     [120,500,800,1100].forEach(function(t){setTimeout(relayout,t);});
     if(h==='repos'){wake();camsOff();}else sleep();}
   /* la caméra s'éteint dès que FotoFauna quitte l'écran */
@@ -234,12 +216,12 @@
   var tilting=false;
   window.__borneBoom=function(cb){if(tilting)return;tilting=true;
     try{IK().burst&&IK().burst(90,'lowpass',.35,.5);IK().tone&&IK().tone(70,.5,'sawtooth',.06,-30);IK().tone&&IK().tone(1046,.08,'square',.025,0,.45);}catch(e){}
-    wrap.classList.remove('b-shake');void wrap.offsetWidth;wrap.classList.add('b-shake');hab.textContent='TILT';hab.classList.add('tilt');
+    wrap.classList.remove('b-shake');void wrap.offsetWidth;wrap.classList.add('b-shake');HAB('TILT',true);
     /* le mot BAKU BOOM s'allume une fois le tube éteint, sur le noir, jamais par-dessus l'image du jeu */
     var gr=glass.getBoundingClientRect();setTimeout(function(){var fl=el('div','b-bbflash','BAKU BOOM');fl.style.left=(gr.left+gr.width/2)+'px';fl.style.top=(gr.top+gr.height/2)+'px';document.body.appendChild(fl);setTimeout(function(){fl.remove();},560);},360);
     glass.classList.remove('b-on');glass.classList.add('b-off');
     setTimeout(function(){try{cb&&cb();}catch(e){}glass.classList.remove('b-off');glass.classList.add('b-on');},480);
-    setTimeout(function(){glass.classList.remove('b-on');wrap.classList.remove('b-shake');hab.classList.remove('tilt');hab.textContent=LABEL[root.dataset.habit]||'';tilting=false;},1150);};
+    setTimeout(function(){glass.classList.remove('b-on');wrap.classList.remove('b-shake');HAB(LABEL[root.dataset.habit]||'');tilting=false;},1150);};
   bb.onclick=function(){var away=document.body.className.indexOf('on-home')<0;fold();window.__borneBoom(function(){if(away)IK().goHome();});};
 
   /* ---------- Burrows et la bio : la borne s'efface, la page s'ouvre en plein écran, prête à imprimer ---------- */
@@ -254,12 +236,6 @@
   wrap.addEventListener('click',function(e){var a=e.target.closest('[data-swap="bio"]');if(!a)return;e.preventDefault();e.stopPropagation();full('borne-bio.html','MAUK TENIEB');},true);
 
   /* ---------- SkopoRhogo tourne seulement quand il est à l'écran ---------- */
-  function wake(){if(!skf.src||skf.src.indexOf('skoporhogo-borne.html')<0)skf.src='skoporhogo-borne.html?attract=1';try{skf.contentWindow.postMessage({borne:'wake'},'*');}catch(e){}}
-  function sleep(){try{skf.contentWindow.postMessage({borne:'sleep'},'*');}catch(e){}}
-  addEventListener('message',function(e){if(e.source===skf.contentWindow&&e.data&&e.data.borne==='open'&&root.dataset.habit==='repos')IK().go&&IK().go('skopo');});
-  document.addEventListener('visibilitychange',function(){if(document.hidden)sleep();else if(root.dataset.habit==='repos')wake();});
-  /* aux trois quarts hors de la fenêtre, la chambre dort ; elle se réveille quand l'écran revient en vue */
-  if('IntersectionObserver' in window)new IntersectionObserver(function(es){es.forEach(function(e){if(!skf.src)return;if(e.intersectionRatio>=.25){if(root.dataset.habit==='repos')wake();}else sleep();});},{threshold:[0,.25,.5]}).observe(skf);
 
   /* ---------- la manette, en miroir : elle penche avec les flèches et les glissés dans l'écran ---------- */
   var mini=el('div','b-stick b-stick-mini','<i></i>');mini.setAttribute('aria-hidden','true');foot.insertBefore(mini,bb);
@@ -292,49 +268,8 @@
     if(/^←\s*(BACK|RETOUR|MENU|EXIT|SORTIE|KATABATIK)$/.test(t)||t==='BAKU BOOM'||b.hasAttribute('data-back')||b.id==='m-quit'||b.id==='kapture-close')b.classList.add('b-dup');});}
   [$('select'),$('game'),$('kg-root')].forEach(function(r){if(!r)return;hideDup(r);new MutationObserver(function(){hideDup(r);}).observe(r,{childList:true,subtree:true});});
 
-  /* ---------- l'entretien de la plante : l'eau, le soleil, la taille ; elle s'en souvient d'une visite à l'autre ----------
-     sans eau depuis quatre jours ou sans soleil depuis six, elle s'affaisse et jaunit ; chaque taille la rend plus touffue, jusqu'à trois. */
-  var DAY=864e5,cs=function(){var c={};try{c=JSON.parse(localStorage.getItem('borne.plant')||'{}')||{};}catch(e){}var n=Date.now();
-    if(!c.water)c.water=n;if(!c.sun)c.sun=n;if(c.cut==null)c.cut=0;return c;};
-  function health(){var c=cs(),n=Date.now();return Math.max(0,Math.min(1,1.25-Math.max((n-c.water)/(4*DAY),(n-c.sun)/(6*DAY))));}
-  pot.addEventListener('click',function(e){var b=e.target.closest('[data-care]');if(!b){pot.classList.toggle('open');return;}
-    var c=cs(),a=b.dataset.care;if(a==='cut')c.cut=Math.min(3,c.cut+1);else c[a]=Date.now();try{localStorage.setItem('borne.plant',JSON.stringify(c));}catch(_){}
-    try{a==='water'?IK().tone(520,.18,'sine',.03,-200):a==='sun'?IK().tone(880,.25,'triangle',.025,300):IK().tone(1500,.04,'square',.02);}catch(_){}
-    pot.classList.remove('fx-water','fx-sun','fx-cut');void pot.offsetWidth;pot.classList.add('fx-'+a);lastM=-1;tick();});
-  pot.addEventListener('mouseleave',function(){pot.classList.remove('open');});
-
-  /* ---------- la plante du toit : elle suit les mois du calendrier républicain ----------
-     vendémiaire : vendange ; brumaire, frimaire : les feuilles tombent ; nivôse : neige ; pluviôse : pluie ; ventôse : bourgeons ;
-     germinal : pousse ; floréal, prairial : fleurs ; messidor, thermidor : plein été ; fructidor : fruits. */
-  var P={1:[6,0,3,'#c9772b','#6b2a5a',0],2:[4,0,0,'#a5522a',0,0],3:[2,0,0,'#7a5a3a',0,'frost'],4:[0,0,0,0,0,'snow'],5:[0,0,0,0,0,'rain'],6:[0,3,0,'#9bbf5a',0,0],
-    7:[3,0,0,'#9fd36a',0,0],8:[6,3,0,'#6fb04a','#f7a8c8',0],9:[8,5,0,'#4f9a3a','#fff1a8',0],10:[8,2,0,'#3f8030','#ffd54f',0],11:[8,0,2,'#3f7a2e','#9ccc65',0],
-    12:[7,0,5,'#4a7a30','#e0442e',0],13:[6,0,3,'#7a8a30','#e0442e',0]};
-  var PIMG={7:'germinal',8:'floreal',9:'floreal',10:'messidor',11:'messidor',12:'fructidor',1:'fructidor',13:'fructidor',2:'brumaire',3:'brumaire',4:'brumaire',5:'brumaire',6:'brumaire'};
-  function plantImg(r){var m=r?r.month:2,n=health()<.5?'assoiffee':PIMG[m]||'brumaire';return '<img alt="" src="plante-'+n+'.webp">';}
-  function bornePlant(r){var m=r?r.month:2,d=r?r.day:1,p=P[m]||P[2],f=Math.min(1,(d||1)/30),s='',hl=health(),ex=cs().cut,droop=(1-hl)*35;
-    var grow=m===7?.45+.55*f:m===6?.4:1,H=48*grow*(.8+.2*hl),L=(m===7?Math.max(1,Math.round(p[0]*f)):p[0])+(p[0]?ex:0);
-    var pts=[];for(var i=0;i<9;i++){var t=(i+1)/10;pts.push([60+Math.sin(t*3)*5,62-t*H]);}
-    s+='<path d="M60 62 C 64 '+(62-H*.35)+', 55 '+(62-H*.7)+', '+(pts[8][0]+droop*.5).toFixed(1)+' '+pts[8][1].toFixed(1)+'" fill="none" stroke="#4a3a1e" stroke-width="2.2" stroke-linecap="round"/>';
-    for(i=0;i<L;i++){var q=pts[Math.min(8,1+(i%8))],side=i%2?1:-1,a=-side*(12+(i*17)%25)+side*droop,sc=.7+((i*7)%5)/10;
-      s+='<path transform="translate('+q[0].toFixed(1)+' '+q[1].toFixed(1)+') rotate('+a+') scale('+sc+')" d="M0 0 C '+(6*side)+' -4, '+(14*side)+' -2, '+(17*side)+' 3 C '+(11*side)+' 6, '+(4*side)+' 5, 0 0Z" fill="'+(hl<.5?'#b9a24a':p[3])+'"/>';}
-    for(i=0;i<p[1]*(hl<.5?0:1);i++){q=pts[[8,6,4,7,5][i]];
-      s+=m===6?'<circle cx="'+(q[0]+(i%2?4:-4)).toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="2" fill="#c8e08a"/>'
-        :'<g transform="translate('+(q[0]+(i%2?7:-7)).toFixed(1)+' '+(q[1]-2).toFixed(1)+')"><circle r="2.2" fill="#ffd54f"/>'+[0,72,144,216,288].map(function(a){return '<ellipse rx="2" ry="3.6" transform="rotate('+a+') translate(0 -4)" fill="'+p[4]+'"/>';}).join('')+'</g>';}
-    for(i=0;i<p[2];i++){q=pts[[5,7,3,6,4][i]];s+='<circle cx="'+(q[0]+(i%2?6:-6)).toFixed(1)+'" cy="'+(q[1]+5).toFixed(1)+'" r="'+(m===1?2.6:3.4)+'" fill="'+p[4]+'"/>';}
-    if(m===2||m===3)s+='<path d="M78 82 q4 -3 9 0 q-5 3 -9 0Z" fill="'+p[3]+'"/><path d="M38 84 q4 -3 8 1 q-5 2 -8 -1Z" fill="'+p[3]+'"/>';
-    if(p[5]==='snow')s+='<path d="M44 62 q16 -6 32 0Z" fill="#f4f7fb"/>'+[[40,20],[70,12],[86,32],[52,40],[30,44],[94,8]].map(function(c){return '<circle cx="'+c[0]+'" cy="'+c[1]+'" r="1.4" fill="#f4f7fb"/>';}).join('');
-    if(p[5]==='rain')s+=[[40,10],[58,22],[76,6],[90,26],[30,30],[66,38]].map(function(c){return '<path d="M'+c[0]+' '+c[1]+' l-2 6" stroke="#8fb8e8" stroke-width="1.2" stroke-linecap="round"/>';}).join('');
-    if(p[5]==='frost')s+='<path d="M60 62 l0 -'+(H*.9).toFixed(1)+'" stroke="#dfe9f5" stroke-width=".7" stroke-dasharray="1 3"/>';
-    s+='<path d="M42 60 h36 l-4 24 h-28Z" fill="#a8532e"/><path d="M40 58 h40 v6 h-40Z" fill="#c2643a"/><path d="M47 64 l-3 20" stroke="rgba(255,255,255,.12)" stroke-width="2"/>';
-    return '<svg viewBox="0 0 120 86" width="100%" height="100%">'+s+'</svg>';}
 
   /* ---------- la date du visiteur, en calendrier républicain, et son heure ---------- */
-  var MO=['vendémiaire','brumaire','frimaire','nivôse','pluviôse','ventôse','germinal','floréal','prairial','messidor','thermidor','fructidor','sans-culottides'];
-  var lastM=-1;
-  function tick(){var d=new Date(),r=window.ikRep?window.ikRep(d):null,h=d.getHours(),m=d.getMinutes();
-    date.firstChild.textContent=(r?(r.month===13?'jour '+r.day+' des sans-culottides an '+r.year:r.day+' '+MO[r.month-1]+' '+r.year)+' · ':'')+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
-    var key=(r?r.month*40+r.day:0)+'/'+Math.round(health()*10)+'/'+cs().cut;if(key!==lastM){lastM=key;plant.innerHTML=plantImg(r);plant.title=r?MO[r.month-1]:'';}}
-  tick();setInterval(tick,15000);
 
   /* ---------- Échap vaut Baku Boom, partout, même dans les programmes en cadre ; un programme qui s'en sert d'abord (fermer un tiroir, quitter une partie d'échecs) garde la main ---------- */
   function escHome(e){if(e.key!=='Escape'||e.defaultPrevented)return;if(document.querySelector('.b-full')||document.pointerLockElement)return;
@@ -622,15 +557,6 @@
     clearTimeout(T);T=setTimeout(function(){T=0;if(window.__borneNoPsy||document.documentElement.dataset.prog)return;window.__borneTourByHand=false;try{window.__borneTourResume&&window.__borneTourResume();}catch(_){}},4000);}
   addEventListener('wheel',hand,{passive:true,capture:true});addEventListener('touchmove',hand,{passive:true,capture:true});
   addEventListener('keydown',function(e){if(/^(Arrow|Page|Home|End| )/.test(e.key))hand();},true);
-  /* la molette 👣 */
-  function knob(){var knobs=document.querySelector('.b-knobs');if(!knobs){setTimeout(knob,500);return;}if(knobs.querySelector('.b-psy'))return;
-    var on=true;try{on=localStorage.getItem('borne.psy')!=='0';}catch(_){}
-    var w=document.createElement('div');w.className='b-knobw';var b=document.createElement('button');b.type='button';b.className='b-knob b-psy';b.setAttribute('aria-label','Psychopompes');
-    var l=document.createElement('span');l.className='b-knoblab';l.textContent='👣';w.appendChild(b);w.appendChild(l);knobs.appendChild(w);
-    function apply(){b.dataset.on=on?'1':'0';b.dataset.pos=on?1:0;window.__borneNoPsy=!on;document.documentElement.classList.toggle('b-nopsy',!on);
-      if(!on){try{window.__borneTourStop&&window.__borneTourStop();}catch(_){}}try{localStorage.setItem('borne.psy',on?'1':'0');}catch(_){}}
-    b.addEventListener('click',function(){on=!on;try{window.__borneSon&&window.__borneSon.detent(2);}catch(_){}apply();});apply();}
-  knob();
 })();
 
 /* vieillissement du formica (décisions de Mauk Tenieb, 30 et 31 oct.) : la borne s'use avec le temps, d'un palier tous les deux ou trois jours
