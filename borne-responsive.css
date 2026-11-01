@@ -177,8 +177,8 @@ html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion)
   html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>.cab{min-height:max(var(--r-hitx),calc(15 * var(--r-u)))!important/* !P11 */}
   html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>.b-stick{width:max(var(--r-hit),calc(17 * var(--r-u)))!important/* !P6 */}
   /* deux paires : les quatre touches au même niveau (le décalage des touches extrêmes sert la rangée unique) */
-  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>.cab:is(:nth-child(1),:last-child){transform:rotateX(30deg)!important/* !P6 */}
-  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>.cab:is(:nth-child(1),:last-child).b-down{transform:rotateX(30deg) translateY(6px)!important/* !P6 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>.cab:is(:nth-child(1),:last-child){transform:none!important/* !P6 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-panel .cabinets>.cab:is(:nth-child(1),:last-child).b-down{transform:translateY(3px)!important/* !P6 */}
 }
 /* D1 téléphone : molettes en rangée sous la fente */
 @media (orientation:portrait) and (max-aspect-ratio:3/5){

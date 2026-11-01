@@ -991,13 +991,13 @@ html.borne .b-panel .cabinets>.b-stick{height:auto!important;aspect-ratio:76/100
 
 
 /* ---------- perspective unique du panneau : on le regarde de face, un peu d'en haut, comme les boutons BC TL IG et la manette ---------- */
-html.borne .b-panel .cabinets>.cab,html.borne .b-panel .b-sub .cab{transform-origin:50% 100%;transform:rotateX(30deg)!important;
+html.borne .b-panel .cabinets>.cab,html.borne .b-panel .b-sub .cab{transform-origin:50% 100%;transform:none!important;
   box-shadow:0 0 0 2px #050505,inset 0 1px 0 rgba(255,255,255,.16),0 9px 0 #0a0908,0 10px 0 #000,0 16px 20px rgba(0,0,0,.55)!important}
-html.borne .b-panel .cabinets>.cab:nth-child(1),html.borne .b-panel .cabinets>.cab:last-child{transform:rotateX(30deg) translateY(14px)!important}
-html.borne .b-panel .cab.b-down{scale:1!important;transform:rotateX(30deg) translateY(6px)!important;box-shadow:0 0 0 2px #050505,inset 0 1px 0 rgba(255,255,255,.1),0 3px 0 #0a0908,0 4px 0 #000,0 7px 10px rgba(0,0,0,.5)!important}
-html.borne .b-panel .cabinets>.cab:nth-child(1).b-down,html.borne .b-panel .cabinets>.cab:last-child.b-down{transform:rotateX(30deg) translateY(20px)!important}
+html.borne .b-panel .cabinets>.cab:nth-child(1),html.borne .b-panel .cabinets>.cab:last-child{transform:none!important}
+html.borne .b-panel .cab.b-down{scale:1!important;transform:translateY(3px)!important;box-shadow:0 0 0 2px #050505,inset 0 1px 0 rgba(255,255,255,.1),0 3px 0 #0a0908,0 4px 0 #000,0 7px 10px rgba(0,0,0,.5)!important}
+html.borne .b-panel .cabinets>.cab:nth-child(1).b-down,html.borne .b-panel .cabinets>.cab:last-child.b-down{transform:translateY(3px)!important}
 html.borne .b-panel .cab.b-up{animation:none!important}
-html.borne .b-plate .b-badge{transform:rotateX(30deg)!important;box-shadow:0 0 0 1px #000,0 0 0 3px #a8885a,0 0 0 4px #4a3a24,inset 0 1px 0 rgba(255,255,255,.08),0 4px 0 #2a1e10,0 8px 12px rgba(0,0,0,.55)!important}
+html.borne .b-plate .b-badge{transform:none!important;box-shadow:0 0 0 1px #000,0 0 0 3px #a8885a,0 0 0 4px #4a3a24,inset 0 1px 0 rgba(255,255,255,.08),0 4px 0 #2a1e10,0 8px 12px rgba(0,0,0,.55)!important}
 
 /* ---------- bloc son refait : une fenêtre d'affichage sous verre fumé (fluorescent ambre, trame de points), deux touches physiques à côté ---------- */
 html.borne .bar .dock:first-of-type{grid-template-columns:minmax(0,1fr) 34px 34px!important;column-gap:5px!important}
@@ -1035,8 +1035,8 @@ html.borne .b-panel::before{content:"";position:absolute;top:0;bottom:14px;z-ind
 html.borne .b-panel::after{content:"";position:absolute;left:-3.2%;right:-3.2%;bottom:0;z-index:-1;border-radius:0 0 10px 10px;
   }
 html.borne .b-panel .cabinets,html.borne .b-panel .b-sub,html.borne .b-plate{perspective:700px;perspective-origin:50% -40%}
-@media (max-width:700px){html.borne .b-panel .cabinets>.cab:nth-child(1),html.borne .b-panel .cabinets>.cab:last-child{transform:rotateX(30deg)!important}
-  html.borne .b-panel .cabinets>.cab:nth-child(1).b-down,html.borne .b-panel .cabinets>.cab:last-child.b-down{transform:rotateX(30deg) translateY(6px)!important}}
+@media (max-width:700px){html.borne .b-panel .cabinets>.cab:nth-child(1),html.borne .b-panel .cabinets>.cab:last-child{transform:none!important}
+  html.borne .b-panel .cabinets>.cab:nth-child(1).b-down,html.borne .b-panel .cabinets>.cab:last-child.b-down{transform:translateY(3px)!important}}
 
 /* ---------- l'autocollant Lore de Midjourney : le mot est dans l'image ---------- */
 html.borne .b-lore .b-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -1079,8 +1079,8 @@ html.borne .b-knobw{-webkit-tap-highlight-color:transparent}
 html.borne #snd.b-knob[data-pos="1"]{transform:rotate(-10deg)}
 
 html.borne .b-row2 .menu,html.borne .b-row2{perspective:700px;perspective-origin:50% -40%}
-html.borne .b-row2 .menu a{transform:rotateX(34deg);transform-origin:50% 70%}
-html.borne .b-row2 .menu a.b-down{transform:rotateX(34deg) translateY(3px)!important;scale:1!important}
+html.borne .b-row2 .menu a{transform:none;transform-origin:50% 70%}
+html.borne .b-row2 .menu a.b-down{transform:translateY(3px)!important;scale:1!important}
 
 /* ---------- gros plan sur la Koin ---------- */
 html.borne .b-kveil{position:fixed;inset:0;z-index:99990;pointer-events:none;background:radial-gradient(circle at 50% 50%,rgba(255,180,60,.16),rgba(0,0,0,.55) 70%)}

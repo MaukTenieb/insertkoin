@@ -633,16 +633,15 @@
   knob();
 })();
 
-/* vieillissement du formica (décisions de Mauk Tenieb, 30 et 31 oct.) : la borne s'use avec le temps, d'un palier tous les deux ou trois jours
+/* vieillissement du formica (décisions de Mauk Tenieb, 30 oct. à 1er nov. 04 h 01) : la borne gagne un palier d'usure toutes les deux visites
    (neuve, légère, moyenne, forte), puis le cycle recommence ; le bouton SKIN la remet à neuf. Le skin métal reste tel quel.
-   Le temps se compte dans le navigateur du visiteur, depuis sa première visite. */
-(function(){var K='borne.usure2',d=document.documentElement,DAY=864e5;
-  function get(){try{return JSON.parse(localStorage.getItem(K)||'null');}catch(e){return null;}}
-  function put(o){try{localStorage.setItem(K,JSON.stringify(o));}catch(e){}}
-  function fresh(){var o={t0:Date.now(),st:[0,1,2,3].map(function(){return Math.round((2+Math.random())*DAY);})};put(o);return o;}
-  function tier(o){var e=Date.now()-o.t0,cyc=o.st.reduce(function(a,b){return a+b;},0);e=e%cyc;for(var k=0;k<4;k++){if(e<o.st[k])return k;e-=o.st[k];}return 0;}
+   Les visites se comptent dans le navigateur du visiteur (localStorage) ; sans stockage : palier 0. */
+(function(){var K='borne.visites',d=document.documentElement,PAS=2,NIV=4;
+  function get(){try{var n=parseInt(localStorage.getItem(K),10);return n>0?n:0;}catch(e){return 0;}}
+  function put(n){try{localStorage.setItem(K,String(n));}catch(e){}}
+  function tier(n){return n>0?Math.floor((n-1)/PAS)%NIV:0;}
   function show(t){if(t)d.dataset.usure=String(t);else delete d.dataset.usure;}
-  var o=get()||fresh();show(tier(o));setInterval(function(){show(tier(get()||o));},36e5);
-  /* aperçu pour l'auteur : ?usure=1, 2 ou 3 montre un palier sans toucher au temps, avec le skin bois */
+  var n=get()+1;put(n);show(tier(n));
+  /* aperçu pour l'auteur : ?usure=1, 2 ou 3 montre un palier sans toucher au compteur, avec le skin bois */
   try{var q=/[?&]usure=([0-3])/.exec(location.search);if(q){d.dataset.skin='bois';show(+q[1]);}}catch(e){}
-  window.__borneUsure=function(){o=fresh();show(0);};})();
+  window.__borneUsure=function(){put(1);show(0);};})();
