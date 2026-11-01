@@ -12,10 +12,6 @@
     setInterval(function(){var h=root.dataset.habit||'repos',c=INK[h]||INK.arcade,dim=!!document.querySelector('.bar .brand.b-dim');
       s.style.setProperty('--sp',c);m.classList.toggle('b-off',dim);s.classList.toggle('b-hi',!!root.dataset.prog);},500);}
   mount();})();
-/* la tranche peinte des flancs : la bande de rayures de chaque côté du meuble, en miroir, sur toute la hauteur */
-(function(){function mount(){var w=document.querySelector('.wrap');if(!w){setTimeout(mount,600);return;}if(w.querySelector('.b-edgeart'))return;
-  ['l','r'].forEach(function(s){var e=document.createElement('i');e.className='b-edgeart b-edgeart-'+s;e.setAttribute('aria-hidden','true');w.appendChild(e);});}
-  mount();})();
 /* l'aimant de Dekonect dessiné en fer à cheval rouge, pôles d'acier, reflet ; sans lignes de champ (Mauk Tenieb, 30 oct. : « toujours a minima ») */
 (function(){function go(){var b=document.querySelector('.b-dekonect');if(!b){setTimeout(go,600);return;}if(b._art)return;b._art=1;
   b.innerHTML='<svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="bmg" x1="0" x2="1"><stop offset="0" stop-color="#7a1210"/><stop offset=".35" stop-color="#e0443a"/><stop offset=".6" stop-color="#c9302a"/><stop offset="1" stop-color="#6a0e0c"/></linearGradient><linearGradient id="bms" x1="0" x2="1"><stop offset="0" stop-color="#6a6e74"/><stop offset=".45" stop-color="#f2f4f6"/><stop offset="1" stop-color="#7a7e84"/></linearGradient></defs>'+
