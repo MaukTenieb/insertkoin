@@ -553,6 +553,20 @@ html.borne .b-bezel .b-lore.b-stuck{position:absolute;z-index:6;}
 html.borne .b-bezelfoot{justify-content:space-between}
 html.borne .b-plant{width:auto!important;display:flex;align-items:flex-end}
 html.borne .b-plant img{height:100%;width:auto;display:block}
+/* la plante vivante : le pot reste, le feuillage (même image, découpée) pousse, s'épaissit, verdit, se taille ; l'assoiffée se fond dessus au fil du manque de soin */
+html.borne .b-plant{position:relative}
+html.borne .b-plant .p-u{display:block;position:relative;height:100%}
+html.borne .b-plant .p-u.p-x{position:absolute;left:0;top:0;width:100%;opacity:clamp(0,calc((var(--pn,0) - .12) * 1.25),1);transition:opacity 2s}
+html.borne .b-plant .p-pot{display:block;height:100%;width:auto;clip-path:inset(55% 0 0 0)}
+html.borne .b-plant .p-fo{position:absolute;left:0;top:0;width:100%;height:100%;clip-path:inset(0 0 34% 0);pointer-events:none;transition:filter 1.6s}
+html.borne .b-plant .p-mid{position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:50% 66%;
+  transform:scale(calc(1 + .3 * var(--pg,0)),calc(1 + .3 * var(--pg,0) - .1 * var(--pn,0))) rotate(calc(var(--pn,0) * -3deg));transition:transform 1.8s}
+html.borne .b-plant .p-m,html.borne .b-plant .p-dn{position:absolute;left:0;top:0;width:100%;height:100%;display:block;
+  filter:saturate(calc(1 + .5 * var(--pd,0) - .5 * var(--pn,0))) brightness(calc(.97 + .08 * var(--pd,0) - .1 * var(--pn,0))) contrast(calc(1 + .12 * var(--ps,0))) sepia(calc(.4 * var(--pn,0)));
+  transition:filter 1.6s,clip-path 1.6s,opacity 1.6s}
+html.borne .b-plant .p-m{clip-path:ellipse(calc(75% - 29% * var(--ps,0)) calc(80% - 30% * var(--ps,0)) at 50% 55%)}
+html.borne .b-plant .p-dn{transform:translate(1%,-2%) scaleX(-1);clip-path:inset(0 0 42% 0);opacity:calc(.8 * var(--pd,0) * (1 - var(--pn,0)))}
+html.borne .b-pot.b-wet .b-plant .p-fo{filter:saturate(1.15) brightness(1.04)}
 @media (max-width:700px){
   html.borne .b-panel .cabinets{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;}
   html.borne .b-panel .cabinets>.cab:nth-child(1){grid-area:1/1;}html.borne .b-panel .cabinets>.cab:nth-child(2){grid-area:1/3}
@@ -715,10 +729,11 @@ html.borne #home .copy b{font-weight:500;color:inherit}
 
 /* ---------- 8. la porte : la porte a monnayeur sur l'axe du meuble, les trois molettes sur une plaque de la meme tole, a sa droite ---------- */
 html.borne .wrap{container:cab / inline-size}
-html.borne .b-door{display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;column-gap:var(--s4);row-gap:var(--s4);
+html.borne .b-doorrow{display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;column-gap:var(--s4);row-gap:var(--s4);
   width:100%!important;max-width:100%!important;margin:var(--s5) 0 0!important;padding:0 var(--inset)!important;box-sizing:border-box;background:none!important;box-shadow:none!important}
-html.borne .b-door>.b-slot{grid-column:2;width:clamp(200px,34cqw,260px)!important}
-html.borne .b-door>.b-knobs{grid-column:3;justify-self:start}
+html.borne .wrap>.b-doorrow>.b-door{grid-column:2;max-width:none}
+html.borne .b-door>.b-slot{width:clamp(200px,34cqw,260px)!important}
+html.borne .b-doorrow>.b-knobs{grid-column:3;justify-self:start}
 html.borne .b-knobs{gap:var(--s3)!important;padding:var(--s3) var(--s3) var(--s2);border-radius:4px;
   background:radial-gradient(circle at 7px 7px,#4e4b46 0 2px,transparent 2.6px),radial-gradient(circle at calc(100% - 7px) 7px,#4e4b46 0 2px,transparent 2.6px),
     radial-gradient(circle at 7px calc(100% - 7px),#4e4b46 0 2px,transparent 2.6px),radial-gradient(circle at calc(100% - 7px) calc(100% - 7px),#4e4b46 0 2px,transparent 2.6px),
@@ -728,8 +743,8 @@ html.borne .b-knobw{gap:var(--s1)!important}
 html.borne .b-knoblab{font-family:var(--f-eng)!important;color:var(--eng-plate)!important;font-weight:500}
 html.borne .wrap{padding-bottom:var(--s5)!important}
 @container cab (max-width:700px){
-  html.borne .b-door{grid-template-columns:minmax(0,1fr)}
-  html.borne .b-door>.b-slot,html.borne .b-door>.b-knobs{grid-column:1;justify-self:center}
+  html.borne .b-doorrow{grid-template-columns:minmax(0,1fr)}
+  html.borne .b-doorrow>.b-door,html.borne .b-doorrow>.b-knobs{grid-column:1;justify-self:center}
 }
 @media (max-width:700px){html.borne .b-door>.b-slot{width:min(240px,70vw)!important}}
 
@@ -1001,7 +1016,7 @@ html.borne .b-plate .b-badge{transform:none!important;box-shadow:0 0 0 1px #000,
 
 /* ---------- bloc son refait : une fenêtre d'affichage sous verre fumé (fluorescent ambre, trame de points), deux touches physiques à côté ---------- */
 html.borne .bar .dock:first-of-type{grid-template-columns:minmax(0,1fr) 34px 34px!important;column-gap:5px!important}
-html.borne .bar .dock:first-of-type #radio-toggle{position:relative;border-radius:3px!important;padding:0 10px!important;
+html.borne .bar .dock:first-of-type #radio-toggle{position:relative;border-radius:var(--b-kr,3px)!important;padding:0 10px!important;
   background:radial-gradient(ellipse at 50% 120%,rgba(255,150,40,.10),transparent 70%),#070605!important;
   box-shadow:inset 0 2px 4px rgba(0,0,0,.95),inset 0 0 0 1px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.14),0 -1px 0 rgba(0,0,0,.5)!important}
 html.borne .bar .dock:first-of-type #radio-toggle::after{content:"";position:absolute;inset:0;border-radius:3px;pointer-events:none;
@@ -1009,7 +1024,7 @@ html.borne .bar .dock:first-of-type #radio-toggle::after{content:"";position:abs
 html.borne .bar .dock:first-of-type #radio-toggle .motel-l{font-family:'DM Mono',monospace!important;font-weight:500;color:var(--pal-accent,#ffb54a)!important;
   text-shadow:0 0 2px #ff9a2a,0 0 8px rgba(255,140,30,.7)!important}
 html.borne .bar .dock:first-of-type #export-pl,html.borne .bar .dock:first-of-type .b-bell{position:relative;width:34px!important;height:30px!important;min-height:30px!important;padding:0!important;margin:0!important;
-  display:grid!important;place-items:center;border-radius:4px!important;cursor:pointer;
+  display:grid!important;place-items:center;border-radius:var(--b-kr,4px)!important;cursor:pointer;
   background:linear-gradient(180deg,#3a3633 0%,#22201e 55%,#171513 100%)!important;color:#d9cfbf!important;opacity:1!important;filter:none!important;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -2px 0 rgba(0,0,0,.5),0 0 0 1px #000,0 3px 0 #0b0a09,0 4px 6px rgba(0,0,0,.6)!important;
   font-family:'DM Mono',monospace!important;font-weight:600;font-size:10px!important;letter-spacing:.06em!important;text-shadow:0 -1px 0 rgba(0,0,0,.8)!important;transition:transform .06s,box-shadow .06s}
@@ -1040,7 +1055,7 @@ html.borne .b-panel .cabinets,html.borne .b-panel .b-sub,html.borne .b-plate{per
 
 /* ---------- l'autocollant Lore de Midjourney : le mot est dans l'image ---------- */
 html.borne .b-lore .b-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-html.borne .b-slot .b-lore.b-onbox,html.borne .b-lore{background:var(--i-lore) center/contain no-repeat!important;aspect-ratio:600/262;height:auto!important;padding:0!important}
+html.borne .b-slot .b-lore.b-onbox,html.borne .b-lore{aspect-ratio:600/262;height:auto!important;padding:0!important}
 html.borne .b-slot .b-lore.b-onbox{width:104px!important}
 @media (max-width:700px){html.borne .b-slot .b-lore.b-onbox{width:92px!important}}
 
@@ -1137,12 +1152,12 @@ html.borne.b-nopsy .guide,html.borne.b-nopsy .gtip{display:none!important}
 html.borne .b-copy{padding-right:max(var(--inset,12px),64px)!important}
 /* 31 oct. — Lore posé sur la caisse (la porte), plus sur la plaque de la fente */
 html.borne .b-door{position:relative}
-html.borne .b-door>.b-lore.b-onbox{position:absolute;left:var(--lx,20%);top:var(--ly,10%);z-index:6;width:84px!important;height:38px!important;font-size:.9rem!important;}
+html.borne .b-door>.b-lore.b-onbox{position:absolute;left:var(--lx,20%);top:var(--ly,10%);z-index:6;width:108px!important;height:48px!important;font-size:.9rem!important;}
 
 /* 31 oct. — la console en perspective passe devant les bandes peintes des flancs (les tiges droites traversaient ses pans obliques) */
 html.borne #home .b-panel{z-index:2}
 /* 31 oct. — la plaque des molettes tient dans la caisse (elle débordait du flanc droit sous 1500 px) */
-@media (max-width:1500px) and (min-width:701px){html.borne .b-door>.b-knobs{zoom:.86}}
+@media (max-width:1500px) and (min-width:701px){html.borne .b-doorrow>.b-knobs{zoom:.86}}
 /* bandeau du Motel Sound : chaque titre traverse la bande de droite à gauche, une occurrence à la fois, bords fondus */
 html.borne .motel-l .b-tk.b-one{display:inline-block;animation:btkone var(--tkd,10s) linear infinite}
 @keyframes btkone{from{transform:translateX(var(--tkf,200px))}to{transform:translateX(var(--tkt,-200px))}}
@@ -1185,3 +1200,13 @@ html.borne .b-door>.b-lore.b-onbox::before{content:"";position:absolute;inset:-1
 /* téléphone et tablette debout : la mention descend dans la bande du socle, centrée dans sa hauteur */
 @media (max-width:900px){html.borne:not([data-bland]) .b-copy{position:relative;top:20px}}
 @media (max-width:400px){html.borne .b-copy{padding-left:40px!important;padding-right:56px!important}}
+
+/* autocollant Lore : papier vierge teinté, mot en texte, déplacement à la main */
+html.borne .b-lore{position:relative;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none}
+html.borne .b-lore .b-paper{position:absolute;inset:0;background:var(--i-lore) center/contain no-repeat;filter:hue-rotate(var(--lh,0deg)) saturate(1.3) brightness(1.45);transition:filter .5s ease;pointer-events:none}
+html.borne .b-lore .b-word{position:relative;display:block;font-family:var(--f-sign);font-size:30px;line-height:1;letter-spacing:.05em;text-transform:uppercase;color:#f6ead0;-webkit-text-stroke:.045em #f6ead0;paint-order:stroke fill;white-space:nowrap;pointer-events:none;transition:opacity .17s ease,transform .17s ease;
+  text-shadow:.03em 0 0 #1b0b06,-.03em 0 0 #1b0b06,0 .03em 0 #1b0b06,0 -.03em 0 #1b0b06,.04em .04em 0 #1b0b06,.06em .06em 0 #e8641c,.09em .09em 0 #e8641c,.12em .12em 0 #c24d12,.14em .14em 0 #1b0b06}
+html.borne .b-lore.b-peel .b-word{opacity:0;transform:scaleY(.1) translateY(.15em)}
+html.borne .b-lore.b-peel .b-paper{filter:hue-rotate(var(--lh,0deg)) saturate(1.3) brightness(1.7)}
+html.borne .b-lore.b-drag{cursor:grabbing}
+html.borne .b-lore.b-back{transition:left .4s ease,top .4s ease}

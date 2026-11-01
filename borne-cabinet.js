@@ -34,7 +34,7 @@
   var foot=el('div','b-bezelfoot');
   var badge=el('button','b-sticker b-badge','<b>MAUK TENIEB</b>');badge.type='button';badge.setAttribute('aria-label','Mauk Tenieb');
   var menu=home.querySelector('.menu'),loreHref=((menu&&menu.querySelector('a[href*="substack"]'))||{}).href||'https://mauktenieb.substack.com';
-  var lore=el('a','b-sticker b-lore','<span class="b-sr">LORE</span>');lore.href=loreHref;lore.target='_blank';lore.rel='noopener';
+  var lore=el('a','b-sticker b-lore','<i class="b-paper" aria-hidden="true"></i><span class="b-sr">LORE</span><span class="b-word" aria-hidden="true">LORE</span>');lore.href=loreHref;lore.target='_blank';lore.rel='noopener';
   if($('koins')){$('koins').classList.add('b-credit');foot.appendChild($('koins'));}lore.classList.add('b-stuck');
   var butee=el('div','b-butee');butee.setAttribute('aria-hidden','true');
   bezel.appendChild(land);bezel.appendChild(butee);bezel.appendChild(scr);bezel.appendChild(foot);bezel.appendChild(lore);
@@ -107,7 +107,7 @@
 
   /* ---------- la porte : la fente, le son, la langue ---------- */
   var door=el('div','b-door'),slot=el('button','b-slot','<b><em>INSERT</em> <u>KOIN</u></b><i></i>');slot.type='button';slot.setAttribute('aria-label','Insert Koin · 3615 KOINS');
-  var knobs=el('div','b-knobs');door.appendChild(slot);door.appendChild(knobs);
+  var knobs=el('div','b-knobs');door.appendChild(slot);var row=el('div','b-doorrow');row.appendChild(door);row.appendChild(knobs);/* le rack de molettes est un bloc frère de la caisse, dans la rangée */
   /* le bouton SKIN : le meuble en bois, en métal, ou en jeu électromécanique des années 1960 */
   var SKINS=['bois','metal'],skin=null;/* un skin tiré au hasard à chaque arrivée ; le bouton SKIN change ensuite */
   /* première visite : un skin au hasard ; ensuite, celui que le visiteur a choisi */
@@ -122,7 +122,7 @@
     s.setProperty('--v-panneau','url('+pick(V1960.panneau)+')');s.setProperty('--v-porte','url('+p[0]+')');s.setProperty('--v-pr',p[1]);s.setProperty('--v-sx',p[2]);s.setProperty('--v-sy',p[3]);s.setProperty('--v-sw',p[4]);s.setProperty('--v-sh',p[5]);}
   variants();
   /* pièces tirées au hasard à chaque visite : l'autocollant Lore, la caméra, la manette */
-  (function(){var s=root.style;s.setProperty('--i-lore','url('+pick(['sticker-lore-a.webp','sticker-lore-b.webp'])+')');
+  (function(){var s=root.style;s.setProperty('--i-lore','url('+pick(['sticker-lore-vide-a.webp','sticker-lore-vide-b.webp'])+')');
     s.setProperty('--i-cam','url('+pick(['camera-a.webp','camera-c.webp'])+')');/* caméras du toit : la webcam à pied et lentille bleue, ou la compacte Korhogo (décision de Mauk Tenieb, 30 oct., 22 h 40) */var mt='manette-a.webp';/* la manette courte, à embase (décision de Mauk Tenieb, 30 oct., 23 h 33 : plus réaliste) */s.setProperty('--i-stick','url('+mt+')');s.setProperty('--stk-cut',mt==='manette-a.webp'?'50%':'76%');s.setProperty('--ball-cut',mt==='manette-a.webp'?'39.5%':'37.5%');})();
   var sw=el('div','b-knobw'),sb=el('button','b-knob b-skin');sb.type='button';sb.setAttribute('aria-label','Skin');sb.dataset.pos=SKINS.indexOf(skin);
   sw.appendChild(sb);sw.appendChild(el('span','b-knoblab','🧤'));knobs.appendChild(sw);
@@ -140,7 +140,7 @@
     var sync=function(){var t=(b.textContent||'').toUpperCase();b.dataset.on=(p[0]==='snd'?/ON/.test(t):/FR/.test(t))?'1':'0';};sync();
     new MutationObserver(sync).observe(b,{childList:true,characterData:true,subtree:true});});
   if($('kal'))door.appendChild($('kal'));
-  wrap.appendChild(door);
+  wrap.appendChild(row);
   /* le copyright, petit, tout en bas du meuble */
   var cp=document.querySelector('#home .copy');if(cp){cp.classList.add('b-copy');wrap.appendChild(cp);}
   var SL=['KOIN','KINOS',"O'SKIN"],si=0,kw=slot.querySelector('u');
@@ -294,11 +294,23 @@
 
   /* ---------- l'entretien de la plante : l'eau, le soleil, la taille ; elle s'en souvient d'une visite à l'autre ----------
      sans eau depuis quatre jours ou sans soleil depuis six, elle s'affaisse et jaunit ; chaque taille la rend plus touffue, jusqu'à trois. */
-  var DAY=864e5,cs=function(){var c={};try{c=JSON.parse(localStorage.getItem('borne.plant')||'{}')||{};}catch(e){}var n=Date.now();
-    if(!c.water)c.water=n;if(!c.sun)c.sun=n;if(c.cut==null)c.cut=0;return c;};
-  function health(){var c=cs(),n=Date.now();return Math.max(0,Math.min(1,1.25-Math.max((n-c.water)/(4*DAY),(n-c.sun)/(6*DAY))));}
+  var DAY=864e5,CL=function(x){return Math.max(0,Math.min(1,x));};
+  /* état stocké (borne.plant) : water, sun (dernier soin), cut (tailles, 0 à 3), cutAt, d (densité 0..1), g (pousse 0..1), t (dernier relevé), v (dernière visite).
+     Les valeurs d et g déclinent lentement avec le temps ; cs() rend l'état déjà décliné. */
+  var cs=function(){var c={};try{c=JSON.parse(localStorage.getItem('borne.plant')||'{}')||{};}catch(e){}var n=Date.now();
+    if(!c.water)c.water=n;if(!c.sun)c.sun=n;if(c.cut==null)c.cut=0;if(!c.cutAt)c.cutAt=0;if(c.t==null)c.t=n;if(!c.v)c.v=0;
+    var dt=Math.max(0,(n-c.t)/DAY),dry=Math.max((n-c.water)/(4*DAY),(n-c.sun)/(6*DAY));
+    c.d=CL((c.d==null?.2:c.d)-.06*dt);c.g=CL((c.g==null?.1:c.g)-.012*dt*(dry>.5?1:.25));c.t=n;return c;};
+  function save(c){try{localStorage.setItem('borne.plant',JSON.stringify(c));}catch(_){}}
+  /* manque de soin : progressif, de 0 (soignée) à 1 (assoiffée, jamais morte) ; l'eau compte après deux jours, le soleil après trois */
+  function neglect(c){var n=Date.now();return CL((Math.max((n-c.water)/(4*DAY),(n-c.sun)/(6*DAY))-.5)/1.5);}
+  function health(){return 1-neglect(cs());}
+  /* une visite (au plus une toutes les quatre heures) : bien soignée, elle pousse un peu ; négligée, elle recule un peu */
+  (function visit(){var c=cs(),n=Date.now();if(n-c.v<4*36e5)return;c.v=n;c.g=CL(c.g+(neglect(c)<.3?.015:-.01));save(c);})();
   pot.addEventListener('click',function(e){var b=e.target.closest('[data-care]');if(!b){pot.classList.toggle('open');return;}
-    var c=cs(),a=b.dataset.care;if(a==='cut')c.cut=Math.min(3,c.cut+1);else c[a]=Date.now();try{localStorage.setItem('borne.plant',JSON.stringify(c));}catch(_){}
+    var c=cs(),a=b.dataset.care,n=Date.now();
+    if(a==='cut'){c.cut=Math.min(3,c.cut+1);c.cutAt=n;}else if(a==='water'){c.water=n;c.d=CL(c.d+.3);}else{c.sun=n;c.g=CL(c.g+.12);}
+    save(c);
     try{a==='water'?IK().tone(520,.18,'sine',.03,-200):a==='sun'?IK().tone(880,.25,'triangle',.025,300):IK().tone(1500,.04,'square',.02);}catch(_){}
     pot.classList.remove('fx-water','fx-sun','fx-cut');void pot.offsetWidth;pot.classList.add('fx-'+a);lastM=-1;tick();});
   pot.addEventListener('mouseleave',function(){pot.classList.remove('open');});
@@ -310,7 +322,12 @@
     7:[3,0,0,'#9fd36a',0,0],8:[6,3,0,'#6fb04a','#f7a8c8',0],9:[8,5,0,'#4f9a3a','#fff1a8',0],10:[8,2,0,'#3f8030','#ffd54f',0],11:[8,0,2,'#3f7a2e','#9ccc65',0],
     12:[7,0,5,'#4a7a30','#e0442e',0],13:[6,0,3,'#7a8a30','#e0442e',0]};
   var PIMG={7:'germinal',8:'floreal',9:'floreal',10:'messidor',11:'messidor',12:'fructidor',1:'fructidor',13:'fructidor',2:'brumaire',3:'brumaire',4:'brumaire',5:'brumaire',6:'brumaire'};
-  function plantImg(r){var m=r?r.month:2,n=health()<.5?'assoiffee':PIMG[m]||'brumaire';return '<img alt="" src="plante-'+n+'.webp">';}
+  /* la plante : deux piles d'images existantes (le mois, puis la plante assoiffée qui se fond dessus selon le manque de soin) ; le pot reste, le feuillage se redresse, s'épaissit, verdit, se taille par transformations et filtres */
+  function unit(src,x){return '<span class="p-u'+(x?' p-x':'')+'"><img class="p-pot" alt="" src="'+src+'"><span class="p-fo"><span class="p-mid">'+(x?'':'<img class="p-dn" alt="" src="'+src+'">')+'<img class="p-m" alt="" src="'+src+'"></span></span></span>';}
+  function plantRender(r){var m=r?r.month:2,c=cs(),nn=neglect(c),n=Date.now(),ps=Math.max(CL(1-(n-c.cutAt)/(12*DAY))*(c.cutAt?1:0),.2*c.cut*(c.cutAt?1:0));
+    var st=plant.style;st.setProperty('--pd',c.d.toFixed(3));st.setProperty('--pg',c.g.toFixed(3));st.setProperty('--pn',nn.toFixed(3));st.setProperty('--ps',ps.toFixed(3));
+    plant.dataset.dry=nn>.5?'1':'';
+    if(plant.dataset.mk!==String(m)){plant.dataset.mk=String(m);plant.innerHTML=unit('plante-'+(PIMG[m]||'brumaire')+'.webp')+unit('plante-assoiffee.webp',1);}}
   function bornePlant(r){var m=r?r.month:2,d=r?r.day:1,p=P[m]||P[2],f=Math.min(1,(d||1)/30),s='',hl=health(),ex=cs().cut,droop=(1-hl)*35;
     var grow=m===7?.45+.55*f:m===6?.4:1,H=48*grow*(.8+.2*hl),L=(m===7?Math.max(1,Math.round(p[0]*f)):p[0])+(p[0]?ex:0);
     var pts=[];for(var i=0;i<9;i++){var t=(i+1)/10;pts.push([60+Math.sin(t*3)*5,62-t*H]);}
@@ -333,8 +350,12 @@
   var lastM=-1;
   function tick(){var d=new Date(),r=window.ikRep?window.ikRep(d):null,h=d.getHours(),m=d.getMinutes();
     date.firstChild.textContent=(r?(r.month===13?'jour '+r.day+' des sans-culottides an '+r.year:r.day+' '+MO[r.month-1]+' '+r.year)+' · ':'')+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
-    var key=(r?r.month*40+r.day:0)+'/'+Math.round(health()*10)+'/'+cs().cut;if(key!==lastM){lastM=key;plant.innerHTML=plantImg(r);plant.title=r?MO[r.month-1]:'';}}
+    var c0=cs(),key=(r?r.month*40+r.day:0)+'/'+Math.round(c0.d*50)+'/'+Math.round(c0.g*50)+'/'+Math.round(neglect(c0)*50)+'/'+c0.cut+'/'+Math.round((Date.now()-c0.cutAt)/(DAY/4));if(key!==lastM){lastM=key;plantRender(r);plant.title=r?MO[r.month-1]:'';}}
   tick();setInterval(tick,15000);
+  /* taille de la plante : 8,5 % de la hauteur du meuble (toit + corps), posée sur le toit ; le toit prend cette hauteur (--p2h) */
+  function plantSize(){var w=document.querySelector('.wrap');if(!w)return;var h=w.offsetHeight;if(!h)return;
+    document.documentElement.style.setProperty('--p2h',Math.max(48,Math.round(h*.093))+'px');}
+  plantSize();addEventListener('resize',plantSize);try{new ResizeObserver(plantSize).observe(document.querySelector('.wrap'));}catch(_){}setTimeout(plantSize,1500);
 
   /* ---------- Échap vaut Baku Boom, partout, même dans les programmes en cadre ; un programme qui s'en sert d'abord (fermer un tiroir, quitter une partie d'échecs) garde la main ---------- */
   function escHome(e){if(e.key!=='Escape'||e.defaultPrevented)return;if(document.querySelector('.b-full')||document.pointerLockElement)return;
@@ -424,9 +445,9 @@
   /* l'autocollant Lore, collé au hasard n'importe où sur la caisse à pièces, de travers (Mauk Tenieb, 31 oct. : il ne fait pas partie de la plaque de la fente) */
   (function(){var slot=document.querySelector('.b-slot');if(!slot)return;
     lore.addEventListener('click',function(e){e.stopPropagation();});
-    function place(){if(!slot.offsetWidth){setTimeout(place,300);return;}var P=slot.getBoundingClientRect(),door=slot.closest('.b-door')||slot.parentElement,S=door.getBoundingClientRect(),avoid=[];var BL=document.documentElement.hasAttribute('data-bland')&&!getComputedStyle(document.documentElement).getPropertyValue('--r-S');[slot.querySelector('b'),slot.querySelector('i')].filter(Boolean).forEach(function(x){var r=x.getBoundingClientRect();for(var z=0;z<(BL?30:6);z++)avoid.push({left:r.left-8,top:r.top-8,right:r.right+8,bottom:r.bottom+8});});
+    function place(){if(!slot.offsetWidth){setTimeout(place,300);return;}if(lore._moved){if(!restore())clampLore();return;}var P=slot.getBoundingClientRect(),door=slot.closest('.b-door')||slot.parentElement,S=door.getBoundingClientRect(),avoid=[];var BL=document.documentElement.hasAttribute('data-bland')&&!getComputedStyle(document.documentElement).getPropertyValue('--r-S');[slot.querySelector('b'),slot.querySelector('i')].filter(Boolean).forEach(function(x){var r=x.getBoundingClientRect();for(var z=0;z<(BL?30:6);z++)avoid.push({left:r.left-8,top:r.top-8,right:r.right+8,bottom:r.bottom+8});});
       /* partout (Mauk Tenieb, 31 oct., 8 h 50) : LORE collé au hasard sur la caisse à pièces, la fenêtre de la fente toujours nue ; l'ancien placement sert de repli */
-      if(landPlace(P,S,door,BL))return;
+      if(landPlace(P,S,door,BL)){if(!restore())setTimeout(settle,60);return;}
       /* repli, hors du téléphone couché : à cheval sur le bord gauche de la plaque, à mi-hauteur */
       if(!BL){var w0=lore.offsetWidth||84,h0=lore.offsetHeight||38;lore.classList.remove('b-stuck');lore.classList.add('b-onbox');
         lore.style.setProperty('--lx',(P.left-S.left-w0/2).toFixed(1)+'px');lore.style.setProperty('--ly',(P.top-S.top+P.height/2-h0/2).toFixed(1)+'px');
@@ -457,12 +478,12 @@
       var lb=slot.querySelector('b'),Lr=lb&&lb.getBoundingClientRect(),LB=Lr&&{l:Lr.left-(BL?0:4),t:Lr.top-(BL?0:4),r:Lr.right+(BL?0:4),b:Lr.bottom+(BL?0:4)},LA=LB?(LB.r-LB.l)*(LB.b-LB.t):0;
       /* la serrure (en % de la plaque), libre à 4 px */
       var KHp={bois:[60,62,86,92],metal:[66,58,86,86]}[sk]||[60,62,86,92],KH={l:P.left+P.width*KHp[0]/100-4,t:P.top+P.height*KHp[1]/100-4,r:P.left+P.width*KHp[2]/100+4,b:P.top+P.height*KHp[3]/100+4},PL={l:P.left,t:P.top,r:P.right,b:P.bottom};
-      var kn=document.querySelector('.b-door .b-knobs'),KR=kn&&kn.getBoundingClientRect(),KN=KR&&{l:KR.left-4,t:KR.top-4,r:KR.right+4,b:KR.bottom+4};
+      var kn=document.querySelector('.b-knobs'),KR=kn&&kn.getBoundingClientRect(),KN=KR&&{l:KR.left-4,t:KR.top-4,r:KR.right+4,b:KR.bottom+4};
       var pn=document.querySelector('#home .b-panel'),bz=document.querySelector('#home .b-bezel'),WR=document.querySelector('.wrap').getBoundingClientRect();
       var top=(pn?pn.getBoundingClientRect().bottom:P.top)+3,bot=(BL?Math.min(innerHeight,WR.bottom):Math.min(WR.bottom,P.bottom+P.height*.12))-3,lft=Math.max(S.left,BL&&bz?bz.getBoundingClientRect().right:WR.left+8)+3,rgt=Math.min(S.right,WR.right-8)-3;
       /* LORE au hasard sur la caisse : la fenêtre de la fente nue (6 px), l'étiquette couverte à 15 % au plus, 45 % de sa largeur au plus hors de la plaque, sur le bois de la caisse, sous le rebord du panneau */
       /* 0,6 au plus bas sous 800 px de large, et en bois jusqu'à 900 px (décision du 31 oct.) */
-      var sc=!BL?[1,.9,.8]:(innerWidth<800||(sk==='bois'&&innerWidth<900))?[.8,.75,.6,.5]:[.8,.75,.6];
+      var sc=!BL?[1,.9,.8]:(innerWidth<800||(sk==='bois'&&innerWidth<900))?[1,.9,.8,.7,.6,.5]:[1,.9,.8,.7,.6];
       for(var i=0;i<sc.length;i++){var W=w*sc[i]+4,H=h*sc[i]+6,C=[];
         for(var x=lft;x<=rgt-W;x+=2){var out=Math.max(0,P.left-x)+Math.max(0,x+W-P.right);if(out>.45*W)continue;
           for(var y=top;y<=bot-H;y+=2){if(ov(O,x,y,W,H)||(KN&&ov(KN,x,y,W,H))||(LB&&ov(LB,x,y,W,H)>0))continue;
@@ -484,6 +505,50 @@
     setTimeout(place,500);
     /* la caisse change de taille (mesure de l'écran, téléphone couché, skin) : l'autocollant se recolle sur sa nouvelle place */
     if(window.ResizeObserver){var rsT,rs0='',RO=new ResizeObserver(function(){var r=slot.getBoundingClientRect(),dr=(slot.closest('.b-door')||slot).getBoundingClientRect(),k=Math.round(r.width)+'x'+Math.round(r.height)+'/'+Math.round(dr.width)+'x'+Math.round(dr.height)+'/'+Math.round(r.left-dr.left)+'/'+Math.round(r.top-dr.top)+(document.documentElement.hasAttribute('data-bland')?'L':'');if(k===rs0)return;rs0=k;clearTimeout(rsT);rsT=setTimeout(place,350);});RO.observe(slot);RO.observe(slot.closest('.b-door')||slot);}
+    /* le mot de l'autocollant : LORE le plus souvent, Tales, Korhogo ou Diegesis de temps en temps, comme l'enseigne qui change de nom ; le papier change de teinte ; il se déplace à la main */
+    (function(){var W=['Tales','Korhogo','Diegesis'],H=[0,35,150,195,245,290,320],cw='Lore',ch=0,wd=lore.querySelector('.b-word'),sr=lore.querySelector('.b-sr'),RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+      function fit(){var w=lore.offsetWidth,h=lore.offsetHeight;if(!w||!h)return;wd.style.fontSize='100px';var w1=wd.offsetWidth||1;wd.style.fontSize=Math.max(8,Math.min(100*.76*w/w1,.5*h/.7)).toFixed(1)+'px';}
+      function show(t,hue){cw=t;wd.textContent=t;sr.textContent=t;lore.style.setProperty('--lh',hue+'deg');ch=hue;fit();}
+      /* tirage : Lore 64 %, Tales, Korhogo ou Diegesis 12 % chacun ; teinte prise dans la liste, jamais deux fois de suite */
+      function tick(){var t=Math.random()<.64?'Lore':W[(Math.random()*W.length)|0],o=H.filter(function(x){return x!==ch;}),hue=o[(Math.random()*o.length)|0];
+        if(RM){show(t,hue);}else{lore.classList.add('b-peel');setTimeout(function(){show(t,hue);},170);setTimeout(function(){lore.classList.remove('b-peel');},420);}
+        setTimeout(tick,20000+Math.random()*40000);}
+      lore._fit=fit;lore._tick=tick;fit();setTimeout(fit,700);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);setTimeout(tick,20000+Math.random()*40000);
+      /* glisser à la main : clic simple = lien ; au-delà de 6 px = déplacement ; l'aimant Dekonect ramène l'autocollant s'il est lâché dessus */
+      var st=null;lore.draggable=false;lore.addEventListener('dragstart',function(e){e.preventDefault();});
+      lore.addEventListener('pointerdown',function(e){if(!lore.classList.contains('b-onbox')||(e.button&&e.button!==0))return;lore._drag=false;st={x:e.clientX,y:e.clientY,l:lore.offsetLeft,t:lore.offsetTop,id:e.pointerId};});
+      lore.addEventListener('pointermove',function(e){if(!st||e.pointerId!==st.id)return;var dx=e.clientX-st.x,dy=e.clientY-st.y;
+        if(!lore._drag){if(Math.hypot(dx,dy)<=6)return;lore._drag=true;lore.classList.add('b-drag');try{lore.setPointerCapture(e.pointerId);}catch(x){}}
+        lore.style.setProperty('--lx',(st.l+dx).toFixed(1)+'px');lore.style.setProperty('--ly',(st.t+dy).toFixed(1)+'px');lore._moved=true;clampLore();});
+      function end(e){if(!st||(e&&e.pointerId!==st.id))return;var was=lore._drag;lore.classList.remove('b-drag');
+        if(was){var r=lore.getBoundingClientRect(),back=hit(r,zones())||['.b-dekonect','.b-knobs'].some(function(q){var d=document.querySelector(q);if(!d||!d.offsetWidth)return false;var k=d.getBoundingClientRect();return r.left<k.right+6&&r.right>k.left-6&&r.top<k.bottom+6&&r.bottom>k.top-6;});
+          if(back){lore.classList.add('b-back');lore.style.setProperty('--lx',st.l+'px');lore.style.setProperty('--ly',st.t+'px');setTimeout(function(){lore.classList.remove('b-back');},450);}else keep();}
+        st=null;}
+      lore.addEventListener('pointerup',end);lore.addEventListener('pointercancel',end);
+      lore.addEventListener('click',function(e){if(lore._drag){e.preventDefault();lore._drag=false;}},true);})();
+    /* zones interdites : fenêtre de la fente, étiquette INSERT, serrure (intersection 0, marge 3 px) ; vérifiées au repos et au relâché */
+    function zones(){var P=slot.getBoundingClientRect(),sk=document.documentElement.dataset.skin,OP={bois:[31,19,70,60],metal:[46,26,54,45]}[sk]||[31,19,70,60],KHp={bois:[60,62,86,92],metal:[66,58,86,86]}[sk]||[60,62,86,92],m=3,Z=[];
+      Z.push({l:P.left+P.width*OP[0]/100-m,t:P.top+P.height*OP[1]/100-m,r:P.left+P.width*OP[2]/100+m,b:P.top+P.height*OP[3]/100+m});
+      Z.push({l:P.left+P.width*KHp[0]/100-m,t:P.top+P.height*KHp[1]/100-m,r:P.left+P.width*KHp[2]/100+m,b:P.top+P.height*KHp[3]/100+m});
+      [slot.querySelector('b'),slot.querySelector('i')].forEach(function(x){if(x&&x.offsetWidth){var r=x.getBoundingClientRect();Z.push({l:r.left-m,t:r.top-m,r:r.right+m,b:r.bottom+m});}});return Z;}
+    /* place choisie à la main : gardée dans ce navigateur, par skin et par cadrage, en fraction de la caisse */
+    function posKey(){return (document.documentElement.dataset.skin||'')+(document.documentElement.hasAttribute('data-bland')?'L':'');}
+    function posAll(){try{return JSON.parse(localStorage.getItem('borne.lore')||'{}')||{};}catch(x){return {};}}
+    function keep(){var d=lore.closest('.b-door');if(!d||!d.offsetWidth)return;var a=posAll();a[posKey()]=[lore.offsetLeft/d.offsetWidth,lore.offsetTop/d.offsetHeight];try{localStorage.setItem('borne.lore',JSON.stringify(a));}catch(x){}}
+    function restore(){var d=lore.closest('.b-door'),v=posAll()[posKey()];if(!d||!v||!lore.classList.contains('b-onbox'))return false;var lx=lore.style.getPropertyValue('--lx'),ly=lore.style.getPropertyValue('--ly');
+      lore.style.setProperty('--lx',(v[0]*d.offsetWidth).toFixed(1)+'px');lore.style.setProperty('--ly',(v[1]*d.offsetHeight).toFixed(1)+'px');clampLore();
+      if(clearLore()){lore._moved=true;return true;}lore.style.setProperty('--lx',lx);lore.style.setProperty('--ly',ly);lore._moved=false;return false;}
+    function hit(r,Z){return Z.some(function(z){return r.left<z.r&&r.right>z.l&&r.top<z.b&&r.bottom>z.t;});}
+    function clearLore(){return !hit(lore.getBoundingClientRect(),zones());}
+    function settle(){if(!lore.classList.contains('b-onbox')||clearLore()){lore._try=0;return;}
+      if((lore._try=(lore._try||0)+1)<=8){lore._moved=false;place();return;}
+      var door=lore.closest('.b-door'),S=door.getBoundingClientRect(),Z=zones(),w=lore.offsetWidth,h=lore.offsetHeight,WR=(document.querySelector('.wrap')||document.body).getBoundingClientRect(),L=Math.max(S.left,WR.left+8),R=Math.min(S.right,WR.right-8,innerWidth),T=Math.max(S.top,0),B=Math.min(S.bottom,innerHeight),best=null;
+      [.8,.6,.5].some(function(sc){var W=w*sc+4,H=h*sc+6,C=[];for(var x=L;x<=R-W;x+=3)for(var y=T;y<=B-H;y+=3)if(!hit({left:x,top:y,right:x+W,bottom:y+H},Z))C.push([x,y,sc,W,H]);if(C.length){best=C[(Math.random()*C.length)|0];return true;}});
+      if(best){lore.style.setProperty('--lx',(best[0]+best[3]/2-w/2-S.left).toFixed(1)+'px');lore.style.setProperty('--ly',(best[1]+best[4]/2-h/2-S.top).toFixed(1)+'px');lore.style.setProperty('--ls',best[2]);lore.style.setProperty('--lr','0deg');}
+      lore._try=0;}
+    function clampLore(){var door=lore.closest('.b-door');if(!door||!lore.classList.contains('b-onbox'))return;var d=door.getBoundingClientRect(),r=lore.getBoundingClientRect(),L=Math.max(d.left,0),R=Math.min(d.right,innerWidth),T=Math.max(d.top,0),B=Math.min(d.bottom,innerHeight),dx=0,dy=0;
+      if(r.left<L)dx=L-r.left;else if(r.right>R)dx=R-r.right;if(r.top<T)dy=T-r.top;else if(r.bottom>B)dy=B-r.bottom;
+      if(dx||dy){lore.style.setProperty('--lx',(lore.offsetLeft+dx).toFixed(1)+'px');lore.style.setProperty('--ly',(lore.offsetTop+dy).toFixed(1)+'px');}}
     var RW=innerWidth;addEventListener('resize',function(){if(Math.abs(innerWidth-RW)>40){RW=innerWidth;clearTimeout(lore._rt);lore._rt=setTimeout(place,500);}});
     /* un autre skin, une autre caisse : l'autocollant se recolle hors de la fente et de son étiquette */
     new MutationObserver(function(){if(lore.classList.contains('b-onbox'))setTimeout(place,450);}).observe(document.documentElement,{attributes:true,attributeFilter:['data-skin']});})();
