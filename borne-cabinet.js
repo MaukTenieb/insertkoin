@@ -107,7 +107,7 @@
 
   /* ---------- la porte : la fente, le son, la langue ---------- */
   var door=el('div','b-door'),slot=el('button','b-slot','<b><em>INSERT</em> <u>KOIN</u></b><i></i>');slot.type='button';slot.setAttribute('aria-label','Insert Koin · 3615 KOINS');
-  var knobs=el('div','b-knobs');door.appendChild(slot);door.appendChild(knobs);
+  var knobs=el('div','b-knobs');door.appendChild(slot);var row=el('div','b-doorrow');row.appendChild(door);row.appendChild(knobs);/* le rack de molettes est un bloc frère de la caisse, dans la rangée */
   /* le bouton SKIN : le meuble en bois, en métal, ou en jeu électromécanique des années 1960 */
   var SKINS=['bois','metal'],skin=null;/* un skin tiré au hasard à chaque arrivée ; le bouton SKIN change ensuite */
   /* première visite : un skin au hasard ; ensuite, celui que le visiteur a choisi */
@@ -140,7 +140,7 @@
     var sync=function(){var t=(b.textContent||'').toUpperCase();b.dataset.on=(p[0]==='snd'?/ON/.test(t):/FR/.test(t))?'1':'0';};sync();
     new MutationObserver(sync).observe(b,{childList:true,characterData:true,subtree:true});});
   if($('kal'))door.appendChild($('kal'));
-  wrap.appendChild(door);
+  wrap.appendChild(row);
   /* le copyright, petit, tout en bas du meuble */
   var cp=document.querySelector('#home .copy');if(cp){cp.classList.add('b-copy');wrap.appendChild(cp);}
   var SL=['KOIN','KINOS',"O'SKIN"],si=0,kw=slot.querySelector('u');
@@ -457,7 +457,7 @@
       var lb=slot.querySelector('b'),Lr=lb&&lb.getBoundingClientRect(),LB=Lr&&{l:Lr.left-(BL?0:4),t:Lr.top-(BL?0:4),r:Lr.right+(BL?0:4),b:Lr.bottom+(BL?0:4)},LA=LB?(LB.r-LB.l)*(LB.b-LB.t):0;
       /* la serrure (en % de la plaque), libre à 4 px */
       var KHp={bois:[60,62,86,92],metal:[66,58,86,86]}[sk]||[60,62,86,92],KH={l:P.left+P.width*KHp[0]/100-4,t:P.top+P.height*KHp[1]/100-4,r:P.left+P.width*KHp[2]/100+4,b:P.top+P.height*KHp[3]/100+4},PL={l:P.left,t:P.top,r:P.right,b:P.bottom};
-      var kn=document.querySelector('.b-door .b-knobs'),KR=kn&&kn.getBoundingClientRect(),KN=KR&&{l:KR.left-4,t:KR.top-4,r:KR.right+4,b:KR.bottom+4};
+      var kn=document.querySelector('.b-knobs'),KR=kn&&kn.getBoundingClientRect(),KN=KR&&{l:KR.left-4,t:KR.top-4,r:KR.right+4,b:KR.bottom+4};
       var pn=document.querySelector('#home .b-panel'),bz=document.querySelector('#home .b-bezel'),WR=document.querySelector('.wrap').getBoundingClientRect();
       var top=(pn?pn.getBoundingClientRect().bottom:P.top)+3,bot=(BL?Math.min(innerHeight,WR.bottom):Math.min(WR.bottom,P.bottom+P.height*.12))-3,lft=Math.max(S.left,BL&&bz?bz.getBoundingClientRect().right:WR.left+8)+3,rgt=Math.min(S.right,WR.right-8)-3;
       /* LORE au hasard sur la caisse : la fenêtre de la fente nue (6 px), l'étiquette couverte à 15 % au plus, 45 % de sa largeur au plus hors de la plaque, sur le bois de la caisse, sous le rebord du panneau */

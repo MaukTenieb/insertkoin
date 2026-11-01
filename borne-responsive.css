@@ -128,21 +128,21 @@ html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion)
   font-size:clamp(12px,calc(1.9 * var(--r-u)),20px)!important/* !P11 */}
 
 /* caisse : la fente sur l'axe du meuble, la plaque des molettes seule à sa droite, une colonne vide en miroir à gauche */
-html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door{
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-doorrow{
   display:grid!important/* !P9 */;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;
   column-gap:calc(2 * var(--r-u));width:calc(var(--r-M) - 2 * var(--r-b))!important/* !P9 */;max-width:none!important/* !P9 */;
   margin:calc(2 * var(--r-gap)) auto 0!important/* !P9 */;padding:0 calc(3 * var(--r-u)) calc(4 * var(--r-u))!important/* !P9 */;box-sizing:border-box}
-html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door>.b-slot{
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-doorrow>.b-door>.b-slot{
   grid-column:2;grid-row:1;width:clamp(180px,calc(34 * var(--r-u)),380px)!important/* !P9 */;height:auto!important/* !P9 */}
-html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door>.b-knobs{
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-doorrow>.b-knobs{
   grid-column:3;grid-row:1;justify-self:start;display:grid;grid-template-columns:repeat(4,var(--r-knob));gap:calc(.5 * var(--r-knob))!important/* !P9 */;zoom:1!important/* !P9 */}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-knobs .b-knob{
   width:var(--r-knob)!important/* !P7 */;height:var(--r-knob)!important/* !P7 */}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-knobs .b-knoblab{
   font-size:clamp(12px,calc(1.4 * var(--r-uf)),14px)!important/* !P9 */}
 
-html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door>.b-slot b :is(em,u){font-size:max(12px,.8em)!important/* !P11 */}
-html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door>.b-slot b{
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-doorrow>.b-door>.b-slot b :is(em,u){font-size:max(12px,.8em)!important/* !P11 */}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-doorrow>.b-door>.b-slot b{
   font-size:clamp(12px,calc(2 * var(--r-u)),22px)!important/* !P11 */;white-space:nowrap}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-roof .b-care button{
   font-size:clamp(12px,calc(1.4 * var(--r-uf)),14px)!important/* !P11 */}
@@ -182,9 +182,10 @@ html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion)
 }
 /* D1 téléphone : molettes en rangée sous la fente */
 @media (orientation:portrait) and (max-aspect-ratio:3/5){
-  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door{row-gap:calc(3 * var(--r-u))}
-  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door>.b-slot{width:clamp(180px,calc(54 * var(--r-u)),380px)!important/* !P9 */}
-  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door>.b-knobs{grid-column:1 / -1;grid-row:2;justify-self:center}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-doorrow{row-gap:calc(3 * var(--r-u))}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-doorrow>.b-door>.b-slot{width:clamp(180px,calc(54 * var(--r-u)),380px)!important/* !P9 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-doorrow>.b-knobs{grid-column:1 / -1;grid-row:2;justify-self:center}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-doorrow>.b-door{grid-column:1 / -1;grid-row:1;justify-self:center}
 }
 
 /* ---------- 4. D3 pupitre : enseigne mince sur toute la largeur ; à gauche l'écran, à droite Burrows, le pied de l'écran, la console, la caisse ---------- */
@@ -216,11 +217,11 @@ html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion)
     grid-column:2;grid-row:3;width:auto;height:var(--r-hit)}
   html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) #home .b-panel{
     grid-column:2;grid-row:4;width:auto;margin:0!important/* !P9 */;padding:8px!important/* !P9 */}
-  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door{
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-doorrow{
     grid-column:2;grid-row:5;width:auto!important/* !P9 */;margin:0!important/* !P9 */;padding:0!important/* !P9 */;align-self:start}
   html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) #home .b-panel .cabinets{max-width:calc(62 * var(--r-u));row-gap:calc(2 * var(--r-u))!important/* !P11 */;margin-top:0!important/* !P9 */}
   html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) #home .b-panel .b-plate{margin-top:var(--r-gap)!important/* !P9 */}
-  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-door>.b-knobs{grid-template-columns:repeat(2,var(--r-knob));gap:4px calc(.5 * var(--r-knob))!important/* !P9 */;padding:4px 16px!important/* !P9 */}
+  html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-doorrow>.b-knobs{grid-template-columns:repeat(2,var(--r-knob));gap:4px calc(.5 * var(--r-knob))!important/* !P9 */;padding:4px 16px!important/* !P9 */}
   html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.b-copy{
     display:block!important/* !P9 */;grid-column:1 / -1;grid-row:6;width:auto;margin:0!important/* !P8 */;text-align:center}
 }
@@ -248,7 +249,7 @@ html.borne[data-r-jeu][data-prog]:not(#r1):not(#r2) .b-bezel .b-bezelfoot{
   html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2){--r-band:max(var(--r-hit),calc(5 * var(--r-uf)))}
   html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap{
     display:block!important/* !P10 */;width:calc(100vw - 2 * var(--r-g))!important/* !P10 */;max-width:none!important/* !P10 */;margin:var(--r-g) auto 0!important/* !P10 */;padding:0!important/* !P10 */;height:auto!important/* !P10 */}
-  html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2) :is(.b-land,.b-butee,.b-panel,.b-door,.b-copy){display:none!important/* !P10 */}
+  html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2) :is(.b-land,.b-butee,.b-panel,.b-door,.b-doorrow,.b-copy){display:none!important/* !P10 */}
   html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel{
     width:calc(100vw - 2 * var(--r-g))!important/* !P10 */;margin:0 auto!important/* !P10 */;padding:0!important/* !P10 */;gap:0!important/* !P10 */}
   html.borne[data-prog]:not([data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .b-bezel .b-screen{

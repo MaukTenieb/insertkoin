@@ -170,7 +170,7 @@ html.borne[data-prog] #game .hud{margin-inline:auto!important}
   html.borne:not([data-mode=device]) .wrap .bar .dock:first-of-type #radio-toggle{grid-column:1!important;grid-row:1!important;width:auto!important;min-width:0!important}
   html.borne:not([data-mode=device]) .wrap .bar .dock:first-of-type .b-bell{grid-column:2!important;grid-row:1!important}
   html.borne:not([data-mode=device]) .wrap .bar .dock:first-of-type #export-pl{grid-column:3!important;grid-row:1!important}}
-html.borne[data-prog]:not(.b-immersion) :is(#home .b-panel,.b-door,.b-dekonect){visibility:hidden!important}
+html.borne[data-prog]:not(.b-immersion) :is(#home .b-panel,.b-door,.b-doorrow,.b-dekonect){visibility:hidden!important}
 html.borne .b-sc{font-size:.76em;letter-spacing:inherit;vertical-align:baseline}
 
 /* 30 oct. — cibles tactiles de 44 px au moins, sans changer le dessin : la zone sensible déborde l'objet, invisible */
@@ -337,7 +337,7 @@ html.borne[data-prog] .b-scrhalo,html.borne.b-immersion .b-scrhalo,html.borne[da
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) #home{grid-column:1/-1;grid-row:2;display:grid!important;grid-template-columns:var(--blL) minmax(0,1fr);align-items:start;min-height:0}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) #home .b-bezel{grid-column:1;grid-row:1}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) #home .b-panel{grid-column:2;grid-row:1}
-  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .wrap>.b-door{grid-column:2;grid-row:2;align-self:end;z-index:2;margin:0 0 4px!important}
+  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .wrap>.b-doorrow{grid-column:2;grid-row:2;align-self:end;z-index:2;margin:0 0 4px!important}
   
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion):not([data-habit=fauneye]) .b-bezel .b-screen::before{height:calc(var(--gw) * .85)!important;
     border-width:calc(var(--gw) * .05) calc(var(--gw) * .08)!important}
@@ -357,14 +357,14 @@ html.borne[data-prog] .b-scrhalo,html.borne.b-immersion .b-scrhalo,html.borne[da
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-panel .cabinets>.b-stick{margin:0 2px!important}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-panel .cabinets>.cab:nth-child(1),html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-panel .cabinets>.cab:nth-child(5){transform:translateY(8px)}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-plate{margin-top:8px!important}
-  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .wrap>.b-door{display:flex!important;flex-wrap:nowrap!important;align-items:center;justify-content:flex-end;gap:10px!important;width:auto!important;max-width:100%!important;padding:0 calc(clamp(12px,1.5vw,22px) + 12px) 0 10px!important;justify-self:stretch}
+  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .wrap>.b-doorrow{display:flex!important;flex-wrap:nowrap!important;align-items:center;justify-content:flex-end;gap:10px!important;width:auto!important;max-width:100%!important;padding:0 calc(clamp(12px,1.5vw,22px) + 12px) 0 10px!important;justify-self:stretch}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion){--slr:1.83}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion)[data-skin=bois]{--slr:1.43}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-door>.b-slot{height:auto!important;width:min(calc(clamp(56px,calc(100dvh - 296px),118px) * var(--slr)),calc(var(--wc) - var(--blL) - 252px - clamp(12px,1.5vw,22px)))!important;flex:none;container-type:inline-size}
   /* l'étiquette de la fente tient dans la plaque : la taille suit la largeur de la porte */
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-door>.b-slot b{max-width:none!important;gap:.35em!important;}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-door>.b-slot b *{font-size:inherit!important;letter-spacing:inherit!important}
-  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-door>.b-knobs{flex:none;zoom:1!important;gap:6px!important;padding:7px 9px 5px!important}
+  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-doorrow>.b-knobs{flex:none;zoom:1!important;gap:6px!important;padding:7px 9px 5px!important}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-dekonect{width:48px!important;height:48px!important}
   /* cibles de 44 px et texte de 12 px au moins, dans ce cadrage où la porte entre dans la fenêtre */
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-panel .cabinets>.cab{min-height:60px!important}
@@ -382,8 +382,8 @@ html.borne[data-prog] .b-scrhalo,html.borne.b-immersion .b-scrhalo,html.borne[da
 }
 /* téléphone couché, fenêtre étroite (740 × 360) : la plaque des molettes se resserre ; la porte gagne du bois pour LORE */
 @media (orientation:landscape) and (max-height:500px) and (max-width:799px){
-  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-door>.b-knobs{gap:3px!important;padding:7px 6px 5px!important}
-  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .wrap>.b-door{padding-left:2px!important}}
+  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .b-doorrow>.b-knobs{gap:3px!important;padding:7px 6px 5px!important}
+  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .wrap>.b-doorrow{padding-left:2px!important}}
 /* 31 oct., 9 h 30 (Mauk Tenieb) : zéro décoration autour de l'écran ; la vitre imprimée disparaît, l'image prend sa place */
 html.borne .b-bezel .b-screen{border-image:none!important;border-width:0!important}
 html.borne .b-bezel .b-screen::before{display:none!important}

@@ -715,10 +715,11 @@ html.borne #home .copy b{font-weight:500;color:inherit}
 
 /* ---------- 8. la porte : la porte a monnayeur sur l'axe du meuble, les trois molettes sur une plaque de la meme tole, a sa droite ---------- */
 html.borne .wrap{container:cab / inline-size}
-html.borne .b-door{display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;column-gap:var(--s4);row-gap:var(--s4);
+html.borne .b-doorrow{display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;column-gap:var(--s4);row-gap:var(--s4);
   width:100%!important;max-width:100%!important;margin:var(--s5) 0 0!important;padding:0 var(--inset)!important;box-sizing:border-box;background:none!important;box-shadow:none!important}
-html.borne .b-door>.b-slot{grid-column:2;width:clamp(200px,34cqw,260px)!important}
-html.borne .b-door>.b-knobs{grid-column:3;justify-self:start}
+html.borne .wrap>.b-doorrow>.b-door{grid-column:2;max-width:none}
+html.borne .b-door>.b-slot{width:clamp(200px,34cqw,260px)!important}
+html.borne .b-doorrow>.b-knobs{grid-column:3;justify-self:start}
 html.borne .b-knobs{gap:var(--s3)!important;padding:var(--s3) var(--s3) var(--s2);border-radius:4px;
   background:radial-gradient(circle at 7px 7px,#4e4b46 0 2px,transparent 2.6px),radial-gradient(circle at calc(100% - 7px) 7px,#4e4b46 0 2px,transparent 2.6px),
     radial-gradient(circle at 7px calc(100% - 7px),#4e4b46 0 2px,transparent 2.6px),radial-gradient(circle at calc(100% - 7px) calc(100% - 7px),#4e4b46 0 2px,transparent 2.6px),
@@ -728,8 +729,8 @@ html.borne .b-knobw{gap:var(--s1)!important}
 html.borne .b-knoblab{font-family:var(--f-eng)!important;color:var(--eng-plate)!important;font-weight:500}
 html.borne .wrap{padding-bottom:var(--s5)!important}
 @container cab (max-width:700px){
-  html.borne .b-door{grid-template-columns:minmax(0,1fr)}
-  html.borne .b-door>.b-slot,html.borne .b-door>.b-knobs{grid-column:1;justify-self:center}
+  html.borne .b-doorrow{grid-template-columns:minmax(0,1fr)}
+  html.borne .b-doorrow>.b-door,html.borne .b-doorrow>.b-knobs{grid-column:1;justify-self:center}
 }
 @media (max-width:700px){html.borne .b-door>.b-slot{width:min(240px,70vw)!important}}
 
@@ -1142,7 +1143,7 @@ html.borne .b-door>.b-lore.b-onbox{position:absolute;left:var(--lx,20%);top:var(
 /* 31 oct. — la console en perspective passe devant les bandes peintes des flancs (les tiges droites traversaient ses pans obliques) */
 html.borne #home .b-panel{z-index:2}
 /* 31 oct. — la plaque des molettes tient dans la caisse (elle débordait du flanc droit sous 1500 px) */
-@media (max-width:1500px) and (min-width:701px){html.borne .b-door>.b-knobs{zoom:.86}}
+@media (max-width:1500px) and (min-width:701px){html.borne .b-doorrow>.b-knobs{zoom:.86}}
 /* bandeau du Motel Sound : chaque titre traverse la bande de droite à gauche, une occurrence à la fois, bords fondus */
 html.borne .motel-l .b-tk.b-one{display:inline-block;animation:btkone var(--tkd,10s) linear infinite}
 @keyframes btkone{from{transform:translateX(var(--tkf,200px))}to{transform:translateX(var(--tkt,-200px))}}

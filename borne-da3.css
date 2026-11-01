@@ -155,9 +155,9 @@ html.borne .b-bezelfoot .b-stick-mini i{transition:none!important}
 @media (min-width:1100px){html.borne{--scrW:max(600px,min(calc(100vw - 80px),calc((100vh - 290px) * 4 / 3)))}}
 /* porte : fente et molettes côte à côte dès que le meuble a la place (600 px), au lieu de s'empiler */
 @container cab (min-width:600px) and (max-width:700px){
-  html.borne .b-door{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important}
-  html.borne .b-door>.b-slot{grid-column:2!important}
-  html.borne .b-door>.b-knobs{grid-column:3!important;justify-self:start!important}}
+  html.borne .b-doorrow{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important}
+  html.borne .b-doorrow>.b-door{grid-column:2!important}
+  html.borne .b-doorrow>.b-knobs{grid-column:3!important;justify-self:start!important}}
 /* les bandes invisibles des bords de l'écran ne volent plus les gestes des jeux : on change de programme par les points sous l'écran, la manette ou PageUp/PageDown */
 html.borne .b-edge{display:none!important}
 /* lisibilité des écrans : lignes de balayage et vignettage allégés ; dans un programme, l'image reste nette jusqu'aux bords */

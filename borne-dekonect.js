@@ -47,7 +47,7 @@
       if(pl&&pl.offsetHeight){var pr=pl.getBoundingClientRect();w.style.setProperty('--dkb',Math.round(wr.bottom-pr.bottom-(b.offsetHeight-pr.height)/2)+'px');b.classList.remove('b-dklow');return;}
       w.style.setProperty('--dkb',Math.max(6,Math.round(gap+10))+'px');b.classList.remove('b-dklow');
       /* trop près des molettes : il descend sur le socle, toujours en bas à droite */
-      var k=d.querySelector('.b-knobs'),a=b.getBoundingClientRect(),q=k&&k.getBoundingClientRect();
+      var k=document.querySelector('.b-knobs'),a=b.getBoundingClientRect(),q=k&&k.getBoundingClientRect();
       if(q&&q.width&&a.left<q.right+10&&a.right>q.left&&a.top<q.bottom&&a.bottom>q.top){w.style.setProperty('--dkb',Math.max(4,Math.round((gap-a.height)/2))+'px');b.classList.add('b-dklow');}}
     seat();addEventListener('resize',seat);setTimeout(seat,1500);window.__borneSeat=seat;}
   mount();
