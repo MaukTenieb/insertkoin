@@ -1291,3 +1291,7 @@ html.borne .b-bezelfoot #koins#koins .b-kicon{width:14px!important;height:14px!i
 html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2){column-gap:24px!important;row-gap:24px!important}
 @media (max-width:700px) and (orientation:portrait){html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2){grid-template-columns:auto!important;justify-content:center!important;justify-items:center!important}
   html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2)>.b-door{grid-column:1!important;grid-row:1!important}html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2)>.b-knobs{grid-column:1!important;grid-row:2!important}}
+/* 1er nov., 12 h — zéro défilement horizontal parasite (décors en pseudo-éléments qui dépassaient de 18 à 33 px au téléphone couché) */
+html.borne .b-roof{overflow-x:clip;overflow-y:visible}
+/* 1er nov., 12 h — téléphone couché : l'enseigne prend la largeur de son nom entier */
+@media (min-width:701px){html.borne[data-bland]:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>#brand{width:auto!important;max-width:none!important;padding-inline:12px!important}}

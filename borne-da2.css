@@ -22,7 +22,7 @@ html.borne[data-skin=bois]{--flanc-img:url(skin-bois-flanc-long.webp)}
 html.borne[data-skin=metal]{--flanc-img:url(skin-metal-flanc.webp)}
 html.borne[data-skin=bois][data-usure="1"]{--flanc-img:url(skin-bois-flanc-long-u1.webp)}
 html.borne[data-skin=bois][data-usure="2"]{--flanc-img:url(skin-bois-flanc-long-u2.webp)}
-html.borne[data-skin=bois][data-usure="3"]{--flanc-img:url(skin-bois-flanc-long-u3.webp)}
+html.borne[data-skin=bois][data-usure="3"]{--flanc-img:url(skin-bois-flanc-long-u3-dechire.webp)}
 
 /* ---------- 3. les flancs : un seul panneau, sans raccord ni vis répétées ---------- */
 /* bois : la planche de skin-bois-flanc.webp, vis retirées, mise en miroir verticalement (skin-bois-flanc-long.webp), à la largeur du meuble */

@@ -498,3 +498,6 @@ html.borne .b-bezelfoot :is(.b-pfx .b-px,.b-imm)::after{inset:-7px -5px!importan
 html.borne #kg-root #bb-panel:not([style*="display: none"]):not([style*="display:none"]){grid-template-columns:max-content max-content!important;justify-content:center!important}
 /* 31 oct. — champs de saisie à 16 px au toucher (le navigateur du téléphone garde l'échelle de la page) */
 @media (pointer:coarse){html.borne :is(.vhs-find-sort,#hang-kbd,#kk-box,#kk-story){font-size:16px!important}}
+/* 1er nov., 12 h — usure du formica : l'image couvre le flanc d'un seul tenant (zéro répétition, zéro raccord qui coupe le placage autour de la caisse) ; la déchirure du palier 3 suit un bord arraché */
+html.borne.borne[data-skin=bois][data-usure]:is(:not([data-prog]),[data-mode=device],[data-habit=fauneye]) .wrap.wrap{background-size:cover!important;background-repeat:no-repeat!important;background-position:center bottom!important}
+html.borne.borne[data-skin=bois][data-usure="3"]:is(:not([data-prog]),[data-mode=device],[data-habit=fauneye]) .wrap.wrap{background-image:url(skin-bois-flanc-long-u3-dechire.webp)!important}
