@@ -882,7 +882,7 @@ html.b-charte #mem h1{font-size:clamp(56px,14vw,96px)!important}
 
 /* ---------- la manette à ressort : le ressort pilote l'angle, sans transition ; la tige s'étire un peu avec la vitesse ---------- */
 html.borne .b-stick i,html.borne .b-stick.b-grip i{transition:none!important}
-html.borne .b-stick i{transform:rotate(calc(var(--x) * 16deg)) translateY(calc(var(--y) * 3px)) scaleY(calc(1 - var(--v,0) * .04))!important}
+html.borne .b-stick i{transform:rotate(calc(var(--x) * 14deg))!important;transform-origin:50% 74%!important}/* 1er nov., 11 h : d'un bloc, sans écrasement */
 
 /* ---------- Online Applicants : une diode et un chiffre, gravés discrètement au pied de l'écran ---------- */
 html.borne .b-online{display:flex;align-items:center;gap:6px;margin:0 auto;font-family:'DM Mono',ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;pointer-events:auto;cursor:default}
@@ -1137,7 +1137,7 @@ html.borne .b-panel .cab .num,html.borne .b-store .cab .num{display:none!importa
 /* ---------- manette, révisée : socle fixe (image), tige chromée dessinée qui pivote au col du socle, boule (image) qui suit la tige
    en gardant sa lumière fixe (contre-rotation) ; l'ombre de la boule glisse au sol ---------- */
 html.borne .b-panel .cabinets>.b-stick i{background:none!important;clip-path:none!important;transform-origin:50% 74%!important;
-  transform:perspective(400px) rotateX(calc(var(--y,0) * -12deg)) rotate(calc(var(--x,0) * 15deg))!important}
+  transform:rotate(calc(var(--x,0) * 14deg))!important}/* 1er nov., 11 h : rotation plane, d'un bloc ; la perspective (rotateX) faisait ployer le haut, comme un coude cassé */
 html.borne .b-panel .cabinets>.b-stick i::before{content:"";position:absolute;inset:0;display:block!important;background:var(--i-stick) center bottom/contain no-repeat;
   clip-path:none;z-index:2}
 /* 1er nov., 05 h 13 (LISTE 59) : manette-a.webp entière, d'une seule pièce, sans coupe ; elle penche d'un bloc autour de son pivot au centre de l'anneau (74 %) */
@@ -1231,11 +1231,11 @@ html.borne .b-lore.b-back{transition:left .4s ease,top .4s ease}
   html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:not(:last-child) #radio-toggle .motel-l{font-size:12px!important}
   html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:not(:last-child) :is(#export-pl,.b-bell){flex:0 0 30px!important;width:30px!important;height:30px!important;min-width:0!important;max-width:30px!important;margin:0!important}
   html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:last-child{flex:0 0 auto!important;align-self:stretch!important;padding:0!important;width:auto!important;min-width:0!important;max-width:none!important;height:auto!important;min-height:0!important;flex-basis:48px!important;margin:0!important;border-radius:0 6px 6px 0!important;border-left:0!important}
-  html.borne[data-skin=bois]:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:last-child{flex-basis:96px!important}
+  
 }
 @media (max-width:700px){
-  html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2){grid-template-columns:minmax(0,1fr) 34px!important;column-gap:0!important}
-  html.borne[data-skin=bois]:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2){grid-template-columns:minmax(0,1fr) 68px!important}
+  html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2){grid-template-columns:minmax(0,1fr) 40px!important;column-gap:0!important}
+  
   html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:not(:last-child){border-radius:6px 0 0 6px!important;border-right:0!important;margin:0!important;width:auto!important;max-width:none!important}
   html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:last-child{border-radius:0 6px 6px 0!important;border-left:0!important;margin:0!important;width:auto!important;max-width:none!important;min-width:0!important}
   html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:not(:last-child) #radio-toggle .motel-l{font-size:12px!important}
@@ -1244,3 +1244,50 @@ html.borne .b-lore.b-back{transition:left .4s ease,top .4s ease}
   html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:not(:last-child) :is(#export-pl,.b-bell)::after{content:"";position:absolute;inset:-6px -1px}
 }
 @media (min-width:701px){html.borne[data-bland]:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2){width:100%!important;max-width:none!important;justify-self:stretch!important;padding-right:66px!important}}
+
+/* 1er nov. : lustre de l'autocollant Lore, à la forme du papier, de temps en temps */
+html.borne .b-lore .b-lustre{position:absolute;inset:0;pointer-events:none;opacity:0;-webkit-mask:var(--i-lore) center/contain no-repeat;mask:var(--i-lore) center/contain no-repeat;
+  background:linear-gradient(110deg,transparent 30%,rgba(255,250,230,.0) 38%,rgba(255,252,240,.85) 50%,rgba(255,250,230,.0) 62%,transparent 70%) -140% 0/260% 100% no-repeat;mix-blend-mode:screen}
+html.borne .b-lore.b-shine .b-lustre{animation:b-lustre 1.2s ease-out}
+@keyframes b-lustre{0%{opacity:1;background-position:-140% 0}85%{opacity:1}100%{opacity:0;background-position:140% 0}}
+@media (prefers-reduced-motion:reduce){html.borne .b-lore .b-lustre{display:none}}
+
+/* 1er nov., 10 h 50 — bloc son d'une pièce : une plaque continue sous les deux boîtes, le haut-parleur rond dans sa boîte, sans cadre propre */
+html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock{background-size:auto,var(--bk-w,100%) 100%,auto!important;background-repeat:no-repeat!important}
+html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:not(:last-child){background-position:0 0,left center,0 0!important;box-shadow:none!important}
+html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:last-child{background-position:0 0,right center,0 0!important;box-shadow:none!important;position:relative!important;overflow:hidden}
+html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:last-child::after{content:"";position:absolute;top:50%;left:50%;height:calc(100% - 10px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
+  background:url(skin-metal-grille.webp) center/190% no-repeat;box-shadow:inset 0 0 0 1px rgba(0,0,0,.7),0 1px 0 rgba(255,255,255,.12)}
+html.borne[data-skin=bois]:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:last-child::after{background:url(skin-bois-grille.webp) center/auto 330% no-repeat}
+html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2){filter:drop-shadow(0 6px 10px rgba(0,0,0,.55))}
+
+/* 1er nov., 10 h 50 — caisse et rack : le groupe entier se centre sur l'axe du meuble, 16 px d'écart */
+@media (min-width:701px){html.borne:not([data-prog]):not([data-bland]) .b-doorrow.b-doorrow:not(#r1):not(#r2){grid-template-columns:auto auto!important;justify-content:center!important;column-gap:32px!important}
+  html.borne:not([data-prog]):not([data-bland]) .b-doorrow.b-doorrow:not(#r1):not(#r2)>.b-door{grid-column:1!important}
+  html.borne:not([data-prog]):not([data-bland]) .b-doorrow.b-doorrow:not(#r1):not(#r2)>.b-knobs{grid-column:2!important}}
+
+/* 1er nov., 10 h 50 — solde de Koins : zéro trait d'encadrement, compteur plus petit */
+html.borne .b-bezelfoot #koins#koins{box-shadow:none!important;outline:0!important;border:0!important}
+html.borne .b-bezelfoot #koins#koins.b-credit::before,html.borne .b-bezelfoot #koins#koins #kn{font-size:10px!important}
+html.borne .b-bezelfoot #koins#koins .b-kicon{width:14px!important;height:14px!important}
+
+/* 1er nov., 11 h — téléphone couché de moins de 701 px : la bande de commandes reste la colonne de droite (la règle du téléphone debout l'étirait sur toute la largeur, par-dessus l'écran et les points) */
+@media (max-width:700px) and (max-height:520px) and (orientation:landscape){
+  html.borne[data-prog]:not(.b-immersion):not(#r1) .b-bezelfoot{position:fixed!important;right:6px!important;left:auto!important;top:6px!important;bottom:6px!important;width:66px!important;height:auto!important;flex-direction:column!important;flex-wrap:nowrap!important;justify-content:space-between!important}}
+@media (max-height:380px) and (orientation:landscape){
+  html.borne[data-prog]:not(.b-immersion):not(#r1) .b-bezelfoot{row-gap:2px!important;padding-top:2px!important;padding-bottom:2px!important}
+  html.borne[data-prog]:not(.b-immersion):not(#r1) .b-bezelfoot :is(.b-pfx .b-px,.b-imm,.b-boom){width:30px!important;height:30px!important;min-width:30px!important;max-width:30px!important;min-height:0!important}
+  html.borne[data-prog]:not(.b-immersion):not(#r1) .b-bezelfoot .b-pfx{gap:2px!important}
+  html.borne[data-prog]:not(.b-immersion):not(#r1) .b-bezelfoot #koins{height:30px!important;min-height:0!important}}
+
+/* 1er nov., 11 h 30 — caisse et rack, deux blocs nettement disjoints : 28 px d'écart au téléphone (l'un sous l'autre), 32 px ailleurs (côte à côte) */
+@media (max-width:700px){html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2){row-gap:28px!important}}
+@media (min-width:701px){html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2){column-gap:32px!important}}
+@media (max-width:700px) and (orientation:landscape) and (max-height:520px){
+  html.borne:not([data-prog]) .b-doorrow.b-doorrow.b-doorrow:not(#r1):not(#r2){grid-template-columns:auto!important;justify-content:center!important;justify-items:center!important;row-gap:24px!important;column-gap:0!important}
+  html.borne:not([data-prog]) .b-doorrow.b-doorrow.b-doorrow:not(#r1):not(#r2)>.b-door{grid-column:1!important;grid-row:1!important}
+  html.borne:not([data-prog]) .b-doorrow.b-doorrow.b-doorrow:not(#r1):not(#r2)>.b-knobs{grid-column:1!important;grid-row:2!important}}
+/* 1er nov., 11 h 35 — caisse et rack disjoints partout : 24 px d'écart, en ligne comme en colonne */
+html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2){column-gap:24px!important;row-gap:24px!important}
+@media (max-width:700px) and (orientation:portrait){html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2){grid-template-columns:auto!important;justify-content:center!important;justify-items:center!important}
+  html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2)>.b-door{grid-column:1!important;grid-row:1!important}html.borne:not([data-prog]) .b-doorrow.b-doorrow:not(#r1):not(#r2)>.b-knobs{grid-column:1!important;grid-row:2!important}}

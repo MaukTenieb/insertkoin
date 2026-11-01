@@ -214,11 +214,12 @@
     if(dots.hidden||!root.hasAttribute('data-prog')||root.classList.contains('b-immersion'))return;
     var d=dots.getBoundingClientRect(),ft=document.querySelector('.b-bezelfoot'),lim=innerHeight-2;if(!d.height){if(old)root.style.setProperty('--gh',old,'important');if(oldw)root.style.setProperty('--gw',oldw,'important');return;}
     if(ft){var f=ft.getBoundingClientRect();if(f.width&&f.left<d.right&&f.right>d.left&&f.bottom>d.top)lim=Math.min(lim,f.top-2);}
-    var over=d.bottom-lim;if(over>0){var g0=glass.getBoundingClientRect(),T=Math.max(160,Math.round(g0.height-over));root.style.setProperty('--gh',T+'px','important');
-      /* écran large : sa hauteur suit sa largeur ; la largeur cède alors dans la même proportion */
+    var over=d.bottom-lim;
+    /* l'écran centré (jeux en hauteur) redescend de la moitié de ce qu'il cède : on reprend la mesure jusqu'à ce que les points tiennent */
+    for(var it=0;over>0&&it<6;it++){var g0=glass.getBoundingClientRect(),T=Math.max(160,Math.round(g0.height-over));root.style.setProperty('--gh',T+'px','important');
       var g1=glass.getBoundingClientRect();if(g1.height>T+1)root.style.setProperty('--gw',Math.round(g1.width*T/g1.height)+'px','important');
-      /* pupitre couché : la hauteur de l'écran se calcule sur la bande ; la rangée de points s'y retranche */
-      var g2=glass.getBoundingClientRect();if(g2.height>T+1)root.style.setProperty('--r-dots',Math.round(g2.height-T)+'px');}}
+      var g2=glass.getBoundingClientRect();if(g2.height>T+1)root.style.setProperty('--r-dots',Math.round((parseFloat(root.style.getPropertyValue('--r-dots'))||0)+g2.height-T)+'px');
+      d=dots.getBoundingClientRect();over=d.bottom-lim;if(T<=160)break;}}
   function dotLater(){clearTimeout(dotFit.t);dotFit.t=setTimeout(dotFit,60);}
   addEventListener('resize',dotLater);new MutationObserver(dotLater).observe(root,{attributes:true,attributeFilter:['data-prog','data-habit','data-mode','data-big','class']});
   setInterval(function(){if(root.hasAttribute('data-prog')&&!dots.hidden&&!document.hidden)dotFit();},400);
@@ -526,8 +527,12 @@
       /* tirage : Lore 64 %, Tales, Korhogo ou Diegesis 12 % chacun ; teinte prise dans la liste, jamais deux fois de suite */
       function tick(){var t=Math.random()<.64?'Lore':W[(Math.random()*W.length)|0],o=H.filter(function(x){return x!==ch;}),hue=o[(Math.random()*o.length)|0];
         if(RM){show(t,hue);}else{lore.classList.add('b-peel');setTimeout(function(){show(t,hue);},170);setTimeout(function(){lore.classList.remove('b-peel');},420);}
-        setTimeout(tick,20000+Math.random()*40000);}
-      lore._fit=fit;lore._tick=tick;fit();setTimeout(fit,700);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);setTimeout(tick,20000+Math.random()*40000);
+        setTimeout(tick,9000+Math.random()*11000);}
+      /* 1er nov. : un lustre passe de temps en temps sur l'autocollant, découpé à sa forme (masque de l'image du papier) */
+      var lu=document.createElement('i');lu.className='b-lustre';lu.setAttribute('aria-hidden','true');lore.appendChild(lu);
+      function shine(){if(!RM&&!document.hidden){lore.classList.remove('b-shine');void lore.offsetWidth;lore.classList.add('b-shine');setTimeout(function(){lore.classList.remove('b-shine');},1300);}setTimeout(shine,7000+Math.random()*11000);}
+      setTimeout(shine,2500+Math.random()*4000);
+      lore._fit=fit;lore._tick=tick;fit();setTimeout(fit,700);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);setTimeout(tick,3000+Math.random()*3000);/* 1er nov., 10 h 50 : vivant dès l'arrivée */
       /* glisser à la main : clic simple = lien ; au-delà de 6 px = déplacement ; l'aimant Dekonect ramène l'autocollant s'il est lâché dessus */
       var st=null;lore.draggable=false;lore.addEventListener('dragstart',function(e){e.preventDefault();});
       lore.addEventListener('pointerdown',function(e){if(!lore.classList.contains('b-onbox')||(e.button&&e.button!==0))return;lore._drag=false;st={x:e.clientX,y:e.clientY,l:lore.offsetLeft,t:lore.offsetTop,id:e.pointerId};});
@@ -762,3 +767,9 @@
   new MutationObserver(function(r){for(var i=0;i<r.length;i++){if(r[i].attributeName==='data-skin'&&r[i].target===d){over=null;}}soon();if(r.some(function(x){return x.attributeName==='data-skin'&&x.target===d;}))run(.4);})
     .observe(d,{attributes:true,subtree:true,attributeFilter:['class','data-habit','data-prog','data-skin']});
   setInterval(function(){var h=new Date().getHours(),n=h>=22||h<6;if(n!==night){night=n;run(90);}},2e4);})();
+
+/* 1er nov., 10 h 50 — barre son d'une pièce : une seule plaque court sous le titre et le haut-parleur (image de la grille étirée sur la largeur des deux boîtes) */
+(function(){function plate(){var b=document.getElementById('bar');if(!b)return;var d=b.querySelectorAll(':scope>.dock');if(d.length<2)return;
+  b.style.setProperty('--bk-w',Math.round(d[0].getBoundingClientRect().width+d[1].getBoundingClientRect().width)+'px');}
+  addEventListener('resize',function(){setTimeout(plate,150);});setTimeout(plate,300);setTimeout(plate,1500);
+  if(window.ResizeObserver){var b0=document.getElementById('bar');if(b0)new ResizeObserver(plate).observe(b0);}})();
