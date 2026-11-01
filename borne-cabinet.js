@@ -645,3 +645,41 @@
   /* aperçu pour l'auteur : ?usure=1, 2 ou 3 montre un palier sans toucher au compteur, avec le skin bois */
   try{var q=/[?&]usure=([0-3])/.exec(location.search);if(q){d.dataset.skin='bois';show(+q[1]);}}catch(e){}
   window.__borneUsure=function(){put(1);show(0);};})();
+
+/* palettes chromatiques (roue C ; palettes.md, règle de passage) : la machine pose html[data-palette] et --pal-fondu ; borne-palettes.css fait le reste.
+   Priorité, du plus fort au plus faible : programme ouvert, heure du visiteur (22 h à 6 h), aimant tenu, palette tirée au hasard à chaque arrivée (puis anneau de l'aimant).
+   Aperçu pour l'auteur : ?palette=ambre-noyer (ou une autre des cinq) fige la palette ; ?palette=aucune retire l'attribut. */
+(function(){var d=document.documentElement,RING=['ambre-noyer','braise-acier','creme-1960','sang-autocollant','or-nocturne'],
+  
+  AC={'ambre-noyer':['#ffa726','#39979e'],'braise-acier':['#f29d2e','#28b2c0'],'creme-1960':['#e4b377','#36909b'],'sang-autocollant':['#f79372','#38c2d1'],'or-nocturne':['#dfb15c','#6782d0']},
+  drawn=RING[Math.floor(Math.random()*RING.length)],cur='',over=null,held=0,heldEl=null,night=false,progP=null,progKey='',lastNc='',inProg=false;
+  var q=/[?&]palette=([a-z0-9-]+)/.exec(location.search);
+  if(q){if(RING.indexOf(q[1])>=0)d.dataset.palette=q[1];return;}
+  function still(){try{return matchMedia('(prefers-reduced-motion:reduce)').matches;}catch(e){return false;}}
+  function put(p,sec){if(p===cur)return;d.style.setProperty('--pal-fondu',(still()||!cur?0:sec)+'s');d.dataset.palette=p;cur=p;}
+  function lab(h){var n=parseInt(h.slice(1),16),c=[n>>16&255,n>>8&255,n&255].map(function(v){v/=255;return v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4);});
+    var l=Math.cbrt(.4122214708*c[0]+.5363325363*c[1]+.0514459929*c[2]),m=Math.cbrt(.2119034982*c[0]+.6806995451*c[1]+.1073969566*c[2]),s=Math.cbrt(.0883024619*c[0]+.2817188376*c[1]+.6299787005*c[2]);
+    return [.2104542553*l+.793617785*m-.0040720468*s,1.9779984951*l-2.428592205*m+.4505937099*s,.0259040371*l+.7827717662*m-.808675766*s];}
+  function dist(a,b){return Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]);}
+  /* programme ouvert : palette dont l'accent ou l'accent 2 tient à moins de 0,10 d'OKLab de l'encre --nc du programme ; sinon la palette du moment reste */
+  document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-go]'),c=b&&b.closest('.cab');if(c)lastNc=(getComputedStyle(c).getPropertyValue('--nc')||'').trim();},true);
+  function prog(){if(d.dataset.habit==='repos'||!d.dataset.prog){progKey='';progP=null;if(inProg){lastNc='';inProg=false;}return;}inProg=true;
+    var c=document.querySelector('.cab.on-air'),nc=c?(getComputedStyle(c).getPropertyValue('--nc')||'').trim():lastNc;/* jeu rangé dans un groupe replié : pas de .on-air, l'encre vient du dernier clic sur un [data-go] */
+    if(!nc){progKey='';progP=null;return;}if(nc===progKey)return;progKey=nc;progP=null;
+    var m=/^#([0-9a-f]{6})$/i.exec(nc);if(!m)return;var L=lab(nc),best=.1;
+    RING.forEach(function(p){AC[p].forEach(function(h){var x=dist(L,lab(h));if(x<best){best=x;progP=p;}});});}
+  function want(){return progP||(night?'or-nocturne':held?'sang-autocollant':(over||drawn));}
+  function run(sec){put(want(),sec);}
+  var pend=0;function soon(){if(pend)return;pend=setTimeout(function(){pend=0;var was=progP;prog();var h=d.classList.contains('b-holding');
+    if(h&&!held){held=1;heldEl=document.querySelector('.b-held');run(.6);}
+    else if(!h&&held){held=0;var home=heldEl&&!heldEl.classList.contains('b-moved');heldEl=null;
+      if(home)over=RING[(RING.indexOf(over||drawn)+1)%RING.length];/* réaimantation : palette suivante sur l'anneau, base jusqu'au départ du visiteur */
+      run(home?2.4:1.2);}
+    else if(was!==progP)run(1.2);}
+    ,60);}
+  night=(function(){var h=new Date().getHours();return h>=22||h<6;})();
+  ['fond','fond-2','ligne','bois','metal','scr','neon','neon-trait','neon-x1','neon-x2','neon-ampoule','titre','accent','accent-2','accent-encre','texte','texte-faible','succes','alerte','desactive'].forEach(function(n){try{CSS.registerProperty({name:'--pal-'+n,syntax:'<color>',inherits:true,initialValue:'#000000'});}catch(e){}});/* enregistrés ici et non dans la feuille : sans palette posée, var(--pal-x,repli) garde son repli */
+  put(want(),0);
+  new MutationObserver(function(r){for(var i=0;i<r.length;i++){if(r[i].attributeName==='data-skin'&&r[i].target===d){over=null;}}soon();if(r.some(function(x){return x.attributeName==='data-skin'&&x.target===d;}))run(.4);})
+    .observe(d,{attributes:true,subtree:true,attributeFilter:['class','data-habit','data-prog','data-skin']});
+  setInterval(function(){var h=new Date().getHours(),n=h>=22||h<6;if(n!==night){night=n;run(90);}},2e4);})();

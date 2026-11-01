@@ -31,7 +31,7 @@ html.borne .b-fall.b-petal{background:#f7a8c8;width:6px;height:4px}
 html.borne .b-care button{background:linear-gradient(180deg,#5a4a2e,#3a2e1c)!important;box-shadow:inset 0 1px 0 rgba(255,230,180,.35),inset 0 -2px 0 rgba(0,0,0,.4),0 2px 3px rgba(0,0,0,.5)!important;
   color:#f3e2b8!important;border-radius:3px!important;width:48px!important}
 html.borne .b-care button span{font-family:'Bebas Neue',Impact,sans-serif!important;font-size:12px!important;letter-spacing:.12em!important}
-html.borne .b-care button:hover,html.borne .b-care button:focus-visible{color:#ffe3a0!important;box-shadow:inset 0 1px 0 rgba(255,230,180,.5),0 0 10px rgba(255,200,120,.45)!important}
+html.borne .b-care button:hover,html.borne .b-care button:focus-visible{color:var(--pal-titre,#ffe3a0)!important;box-shadow:inset 0 1px 0 rgba(255,230,180,.5),0 0 10px rgba(255,200,120,.45)!important}
 @media (prefers-reduced-motion:reduce){html.borne .b-plant{animation:none}}
 /* l'aimant de Dekonect, un vrai fer à cheval rouge aux pôles d'acier, posé sur la caisse */
 html.borne .b-dekonect{color:#c9302a!important;filter:drop-shadow(0 3px 3px rgba(0,0,0,.7))!important;animation:bmagnet 6s ease-in-out infinite}
@@ -192,7 +192,7 @@ html.borne .b-bezelfoot .b-boom{margin-right:14px!important}
 }
 
 /* 30 oct. — curseur du clavier et de la manette dans Erratik et Fauna Chess */
-html.borne #m-board .card.kcur,html.borne #chess-board .sq.kcur{outline:3px solid #ffb54a!important;outline-offset:-3px;box-shadow:0 0 14px rgba(255,181,74,.55)!important;z-index:2}
+html.borne #m-board .card.kcur,html.borne #chess-board .sq.kcur{outline:3px solid var(--pal-accent,#ffb54a)!important;outline-offset:-3px;box-shadow:0 0 14px color-mix(in srgb,var(--pal-accent,var(--pal-accent,#ffb54a)) 55%,transparent)!important;z-index:2}
 
 /* 30 oct. — téléphone couché, en jeu : l'écran prend la hauteur entière, à gauche de la colonne de commandes */
 @media (max-height:520px) and (orientation:landscape){

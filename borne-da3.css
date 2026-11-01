@@ -58,9 +58,9 @@ html.borne{background-color:#0b0908}
 /* ---------- 4. les bulles du guide : une plaque de verre fumé, la lettre en phosphore de la couleur du sujet ; zéro cadre d'un pixel ---------- */
 html.borne .gtip{border:0!important;border-radius:3px;padding:9px 13px 10px;
   background:linear-gradient(180deg,rgba(255,255,255,.05),transparent 42%),linear-gradient(180deg,#15120f,#090807)!important;
-  box-shadow:0 0 0 1px #000,inset 0 1px 0 rgba(255,255,255,.1),inset 0 0 0 1px rgba(255,255,255,.035),inset 3px 0 0 color-mix(in srgb,var(--gc,#c9a84c) 70%,transparent),
-    0 10px 24px rgba(0,0,0,.65),0 0 26px color-mix(in srgb,var(--gc,#c9a84c) 16%,transparent)!important;color:#e6dcc6}
-html.borne .gtip b{text-shadow:0 0 8px color-mix(in srgb,var(--gc,#c9a84c) 55%,transparent)}
+  box-shadow:0 0 0 1px #000,inset 0 1px 0 rgba(255,255,255,.1),inset 0 0 0 1px rgba(255,255,255,.035),inset 3px 0 0 color-mix(in srgb,var(--gc,var(--pal-accent,#c9a84c)) 70%,transparent),
+    0 10px 24px rgba(0,0,0,.65),0 0 26px color-mix(in srgb,var(--gc,var(--pal-accent,#c9a84c)) 16%,transparent)!important;color:#e6dcc6}
+html.borne .gtip b{text-shadow:0 0 8px color-mix(in srgb,var(--gc,var(--pal-accent,#c9a84c)) 55%,transparent)}
 
 /* ---------- pied de l'écran : la dalle noire devient une plaque de verre imprimée au dos (filet fin, coins vissés), sans reflet ---------- */
 html.borne .b-bezelfoot{position:relative}
