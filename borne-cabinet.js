@@ -648,12 +648,12 @@
   window.__borneUsure=function(){o=fresh();show(0);};})();
 
 /* palettes chromatiques (roue C ; palettes.md, règle de passage) : la machine pose html[data-palette] et --pal-fondu ; borne-palettes.css fait le reste.
-   Priorité, du plus fort au plus faible : programme ouvert, heure du visiteur (22 h à 6 h), aimant tenu, palette de base (skin, puis anneau de l'aimant).
+   Priorité, du plus fort au plus faible : programme ouvert, heure du visiteur (22 h à 6 h), aimant tenu, palette tirée au hasard à chaque arrivée (puis anneau de l'aimant).
    Aperçu pour l'auteur : ?palette=ambre-noyer (ou une autre des cinq) fige la palette ; ?palette=aucune retire l'attribut. */
 (function(){var d=document.documentElement,RING=['ambre-noyer','braise-acier','creme-1960','sang-autocollant','or-nocturne'],
-  BASE={bois:'ambre-noyer',metal:'braise-acier','1960':'creme-1960'},
-  AC={'ambre-noyer':['#e18a2f','#39979e'],'braise-acier':['#f29d2e','#28b2c0'],'creme-1960':['#e4b377','#36909b'],'sang-autocollant':['#f79372','#38c2d1'],'or-nocturne':['#dfb15c','#6782d0']},
-  cur='',over=null,held=0,heldEl=null,night=false,progP=null,progKey='',lastNc='',inProg=false;
+  
+  AC={'ambre-noyer':['#ffa726','#39979e'],'braise-acier':['#f29d2e','#28b2c0'],'creme-1960':['#e4b377','#36909b'],'sang-autocollant':['#f79372','#38c2d1'],'or-nocturne':['#dfb15c','#6782d0']},
+  drawn=RING[Math.floor(Math.random()*RING.length)],cur='',over=null,held=0,heldEl=null,night=false,progP=null,progKey='',lastNc='',inProg=false;
   var q=/[?&]palette=([a-z0-9-]+)/.exec(location.search);
   if(q){if(RING.indexOf(q[1])>=0)d.dataset.palette=q[1];return;}
   function still(){try{return matchMedia('(prefers-reduced-motion:reduce)').matches;}catch(e){return false;}}
@@ -669,12 +669,12 @@
     if(!nc){progKey='';progP=null;return;}if(nc===progKey)return;progKey=nc;progP=null;
     var m=/^#([0-9a-f]{6})$/i.exec(nc);if(!m)return;var L=lab(nc),best=.1;
     RING.forEach(function(p){AC[p].forEach(function(h){var x=dist(L,lab(h));if(x<best){best=x;progP=p;}});});}
-  function want(){return progP||(night?'or-nocturne':held?'sang-autocollant':(over||BASE[d.dataset.skin]||'ambre-noyer'));}
+  function want(){return progP||(night?'or-nocturne':held?'sang-autocollant':(over||drawn));}
   function run(sec){put(want(),sec);}
   var pend=0;function soon(){if(pend)return;pend=setTimeout(function(){pend=0;var was=progP;prog();var h=d.classList.contains('b-holding');
     if(h&&!held){held=1;heldEl=document.querySelector('.b-held');run(.6);}
     else if(!h&&held){held=0;var home=heldEl&&!heldEl.classList.contains('b-moved');heldEl=null;
-      if(home)over=RING[(RING.indexOf(over||BASE[d.dataset.skin]||'ambre-noyer')+1)%RING.length];/* réaimantation : palette suivante sur l'anneau, base jusqu'au départ du visiteur */
+      if(home)over=RING[(RING.indexOf(over||drawn)+1)%RING.length];/* réaimantation : palette suivante sur l'anneau, base jusqu'au départ du visiteur */
       run(home?2.4:1.2);}
     else if(was!==progP)run(1.2);}
     ,60);}

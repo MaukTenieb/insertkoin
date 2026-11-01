@@ -7,7 +7,7 @@
 /* Les vingt rôles --pal-* sont enregistrés par borne-cabinet.js (CSS.registerProperty) au moment où la machine pose data-palette : un @property déclaré ici donnerait une valeur initiale aux var(--pal-x,repli) et supprimerait le repli, donc le rendu actuel sans attribut. */
 
 /* ambre-noyer — skin bois (9 images) + captures home-* (8) */
-html.borne[data-palette="ambre-noyer"],html.borne[data-skin][data-palette="ambre-noyer"]{--pal-fond:#1a0600;--pal-fond-2:#341402;--pal-ligne:#6e3c16;--pal-bois:#963a00;--pal-metal:#b49468;--pal-scr:#f5c97e;--pal-neon:#fdcb8b;--pal-neon-trait:#410401;--pal-neon-x1:#c67629;--pal-neon-x2:#7e2b1f;--pal-neon-ampoule:#ffe3c2;--pal-titre:#ffe3c2;--pal-accent:#e18a2f;--pal-accent-2:#1fba9c;--pal-accent-encre:#1a0600;--pal-texte:#cdc8b3;--pal-texte-faible:#868683;--pal-succes:#6b9457;--pal-alerte:#db5c47;--pal-desactive:#5f5e5c;--pal-scr-rgb:245,201,126;--pal-bois-rgb:58,43,30;--pal-ombre-rgb:11,9,8}
+html.borne[data-palette="ambre-noyer"],html.borne[data-skin][data-palette="ambre-noyer"]{--pal-fond:#1a0600;--pal-fond-2:#341402;--pal-ligne:#6e3c16;--pal-bois:#963a00;--pal-metal:#b49468;--pal-scr:#f5c97e;--pal-neon:#fdcb8b;--pal-neon-trait:#410401;--pal-neon-x1:#c67629;--pal-neon-x2:#7e2b1f;--pal-neon-ampoule:#ffe3c2;--pal-titre:#ffe3c2;--pal-accent:#ffa726;--pal-accent-2:#1fba9c;--pal-accent-encre:#1a0600;--pal-texte:#cdc8b3;--pal-texte-faible:#868683;--pal-succes:#6b9457;--pal-alerte:#db5c47;--pal-desactive:#5f5e5c;--pal-scr-rgb:245,201,126;--pal-bois-rgb:58,43,30;--pal-ombre-rgb:11,9,8}
 /* braise-acier — skin métal (9 images) */
 html.borne[data-palette="braise-acier"],html.borne[data-skin][data-palette="braise-acier"]{--pal-fond:#010812;--pal-fond-2:#0a1a32;--pal-ligne:#264264;--pal-bois:#285090;--pal-metal:#72acec;--pal-scr:#eea779;--pal-neon:#fec8a6;--pal-neon-trait:#3d0b00;--pal-neon-x1:#d14014;--pal-neon-x2:#6a1f06;--pal-neon-ampoule:#ffe1cf;--pal-titre:#ffe1cf;--pal-accent:#f29d2e;--pal-accent-2:#44ccfa;--pal-accent-encre:#010812;--pal-texte:#cac9c2;--pal-texte-faible:#8b8681;--pal-succes:#6b9457;--pal-alerte:#e6542c;--pal-desactive:#625e5a;--pal-scr-rgb:238,167,121;--pal-bois-rgb:73,67,58;--pal-ombre-rgb:10,9,6}
 /* creme-1960 — skin 1960 (13 images) + art-bezel.webp */
@@ -18,9 +18,9 @@ html.borne[data-palette="sang-autocollant"],html.borne[data-skin][data-palette="
 html.borne[data-palette="or-nocturne"],html.borne[data-skin][data-palette="or-nocturne"]{--pal-fond:#141200;--pal-fond-2:#1e1c00;--pal-ligne:#6e6010;--pal-bois:#a08210;--pal-metal:#5c64c4;--pal-scr:#dfb15c;--pal-neon:#fbcc77;--pal-neon-trait:#400500;--pal-neon-x1:#c32d09;--pal-neon-x2:#68180a;--pal-neon-ampoule:#ffe4b7;--pal-titre:#ffe4b7;--pal-accent:#dfb15c;--pal-accent-2:#947ef6;--pal-accent-encre:#141200;--pal-texte:#d9ccc0;--pal-texte-faible:#b29e73;--pal-succes:#6b9457;--pal-alerte:#e75233;--pal-desactive:#6d5f45;--pal-scr-rgb:223,177,92;--pal-bois-rgb:96,72,41;--pal-ombre-rgb:13,9,6}
 
 /* usure du formica (data-usure, borne-cabinet.js) : chroma des accents × (1 − 0,08 × palier), clarté relevée à 4,5:1 sur fond-2 */
-html.borne[data-palette="ambre-noyer"][data-usure="1"]{--pal-accent:#dc8d3e;--pal-accent-2:#38b89c;--pal-succes:#6d935b;--pal-alerte:#d5614d}
-html.borne[data-palette="ambre-noyer"][data-usure="2"]{--pal-accent:#d88f4a;--pal-accent-2:#48b69d;--pal-succes:#709260;--pal-alerte:#d06654}
-html.borne[data-palette="ambre-noyer"][data-usure="3"]{--pal-accent:#d39155;--pal-accent-2:#55b49d;--pal-succes:#729164;--pal-alerte:#ca6b59}
+html.borne[data-palette="ambre-noyer"][data-usure="1"]{--pal-accent:#faa93e;--pal-accent-2:#38b89c;--pal-succes:#6d935b;--pal-alerte:#d5614d}
+html.borne[data-palette="ambre-noyer"][data-usure="2"]{--pal-accent:#f5ac4f;--pal-accent-2:#48b69d;--pal-succes:#709260;--pal-alerte:#d06654}
+html.borne[data-palette="ambre-noyer"][data-usure="3"]{--pal-accent:#f0ae5d;--pal-accent-2:#55b49d;--pal-succes:#729164;--pal-alerte:#ca6b59}
 html.borne[data-palette="braise-acier"][data-usure="1"]{--pal-accent:#ed9f41;--pal-accent-2:#55cbf5;--pal-succes:#6d935b;--pal-alerte:#e05b38}
 html.borne[data-palette="braise-acier"][data-usure="2"]{--pal-accent:#e9a24f;--pal-accent-2:#62caf0;--pal-succes:#709260;--pal-alerte:#d96141}
 html.borne[data-palette="braise-acier"][data-usure="3"]{--pal-accent:#e4a45c;--pal-accent-2:#6ec9eb;--pal-succes:#729164;--pal-alerte:#d3674a}
