@@ -28,7 +28,7 @@ html.borne{
   --r-uf:max(var(--r-u),calc(var(--r-s0) / 100));
   --r-M:min(calc(var(--r-S) * 1.3),calc(100vw - 2 * var(--r-g)));
   --r-gap:var(--r-uf);
-  --r-strip:max(var(--r-hit),calc(4 * var(--r-uf)));   /* bande d'affichage du fronton : titre à gauche, son et PL à droite */
+  --r-strip:max(var(--r-hit),32px,calc(4 * var(--r-uf)));   /* bande d'affichage du fronton : titre à gauche, son et PL à droite */
   --r-knob:max(var(--r-hit),calc(6 * var(--r-u)));     /* molette */
 }
 @supports (height:1svh){html.borne{--r-vh:100svh}}
@@ -59,7 +59,7 @@ html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion)
 
 /* fronton : trois colonnes, les deux boîtes de même largeur par construction (1fr | enseigne | 1fr) */
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar{
-  display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important/* !P4 */;grid-template-rows:calc(7 * var(--r-uf))!important/* !P4 */;
+  display:grid;grid-template-columns:minmax(0,var(--r-c1,1fr)) auto minmax(0,1fr)!important/* !P4 */;grid-template-rows:calc(7 * var(--r-uf))!important/* !P4 */;
   column-gap:var(--r-gap);row-gap:var(--r-gap);width:calc(var(--r-M) - 2 * var(--r-b));height:auto!important/* !P9 */;min-height:0!important/* !P9 */;
   margin:0 auto;padding:0!important/* !P4 */;box-sizing:border-box}
 html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2) .wrap>.bar>.brand{

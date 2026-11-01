@@ -332,7 +332,7 @@ html.borne[data-prog] .b-scrhalo,html.borne.b-immersion .b-scrhalo,html.borne[da
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) :is(.b-roof,.b-copy,.b-land){display:none!important}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .wrap{display:grid!important;grid-template-columns:var(--blL) minmax(0,1fr)!important;grid-template-rows:auto minmax(0,1fr)!important;
     width:var(--wc)!important;max-width:calc(100vw - 16px)!important;height:calc(100vh - 6px)!important;margin:6px auto 0!important;padding:0!important;box-sizing:border-box}
-  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .wrap>.bar{grid-column:1/-1;grid-row:1}
+  html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .wrap>.bar{grid-column:1/-1;grid-row:1;--r-c1:2.5fr}/* 1er nov. (E43) : téléphone couché, la boîte du titre prend deux parts et demie, son et PL une */
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) .wrap .bar :is(.brand,.dock){min-height:44px!important;height:44px!important}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) #home{grid-column:1/-1;grid-row:2;display:grid!important;grid-template-columns:var(--blL) minmax(0,1fr);align-items:start;min-height:0}
   html.borne[data-bland]:not([data-prog]):not([data-mode=device]):not(.b-immersion) #home .b-bezel{grid-column:1;grid-row:1}
