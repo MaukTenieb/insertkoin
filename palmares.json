@@ -1,10 +1,10 @@
 {
- "updated": "2026-11-03T21:04Z",
+ "updated": "2026-11-04T23:43Z",
  "relays": {
-  "wss://relay.damus.io": 31,
-  "wss://nos.lol": 43,
-  "wss://relay.primal.net": 47,
-  "wss://nostr.mom": 46
+  "wss://relay.damus.io": 33,
+  "wss://nos.lol": 47,
+  "wss://relay.primal.net": 51,
+  "wss://nostr.mom": 50
  },
  "korong": [
   {
@@ -22,6 +22,14 @@
    "t": 1792704928,
    "who": "515d1f59029568f92203b036679dbd033a010db2748ae3eaa4904327ec96c52a",
    "run": "korhogo-palmares:korong:dmvk284kybxcpkb"
+  },
+  {
+   "ini": "FFN",
+   "a": 1,
+   "b": 12,
+   "t": 1793823921,
+   "who": "515d1f59029568f92203b036679dbd033a010db2748ae3eaa4904327ec96c52a",
+   "run": "korhogo-palmares:korong:dmw2kfyix7bisd3"
   }
  ],
  "fauninvaders": [
@@ -117,21 +125,21 @@
  "kave": [
   {
    "who": "515d1f59029568f92203b036679dbd033a010db2748ae3eaa4904327ec96c52a",
-   "name": "IGM",
-   "t": 1793050105,
+   "name": "FFN",
+   "t": 1793831663,
    "c": {
-    "ka": 0,
-    "kb": 0,
-    "du": 0,
+    "ka": 1,
+    "kb": 7,
+    "du": 1,
     "fi": 7960,
     "cl": 3,
     "er": 0,
     "c4": 0,
     "hg": 0,
     "mm": 0,
-    "ko": 47
+    "ko": 55
    },
-   "pts": 946
+   "pts": 1059
   },
   {
    "who": "dfd5e6d679a623b63e63345a528f05d204738fbb59e6c0cf006966eeeede8088",
@@ -154,7 +162,7 @@
   {
    "who": "ad2d5b7b61d646f7955c720e86ea2bb2d3f4c0116b81a10fa62f09611c78531f",
    "name": "597",
-   "t": 1793148827,
+   "t": 1793832004,
    "c": {
     "ka": 0,
     "kb": 0,
@@ -165,7 +173,7 @@
     "c4": 0,
     "hg": 0,
     "mm": 0,
-    "ko": 12
+    "ko": 14
    },
    "pts": 774
   },
