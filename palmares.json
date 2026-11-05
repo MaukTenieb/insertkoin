@@ -1,7 +1,7 @@
 {
- "updated": "2026-11-04T23:43Z",
+ "updated": "2026-11-05T06:53Z",
  "relays": {
-  "wss://relay.damus.io": 33,
+  "wss://relay.damus.io": 0,
   "wss://nos.lol": 47,
   "wss://relay.primal.net": 51,
   "wss://nostr.mom": 50
@@ -162,7 +162,7 @@
   {
    "who": "ad2d5b7b61d646f7955c720e86ea2bb2d3f4c0116b81a10fa62f09611c78531f",
    "name": "597",
-   "t": 1793832004,
+   "t": 1793838509,
    "c": {
     "ka": 0,
     "kb": 0,
@@ -173,7 +173,7 @@
     "c4": 0,
     "hg": 0,
     "mm": 0,
-    "ko": 14
+    "ko": 15
    },
    "pts": 774
   },
