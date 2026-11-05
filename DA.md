@@ -33,7 +33,7 @@ Une borne affiche l'œuvre de son jeu. Celle-ci affiche Korhogo.
 - Panneau de commande : la matière du skin, nue, sous les touches et la manette.
 - Carte d'instructions : « 1 KOIN — 1 PLAY », les commandes, en sérigraphie.
 - Étiquettes de prix et de crédit près de la fente.
-- Ces images reprennent les cinq couleurs de la palette et les Masks de la Korhogo Fauna, aka the Masks.
+- Ces images reprennent les cinq couleurs de la palette et les Masks de la Korhogo Fauna, aka Hordalék or the Masks.
 
 ## Palette
 
