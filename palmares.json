@@ -1,10 +1,10 @@
 {
- "updated": "2026-11-05T15:31Z",
+ "updated": "2026-11-06T02:30Z",
  "relays": {
-  "wss://relay.damus.io": 33,
-  "wss://nos.lol": 47,
-  "wss://relay.primal.net": 51,
-  "wss://nostr.mom": 50
+  "wss://relay.damus.io": 0,
+  "wss://nos.lol": 48,
+  "wss://relay.primal.net": 52,
+  "wss://nostr.mom": 51
  },
  "korong": [
   {
@@ -50,6 +50,14 @@
    "run": "korhogo-palmares:fauninvaders:mvkzuabbyot1ua"
   },
   {
+   "ini": "7CK",
+   "a": 7790,
+   "b": 5,
+   "t": 1793920983,
+   "who": "515d1f59029568f92203b036679dbd033a010db2748ae3eaa4904327ec96c52a",
+   "run": "korhogo-palmares:fauninvaders:mw468b3jdgsc91"
+  },
+  {
    "ini": "597",
    "a": 7740,
    "b": 5,
@@ -64,14 +72,6 @@
    "t": 1793373056,
    "who": "dfd5e6d679a623b63e63345a528f05d204738fbb59e6c0cf006966eeeede8088",
    "run": "korhogo-palmares:fauninvaders:mvv3zdrodc6h87"
-  },
-  {
-   "ini": "MAU",
-   "a": 6670,
-   "b": 4,
-   "t": 1792716574,
-   "who": "515d1f59029568f92203b036679dbd033a010db2748ae3eaa4904327ec96c52a",
-   "run": "korhogo-palmares:fauninvaders:mvk95e2j9c3mpd"
   },
   {
    "ini": "3VC",
@@ -125,8 +125,8 @@
  "kave": [
   {
    "who": "515d1f59029568f92203b036679dbd033a010db2748ae3eaa4904327ec96c52a",
-   "name": "FFN",
-   "t": 1793831663,
+   "name": "CFN",
+   "t": 1793920976,
    "c": {
     "ka": 1,
     "kb": 7,
@@ -137,7 +137,7 @@
     "c4": 0,
     "hg": 0,
     "mm": 0,
-    "ko": 55
+    "ko": 59
    },
    "pts": 1059
   },
