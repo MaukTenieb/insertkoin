@@ -2,11 +2,33 @@
 // Formats : 1280×800, 1180×820, 820×1180, 844×390, 390×844, 360×740. Échec si une erreur de page survient,
 // si la page défile de côté, ou si une commande visible de l'accueil refuse le clic (elementFromPoint au centre).
 const { chromium } = require('playwright');
+const fs = require('fs'), path = require('path');
+let PNG = null, pixelmatch = null; try { PNG = require('pngjs').PNG; pixelmatch = require('pixelmatch'); } catch (e) {}
+const MAJ = process.argv.includes('--maj-ref'), SEUL = process.argv.includes('--visuel-seul'), AVIS = !!process.env.VISUEL_AVIS, REF = process.env.BORNE_REF || path.join(__dirname, 'ref');
 (async () => {
 const base = process.env.BORNE_URL || 'http://localhost:8800/insertkoin/';
 const formats = [[1280,800,0],[1180,820,1],[820,1180,1],[844,390,1],[390,844,1],[360,740,1]];
 const cmds = ['#brand','.b-land','.b-panel .cabinets>.cab','.b-boom','.b-imm','#koins','.b-lore','.b-knobs .b-knob','.b-dekonect'];
-const b = await chromium.launch(); let fautes = 0; const lignes = [], lignesPts = [];
+const b = await chromium.launch(); let fautes = 0; const lignes = [], lignesPts = [], lignesRef = [];
+  // régression visuelle : capture figée (hasard fixé, skin bois, caméra a, papier sang, mouvements coupés, écran et textes changeants masqués) comparée à tools/ref/WxH.png
+async function visuel(w,h,t,refus) {
+  if (PNG && pixelmatch) {
+    const cf = await b.newContext({ viewport:{width:w,height:h}, deviceScaleFactor:.5, isMobile:!!t, hasTouch:!!t, reducedMotion:'reduce' });
+    await cf.addInitScript(() => { let s = 7; Math.random = () => ((s = s * 16807 % 2147483647) / 2147483647); const D = Date; const T = new D('2026-11-07T20:00:00Z').getTime(); Date = class extends D { constructor(...a) { super(...(a.length ? a : [T])); } static now() { return T; } }; try { localStorage.clear(); } catch (e) {} });
+    const pf = await cf.newPage(); await pf.goto(base + '?palette=ambre-noyer', { waitUntil:'load', timeout:60000 }); await pf.waitForTimeout(6000);
+    await pf.addStyleTag({ content:'*,*::before,*::after{animation:none!important;transition:none!important}.guide,.gtip,.b-attract,.b-screen iframe,.b-tk,.b-date,.b-lore .b-word,.b-lustre,.b-psy{visibility:hidden!important}' });
+    await pf.evaluate(async () => { try { window.__borneTourStop && window.__borneTourStop(); } catch (e) {} const R = document.documentElement; R.dataset.skin = 'bois'; R.style.setProperty('--i-cam', 'url(camera-a.webp)'); document.querySelectorAll('.b-lore').forEach(e => { e.style.setProperty('--i-lore', 'url(sticker-lore-papier-sang.webp)'); e.dataset.pap = 'sang'; }); await document.fonts.ready; scrollTo(0,0); dispatchEvent(new Event('resize')); }); await pf.waitForTimeout(1200); await pf.evaluate(() => scrollTo(0,0)); await pf.waitForTimeout(300); const img = await pf.screenshot({ fullPage:false }); await cf.close();
+    const fr = path.join(REF, `${w}x${h}.png`);
+    if (MAJ || !fs.existsSync(fr)) { fs.mkdirSync(REF, { recursive:true }); fs.writeFileSync(fr, img); lignesRef.push(`${w}x${h} : référence ${MAJ ? 'mise à jour' : 'créée'}`); }
+    else { const A = PNG.sync.read(fs.readFileSync(fr)), B = PNG.sync.read(img);
+      const hh = Math.min(A.height, B.height);
+      if (A.width !== B.width || Math.abs(A.height - B.height) > 20) { refus.push(`capture ${B.width}x${B.height} contre référence ${A.width}x${A.height}`); lignesRef.push(`${w}x${h} : taille changée`); }
+      else { const cut = I => I.data.subarray(0, I.width * hh * 4); const dif = new PNG({ width:A.width, height:hh }); const n = pixelmatch(cut(A), cut(B), dif.data, A.width, hh, { threshold:.12 }); const pc = 100 * n / (A.width * hh);
+        lignesRef.push(`${w}x${h} : écart visuel ${pc.toFixed(2)} %`); if (pc > 1.5) { if (AVIS) console.log(`::warning::${w}x${h} écart visuel ${pc.toFixed(2)} % avec la version précédente (voir ecart-${w}x${h}.png)`); else refus.push(`écart visuel ${pc.toFixed(2)} %`); fs.writeFileSync(`ecart-${w}x${h}.png`, PNG.sync.write(dif)); fs.writeFileSync(`actuel-${w}x${h}.png`, img); } } }
+  }
+}
+if (SEUL) { for (const [w,h,t] of formats) await visuel(w,h,t,[]); await b.close(); console.log(lignesRef.join('\n')); process.exit(0); }
+
 for (const [w,h,t] of formats) {
   const c = await b.newContext({ viewport:{width:w,height:h}, isMobile:!!t, hasTouch:!!t });
   const p = await c.newPage(); const err = []; p.on('pageerror', e => err.push(e.message));
@@ -28,6 +50,7 @@ for (const [w,h,t] of formats) {
     }
   }
   await p.evaluate(() => scrollTo(0,0)); await p.screenshot({ path:`controle-${w}x${h}.png`, fullPage:true });
+  await visuel(w,h,t,refus);
   // points de navigation : chaque touche de la console ouvre son programme ; ses points visibles reçoivent le clic
   const nk = await p.$$eval('.b-panel .cabinets>.cab', l => l.length); const pts = [];
   for (let k = 0; k < nk; k++) {
@@ -51,6 +74,6 @@ for (const [w,h,t] of formats) {
   lignes.push(`${w}x${h} : erreurs ${err.length}${err[0] ? ' (' + err[0].slice(0,120) + ')' : ''} ; défilement latéral ${largeur} px ; commandes testées ${vus}, couvertes ${refus.length}${refus.length ? ' (' + refus.join(', ') + ')' : ''}`);
   await c.close();
 }
-await b.close(); console.log(lignes.join('\n')); console.log(lignesPts.join('\n')); console.log(fautes ? `ÉCHEC : ${fautes} défaut(s)` : 'OK : borne conforme sur 6 formats');
+await b.close(); console.log(lignes.join('\n')); console.log(lignesPts.join('\n')); console.log(lignesRef.join('\n')); console.log(fautes ? `ÉCHEC : ${fautes} défaut(s)` : 'OK : borne conforme sur 6 formats');
 process.exit(fautes ? 1 : 0);
 })();

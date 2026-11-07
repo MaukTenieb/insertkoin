@@ -6,27 +6,37 @@ on:
 jobs:
   controle:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
       - name: Playwright et Chromium
         run: |
-          npm i --no-save --no-package-lock playwright@1.48.2
+          npm i --no-save --no-package-lock playwright@1.48.2 pngjs@7.0.0 pixelmatch@5.3.0
           npx playwright install --with-deps chromium
       - name: Serveur local sous /insertkoin/
         run: |
           mkdir -p "$RUNNER_TEMP/site" && ln -s "$GITHUB_WORKSPACE" "$RUNNER_TEMP/site/insertkoin"
           (cd "$RUNNER_TEMP/site" && python3 -m http.server 8800 >/dev/null 2>&1 &)
+          git worktree add "$RUNNER_TEMP/avant-src" HEAD~1 || true
+          mkdir -p "$RUNNER_TEMP/avant" && ln -s "$RUNNER_TEMP/avant-src" "$RUNNER_TEMP/avant/insertkoin"
+          (cd "$RUNNER_TEMP/avant" && python3 -m http.server 8801 >/dev/null 2>&1 &)
           sleep 2
+      - name: Références visuelles prises sur la version précédente
+        run: BORNE_URL=http://localhost:8801/insertkoin/ BORNE_REF="$RUNNER_TEMP/ref" node tools/controle-ci.cjs --visuel-seul --maj-ref || true
       - name: Contrôle sur six formats
-        run: node tools/controle-ci.cjs
+        run: BORNE_REF="$RUNNER_TEMP/ref" VISUEL_AVIS=1 node tools/controle-ci.cjs
       - name: Captures
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: captures-borne
-          path: controle-*.png
+          path: |
+            controle-*.png
+            ecart-*.png
+            actuel-*.png
           retention-days: 14
