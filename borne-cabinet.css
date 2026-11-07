@@ -1343,3 +1343,6 @@ html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-land span{font-size:cl
 @media (min-width:1000px) and (min-height:501px){html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .wrap>.b-doorrow,html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #home .b-doorrow{display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;align-items:center!important;justify-content:stretch!important;column-gap:24px!important}
   html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-doorrow>.b-door{grid-column:2!important;justify-self:center!important;margin:0!important}
   html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-doorrow>.b-knobs{grid-column:3!important;justify-self:start!important;margin:0!important}}
+/* 7 nov., 23 h 55 : le panneau de commandes avance devant les arêtes des flancs (.wrap::before et ::after, z 6), comme sur une borne réelle ; le guide (z 60) reste au-dessus */
+html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-panel{z-index:7!important}
+html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-doorrow{z-index:8!important}/* la rangée de la caisse (aimant Dekonect compris) reste au-dessus du panneau là où leurs boîtes se croisent, au téléphone couché */
