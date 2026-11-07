@@ -58,11 +58,11 @@ html.borne[data-palette]{--pal-fondu:1.2s;transition-property:--pal-fond,--pal-f
 
 /* roue C, it4 : teinte légère des images de matière. Une lumière unie (--pal-bois ou --pal-metal, 10 à 22 %) se fond en mode « color » sur l'image ; la matière reste l'image (R4). Sous [data-palette] seulement. */
 html.borne.borne[data-palette][data-skin="bois"] .wrap{isolation:isolate}
-html.borne.borne[data-palette][data-skin="bois"] .wrap::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:var(--pal-bois);mix-blend-mode:color;opacity:0.2}
+html.borne.borne[data-palette][data-skin="bois"] .wrap>#home::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:var(--pal-bois);mix-blend-mode:color;opacity:0.2}
 html.borne.borne[data-palette][data-skin="metal"] .wrap{isolation:isolate}
-html.borne.borne[data-palette][data-skin="metal"] .wrap::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:var(--pal-metal);mix-blend-mode:color;opacity:0.16}
+html.borne.borne[data-palette][data-skin="metal"] .wrap>#home::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:var(--pal-metal);mix-blend-mode:color;opacity:0.16}
 html.borne.borne[data-palette][data-skin="1960"] .wrap{isolation:isolate}
-html.borne.borne[data-palette][data-skin="1960"] .wrap::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:var(--pal-bois);mix-blend-mode:color;opacity:0.14}
+html.borne.borne[data-palette][data-skin="1960"] .wrap>#home::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:var(--pal-bois);mix-blend-mode:color;opacity:0.14}
 html.borne.borne[data-palette][data-skin="bois"]:not([data-mode=device]):not([data-habit=fauneye]) .bar .dock{background:linear-gradient(color-mix(in srgb,var(--pal-metal) 16%,transparent),color-mix(in srgb,var(--pal-metal) 16%,transparent)),url(skin-bois-grille.webp) center/100% 100% no-repeat,#111!important;background-blend-mode:color,normal!important}
 html.borne.borne[data-palette][data-skin="metal"]:not([data-mode=device]):not([data-habit=fauneye]) .bar .dock{background:linear-gradient(color-mix(in srgb,var(--pal-metal) 16%,transparent),color-mix(in srgb,var(--pal-metal) 16%,transparent)),url(skin-metal-grille.webp) center/100% 100% no-repeat,#3a3d41!important;background-blend-mode:color,normal!important}
 html.borne.borne[data-palette][data-skin="1960"]:not([data-mode=device]):not([data-habit=fauneye]) .bar .dock{background:linear-gradient(color-mix(in srgb,var(--pal-metal) 14%,transparent),color-mix(in srgb,var(--pal-metal) 14%,transparent)),url(skin-1960-grille.webp) center/100% 100% no-repeat,#c9b48a!important;background-blend-mode:color,normal!important}

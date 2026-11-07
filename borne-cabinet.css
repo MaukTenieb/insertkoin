@@ -1328,7 +1328,7 @@ html.borne .b-lore[data-pap="bleu"] .b-word{color:#f6ead0;-webkit-text-stroke-co
 
 /* 7 nov. : relevé contrôlé contre borne/ (même skin bois) — enseigne 40 → 60 px de haut au téléphone, 38 → 64 px à l'ordinateur ;
    lettrage de Burrows 13,7 → 24 px au téléphone, 18,7 → 33 px à l'ordinateur ; aimant Dekonect 26 → 48 px au téléphone */
-html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #brand{min-height:clamp(54px,7.2vh,68px)!important;height:clamp(54px,7.2vh,68px)!important;font-size:clamp(1.55rem,3.1vh,2.2rem)!important}
+html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #brand{min-height:clamp(54px,7.2vh,68px)!important;height:clamp(54px,7.2vh,68px)!important;font-size:clamp(1rem,min(3.1vh,2.4vw),2.2rem)!important}
 @media (max-width:700px){html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #brand{min-height:58px!important;height:58px!important;font-size:1.7rem!important}}
 html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-land span{font-size:clamp(1.6rem,4.2vh,2.2rem)!important;letter-spacing:.2em!important}
 @media (max-width:700px){html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-land span{font-size:1.5rem!important}}
@@ -1339,3 +1339,7 @@ html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-land span{font-size:cl
 /* 7 nov. : aimant Dekonect lisible aussi au téléphone couché */
 @media (max-height:500px){html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-dekonect{width:44px!important;height:44px!important}
   html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-dekonect svg{width:100%!important;height:100%!important}}
+/* 7 nov. (décision du 31 oct., 8 h 45 : caisse centrée sur le meuble, partout ; blocs disjoints) : à l'écran large, la caisse tient l'axe du meuble, le rack se range à sa droite, à 24 px */
+@media (min-width:1000px) and (min-height:501px){html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .wrap>.b-doorrow,html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #home .b-doorrow{display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;align-items:center!important;justify-content:stretch!important;column-gap:24px!important}
+  html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-doorrow>.b-door{grid-column:2!important;justify-self:center!important;margin:0!important}
+  html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-doorrow>.b-knobs{grid-column:3!important;justify-self:start!important;margin:0!important}}
