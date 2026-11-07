@@ -39,7 +39,7 @@ html.borne[data-palette]{
   --bg:var(--pal-fond);--ink:var(--pal-fond);--panel:var(--pal-fond-2);--line:var(--pal-ligne);
   --txt:var(--pal-texte);--dim:var(--pal-texte-faible);--gold:var(--pal-accent);--gold2:var(--pal-titre);--hot:var(--pal-alerte);
   --lcd-bg:var(--pal-fond);--lcd-ink:var(--pal-accent);--lcd-dim:color-mix(in srgb,var(--pal-accent) 45%,transparent);--lcd-edge:var(--pal-ligne);
-  --pan-c:var(--pal-fond-2);--pan-lip:var(--pal-fond)}
+  --pan-c:var(--pal-fond-2)}/* 7 nov. : le chant du panneau garde le noir du skin ; la teinte de la palette y traçait une bande rouge sombre sous la plaque */
 html.borne[data-skin][data-palette]{
   --sg-fill:var(--pal-neon);--sg-line:var(--pal-neon-trait);--sg-x1:var(--pal-neon-x1);--sg-x2:var(--pal-neon-x2);
   --sg-glow:color-mix(in srgb,var(--pal-neon-x1) 75%,transparent);--sg-bulb:var(--pal-neon-ampoule)}
