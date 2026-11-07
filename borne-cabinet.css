@@ -1325,3 +1325,12 @@ html.borne .b-lore[data-pap="noir"] .b-word{color:#f6ead0;-webkit-text-stroke-co
 html.borne .b-lore[data-pap="ambre"] .b-word{color:#2a0d06;-webkit-text-stroke-color:#2a0d06;text-shadow:.04em .04em 0 #2a0d06,.06em .06em 0 #fff0cf,.09em .09em 0 #fff0cf,.11em .11em 0 #2a0d06}
 html.borne .b-lore[data-pap="creme"] .b-word{color:#7a1416;-webkit-text-stroke-color:#7a1416;text-shadow:.03em 0 0 #3a0a08,-.03em 0 0 #3a0a08,0 .03em 0 #3a0a08,0 -.03em 0 #3a0a08,.04em .04em 0 #3a0a08,.06em .06em 0 #e8951e,.09em .09em 0 #e8951e,.12em .12em 0 #b8650e,.14em .14em 0 #3a0a08}
 html.borne .b-lore[data-pap="bleu"] .b-word{color:#f6ead0;-webkit-text-stroke-color:#f6ead0;text-shadow:.03em 0 0 #0b1a20,-.03em 0 0 #0b1a20,0 .03em 0 #0b1a20,0 -.03em 0 #0b1a20,.04em .04em 0 #0b1a20,.06em .06em 0 #ffa726,.09em .09em 0 #ffa726,.12em .12em 0 #c77a12,.14em .14em 0 #0b1a20}
+
+/* 7 nov. : relevé contrôlé contre borne/ (même skin bois) — enseigne 40 → 60 px de haut au téléphone, 38 → 64 px à l'ordinateur ;
+   lettrage de Burrows 13,7 → 24 px au téléphone, 18,7 → 33 px à l'ordinateur ; aimant Dekonect 26 → 48 px au téléphone */
+html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #brand{min-height:clamp(54px,7.2vh,68px)!important;height:clamp(54px,7.2vh,68px)!important;font-size:clamp(1.55rem,3.1vh,2.2rem)!important}
+@media (max-width:700px){html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #brand{min-height:58px!important;height:58px!important;font-size:1.7rem!important}}
+html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-land span{font-size:clamp(1.6rem,4.2vh,2.2rem)!important;letter-spacing:.2em!important}
+@media (max-width:700px){html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-land span{font-size:1.5rem!important}}
+@media (max-width:700px){html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-dekonect{width:48px!important;height:48px!important}
+  html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-dekonect svg{width:100%!important;height:100%!important}}
