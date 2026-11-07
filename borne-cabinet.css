@@ -1346,3 +1346,7 @@ html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-land span{font-size:cl
 /* 7 nov., 23 h 55 : le panneau de commandes avance devant les arêtes des flancs (.wrap::before et ::after, z 6), comme sur une borne réelle ; le guide (z 60) reste au-dessus */
 html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-panel{z-index:7!important}
 html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-doorrow{z-index:8!important}/* la rangée de la caisse (aimant Dekonect compris) reste au-dessus du panneau là où leurs boîtes se croisent, au téléphone couché */
+/* 8 nov. (LISTE n°14, décision S13 « la date sur le noir ») : au téléphone, la chambre grossie (z 1,25) remplit le bas de l écran ; la date monte dans le coin haut droit, sur le noir au-dessus du mur, hors des Masks */
+@media (max-width:560px){html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-date{top:3%!important;bottom:auto!important}}
+/* 8 nov. (LISTE n°28) : skin métal, l étiquette de la fente monte entre la fenêtre (bas à 48 %) et la serrure (haut à 64 %), qu elle couvrait */
+html.borne.borne[data-skin=metal]:not(#k1):not(#k2) .b-slot b{top:48.5%!important}
