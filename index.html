@@ -4,7 +4,7 @@
   Copyright © Mauk Tenieb & Korhogo. Korhogo™, Korhogo Fauna™, Fauna Masks™, Fauna Chess™, Faunarratik™, Katabatik™, Insert Koin™, Korong!™ and any related material — including characters, names, symbols, rules, lore and texts, in any form or medium — are the exclusive property of Korhogo™, all rights reserved. The source code of this site is free to reuse under the MIT licence (see LICENSE); the lore, names, marks, characters, images, music and texts stay out of that licence and remain the property of the author.
   Korong! runs on a JavaScript port of PuffleHuck (MIT licence); its notice is in LICENSE.
 -->
-<html lang="en">
+<html lang="en" class="borne">
 <head>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: https://cdnjs.cloudflare.com https://www.youtube.com https://s.ytimg.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' https: data: blob:; media-src 'self' https: data: blob:; connect-src 'self' https: wss: data: blob: http://127.0.0.1:* http://localhost:*; frame-src 'self' blob: https://www.youtube-nocookie.com https://www.youtube.com https://bandcamp.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https:">
 <meta charset="utf-8">
@@ -449,7 +449,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 
   <section id="home">
     <div class="hero">
-      <picture><source type="image/webp" srcset="poster-800.webp 800w, poster.webp 1200w" sizes="(max-width:900px) 100vw, 1040px"><img src="poster.jpg" width="1200" height="896" alt="The eighteen Fauna of Korhogo gathered in a motel room" fetchpriority="high"></picture>
+      <picture><source type="image/webp" srcset="poster-800.webp 800w, poster.webp 1200w" sizes="(max-width:900px) 100vw, 1040px"><img src="poster.jpg" width="1200" height="896" alt="The eighteen Fauna of Korhogo gathered in a motel room" loading="lazy" decoding="async"></picture>
       <div class="heroText"><div class="koro">MAUK TENIEB PRESENTS</div><h1 class="logo">INSERT KOIN</h1></div>
     </div>
     <nav class="cabinets" aria-label="Arcade">
