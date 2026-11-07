@@ -318,7 +318,7 @@
     c.d=CL((c.d==null?.2:c.d)-.06*dt);c.g=CL((c.g==null?.1:c.g)-.012*dt*(dry>.5?1:.25));c.t=n;return c;};
   function save(c){try{localStorage.setItem('borne.plant',JSON.stringify(c));}catch(_){}}
   /* manque de soin : progressif, de 0 (soignée) à 1 (assoiffée, jamais morte) ; l'eau compte après deux jours, le soleil après trois */
-  function neglect(c){var n=Date.now();return CL((Math.max((n-c.water)/(4*DAY),(n-c.sun)/(6*DAY))-.5)/1.5);}
+  function neglect(c){var n=Date.now(),wl=CL(((n-c.water)/(4*DAY)-.5)/1.5),sl=CL(((n-c.sun)/(6*DAY)-.5)/1.5);return CL(.6*wl+.4*sl);}/* 7 nov. : la soif et le manque de lumière s'additionnent ; chaque soin se voit seul, les deux ensemble rendent la plante pleine */
   function health(){return 1-neglect(cs());}
   /* une visite (au plus une toutes les quatre heures) : bien soignée, elle pousse un peu ; négligée, elle recule un peu */
   (function visit(){var c=cs(),n=Date.now();if(n-c.v<4*36e5)return;c.v=n;c.g=CL(c.g+(neglect(c)<.3?.015:-.01));save(c);})();
