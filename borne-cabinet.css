@@ -1334,3 +1334,5 @@ html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-land span{font-size:cl
 @media (max-width:700px){html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-land span{font-size:1.5rem!important}}
 @media (max-width:700px){html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-dekonect{width:48px!important;height:48px!important}
   html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-dekonect svg{width:100%!important;height:100%!important}}
+/* 7 nov. : touches de console au téléphone, 4/3 → 16/10 (95 → 79 px de haut à 390 px) : la caisse remonte, la cible reste au-dessus de 44 px */
+@media (max-width:700px){html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-panel .cabinets>.cab{aspect-ratio:16/10!important;min-height:0!important}}

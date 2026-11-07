@@ -23,7 +23,7 @@
   #lang{ margin-left:auto; }
   main{ flex:1; display:flex; gap:0; min-height:0; }
   #stage{ flex:1; display:flex; align-items:center; justify-content:center; min-width:0; padding:8px; }
-  #view{ touch-action:none; image-rendering:pixelated; image-rendering:crisp-edges; display:block; cursor:pointer; border:2px solid var(--w); }
+  #view{ touch-action:none; image-rendering:pixelated; image-rendering:crisp-edges; display:block; cursor:pointer; border:2px solid transparent;/* 7 nov. : zéro cadre dans le cadre de l écran de la borne */ }
   aside{ width:360px; border-left:2px solid var(--w); padding:12px; display:flex; flex-direction:column; gap:12px; overflow:auto; }
   [hidden]{ display:none !important; }
   #card{ border:2px solid var(--w); padding:10px; }
