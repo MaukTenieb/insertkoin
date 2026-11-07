@@ -495,7 +495,7 @@
       var KHp={bois:[60,62,86,92],metal:[66,58,86,86]}[sk]||[60,62,86,92],KH={l:P.left+P.width*KHp[0]/100-4,t:P.top+P.height*KHp[1]/100-4,r:P.left+P.width*KHp[2]/100+4,b:P.top+P.height*KHp[3]/100+4},PL={l:P.left,t:P.top,r:P.right,b:P.bottom};
       var kn=document.querySelector('.b-knobs'),KR=kn&&kn.getBoundingClientRect(),KN=KR&&{l:KR.left-4,t:KR.top-4,r:KR.right+4,b:KR.bottom+4};
       var pn=document.querySelector('#home .b-panel'),bz=document.querySelector('#home .b-bezel'),WR=document.querySelector('.wrap').getBoundingClientRect();
-      var top=(pn?pn.getBoundingClientRect().bottom:P.top)+14,bot=(BL?Math.min(innerHeight,WR.bottom):Math.min(WR.bottom,P.bottom+P.height*.12))-3,lft=Math.max(S.left,BL&&bz?bz.getBoundingClientRect().right:WR.left+8)+3,rgt=Math.min(S.right,WR.right-8)-3;
+      var cp=document.querySelector('.b-copy'),CPt=cp&&cp.offsetWidth?cp.getBoundingClientRect().top:1e5,top=(pn?pn.getBoundingClientRect().bottom:P.top)+14,bot=Math.min(CPt-4,(BL?Math.min(innerHeight,WR.bottom):Math.min(WR.bottom,P.bottom+P.height*.12))-3),/* 7 nov. : jamais sur la ligne du copyright */lft=Math.max(S.left,BL&&bz?bz.getBoundingClientRect().right:WR.left+8)+3,rgt=Math.min(S.right,WR.right-8)-3;
       /* LORE au hasard sur la caisse : la fenêtre de la fente nue (6 px), l'étiquette couverte à 15 % au plus, 45 % de sa largeur au plus hors de la plaque, sur le bois de la caisse, sous le rebord du panneau */
       /* 0,6 au plus bas sous 800 px de large, et en bois jusqu'à 900 px (décision du 31 oct.) */
       var sc=!BL?[1,.9,.8]:(innerWidth<800||(sk==='bois'&&innerWidth<900))?[1,.9,.8,.7,.6,.5]:[1,.9,.8,.7,.6];

@@ -2132,7 +2132,7 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
     TQ=stops;
     const L=SAY[LANG]||SAY.en;
     for(let i=0;i<stops.length;i++){const el=stops[i];TI=i;window.__borneTourEl=el;if(!touring)break;const isCab=el.classList.contains('cab');const hr=(el.getAttribute('href')||(el.querySelector('a')||{}).href||'')+'';const go=el.dataset.grp||(el.querySelector('[data-go]')||el).dataset.go||(/bandcamp/.test(hr)?'bc':'')||(el.id==='kapture'?'kapture':(el.id==='radio-toggle'||el.classList.contains('motel-bar'))?'motel':el.id==='refresh'?'refresh':/substack/.test(hr)?'lore':/threadless/.test(hr)?'tl':/instagram/.test(hr)?'ig':/github\.com\/MaukTenieb/.test(hr)?'bio':'');
-      {const q=el.getBoundingClientRect(),m=28,d=q.top<m?q.top-m:q.bottom>innerHeight-m?Math.min(q.bottom-innerHeight+m,q.top-m):0;if(Math.abs(d)>2){scrollBy({top:d,behavior:RMg?'auto':'smooth'});await W(RMg?60:420);}}if(!touring)break;
+      {/* 7 nov. : la page défile pour laisser au guide la hauteur de s'asseoir au sommet de la cible ; le cœur reste pour les seuls éléments du haut de la page */const q=el.getBoundingClientRect(),m=28,mt=Math.min(Math.max(m,H+12),Math.max(m,innerHeight-q.height-m)),d=q.top<mt?Math.max(q.top-mt,-scrollY):q.bottom>innerHeight-m?Math.min(q.bottom-innerHeight+m,q.top-mt):0;if(Math.abs(d)>2){scrollBy({top:d,behavior:RMg?'auto':'smooth'});await W(RMg?60:420);}}if(!touring)break;
       const r=homeXY(el),gw=parseFloat(g.style.getPropertyValue('--gw'))||60;g.classList.add('walk');face(r.x<parseFloat(g.style.left)?2:3);
       const vt=el.getBoundingClientRect().top,inBar=!!el.closest('.bar'),HW=GW();
       /* up in the bar (Kapture), it stops a little short, below and to the left, and never leaves the frame */
