@@ -72,3 +72,33 @@
   addEventListener('resize',placeGhost);
   paint();
 })();
+
+/* i3 : FotoFauna prend la palette de la borne. --pal-accent de la page mère devient --acc, sa version claire --acc2,
+   et --edge (onglet actif, SHUFFLE) quitte l'orange propre à FotoFauna. Suit les changements de palette et d'usure. */
+(function(){
+  var P=null;try{P=window.parent!==window?window.parent.document.documentElement:null;}catch(e){}
+  if(!P)return;
+  var R=document.documentElement;
+  function rgb(v){var m=String(v).match(/\d+(\.\d+)?/g);return m&&m.length>=3?m.slice(0,3).map(Number):null;}
+  function hex(c){return'#'+c.map(function(x){return Math.max(0,Math.min(255,Math.round(x))).toString(16).padStart(2,'0');}).join('');}
+  function sync(){
+    var a=rgb(getComputedStyle(P).getPropertyValue('--pal-accent'));if(!a)return;
+    var l=a.map(function(x){return x+(255-x)*.45;});
+    R.style.setProperty('--acc',hex(a));R.style.setProperty('--acc2',hex(l));R.style.setProperty('--edge',hex(a));
+  }
+  sync();setTimeout(sync,1200);
+  new MutationObserver(sync).observe(P,{attributes:true,attributeFilter:['data-palette','data-usure','data-skin']});
+})();
+
+/* i3 : la rangée des familles s'arrête sur une puce entière ; la puce active reste visible en entier */
+(function(){
+  var F=document.getElementById('fams');if(!F)return;
+  function snap(){
+    var on=F.querySelector('.fam[aria-pressed="true"]'),x=F.scrollLeft,L=F.getBoundingClientRect().left;
+    if(on){var r=on.getBoundingClientRect();if(r.left<L||r.right>L+F.clientWidth)x=on.offsetLeft-F.firstElementChild.offsetLeft;}
+    var best=0;[].forEach.call(F.children,function(c){var o=c.offsetLeft-F.firstElementChild.offsetLeft;if(o<=x+1)best=o;});
+    F.scrollLeft=best;
+  }
+  new MutationObserver(function(){requestAnimationFrame(snap);}).observe(F,{childList:true});
+  requestAnimationFrame(snap);setTimeout(snap,600);
+})();
