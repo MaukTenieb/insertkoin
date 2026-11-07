@@ -5,6 +5,10 @@ Les copies restent telles qu'aspirées, aux noms canoniques près (CANON) ; les 
 import os, re
 D = os.path.dirname(os.path.abspath(__file__))
 
+# 8 nov. : index.html et skoporhogo-borne.html reçoivent des retouches directes (palettes color-mix, cadre de SkopoRhogo) absentes d'insertkoin.html ;
+# relancer ce script les effacerait. Il s'arrête donc, sauf BORNE_BUILD_FORCE=1, après report de ces retouches dans ses étapes.
+if os.environ.get('BORNE_BUILD_FORCE') != '1':
+    raise SystemExit('borne-build.py : arrêt. index.html contient des retouches directes absentes de la source ; voir l’en-tête du script.')
 def rd(n): return open(os.path.join(D, n), encoding="utf-8").read()
 def wr(n, s): open(os.path.join(D, n), "w", encoding="utf-8").write(s)
 
@@ -257,10 +261,7 @@ s7 = once(s7, "say(el,go==='motel'?'':nm,said)", "say(el,go==='motel'?'MOTEL SOU
 wr("index.html", s7)
 # la borne en français : fr.html sort de la borne finie, avec la langue et l'en-tête français d'InsertKoin (fr-head.json)
 import json as _json
-# 8 nov. : index.html et skoporhogo-borne.html reçoivent des retouches directes (palettes color-mix, cadre de SkopoRhogo) absentes d'insertkoin.html ;
-# relancer ce script les effacerait. Il s'arrête donc, sauf BORNE_BUILD_FORCE=1, après report de ces retouches dans ses étapes.
-if os.environ.get('BORNE_BUILD_FORCE') != '1':
-    raise SystemExit('borne-build.py : arrêt. index.html contient des retouches directes absentes de la source ; voir l’en-tête du script.')
+
 f = rd("index.html")
 for a, b in _json.load(open("fr-head.json", encoding="utf-8")):
     f = once(f, a, b)
