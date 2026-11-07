@@ -1,0 +1,32 @@
+name: Contrôle de la borne
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  controle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Playwright et Chromium
+        run: |
+          npm i --no-save --no-package-lock playwright@1.48.2
+          npx playwright install --with-deps chromium
+      - name: Serveur local sous /insertkoin/
+        run: |
+          mkdir -p "$RUNNER_TEMP/site" && ln -s "$GITHUB_WORKSPACE" "$RUNNER_TEMP/site/insertkoin"
+          (cd "$RUNNER_TEMP/site" && python3 -m http.server 8800 >/dev/null 2>&1 &)
+          sleep 2
+      - name: Contrôle sur six formats
+        run: node tools/controle-ci.cjs
+      - name: Captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: captures-borne
+          path: controle-*.png
+          retention-days: 14
