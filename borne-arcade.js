@@ -106,9 +106,12 @@ addEventListener('keydown',function(e){var r=document.documentElement;if(r.datas
   /* le voile se lève quand les matières du meuble sont décodées (bois, métal, vitre imprimée, enseigne), 3 s au plus */
   function mats(){var U={};[].forEach.call(document.querySelectorAll('.b-roof, .b-roof *, .wrap, .wrap .bar, .wrap .bar *, .b-bezel, .b-bezel *, .b-butee, .b-land'),function(e){['backgroundImage','borderImageSource'].forEach(function(k){var v=getComputedStyle(e)[k]||'';v.replace(/url\(["']?([^"')]+)["']?\)/g,function(_,u){U[u]=1;});});
       try{var b=getComputedStyle(e,'::before').borderImageSource||'';b.replace(/url\(["']?([^"')]+)["']?\)/g,function(_,u){U[u]=1;});}catch(_){}});
-    return Promise.race([Promise.all(Object.keys(U).slice(0,40).map(function(u){var i=new Image();i.src=u;return (i.decode?i.decode():Promise.resolve()).catch(function(){});})),new Promise(function(r){setTimeout(r,3000);})]);}
-  function ready(){if(R.classList.contains('borne-ready'))return;fit();mats().then(function(){fit();requestAnimationFrame(function(){fit();requestAnimationFrame(function(){R.classList.add('borne-ready');});});});}
-  addEventListener('load',function(){var f=document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve();f.then(ready,ready);setTimeout(fit,800)});fit();
+    return Promise.race([Promise.all(Object.keys(U).slice(0,40).map(function(u){var i=new Image();i.src=u;return (i.decode?i.decode():Promise.resolve()).catch(function(){});})),new Promise(function(r){setTimeout(r,2500);})]);}
+  var M0=null;function ready(){if(R.classList.contains('borne-ready'))return;fit();(M0||mats()).then(function(){fit();requestAnimationFrame(function(){fit();requestAnimationFrame(function(){R.classList.add('borne-ready');});});});}
+  /* 7 nov. : le voile se lève dès le DOM monté, polices prêtes (1,5 s au plus) et matières décodées ; l'événement load (lecteur YouTube, three.js) reste hors du chemin */
+  function go(){var f=document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve();Promise.race([f,new Promise(function(r){setTimeout(r,1500);})]).then(ready,ready);setTimeout(fit,800);}
+  M0=mats();/* décodage des matières lancé dès ici, en parallèle de la fin du chargement */
+  if(document.readyState==='loading')addEventListener('DOMContentLoaded',go);else go();addEventListener('load',fit);fit();
 })();
 
 /* 30 oct. — la caméra : lancer un jeu, c'est s'approcher de la borne jusqu'à ce que l'écran remplisse la fenêtre ; Baku Boom ou l'accueil font reculer.

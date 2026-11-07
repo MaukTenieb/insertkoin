@@ -501,3 +501,6 @@ html.borne #kg-root #bb-panel:not([style*="display: none"]):not([style*="display
 /* 1er nov., 12 h — usure du formica : l'image couvre le flanc d'un seul tenant (zéro répétition, zéro raccord qui coupe le placage autour de la caisse) ; la déchirure du palier 3 suit un bord arraché */
 html.borne.borne[data-skin=bois][data-usure]:is(:not([data-prog]),[data-mode=device],[data-habit=fauneye]) .wrap.wrap{background-size:cover!important;background-repeat:no-repeat!important;background-position:center bottom!important}
 html.borne.borne[data-skin=bois][data-usure="3"]:is(:not([data-prog]),[data-mode=device],[data-habit=fauneye]) .wrap.wrap{background-image:url(skin-bois-flanc-long-u3-dechire.webp)!important}
+/* 7 nov. — mode jeu, grands écrans : les écrans de titre et de choix (Fauna Chess, ERRATIK) suivent la taille du verre ; plancher du texte relevé à 15 px et plus */
+@media (min-width:1100px) and (min-height:700px){html.borne[data-prog] #kg-root :is(#chess-sel,#chess-over,#m-title){zoom:1.35}}
+@media (min-width:1500px) and (min-height:900px){html.borne[data-prog] #kg-root :is(#chess-sel,#chess-over,#m-title){zoom:1.7}}
