@@ -1206,11 +1206,11 @@ html.borne .b-door>.b-lore.b-onbox::before{content:"";position:absolute;inset:-1
 
 /* autocollant Lore : papier vierge teinté, mot en texte, déplacement à la main */
 html.borne .b-lore{position:relative;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none}
-html.borne .b-lore .b-paper{position:absolute;inset:0;background:var(--i-lore) center/contain no-repeat;filter:hue-rotate(var(--lh,0deg)) saturate(1.3) brightness(1.45);transition:filter .5s ease;pointer-events:none}
+html.borne .b-lore .b-paper{position:absolute;inset:0;background:var(--i-lore) center/contain no-repeat;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.45));pointer-events:none}
 html.borne .b-lore .b-word{position:relative;display:block;font-family:var(--f-sign);font-size:30px;line-height:1;letter-spacing:.05em;text-transform:uppercase;color:#f6ead0;-webkit-text-stroke:.045em #f6ead0;paint-order:stroke fill;white-space:nowrap;pointer-events:none;transition:opacity .17s ease,transform .17s ease;
   text-shadow:.03em 0 0 #1b0b06,-.03em 0 0 #1b0b06,0 .03em 0 #1b0b06,0 -.03em 0 #1b0b06,.04em .04em 0 #1b0b06,.06em .06em 0 #e8641c,.09em .09em 0 #e8641c,.12em .12em 0 #c24d12,.14em .14em 0 #1b0b06}
-html.borne .b-lore.b-peel .b-word{opacity:0;transform:scaleY(.1) translateY(.15em)}
-html.borne .b-lore.b-peel .b-paper{filter:hue-rotate(var(--lh,0deg)) saturate(1.3) brightness(1.7)}
+html.borne .b-lore.b-peel .b-word{opacity:0;transform:scaleX(var(--sx,1)) scaleY(.1) translateY(.15em)}
+html.borne .b-lore.b-peel .b-paper{filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.45)) brightness(1.12)}
 html.borne .b-lore.b-drag{cursor:grabbing}
 html.borne .b-lore.b-back{transition:left .4s ease,top .4s ease}
 
@@ -1318,3 +1318,10 @@ html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2)>.dock:not(:last-child
 html.borne .b-lore.b-wob{animation:b-wob .9s ease-in-out}
 @keyframes b-wob{0%,100%{rotate:0deg;scale:1}30%{rotate:-3deg;scale:1.06}60%{rotate:2deg;scale:1.03}}
 @media (max-width:700px){html.borne:not([data-prog]) .b-roof.b-roof:not(#r1):not(#r2):not(#r3){height:calc(1.4 * var(--p2h,120px))!important}}
+
+/* 7 nov. : autocollant Lore, cinq papiers de la DA ; lettre, ombre portée et contour propres à chaque papier ; contraste lettre/papier ≥ 4,5 */
+html.borne .b-lore .b-word{transform:scaleX(var(--sx,1));transform-origin:50% 50%}
+html.borne .b-lore[data-pap="noir"] .b-word{color:#f6ead0;-webkit-text-stroke-color:#f6ead0;text-shadow:.03em 0 0 #000,-.03em 0 0 #000,0 .03em 0 #000,0 -.03em 0 #000,.04em .04em 0 #000,.06em .06em 0 #ffa726,.09em .09em 0 #ffa726,.12em .12em 0 #c77a12,.14em .14em 0 #000}
+html.borne .b-lore[data-pap="ambre"] .b-word{color:#2a0d06;-webkit-text-stroke-color:#2a0d06;text-shadow:.04em .04em 0 #2a0d06,.06em .06em 0 #fff0cf,.09em .09em 0 #fff0cf,.11em .11em 0 #2a0d06}
+html.borne .b-lore[data-pap="creme"] .b-word{color:#7a1416;-webkit-text-stroke-color:#7a1416;text-shadow:.03em 0 0 #3a0a08,-.03em 0 0 #3a0a08,0 .03em 0 #3a0a08,0 -.03em 0 #3a0a08,.04em .04em 0 #3a0a08,.06em .06em 0 #e8951e,.09em .09em 0 #e8951e,.12em .12em 0 #b8650e,.14em .14em 0 #3a0a08}
+html.borne .b-lore[data-pap="bleu"] .b-word{color:#f6ead0;-webkit-text-stroke-color:#f6ead0;text-shadow:.03em 0 0 #0b1a20,-.03em 0 0 #0b1a20,0 .03em 0 #0b1a20,0 -.03em 0 #0b1a20,.04em .04em 0 #0b1a20,.06em .06em 0 #ffa726,.09em .09em 0 #ffa726,.12em .12em 0 #c77a12,.14em .14em 0 #0b1a20}

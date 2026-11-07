@@ -521,10 +521,11 @@
     /* la caisse change de taille (mesure de l'écran, téléphone couché, skin) : l'autocollant se recolle sur sa nouvelle place */
     if(window.ResizeObserver){var rsT,rs0='',RO=new ResizeObserver(function(){var r=slot.getBoundingClientRect(),dr=(slot.closest('.b-door')||slot).getBoundingClientRect(),k=Math.round(r.width)+'x'+Math.round(r.height)+'/'+Math.round(dr.width)+'x'+Math.round(dr.height)+'/'+Math.round(r.left-dr.left)+'/'+Math.round(r.top-dr.top)+(document.documentElement.hasAttribute('data-bland')?'L':'');if(k===rs0)return;rs0=k;clearTimeout(rsT);rsT=setTimeout(place,350);});RO.observe(slot);RO.observe(slot.closest('.b-door')||slot);}
     /* le mot de l'autocollant : LORE le plus souvent, Tales, Korhogo ou Diegesis de temps en temps, comme l'enseigne qui change de nom ; le papier change de teinte ; il se déplace à la main */
-    (function(){var W=['Tales','Korhogo','Diegesis'],H=[0,35,150,195,245,290,320],cw='Lore',ch=0,wd=lore.querySelector('.b-word'),sr=lore.querySelector('.b-sr'),RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
-      function fit(){var w=lore.offsetWidth,h=lore.offsetHeight;if(!w||!h)return;wd.style.fontSize='100px';var w1=wd.offsetWidth||1;wd.style.fontSize=Math.max(8,Math.min(100*.76*w/w1,.5*h/.7)).toFixed(1)+'px';}
-      function show(t,hue){cw=t;wd.textContent=t;sr.textContent=t;lore.style.setProperty('--lh',hue+'deg');ch=hue;fit();}
-      /* tirage : Lore 64 %, Tales, Korhogo ou Diegesis 12 % chacun ; teinte prise dans la liste, jamais deux fois de suite */
+    (function(){var W=['Tales','Korhogo','Diegesis'],H=['sang','noir','ambre','creme','bleu'],cw='Lore',ch='sang',wd=lore.querySelector('.b-word'),sr=lore.querySelector('.b-sr'),RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+      function fit(){var w=lore.offsetWidth,h=lore.offsetHeight;if(!w||!h)return;var fs=.44*h/.7;wd.style.setProperty('--sx','1');wd.style.fontSize=fs.toFixed(1)+'px';var w1=wd.offsetWidth||1,av=.68*w,sx=1;if(w1>av){sx=Math.max(.74,av/w1);if(w1*sx>av)fs*=av/(w1*sx);}wd.style.fontSize=Math.max(8,fs).toFixed(1)+'px';wd.style.setProperty('--sx',sx.toFixed(3));}/* 7 nov. : hauteur de lettre fixe pour les quatre mots ; les mots longs se resserrent au lieu de rapetisser */
+      function show(t,pap){cw=t;wd.textContent=t;sr.textContent=t;lore.style.setProperty('--i-lore','url(sticker-lore-papier-'+pap+'.webp)');lore.dataset.pap=pap;ch=pap;fit();}/* 7 nov. : cinq papiers peints dans la palette de la DA, à la place de la rotation de teinte */
+      show('Lore','sang');
+      /* tirage : Lore 64 %, Tales, Korhogo ou Diegesis 12 % chacun ; papier pris dans la liste, jamais deux fois de suite */
       function tick(){var t=Math.random()<.64?'Lore':W[(Math.random()*W.length)|0],o=H.filter(function(x){return x!==ch;}),hue=o[(Math.random()*o.length)|0];
         if(RM){show(t,hue);}else{lore.classList.add('b-peel');setTimeout(function(){show(t,hue);},170);setTimeout(function(){lore.classList.remove('b-peel');},420);}
         setTimeout(tick,6000+Math.random()*6000);}
