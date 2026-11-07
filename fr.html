@@ -156,7 +156,7 @@ a{color:inherit}
 .heroText .koro{text-shadow:0 1px 6px #000}
 .tagline{margin:0;font-size:clamp(.62rem,1.1vw,.8rem);letter-spacing:.14em;color:#d9d1be}
 .cabinets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
-.cab{position:relative;min-height:clamp(104px,14vw,160px);border:1px solid var(--line);background:#000 var(--th) center/cover no-repeat;overflow:hidden}
+.cab{position:relative;min-height:clamp(104px,14vw,160px);border:1px solid var(--line);background:#000;overflow:hidden}
 .cab::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,6,10,0) 35%,rgba(7,6,10,.92));pointer-events:none}
 .cab .hit{position:absolute;inset:0;display:grid;align-content:end;padding:10px;text-align:left;cursor:pointer;background:none;border:0;color:#fff;font:inherit;z-index:1}
 .cab b small{font-size:.76em}
@@ -228,7 +228,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 .cab{--nc:#ffe08a;transform:rotateX(var(--rx,0)) rotateY(var(--ry,0));transition:transform .25s ease,box-shadow .3s,border-color .3s;border-color:color-mix(in srgb,var(--nc) 35%,#2a261c);background-size:cover;filter:none}
 .cab::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),color-mix(in srgb,var(--nc) 38%,transparent),transparent 55%);opacity:0;transition:opacity .3s;mix-blend-mode:screen}
 .cab:hover::after,.cab.lit::after{opacity:1}
-.cab{background-image:var(--th);filter:saturate(.35) brightness(.8)}
+.cab{filter:saturate(.35) brightness(.8)}
 .cab:hover,.cab.lit,.cab:focus-within{filter:saturate(1.1) brightness(1);border-color:var(--nc);box-shadow:0 0 0 1px var(--nc),0 0 26px color-mix(in srgb,var(--nc) 55%,transparent),inset 0 0 30px color-mix(in srgb,var(--nc) 25%,transparent)}
 .cab .hit{padding:10px 12px 11px}
 .cab b{font-family:"Bebas Neue","Arial Narrow",Impact,sans-serif;font-weight:400;font-size:clamp(.95rem,1.55vw,1.35rem);letter-spacing:.06em;white-space:nowrap;line-height:.95;color:#fff8ec;
