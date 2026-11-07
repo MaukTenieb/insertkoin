@@ -40,6 +40,13 @@ for (const [w,h,t] of formats) {
     await p.keyboard.press('Escape'); await p.waitForTimeout(1500);
   }
   lignesPts.push(`${w}x${h} : points cliquables ${pts.join(' ') || 'aucun programme à points'}`);
+  // menu de Fauna Chess (7 nov.) : titre sur l'axe du verre à 2 px près, entier dans le verre
+  await p.evaluate(() => { const e = document.querySelector('[data-go="chess"]'); if (e) e.click(); }); await p.waitForTimeout(2500);
+  const ch = await p.evaluate(() => { const g = document.querySelector('.b-glass'), h = document.querySelector('#chess-sel h2'); if (!g || !h || !h.offsetWidth) return null;
+    const G = g.getBoundingClientRect(), H = h.getBoundingClientRect(); return [Math.round((H.left + H.width/2) - (G.left + G.width/2)), H.top >= G.top && H.bottom <= G.bottom]; });
+  if (ch && (Math.abs(ch[0]) > 2 || !ch[1])) refus.push('menu Fauna Chess décalé de ' + ch[0] + ' px' + (ch[1] ? '' : ', hors du verre'));
+  lignesPts.push(`${w}x${h} : menu Fauna Chess ${ch ? 'écart ' + ch[0] + ' px' : 'non ouvert'}`);
+  await p.keyboard.press('Escape'); await p.waitForTimeout(1000);
   const f = err.length + (largeur > 1 ? 1 : 0) + refus.length + (vus < 8 ? 1 : 0); fautes += f;
   lignes.push(`${w}x${h} : erreurs ${err.length}${err[0] ? ' (' + err[0].slice(0,120) + ')' : ''} ; défilement latéral ${largeur} px ; commandes testées ${vus}, couvertes ${refus.length}${refus.length ? ' (' + refus.join(', ') + ')' : ''}`);
   await c.close();
