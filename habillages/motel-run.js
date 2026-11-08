@@ -1,6 +1,7 @@
 /* Motel infini : rendu par lancer de rayons, à la Doom, en basse définition.
    Un des 18 Masks, tiré au hasard, court de dos dans les couloirs d'un motel sans fin ;
-   il prend seul les bifurcations, au hasard, comme une vidéo qui tourne sans fin ; noir et blanc. */
+   il prend seul les bifurcations, au hasard, comme une vidéo qui tourne sans fin ; noir et blanc.
+   Flèches tenues : virage libre et immédiat, à la Doom ; le pilote reprend après 2,5 s sans commande. */
 (function(){
 var W=240,H=150,FOV=0.66;
 function hash(a,b,c){var h=(a*374761393+b*668265263+(c||0)*2147483647)|0;h=(h^(h>>>13))*1274126177|0;return (h^(h>>>16))>>>0}
@@ -54,19 +55,40 @@ window.MotelRun=function(host){
  host.appendChild(cv);var c=cv.getContext('2d'),img=c.createImageData(W,H),buf=new Uint32Array(img.data.buffer),zb=new Float32Array(W);
  var key=KEYS[Math.floor(Math.random()*KEYS.length)],m=M[key],frames=[0,1,2,3].map(function(f){return sprite(key,f)});
  var face=new Image();face.src='a/b-'+key+'.webp';
- var px=0.5,py=0.5,dir=0,ang=0,pend=0,speed=2.3,last=performance.now(),run=0,alive=true;
- var DX=[1,0,-1,0],DY=[0,1,0,-1];
- function key_(e){if(!alive)return;if(e.target&&e.target.closest&&e.target.closest('input,textarea,.win'))return;if(e.key==='ArrowLeft'){pend=-1;e.preventDefault()}else if(e.key==='ArrowRight'){pend=1;e.preventDefault()}}
- addEventListener('keydown',key_);
- cv.addEventListener('pointerdown',function(e){var r=cv.getBoundingClientRect();pend=(e.clientX-r.left)<r.width/2?-1:1});
- function step(dt){var ox=px,oy=py;px+=DX[dir]*speed*dt;py+=DY[dir]*speed*dt;
-  var cx=Math.floor(px),cy=Math.floor(py),pcx=Math.floor(ox-0.5+0.5),pcy=Math.floor(oy);
-  var crossed=dir%2===0?(Math.floor(ox-0.5)!==Math.floor(px-0.5)):(Math.floor(oy-0.5)!==Math.floor(py-0.5));
-  if(crossed&&!pend&&Math.random()<0.4)pend=Math.random()<0.5?-1:1;
-  if(crossed&&pend){var nx=dir%2===0?Math.round(px-0.5)+0.5:px,ny=dir%2===0?py:Math.round(py-0.5)+0.5,gx=Math.floor(nx),gy=Math.floor(ny);
-   var nd=(dir+pend+4)%4,ok=nd%2===1?colC(gx):rowC(gy);
-   if(ok){px=nx;py=ny;dir=nd}pend=0}}
- function cast(){var ta=dir*Math.PI/2;var d=ta-ang;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;ang+=d*0.18;
+ var px=0.5,py=0.5,dir=0,ang=0,speed=2.3,last=performance.now(),run=0,alive=true,turn=0,idle=9,pendT=0,cell=-1;
+ var DX=[1,0,-1,0],DY=[0,1,0,-1],held={},ptr=null,TURN=3.1,RAD=0.24;
+ /* commandes à la Doom : flèches ou Q/D/A tenues = virage continu, immédiat ; haut = sprint, bas = freiner ; au doigt ou à la souris, tenir appuyé et glisser */
+ var KM={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d',a:'l',q:'l',d:'r',w:'u',z:'u',s:'d'};
+ function own(e){return !(e.target&&e.target.closest&&e.target.closest('input,textarea,.win'))}
+ function key_(e){if(!alive||!own(e))return;var k=KM[e.key.length===1?e.key.toLowerCase():e.key];if(!k)return;held[k]=1;idle=0;if(e.key.indexOf('Arrow')===0)e.preventDefault()}
+ function keyu_(e){var k=KM[e.key.length===1?e.key.toLowerCase():e.key];if(k)held[k]=0}
+ function blur_(){held={};ptr=null}
+ addEventListener('keydown',key_);addEventListener('keyup',keyu_);addEventListener('blur',blur_);
+ cv.addEventListener('pointerdown',function(e){var r=cv.getBoundingClientRect();ptr={x:e.clientX,cx:r.left+r.width/2,w:r.width};idle=0;try{cv.setPointerCapture(e.pointerId)}catch(_){}});
+ cv.addEventListener('pointermove',function(e){if(ptr){ang+=(e.clientX-ptr.x)*0.011;ptr.x=e.clientX;idle=0}});
+ function up_(){ptr=null}cv.addEventListener('pointerup',up_);cv.addEventListener('pointercancel',up_);
+ function open_(x,y){return !solid(Math.floor(x),Math.floor(y))}
+ function wrap(a){while(a>Math.PI)a-=2*Math.PI;while(a<-Math.PI)a+=2*Math.PI;return a}
+ function free(gx,gy,d){return !solid(gx+DX[d],gy+DY[d])}
+ function step(dt){var man=held.l||held.r||held.u||held.d||ptr;if(man)idle=0;else idle+=dt;var tr=0,sp=speed;
+  if(idle<2.5){/* le joueur tient la course */
+   tr=((held.r?1:0)-(held.l?1:0))*TURN;if(ptr){var o=(ptr.x-ptr.cx)/(ptr.w/2);if(Math.abs(o)>0.25)tr+=Math.max(-1,Math.min(1,o))*TURN}
+   if(held.u)sp=speed*1.5;if(held.d)sp=speed*0.35;ang+=tr*dt;
+   dir=((Math.round(ang/(Math.PI/2))%4)+4)%4;pendT=0}
+  else{/* pilote automatique : couloir, centre, bifurcations au hasard */
+   var gx=Math.floor(px),gy=Math.floor(py),id=gx*100003+gy,cxm=gx+0.5,cym=gy+0.5;
+   if(!free(gx,gy,dir)&&!open_(px+DX[dir]*0.6,py+DY[dir]*0.6)){var opts=[1,3].map(function(t){return (dir+t)%4}).filter(function(d){return free(gx,gy,d)});pendT=0;dir=opts.length?opts[Math.floor(Math.random()*opts.length)]:(dir+2)%4}
+   if(id!==cell){cell=id;var o2=[1,3].filter(function(t){return free(gx,gy,(dir+t)%4)});if(o2.length&&Math.random()<0.4)pendT=o2[Math.floor(Math.random()*o2.length)]}
+   var along=(cxm-px)*DX[dir]+(cym-py)*DY[dir];if(pendT&&Math.abs(along)<0.12){dir=(dir+pendT)%4;pendT=0}
+   var lat=(cxm-px)*(-DY[dir])+(cym-py)*DX[dir],want=dir*Math.PI/2+Math.max(-0.5,Math.min(0.5,lat*1.6)),d=wrap(want-ang);
+   tr=Math.max(-2.4,Math.min(2.4,d*7));ang+=Math.max(-Math.abs(d),Math.min(Math.abs(d),tr*dt));sp=speed*(Math.abs(d)>0.6?0.6:1)}
+  turn+=(tr-turn)*Math.min(1,dt*12);
+  /* glisse le long des murs */
+  var vx=Math.cos(ang)*sp*dt,vy=Math.sin(ang)*sp*dt,sx=vx>0?RAD:-RAD,sy=vy>0?RAD:-RAD;
+  if(open_(px+vx+sx,py-RAD)&&open_(px+vx+sx,py+RAD))px+=vx;
+  if(open_(px-RAD,py+vy+sy)&&open_(px+RAD,py+vy+sy))py+=vy;
+  ang=wrap(ang)}
+ function cast(){
   var dx=Math.cos(ang),dy=Math.sin(ang),plx=-dy*FOV,ply=dx*FOV,bob=Math.sin(run*11)*1.2;
   /* sol et plafond */
   for(var y=0;y<H;y++){var p=y-H/2-bob;if(Math.abs(p)<0.5)p=0.5;var rd=(H/2)/Math.abs(p),fl=p>0;
@@ -85,12 +107,12 @@ window.MotelRun=function(host){
   /* le Mask, de dos, à sa taille */
   var fr=frames[Math.floor(run*8)%4],sc=2.1*m.s/1.75,w=fr.width*sc,h=fr.height*sc;c.imageSmoothingEnabled=false;
   c.fillStyle='rgba(0,0,0,.35)';c.fillRect(W/2-w*0.35,H-9,w*0.7,3);
-  c.drawImage(fr,Math.round(W/2-w/2),Math.round(H-8-h+Math.abs(Math.sin(run*11))*-1.5),Math.round(w),Math.round(h));
+  c.drawImage(fr,Math.round(W/2-w/2-turn*3),Math.round(H-8-h+Math.abs(Math.sin(run*11))*-1.5),Math.round(w),Math.round(h));
   /* visage du Mask dans la barre d'état, à la Doom */
   c.fillStyle='#2a2420';c.fillRect(2,H-26,24,24);if(face.complete&&face.naturalWidth){c.drawImage(face,3,H-25,22,22)}
 }
  function shade(col,s){var r=col&255,g=(col>>8)&255,b=(col>>16)&255;return (255<<24)|(((b*s)|0)<<16)|(((g*s)|0)<<8)|((r*s)|0)}
  function loop(t){if(!alive)return;var dt=Math.max(0,Math.min(0.05,(t-last)/1000));last=t;if(!document.hidden){run+=dt;step(dt);cast()}requestAnimationFrame(loop)}
  requestAnimationFrame(loop);
- return{stop:function(){alive=false;removeEventListener('keydown',key_);cv.remove()},mask:key}};
+ return{stop:function(){alive=false;removeEventListener('keydown',key_);removeEventListener('keyup',keyu_);removeEventListener('blur',blur_);cv.remove()},mask:key}};
 })();
