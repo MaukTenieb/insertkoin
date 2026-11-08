@@ -1364,3 +1364,7 @@ html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #home .b-panel>.b-row1,ht
 html.borne .b-lore .b-word{text-shadow:none!important;filter:none!important}
 html.borne .b-lore .b-lustre{display:none!important}
 html.borne .b-lore.b-drag{cursor:grabbing}html.borne .b-lore.b-onbox{cursor:grab;touch-action:none}
+/* 8 nov. (LISTE n°68, juges du 8 nov.) : BC TL IG gardent leur hoquet de LED, plancher d opacité 0,6 ; le libellé reste lisible pendant l extinction */
+html.borne #home .b-row2 .menu .dead{animation-name:deadb!important}html.borne #home .b-row2 .menu .flk{animation-name:flkb!important}
+@keyframes deadb{0%{opacity:.62;text-shadow:none;box-shadow:none}72%{opacity:.62;text-shadow:none}76%{opacity:1}80%{opacity:.7;text-shadow:none}86%{opacity:1}}
+@keyframes flkb{0%{opacity:.62;text-shadow:none;box-shadow:none}10%{opacity:1}18%{opacity:.7;text-shadow:none}26%{opacity:1}60%{opacity:.85}66%{opacity:1}}
