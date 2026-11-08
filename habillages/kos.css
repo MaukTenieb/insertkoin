@@ -396,3 +396,13 @@ body{font:var(--f);color:var(--tx);background:var(--desk)}
 
 /* fond d'écran Motel : le jeu de couloirs, au centre, à la taille de l'ancienne image */
 #runbox{position:absolute;left:50%;top:50%;width:min(480px,92vw);aspect-ratio:8/5;transform:translate(-50%,-56%);box-shadow:0 0 0 1px #000}
+
+/* 8 nov. : le psychopompe bondit d'icône en icône et se pose */
+@property --khy{syntax:'<length>';inherits:false;initial-value:0px}
+#psy{translate:0 var(--khy);transition:left .9s cubic-bezier(.45,0,.35,1),top .9s cubic-bezier(.45,0,.35,1)}
+#psy.hop{animation:khop .9s cubic-bezier(.3,0,.4,1) both}
+@keyframes khop{0%{--khy:0px}45%{--khy:-30px}100%{--khy:0px}}
+#psy .spr{transform-origin:50% 100%}
+#psy.land .spr{animation:spr 2.4s steps(1) infinite,kland .42s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes kland{0%{scale:1.06 .84}45%{scale:.95 1.07}100%{scale:1 1}}
+#psy{z-index:2147482995}#bal{z-index:2147482996}

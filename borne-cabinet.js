@@ -206,6 +206,8 @@
   function launch(g){if(g==='diktat'){IK().openCalque&&IK().openCalque('borne-diktat.html','DIKTATFAUNE');return;}if(KATA.indexOf(g)>=0)kata(g);else IK().go&&IK().go(g);}
   /* 8 nov. — adresse par programme : ?p=<programme> ouvre ce programme (lien des habillages KorhogOS, DVD, télé du motel, vidéoclub) */
   window.__borneLaunch=launch;
+/* 8 nov. : ?kap=1 (barre des lieux du motel) ouvre Kapture une fois la borne prête */
+(function(){if(!/[?&]kap=1/.test(location.search))return;var n=0,t=setInterval(function(){var k=document.getElementById('kapture');if((k&&document.documentElement.classList.contains('borne-ready'))||++n>60){clearInterval(t);if(k)k.click();}},250);})();
   (function(){var m=/[?&]p=([a-z0-9]+)/.exec(location.search);if(!m)return;var k=m[1];if(ORDER.indexOf(k)<0&&['katabatik','skopo'].indexOf(k)<0)return;
     var n=0,t=setInterval(function(){n++;var ok=IK()&&IK().go;if(ok||n>40){clearInterval(t);if(ok)launch(k);}},150);})();
   var dots=el('div','b-dots');dots.setAttribute('role','tablist');scr.appendChild(dots);
