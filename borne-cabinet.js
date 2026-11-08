@@ -253,12 +253,18 @@
   var tilting=false;
   window.__borneBoom=function(cb){if(tilting)return;tilting=true;
     try{IK().burst&&IK().burst(90,'lowpass',.35,.5);IK().tone&&IK().tone(70,.5,'sawtooth',.06,-30);IK().tone&&IK().tone(1046,.08,'square',.025,0,.45);}catch(e){}
-    wrap.classList.remove('b-shake');void wrap.offsetWidth;wrap.classList.add('b-shake');hab.textContent='TILT';hab.classList.add('tilt');
+    wrap.classList.remove('b-shake');void wrap.offsetWidth;wrap.classList.add('b-shake');root.classList.add('b-tilted');hab.textContent='TILT';hab.classList.add('tilt');
     /* le mot BAKU BOOM s'allume une fois le tube éteint, sur le noir, jamais par-dessus l'image du jeu */
     var gr=glass.getBoundingClientRect();setTimeout(function(){var fl=el('div','b-bbflash','BAKU BOOM');fl.style.left=(gr.left+gr.width/2)+'px';fl.style.top=(gr.top+gr.height/2)+'px';document.body.appendChild(fl);setTimeout(function(){fl.remove();},560);},360);
+    /* 8 nov. (Mauk Tenieb : « BakuBoom est trop faible en matière de tilt ») : le meuble bascule sur ses pieds et oscille 1,4 s ; enseigne et lampes vacillent ; le tube s'éteint en trait puis en point, reste noir, puis chauffe et revient (rallumage dès le point éteint, sinon l'image d'avant transparaît) */
     glass.classList.remove('b-on');glass.classList.add('b-off');
-    setTimeout(function(){try{cb&&cb();}catch(e){}glass.classList.remove('b-off');glass.classList.add('b-on');},480);
-    setTimeout(function(){glass.classList.remove('b-on');wrap.classList.remove('b-shake');hab.classList.remove('tilt');hab.textContent=LABEL[root.dataset.habit]||'';tilting=false;},1150);};
+    /* les étapes suivent la fin réelle de chaque animation (animationend), un minuteur de secours derrière */
+    var stage=0,ch=glass.firstElementChild;
+    function relight(){if(stage)return;stage=1;try{cb&&cb();}catch(e){}glass.classList.remove('b-off');glass.classList.add('b-on');
+      var done=false;function fin(){if(done)return;done=true;glass.classList.remove('b-on');wrap.classList.remove('b-shake');root.classList.remove('b-tilted');hab.classList.remove('tilt');hab.textContent=LABEL[root.dataset.habit]||'';tilting=false;}
+      if(ch)ch.addEventListener('animationend',function h(e){if(e.animationName==='bon2'){ch.removeEventListener('animationend',h);setTimeout(fin,350);}});setTimeout(fin,2200);}
+    if(ch)ch.addEventListener('animationend',function h(e){if(e.animationName==='boff2'){ch.removeEventListener('animationend',h);relight();}});
+    setTimeout(relight,1500);};
   bb.onclick=function(){var away=document.body.className.indexOf('on-home')<0;fold();window.__borneBoom(function(){if(away)IK().goHome();});};
 
   /* ---------- Burrows et la bio : la borne s'efface, la page s'ouvre en plein écran, prête à imprimer ---------- */

@@ -1,6 +1,6 @@
 /* Borne Insert Koin — Dekonect.
    Un aimant gravé sur la caisse à pièces. Chaque pression déboîte les tronçons du meuble (chapiteau, écran, console, caisse),
-   les fait flotter un instant, puis les rassemble par aimantation dans un ordre nouveau. La plante et la caméra restent sur le toit. */
+   les lâche, les laisse flotter, puis les aspire un par un, par aimantation, dans un ordre nouveau. La plante et la caméra restent sur le toit. */
 (function(){
   var root=document.documentElement,order=null,busy=false,R=Math.random;
   var SEL=['.bar','#home .b-bezel','#home .b-panel','.b-door'];
@@ -10,27 +10,40 @@
   function same(a,b){return a.length===b.length&&a.every(function(x,i){return x===b[i];});}
   function son(k){try{window.__borneSon&&window.__borneSon[k]&&window.__borneSon[k]();}catch(e){}}
   function reset(anim){parts().forEach(function(e){e.style.transition=anim?'translate .45s cubic-bezier(.2,1.4,.4,1),rotate .45s':'';e.style.translate='';e.style.rotate='';e.style.zIndex='';});order=null;}
+  /* 8 nov. (Mauk Tenieb : « ton magnet-demagnet est une merde » ; demande du 25 oct. : « par succion ou aspiration ») : trois temps.
+     Le lâcher : chaque tronçon se décolle, s'écarte de ses voisins et pivote, vite puis de moins en moins vite (0,7 s).
+     Le flottement : les tronçons restent suspendus, ils dérivent et respirent (0,5 s).
+     La succion : un par un, chaque tronçon accélère vers sa nouvelle place, claque, rebondit de 3 px, et le meuble encaisse le choc. */
+  var RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function knock(k){var w=document.querySelector('.wrap');if(!w||RM||!w.animate)return;var a=1.5+k*.4;w.animate([{translate:'0 0'},{translate:(R()<.5?-a:a)+'px '+a+'px'},{translate:(R()<.5?-a:a)*.5+'px 0'},{translate:'0 0'}],{duration:170,easing:'ease-out'});}
   function press(){if(busy||root.dataset.prog)return;busy=true;var P=parts();if(P.length<2){busy=false;return;}
-    /* les places d'origine : on mesure sans décalage */
     P.forEach(function(e){e.style.transition='none';e.style.translate='';e.style.rotate='';});
     var top=Infinity,rects=P.map(function(e){var r=e.getBoundingClientRect();top=Math.min(top,r.top);return r;});
     var cur=order||P.slice(),next;do{next=shuffle(P);}while(same(next,cur)&&P.length>1);
-    /* le retour à l'ordre d'origine passe aussi, une fois sur quatre */
     if(order&&R()<.25)next=P.slice();
-    /* rétablit visuellement l'ordre en cours avant de déboîter */
     place(cur,rects,top,P,false);
+    if(RM){place(next,rects,top,P,false);order=same(next,P)?null:next;busy=false;return;}
     requestAnimationFrame(function(){requestAnimationFrame(function(){
-      son('suck');
-      P.forEach(function(e,i){var dx=(R()*2-1)*Math.min(90,innerWidth*.08),dy=(R()*2-1)*24;e.style.transition='translate .32s cubic-bezier(.3,0,.3,1),rotate .32s';
-        var t=(e.style.translate||'0px 0px').split(' ');e.style.translate=(parseFloat(t[0])+dx)+'px '+(parseFloat(t[1]||0)+dy)+'px';e.style.rotate=((R()*2-1)*5).toFixed(1)+'deg';e.style.zIndex=30+i;});
-      setTimeout(function(){place(next,rects,top,P,true);order=same(next,P)?null:next;setTimeout(function(){busy=false;},700);
-        /* téléphone couché : l'aimant suit la plaque MAUK TENIEB à sa nouvelle place */
-        if(root.hasAttribute('data-bland'))setTimeout(function(){try{window.__borneSeat&&window.__borneSeat();}catch(_){}},760);},380);
+      son('suck');var n=cur.length,dr=[];
+      /* le lâcher */
+      cur.forEach(function(e,k){var t=(e.style.translate||'0px 0px').split(' '),x0=parseFloat(t[0])||0,y0=parseFloat(t[1])||0,side=(k%2?1:-1)*(R()<.8?1:-1),
+          dx=side*(.04+R()*.05)*innerWidth,dy=(k-(n-1)/2)*(14+R()*10)+8,rot=side*(2+R()*5);dr.push([x0+dx,y0+dy,rot]);
+        e.style.transition='translate .7s cubic-bezier(.12,.75,.3,1) '+(k*40)+'ms,rotate .7s cubic-bezier(.12,.75,.3,1) '+(k*40)+'ms';
+        e.style.translate=(x0+dx).toFixed(1)+'px '+(y0+dy).toFixed(1)+'px';e.style.rotate=rot.toFixed(1)+'deg';e.style.zIndex=30+k;});
+      /* le flottement */
+      setTimeout(function(){cur.forEach(function(e,k){var d=dr[k];e.style.transition='translate .5s ease-in-out,rotate .5s ease-in-out';
+        e.style.translate=(d[0]+(R()*2-1)*6).toFixed(1)+'px '+(d[1]-5-R()*6).toFixed(1)+'px';e.style.rotate=(d[2]*.7).toFixed(1)+'deg';});},760);
+      /* la succion */
+      setTimeout(function(){place(next,rects,top,P,true);order=same(next,P)?null:next;setTimeout(function(){busy=false;},900);
+        if(root.hasAttribute('data-bland'))setTimeout(function(){try{window.__borneSeat&&window.__borneSeat();}catch(_){}},900);},1300);
     });});}
   /* chaque tronçon prend la place suivante ; les jours d'origine entre les tronçons restent les mêmes (la caisse tombait mal sans eux) */
   function place(seq,rects,top,P,anim){var gaps=rects.map(function(r,i){return i<rects.length-1?Math.max(0,rects[i+1].top-r.bottom):0;});var y=top;seq.forEach(function(e,k){var r=rects[P.indexOf(e)],dy=y-r.top;y+=r.height+(gaps[k]||0);
-      e.style.transition=anim?'translate .5s cubic-bezier(.2,1.5,.4,1) '+(k*70)+'ms,rotate .5s '+(k*70)+'ms':'none';e.style.translate='0px '+dy+'px';e.style.rotate='0deg';
-      if(anim)setTimeout(function(){son('clack');},420+k*70);});}
+      e.style.transition=anim?'translate .36s cubic-bezier(.6,0,.95,.35) '+(k*110)+'ms,rotate .36s cubic-bezier(.6,0,.95,.35) '+(k*110)+'ms':'none';e.style.translate='0px '+dy+'px';e.style.rotate='0deg';
+      if(anim)setTimeout(function(){son('clack');knock(k);if(e.animate&&!RM)e.animate([{transform:'translateY(0)'},{transform:'translateY(3px) scaleY(.985)'},{transform:'translateY(0)'}],{duration:150,easing:'ease-out'});e.style.zIndex='';},360+k*110);});}
+  /* 8 nov. : le rack des molettes accompagne la caisse à pièces dans chaque déplacement (même tronçon du meuble) ; l'aimant reste en bas à droite */
+  (function follow(){var d=document.querySelector('.b-door'),k=document.querySelector('.b-knobs');if(!d||!k){setTimeout(follow,600);return;}
+    new MutationObserver(function(){k.style.transition=d.style.transition;k.style.translate=d.style.translate;k.style.rotate=d.style.rotate;k.style.zIndex=d.style.zIndex;}).observe(d,{attributes:true,attributeFilter:['style']});})();
   window.__borneDekonect=press;
   /* un programme s'ouvre : le meuble se remet en ordre */
   new MutationObserver(function(){if(root.dataset.prog&&order)reset(false);}).observe(root,{attributes:true,attributeFilter:['data-prog']});
