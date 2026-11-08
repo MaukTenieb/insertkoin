@@ -31,3 +31,32 @@
 .stageWrap.live~* #bShoot,html:has(.stageWrap.live) #bShoot{display:none!important}
 footer.credit{display:none!important}
 #fams{overflow-x:auto;max-width:100%;flex-wrap:nowrap}
+
+/* refonte : un niveau de familles, ambre et capitales, très peu à lire */
+:root{--acc:#f2a33a;--acc2:#ffc46b;--edge:#f2a33a;--pencil:#f2a33a;--accSoft:rgba(242,163,58,.16)}
+#dock,#q,#count,#cmpBtn,#bMenu,.frame i,#genres{display:none!important}
+.search{justify-content:flex-start}
+.fam{text-transform:uppercase;letter-spacing:.14em;color:#d8a35a;border-color:#3a2c16}
+.fam:hover{color:var(--acc2);border-color:var(--acc)}
+.fam[aria-pressed=true]{background:var(--acc);color:#140c02;border-color:var(--acc)}
+.fam.fx{border-style:dashed}
+.fam.shuf{border-color:var(--acc);color:var(--acc)}
+.frame b{text-transform:uppercase;letter-spacing:.08em;color:#d9c7a4}
+.frame[aria-pressed=true] b{color:var(--acc)}
+.frame::before{color:var(--acc)}
+.frame[aria-pressed=true]::after{border-color:var(--acc)}
+.key,.chip,.dock button,.lookBar p,.cr span,h3{text-transform:uppercase}
+.key.prim{background:linear-gradient(180deg,#ffc46b,#e08a1e);color:#140c02;border-color:#e08a1e}
+.lookBar .ls,.lookBar .lh{display:none}
+.search{display:none!important}
+#fams{margin:0;padding:12px 14px 8px;background:var(--panel);position:sticky;top:0;z-index:12}
+/* noms entiers, sur deux lignes au besoin */
+.frame b{display:block!important;-webkit-line-clamp:unset!important;overflow:visible!important;overflow-wrap:anywhere;hyphens:auto;font-size:10px;line-height:1.25;letter-spacing:.05em}
+/* avant / après : pastille visible sur l'image ; appui long ou toucher */
+.cmpPin{position:absolute;right:10px;bottom:10px;z-index:5;width:44px;height:44px;display:grid;place-items:center;border-radius:50%;border:1px solid rgba(242,163,58,.6);background:rgba(10,8,4,.62);color:var(--acc);cursor:pointer;padding:0}
+.cmpPin .ic{width:22px;height:22px}
+.cmpPin[aria-pressed=true]{background:var(--acc);color:#140c02}
+.stage.ff-live .cmpPin{display:none}
+/* statut vide : zéro place réservée */
+.status:has(#stText:empty):has(#stAct[hidden]):has(#stopAi[hidden]){display:none}
+.frame{justify-content:flex-start!important}.frame img,.frame .ph{margin-top:0!important}
