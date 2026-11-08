@@ -1,10 +1,10 @@
 {
- "updated": "2026-11-08T00:41Z",
+ "updated": "2026-11-08T07:25Z",
  "relays": {
-  "wss://relay.damus.io": 0,
-  "wss://nos.lol": 48,
-  "wss://relay.primal.net": 52,
-  "wss://nostr.mom": 51
+  "wss://relay.damus.io": 35,
+  "wss://nos.lol": 49,
+  "wss://relay.primal.net": 53,
+  "wss://nostr.mom": 52
  },
  "korong": [
   {
@@ -120,7 +120,8 @@
   "dfd5e6d679a623b63e63345a528f05d204738fbb59e6c0cf006966eeeede8088": 1792454400,
   "15151a25622743692dc1a75c8b2c74aa8aeb1ec169bcc345ca982c40b173731d": 1792454400,
   "e58102657028d4be2d116dda3f1190b943fa5909a3cf1f33999ec383f332a409": 1792454400,
-  "f59755a108b9d37535a1b8e31ba14a7db9c876c8384794c54d70fa7c382d1d0a": 1792454400
+  "f59755a108b9d37535a1b8e31ba14a7db9c876c8384794c54d70fa7c382d1d0a": 1792454400,
+  "c9a88729b2865d7d29ac779f55ffb6629f57f6bdbc41559cbdba65bbfcaf9a24": 1794102128
  },
  "kave": [
   {
