@@ -253,11 +253,11 @@ setInterval(function(){if(txt&&!entry){var f=PAGES[page];if(f){var rows=f(sub);v
 /* ---------- le son du télétexte : le Motel Sound (Mauk Tenieb, 8 nov.), la liste du hall tirée au hasard ; volume et muet de la télécommande ---------- */
 var MS={p:null,ids:null,ready:false,want:false};
 function msIds(cb){if(MS.ids)return cb(MS.ids);fetch('../index.html').then(function(r){return r.text()}).then(function(t){var m=/var JUKE_TRACKS=(\[.*?\]);/.exec(t);try{MS.ids=m?JSON.parse(m[1]).map(function(x){return x.id}):[]}catch(e){MS.ids=[]}cb(MS.ids)}).catch(function(){MS.ids=[];cb([])})}
-function msVol(){if(!MS.p||!MS.ready)return;try{if(mute||!vol)MS.p.mute();else{MS.p.unMute();MS.p.setVolume(Math.round(vol*2.5))}}catch(e){}}
+function msVol(){if(window.IKMotel){IKMotel.vol(Math.round(vol*2.5));IKMotel.mute(mute||!vol);return}if(!MS.p||!MS.ready)return;try{if(mute||!vol)MS.p.mute();else{MS.p.unMute();MS.p.setVolume(Math.round(vol*2.5))}}catch(e){}}
 function msMake(ids){var o=ids.slice();for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=o[i];o[i]=o[j];o[j]=t}
  MS.p=new YT.Player('msnd',{height:'90',width:'160',host:'https://www.youtube-nocookie.com',playerVars:{autoplay:1,controls:0,playsinline:1,rel:0},
   events:{onReady:function(){MS.ready=true;MS.p.loadPlaylist({playlist:o,index:0});MS.p.setLoop(true);msVol();if(!MS.want)MS.p.pauseVideo()},onError:function(){try{MS.p.nextVideo()}catch(e){}}}})}
-function msnd(){MS.want=power&&txt>0;
+function msnd(){MS.want=power&&txt>0;if(window.IKMotel){msVol();IKMotel.want('tv',MS.want);return}
  if(!MS.want){if(MS.p&&MS.ready)try{MS.p.pauseVideo()}catch(e){}return}
  if(MS.p){if(MS.ready){msVol();try{MS.p.playVideo()}catch(e){}}return}
  msIds(function(ids){if(!ids.length||MS.p||document.getElementById('msnd'))return;var d=document.createElement('div');d.id='msnd';d.setAttribute('aria-hidden','true');d.style.cssText='position:fixed;left:-9999px;top:0;width:160px;height:90px';document.body.appendChild(d);
@@ -307,5 +307,6 @@ fit();document.fonts&&document.fonts.ready.then(function(){draw()});draw();
 })();
 </script>
 <script src="motel.js"></script>
+<script src="panneau.js"></script>
 </body>
 </html>
