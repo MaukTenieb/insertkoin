@@ -393,3 +393,6 @@ body{font:var(--f);color:var(--tx);background:var(--desk)}
 #fp .date span{font-size:9px}
 /* grosses icônes des lieux du motel (hall, chambre, vidéoclub) : 48 px */
 .di.big .ig{width:48px;height:48px}.di.big .ig svg,.di.big .ig img{width:48px;height:48px}
+
+/* fond d'écran Motel : le jeu de couloirs, au centre, à la taille de l'ancienne image */
+#runbox{position:absolute;left:50%;top:50%;width:min(480px,92vw);aspect-ratio:8/5;transform:translate(-50%,-56%);box-shadow:0 0 0 1px #000}
