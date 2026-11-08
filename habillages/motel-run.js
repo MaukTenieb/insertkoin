@@ -1,6 +1,6 @@
 /* Motel infini : rendu par lancer de rayons, à la Doom, en basse définition.
    Un des 18 Masks, tiré au hasard, court de dos dans les couloirs d'un motel sans fin ;
-   flèche gauche ou droite (ou toucher la moitié gauche ou droite) : il prend la prochaine bifurcation. */
+   il prend seul les bifurcations, au hasard, comme une vidéo qui tourne sans fin ; noir et blanc. */
 (function(){
 var W=240,H=150,FOV=0.66;
 function hash(a,b,c){var h=(a*374761393+b*668265263+(c||0)*2147483647)|0;h=(h^(h>>>13))*1274126177|0;return (h^(h>>>16))>>>0}
@@ -50,7 +50,7 @@ function sprite(key,f){var m=M[key],cv=document.createElement('canvas');cv.width
  body(c,m,f,0);if(m.two)body(c,m,(f+2)%4,24);return cv}
 window.MotelRun=function(host){
  var cv=document.createElement('canvas');cv.width=W;cv.height=H;cv.className='mrun';cv.setAttribute('role','img');cv.setAttribute('aria-label','Motel');cv.tabIndex=0;
- cv.style.cssText='image-rendering:pixelated;image-rendering:crisp-edges;display:block;width:100%;height:100%;outline:0;touch-action:manipulation';
+ cv.style.cssText='image-rendering:pixelated;image-rendering:crisp-edges;display:block;width:100%;height:100%;outline:0;touch-action:manipulation;filter:grayscale(1) contrast(1.12) brightness(1.05)';
  host.appendChild(cv);var c=cv.getContext('2d'),img=c.createImageData(W,H),buf=new Uint32Array(img.data.buffer),zb=new Float32Array(W);
  var key=KEYS[Math.floor(Math.random()*KEYS.length)],m=M[key],frames=[0,1,2,3].map(function(f){return sprite(key,f)});
  var face=new Image();face.src='a/b-'+key+'.webp';
@@ -62,9 +62,10 @@ window.MotelRun=function(host){
  function step(dt){var ox=px,oy=py;px+=DX[dir]*speed*dt;py+=DY[dir]*speed*dt;
   var cx=Math.floor(px),cy=Math.floor(py),pcx=Math.floor(ox-0.5+0.5),pcy=Math.floor(oy);
   var crossed=dir%2===0?(Math.floor(ox-0.5)!==Math.floor(px-0.5)):(Math.floor(oy-0.5)!==Math.floor(py-0.5));
+  if(crossed&&!pend&&Math.random()<0.4)pend=Math.random()<0.5?-1:1;
   if(crossed&&pend){var nx=dir%2===0?Math.round(px-0.5)+0.5:px,ny=dir%2===0?py:Math.round(py-0.5)+0.5,gx=Math.floor(nx),gy=Math.floor(ny);
    var nd=(dir+pend+4)%4,ok=nd%2===1?colC(gx):rowC(gy);
-   if(ok){px=nx;py=ny;dir=nd;pend=0}}}
+   if(ok){px=nx;py=ny;dir=nd}pend=0}}
  function cast(){var ta=dir*Math.PI/2;var d=ta-ang;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;ang+=d*0.18;
   var dx=Math.cos(ang),dy=Math.sin(ang),plx=-dy*FOV,ply=dx*FOV,bob=Math.sin(run*11)*1.2;
   /* sol et plafond */
@@ -87,7 +88,7 @@ window.MotelRun=function(host){
   c.drawImage(fr,Math.round(W/2-w/2),Math.round(H-8-h+Math.abs(Math.sin(run*11))*-1.5),Math.round(w),Math.round(h));
   /* visage du Mask dans la barre d'état, à la Doom */
   c.fillStyle='#2a2420';c.fillRect(2,H-26,24,24);if(face.complete&&face.naturalWidth){c.drawImage(face,3,H-25,22,22)}
-  if(pend){c.fillStyle='#f0e6c8';var ax=pend<0?W-24:W-10;c.beginPath();c.moveTo(ax+(pend<0?0:8),H-14);c.lineTo(ax+(pend<0?8:0),H-19);c.lineTo(ax+(pend<0?8:0),H-9);c.fill()}}
+}
  function shade(col,s){var r=col&255,g=(col>>8)&255,b=(col>>16)&255;return (255<<24)|(((b*s)|0)<<16)|(((g*s)|0)<<8)|((r*s)|0)}
  function loop(t){if(!alive)return;var dt=Math.max(0,Math.min(0.05,(t-last)/1000));last=t;if(!document.hidden){run+=dt;step(dt);cast()}requestAnimationFrame(loop)}
  requestAnimationFrame(loop);
