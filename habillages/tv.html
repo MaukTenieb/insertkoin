@@ -83,6 +83,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0b0908;user-select:no
 #remote{display:grid;grid-template-columns:repeat(3,44px);gap:6px;padding:12px 10px 16px;background:linear-gradient(#2a2622,#171412);border-radius:18px 18px 26px 26px;box-shadow:0 8px 20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.07)}
 #remote button{height:30px;border:0;border-radius:7px;background:#3a342d;color:#e8e0cc;font:12px Arial,sans-serif;box-shadow:0 2px 0 #0e0c0a;cursor:pointer;touch-action:manipulation;padding:0}
 #remote button:active{transform:translateY(1px);box-shadow:none}
+#remote .av{grid-column:span 3}
 #remote .w{grid-column:span 3;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 #remote .w button{height:16px;border-radius:4px}
 #remote .red{background:#c9302a!important}#remote .grn{background:#2e9a3a!important}#remote .yel{background:#d8b820!important}#remote .cya{background:#2aa8c8!important}
@@ -114,6 +115,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0b0908;user-select:no
   <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
   <button data-k="chdn">CH ▼</button><button data-k="0">0</button><button data-k="chup">CH ▲</button>
   <button data-k="voldn">VOL −</button><button data-k="ok">OK</button><button data-k="volup">VOL +</button>
+  <button class="av" data-k="av">AV</button>
   <div class="w"><button class="red" data-k="red"></button><button class="grn" data-k="green"></button><button class="yel" data-k="yellow"></button><button class="cya" data-k="cyan"></button></div>
  </div>
 </div>
@@ -229,7 +231,7 @@ function goPage(n){/* l'en-tête défile pendant la recherche, comme sur un vrai
 setInterval(function(){if(txt&&!entry){var f=PAGES[page];if(f){var rows=f(sub);var g=$('#grid');var h0=rows[0];/* horloge de l'en-tête */render(rows)}}},1000);
 
 /* ---------- commandes ---------- */
-function key(k){var ir=$('#ir');ir.classList.add('on');setTimeout(function(){ir.classList.remove('on')},100);
+function key(k){if(k==='av'){location.href='dvd.html';return}var ir=$('#ir');ir.classList.add('on');setTimeout(function(){ir.classList.remove('on')},100);
  if(k==='power'){power=!power;$('#tube').style.filter=power?'':'brightness(0)';if(!power){txt=0;$('#ttx').className='layer'}return}if(!power)return;
  if(k==='txt'){txt=(txt+1)%3;var t=$('#ttx');t.className='layer'+(txt===1?' on':txt===2?' on mix':'');if(txt===1)goPage(page);return}
  if(/^\d$/.test(k)){if(txt){entry+=k;var g=$('#grid');render([' P'+pad(entry,3)+'  '+A.y+'KORHOGO'].concat([]));if(entry.length===3){var n=+entry;entry='';goPage(n)}return}
@@ -253,9 +255,10 @@ var ty;$('#ggrid').addEventListener('touchstart',function(e){ty=e.touches[0].cli
 function fit(){var portrait=innerHeight>innerWidth*1.0,rw=$('#remote').offsetWidth;var W=portrait?Math.min(innerWidth*.94,(innerHeight-260)*1.05):Math.min(innerWidth-rw-60,(innerHeight*.86)*1.42);document.documentElement.style.setProperty('--tw',Math.max(240,W)+'px');setTimeout(function(){fitTtx();if(cur().id==='guide')guide()},50)}
 addEventListener('resize',fit);
 /* titre de l'onglet : l'enseigne */
-setInterval(function(){var r=Math.random();document.title=(r<.7?'Insert Koin':['Intersektion','SektorInn','NoirInsekt'][Math.floor(Math.random()*3)])+' — Motel TV'},6000);
+setInterval(function(){var r=Math.random();document.title=(r<.7?'Insert Koin':['Intersektion','Sektor Inn','Noir Insekt'][Math.floor(Math.random()*3)])+' — Motel TV'},6000);
 fit();document.fonts&&document.fonts.ready.then(function(){draw()});draw();
 })();
 </script>
+<script src="motel.js"></script>
 </body>
 </html>

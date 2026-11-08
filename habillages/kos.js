@@ -284,7 +284,7 @@ function notepad(title,text){var pre=h('pre','note');pre.textContent=text;pre.co
 /* ---------- invite de commandes ---------- */
 function terminal(){var box=h('div','wview term'),cwd=ROOT,hist=[],hi=0;
  var unix=S.theme!=='std';
- function prompt(){return unix?'mauk@korhogos:'+(cwd===ROOT?'~':'~/'+pathOf(cwd).split('\\').slice(1).join('/'))+'$ ':pathOf(cwd)+'>'}
+ function prompt(){return unix?'mauk@korhogo:'+(cwd===ROOT?'~':'~/'+pathOf(cwd).split('\\').slice(1).join('/'))+'$ ':pathOf(cwd)+'>'}
  function out(s){var p=h('div');p.textContent=s;box.insertBefore(p,line)}
  var line=h('div'),ps=h('span'),inp=h('input');inp.spellcheck=false;inp.autocapitalize='off';line.appendChild(ps);line.appendChild(inp);
  box.appendChild(h('div',null,unix?'KorhogOS · '+repLong(new Date())+'\n':'\nKorhogOS\n    (C) Korhogo™, Korhogo Fauna™ & Mauk Tenieb\n\n'));box.appendChild(line);ps.textContent=prompt();
@@ -308,7 +308,7 @@ function terminal(){var box=h('div','wview term'),cwd=ROOT,hist=[],hi=0;
    ps.textContent=prompt();box.scrollTop=box.scrollHeight}
   else if(e.key==='ArrowUp'){if(hi>0)inp.value=hist[--hi]||''}else if(e.key==='ArrowDown'){inp.value=hist[++hi]||''}});
  box.addEventListener('click',function(){inp.focus()});
- var w=win({key:'term',title:unix?'mauk@korhogos: ~':(S.lang==='fr'?'Commandes MS-DOS':'MS-DOS Prompt'),icon:'term',w:560,h:330,body:box,onopen:function(){setTimeout(function(){inp.focus()},50)}});return w}
+ var w=win({key:'term',title:unix?'mauk@korhogo: ~':(S.lang==='fr'?'Commandes MS-DOS':'MS-DOS Prompt'),icon:'term',w:560,h:330,body:box,onopen:function(){setTimeout(function(){inp.focus()},50)}});return w}
 
 /* ---------- Exécuter, Rechercher ---------- */
 function runDlg(){var body=h('div','dbody');body.innerHTML='<div style="display:flex;gap:12px;align-items:flex-start">'+ic('run',32)+'<div>'+t('runlbl')+'</div></div><div style="display:flex;align-items:center;gap:8px"><span>'+t('openlbl')+'</span><input class="field in" id="runf" value="korong"></div>';
@@ -412,7 +412,7 @@ function boot(again){var b=$('#boot');b.className='';b.innerHTML='';WINS.slice()
  if(th==='std'){b.innerHTML='<pre>'+t('starting')+'</pre>';setTimeout(function(){if(done)return;b.innerHTML='<div class="splash95" style="background-image:url(a/poster-800.webp)"><div class="wm"><b>Korhog</b><i>OS</i><small>Insert Koin · Korhogo Fauna</small></div><div class="pb"></div></div>'},700);setTimeout(end,2600)}
  else if(th==='plat'){b.innerHTML='<div class="macbox"><div style="margin-bottom:8px">'+ic('koin',32).replace('<svg','<svg style="margin:0 auto 8px"')+'</div>'+t('welcome')+'<div class="bar"><i></i></div></div><div class="macext"></div>';var ex=$('.macext',b),list=['koin','minitel','vhs','camera','book','musik','mic','onion','repo','skopo','jukebox','webcam'];
   setTimeout(function(){var i=$('.bar i',b);if(i)i.style.width='100%'},60);list.forEach(function(n,i){setTimeout(function(){if(!done)ex.insertAdjacentHTML('beforeend',KICON(n,32))},150+i*140)});setTimeout(end,2300)}
- else if(th==='fram'){var L=['[    0.000000] Booting KorhogOS','[    0.412870] Korhogo: 18 Masks found','[  OK  ] Started Motel Sound.','[  OK  ] Started SkopoRhogo.','[  OK  ] Reached target KorhoGame.','[  OK  ] Started FaunEye.','[  OK  ] Started SurFauna.','[  OK  ] Started 3615.','[  OK  ] Reached target Graphical Interface.'],pre=h('pre');b.appendChild(pre);L.forEach(function(l,i){setTimeout(function(){if(!done)pre.textContent+=l+'\n'},i*170)});setTimeout(end,1900)}
+ else if(th==='fram'){var L=['[    0.000000] Booting KorhogOS','[  OK  ] Started Motel Sound.','[  OK  ] Started SkopoRhogo.','[  OK  ] Reached target KorhoGame.','[  OK  ] Started FaunEye.','[  OK  ] Started SurFauna.','[  OK  ] Started 3615.','[  OK  ] Reached target Graphical Interface.'],pre=h('pre');b.appendChild(pre);L.forEach(function(l,i){setTimeout(function(){if(!done)pre.textContent+=l+'\n'},i*170)});setTimeout(end,1900)}
  else{b.style.background='#596a8a';b.innerHTML='<div class="cdelogin"><b>'+t('welcome')+'</b><br>'+t('login')+'<br><input class="field" value="mauk" readonly></div>';setTimeout(end,1500)}}
 
 /* ---------- apparence ---------- */
@@ -428,7 +428,7 @@ addEventListener('keydown',function(e){if(e.key==='Escape'){if(openMenus.length)
  if(e.key==='Enter'&&SEL&&!e.target.closest('input,pre,select,textarea'))openNode(SEL)});
 addEventListener('resize',function(){clearTimeout(window.__rz);window.__rz=setTimeout(renderDesk,150)});
 /* l'enseigne brouille le titre de l'onglet */
-setInterval(function(){var r=Math.random(),n=r<.7?'KorhogOS':['Intersektion','SektorInn','NoirInsekt'][Math.floor(Math.random()*3)];document.title=n},5200);
+setInterval(function(){var r=Math.random(),n=r<.7?'KorhogOS':['Intersektion','Sektor Inn','Noir Insekt'][Math.floor(Math.random()*3)];document.title=n},5200);
 
 /* montage */
 document.documentElement.lang=S.lang;

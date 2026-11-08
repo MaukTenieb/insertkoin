@@ -238,7 +238,7 @@ function key(k){idle=0;if(saverOn){stopSaver();return}var ir=$('#ir');ir.classLi
  else if(k==='subt'){st.subs=st.subs==='off'?st.lang:'off';save();paint()}
  else if(k==='audio'){prohibited()}
  else if(k==='stop'){prohibited()}
- else if(k==='eject'){clearInterval(bgT);bgT=null;show('lang',langScreen)}}
+ else if(k==='eject'){clearInterval(bgT);bgT=null;location.href='tv.html'}}
 $$('#remote button,#rside button').forEach(function(b){b.addEventListener('click',function(){key(b.dataset.k)})});
 addEventListener('keydown',function(e){var m={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',Enter:'ok',' ':'ok',Escape:'menu',Backspace:'menu'}[e.key];if(m){e.preventDefault();key(m)}});
 $('#stage').addEventListener('click',function(e){if(cur==='warn'||cur==='ident')key('ok')});
@@ -255,5 +255,6 @@ BG.forEach(function(u){var d=h('div','bg');d.style.backgroundImage='url('+u+')';
 fit();setTimeout(fit,300);$('#lang').classList.add('on');cur='lang';langScreen();
 })();
 </script>
+<script src="motel.js"></script>
 </body>
 </html>
