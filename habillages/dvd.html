@@ -152,7 +152,7 @@ var st={lang:'en',subs:'off'};try{var s=JSON.parse(localStorage.getItem('ik.dvd2
 function save(){try{localStorage.setItem('ik.lang',st.lang);localStorage.setItem('ik.dvd2',JSON.stringify(st))}catch(e){}}
 function t(k){return TX[st.lang][k]}
 /* phrases des psychopompes : servent de sous-titres */
-var SAY={korong:['Shufflepuck: challenge us!','Shufflepuck : défie-nous !'],chess:['Fairy chess against the Fauna.','Tente ces échecs alternatifs, tiens.'],erratik:['Find the pairs.','Trouve les clones.'],faunarratik:['Your own story with us. Build!','Picore, ci et là : construis l’histoire à plusieurs.'],katabatik:['Roll for a mini-game.','Jette le dé, joue à des mini-jeux.'],'3615':['Surf the Minitel, earn Koins.','Consulte ce bon vieux Minitel. Chope des Koins !'],vhs:['Your own YouTube tapes.','Visionne tes programmes YouTube.'],fotofauna:['Shoot and edit.','Prends tes photos, retouche-les dans la foulée.'],faunator:['Browse .onion sites.','Tomates, salade, .onion !'],skopo:['Watch us.','Tu nous vois ?'],reporhogo:['Find any repo on anything.','Toutes les ressources "code" sur… tout.'],invaders:['Factualists want to liquefy you!','Les Divisionistes le font par zéro !'],musik:['Touched by a muse?','Touched by a muse?']};
+var SAY=(window.KDATA&&KDATA.SAY)||{};
 function subline(id){var s=SAY[id];if(!s||st.subs==='off')return '';return st.subs==='fr'?s[1]:s[0]}
 
 /* ---------- mise à l'échelle ---------- */
