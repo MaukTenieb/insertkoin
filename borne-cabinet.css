@@ -1387,5 +1387,11 @@ html.borne .b-plant .p-pot{clip-path:none!important}
 html.borne .b-plant .p-fo{display:none!important}
 /* 8 nov. (Mauk Tenieb, 15 h 40 : « il est parfois trop gros ») : au téléphone, la plaque Mauk Tenieb reste plus étroite qu'une touche de la console (140 px contre 110 px de touche à 360 px de large) */
 @media (max-width:900px){
-html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2):not(#r3) .b-plate .b-badge{width:clamp(108px,30vw,118px)!important;height:44px!important}
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2):not(#r3) .b-plate .b-badge{width:clamp(88px,26vw,112px)!important;height:auto!important}
 html.borne:not(#r1):not(#r2):not(#r3) .b-plate .b-badge b{font-size:.76rem!important;letter-spacing:.18em!important;margin-right:-.18em}}
+/* 8 nov. (Mauk Tenieb, 16 h 20) : la plaque Mauk Tenieb devient une vraie plaque photographiée, émail noir et cadre de laiton, une par skin ; le nom reste dans la page pour les lecteurs d'écran */
+html.borne:not(#p1):not(#p2):not(#p3) .b-plate .b-badge{background:url(plaque-bois.webp) center/contain no-repeat!important;box-shadow:none!important;border:0!important;border-radius:0!important;filter:drop-shadow(0 4px 5px rgba(0,0,0,.55))!important;aspect-ratio:4.44/1;height:auto!important;min-height:44px!important}
+html.borne[data-skin=metal]:not(#p1):not(#p2):not(#p3) .b-plate .b-badge{background-image:url(plaque-metal.webp)!important;aspect-ratio:4.57/1}
+html.borne:not(#p1):not(#p2):not(#p3) .b-plate .b-badge::before,html.borne:not(#p1):not(#p2):not(#p3) .b-plate .b-badge::after{display:none!important}
+html.borne:not(#p1):not(#p2):not(#p3) .b-plate .b-badge b{color:transparent!important;text-shadow:none!important}
+@media (max-width:900px) and (max-height:500px) and (orientation:landscape){html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2):not(#r3) .b-plate .b-badge{width:92px!important}}
