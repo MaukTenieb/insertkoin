@@ -2091,8 +2091,8 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
   const GC=()=>{const o=g.offsetParent;return o&&o!==document.body?o:(home.getClientRects().length?home:(g.offsetParent||document.body));},GB=()=>GC().getBoundingClientRect(),GW=()=>GC().clientWidth;
   const tip=document.createElement('div');tip.className='gtip';home.appendChild(tip);
   let who=null,fw=0,sc=1,frame=0,touring=false,idleT=0,blinkT=0,away=true;
-  /* 1er nov. (LISTE n°51) : psychopompes grossis (× 1,3) */const H=Math.round((touchDev?80:106)*1.3);
-  function dress(){who=WHO[Math.floor(Math.random()*WHO.length)];const S=SH[who],r=R.find(x=>x.id===who);fw=S.w*(S.k||1);sc=H/(S.h*(S.k||1));
+  /* 1er nov. (LISTE n°51) : psychopompes grossis (× 1,3) */const H0=Math.round((touchDev?80:106)*1.3);let H=H0;/* 8 nov. : chaque psychopompe garde sa taille relative, celle de Korong! (BIG, décision du 22 oct. : Croisière Noire à 0,9, dogXim à 0,7, les autres à 1) */const PSZ={croisiere_noire:.9,dogxim:.7};
+  function dress(){who=WHO[Math.floor(Math.random()*WHO.length)];H=Math.round(H0*(PSZ[who]||1));const S=SH[who],r=R.find(x=>x.id===who);fw=S.w*(S.k||1);sc=H/(S.h*(S.k||1));
     g.style.setProperty('--gw',Math.round(fw*sc)+'px');g.style.setProperty('--gh',H+'px');g.style.backgroundImage=`url(${S.src})`;g.style.backgroundSize=`${Math.round(fw*8*sc)}px ${H}px`;const gc=({honey_buzzard:'#ff2a3a',c7h5n3o6:'#3aa0ff',tsui_pen:'#ff9a1a'})[who]||(r?r.glow:'#c9a84c');g.style.setProperty('--gc',gc);tip.style.setProperty('--gc',gc);face(0);}
   function face(f){frame=f;g.style.backgroundPosition=`${-Math.round(f*fw*sc)}px 0`;}
   function homeXY(el){const a=el.getBoundingClientRect(),b=GB();return{x:a.left-b.left,y:a.top-b.top,w:a.width,h:a.height};}
