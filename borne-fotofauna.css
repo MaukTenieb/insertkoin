@@ -50,5 +50,15 @@ footer.credit{display:none!important}
 #actions{display:grid!important;grid-template-columns:repeat(4,1fr);gap:6px}
 #actions .key{width:100%;min-width:0;margin:0!important;justify-content:center;padding-inline:4px}
 @container ffctrl (max-width:439px){#actions .key svg{display:none}}
-/* champ de recherche : sous 346 px de large, SHUFFLE garde son pictogramme */
-@media (max-width:345px){html #bRand#bRand{font-size:0!important;gap:0!important;min-width:44px;justify-content:center}}
+/* champ de recherche : jusqu'à 360 px de large, SHUFFLE garde son pictogramme */
+@media (max-width:360px){html #bRand#bRand{font-size:0!important;gap:0!important;min-width:44px;justify-content:center}}
+
+/* i3 cycle 2 : onglets et boutons de tête à 44 px ; flèche de suite sur les rangées de puces */
+html .tabs button,html #laboBtn{min-height:44px!important}
+html header.top :is(#bShoot,#bOpen,#bMenu){min-width:44px!important;min-height:44px}
+.ff-row{position:relative}
+.ff-more{position:absolute;right:0;top:50%;transform:translateY(-50%);width:44px;height:44px;border:0;border-radius:4px;
+  background:linear-gradient(90deg,transparent,var(--bg,#0b0a0e) 45%);color:var(--acc);font:700 18px/44px 'DM Mono',monospace;text-align:right;padding:0 6px;cursor:pointer;display:none;z-index:2}
+.ff-row.more .ff-more{display:block}
+.ff-row:has(>.rail) .ff-more{right:-14px}
+html #laboBtn{min-width:44px!important}html header.top .logo{min-height:44px}
