@@ -148,7 +148,7 @@
   var lastFire=0;function slot(){var t=C.currentTime+.02;if(t<lastFire+.25)t=lastFire+.25+R()*.2;lastFire=t;return t;}
   /* [délai mini, délai maxi] en secondes entre deux appels de chaque processus, au repos */
   var PROC={relay:[5,13],creak:[6,20],crt:[5,14],reel:[18,40],timer:[28,55],bell:[35,75],coin:[45,110],mag:[35,80],neon:[25,55]};
-  function fire(k){var c=C,t=slot(),o=A.ev,n,i;log(k);
+  function fire(k){var c=C,t=slot(),o=A.ev,n,i;log(k);/* 8 nov. : chaque processus allume son organe (borne-vie.js) */try{var dl=Math.max(0,(t-c.currentTime)*1000);setTimeout(function(){document.dispatchEvent(new CustomEvent('borne:proc',{detail:k}));},dl);}catch(e){}
     switch(k){
     case 'relay':/* relais et contacteurs du fond de caisse : un coup, parfois une grappe qui retombe */
       n=R()<.55?1:2+Math.floor(R()*3);var p=(R()*2-1)*.35;for(i=0;i<n;i++)play('relay',j(.2,.3)*(i?.7:1),t+i*j(.07,.6),j(1,.06),p+(R()-.5)*.1,o)||Y.relay(c,t+i*.08,o,p);break;
@@ -214,4 +214,6 @@
     m.frequency.value=j(7,.2);mg.gain.value=.03;m.connect(mg);mg.connect(e.gain);e.gain.setValueAtTime(0,t+.05);e.gain.linearRampToValueAtTime(.075,t+.07);e.gain.exponentialRampToValueAtTime(.0001,t+.95);
     o.connect(f);f.connect(e);e.connect(M);o.start(t+.05);m.start(t+.05);o.stop(t+1);m.stop(t+1);warm(.15);};
   new MutationObserver(function(){if(document.documentElement.dataset.prog)S.degauss();}).observe(document.documentElement,{attributes:true,attributeFilter:['data-prog']});
+  /* 8 nov. : la baisse de secteur (borne-vie.js) : le ronronnement plonge et le relais du secteur claque en revenant */
+  document.addEventListener('borne:brownout',function(){var c=C;if(!c||!on()||!hum||!hum.g)return;var t=c.currentTime,g=hum.g.gain,v=g.value;g.cancelScheduledValues(t);g.setValueAtTime(v,t);g.linearRampToValueAtTime(v*.25,t+.12);g.linearRampToValueAtTime(v*.8,t+.5);g.linearRampToValueAtTime(v*.3,t+.62);g.linearRampToValueAtTime(v,t+1.1);if(hum.src)try{hum.src.detune.setTargetAtTime(-180,t,.08);hum.src.detune.setTargetAtTime(0,t+.7,.25);}catch(e){}play('relay',.2,t+1.05,.9,0,A&&A.ev)||(Y.relay&&Y.relay(c,t+1.05,A&&A.ev,0));});
 })();
