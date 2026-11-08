@@ -1385,3 +1385,7 @@ html.borne .b-glass.b-on>*{animation:bon2 .7s ease-out!important}
 html.borne:not([data-prog]) .b-roof .b-pot.b-pot{height:70%!important;align-self:flex-end!important}
 html.borne .b-plant .p-pot{clip-path:none!important}
 html.borne .b-plant .p-fo{display:none!important}
+/* 8 nov. (Mauk Tenieb, 15 h 40 : « il est parfois trop gros ») : au téléphone, la plaque Mauk Tenieb reste plus étroite qu'une touche de la console (140 px contre 110 px de touche à 360 px de large) */
+@media (max-width:900px){
+html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2):not(#r3) .b-plate .b-badge{width:clamp(108px,30vw,118px)!important;height:44px!important}
+html.borne:not(#r1):not(#r2):not(#r3) .b-plate .b-badge b{font-size:.76rem!important;letter-spacing:.18em!important;margin-right:-.18em}}
