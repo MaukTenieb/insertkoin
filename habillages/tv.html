@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Insert Koin — Motel TV</title>
+<title>Insert Koin — TV</title>
 <link rel="stylesheet" href="fonts.css">
 <style>@font-face{font-family:Arimo;src:url(a/f/arimo-latin-400-normal.woff2) format("woff2");font-weight:400}@font-face{font-family:Arimo;src:url(a/f/arimo-latin-700-normal.woff2) format("woff2");font-weight:700}</style>
 <style>
@@ -152,7 +152,7 @@ function sext(y){return y<20?(y===3||y===7||y===11||y===15):(y%4===0&&(y%100!==0
 function rep(d){d=d||new Date();var n=Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(1792,8,22))/864e5),y=1;for(;;){var l=sext(y)?366:365;if(n<l)break;n-=l;y++}return{d:n%30+1,m:Math.floor(n/30)+1,y:y}}
 function roman(n){var r='',v=[[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];v.forEach(function(p){while(n>=p[0]){r+=p[1];n-=p[0]}});return r}
 function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=a[i];a[i]=a[j];a[j]=x}return a}
-var SAY={korong:['Shufflepuck: challenge us!','Shufflepuck : défie-nous !'],chess:['Fairy chess against the Fauna.','Tente ces échecs alternatifs, tiens.'],erratik:['Find the pairs.','Trouve les clones.'],faunarratik:['Your own story with us. Build!','Picore, ci et là : construis l’histoire à plusieurs.'],katabatik:['Roll for a mini-game.','Jette le dé, joue à des mini-jeux.'],'3615':['Surf the Minitel, earn Koins.','Consulte ce bon vieux Minitel. Chope des Koins !'],vhs:['Your own YouTube tapes.','Visionne tes programmes YouTube.'],fotofauna:['Shoot and edit.','Prends tes photos, retouche-les dans la foulée.'],faunator:['Browse .onion sites.','Tomates, salade, .onion !'],skopo:['Watch us.','Tu nous vois ?'],reporhogo:['Find any repo on anything.','Toutes les ressources "code" sur… tout.'],bakubook:['Read it all.','Lis tout ça.'],invaders:['Factualists want to liquefy you!','Les Divisionistes le font par zéro !'],musik:['Touched by a muse?','Touched by a muse?']};
+var SAY={korong:['Shufflepuck: challenge us!','Shufflepuck : défie-nous !'],chess:['Fairy chess against the Fauna.','Tente ces échecs alternatifs, tiens.'],erratik:['Find the pairs.','Trouve les clones.'],faunarratik:['Your own story with us. Build!','Picore, ci et là : construis l’histoire à plusieurs.'],katabatik:['Roll for a mini-game.','Jette le dé, joue à des mini-jeux.'],'3615':['Surf the Minitel, earn Koins.','Consulte ce bon vieux Minitel. Chope des Koins !'],vhs:['Your own YouTube tapes.','Visionne tes programmes YouTube.'],fotofauna:['Shoot and edit.','Prends tes photos, retouche-les dans la foulée.'],faunator:['Browse .onion sites.','Tomates, salade, .onion !'],skopo:['Watch us.','Tu nous vois ?'],reporhogo:['Find any repo on anything.','Toutes les ressources "code" sur… tout.'],invaders:['Factualists want to liquefy you!','Les Divisionistes le font par zéro !'],musik:['Touched by a muse?','Touched by a muse?']};
 function say(id){var s=SAY[id];return s?(lang==='fr'?s[1]:s[0]):''}
 
 /* ---------- chaînes : 01 le guide, puis les 18 programmes dans l'ordre du panneau ---------- */
@@ -218,10 +218,10 @@ var FASTDEF=function(){return F?['Programmes','La Fauna','Palmarès','Sommaire']
 var FASTNUM=[200,300,400,100];
 var PAGES={};
 PAGES[100]=function(){var L=[hdr(100)];mosaicText('KORHOGO',39,5,A.gy).forEach(function(l){L.push(l)});
- L.push(A.c+(F?'  Le monde Korhogo de Mauk Tenieb':'  Mauk Tenieb\'s Korhogo world'));L.push(A.c+(F?'  jeux et machines dans un navigateur':'  games and machines in a browser'));L.push('');
+ L.push(A.c+(F?'  Le monde Korhogo de Mauk Tenieb':'  Mauk Tenieb\'s Korhogo world'));L.push(A.c+(F?'  ses jeux et ses machines dans un navigateur':'  games and machines in a browser'));L.push('');
  var idx=F?[['101','Insert Koin'],['200','Programmes'],['300','La Fauna'],['400','Palmarès Korong!'],['401','Palmarès FaunInvaders'],['500','Koins'],['600','Ce soir à la TV'],['700','Liens'],['888','Sous-titres']]:[['101','Insert Koin'],['200','Programs'],['300','The Fauna'],['400','Palmarès Korong!'],['401','Palmarès FaunInvaders'],['500','Koins'],['600','Tonight on TV'],['700','Links'],['888','Subtitles']];
  idx.forEach(function(x){L.push(A.w+' '+pad(x[1],28)+A.y+x[0])});while(L.length<23)L.push('');L.push(bar(A.b,F?' Tapez un numéro de page':' Key in a page number',A.y));L.push(fast(FASTDEF()));return L};
-PAGES[101]=function(){var L=[hdr(101),bar(A.r,'INSERT KOIN',A.w),''];var t=F?['Le monde Korhogo de Mauk Tenieb, jeux et machines dans un navigateur.','Insert Koin tourne dans le navigateur du visiteur, sur ordinateur et téléphone, tenu droit ou couché, en anglais et en français.','Par Mauk Tenieb & Korhogo.']:['Insert Koin, Mauk Tenieb\'s Korhogo world, games and machines in a browser.','Insert Koin runs in the visitor\'s browser on desktop and phone, held upright or on its side, in English and French.','By Mauk Tenieb & Korhogo.'];
+PAGES[101]=function(){var L=[hdr(101),bar(A.r,'INSERT KOIN',A.w),''];var t=F?['Le monde Korhogo de Mauk Tenieb, ses jeux et ses machines dans un navigateur.','Insert Koin tourne dans le navigateur du visiteur, sur ordinateur et téléphone, tenu droit ou couché, en anglais et en français.','Par Mauk Tenieb & Korhogo.']:['Insert Koin, Mauk Tenieb\'s Korhogo world, games and machines in a browser.','Insert Koin runs in the visitor\'s browser on desktop and phone, held upright or on its side, in English and French.','By Mauk Tenieb & Korhogo.'];
  t.forEach(function(p){wrap(p,38).forEach(function(l){L.push(A.w+l)});L.push('')});L.push(A.c+'mauktenieb.github.io/insertkoin');while(L.length<24)L.push('');L.push(fast(FASTDEF()));return L};
 PAGES[200]=function(){var L=[hdr(200),bar(A.r,F?'PROGRAMMES':'PROGRAMS',A.w),''];D.P.forEach(function(p,i){L.push(A.w+pad(p.name,16)+A.g+pad(p.group,14)+A.y+(201+i))});while(L.length<24)L.push('');L.push(fast(FASTDEF()));return L};
 D.P.forEach(function(p,i){PAGES[201+i]=function(){var L=[hdr(201+i),bar(A.r,p.name.toUpperCase(),A.w),A.g+p.group+'  '+A.c+p.exe,''];if(say(p.id)){L.push(A.dh+A.y+say(p.id).slice(0,37));L.push('');L.push('')}
@@ -231,15 +231,15 @@ D.F.forEach(function(f,i){PAGES[301+i]=function(sp){sp=sp||1;var L=[hdr(301+i),A
  if(sp===1){L.push('');wrap('"'+f.motto+'"',38).forEach(function(l){L.push(A.y+l)});L.push('');
   ['STR','DEX','INT','WIS','CHA','CON'].forEach(function(k){var v=+f.stats[k];L.push(A.c+k+' '+A.gy+'\x7f'.repeat(v)+' '.repeat(10-v)+A.w+' '+v)});L.push('');
   wrap(f.appearance,38).slice(0,7).forEach(function(l){L.push(A.w+l)})}
- else if(sp===2){L.push('');L.push(A.c+(F?'MASQUES':'MASKS'));wrap(f.masks,38).slice(0,5).forEach(function(l){L.push(A.w+l)});L.push('');L.push(A.c+(F?'FACTION':'FACTION'));wrap(f.faction,38).slice(0,4).forEach(function(l){L.push(A.w+l)});L.push('');L.push(A.c+'HEXAGRAM');wrap(f.hexagram,38).slice(0,4).forEach(function(l){L.push(A.w+l)})}
- else{L.push('');L.push(A.c+(F?'POUVOIRS':'POWERS'));wrap(f.powers,38).slice(0,8).forEach(function(l){L.push(A.w+l)});L.push('');L.push(A.c+'KORONG!');wrap(F?(f.korong_fr||f.korong_en):f.korong_en,38).slice(0,5).forEach(function(l){L.push(A.w+l)})}
+ else if(sp===2){L.push('');L.push(A.c+('MASKS'));wrap(f.masks,38).slice(0,5).forEach(function(l){L.push(A.w+l)});L.push('');L.push(A.c+('FACTION'));wrap(f.faction,38).slice(0,4).forEach(function(l){L.push(A.w+l)});L.push('');L.push(A.c+'HEXAGRAM');wrap(f.hexagram,38).slice(0,4).forEach(function(l){L.push(A.w+l)})}
+ else{L.push('');L.push(A.c+('POWERS'));wrap(f.powers,38).slice(0,8).forEach(function(l){L.push(A.w+l)});L.push('');L.push(A.c+'KORONG!');wrap(F?(f.korong_fr||f.korong_en):f.korong_en,38).slice(0,5).forEach(function(l){L.push(A.w+l)})}
  while(L.length<24)L.push('');L.push(fast(FASTDEF()));return L};PAGES[301+i].subs=3});
 function palmPage(num,key,title,c1,c2){return function(){var L=[hdr(num),bar(A.y,title,A.b),'',A.c+'    '+pad(F?'JOUEUR':'PLAYER',10)+pad(c1,12)+c2,''];
  (D.PALM[key]||[]).forEach(function(r,i){L.push((i<3?A.y:A.w)+' '+p2(i+1)+'  '+pad(r[0],10)+pad(String(r[1]),12)+r[2])});
  L.push('');L.push(A.g+(F?'Mis à jour ':'Updated ')+String(D.PALM.updated||'').replace('T',' ').replace('Z',' UTC'));while(L.length<24)L.push('');L.push(fast(FASTDEF()));return L}}
-PAGES[400]=palmPage(400,'korong','PALMARES  KORONG!',F?'MASKS':'MASKS',F?'BUTS':'GOALS');
-PAGES[401]=palmPage(401,'fauninvaders','PALMARES  FAUNINVADERS','SCORE',F?'VAGUE':'WAVE');
-PAGES[500]=function(){var L=[hdr(500),bar(A.y,'KOINS',A.b),''];var t=F?['Départ à 3, plafond 99.','Une Koin par victoire, quel que soit le jeu ; une par connexion 3615 KOINS.','La première partie d\'un programme se paie au premier geste dans l\'écran ; zapper reste gratuit.','Rejouer dans un programme ouvert coûte une Koin.','À zéro Koin, une Koin gratuite revient au bout de 60 s.']:['Start with 3, ceiling 99.','One Koin per win, in any game; one per connection to 3615 KOINS.','A program\'s first game is paid at the first move on the screen; zapping stays free.','Replaying in an open program costs one Koin.','At zero, a free Koin comes back after 60 s.'];
+PAGES[400]=palmPage(400,'korong','PALMARÈS  KORONG!','MASKS',F?'BUTS PRIS':'GOALS IN');
+PAGES[401]=palmPage(401,'fauninvaders','PALMARÈS  FAUNINVADERS','SCORE',F?'VAGUE':'WAVE');
+PAGES[500]=function(){var L=[hdr(500),bar(A.y,'KOINS',A.b),''];var t=F?['Départ à 3, plafond 99.','Un Koin par victoire, quel que soit le jeu ; un par connexion 3615 KOINS.','La première partie d\'un programme se paie au premier geste dans l\'écran ; zapper reste gratuit.','Rejouer dans un programme ouvert coûte un Koin.','À zéro Koin, un Koin gratuit revient au bout de 60 s.']:['Start with 3, ceiling 99.','One Koin per win, in any game; one per connection to 3615 KOINS.','A program\'s first game is paid at the first move on the screen; zapping stays free.','Replaying in an open program costs one Koin.','At zero, a free Koin comes back after 60 s.'];
  t.forEach(function(p){wrap(p,37).forEach(function(l,j){L.push((j?A.w+' ':A.y+'\x7f'+A.w)+l)});L.push('')});while(L.length<24)L.push('');L.push(fast(FASTDEF()));return L};
 PAGES[600]=function(){var L=[hdr(600),bar(A.b,F?'CE SOIR A LA TV':'TONIGHT ON TV',A.w),''];var s=slots();CH.slice(1,20).forEach(function(c){var w=VS.indexOf(c.id)>=0?'vs '+shuffle(D.F)[0].name:say(c.id);L.push(A.y+p2(c.num)+' '+A.w+pad(c.name,13)+A.c+pad(w,20))});while(L.length<24)L.push('');L.push(fast(FASTDEF()));return L};
 PAGES[700]=function(){var L=[hdr(700),bar(A.g,F?'LIENS':'LINKS',A.b),''];[['Lore','mauktenieb.substack.com'],['Journal','korhogo.substack.com'],['Burrows','mauktenieb.github.io/katabase'],['Bandcamp','mauktenieb.bandcamp.com'],['Threadless','korhogo.threadless.com'],['Instagram','instagram.com/mauktenieb'],['YouTube','youtube.com/@mauktenieb'],['Mauk Tenieb','github.com/MaukTenieb'],['3615','mauktenieb.github.io/3615']].forEach(function(x){L.push(A.y+x[0]);L.push(A.w+' '+x[1])});while(L.length<24)L.push('');L.push(fast(FASTDEF()));return L};
@@ -298,11 +298,12 @@ function fit(){var W=1376,H=768,cx=676.5,cy=312.5,sw0=215,vw=innerWidth,vh=inner
  var R=document.documentElement.style;R.setProperty('--sw',W*CL.s+'px');R.setProperty('--sx',CL.x+'px');R.setProperty('--sy',CL.y+'px');R.setProperty('--tw',(sw0*CL.s)+'px');zoom();setTimeout(function(){fitTtx();if(cur().id==='guide')guide()},50)}
 var near=false;function zoom(v){if(v!=null)near=v;if(!CL)return;var k=WI.s/CL.s,t=$('#tvset');t.style.transformOrigin='0 0';t.style.transform=near?'':'translate('+(WI.x-CL.x)+'px,'+(WI.y-CL.y)+'px) scale('+k+')'}
 setTimeout(function(){$('#tvset').style.transition='transform 2.4s cubic-bezier(.45,.05,.25,1)';zoom(true)},2200);
-$('#room').addEventListener('click',function(e){if(e.target.closest('#tube,#remote,#ctl,#mk'))return;zoom(!near)});
+$('#room').addEventListener('click',function(e){if(e.target.closest('#tube,#remote,#ctl,#mk'))return;if(!near)zoom(true)});
+window.__ikBoom=function(){zoom(false);if(ch!==1)zap(1)};
 $$('#remote button').forEach(function(b){b.addEventListener('click',function(){if(!near)zoom(true)})});
 addEventListener('resize',fit);
 /* titre de l'onglet : l'enseigne */
-setInterval(function(){var r=Math.random();document.title=(r<.7?'Insert Koin':['Intersektion','Sektor Inn','Noir Insekt'][Math.floor(Math.random()*3)])+' — Motel TV'},6000);
+setInterval(function(){var r=Math.random();document.title=(r<.7?'Insert Koin':['Intersektion','Sektor Inn','Noir Insekt'][Math.floor(Math.random()*3)])+' — TV'},6000);
 fit();document.fonts&&document.fonts.ready.then(function(){draw()});draw();
 })();
 </script>

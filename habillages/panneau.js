@@ -1,6 +1,6 @@
 /* Le panneau de contrôle commun des lieux du motel (Mauk Tenieb, 8 nov. : « un panneau de contrôle universel sous tous les régimes et tous les écrans » ;
    17 h 56 : il reprend la barre de la console, la même partout). La barre du pied de la console, telle quelle :
-   Koins, son (Motel Sound), PL (la liste du Motel Sound sur YouTube), Kapture (au hall), Immersion (plein écran), Baku Boom (retour au hall), et FR · EN.
+   Koins, son (Motel Sound), PL (la liste du Motel Sound sur YouTube), Kapture, Immersion, Baku Boom, et FR · EN.
    Le Motel Sound reste allumé d'un lieu à l'autre (ik.motel) et reprend au premier geste du visiteur ; window.IKMotel sert la télé. */
 (function(){
 if(window.top!==window.self||document.getElementById('ikbar'))return;
@@ -22,13 +22,16 @@ var kn=q('.kn');try{kn.textContent=localStorage.getItem('ik.koins')||'0'}catch(e
 var SON=q('.b-px-son'),PL=q('.b-px-pl'),KAP=q('.b-px-kap'),IMM=q('.b-imm'),BOOM=q('.b-boom');
 var LG=PL.cloneNode(true);LG.classList.remove('b-px-pl');LG.classList.add('b-px-lg');LG.textContent=lang==='fr'?'EN':'FR';PL.parentNode.appendChild(LG);
 function lab(e,en,fr){var t=lang==='fr'?fr:en;e.title=t;e.setAttribute('aria-label',t)}
-lab(SON,'Motel Sound','Motel Sound');lab(PL,'Motel Sound playlist on YouTube','La liste du Motel Sound sur YouTube');lab(KAP,'Kapture, in the hall','Kapture, au hall');lab(IMM,'Immersion: full screen','Immersion : plein écran');lab(BOOM,KOS?'Baku Boom: close every window':'Baku Boom: back to KorhogOS',KOS?'Baku Boom : fermer toutes les fenêtres':'Baku Boom : retour à KorhogOS');lab(LG,'Passer en français','Switch to English');
+lab(SON,'Motel Sound','Motel Sound');lab(PL,'PL','PL');lab(KAP,'Kapture','Kapture');lab(IMM,'Immersion','Immersion');lab(BOOM,'Baku Boom','Baku Boom');lab(LG,'Français / English','Français / English');
 var MSB=SON;
 SON.addEventListener('click',function(){user=true;want.panel=!want.panel;try{localStorage.setItem('ik.motel',want.panel?'1':'0')}catch(e){}sync()});
 PL.addEventListener('click',function(){list(function(a){if(a.length)window.open('https://www.youtube.com/watch_videos?video_ids='+a.slice(0,50).join(','),'_blank','noopener')})});
-KAP.addEventListener('click',function(){location.href=HALL+'?kap=1'});
+/* Kapture sur place : la page du lieu part à FotoFauna ; au doigt, le choix SKREEN / KAM du hall */
+KAP.addEventListener('click',function(){var md=navigator.mediaDevices;if(!(md&&md.getDisplayMedia)||matchMedia('(pointer:coarse)').matches){location.href=HALL+'?kap=1';return}
+ md.getDisplayMedia({video:{displaySurface:'browser'},audio:false,preferCurrentTab:true,selfBrowserSurface:'include',surfaceSwitching:'exclude'}).then(function(s){var v=document.createElement('video');v.srcObject=s;v.muted=true;v.playsInline=true;return v.play().then(function(){return new Promise(function(r){setTimeout(r,250)})}).then(function(){var c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);s.getTracks().forEach(function(t){t.stop()});try{sessionStorage.setItem('ik.kap',c.toDataURL('image/jpeg',.9))}catch(e){}location.href=HALL+'?kap=skreen'})}).catch(function(){})});
 IMM.addEventListener('click',function(){var d=document.documentElement;try{if(document.fullscreenElement)document.exitFullscreen();else d.requestFullscreen()}catch(e){}});
-BOOM.addEventListener('click',function(){if(KOS){if(window.__kosBoom)window.__kosBoom();return}location.href=(ON?HALL+'habillages/':'')+'kos.html'});
+/* Baku Boom : retour au menu du lieu, comme à la borne */
+BOOM.addEventListener('click',function(){if(window.__ikBoom){window.__ikBoom();return}});
 LG.addEventListener('click',function(){try{localStorage.setItem('ik.lang',lang==='fr'?'en':'fr')}catch(e){}location.reload()});
 /* le lecteur du Motel Sound */
 var want={panel:false,tv:false},user=false,pl=null,ready=false,ids=null,vol=100,muted=false,title='';

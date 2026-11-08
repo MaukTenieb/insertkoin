@@ -207,6 +207,7 @@
   /* 8 nov. — adresse par programme : ?p=<programme> ouvre ce programme (lien des habillages KorhogOS, DVD, télé du motel, vidéoclub) */
   window.__borneLaunch=launch;
 /* 8 nov. : ?kap=1 (barre des lieux du motel) ouvre Kapture une fois la borne prête */
+(function(){if(!/[?&]kap=skreen/.test(location.search))return;var u;try{u=sessionStorage.getItem('ik.kap');sessionStorage.removeItem('ik.kap')}catch(e){}if(!u)return;var n=0,t=setInterval(function(){if((window.ikToFotoFauna&&document.documentElement.classList.contains('borne-ready'))||++n>60){clearInterval(t);if(window.ikToFotoFauna)fetch(u).then(function(r){return r.blob()}).then(function(b){window.ikToFotoFauna(b,'skreen')});}},250);})();
 (function(){if(!/[?&]kap=1/.test(location.search))return;var n=0,t=setInterval(function(){var k=document.getElementById('kapture');if((k&&document.documentElement.classList.contains('borne-ready'))||++n>60){clearInterval(t);if(k)k.click();}},250);})();
   (function(){var m=/[?&]p=([a-z0-9]+)/.exec(location.search);if(!m)return;var k=m[1];if(ORDER.indexOf(k)<0&&['katabatik','skopo'].indexOf(k)<0)return;
     var n=0,t=setInterval(function(){n++;var ok=IK()&&IK().go;if(ok||n>40){clearInterval(t);if(ok)launch(k);}},150);})();

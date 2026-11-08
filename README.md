@@ -23,9 +23,9 @@ The home screen is the motel painting, then the cabinets. Every visit draws its 
 | **Katabatik** | A die is thrown on the cabinet: Konnect4, Sampler, Akasztófa (the Hungarian hangman, on a Hungarian keyboard; a vowel counts with its accents or bare; a win brings a short unsigned quotation to guess), Mastermind or FaunInvaders (the 18 Masks march and drop bombs; each Mask throws in its own way, after its character: Ts'ui Pên's bomb forks into two paths, one real; Honey Buzzard's stops in mid-air and comes back lower; Hátra Lövés's comes back from the ground; Maiden Call's comes to the player who comes to it; `?fi=classic` in the address brings back the throws of the first version). |
 | **3615** | The K Terminal, a Minitel emulator: https://mauktenieb.github.io/3615/ |
 | **VHS** | A television on a tape deck: Motel Sound and your own YouTube tapes. |
-| **Photofauna** | The photo editor: takes or opens a photo and applies 44 looks. |
+| **FotoFauna** | The photo editor: takes or opens a photo and applies 44 looks. |
 | **FaunaTor** | Opens web pages and v3 .onion sites through Tor clients that run in the page. |
-| **Skoporhogo** | The Fauna in an isometric hotel room. |
+| **SkopoRhogo** | The Fauna in an isometric hotel room. |
 | **Reporhogo** | Reporhogo searches forty-one code forges for a topic and collects the URLs of the repositories it finds. |
 | Bio · Burrows · Lore · TL · IG | Mauk Tenieb on GitHub · Korhogo Fauna (katabase) · the Substack · the Threadless store · Instagram. |
 
@@ -60,10 +60,10 @@ In the VHS deck, the key ♡ puts the track playing into the visitor's own casse
 
 ## Koins
 
-- One Koin opens a game (a Korong! duel or run, a Korhogo game). The machines (3615, VHS, Photofauna, FaunaTor, Skoporhogo, Reporhogo) and Motel Sound are free.
+- One Koin opens a game (a Korong! duel or run, a Korhogo game). The machines (3615, VHS, FotoFauna, FaunaTor, SkopoRhogo, Reporhogo) and Motel Sound are free.
 - Every win, in any game, brings one Koin. A win rains Koins on the screen.
 - In the 3615: 3 Koins at the first connection of the day to 3615 KOINS, then 1 per hour, 10 a day at most; 1 per Fauna profile read to its last page; 1 per message sent, 5 a day at most.
-- At 0, one Koin comes back after 30 seconds.
+- At 0, one Koin comes back after 60 seconds.
 - The 3615 shares the balance (same address, `ik.koins` in the browser).
 
 ## VHS: REC
@@ -95,13 +95,13 @@ FaunaTor runs Tor inside the page: two Tor clients compiled to WebAssembly reach
 
 A page out of reach shows *Your Kalabass was rejected. Apply later.*, with the reason in small type underneath.
 
-## Photofauna
+## FotoFauna
 
-Photofauna, the photo editor of Insert Koin, reproduces the looks of the photo apps of 2008–2019: 44 looks (simulated film, toy cameras, historical processes, instants, glitch, painting, shapes…), an editor with adjustments, recipes kept inside the saved PNG, GIF export, deterministic renders. The camera opens on a Mask drawn at random. Photofauna saves every shot at once, untouched. Looks pile up: **Keep** fixes the current look into the picture and the next one goes on top; **Undo** steps back, last look first, then last layer. The saved PNG keeps the fixed layers in its recipe. `fotofauna.html` contains the whole app.
+FotoFauna, the photo editor of Insert Koin, reproduces the looks of the photo apps of 2008–2019: 44 looks (simulated film, toy cameras, historical processes, instants, glitch, painting, shapes…), an editor with adjustments, recipes kept inside the saved PNG, GIF export, deterministic renders. The camera opens on a Mask drawn at random. FotoFauna saves every shot at once, untouched. Looks pile up: **Keep** fixes the current look into the picture and the next one goes on top; **Undo** steps back, last look first, then last layer. The saved PNG keeps the fixed layers in its recipe. `fotofauna.html` contains the whole app.
 
 ## The screen
 
-`ik-ecran.js` draws the one screen of the machines: the same 4:3 picture, the same frame, the same size and the same place in every program. On a wide screen it stands on the left, as large as the height allows, and the program's controls stand on the right; on a phone it stands on top, full width, and the controls follow below. Each program changes only the rendering of the glass (VHS tape wear; the Minitel's bulging tube, reflection and phosphor; the clean viewfinder of the camera; the camcorder's REC and counter) and its controls: the deck of the VHS, the keyboard of the Minitel, the modes, shutter, looks and settings of Photofauna. A canvas, a video or an image goes through one WebGL pass; a page made of HTML, or the YouTube player, gets layers laid over it. The dressing stays on its own layers, so saved images keep the program's own picture. FX OFF and reduced motion freeze the noise and the bands; a phone gets a lighter screen.
+`ik-ecran.js` draws the one screen of the machines: the same 4:3 picture, the same frame, the same size and the same place in every program. On a wide screen it stands on the left, as large as the height allows, and the program's controls stand on the right; on a phone it stands on top, full width, and the controls follow below. Each program changes only the rendering of the glass (VHS tape wear; the Minitel's bulging tube, reflection and phosphor; the clean viewfinder of the camera; the camcorder's REC and counter) and its controls: the deck of the VHS, the keyboard of the Minitel, the modes, shutter, looks and settings of FotoFauna. A canvas, a video or an image goes through one WebGL pass; a page made of HTML, or the YouTube player, gets layers laid over it. The dressing stays on its own layers, so saved images keep the program's own picture. FX OFF and reduced motion freeze the noise and the bands; a phone gets a lighter screen.
 
 ## Habillages
 
@@ -109,7 +109,7 @@ Photofauna, the photo editor of Insert Koin, reproduces the looks of the photo a
 
 ## Saved files
 
-Insert Koin names everything it saves (Photofauna, Faunarratik, the Sampler, Kapture, VHS exports, the Motel Sound list) by the French Republican calendar, then the program, then a counter of the day: `18-vendemiaire-235_photofauna_001.jpg`. The day is the visitor's own; years III, VII, XI and XV count as sextile, as in the calendar of the time; Romme's rule follows (`ik-name.js`).
+Insert Koin names everything it saves (FotoFauna, Faunarratik, the Sampler, Kapture, VHS exports, the Motel Sound list) by the French Republican calendar, then the program, then a counter of the day: `18-vendemiaire-235_photofauna_001.jpg`. The day is the visitor's own; years III, VII, XI and XV count as sextile, as in the calendar of the time; Romme's rule follows (`ik-name.js`).
 
 ---
 
@@ -123,7 +123,7 @@ Every file is at the top level; the folders are `habillages/`, `tor/`, `notes/`,
 | `fr.html` | the same page in French, built from `index.html`: edit `index.html`, then run `python3 build-fr.py` |
 | `fauna-*.html`, `fauna-*.webp` | one page per member of the Fauna |
 | `sprite-*.webp` | the Masks of Korong! (8 expressions each) |
-| `mask-*.webp` | the Masks' portraits (Photofauna, the paintings of the room) |
+| `mask-*.webp` | the Masks' portraits (FotoFauna, the paintings of the room) |
 | `thumb-*.jpg` | the cabinets (`thumb-bio-*.jpg`: the Bio cabinet draws one of the eighteen Masks) |
 | `poster*.{jpg,webp}`, `room.webp` | the painting and the pixel room |
 | `room-puck-1.webp` … `room-puck-6.webp` | the six painted motel rooms of Korong!, one drawn at random per match (the game lays the table, the Mask, the window's sky, the TV, the portraits and the score board over it, each room with its own measured zones); `room-puck.webp` is the former room |
@@ -134,15 +134,15 @@ Every file is at the top level; the folders are `habillages/`, `tor/`, `notes/`,
 | `font-permanent-marker-latin-400-normal.woff2` | the marker of the CURATORS labels (Permanent Marker, Font Diner, Apache License 2.0) |
 | `ik-kuration.js`, `kuration.html` | Korhogo Kuration: the visitors' cassettes and their pages |
 | `palmares-rules.js`, `ik-palmares.js`, `palmares.json`, `tools/palmares.mjs`, `PALMARES.md` | palmarès and Hall of Kave: rules, arcade client, the hourly list, the routine, the method |
-| `fotofauna.html` | Photofauna |
+| `fotofauna.html` | FotoFauna |
 | `tor.html`, `faunator-tor.js`, `tor-web*`, `tor-onion*`, `tor/` | FaunaTor and its Tor clients; `faunator-worker.js`, an optional Cloudflare Worker relay |
-| `skoporhogo.html`, `three.min.js` | Skoporhogo and three.js r128 |
+| `skoporhogo.html`, `three.min.js` | SkopoRhogo and three.js r128 |
 | `reporhogo.html` | Reporhogo |
 | `fonts.css`, `font-*.woff2` | the fonts, served by the site |
 | `manifest.webmanifest`, `sw.js`, `icon.png`, `favicon.png` | installation and offline use (`sw.js`: pages and code from the network first, images from the cache) |
 | `robots.txt`, `sitemap.xml`, `llms.txt` | robots.txt welcomes search and answer engines and turns away training crawlers |
 | `ik-name.js` | names every saved file by the Republican calendar (`fotofauna.html` has its own copy) |
-| `ik-ecran.js` | the shared screen: one layout (screen rectangle, controls slot) and one glass rendering per program (VHS, Minitel, viewfinder, camcorder, Korong!, Katabatik, Skoporhogo, plain programs); the VHS, Kapture, the local 3615 and the Photofauna test build (`fotofauna-test.html`) use it |
+| `ik-ecran.js` | the shared screen: one layout (screen rectangle, controls slot) and one glass rendering per program (VHS, Minitel, viewfinder, camcorder, Korong!, Katabatik, SkopoRhogo, plain programs); the VHS, Kapture, the local 3615 and the FotoFauna test build (`fotofauna-test.html`) use it |
 | `build-fr.py` | builds `fr.html` from `index.html` |
 
 ### Workflows (`.github/workflows/`)
@@ -185,7 +185,7 @@ Third-party components:
 - Korong! runs on a JavaScript port of [PuffleHuck](https://github.com/iconidentify/pufflehuck) (MIT, see `LICENSE`).
 - FaunaTor's Tor clients: webtor-rs by privacy-ethereum and by andrewtheguy (MIT, see `TOR-LICENSES.txt`).
 - Akasztófa's stanzas: József Attila's poems up to 1928, in verse and in prose (public domain), taken from the [ELTE Poetry Corpus](https://github.com/ELTE-DH/poetry-corpus) (MEK edition) → `kg-hang-ja.json`.
-- Skoporhogo uses [three.js](https://threejs.org) r128 (MIT).
+- SkopoRhogo uses [three.js](https://threejs.org) r128 (MIT).
 - Fonts: Bebas Neue, DM Mono, Press Start 2P, Archivo, and one glyph of Noto Sans Egyptian Hieroglyphs (Honey Buzzard's sign in the Mastermind) (SIL Open Font License), served from the site.
 
 Characters, images and music: Mauk Tenieb. Motel Sound plays through YouTube.
