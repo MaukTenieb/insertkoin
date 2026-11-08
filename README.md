@@ -103,6 +103,10 @@ Photofauna, the photo editor of Insert Koin, reproduces the looks of the photo a
 
 `ik-ecran.js` draws the one screen of the machines: the same 4:3 picture, the same frame, the same size and the same place in every program. On a wide screen it stands on the left, as large as the height allows, and the program's controls stand on the right; on a phone it stands on top, full width, and the controls follow below. Each program changes only the rendering of the glass (VHS tape wear; the Minitel's bulging tube, reflection and phosphor; the clean viewfinder of the camera; the camcorder's REC and counter) and its controls: the deck of the VHS, the keyboard of the Minitel, the modes, shutter, looks and settings of Photofauna. A canvas, a video or an image goes through one WebGL pass; a page made of HTML, or the YouTube player, gets layers laid over it. The dressing stays on its own layers, so saved images keep the program's own picture. FX OFF and reduced motion freeze the noise and the bands; a phone gets a lighter screen.
 
+## Habillages
+
+`habillages/` dresses the programs of Insert Koin as four other machines. `kos.html`: KorhogOS, a desktop in four period skins (Windows 95, Mac OS 8, Raspberry Pi, CDE), with icons, Explorer, Notepad, an MS-DOS prompt and a Control Panel. `dvd.html`: the menu of a DVD from the early 2000s, with its language screen, warning, chapters and bonus. `tv.html`: the TV of a motel, its programme guide on channel 1 and its teletext. `videoclub.html`: a video store, its shelf of 33 tapes, a tape in hand, face and back, and the TV of the counter. Each program opens the arcade on itself through `?p=`: `https://mauktenieb.github.io/insertkoin/?p=chess` (keys: chess, fi, puck, faunarratics, c4, hang, mm, erratic, fauneye, vhs, photo, bb, diktat, terminal, repo, tor, katabatik, skopo).
+
 ## Saved files
 
 Insert Koin names everything it saves (Photofauna, Faunarratik, the Sampler, Kapture, VHS exports, the Motel Sound list) by the French Republican calendar, then the program, then a counter of the day: `18-vendemiaire-235_photofauna_001.jpg`. The day is the visitor's own; years III, VII, XI and XV count as sextile, as in the calendar of the time; Romme's rule follows (`ik-name.js`).
@@ -111,7 +115,7 @@ Insert Koin names everything it saves (Photofauna, Faunarratik, the Sampler, Kap
 
 ## Files
 
-Every file is at the top level; the folders are `tor/`, `notes/`, `tools/` and `.github/`. One upload updates the site.
+Every file is at the top level; the folders are `habillages/`, `tor/`, `notes/`, `tools/` and `.github/`. One upload updates the site.
 
 | Files | Role |
 |---|---|
