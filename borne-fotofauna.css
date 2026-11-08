@@ -31,3 +31,34 @@
 .stageWrap.live~* #bShoot,html:has(.stageWrap.live) #bShoot{display:none!important}
 footer.credit{display:none!important}
 #fams{overflow-x:auto;max-width:100%;flex-wrap:nowrap}
+
+/* i3 : accents dans la palette de la borne (borne-fotofauna.js recopie --pal-accent dans --acc, --acc2 et --edge) */
+.status{font-size:12px}
+/* puces : chaque arrêt du défilement tombe sur le bord d'une puce entière */
+#fams,.subs,.gchips{scroll-snap-type:x proximity;scroll-padding-inline:0}
+#fams{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 24px),transparent)}
+#fams .fam,.gchip{scroll-snap-align:start}
+/* commandes : la colonne se mesure elle-même */
+#ctrl{container:ffctrl/inline-size}
+/* tête à l'ordinateur : le logo sur sa ligne, puis TAKE, OPEN et ⋯ sur une même rangée ; au téléphone, tout tient sur une rangée */
+@media (min-width:700px){
+  header.top{display:grid!important;grid-template-columns:1fr 1fr 44px;gap:8px;align-items:center}
+  header.top .logo{grid-column:1/-1;margin:0!important;justify-self:start}
+  header.top #bShoot,header.top #bOpen{width:100%;justify-content:center}
+}
+/* rangée d'actions : quatre cases égales ; sous 440 px de colonne, le mot seul */
+#actions{display:grid!important;grid-template-columns:repeat(4,1fr);gap:6px}
+#actions .key{width:100%;min-width:0;margin:0!important;justify-content:center;padding-inline:4px}
+@container ffctrl (max-width:439px){#actions .key svg{display:none}}
+/* champ de recherche : jusqu'à 360 px de large, SHUFFLE garde son pictogramme */
+@media (max-width:360px){html #bRand#bRand{font-size:0!important;gap:0!important;min-width:44px;justify-content:center}}
+
+/* i3 cycle 2 : onglets et boutons de tête à 44 px ; flèche de suite sur les rangées de puces */
+html .tabs button,html #laboBtn{min-height:44px!important}
+html header.top :is(#bShoot,#bOpen,#bMenu){min-width:44px!important;min-height:44px}
+.ff-row{position:relative}
+.ff-more{position:absolute;right:0;top:50%;transform:translateY(-50%);width:44px;height:44px;border:0;border-radius:4px;
+  background:linear-gradient(90deg,transparent,var(--bg,#0b0a0e) 45%);color:var(--acc);font:700 18px/44px 'DM Mono',monospace;text-align:right;padding:0 6px;cursor:pointer;display:none;z-index:2}
+.ff-row.more .ff-more{display:block}
+.ff-row:has(>.rail) .ff-more{right:-14px}
+html #laboBtn{min-width:44px!important}html header.top .logo{min-height:44px}
