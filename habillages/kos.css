@@ -393,7 +393,7 @@ body{font:var(--f);color:var(--tx);background:var(--desk)}
 #fp .date span{font-size:9px}
 /* porte-clé du motel (motel.js) : hors des icônes du bureau et des barres de chaque système */
 body.std #mk{left:auto;right:14px;top:0}
-body.std #mk .card{left:auto;right:2px}
+body.std #mk .board{left:auto;right:0}
 body.plat #mk{top:21px}
 body.fram #mk{left:auto;right:14px;top:37px}
-body.fram #mk .card{left:auto;right:2px}
+body.fram #mk .board{left:auto;right:0}

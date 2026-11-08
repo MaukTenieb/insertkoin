@@ -7,37 +7,37 @@ var B=/github\.io$/.test(location.hostname)?'https://mauktenieb.github.io/insert
 var here=(location.pathname.split('/').pop()||'').replace(/\?.*/,'');
 /* dans la borne (hall), les lieux sont dans habillages/ ; le porte-clé se retire pendant un programme */
 var HALL=!/\/habillages\//.test(location.pathname),P=HALL?'habillages/':'';if(HALL)here='../';
-/* les lieux : une ligne par lieu ; la chambre donne ses deux objets */
-var L=[
- [['../','Hall','Lobby']],
- [[null,'Chambre','Room'],['tv.html','Télé','TV'],['dvd.html','DVD','DVD']],
- [['videoclub.html','Vidéoclub','Video store']],
- [['kos.html','Bureau','Office']]];
-var css='#mk{position:fixed;left:14px;top:0;z-index:2147483000;font:13px/1 "Courier New",Courier,monospace;-webkit-tap-highlight-color:transparent}'+
+/* les lieux : un pictogramme par lieu, sur une plaque émaillée */
+var L=[['../','Hall · borne d’arcade','Lobby · arcade cabinet','borne'],['tv.html','Chambre · télévision','Room · television','tele'],['dvd.html','Chambre · lecteur DVD','Room · DVD player','dvd'],['videoclub.html','Vidéoclub','Video store','vhs'],['kos.html','Bureau · ordinateur','Office · computer','ordi']];
+/* pictogrammes en aplat, 40 × 40, encre crème ; c = couleur du fond (évidements) */
+function picto(k,c){var f='#efe3cf',p={
+ borne:'<rect x="9" y="3" width="22" height="34" rx="2" fill="'+f+'"/><rect x="13" y="8" width="14" height="10" fill="'+c+'"/><rect x="12" y="22" width="16" height="3" fill="'+c+'"/><circle cx="17" cy="29" r="1.7" fill="'+c+'"/><circle cx="23" cy="29" r="1.7" fill="'+c+'"/>',
+ tele:'<path d="M14 3 L20 9 L26 3" fill="none" stroke="'+f+'" stroke-width="2.2"/><rect x="4" y="9" width="32" height="24" rx="3" fill="'+f+'"/><rect x="8" y="13" width="19" height="16" rx="3" fill="'+c+'"/><circle cx="31" cy="17" r="1.8" fill="'+c+'"/><circle cx="31" cy="24" r="1.8" fill="'+c+'"/><rect x="8" y="33" width="4" height="4" fill="'+f+'"/><rect x="28" y="33" width="4" height="4" fill="'+f+'"/>',
+ dvd:'<circle cx="20" cy="20" r="16" fill="'+f+'"/><circle cx="20" cy="20" r="5" fill="'+c+'"/><circle cx="20" cy="20" r="2" fill="'+f+'"/>',
+ vhs:'<rect x="2" y="9" width="36" height="22" rx="2" fill="'+f+'"/><circle cx="12" cy="19" r="4" fill="'+c+'"/><circle cx="28" cy="19" r="4" fill="'+c+'"/><rect x="16" y="17" width="8" height="4" fill="'+c+'"/><rect x="8" y="26" width="24" height="3" fill="'+c+'"/>',
+ ordi:'<rect x="5" y="4" width="30" height="21" rx="2" fill="'+f+'"/><rect x="9" y="8" width="22" height="13" fill="'+c+'"/><rect x="16" y="25" width="8" height="5" fill="'+f+'"/><rect x="4" y="31" width="32" height="5" rx="1" fill="'+f+'"/>'}[k];
+ return '<svg viewBox="0 0 40 40" aria-hidden="true">'+p+'</svg>'}
+var css='#mk{position:fixed;left:14px;top:0;z-index:2147483000;-webkit-tap-highlight-color:transparent}'+
 '#mk .fob{display:block;width:34px;cursor:pointer;background:none;border:0;padding:0 5px 4px;box-sizing:content-box;filter:drop-shadow(0 3px 3px rgba(0,0,0,.55))}'+
 '#mk .sw{display:block;transform-origin:50% 0;animation:mksw 4.6s ease-in-out infinite alternate;perspective:240px}'+
 '#mk .tw{display:block;position:relative;transform-style:preserve-3d;animation:mktw 11s cubic-bezier(.45,0,.25,1) infinite}'+
-'#mk .tw svg{display:block;width:100%;height:auto;backface-visibility:hidden;-webkit-backface-visibility:hidden}'+
-'#mk .tw svg+svg{position:absolute;left:0;top:0;transform:rotateY(180deg)}'+
-
+'#mk .tw>*{display:block;width:100%;height:auto;backface-visibility:hidden;-webkit-backface-visibility:hidden}'+
+'#mk .tw>*+*{position:absolute;left:0;top:0;transform:rotateY(180deg)}'+
 '@keyframes mksw{from{transform:rotate(-3.5deg)}to{transform:rotate(3.5deg)}}'+
 '@keyframes mktw{0%,62%{transform:rotateY(0)}100%{transform:rotateY(360deg)}}'+
+'#mk .fob:focus-visible,#mk .board a:focus-visible{outline:2px solid #c9a24e;outline-offset:1px}'+
+/* la plaque émaillée : une seule pièce brune, filet crème, les cinq pictogrammes ; un filet laiton sous le lieu courant */
+'#mk .board{position:absolute;left:0;top:88px;display:none;gap:2px;padding:9px 10px;background:#3b2416;border-radius:9px;box-shadow:inset 0 0 0 4px #3b2416,inset 0 0 0 5.5px #efe3cf,0 10px 24px rgba(0,0,0,.6)}'+
+'#mk.on .board{display:flex}'+
+'#mk .board a{display:grid;place-items:center;width:48px;height:48px;position:relative;border-radius:4px}'+
+'#mk .board a svg{width:30px;height:30px;transition:transform .15s}'+
+'#mk .board a:hover svg{transform:scale(1.1)}'+
+'#mk .board a[aria-current]::after{content:"";position:absolute;left:9px;right:9px;bottom:2px;height:3px;background:#c9a24e}'+
+'@media (max-width:900px){#mk{left:4px}#mk .fob{width:28px;padding:0 8px 4px}#mk .board{top:72px;padding:7px 8px}#mk .board a{width:44px;height:44px}#mk .board a svg{width:26px;height:26px}}'+
 '@media (prefers-reduced-motion:reduce){#mk .sw,#mk .tw{animation:none}}'+
-'#mk .fob:focus-visible{outline:2px solid #f3eedf;outline-offset:2px}'+
-'#mk .card{position:absolute;left:4px;top:86px;background:#f3eedf;color:#1b1813;box-shadow:0 1px 0 #b9b19c,0 10px 24px rgba(0,0,0,.55);padding:4px 0;display:none;white-space:nowrap}'+
-'#mk.on .card{display:block}'+
-'#mk .r{display:flex;align-items:baseline;gap:14px;padding:0 16px;min-height:40px;align-items:center;border-top:1px dotted #c8bfa8}'+
-'#mk .r:first-child{border-top:0}'+
-'#mk .r b{font-weight:400;color:#6d665a;min-width:0}'+
-'#mk a{color:#1b1813;text-decoration:none;padding:12px 0;flex:none}'+
-'#mk .r>a:first-child{flex:1}'+
-'#mk .r b~a{padding:12px 8px;margin:0 -8px}'+
-'#mk a:hover,#mk a:focus-visible{color:#8b1e1e;outline:0;text-decoration:underline;text-underline-offset:3px}'+
-'#mk a[aria-current]{color:#8b1e1e;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}'+
-'@media (max-width:900px){#mk{left:4px}#mk .fob{width:28px;padding:0 8px 4px}#mk .card{top:70px}}'+
 'body.on-calque #mk,html[data-prog] #mk,.b-immersion #mk{display:none}';
 var st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
-/* porte-clé de motel en losange, plastique rouge, anneau et clé en laiton ; deux faces pour qu'il tourne sur lui-même */
+/* le porte-clé : image fournie par Mauk Tenieb (a/porte-cle.webp) ; à défaut, le losange dessiné */
 var svg='<svg viewBox="0 0 34 82" width="34" height="82" aria-hidden="true">'+
 '<line x1="17" y1="0" x2="17" y2="7" stroke="#2a2420" stroke-width="2"/>'+
 '<circle cx="17" cy="12" r="5.5" fill="none" stroke="#b08a3e" stroke-width="2"/>'+
@@ -45,18 +45,18 @@ var svg='<svg viewBox="0 0 34 82" width="34" height="82" aria-hidden="true">'+
 '<path d="M17 26 L32 52 Q33 54 31.5 56 L19 79 Q17 82 15 79 L2.5 56 Q1 54 2 52 Z" fill="#8b1e1e" stroke="#5e1212" stroke-width="1"/>'+
 '<path d="M17 31 L28.5 52.5 L17 75 L5.5 52.5 Z" fill="none" stroke="#e9dccb" stroke-width=".8" opacity=".75"/>'+
 '<circle cx="17" cy="33" r="2.3" fill="#2a2420"/>'+
-'<text x="17" y="55.5" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="5.6" letter-spacing=".6" fill="#efe3cf">KORHOGO</text>'+
-'<path d="M8 30 L17 28 L11 44 Z" fill="#fff" opacity=".12"/></svg>';
+'<text x="17" y="55.5" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="5.6" letter-spacing=".6" fill="#efe3cf">KORHOGO</text></svg>';
+var IMG=P+'a/porte-cle.webp';
 var w=document.createElement('div');w.id='mk';
 var b=document.createElement('button');b.className='fob';b.type='button';b.setAttribute('aria-expanded','false');
 b.innerHTML='<span class="sw"><span class="tw">'+svg+svg+'</span></span>';
-var c=document.createElement('nav');c.className='card';
+(function(){var im=new Image();im.onload=function(){b.querySelector('.tw').innerHTML='<img src="'+IMG+'" alt=""><img src="'+IMG+'" alt="">'};im.src=IMG})();
+var c=document.createElement('nav');c.className='board';
 function href(u){return u==='../'?(HALL?'./':B):P+u}
+var BG='#3b2416';
 function fill(){try{lang=localStorage.getItem('ik.lang')||lang}catch(e){}var fr=lang==='fr';
  b.setAttribute('aria-label',fr?'Porte-clé du motel : les lieux':'Motel key tag: the places');c.setAttribute('aria-label',fr?'Les lieux du motel':'The motel places');
- c.innerHTML='';L.forEach(function(row){var r=document.createElement('div');r.className='r';
-  row.forEach(function(x){var t=fr?x[1]:x[2],e;if(x[0]===null){e=document.createElement('b');e.textContent=t}else{e=document.createElement('a');e.href=href(x[0]);e.textContent=t;if(x[0]===here)e.setAttribute('aria-current','page')}r.appendChild(e)});
-  c.appendChild(r)})}
+ c.innerHTML='';L.forEach(function(x){var a=document.createElement('a');a.href=href(x[0]);a.title=fr?x[1]:x[2];a.setAttribute('aria-label',a.title);a.innerHTML=picto(x[3],BG);if(x[0]===here)a.setAttribute('aria-current','page');c.appendChild(a)})}
 fill();
 w.appendChild(b);w.appendChild(c);
 function tog(v){w.classList.toggle('on',v);b.setAttribute('aria-expanded',String(v))}
