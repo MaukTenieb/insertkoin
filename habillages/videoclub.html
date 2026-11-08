@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Insert Koin — Vidéoclub</title>
+<link rel="stylesheet" href="fonts.css">
+<style>@font-face{font-family:Arimo;font-weight:400;src:url(a/f/arimo-latin-400-normal.woff2) format("woff2")}@font-face{font-family:Arimo;font-weight:700;src:url(a/f/arimo-latin-700-normal.woff2) format("woff2")}@font-face{font-family:Garamond;src:url(a/f/font-eb-garamond-latin-400-normal.woff2) format("woff2")}@font-face{font-family:Garamond;font-style:italic;src:url(a/f/font-eb-garamond-latin-400-italic.woff2) format("woff2")}</style>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#050403;overflow:hidden;color:#ece6d6;font-family:Arimo,sans-serif;user-select:none;-webkit-tap-highlight-color:transparent}
+#wrap{position:fixed;inset:0;display:grid;place-items:center;-webkit-overflow-scrolling:touch}
+#wrap>.scene{position:relative;grid-area:1/1}
+/* chaque plan est une photo 16:9 ; les éléments se posent en % de la photo */
+.scene{position:absolute;width:var(--sw);height:var(--sh);display:none}
+.scene.on{display:block;animation:in .35s ease-out}
+@keyframes in{from{opacity:0}}
+.scene>img.bg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hot{position:absolute;cursor:pointer}
+.hot:hover{outline:1px solid rgba(255,227,160,.35)}
+/* rayon : jaquettes debout, face visible, derrière les barres chromées */
+.box{position:absolute;cursor:pointer;transform-origin:50% 100%;transition:transform .15s}
+.box::before{content:"";position:absolute;top:1.5%;bottom:0;left:-5%;width:5%;background:linear-gradient(90deg,#050505,#1c1c1c 60%,#2a2a2a);transform:skewY(-12deg);transform-origin:100% 0}
+.box::after{content:"";position:absolute;left:4%;right:-6%;top:4%;bottom:-2%;z-index:-1;background:rgba(0,0,0,.55);filter:blur(4px)}
+.box .sleeve{outline:1px solid rgba(255,255,255,.07);outline-offset:-2px}
+.box:hover{transform:translateY(-3%)}
+.sleeve{position:absolute;inset:0;background:#000 center/cover;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),-2px 0 0 #0b0a09,2px 3px 6px rgba(0,0,0,.7)}
+.sleeve::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;background:linear-gradient(100deg,rgba(255,255,255,.10) 0,rgba(255,255,255,0) 18%,rgba(255,255,255,0) 78%,rgba(255,255,255,.04) 100%)}
+.sleeve::before{content:"";position:absolute;left:0;right:0;top:0;height:24%;background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,0));z-index:1}
+/* titres : capitales romaines espacées pour les Masks (habillage drame des années 90), linéale grasse pour les programmes */
+.sleeve .t{position:absolute;z-index:2;left:5%;right:5%;top:5%;text-align:center;color:#f4f1ea;text-shadow:0 1px 2px rgba(0,0,0,.9)}
+.sleeve.mask .t{font:400 calc(var(--bw)*.105)/1.05 Garamond,serif;letter-spacing:.14em;text-transform:uppercase}
+.sleeve.prog .t{font:700 calc(var(--bw)*.11)/1 Arimo,sans-serif;letter-spacing:-.01em;text-transform:uppercase}
+.sleeve .k{position:absolute;left:0;right:0;bottom:0;height:7%;display:flex;align-items:center;justify-content:center;background:#000;font:700 calc(var(--bw)*.038) Arimo,sans-serif;color:#cfcac0;letter-spacing:.42em;z-index:1}
+/* étiquette de location collée par le loueur */
+.sleeve .n{position:absolute;left:6%;top:21%;z-index:2;font:700 calc(var(--bw)*.05)/1 Arimo,sans-serif;color:#111;background:#f2efe6;padding:1.2% 2.6%;transform:rotate(-3deg);box-shadow:0 1px 1px rgba(0,0,0,.4)}
+.rail{position:absolute;inset:0;pointer-events:none}
+/* boîtier en main : face et dos */
+#case{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;gap:3%;padding:3%;z-index:40}
+#case.on{display:flex}
+#case .face{height:88%;aspect-ratio:5/7;position:relative;flex:none}
+#case .back{height:88%;width:min(46vw,560px);background:#0a0a0a;padding:4.5% 5%;display:flex;flex-direction:column;gap:2.2%;font:400 clamp(12px,1.8vmin,14px)/1.45 Arimo,sans-serif;color:#e8e6e1;overflow:auto;flex:none}
+#case .back h2{margin:0;font:400 clamp(20px,4.2vmin,34px)/1.05 Garamond,serif;letter-spacing:.12em;text-transform:uppercase;color:#fff;text-align:center}
+#case .back .m{font:italic 400 1.15em/1.3 Garamond,serif;color:#d9d4c8;text-align:center}
+#case .back dl{display:grid;grid-template-columns:24% 1fr;gap:1% 4%;margin:0}
+#case .back dt{color:#9a968e;text-transform:uppercase;font-size:.78em;letter-spacing:.12em;padding-top:.2em}
+#case .back dd{margin:0;text-align:justify;hyphens:auto}
+#case .back .st{display:grid;grid-template-columns:repeat(6,1fr);text-align:center;border-top:1px solid #444;border-bottom:1px solid #444;padding:1.5% 0;font-size:.78em;letter-spacing:.1em;color:#9a968e}
+#case .back .st b{display:block;color:#fff;font-weight:700;font-size:1.5em;letter-spacing:0}
+#case .back .cr{margin-top:auto;border-top:1px solid #333;padding-top:2.5%;font-size:.72em;line-height:1.5;color:#8d8a84;letter-spacing:.04em;text-transform:uppercase}
+#case .acts{position:absolute;right:3%;bottom:4%;display:flex;gap:10px}
+.btn{font:700 clamp(11px,1.9vmin,14px) Arimo,sans-serif;letter-spacing:.08em;text-transform:uppercase;background:#000;color:#e8e6e1;border:1px solid #6b6862;padding:.8em 1.4em;cursor:pointer}
+.btn.go{background:#e8e6e1;color:#000;border-color:#e8e6e1}
+/* comptoir : la cassette louée passe dans le magnétoscope, l'image sur le téléviseur */
+#tv{position:absolute;left:26.6%;top:33.4%;width:10.3%;height:15.4%;border-radius:8%/10%;background:#000 center/cover;cursor:pointer;overflow:hidden;filter:saturate(1.2) contrast(1.08) blur(.4px)}
+#tv::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,transparent 50%,rgba(0,0,0,.6)),linear-gradient(160deg,rgba(255,255,255,.13) 0,rgba(255,255,255,0) 35%)}
+#tv .osd{position:absolute;left:7%;top:7%;font:calc(var(--sh)*.022)/1 VT323,monospace;color:#fff;text-shadow:1px 1px 0 #000,0 0 3px rgba(255,255,255,.4)}
+/* barre de navigation */
+#nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:0;z-index:30;background:linear-gradient(transparent,rgba(0,0,0,.7))}
+#nav button{font:700 clamp(10px,1.6vmin,13px) Arimo,sans-serif;letter-spacing:.14em;text-transform:uppercase;background:none;color:#c4bfb5;text-shadow:0 1px 3px #000;border:0;border-bottom:2px solid transparent;padding:1em 1.4em .8em;cursor:pointer}
+#nav button.on{color:#f4f1ea;border-bottom-color:#f4f1ea}
+#lang{position:fixed;right:8px;top:8px;z-index:30;font:700 clamp(10px,1.4vmin,12px) Arimo,sans-serif;letter-spacing:.1em;background:rgba(0,0,0,.6);color:#cfcac0;border:1px solid #444;padding:.5em .7em;cursor:pointer}
+@media (max-aspect-ratio:1/1){#case{flex-direction:column;overflow:auto;justify-content:flex-start;padding:14px 0 70px;gap:14px}#case .face{height:auto;width:min(80vw,62vh)}#case .back{height:auto;width:min(80vw,62vh);aspect-ratio:auto;overflow:visible}#case .acts{position:static}}
+.box .sleeve .k,.box .sleeve .n{display:none}
+</style>
+</head>
+<body>
+<div id="wrap">
+ <div class="scene on" id="salle"><img class="bg" src="a/vc/vc-01-salle.webp" alt=""><div class="hot" id="hAisle" style="left:30%;top:20%;width:42%;height:68%"></div><div class="hot" id="hLeft" style="left:0;top:8%;width:30%;height:80%"></div><div class="hot" id="hRight" style="left:72%;top:8%;width:28%;height:80%"></div></div>
+ <div class="scene" id="rayon"><img class="bg" src="a/vc/vc-02-rayon.webp" alt=""><div id="boxes"></div><div class="rail" id="rails"></div>
+  <div id="case"><div class="face"></div><div class="back"></div><div class="acts"></div></div></div>
+ <div class="scene" id="comptoir"><img class="bg" src="a/vc/vc-03-comptoir.webp" alt=""><div id="tv"><div class="osd"></div></div></div>
+ <div id="nav"></div><button id="lang"></button>
+</div>
+<script src="kdata.js"></script>
+<script>
+(function(){
+var $=function(s){return document.querySelector(s)},$$=function(s){return [].slice.call(document.querySelectorAll(s))};
+function h(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.innerHTML=x;return e}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+var D=window.KDATA,ON=/github\.io$/.test(location.hostname),B='https://mauktenieb.github.io/insertkoin/';
+var lang='fr';try{lang=localStorage.getItem('ik.lang')||(/^fr/.test(navigator.language)?'fr':'en')}catch(e){}
+var TX={fr:{salle:'Salle',rayon:'Rayon',comptoir:'Comptoir',rent:'Louer',back:'Remettre',play:'▶ LECTURE',appearance:'Apparence',profile:'Profil',powers:'Pouvoirs',masks:'Masques',korong:'Korong!',desc:'Programme'},
+        en:{salle:'Store',rayon:'Shelf',comptoir:'Counter',rent:'Rent',back:'Put back',play:'▶ PLAY',appearance:'Appearance',profile:'Profile',powers:'Powers',masks:'Masks',korong:'Korong!',desc:'Program'}};
+function t(k){return TX[lang][k]}
+/* 1. mise à l'échelle 16:9 */
+function fit(){var portrait=innerHeight>innerWidth;var low=!portrait&&innerHeight<520;var sc=portrait?innerHeight*.92/768:low?innerWidth/1376:Math.min(innerWidth/1376,innerHeight/768);var w=$('#wrap');w.style.overflowX=portrait?'auto':'hidden';w.style.overflowY=low?'auto':'hidden';w.style.alignItems=low?'start':'';w.style.paddingBottom=low?'52px':'0';w.style.placeItems=portrait?'center start':'center';setTimeout(function(){if(portrait)w.scrollLeft=(1376*sc-innerWidth)/2},0);document.documentElement.style.setProperty('--sw',1376*sc+'px');document.documentElement.style.setProperty('--sh',768*sc+'px')}
+addEventListener('resize',fit);fit();
+/* 2. les cassettes : 18 Masks puis les programmes du panneau ; jaquette absente = buste canonique sur fond noir */
+var PROG=['korong','chess','erratik','faunarratik','invaders','katabatik','bakubook','vhs','fotofauna','musik','diktat','3615','reporhogo','faunator','skopo'];
+var TAPES=D.F.map(function(f){return{kind:'mask',id:f.slug,title:f.name,img:'a/vc/vc-mask-'+f.slug+'.webp',fallback:'a/b-'+f.slug+'.webp',num:f.num,f:f,url:B+'fauna-'+f.slug+'.html'}})
+ .concat(PROG.map(function(id){var p=D.P.filter(function(x){return x.id===id})[0];return{kind:'prog',id:id,title:p.name,img:'a/vc/vc-prog-'+id+'.webp',p:p,url:p.url}}));
+/* 3. le rayon : quatre étagères relevées sur la photo (surface à 29,5 / 50,5 / 71 / 92,5 % ; intérieur 11 à 89 %) */
+var SHELF=[29.5,50.5,71,92.5],X0=12,X1=88,BH=17.2,PER=9;
+function rayon(){var host=$('#boxes');host.innerHTML='';var bw=BH*768/1376*5/7;
+ TAPES.forEach(function(tp,i){var row=Math.floor(i/PER),col=i%PER;if(row>3)return;var n=Math.min(PER,TAPES.length-row*PER),gap=(X1-X0-n*bw)/(n+1);
+  var b=h('div','box');b.style.cssText='left:'+(X0+gap+col*(bw+gap))+'%;top:'+(SHELF[row]-BH)+'%;width:'+bw+'%;height:'+BH+'%;--bw:calc(var(--sw)*'+(bw/100)+')';
+  var s=h('div','sleeve '+tp.kind);s.innerHTML='<div class="t">'+esc(tp.title)+'</div><div class="k">KORHOGO</div>'+(tp.num?'<div class="n">'+tp.num+'</div>':'');setImg(s,tp);b.appendChild(s);b.onclick=function(){take(tp)};host.appendChild(b)});
+ /* les barres chromées repassent devant les boîtiers */
+ var r=$('#rails');r.innerHTML='';SHELF.forEach(function(y){var d=h('div');d.style.cssText='position:absolute;inset:0;background:url(a/vc/vc-02-rayon.webp) 0 0/100% 100%;clip-path:inset('+(y-4.2)+'% 9% '+(100-y+0.4)+'% 9%)';r.appendChild(d)})}
+function setImg(el,tp){var im=new Image();im.onload=function(){el.style.backgroundImage='url('+tp.img+')'};im.onerror=function(){el.style.background='#0b0908 url('+tp.fallback+') 50% 85%/80% auto no-repeat'};im.src=tp.img}
+/* 4. le boîtier en main : face, dos tiré de la fiche ou du README */
+var cur=null;
+function take(tp){cur=tp;var c=$('#case'),face=$('.face',c),back=$('.back',c);face.innerHTML='';var s=h('div','sleeve '+tp.kind);s.innerHTML='<div class="t">'+esc(tp.title)+'</div><div class="k">KORHOGO</div>'+(tp.num?'<div class="n">'+tp.num+'</div>':'');setImg(s,tp);face.appendChild(s);
+ if(tp.kind==='mask'){var f=tp.f,E=TX.en;back.innerHTML='<h2>'+esc(f.name)+'</h2><div class="m">« '+esc(f.motto)+' »</div><div class="st">'+['STR','DEX','INT','WIS','CHA','CON'].map(function(k){return '<div>'+k+'<b>'+f.stats[k]+'</b></div>'}).join('')+'</div><dl><dt>'+E.appearance+'</dt><dd>'+esc(f.appearance)+'</dd><dt>'+E.profile+'</dt><dd>'+esc(f.profile)+'</dd><dt>'+E.korong+'</dt><dd>'+esc(f.korong_en)+'</dd></dl><div class="cr">N° '+f.num+' · '+esc(f.sub)+'<br>© Korhogo™, Korhogo Fauna™ & Mauk Tenieb</div>'}
+ else{var p=tp.p;back.innerHTML='<h2>'+esc(p.name)+'</h2><div class="m">'+esc(p.group)+' · '+esc(p.exe)+'</div><dl><dt>'+t('desc')+'</dt><dd>'+esc(p.desc)+'</dd></dl><div class="cr">'+esc(p.url.replace('https://',''))+'<br>© Korhogo™, Korhogo Fauna™ & Mauk Tenieb</div>'}
+ var a=$('.acts',c);a.innerHTML='';var r=h('button','btn go',t('rent'));r.onclick=function(){c.classList.remove('on');go('comptoir')};var k=h('button','btn',t('back'));k.onclick=function(){c.classList.remove('on')};a.appendChild(k);a.appendChild(r);c.classList.add('on');c.scrollTop=0;face.style.setProperty('--bw',face.offsetWidth+'px')}
+/* 5. le comptoir : le téléviseur montre la cassette louée ; un clic la lit */
+function comptoir(){var tv=$('#tv');if(!cur){tv.style.backgroundImage='none';$('.osd',tv).textContent='';return}
+ tv.style.backgroundImage='url('+(cur.kind==='prog'?cur.p.thumb:cur.img)+')';$('.osd',tv).textContent=t('play')}
+$('#tv').onclick=function(){if(!cur)return;if(ON)location.href=cur.url;else window.open(cur.url,'_blank','noopener')};
+/* 6. navigation */
+var SC=['salle','rayon','comptoir'];
+function go(id){$$('.scene').forEach(function(s){s.classList.toggle('on',s.id===id)});$$('#nav button').forEach(function(b){b.classList.toggle('on',b.dataset.s===id)});if(id==='comptoir')comptoir()}
+function nav(){var n=$('#nav');n.innerHTML='';SC.forEach(function(s){var b=h('button',null,t(s));b.dataset.s=s;b.onclick=function(){go(s)};n.appendChild(b)});$('#lang').textContent=lang==='fr'?'EN':'FR';var on=$$('.scene.on')[0];if(on)$$('#nav button').forEach(function(b){b.classList.toggle('on',b.dataset.s===on.id)})}
+['hAisle','hLeft','hRight'].forEach(function(id){$('#'+id).onclick=function(){go('rayon')}});
+$('#lang').onclick=function(){lang=lang==='fr'?'en':'fr';try{localStorage.setItem('ik.lang',lang)}catch(e){}nav();if($('#case').classList.contains('on')&&cur)take(cur)};
+addEventListener('keydown',function(e){if(e.key==='Escape')$('#case').classList.remove('on')});
+rayon();nav();
+})();
+</script>
+</body>
+</html>

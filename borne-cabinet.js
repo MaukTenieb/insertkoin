@@ -204,6 +204,10 @@
     fauneye:'BAKUBOOK',vhs:'VHS',photo:'FOTOFAUNA',terminal:'3615',repo:'REPORHOGO',tor:'FAUNATOR'};
   var CUR=null,SWAP=false;
   function launch(g){if(g==='diktat'){IK().openCalque&&IK().openCalque('borne-diktat.html','DIKTATFAUNE');return;}if(KATA.indexOf(g)>=0)kata(g);else IK().go&&IK().go(g);}
+  /* 8 nov. — adresse par programme : ?p=<programme> ouvre ce programme (lien des habillages KorhogOS, DVD, télé du motel, vidéoclub) */
+  window.__borneLaunch=launch;
+  (function(){var m=/[?&]p=([a-z0-9]+)/.exec(location.search);if(!m)return;var k=m[1];if(ORDER.indexOf(k)<0&&['katabatik','skopo'].indexOf(k)<0)return;
+    var n=0,t=setInterval(function(){n++;var ok=IK()&&IK().go;if(ok||n>40){clearInterval(t);if(ok)launch(k);}},150);})();
   var dots=el('div','b-dots');dots.setAttribute('role','tablist');scr.appendChild(dots);
   function paintDots(){dots.innerHTML='';var G=null;GRP.forEach(function(g){if(g.indexOf(CUR)>=0)G=g;});if(!G||G.length<2){dots.hidden=true;return;}dots.hidden=false;
     G.forEach(function(g){var b=el('button','b-dot'+(g===CUR?' on':''));b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-selected',String(g===CUR));b.setAttribute('aria-label',NAME[g]);b.title=NAME[g];
