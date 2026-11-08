@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -81,7 +81,7 @@ var $=function(s){return document.querySelector(s)},$$=function(s){return [].sli
 function h(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.innerHTML=x;return e}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 var D=window.KDATA,ON=/github\.io$/.test(location.hostname),B='https://mauktenieb.github.io/insertkoin/';
-var lang='en';try{lang=localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e){}
+var lang='en';try{lang=localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e){}document.documentElement.lang=lang;
 var TX={fr:{salle:'Salle',rayon:'Rayon',comptoir:'Comptoir',rent:'Louer',back:'Remettre',play:'▶ LECTURE',appearance:'Appearance',profile:'Profile',powers:'Powers',masks:'Masks',korong:'Korong!',desc:'Programme'},
         en:{salle:'Store',rayon:'Shelf',comptoir:'Counter',rent:'Rent',back:'Put back',play:'▶ PLAY',appearance:'Appearance',profile:'Profile',powers:'Powers',masks:'Masks',korong:'Korong!',desc:'Program'}};
 function t(k){return TX[lang][k]}
@@ -118,7 +118,7 @@ var SC=['salle','rayon','comptoir'];
 function go(id){$$('.scene').forEach(function(s){s.classList.toggle('on',s.id===id)});$$('#nav button').forEach(function(b){b.classList.toggle('on',b.dataset.s===id)});if(id==='comptoir')comptoir()}
 function nav(){var n=$('#nav');n.innerHTML='';SC.forEach(function(s){var b=h('button',null,t(s));b.dataset.s=s;b.onclick=function(){go(s)};n.appendChild(b)});$('#lang').textContent=lang==='fr'?'EN':'FR';var on=$$('.scene.on')[0];if(on)$$('#nav button').forEach(function(b){b.classList.toggle('on',b.dataset.s===on.id)})}
 ['hAisle','hLeft','hRight'].forEach(function(id){$('#'+id).onclick=function(){go('rayon')}});
-$('#lang').onclick=function(){lang=lang==='fr'?'en':'fr';try{localStorage.setItem('ik.lang',lang)}catch(e){}nav();if($('#case').classList.contains('on')&&cur)take(cur)};
+$('#lang').onclick=function(){lang=lang==='fr'?'en':'fr';document.documentElement.lang=lang;try{localStorage.setItem('ik.lang',lang)}catch(e){}nav();if($('#case').classList.contains('on')&&cur)take(cur)};
 addEventListener('keydown',function(e){if(e.key==='Escape')$('#case').classList.remove('on')});
 window.__ikBoom=function(){$('#case').classList.remove('on');go('salle')};
 rayon();nav();

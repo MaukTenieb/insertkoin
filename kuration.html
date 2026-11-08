@@ -48,7 +48,7 @@ footer{color:var(--dim);font-size:11px;margin-top:40px}
 <script src="ik-kuration.js"></script>
 <script>
 (function(){
-  var fr=(function(){try{var l=localStorage.getItem('ik.lang');if(l)return l==='fr';}catch(e){}return /^fr/i.test(navigator.language||'');})();
+  var fr=(function(){try{return localStorage.getItem('ik.lang')==='fr';}catch(e){return false}})();
   document.documentElement.lang=fr?'fr':'en';
   document.querySelectorAll('[data-en]').forEach(function(el){el.innerHTML=el.getAttribute(fr?'data-fr':'data-en');});
   if(fr)document.getElementById('deck').href='https://mauktenieb.github.io/insertkoin/fr.html';
