@@ -76,7 +76,7 @@
     /* les programmes des groupes vont en réserve ; les cabinets sans place y restent branchés (dé, chambre, Mask de Bio) */
     Object.keys(GROUPS).forEach(function(g){GROUPS[g].els=GROUPS[g].items.map(function(it){var c=tile(it[0],it[1],it[2],it[3]);store.appendChild(c);return c;});});
     Object.keys(GROUPS).forEach(function(g){(GROUPS[g].extra||[]).forEach(function(it){var c=ktile(it[0],it[1],it[2],it[3]);GROUPS[g].els.push(c);store.appendChild(c);});});var KG=GROUPS.korhogame;
-    var ORD=['chess','fi','puck','faunarratics'],keyOf=function(c){var b=c.querySelector('[data-go],[data-kata]');return b.dataset.go||b.dataset.kata;};
+    var ORD=['puck','fi','faunarratics','chess'],keyOf=function(c){var b=c.querySelector('[data-go],[data-kata]');return b.dataset.go||b.dataset.kata;};
     KG.els.sort(function(a,b){return ORD.indexOf(keyOf(a))-ORD.indexOf(keyOf(b));});
     /* le côté des mini-jeux : le dé, puis chaque mini-jeu sous sa face */
     var DIMG=['de-a.webp','de-b.webp','de-c.webp'],die=el('button','b-die','<img class="b-dimg" alt="" src="'+DIMG[0]+'"><span>'+DICE[0]+'</span><b>KATABATIK</b>');die.type='button';die.setAttribute('aria-label','Katabatik');
@@ -198,8 +198,8 @@
 
   /* ---------- d'un programme à l'autre : un glissé depuis le bord de l'écran, ou Page préc. / Page suiv. ; des points sous l'écran, comme les chaînes d'un téléviseur ----------
      L'ordre suit le panneau. À zéro Koin, un jeu payant se saute : le glissé va au programme suivant. */
-  var ORDER=['chess','fi','puck','faunarratics','c4','hang','mm','erratic','fauneye','vhs','photo','bb','diktat','terminal','repo','tor'];
-  var GRP=[['chess','fi','puck','faunarratics','c4','hang','mm','erratic'],['fauneye','vhs','photo','bb','diktat'],['terminal'],['repo','tor']];
+  var ORDER=['puck','fi','faunarratics','chess','c4','hang','mm','erratic','fauneye','vhs','photo','bb','diktat','terminal','repo','tor'];
+  var GRP=[['puck','fi','faunarratics','chess','c4','hang','mm','erratic'],['fauneye','vhs','photo','bb','diktat'],['terminal'],['repo','tor']];
   var NAME={chess:'FAUNA CHESS',fi:'FAUNINVADERS',diktat:'DIKTATFAUNE',puck:'KORONG!',faunarratics:'FAUNARRATIK',bb:'MUSIK',c4:'KONNECT4',hang:'AKASZTÓFA',mm:'MASKERMIND',erratic:'ERRATIK',
     fauneye:'BAKUBOOK',vhs:'VHS',photo:'FOTOFAUNA',terminal:'3615',repo:'REPORHOGO',tor:'FAUNATOR'};
   var CUR=null,SWAP=false;
