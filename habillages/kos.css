@@ -406,3 +406,15 @@ body{font:var(--f);color:var(--tx);background:var(--desk)}
 #psy.land .spr{animation:spr 2.4s steps(1) infinite,kland .42s cubic-bezier(.2,1.6,.4,1) both}
 @keyframes kland{0%{scale:1.06 .84}45%{scale:.95 1.07}100%{scale:1 1}}
 #psy{z-index:2147482995}#bal{z-index:2147482996}
+
+/* 8 nov. 2026 (points 4 et 5 de l'audit d'ensemble) : géométrie de lecture.
+   --zd : échelle du tableau de bord, proportionnelle à la fenêtre (1 au téléphone, jusqu'à 1,7 sur grand écran) ;
+   --zi : échelle des icônes du bureau, selon le petit côté de la fenêtre. Tout texte vaut 12 px au moins à l'œil. */
+:root{--zd:1;--zi:1}
+.motif .di .lb{font-size:12px}
+#fp .ctl .tab,#fp .ctl .body small,#fp .date span{font-size:max(9px,calc(12px / var(--zd)))}
+#fp .ws button,#fp .date{font-size:max(11px,calc(12px / var(--zd)))}
+.plat .finfo,.cal div,.cal .h,#bal,#tip{font-size:12px}
+@media (min-width:700px){#fp{zoom:var(--zd)}.motif{--barb:calc(86px * var(--zd))}}
+@media (max-width:699px){#fp{flex-wrap:wrap;height:auto;justify-content:center;overflow:visible}.motif{--barb:172px}}
+@media (max-width:699px){#desk{top:calc(var(--bart) + 66px)}}

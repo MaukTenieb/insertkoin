@@ -192,7 +192,7 @@ function motifPanel(){var f=$('#fp');f.innerHTML='';
  f.appendChild(ctl('fauna','La Fauna',function(){explorer(FAUNA)},faunaItems));
  var lk=h('div','lock');var b1=h('button',null,KICON('koin',16));b1.title=t('about');b1.onclick=about;var b2=h('button',null,KICON('shutdown',16));b2.title=t('logout');b2.onclick=shutdownDlg;lk.appendChild(b1);lk.appendChild(b2);f.appendChild(lk);
  var ws=h('div','ws');WSN.forEach(function(n,i){var b=h('button',i===S.ws?'on':'',esc(n));b.onclick=function(){setWS(i)};ws.appendChild(b)});f.appendChild(ws);
- var lk2=h('div','lock');var b3=h('button',null,ic('koin',16));b3.title=t('koins')+' : '+p2(S.koins);var b4=h('button',null,'<b style="font-size:10px">'+S.lang.toUpperCase()+'</b>');b4.onclick=toggleLang;lk2.appendChild(b3);lk2.appendChild(b4);f.appendChild(lk2);
+ var lk2=h('div','lock');var b3=h('button',null,ic('koin',16));b3.title=t('koins')+' : '+p2(S.koins);var b4=h('button',null,'<b style="font-size:12px">'+S.lang.toUpperCase()+'</b>');b4.onclick=toggleLang;lk2.appendChild(b3);lk2.appendChild(b4);f.appendChild(lk2);
  f.appendChild(ctl('term',t('terminal'),terminal));
  f.appendChild(ctl('help',t('help'),help));
  f.appendChild(ctl('control',t('style'),control,function(){return[[t('display'),displayDlg,'computer'],[t('language'),langDlg,'url'],[t('psy'),psyDlg,'m:'+(S.psyId||'c7h5n3o6')],[t('datetime'),dateDlg,'koin']]}));
@@ -368,13 +368,13 @@ function lieux(){var fr=S.lang==='fr';return[[{name:'Insert Koin',kind:'lieu',ur
 function deskItems(){var drive=Object.assign({},ROOT);drive.real=ROOT;
  return lieux().concat([[ROOT,'drive'],[findNode('KorhoGame')],[findNode('FaunEye')],[findNode('SurFauna')],[prog(D.P.filter(function(p){return p.id==='3615'})[0]),null,1],[prog(D.P.filter(function(p){return p.id==='skopo'})[0]),null,1],[FAUNA],[findNode('Lore'),null],[url('GitHub','https://github.com/MaukTenieb','plaque'),null,1],[findNode('Mauk Tenieb'),'plaque']])}
 function renderDesk(){var host=$('#icons');host.innerHTML='';
- var items=deskItems(),dh=$('#desk').clientHeight,dw=$('#desk').clientWidth,cellH=S.theme==='plat'?68:74,perCol=Math.max(1,Math.floor((dh-8)/cellH)),phone=dw<=640;
+ var items=deskItems(),dh=$('#desk').clientHeight,dw=$('#desk').clientWidth,phone=dw<=640,Z=phone?1:Math.max(1,Math.min(1.5,Math.min(innerWidth,innerHeight)/700)),cellH=(S.theme==='plat'?68:74)*Z,perCol=Math.max(1,Math.floor((dh-8)/cellH));document.documentElement.style.setProperty('--zi',Z);document.documentElement.style.setProperty('--zd',innerWidth<700?1:Math.max(1.25,Math.min(1.7,innerWidth/1100,innerHeight*1.35/720)));
  items.forEach(function(a,i){var n=a[0];if(!n)return;var icon=a[1]||n.icon,lnk=a[2]||n.kind==='url';var big=!!a[3];var el=h('div','di'+(big?' big':''),'<div class="ig'+(lnk&&!big?' lnk':'')+'">'+ic(icon,big?48:32)+'</div><div class="lb">'+esc(n.name)+'</div>');el.style.setProperty('--m',icURI(icon));
   var key=S.theme+':'+n.name,p=S.pos[key],col,row;
   if(phone&&!(p&&p[0]<=dw-80&&p[1]<=dh-70)){col=i%4;row=Math.floor(i/4);el.style.left=(col*(dw/4)+(dw/4-75)/2)+'px';el.style.top=(8+row*84)+'px'}
   else if(p){el.style.left=Math.max(0,Math.min(dw-96,p[0]))+'px';el.style.top=Math.max(0,Math.min(dh-70,p[1]))+'px'}
-  else{col=Math.floor(i/perCol);row=i%perCol;var x=S.theme==='plat'?dw-96-col*96:4+col*80;if(S.theme==='plat'&&n===BAKU){el.style.left=(dw-84)+'px';el.style.top=(dh-74)+'px'}else{el.style.left=x+'px';el.style.top=(6+row*cellH)+'px'}}
-  host.appendChild(el);el._n=n;deskBind(el,n,key)})}
+  else{col=Math.floor(i/perCol);row=i%perCol;var x=S.theme==='plat'?dw-(96+col*96)*Z:4+col*80*Z;if(S.theme==='plat'&&n===BAKU){el.style.left=(dw-84)+'px';el.style.top=(dh-74)+'px'}else{el.style.left=x+'px';el.style.top=(6+row*cellH)+'px'}}
+  if(Z!==1){el.style.transformOrigin='0 0';el.style.transform='scale('+Z+')'}host.appendChild(el);el._n=n;deskBind(el,n,key)})}
 function deskBind(el,n,key){var sx,sy,ox,oy,moved=false,down=false;
  el.addEventListener('pointerdown',function(e){if(e.button)return;e.stopPropagation();$$('.di.sel').forEach(function(x){x.classList.remove('sel')});el.classList.add('sel');SEL=n;down=true;moved=false;sx=e.clientX;sy=e.clientY;ox=el.offsetLeft;oy=el.offsetTop;el.setPointerCapture(e.pointerId)});
  el.addEventListener('pointermove',function(e){if(!down)return;var dx=e.clientX-sx,dy=e.clientY-sy;if(!moved&&Math.abs(dx)+Math.abs(dy)<6)return;moved=true;el.style.left=ox+dx+'px';el.style.top=oy+dy+'px'});
