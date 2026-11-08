@@ -34,6 +34,8 @@ var css='#mk{position:fixed;left:14px;top:0;z-index:2147483000;-webkit-tap-highl
 '#mk .board a:hover svg{transform:scale(1.1)}'+
 '#mk .board a[aria-current]::after{content:"";position:absolute;left:9px;right:9px;bottom:2px;height:3px;background:#c9a24e}'+
 '@media (max-width:900px){#mk{left:4px}#mk .fob{width:28px;padding:0 8px 4px}#mk .board{top:72px;padding:7px 8px}#mk .board a{width:44px;height:44px}#mk .board a svg{width:26px;height:26px}}'+
+'#mk.img .board{top:126px}'+
+'@media (max-width:900px){#mk.img .board{top:100px}}'+
 '@media (prefers-reduced-motion:reduce){#mk .sw,#mk .tw{animation:none}}'+
 'body.on-calque #mk,html[data-prog] #mk,.b-immersion #mk{display:none}';
 var st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
@@ -50,7 +52,7 @@ var IMG=P+'a/porte-cle.webp';
 var w=document.createElement('div');w.id='mk';
 var b=document.createElement('button');b.className='fob';b.type='button';b.setAttribute('aria-expanded','false');
 b.innerHTML='<span class="sw"><span class="tw">'+svg+svg+'</span></span>';
-(function(){var im=new Image();im.onload=function(){b.querySelector('.tw').innerHTML='<img src="'+IMG+'" alt=""><img src="'+IMG+'" alt="">'};im.src=IMG})();
+(function(){var im=new Image();im.onload=function(){w.classList.add('img');b.querySelector('.tw').innerHTML='<img src="'+IMG+'" alt=""><img src="'+IMG+'" alt="">'};im.src=IMG})();
 var c=document.createElement('nav');c.className='board';
 function href(u){return u==='../'?(HALL?'./':B):P+u}
 var BG='#3b2416';
