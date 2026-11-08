@@ -340,7 +340,7 @@
   var P={1:[6,0,3,'#c9772b','#6b2a5a',0],2:[4,0,0,'#a5522a',0,0],3:[2,0,0,'#7a5a3a',0,'frost'],4:[0,0,0,0,0,'snow'],5:[0,0,0,0,0,'rain'],6:[0,3,0,'#9bbf5a',0,0],
     7:[3,0,0,'#9fd36a',0,0],8:[6,3,0,'#6fb04a','#f7a8c8',0],9:[8,5,0,'#4f9a3a','#fff1a8',0],10:[8,2,0,'#3f8030','#ffd54f',0],11:[8,0,2,'#3f7a2e','#9ccc65',0],
     12:[7,0,5,'#4a7a30','#e0442e',0],13:[6,0,3,'#7a8a30','#e0442e',0]};
-  var PIMG={7:'germinal',8:'floreal',9:'floreal',10:'messidor',11:'messidor',12:'fructidor',1:'fructidor',13:'fructidor',2:'brumaire',3:'brumaire',4:'brumaire',5:'brumaire',6:'brumaire'};
+  /* 8 nov. (Mauk Tenieb : « la plante est infâme ») : un myrte d'intérieur reste vert toute l'année ; ses baies mûrissent d'octobre à janvier ; l'image d'automne (feuilles rousses qui tombent) sort du cycle */var PIMG={7:'germinal',8:'floreal',9:'floreal',10:'messidor',11:'messidor',12:'fructidor',1:'fructidor',13:'fructidor',2:'fructidor',3:'fructidor',4:'fructidor',5:'messidor',6:'messidor'};
   /* la plante : deux piles d'images existantes (le mois, puis la plante assoiffée qui se fond dessus selon le manque de soin) ; le pot reste, le feuillage se redresse, s'épaissit, verdit, se taille par transformations et filtres */
   function unit(src,x){return '<span class="p-u'+(x?' p-x':'')+'"><img class="p-pot" alt="" src="'+src+'"><span class="p-fo"><span class="p-mid">'+(x?'':'<img class="p-dn" alt="" src="'+src+'">')+'<img class="p-m" alt="" src="'+src+'"></span></span></span>';}
   function plantRender(r){var m=r?r.month:2,c=cs(),nn=neglect(c),n=Date.now(),ps=Math.max(CL(1-(n-c.cutAt)/(12*DAY))*(c.cutAt?1:0),.2*c.cut*(c.cutAt?1:0));

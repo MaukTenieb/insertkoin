@@ -21,7 +21,7 @@
     var lastUp=0;
     pot.addEventListener('pointerup',function(e){if(e.target.closest('[data-care]'))return;var t=performance.now();if(t-lastUp<380){lastUp=0;water();}else lastUp=t;});
     /* ce qui tombe, selon le mois de la plante */
-    function season(){var img=pl.querySelector('img'),s=img?img.src:'';return pl.dataset.dry||/brumaire|assoiffee/.test(s)?'leaf':/floreal/.test(s)?'petal':/fructidor/.test(s)?'leaf':'';}
+    function season(){var img=pl.querySelector('img'),s=img?img.src:'';return pl.dataset.dry?'leaf':/floreal/.test(s)?'petal':'';}
     function fall(){var k=season();if(k&&!RM&&!document.hidden){var f=document.createElement('i');f.className='b-fall b-'+k;f.style.left=(25+Math.random()*50)+'%';
         f.style.setProperty('--dx',((Math.random()*2-1)*40).toFixed(0)+'px');f.style.animationDuration=(3.5+Math.random()*2.5).toFixed(1)+'s';pot.appendChild(f);setTimeout(function(){f.remove();},6500);}
       setTimeout(fall,k==='petal'?9000+Math.random()*12000:14000+Math.random()*20000);}
