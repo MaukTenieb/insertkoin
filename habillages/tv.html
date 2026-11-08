@@ -230,16 +230,29 @@ function renderPage(n){var f=PAGES[n];if(!f){render([hdr(n).replace('KORHOGO','K
 function goPage(n){/* l'en-tête défile pendant la recherche, comme sur un vrai décodeur */page=n;sub=1;var k=0,t0=100+Math.floor(Math.random()*8)*10;var run=setInterval(function(){var pn=t0+k*7;if(++k>5){clearInterval(run);renderPage(n);return}var r=$('#grid').children;var hdrS=' P'+n+'  '+A.g+'KORHOGO '+pn;render([hdrS].concat((PAGES[page]?[]:[])))},90)}
 setInterval(function(){if(txt&&!entry){var f=PAGES[page];if(f){var rows=f(sub);var g=$('#grid');var h0=rows[0];/* horloge de l'en-tête */render(rows)}}},1000);
 
+/* ---------- le son du télétexte : le Motel Sound (Mauk Tenieb, 8 nov.), la liste du hall tirée au hasard ; volume et muet de la télécommande ---------- */
+var MS={p:null,ids:null,ready:false,want:false};
+function msIds(cb){if(MS.ids)return cb(MS.ids);fetch('../index.html').then(function(r){return r.text()}).then(function(t){var m=/var JUKE_TRACKS=(\[.*?\]);/.exec(t);try{MS.ids=m?JSON.parse(m[1]).map(function(x){return x.id}):[]}catch(e){MS.ids=[]}cb(MS.ids)}).catch(function(){MS.ids=[];cb([])})}
+function msVol(){if(!MS.p||!MS.ready)return;try{if(mute||!vol)MS.p.mute();else{MS.p.unMute();MS.p.setVolume(Math.round(vol*2.5))}}catch(e){}}
+function msMake(ids){var o=ids.slice();for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=o[i];o[i]=o[j];o[j]=t}
+ MS.p=new YT.Player('msnd',{height:'90',width:'160',host:'https://www.youtube-nocookie.com',playerVars:{autoplay:1,controls:0,playsinline:1,rel:0},
+  events:{onReady:function(){MS.ready=true;MS.p.loadPlaylist({playlist:o,index:0});MS.p.setLoop(true);msVol();if(!MS.want)MS.p.pauseVideo()},onError:function(){try{MS.p.nextVideo()}catch(e){}}}})}
+function msnd(){MS.want=power&&txt>0;
+ if(!MS.want){if(MS.p&&MS.ready)try{MS.p.pauseVideo()}catch(e){}return}
+ if(MS.p){if(MS.ready){msVol();try{MS.p.playVideo()}catch(e){}}return}
+ msIds(function(ids){if(!ids.length||MS.p||document.getElementById('msnd'))return;var d=document.createElement('div');d.id='msnd';d.setAttribute('aria-hidden','true');d.style.cssText='position:fixed;left:-9999px;top:0;width:160px;height:90px';document.body.appendChild(d);
+  if(window.YT&&YT.Player)msMake(ids);else{var pr=window.onYouTubeIframeAPIReady;window.onYouTubeIframeAPIReady=function(){if(pr)pr();msMake(ids)};var sc=document.createElement('script');sc.src='https://www.youtube.com/iframe_api';document.head.appendChild(sc)}})}
+
 /* ---------- commandes ---------- */
 function key(k){if(k==='av'){location.href='dvd.html';return}var ir=$('#ir');ir.classList.add('on');setTimeout(function(){ir.classList.remove('on')},100);
- if(k==='power'){power=!power;$('#tube').style.filter=power?'':'brightness(0)';if(!power){txt=0;$('#ttx').className='layer'}return}if(!power)return;
- if(k==='txt'){txt=(txt+1)%3;var t=$('#ttx');t.className='layer'+(txt===1?' on':txt===2?' on mix':'');if(txt===1)goPage(page);return}
+ if(k==='power'){power=!power;$('#tube').style.filter=power?'':'brightness(0)';if(!power){txt=0;$('#ttx').className='layer'}msnd();return}if(!power)return;
+ if(k==='txt'){txt=(txt+1)%3;var t=$('#ttx');t.className='layer'+(txt===1?' on':txt===2?' on mix':'');if(txt===1)goPage(page);msnd();return}
  if(/^\d$/.test(k)){if(txt){entry+=k;var g=$('#grid');render([' P'+pad(entry,3)+'  '+A.y+'KORHOGO'].concat([]));if(entry.length===3){var n=+entry;entry='';goPage(n)}return}
   entry+=k;osd(entry);clearTimeout(entryT);entryT=setTimeout(function(){var n=+entry;entry='';if(n)zap(n)},1100);return}
  if(txt){var fi={red:0,green:1,yellow:2,cyan:3}[k];if(fi!=null){goPage(FASTNUM[fi]);return}
   if(k==='chup'){goPage(nextPage(1));return}if(k==='chdn'){goPage(nextPage(-1));return}if(k==='ok'){var f=PAGES[page];if(f&&f.subs){sub=sub%f.subs+1;renderPage(page)}return}}
  if(k==='chup')zap(ch%CH.length+1);else if(k==='chdn')zap((ch-2+CH.length)%CH.length+1);
- else if(k==='volup'||k==='voldn'){vol=Math.max(0,Math.min(40,vol+(k==='volup'?2:-2)));mute=false;showVol()}else if(k==='mute'){mute=!mute;showVol()}
+ else if(k==='volup'||k==='voldn'){vol=Math.max(0,Math.min(40,vol+(k==='volup'?2:-2)));mute=false;showVol();msVol()}else if(k==='mute'){mute=!mute;showVol();msVol()}
  else if(k==='ok'){var c=cur();if(c.id==='guide'){var g=CH.filter(function(x){return x.num===gsel})[0];if(g){osd('▶ '+g.name.toUpperCase());open(g.url)}}else{osd('▶ '+c.name.toUpperCase());open(c.url)}}
  else if(k==='red'||k==='green'||k==='yellow'||k==='cyan'){osd('TXT')}}
 function nextPage(d){var ks=Object.keys(PAGES).map(Number).sort(function(a,b){return a-b}),i=ks.indexOf(page);return ks[(i+d+ks.length)%ks.length]}

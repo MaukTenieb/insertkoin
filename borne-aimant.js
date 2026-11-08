@@ -7,7 +7,7 @@
   /* la coupe de la manette (part haute = levier, part basse = socle) : lue sur --stk-cut, la même valeur que le dessin ; aimant.js et jeu.js la lisent ici */
   window.__borneStickCut=function(el){var v=parseFloat(getComputedStyle(el).getPropertyValue('--stk-cut'));return (v>0&&v<100?v:60)/100;};
   var SEL=[
-    ['plante','.b-pot'],['camera','.b-cam'],['fronton','.bar .brand'],['son','.bar .dock:first-of-type'],['hp','.bar .dock:last-of-type'],
+    ['plante','.b-pot'],['camera','.b-cam'],['fronton','.bar .brand'],/* la barre son (titre, PL, son, haut-parleur) reste fixe : Mauk Tenieb, 8 nov. */
     ['burrows','.b-land'],['lore','.b-lore'],['koins','.b-bezelfoot #koins'],['boom','.b-bezelfoot .b-boom'],
     ['boutons','.b-row2 .menu'],['manette','.b-panel .cabinets > .b-stick'],['manette-mini','.b-bezelfoot .b-stick-mini'],['plaque','.b-plate .b-badge'],['fente','.b-slot'],['molettes','.b-knobs']
   ];
@@ -26,11 +26,15 @@
     var saved=load(),seen={};
     blocks=list.filter(function(x){return x[1]&&!seen[x[0]]&&(seen[x[0]]=1);}).map(function(x){
       var b={id:x[0],el:x[1],dx:0,dy:0};x[1].classList.add('b-mag');var s=saved[x[0]];if(s)put(b,s[0],s[1],false);return b;});
-    var lost=false;blocks.forEach(function(b){if((b.dx||b.dy)&&!inside(b)){put(b,0,0,false);lost=true;}});if(lost)save();
+    var lost=false;blocks.forEach(function(b){if((b.dx||b.dy)&&(!inside(b)||clash(b))){put(b,0,0,false);lost=true;}});if(lost)save();
   }
   /* un bloc doit rester sur le meuble, aux deux tiers au moins : sinon il revient à sa place */
   function inside(b){var w=document.querySelector('.wrap');if(!w||!b.el.offsetParent)return true;var W=w.getBoundingClientRect(),r=b.el.getBoundingClientRect();if(!r.width)return true;
     var ix=Math.max(0,Math.min(r.right,W.right)-Math.max(r.left,W.left)),iy=Math.max(0,Math.min(r.bottom,W.bottom)-Math.max(r.top,W.top));return ix*iy>=r.width*r.height*.66;}
+  /* un bloc lâché sur un autre bloc revient à sa place : jamais deux blocs l'un sur l'autre (Lore, autocollant, se colle partout) */
+  function clash(b){if(b.id==='lore'||!b.el.offsetParent)return false;var r=b.el.getBoundingClientRect(),A=r.width*r.height;if(!A)return false;
+    return blocks.some(function(o){if(o===b||o.id==='lore'||!o.el.offsetParent||o.el.contains(b.el)||b.el.contains(o.el))return false;var q=o.el.getBoundingClientRect(),B=q.width*q.height;if(!B)return false;
+      var ix=Math.max(0,Math.min(r.right,q.right)-Math.max(r.left,q.left)),iy=Math.max(0,Math.min(r.bottom,q.bottom)-Math.max(r.top,q.top));return ix*iy>.12*Math.min(A,B);});}
   function of(t){for(var i=0;i<blocks.length;i++)if(blocks[i].el===t||blocks[i].el.contains(t))return blocks[i];return null;}
   /* l'aimant : bords contre bords, bords alignés, axes alignés ; et la place d'origine */
   function snap(b,x,y){
@@ -62,7 +66,7 @@
     e.preventDefault();var s=snap(drag.b,drag.dx+mx,drag.dy+my);put(drag.b,s[0],s[1],false);drag.b.el.classList.toggle('b-docked',s[2]);}
   function up(e){if(!drag||e.pointerId!==drag.id)return;clearTimeout(drag.t);var d=drag;drag=null;
     if(!d.on)return;suppress=Date.now();d.b.el.classList.remove('b-held','b-docked');root.classList.remove('b-holding');
-    var s=snap(d.b,d.b.dx,d.b.dy);put(d.b,s[0],s[1],false);if(!inside(d.b))s=[0,0];put(d.b,s[0],s[1],true);save();try{window.__borneSon&&setTimeout(window.__borneSon.clack,120);}catch(_){}}
+    var s=snap(d.b,d.b.dx,d.b.dy);put(d.b,s[0],s[1],false);if(!inside(d.b)||clash(d.b))s=[0,0];put(d.b,s[0],s[1],true);save();try{window.__borneSon&&setTimeout(window.__borneSon.clack,120);}catch(_){}}
   document.addEventListener('pointerdown',down,true);
   document.addEventListener('pointermove',move,{capture:true,passive:false});
   document.addEventListener('pointerup',up,true);document.addEventListener('pointercancel',up,true);

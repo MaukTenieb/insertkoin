@@ -68,5 +68,11 @@ b.addEventListener('click',function(e){e.stopPropagation();var v=!w.classList.co
 document.addEventListener('click',function(e){if(!w.contains(e.target))tog(false)});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&w.classList.contains('on')){tog(false);b.focus();e.stopPropagation();e.preventDefault()}},true);
 function add(){document.body.appendChild(w);var t=getComputedStyle(document.documentElement).getPropertyValue('--mk-top');if(t)w.style.top=t}
+/* au hall, sur un écran sans marge à gauche du meuble (téléphone), le porte-clé pend au toit et défile avec la page : il cesse de flotter sur le meuble (Mauk Tenieb, 8 nov.) */
+function hall(){var wr=document.querySelector('.wrap');if(!wr||!document.querySelector('.b-panel'))return;var R=wr.getBoundingClientRect();
+ if(R.left>=56){w.style.position='';w.style.left='';return}
+ var p=document.querySelector('.b-pot'),P=p&&p.offsetParent?p.getBoundingClientRect():null;var F=document.querySelector('.bar .brand'),Q=F&&F.getBoundingClientRect();/* la plante au-dessus du fronton (téléphone debout) : le porte-clé pend à sa droite ; sinon au bord gauche */
+ w.style.position='absolute';w.style.top='0px';w.style.left=Math.round((P&&P.width&&(!Q||Q.top>=P.bottom-4)?P.right+8:4)+scrollX)+'px'}
+addEventListener('resize',function(){setTimeout(hall,200)});addEventListener('load',function(){setTimeout(hall,900);setTimeout(hall,3000)});setTimeout(hall,1200);
 if(document.body)add();else document.addEventListener('DOMContentLoaded',add);
 })();

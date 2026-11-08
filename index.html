@@ -258,7 +258,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 
 @keyframes gbob{50%{transform:translateY(-3px)}}
 @keyframes gwalk{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
-.guide.gone{opacity:0;pointer-events:none}
+.gstage>.guide{pointer-events:auto}.guide.gone{opacity:0;pointer-events:none}
 .gtip{position:absolute;z-index:61;max-width:min(320px,70vw);padding:8px 11px 9px;background:rgba(7,6,10,.92);border:1px solid var(--gc,var(--pal-accent,#c9a84c));box-shadow:0 0 18px color-mix(in srgb,var(--gc,var(--pal-accent,#c9a84c)) 40%,transparent);font:12px/1.5 "DM Mono",monospace;color:#e8e0c8;pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .25s,transform .25s}
 .gtip.on{opacity:1;transform:none}
 .gtip b{display:block;font:400 18px/1 "Bebas Neue",Impact,sans-serif;letter-spacing:.06em;color:var(--gc,var(--pal-accent,#c9a84c));margin-bottom:3px}
@@ -2085,10 +2085,13 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
   Object.assign(SAY.en,{"g-korhogame":"Challenge us! Or roll for a mini-game.","g-fauneye":"The Kerema sees you anyway.","g-surf":"Find any repo on anything. Browse .onion sites.","bc":"The artist's Bandcamp. U gotta stay tuned...","fauneye":"Read it all.","fi":"Factualists want to liquefy you!","bb":"Touched by a muse?"});
   Object.assign(SAY.fr,{"g-korhogame":"Défie-nous ! Ou jette le dé, joue à des mini-jeux.","g-fauneye":"Visionne, lis, prends tes photos.","g-surf":"Tomates, salade, .onion ! Et toutes les ressources \"code\" sur… tout.","bc":"BC de l'artiste. U gotta stay tuned...","fauneye":"Lis tout ça.","fi":"Les Divisionistes le font par zéro !","bb":"Touched by a muse?"});
   window.__borneSAY=function(){try{return SAY[LANG]||SAY.en;}catch(e){return SAY.en;}};
-  const g=document.createElement('div');g.className='guide gone';g.setAttribute('role','button');g.setAttribute('aria-label','Guide');g.tabIndex=0;home.appendChild(g);
+  const g=document.createElement('div');g.className='guide gone';g.setAttribute('role','button');g.setAttribute('aria-label','Guide');g.tabIndex=0;
+  /* 8 nov. (Mauk Tenieb) : les psychopompes passent devant la caméra du toit. Le guide et sa bulle quittent la caisse (isolée pour les palettes) pour une scène posée sur #home, au-dessus du toit */
+  const STG=document.createElement('div');STG.className='gstage';STG.style.cssText='position:absolute;left:0;top:0;width:0;height:0;z-index:3;pointer-events:none';document.body.appendChild(STG);STG.appendChild(g);
+  (function sync(){const t=home.getClientRects().length?home:(home.closest('.wrap')||document.body),r=t.getBoundingClientRect(),v=[r.left+scrollX,r.top+scrollY,r.width,r.height].map(Math.round);if(v.join()!==STG._v){STG._v=v.join();STG.style.left=v[0]+'px';STG.style.top=v[1]+'px';STG.style.width=v[2]+'px';STG.style.height=v[3]+'px';}requestAnimationFrame(sync);})();
   /* 1er nov. : au pupitre couché, #home passe en display:contents et n'a plus de boîte ; les coordonnées du guide se prennent alors sur son vrai conteneur */
   const GC=()=>{const o=g.offsetParent;return o&&o!==document.body?o:(home.getClientRects().length?home:(g.offsetParent||document.body));},GB=()=>GC().getBoundingClientRect(),GW=()=>GC().clientWidth;
-  const tip=document.createElement('div');tip.className='gtip';home.appendChild(tip);
+  const tip=document.createElement('div');tip.className='gtip';STG.appendChild(tip);
   let who=null,fw=0,sc=1,frame=0,touring=false,idleT=0,blinkT=0,away=true;
   /* 1er nov. (LISTE n°51) : psychopompes grossis (× 1,3) */const H0=Math.round((touchDev?80:106)*1.3);let H=H0;/* 8 nov. : chaque psychopompe garde sa taille relative, celle de Korong! (BIG, décision du 22 oct. : Croisière Noire à 0,9, dogXim à 0,7, les autres à 1) */const PSZ={croisiere_noire:.9,dogxim:.7};
   function dress(){who=WHO[Math.floor(Math.random()*WHO.length)];H=Math.round(H0*(PSZ[who]||1));const S=SH[who],r=R.find(x=>x.id===who);fw=S.w*(S.k||1);sc=H/(S.h*(S.k||1));
