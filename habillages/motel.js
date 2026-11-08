@@ -2,13 +2,15 @@
    Décision de Mauk Tenieb, 8 nov. 2026 : les univers sont les lieux d'un même motel. */
 (function(){
 if(window.top!==window.self||document.getElementById('mk'))return;
-var lang='fr';try{lang=localStorage.getItem('ik.lang')||(/^fr/.test(navigator.language)?'fr':'en')}catch(e){}
+/* lieu retenu pour le visiteur qui revient ; l'entrée du site (index.html de la borne, session « Audit ») le lira */
+try{var lp=location.pathname;localStorage.setItem('ik.lieu',/\/habillages\//.test(lp)?(lp.split('/').pop()||'index.html'):'../')}catch(e){}
+var lang='en';try{lang=localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e){}
 var B=/github\.io$/.test(location.hostname)?'https://mauktenieb.github.io/insertkoin/':'../';
 var here=(location.pathname.split('/').pop()||'').replace(/\?.*/,'');
 /* dans la borne (hall), les lieux sont dans habillages/ ; le porte-clé se retire pendant un programme */
 var HALL=!/\/habillages\//.test(location.pathname),P=HALL?'habillages/':'';if(HALL)here='../';
 /* les lieux : un pictogramme par lieu, sur une plaque émaillée */
-var L=[['../','Hall · borne d’arcade','Lobby · arcade cabinet','borne'],['tv.html','Chambre · télévision','Room · television','tele'],['dvd.html','Chambre · lecteur DVD','Room · DVD player','dvd'],['videoclub.html','Vidéoclub','Video store','vhs'],['kos.html','Bureau · ordinateur','Office · computer','ordi']];
+var L=[['../','Hall · borne d’arcade','Lobby · arcade cabinet','borne'],['tv.html','Chambre · télévision','Room · television','tele'],['videoclub.html','Vidéoclub','Video store','vhs'],['kos.html','Bureau · ordinateur','Office · computer','ordi']];
 /* pictogrammes en aplat, 40 × 40, encre crème ; c = couleur du fond (évidements) */
 function picto(k,c){var f='#efe3cf',p={
  borne:'<rect x="9" y="3" width="22" height="34" rx="2" fill="'+f+'"/><rect x="13" y="8" width="14" height="10" fill="'+c+'"/><rect x="12" y="22" width="16" height="3" fill="'+c+'"/><circle cx="17" cy="29" r="1.7" fill="'+c+'"/><circle cx="23" cy="29" r="1.7" fill="'+c+'"/>',

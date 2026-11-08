@@ -79,7 +79,7 @@ var $=function(s){return document.querySelector(s)},$$=function(s){return [].sli
 function h(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.innerHTML=x;return e}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 var D=window.KDATA,ON=/github\.io$/.test(location.hostname),B='https://mauktenieb.github.io/insertkoin/';
-var lang='fr';try{lang=localStorage.getItem('ik.lang')||(/^fr/.test(navigator.language)?'fr':'en')}catch(e){}
+var lang='en';try{lang=localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e){}
 var TX={fr:{salle:'Salle',rayon:'Rayon',comptoir:'Comptoir',rent:'Louer',back:'Remettre',play:'▶ LECTURE',appearance:'Apparence',profile:'Profil',powers:'Pouvoirs',masks:'Masques',korong:'Korong!',desc:'Programme'},
         en:{salle:'Store',rayon:'Shelf',comptoir:'Counter',rent:'Rent',back:'Put back',play:'▶ PLAY',appearance:'Appearance',profile:'Profile',powers:'Powers',masks:'Masks',korong:'Korong!',desc:'Program'}};
 function t(k){return TX[lang][k]}

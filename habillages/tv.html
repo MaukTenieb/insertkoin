@@ -124,7 +124,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0b0908;user-select:no
 (function(){
 var $=function(s){return document.querySelector(s)},$$=function(s){return [].slice.call(document.querySelectorAll(s))};
 var D=window.KDATA,ON=/github\.io$/.test(location.hostname),B='https://mauktenieb.github.io/insertkoin/';
-var lang='en';try{lang=localStorage.getItem('ik.lang')||(/^fr/.test(navigator.language)?'fr':'en')}catch(e){}
+var lang='en';try{lang=localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e){}
 function p2(n){return String(n).padStart(2,'0')}
 /* calendrier républicain */
 var MO=['Vendémiaire','Brumaire','Frimaire','Nivôse','Pluviôse','Ventôse','Germinal','Floréal','Prairial','Messidor','Thermidor','Fructidor','Sansculottides'],DAYS=['Primidi','Duodi','Tridi','Quartidi','Quintidi','Sextidi','Septidi','Octidi','Nonidi','Décadi'];
