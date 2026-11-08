@@ -93,6 +93,33 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0b0908;user-select:no
 #remote .ir i{width:8px;height:8px;border-radius:50%;background:#300}
 #remote .ir i.on{background:#f33;box-shadow:0 0 8px #f33}
 @media (max-aspect-ratio:1/1){#room{flex-direction:column}#tvset{padding:5% 5% 18% 5%;aspect-ratio:1.05/1}#ctl{left:5%;right:5%;top:auto;bottom:3%;width:auto;height:12%;flex-direction:row;justify-content:space-between}.knob{width:auto;height:80%}.grille{height:60%;flex:1}}
+
+/* 8 nov. (Mauk Tenieb) : la chambre photographiée d'une seule prise — la télé, la commode et la lampe dans la même lumière ; l'écran vert découpé reçoit les programmes ; la télécommande au premier plan */
+#room{display:block;padding:0;background:#050403;overflow:hidden}
+#tvset{position:absolute;left:var(--sx,0);top:var(--sy,0);width:var(--sw,100vw);height:auto;aspect-ratio:1376/768;background:none;border-radius:0;box-shadow:none;padding:0;margin:0}
+#tvset::before{display:none}
+#tvset::after{content:"";position:absolute;inset:0;background:url(a/tv/chambre.webp) 0 0/100% 100% no-repeat;z-index:5;pointer-events:none}
+#bezel{position:absolute;left:41.352%;top:30.339%;width:15.625%;height:20.703%;padding:0;background:#000;border-radius:0;box-shadow:none}
+#tube{border-radius:0}
+#glass{z-index:29;pointer-events:none;background:url(a/tv/vitre.webp) center/cover no-repeat;mix-blend-mode:screen;opacity:.12;transition:opacity .4s}
+.off #glass{mix-blend-mode:normal;opacity:.9}.off>.layer:not(#glass),.off>#osd,.off>#vol{opacity:0!important}
+#halo{position:absolute;left:22.456%;top:8.203%;width:53.416%;height:75.391%;z-index:6;pointer-events:none;background:radial-gradient(closest-side,var(--glow,rgba(60,90,220,.32)),transparent);mix-blend-mode:screen;opacity:.55;transition:background .8s,opacity .4s}
+.dark #halo{opacity:0}
+#dresser,#ctl .lbl,#ctl .grille,#kpw{display:none}
+#ctl{position:absolute;inset:0;width:auto!important;height:auto!important;display:block!important;z-index:7;pointer-events:none}
+#ctl button{position:absolute;pointer-events:auto;height:auto!important;background:transparent!important;box-shadow:none!important;border:0;padding:0;cursor:pointer;border-radius:30%;width:2.18%;aspect-ratio:1;transform:translate(-50%,-50%)}
+#ctl button::after{display:none}
+#kvol{left:59.302%;top:43.75%}
+#kch{left:59.302%;top:46.875%}
+#lcd{position:absolute;left:58.576%;top:30.208%;width:3.052%;height:8.333%;z-index:7;display:flex;align-items:center;justify-content:center;font:700 calc(var(--sw,100vw)*.016) "VT323",monospace;color:#ff3a1e;text-shadow:0 0 6px #ff2a10;opacity:.85;pointer-events:none}
+.dark #lcd{opacity:0}
+#remote{position:fixed;right:2.5vw;bottom:-2vh;z-index:20;display:block;width:min(clamp(84px,10vmin,124px),calc(70vh * .2587));aspect-ratio:0.2587;padding:0;background:url(a/tv/telecommande.webp) 0 0/100% 100% no-repeat;border-radius:0;box-shadow:none;filter:brightness(.62) sepia(.25) drop-shadow(-8px 10px 14px rgba(0,0,0,.75));transform:rotate(-7deg)}
+#remote button{position:absolute;width:25%;height:5.6%;transform:translate(-50%,-50%);background:transparent!important;box-shadow:none!important;border-radius:40%;color:transparent;font-size:0}
+#remote button:active{background:rgba(0,0,0,.4)!important;transform:translate(-50%,-48%)}
+#remote .ir{position:absolute;left:50%;top:0;height:auto;transform:translateX(-50%)}
+#remote .ir i{position:absolute;left:-14px;top:4px;width:28px;height:10px;border-radius:2px;background:transparent}
+#remote .ir i.on{background:rgba(255,40,40,.8);box-shadow:0 0 12px #f33}
+@media (max-aspect-ratio:1/1){#remote{--rw:clamp(70px,20vw,92px);width:var(--rw);right:auto;left:50%;bottom:calc(var(--rw)*-1.2);transform:translateX(-50%) rotate(-90deg)}}
 </style>
 </head>
 <body>
@@ -102,21 +129,14 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0b0908;user-select:no
    <div class="layer" id="pic"></div>
    <div class="layer" id="guide"><div id="gtop"><div id="gpv"></div><div id="ginfo"><div class="c" id="gc"></div><h1 id="gh"></h1><p id="gp"></p></div></div><div id="gmid"><b id="gclk"></b><div class="tk"><span id="gtk"></span></div></div><div id="ggrid"><div id="ghead"></div><div id="grows"></div></div></div>
    <div class="layer" id="ttx"><canvas id="grid" width="480" height="500"></canvas></div>
-   <div class="layer" id="snow"></div>
+   <div class="layer" id="snow"></div><div class="layer" id="glass"></div>
    <div id="osd"></div><div id="vol"></div>
   </div></div>
-  <div id="dresser"><i></i><i></i></div><div id="ctl"><button class="knob" id="kch" style="--r:0deg" title="CH"></button><span class="lbl">CHANNEL</span><button class="knob" id="kvol" style="--r:-60deg" title="VOL"></button><span class="lbl">VOLUME</span><div class="grille"></div><button class="pw" id="kpw" title="POWER"></button></div>
+  <div id="dresser"></div><div id="halo"></div><div id="lcd"></div><div id="ctl"><button class="knob" id="kch" style="--r:0deg" title="CH"></button><span class="lbl">CHANNEL</span><button class="knob" id="kvol" style="--r:-60deg" title="VOL"></button><span class="lbl">VOLUME</span><div class="grille"></div><button class="pw" id="kpw" title="POWER"></button></div>
  </div>
  <div id="remote">
   <div class="ir"><i id="ir"></i></div>
-  <button class="pwr" data-k="power">⏻</button><button data-k="mute">🔇</button><button class="txt" data-k="txt">TXT</button>
-  <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
-  <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
-  <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
-  <button data-k="chdn">CH ▼</button><button data-k="0">0</button><button data-k="chup">CH ▲</button>
-  <button data-k="voldn">VOL −</button><button data-k="ok">OK</button><button data-k="volup">VOL +</button>
-  <button class="av" data-k="av">AV</button>
-  <div class="w"><button class="red" data-k="red"></button><button class="grn" data-k="green"></button><button class="yel" data-k="yellow"></button><button class="cya" data-k="cyan"></button></div>
+  <button data-k="1" aria-label="1" title="1" style="left:22.2%;top:17.1%"></button><button data-k="2" aria-label="2" title="2" style="left:49.4%;top:17.1%"></button><button data-k="3" aria-label="3" title="3" style="left:77.0%;top:17.1%"></button><button data-k="4" aria-label="4" title="4" style="left:22.2%;top:23.9%"></button><button data-k="5" aria-label="5" title="5" style="left:49.4%;top:23.9%"></button><button data-k="6" aria-label="6" title="6" style="left:77.0%;top:23.9%"></button><button data-k="7" aria-label="7" title="7" style="left:22.2%;top:30.1%"></button><button data-k="8" aria-label="8" title="8" style="left:49.4%;top:30.1%"></button><button data-k="9" aria-label="9" title="9" style="left:77.0%;top:30.1%"></button><button data-k="0" aria-label="0" title="0" style="left:49.4%;top:36.6%"></button><button data-k="red" aria-label="R" title="R" style="left:19.2%;top:44.2%"></button><button data-k="green" aria-label="G" title="G" style="left:39.7%;top:44.2%"></button><button data-k="yellow" aria-label="Y" title="Y" style="left:60.3%;top:44.2%"></button><button data-k="cyan" aria-label="C" title="C" style="left:80.3%;top:44.2%"></button><button data-k="txt" aria-label="TXT" title="TXT" style="left:30.5%;top:51.0%"></button><button data-k="mix" aria-label="MIX" title="MIX" style="left:69.5%;top:51.0%"></button><button data-k="volup" aria-label="VOL +" title="VOL +" style="left:29.7%;top:60.7%"></button><button data-k="voldn" aria-label="VOL −" title="VOL −" style="left:29.7%;top:66.7%"></button><button data-k="chup" aria-label="CH +" title="CH +" style="left:69.0%;top:60.7%"></button><button data-k="chdn" aria-label="CH −" title="CH −" style="left:69.0%;top:66.7%"></button><button data-k="power" aria-label="POWER" title="POWER" style="left:28.5%;top:78.6%"></button><button data-k="mute" aria-label="MUTE" title="MUTE" style="left:70.3%;top:78.6%"></button>
  </div>
 </div>
 <script src="kdata.js"></script>
@@ -245,8 +265,9 @@ function msnd(){MS.want=power&&txt>0;
 
 /* ---------- commandes ---------- */
 function key(k){if(k==='av'){location.href='dvd.html';return}var ir=$('#ir');ir.classList.add('on');setTimeout(function(){ir.classList.remove('on')},100);
- if(k==='power'){power=!power;$('#tube').style.filter=power?'':'brightness(0)';if(!power){txt=0;$('#ttx').className='layer'}msnd();return}if(!power)return;
- if(k==='txt'){txt=(txt+1)%3;var t=$('#ttx');t.className='layer'+(txt===1?' on':txt===2?' on mix':'');if(txt===1)goPage(page);msnd();return}
+ if(k==='power'){power=!power;$('#tube').style.filter='';$('#tube').classList.toggle('off',!power);$('#tvset').classList.toggle('dark',!power);if(!power){txt=0;$('#ttx').className='layer'}msnd();return}if(!power)return;
+ if(k==='mix'){txt=txt===2?0:2;$('#ttx').className='layer'+(txt===2?' on mix':'');if(txt)goPage(page);msnd();return}
+ if(k==='txt'){txt=txt?0:1;var t=$('#ttx');t.className='layer'+(txt===1?' on':txt===2?' on mix':'');if(txt===1)goPage(page);msnd();return}
  if(/^\d$/.test(k)){if(txt){entry+=k;var g=$('#grid');render([' P'+pad(entry,3)+'  '+A.y+'KORHOGO'].concat([]));if(entry.length===3){var n=+entry;entry='';goPage(n)}return}
   entry+=k;osd(entry);clearTimeout(entryT);entryT=setTimeout(function(){var n=+entry;entry='';if(n)zap(n)},1100);return}
  if(txt){var fi={red:0,green:1,yellow:2,cyan:3}[k];if(fi!=null){goPage(FASTNUM[fi]);return}
@@ -261,11 +282,24 @@ function showVol(){var v=$('#vol');v.innerHTML=mute?'MUTE':'VOLUME '+'|'.repeat(
 $$('#remote button').forEach(function(b){b.addEventListener('click',function(){key(b.dataset.k)})});
 $('#kch').onclick=function(){key('chup')};$('#kvol').onclick=function(){key('volup')};$('#kpw').onclick=function(){key('power')};
 addEventListener('keydown',function(e){var m={ArrowUp:'chup',ArrowDown:'chdn',ArrowRight:'volup',ArrowLeft:'voldn',Enter:'ok',t:'txt',T:'txt',m:'mute',r:'red',g:'green',y:'yellow',c:'cyan'}[e.key];if(/^\d$/.test(e.key))m=e.key;if(m){e.preventDefault();key(m)}});
+$('#pic').addEventListener('click',function(){if(power&&!txt&&cur().id!=='guide')key('ok')});
+/* la lumière du tube sur la pièce, le numéro de chaîne dans la fenêtre du téléviseur */
+setInterval(function(){$('#lcd').textContent=power?p2(ch):'';var c=txt?'rgba(60,120,255,.30)':cur().id==='guide'?'rgba(50,80,230,.34)':'rgba(255,190,120,.22)';$('#tvset').style.setProperty('--glow',c)},500);
 /* le guide : molette et doigt */
 $('#ggrid').addEventListener('wheel',function(e){gy=Math.max(0,gy+e.deltaY*.4);ghold=200;e.preventDefault()},{passive:false});
 var ty;$('#ggrid').addEventListener('touchstart',function(e){ty=e.touches[0].clientY;ghold=99999},{passive:true});$('#ggrid').addEventListener('touchmove',function(e){var n=e.touches[0].clientY;gy=Math.max(0,gy-(n-ty));ty=n},{passive:true});$('#ggrid').addEventListener('touchend',function(){ghold=200},{passive:true});
 /* taille */
-function fit(){var portrait=innerHeight>innerWidth*1.0,rw=$('#remote').offsetWidth;var W=portrait?Math.min(innerWidth*.94,(innerHeight-260)*1.05):Math.min(innerWidth-rw-60,(innerHeight*.86)*1.42);document.documentElement.style.setProperty('--tw',Math.max(240,W)+'px');setTimeout(function(){fitTtx();if(cur().id==='guide')guide()},50)}
+/* deux cadrages : la chambre entière, puis la caméra s'approche de la télé (2,4 s) ; un toucher hors de l'écran recule ou avance */
+function frame(s,ax,ay,qx,qy,vw,vh){var iw=1376*s,ih=768*s;return {s:s,x:Math.min(0,Math.max(vw-iw,ax-qx*s)),y:Math.min(0,Math.max(vh-ih,ay-qy*s))}}
+var CL=null,WI=null;
+function fit(){var W=1376,H=768,cx=676.5,cy=312.5,sw0=215,vw=innerWidth,vh=innerHeight,portrait=vh>vw,cover=Math.max(vw/W,vh/H);
+ WI=portrait?frame(Math.max(cover,vw*.6/sw0),vw/2,vh*.4,cx,cy,vw,vh):frame(Math.max(cover,Math.min(vw/1100,vh/560),vw<1000?vw*.3/sw0:0),vw/2,vh/2,605,355,vw,vh);
+ CL=portrait?frame(Math.max(cover,vw*.96/325),vw/2,vh*.4,703,312,vw,vh):frame(Math.max(cover,Math.min(vw*.56,vh*.64*1.352201)/sw0),vw*.47,vh*.47,cx,cy,vw,vh);
+ var R=document.documentElement.style;R.setProperty('--sw',W*CL.s+'px');R.setProperty('--sx',CL.x+'px');R.setProperty('--sy',CL.y+'px');R.setProperty('--tw',(sw0*CL.s)+'px');zoom();setTimeout(function(){fitTtx();if(cur().id==='guide')guide()},50)}
+var near=false;function zoom(v){if(v!=null)near=v;if(!CL)return;var k=WI.s/CL.s,t=$('#tvset');t.style.transformOrigin='0 0';t.style.transform=near?'':'translate('+(WI.x-CL.x)+'px,'+(WI.y-CL.y)+'px) scale('+k+')'}
+setTimeout(function(){$('#tvset').style.transition='transform 2.4s cubic-bezier(.45,.05,.25,1)';zoom(true)},2200);
+$('#room').addEventListener('click',function(e){if(e.target.closest('#tube,#remote,#ctl,#mk'))return;zoom(!near)});
+$$('#remote button').forEach(function(b){b.addEventListener('click',function(){if(!near)zoom(true)})});
 addEventListener('resize',fit);
 /* titre de l'onglet : l'enseigne */
 setInterval(function(){var r=Math.random();document.title=(r<.7?'Insert Koin':['Intersektion','Sektor Inn','Noir Insekt'][Math.floor(Math.random()*3)])+' — Motel TV'},6000);
