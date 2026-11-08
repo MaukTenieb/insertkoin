@@ -122,6 +122,11 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0b0908;user-select:no
 #remote .ir i{position:absolute;left:-14px;top:4px;width:28px;height:10px;border-radius:2px;background:transparent}
 #remote .ir i.on{background:rgba(255,40,40,.8);box-shadow:0 0 12px #f33}
 @media (max-aspect-ratio:1/1){#remote{--rw:clamp(70px,20vw,92px);width:var(--rw);right:auto;left:50%;bottom:calc(var(--rw)*-1.2);transform:translateX(-50%) rotate(-90deg)}}
+/* 8 nov. (point 3) : lecture du guide — 12 px au moins au bureau ; au téléphone, écran agrandi, 14 px au moins à l'œil */
+@media (min-aspect-ratio:1/1){#ginfo .c,#ghead{font-size:clamp(12px,1.5vmin,14px)}#gmid{font-size:clamp(12px,1.6vmin,15px)}#ginfo p{font-size:clamp(12px,1.9vmin,18px)}.gr .n b,.gr .n span,.gr .s{font-size:clamp(12px,1.8vmin,17px)}.gr .s small{font-size:clamp(12px,1.3vmin,12px)}}
+#tvset{transition:transform .9s cubic-bezier(.45,.05,.25,1)}
+.tvmax #ginfo .c,.tvmax #ghead{font-size:max(calc(14px / var(--k,1)),clamp(8px,1.5vmin,14px))}.tvmax #gmid{font-size:max(calc(14px / var(--k,1)),clamp(8px,1.6vmin,15px))}.tvmax #ginfo p{font-size:max(calc(14px / var(--k,1)),clamp(8px,1.9vmin,18px))}.tvmax .gr .n b,.tvmax .gr .n span,.tvmax .gr .s{font-size:max(calc(14px / var(--k,1)),clamp(8px,1.8vmin,17px))}.tvmax .gr .s small{font-size:max(calc(14px / var(--k,1)),clamp(8px,1.3vmin,12px))}
+.tvmax #remote{opacity:0;pointer-events:none;transition:opacity .4s}
 </style>
 </head>
 <body>
@@ -297,10 +302,13 @@ var CL=null,WI=null;
 function fit(){var W=1376,H=768,cx=676.5,cy=312.5,sw0=215,vw=innerWidth,vh=innerHeight,portrait=vh>vw,cover=Math.max(vw/W,vh/H);
  WI=portrait?frame(Math.max(cover,vw*.6/sw0),vw/2,vh*.4,cx,cy,vw,vh):frame(Math.max(cover,Math.min(vw/1100,vh/560),vw<1000?vw*.3/sw0:0),vw/2,vh/2,605,355,vw,vh);
  CL=portrait?frame(Math.max(cover,vw*.96/325),vw/2,vh*.4,703,312,vw,vh):frame(Math.max(cover,Math.min(vw*.56,vh*.64*1.352201)/sw0),vw*.47,vh*.47,cx,cy,vw,vh);
- var R=document.documentElement.style;R.setProperty('--sw',W*CL.s+'px');R.setProperty('--sx',CL.x+'px');R.setProperty('--sy',CL.y+'px');R.setProperty('--tw',(sw0*CL.s)+'px');zoom();setTimeout(function(){fitTtx();if(cur().id==='guide')guide()},50)}
-var near=false;function zoom(v){if(v!=null)near=v;if(!CL)return;var k=WI.s/CL.s,t=$('#tvset');t.style.transformOrigin='0 0';t.style.transform=near?'':'translate('+(WI.x-CL.x)+'px,'+(WI.y-CL.y)+'px) scale('+k+')'}
+ var R=document.documentElement.style;R.setProperty('--sw',W*CL.s+'px');R.setProperty('--sx',CL.x+'px');R.setProperty('--sy',CL.y+'px');R.setProperty('--tw',(sw0*CL.s)+'px');MX=portrait?frame(vw*.98/sw0,vw/2,vh*.42,cx,cy,vw,vh):null;if(!MX&&big)big=false;document.body.classList.toggle('tvmax',big);zoom();setTimeout(function(){fitTtx();if(cur().id==='guide')guide()},50)}
+var near=false,big=false,MX=null;function zoom(v){if(v!=null)near=v;if(!CL)return;if(big&&near&&MX){var q=MX.s/CL.s,t0=$('#tvset');t0.style.transformOrigin='0 0';t0.style.transform='translate('+(MX.x-CL.x)+'px,'+(MX.y-CL.y)+'px) scale('+q+')';document.documentElement.style.setProperty('--k',q);return}var k=WI.s/CL.s,t=$('#tvset');t.style.transformOrigin='0 0';t.style.transform=near?'':'translate('+(WI.x-CL.x)+'px,'+(WI.y-CL.y)+'px) scale('+k+')'}
 setTimeout(function(){$('#tvset').style.transition='transform 2.4s cubic-bezier(.45,.05,.25,1)';zoom(true)},2200);
 $('#room').addEventListener('click',function(e){if(e.target.closest('#tube,#remote,#ctl,#mk'))return;if(!near)zoom(true)});
+/* 8 nov. (Mauk Tenieb, 19 h 48, point 3) : au téléphone, toucher l'écran de la télé l'agrandit à toute la largeur, le guide se lit ; toucher hors de l'écran ramène la chambre */
+$('#tube').addEventListener('click',function(e){if(!MX||!near||big)return;e.stopPropagation();e.preventDefault();big=true;document.body.classList.add('tvmax');$('#tvset').style.transition='transform .9s cubic-bezier(.45,.05,.25,1)';zoom()},true);
+$('#room').addEventListener('click',function(e){if(!big||e.target.closest('#tube,#remote'))return;big=false;document.body.classList.remove('tvmax');$('#tvset').style.transition='transform .9s cubic-bezier(.45,.05,.25,1)';zoom()});
 window.__ikBoom=function(){zoom(false);if(ch!==1)zap(1)};
 $$('#remote button').forEach(function(b){b.addEventListener('click',function(){if(!near)zoom(true)})});
 addEventListener('resize',fit);
