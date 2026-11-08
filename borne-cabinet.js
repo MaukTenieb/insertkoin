@@ -536,7 +536,7 @@
       /* 1er nov. : un lustre passe de temps en temps sur l'autocollant, découpé à sa forme (masque de l'image du papier) */
       var lu=document.createElement('i');lu.className='b-lustre';lu.setAttribute('aria-hidden','true');lore.appendChild(lu);
       function shine(){if(!document.hidden){lore.classList.remove('b-shine','b-wob');void lore.offsetWidth;lore.classList.add(Math.random()<.5?'b-shine':'b-wob');setTimeout(function(){lore.classList.remove('b-shine','b-wob');},1300);}setTimeout(shine,3500+Math.random()*5000);}
-      setTimeout(shine,2500+Math.random()*4000);
+      /* 8 nov. : lustre et lueur retirés (vinyle imprimé à plat, sans reflet d'appli) */
       lore._fit=fit;lore._tick=tick;fit();setTimeout(fit,700);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);setTimeout(tick,2000+Math.random()*2000);/* 1er nov. : vivant dès l'arrivée */
       /* glisser à la main : clic simple = lien ; au-delà de 6 px = déplacement ; l'aimant Dekonect ramène l'autocollant s'il est lâché dessus */
       var st=null;lore.draggable=false;lore.addEventListener('dragstart',function(e){e.preventDefault();});
@@ -570,7 +570,7 @@
       [.8,.6,.5].some(function(sc){var W=w*sc+4,H=h*sc+6,C=[];for(var x=L;x<=R-W;x+=3)for(var y=T;y<=B-H;y+=3)if(!hit({left:x,top:y,right:x+W,bottom:y+H},Z))C.push([x,y,sc,W,H]);if(C.length){best=C[(Math.random()*C.length)|0];return true;}});
       if(best){lore.style.setProperty('--lx',(best[0]+best[3]/2-w/2-S.left).toFixed(1)+'px');lore.style.setProperty('--ly',(best[1]+best[4]/2-h/2-S.top).toFixed(1)+'px');lore.style.setProperty('--ls',best[2]);lore.style.setProperty('--lr','0deg');}
       lore._try=0;}
-    function clampLore(){var door=lore.closest('.b-door');if(!door||!lore.classList.contains('b-onbox'))return;var d=door.getBoundingClientRect(),r=lore.getBoundingClientRect(),L=Math.max(d.left,0),R=Math.min(d.right,innerWidth),T=Math.max(d.top,0),B=Math.min(d.bottom,innerHeight),dx=0,dy=0;
+    function clampLore(){var door=lore.closest('.b-door');if(!door||!lore.classList.contains('b-onbox'))return;/* 8 nov. (demande du 8 nov., 1 h 30) : Lore se déplace au doigt et à la souris sur tout le caisson bas, hors de la caisse si le visiteur le veut ; il reste sous la console, au-dessus du copyright, dans le meuble */var wr=(document.querySelector('.wrap')||document.body).getBoundingClientRect(),pn=document.querySelector('#home .b-panel'),cp=document.querySelector('.b-copy'),pb=pn&&pn.offsetWidth?pn.getBoundingClientRect().bottom:door.getBoundingClientRect().top,cb=cp&&cp.offsetWidth?cp.getBoundingClientRect().top:wr.bottom,r=lore.getBoundingClientRect(),L=Math.max(wr.left+10,0),R=Math.min(wr.right-10,innerWidth),T=Math.max(pb+4,0),B=Math.min(cb-4,innerHeight),dx=0,dy=0;
       if(r.left<L)dx=L-r.left;else if(r.right>R)dx=R-r.right;if(r.top<T)dy=T-r.top;else if(r.bottom>B)dy=B-r.bottom;
       if(dx||dy){lore.style.setProperty('--lx',(lore.offsetLeft+dx).toFixed(1)+'px');lore.style.setProperty('--ly',(lore.offsetTop+dy).toFixed(1)+'px');}}
     var RW=innerWidth;addEventListener('resize',function(){if(Math.abs(innerWidth-RW)>40){RW=innerWidth;clearTimeout(lore._rt);lore._rt=setTimeout(place,500);}});

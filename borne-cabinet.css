@@ -1350,3 +1350,17 @@ html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-doorrow{z-index:8!impo
 @media (max-width:560px){html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) .b-date{top:3%!important;bottom:auto!important}}
 /* 8 nov. (LISTE n°28) : skin métal, l étiquette de la fente monte entre la fenêtre (bas à 48 %) et la serrure (haut à 64 %), qu elle couvrait */
 html.borne.borne[data-skin=metal]:not(#k1):not(#k2) .b-slot b{top:48.5%!important}
+/* 8 nov. (LISTE n°43, 47, 58 ; demande du 8 nov., 1 h 30) : plaque Mauk Tenieb brune, cadre laiton, lettres dorées, deux clous dorés bombés ; posée entière sur la face de la console, au-dessus du chant, sans enjamber deux blocs */
+html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #home .b-panel>.b-plate{margin-bottom:32px!important;position:relative;z-index:3}
+html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #home .b-plate .b-badge{background:linear-gradient(180deg,#46301b 0%,#2e1e10 55%,#22160b 100%)!important}
+html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #home .b-plate .b-badge b{color:#e9c77a!important;text-shadow:0 1px 0 #120a04,0 -1px 0 rgba(255,236,190,.25)!important}
+html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #home .b-badge::before,html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #home .b-badge::after{width:9px!important;height:9px!important;margin-top:-4.5px!important;background:radial-gradient(circle at 35% 30%,#fff4cc 0,#e2bd68 32%,#9a7330 68%,#4a3412 100%)!important;box-shadow:0 1px 1px rgba(0,0,0,.7),inset 0 -1px 1px rgba(0,0,0,.35)!important}
+html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #home .b-badge::before{left:8px!important}html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #home .b-badge::after{right:8px!important}
+@media (max-height:500px){html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #home .b-plate .b-badge{height:34px!important}}
+/* 8 nov. (DA, Point de vue ; demande du 8 nov., 1 h 30) : touches, boutons, manette et plaque suivent l inclinaison du panneau vers le joueur, un seul point de fuite au-dessus du centre de la console */
+html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #home .b-panel{perspective:1000px!important;perspective-origin:50% -70%!important}
+html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #home .b-panel>.b-row1,html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #home .b-panel>.b-row2,html.borne:not([data-prog]):not(#k1):not(#k2):not(#k3) #home .b-panel>.b-plate{transform:rotateX(16deg)!important;transform-origin:50% 100%!important}
+/* 8 nov. : autocollant Lore en vinyle imprimé à plat, une encre, zéro relief ni ombre double (juges DA et UX ; graphisme d époque) */
+html.borne .b-lore .b-word{text-shadow:none!important;filter:none!important}
+html.borne .b-lore .b-lustre{display:none!important}
+html.borne .b-lore.b-drag{cursor:grabbing}html.borne .b-lore.b-onbox{cursor:grab;touch-action:none}
