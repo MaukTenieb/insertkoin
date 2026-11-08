@@ -20,7 +20,9 @@ dt{color:var(--c);letter-spacing:.14em;font-size:.62rem;text-transform:uppercase
 @media(max-width:520px){dl{grid-template-columns:1fr}dd{margin-bottom:6px}}
 a{color:#ffe08a}.go{font:400 1.4rem "Bebas Neue",Impact,sans-serif;letter-spacing:.1em;border:1px solid var(--c);padding:6px 18px;text-decoration:none;color:#fff}
 nav{display:flex;justify-content:space-between;width:100%;font-size:.72rem;letter-spacing:.12em}nav a{text-decoration:none;color:#b0a58c}nav a:hover{color:#ffe08a}
-.legal{font-size:.62rem;color:#b0a58c}</style></head>
+.legal{font-size:.62rem;color:#b0a58c}
+/* 8 nov. 2026 (point 16) : échelle de lecture, 12 px au moins, montée douce avec la largeur */
+.n{font-size:max(12px,.75rem)}ul{width:min(100%,400px);gap:6px}li{font-size:clamp(12px,calc(.72rem + .25vw),14px)}li b{height:6px}dl{font-size:clamp(13px,calc(.74rem + .2vw),15px)}dt{font-size:12px}nav{font-size:12.5px}.legal{font-size:12px}</style></head>
 <body><main>
 <span class="n">N° 05</span><h1>Ts&#x27;ui Pên</h1>
 <img src="fauna-tsui_pen.webp" width="188" height="188" alt="Ts&#x27;ui Pên">
