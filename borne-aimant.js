@@ -8,7 +8,7 @@
   window.__borneStickCut=function(el){var v=parseFloat(getComputedStyle(el).getPropertyValue('--stk-cut'));return (v>0&&v<100?v:60)/100;};
   var SEL=[
     ['plante','.b-pot'],['camera','.b-cam'],['fronton','.bar .brand'],/* la barre son (titre, PL, son, haut-parleur) reste fixe : Mauk Tenieb, 8 nov. */
-    ['burrows','.b-land'],['lore','.b-lore'],['koins','.b-bezelfoot #koins'],['boom','.b-bezelfoot .b-boom'],
+    ['burrows','.b-land'],/* Lore : son propre glissé (borne-cabinet.js) ; deux systèmes à la fois le faisaient sauter et le posaient sur l'écran */['koins','.b-bezelfoot #koins'],['boom','.b-bezelfoot .b-boom'],
     ['boutons','.b-row2 .menu'],['manette','.b-panel .cabinets > .b-stick'],['manette-mini','.b-bezelfoot .b-stick-mini'],['plaque','.b-plate .b-badge'],['fente','.b-slot'],['molettes','.b-knobs']
   ];
   var MAG=14,HOME=40,LONG=260;
