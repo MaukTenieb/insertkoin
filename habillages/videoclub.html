@@ -247,7 +247,13 @@ function getIt(){cur=inHand;CASE.classList.remove('on');rep('comptoir');show('co
 CASE.addEventListener('click',function(e){if(e.target===CASE)nope()});
 
 /* 6. le comptoir : le téléviseur montre la cassette louée ; un toucher la lit ; sans cassette, il renvoie au rayon */
-function comptoir(){var tv=$('#tv');if(!cur){tv.style.backgroundImage='none';tv.style.backgroundColor='transparent';$('.osd',tv).textContent='';return}tv.style.backgroundColor='#000';
+/* 10 nov. (Mauk Tenieb, 21 h 33) : télé vide, zéro DVD dedans : un clip de Mauk Tenieb au hasard, muet (liste du Motel Sound) */
+var VC={ids:null,f:null};
+function vcIds(cb){if(VC.ids)return cb(VC.ids);fetch('../index.html').then(function(r){return r.text()}).then(function(t){var m=/var JUKE_TRACKS=(\[.*?\]);/.exec(t),a=[];try{a=m?JSON.parse(m[1]):[]}catch(e){}VC.ids=a.map(function(x){return x.id});cb(VC.ids)}).catch(function(){VC.ids=[];cb([])})}
+function vcClip(v){var tv=$('#tv');if(!v){if(VC.f){VC.f.remove();VC.f=null}return}if(VC.f)return;vcIds(function(ids){if(!ids.length||VC.f||cur||scene!=='comptoir')return;var o=ids.slice().sort(function(){return Math.random()-.5}).slice(0,40),f=document.createElement('iframe');
+ f.src='https://www.youtube-nocookie.com/embed/'+o[0]+'?autoplay=1&mute=1&controls=0&disablekb=1&fs=0&iv_load_policy=3&modestbranding=1&playsinline=1&rel=0&loop=1&playlist='+o.join(',');
+ f.allow='autoplay';f.tabIndex=-1;f.setAttribute('aria-hidden','true');f.style.cssText='position:absolute;left:-18%;top:-18%;width:136%;height:136%;border:0;pointer-events:none';tv.insertBefore(f,tv.firstChild);VC.f=f})}
+function comptoir(){var tv=$('#tv');vcClip(!cur);if(!cur){tv.style.backgroundImage='none';tv.style.backgroundColor='#000';$('.osd',tv).textContent='';return}tv.style.backgroundColor='#000';
  tv.style.backgroundImage='url('+(cur.kind==='prog'?cur.p.thumb:cur.img)+')';$('.osd',tv).textContent=t('play')}
 function play(){if(!cur){go('rayon');return}if(ON)location.href=cur.url;else window.open(cur.url,'_blank','noopener')}
 $('#tv').onclick=function(){if(!swiped)play()};
@@ -262,7 +268,7 @@ function center(){if(!PAN)return;var sw=parseFloat(getComputedStyle(root).getPro
 function reveal(id){scene=id;warm();Object.keys(SC).forEach(function(k){SC[k].classList.toggle('on',k===id)});WR.classList.add('live');hs.classList.add('off');cv.classList.add('dim');$('#grain').classList.add('on');
  if(id==='comptoir')comptoir();center();
  setTimeout(function(){if(scene!==id)return;if(id==='rayon'){var b=BOX[inHand?TAPES.indexOf(inHand):0];if(b)b.focus({preventScroll:true})}else $('#tv').focus({preventScroll:true})},RM?0:220)}
-function show(id){shut();if(id===scene&&!busy)return;
+function show(id){shut();if(id!=='comptoir')vcClip(false);if(id===scene&&!busy)return;
  if(id==='salle'){scene='salle';busy=false;Object.keys(SC).forEach(function(k){SC[k].classList.remove('on')});WR.classList.remove('live');hs.classList.remove('off');cv.classList.remove('dim');$('#grain').classList.remove('on');tween('push',0,520,eout);hs.focus({preventScroll:true});kick();return}
  if(scene==='salle'&&!RM&&gl){busy=true;S.hlT=[0,0,0];tween('push',1,430,ease,function(){busy=false;if(scene==='salle')reveal(id)});return}
  S.push=1;reveal(id);kick()}
