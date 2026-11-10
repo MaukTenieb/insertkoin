@@ -24,7 +24,13 @@ var SON=q('.b-px-son'),PL=q('.b-px-pl'),KAP=q('.b-px-kap'),IMM=q('.b-imm'),BOOM=
 var SVGL='<svg viewBox="0 0 24 24" aria-hidden="true" data-k="21">';
 var DIK=KAP.cloneNode(false);DIK.className='b-px b-px-dik';DIK.setAttribute('aria-label','diktaTfaune');DIK.title='diktaTfaune';
 DIK.innerHTML=SVGL+'<rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>';
-KAP.parentNode.insertBefore(DIK,KAP.nextSibling);DIK.addEventListener('click',function(){location.href=HALL+'?p=diktat'});
+KAP.parentNode.insertBefore(DIK,KAP.nextSibling);
+/* 10 nov. 2026 (Mauk Tenieb, 20 h 27 : « La manette qui permet de changer d'environnement, c'est bien ») : la manette de la barre mène à la pièce suivante du motel */
+var STK=q('.b-stick');if(STK){var ROOMS=[['habillages/kos.html','KorhogOS'],['habillages/tv.html','TV'],['habillages/videoclub.html','Video Kave'],['habillages/dvd.html','DVD'],['','Insert Koin']];
+ var cur=0;ROOMS.forEach(function(r,n){if(r[0]&&location.pathname.indexOf(r[0].split('/')[1])>=0)cur=n});var nx=ROOMS[(cur+1)%ROOMS.length];
+ STK.removeAttribute('aria-hidden');STK.setAttribute('role','button');STK.tabIndex=0;STK.setAttribute('aria-label',nx[1]);STK.title=nx[1];STK.style.cursor='pointer';STK.style.pointerEvents='auto';
+ var go=function(){var i=STK.querySelector('i');if(i){i.style.transition='transform .12s cubic-bezier(.3,1.6,.5,1)';i.style.transformOrigin='50% 100%';i.style.transform='rotate(14deg)'}setTimeout(function(){location.href=(ON?HALL:'../')+nx[0]},140)};
+ STK.addEventListener('click',go);STK.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}})}DIK.addEventListener('click',function(){location.href=HALL+'?p=diktat'});
 PL.innerHTML=SVGL+'<path d="M4 6h10M4 11h10M4 16h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path><path d="M18 5v10.5" fill="none" stroke="currentColor" stroke-width="1.8"></path><circle cx="16.3" cy="16.3" r="2" fill="currentColor"></circle></svg>';
 var LG=PL.cloneNode(true);LG.classList.remove('b-px-pl');LG.classList.add('b-px-lg');LG.textContent=lang==='fr'?'EN':'FR';PL.parentNode.appendChild(LG);
 function lab(e,en,fr){var t=lang==='fr'?fr:en;e.title=t;e.setAttribute('aria-label',t)}
