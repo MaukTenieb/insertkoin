@@ -1,6 +1,6 @@
 /* Le panneau de contrôle commun des lieux du motel (Mauk Tenieb, 8 nov. : « un panneau de contrôle universel sous tous les régimes et tous les écrans » ;
    17 h 56 : il reprend la barre de la console, la même partout). La barre du pied de la console, telle quelle :
-   Koins, son (Motel Sound), PL (la liste du Motel Sound sur YouTube), Kapture, Immersion, Baku Boom (hors de KorhogOS, décision du 8 nov.), et FR · EN.
+   Koins, son (Motel Sound), PL (télécharge la liste écrite des 99 morceaux du Motel Sound), Kapture, Immersion, Baku Boom (hors de KorhogOS, décision du 8 nov.), et FR · EN.
    Le Motel Sound reste allumé d'un lieu à l'autre (ik.motel) et reprend au premier geste du visiteur ; window.IKMotel sert la télé. */
 (function(){
 if(window.top!==window.self||document.getElementById('ikbar'))return;
@@ -50,7 +50,9 @@ function lab(e,en,fr){var t=lang==='fr'?fr:en;e.title=t;e.setAttribute('aria-lab
 lab(SON,'Motel Sound','Motel Sound');lab(PL,'PL','PL');lab(KAP,'Kapture','Kapture');lab(IMM,'Immersion','Immersion');lab(BOOM,'Baku Boom','Baku Boom');lab(LG,'Français / English','Français / English');
 var MSB=SON;
 SON.addEventListener('click',function(){user=true;want.panel=!want.panel;try{localStorage.setItem('ik.motel',want.panel?'1':'0')}catch(e){}sync()});
-PL.addEventListener('click',function(){list(function(a){if(a.length)window.open('https://www.youtube.com/watch_videos?video_ids='+a.slice(0,50).join(','),'_blank','noopener')})});
+/* 11 nov. 2026 (Mauk Tenieb, 0 h 10) : PL télécharge la liste écrite des 99 morceaux du Motel Sound, titre et adresse YouTube de chacun, comme le bouton de la borne */
+PL.addEventListener('click',function(){list(function(a){if(!a.length)return;var L=['KORHOGO -- MOTEL SOUND','MAUK TENIEB -- '+a.length+' tracks','',''];a.forEach(function(id,i){L.push((i+1)+'. '+((a.T&&a.T[id])||''));L.push('   https://www.youtube.com/watch?v='+id)});
+ var u=URL.createObjectURL(new Blob([L.join('\n')],{type:'text/plain'})),k=document.createElement('a');k.href=u;k.download=window.ikName?ikName('motel-sound','txt'):'motel-sound-playlist.txt';document.body.appendChild(k);k.click();setTimeout(function(){k.remove();URL.revokeObjectURL(u)},300)})});
 /* Kapture sur place : la page du lieu part à FotoFauna ; au doigt, le choix SKREEN / KAM du hall */
 KAP.addEventListener('click',function(){var md=navigator.mediaDevices;if(!(md&&md.getDisplayMedia)||matchMedia('(pointer:coarse)').matches){location.href=HALL+'?kap=1';return}
  md.getDisplayMedia({video:{displaySurface:'browser'},audio:false,preferCurrentTab:true,selfBrowserSurface:'include',surfaceSwitching:'exclude'}).then(function(s){var v=document.createElement('video');v.srcObject=s;v.muted=true;v.playsInline=true;return v.play().then(function(){return new Promise(function(r){setTimeout(r,250)})}).then(function(){var c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);s.getTracks().forEach(function(t){t.stop()});try{sessionStorage.setItem('ik.kap',c.toDataURL('image/jpeg',.9))}catch(e){}location.href=HALL+'?kap=skreen'})}).catch(function(){})});
