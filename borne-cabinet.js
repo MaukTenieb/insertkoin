@@ -494,13 +494,13 @@
       var C=[];for(var gx=-4;gx<=86;gx+=4)for(var gy=(BL?-30:-6);gy<=92;gy+=4)C.push([gx,gy]);C.sort(function(){return Math.random()-.5;});var w=lore.offsetWidth||108,h=lore.offsetHeight||50;
       /* téléphone couché : l'autocollant pose aux trois cinquièmes au moins sur la porte à monnayeur */
       if(BL){var CP=C.filter(function(c){var L=S.left+S.width*c[0]/100,T=S.top+S.height*c[1]/100;return Math.max(0,Math.min(L+w,P.right)-Math.max(L,P.left))*Math.max(0,Math.min(T+h,P.bottom)-Math.max(T,P.top))>=.6*w*h;});if(CP.length)C=CP;}
-      var best=null,bo=1e9;C.forEach(function(c){var L=S.left+S.width*c[0]/100,T=S.top+S.height*c[1]/100,o=0;avoid.forEach(function(a){o+=Math.max(0,Math.min(L+w,a.right)-Math.max(L,a.left))*Math.max(0,Math.min(T+h,a.bottom)-Math.max(T,a.top));});c.o=o;if(o<bo){bo=o;best=c;}});
+      var best=null,bo=1e9;C.forEach(function(c){var L=S.left+S.width*c[0]/100,T=S.top+S.height*c[1]/100,o=0;avoid.forEach(function(a){o+=Math.max(0,Math.min(L+w,a.right)-Math.max(L,a.left))*Math.max(0,Math.min(T+h,a.bottom)-Math.max(T,a.top));});c.o=o;c.d=Math.hypot(L+w/2-P.left,T+h/2-P.bottom);if(o<bo||(o===bo&&best&&c.d<best.d)){bo=o;best=c;}});
       /* téléphone couché : une place tirée au hasard parmi les meilleures */
-      if(BL){var CB=C.filter(function(c){return c.o<=bo*1.1+40;});best=CB[Math.floor(Math.random()*CB.length)]||best;}
+      if(BL){var CB=C.filter(function(c){return c.o<=bo*1.1+40;});best=CB.reduce(function(a,c){return c.d<a.d?c:a;},CB[0]||best)||best;}
       C=[best];
       for(var k=0;k<C.length;k++){
         if(true){lore.classList.remove('b-stuck');lore.classList.add('b-onbox');lore.style.setProperty('--lx',C[k][0]+'%');lore.style.setProperty('--ly',C[k][1]+'%');
-          lore.style.setProperty('--lr',((Math.random()*2-1)*3).toFixed(1)+'deg');/* 10 nov. : 3 degrés au plus, ses coins restent hors des voisins */door.appendChild(lore);return;}}}
+          lore.style.setProperty('--lr','-3deg');/* 10 nov. : penché de 3 degrés, ses coins restent hors des voisins */door.appendChild(lore);return;}}}
     function nbRects(){var NB=[];['.b-bezelfoot','.b-screen','#home .b-bezel','#home .b-panel','.bar','.b-dekonect','.b-copy','.b-pot','.b-cam'].forEach(function(q){var e=document.querySelector(q);if(e&&e.offsetWidth&&!e.contains(slot)){var r=e.getBoundingClientRect(),fx=/sticky|fixed/.test(getComputedStyle(e).position);NB.push({left:r.left-(fx?2:6),top:fx?-1e6:r.top-6,right:r.right+(fx?2:6),bottom:fx?1e6:r.bottom+6});}});return NB;}
     function landPlace(P,S,door,BL){var sk=document.documentElement.dataset.skin,w=lore.offsetWidth||92,h=lore.offsetHeight||44;
       /* la fenêtre sombre de la fente (en % de la plaque) ; son cadre compte comme plaque (décision du 31 oct.) */
@@ -524,15 +524,16 @@
             /* hors du téléphone couché : l'autocollant chevauche le bord de la plaque (35 à 65 % de sa surface dessus), la serrure libre */
             if(!BL){var f=ov(PL,x,y,W,H)/(W*H);if(f<.35||f>.65||ov(KH,x,y,W,H))continue;}
             if(NB.some(function(a){return ov(a,x,y,W,H)>0;}))continue;C.push([x,y]);}}
-        if(!C.length)continue;var k=C[Math.floor(Math.random()*C.length)];
+        /* 10 nov. (Mauk Tenieb, 23 h 09) : une place stable, en bas de la caisse : la plus proche du coin bas gauche de la plaque */
+        if(!C.length)continue;var AX=P.left,AY=P.bottom,k=C.reduce(function(a,c){var da=Math.hypot(a[0]+W/2-AX,a[1]+H/2-AY),dc=Math.hypot(c[0]+W/2-AX,c[1]+H/2-AY);return dc<da?c:a;});
         lore.classList.remove('b-stuck');lore.classList.add('b-onbox');
         lore.style.setProperty('--lx',(k[0]+W/2-w/2-S.left).toFixed(1)+'px');lore.style.setProperty('--ly',(k[1]+H/2-h/2-S.top).toFixed(1)+'px');
-        lore.style.setProperty('--ls',sc[i]);lore.style.setProperty('--lr',((Math.random()*2-1)*4).toFixed(1)+'deg');door.appendChild(lore);return true;}
+        lore.style.setProperty('--ls',sc[i]);lore.style.setProperty('--lr','-4deg');door.appendChild(lore);return true;}
       /* porte trop petite (740 × 360, bois) : à la plus petite échelle, la place qui dépasse le moins les deux plafonds ; la fenêtre de la fente, le cadre de l'écran, le rebord du panneau et les molettes restent libres */
       var s3=sc[sc.length-1],W3=w*s3+2,H3=h*s3+2,D=[],mo=1e18;
       for(var x3=lft;x3<=rgt-W3;x3+=2)for(var y3=top;y3<=bot+2-H3;y3+=2){if(ov(O,x3,y3,W3,H3)||(KN&&ov(KN,x3,y3,W3,H3))||(LB&&ov(LB,x3,y3,W3,H3))||NB.some(function(a){return ov(a,x3,y3,W3,H3)>0;}))continue;
         var o3=Math.max(0,P.left-x3)+Math.max(0,x3+W3-P.right),e3=Math.max(0,o3-.45*W3)*H3+(LB?Math.max(0,ov(LB,x3,y3,W3,H3)-.15*LA):0);D.push([x3,y3,e3]);if(e3<mo)mo=e3;}
-      if(!D.length)return false;D=D.filter(function(c){return c[2]<=mo+60;});var k3=D[Math.floor(Math.random()*D.length)];
+      if(!D.length)return false;D=D.filter(function(c){return c[2]<=mo+60;});var k3=D.reduce(function(a,c){return Math.hypot(c[0]+W3/2-P.left,c[1]+H3/2-P.bottom)<Math.hypot(a[0]+W3/2-P.left,a[1]+H3/2-P.bottom)?c:a;});
       lore.classList.remove('b-stuck');lore.classList.add('b-onbox');
       lore.style.setProperty('--lx',(k3[0]+W3/2-w/2-S.left).toFixed(1)+'px');lore.style.setProperty('--ly',(k3[1]+H3/2-h/2-S.top).toFixed(1)+'px');
       lore.style.setProperty('--ls',s3);lore.style.setProperty('--lr','0deg');door.appendChild(lore);return true;}
@@ -549,12 +550,12 @@
       /* tirage : Lore 64 %, Tales, Korhogo ou Diegesis 12 % chacun ; papier pris dans la liste, jamais deux fois de suite */
       function tick(){var t=Math.random()<.64?'Lore':W[(Math.random()*W.length)|0],o=H.filter(function(x){return x!==ch;}),hue=o[(Math.random()*o.length)|0];
         if(RM){show(t,hue);}else{lore.classList.add('b-peel');setTimeout(function(){show(t,hue);},170);setTimeout(function(){lore.classList.remove('b-peel');},420);}
-        setTimeout(tick,6000+Math.random()*6000);}
+        setTimeout(tick,60000+Math.random()*60000);}/* 10 nov. (Mauk Tenieb, 23 h 09) : une minute à deux entre deux changements */
       /* 1er nov. : un lustre passe de temps en temps sur l'autocollant, découpé à sa forme (masque de l'image du papier) */
       var lu=document.createElement('i');lu.className='b-lustre';lu.setAttribute('aria-hidden','true');lore.appendChild(lu);
       function shine(){if(!document.hidden){lore.classList.remove('b-shine','b-wob');void lore.offsetWidth;lore.classList.add(Math.random()<.5?'b-shine':'b-wob');setTimeout(function(){lore.classList.remove('b-shine','b-wob');},1300);}setTimeout(shine,3500+Math.random()*5000);}
       /* 8 nov. : lustre et lueur retirés (vinyle imprimé à plat, sans reflet d'appli) */
-      lore._fit=fit;lore._tick=tick;fit();setTimeout(fit,700);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);setTimeout(tick,2000+Math.random()*2000);/* 1er nov. : vivant dès l'arrivée */
+      lore._fit=fit;lore._tick=tick;fit();setTimeout(fit,700);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);setTimeout(tick,45000+Math.random()*30000);
       /* glisser à la main : clic simple = lien ; au-delà de 6 px = déplacement ; l'aimant Dekonect ramène l'autocollant s'il est lâché dessus */
       var st=null;lore.draggable=false;lore.addEventListener('dragstart',function(e){e.preventDefault();});
       lore.addEventListener('pointerdown',function(e){if(!lore.classList.contains('b-onbox')||(e.button&&e.button!==0))return;lore._drag=false;st={x:e.clientX,y:e.clientY,l:lore.offsetLeft,t:lore.offsetTop,id:e.pointerId};});
