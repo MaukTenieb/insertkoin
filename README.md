@@ -23,7 +23,7 @@ The home screen is the motel painting, then the cabinets. Every visit draws its 
 | **Katabatik** | A die is thrown on the cabinet: Konnect4, Sampler, Akasztófa (the Hungarian hangman, on a Hungarian keyboard; a vowel counts with its accents or bare; a win brings a short unsigned quotation to guess), Mastermind or FaunInvaders (the 18 Masks march and drop bombs; each Mask throws in its own way, after its character: Ts'ui Pên's bomb forks into two paths, one real; Honey Buzzard's stops in mid-air and comes back lower; Hátra Lövés's comes back from the ground; Maiden Call's comes to the player who comes to it; `?fi=classic` in the address brings back the throws of the first version). |
 | **3615** | The K Terminal, the MiniTale: https://mauktenieb.github.io/3615/ |
 | **VHS** | A television on a tape deck: Motel Sound and your own YouTube tapes. |
-| **FotoFauna** | The photo editor: takes or opens a photo and applies 1,998 filters & effekts from 44 photo apps, in 13 families. |
+| **FotoFauna** | The photo editor: takes or opens a photo and applies 2K effekts from 44 photo apps, in 13 families. |
 | **FaunaTor** | Opens web pages and v3 .onion sites through Tor clients that run in the page. |
 | **SkopoRhogo** | The Fauna in an isometric hotel room. |
 | **Reporhogo** | Reporhogo searches forty-one code forges for a topic and collects the URLs of the repositories it finds. |
@@ -97,7 +97,7 @@ A page out of reach shows *Your Kalabass was rejected. Apply later.*, with the r
 
 ## FotoFauna
 
-FotoFauna, the photo editor of Insert Koin, reproduces the looks of the photo apps of 2008–2019: 1,998 filters & effekts from 44 photo apps, in 13 families (simulated film, toy cameras, historical processes, instants, glitch, painting, shapes…), an editor with adjustments, recipes kept inside the saved PNG, GIF export, deterministic renders. The camera opens on a Mask drawn at random. FotoFauna saves every shot at once, untouched. Looks pile up: **Keep** fixes the current look into the picture and the next one goes on top; **Undo** steps back, last look first, then last layer. The saved PNG keeps the fixed layers in its recipe. `fotofauna.html` contains the whole app.
+FotoFauna, the photo editor of Insert Koin, reproduces the looks of the photo apps of 2008–2019: 2K effekts from 44 photo apps, in 13 families (simulated film, toy cameras, historical processes, instants, glitch, painting, shapes…), an editor with adjustments, recipes kept inside the saved PNG, GIF export, deterministic renders. The camera opens on a Mask drawn at random. FotoFauna saves every shot at once, untouched. Looks pile up: **Keep** fixes the current look into the picture and the next one goes on top; **Undo** steps back, last look first, then last layer. The saved PNG keeps the fixed layers in its recipe. `fotofauna.html` contains the whole app.
 
 ## The screen
 
