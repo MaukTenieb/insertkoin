@@ -9,7 +9,7 @@
   function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(R()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
   function same(a,b){return a.length===b.length&&a.every(function(x,i){return x===b[i];});}
   function son(k){try{window.__borneSon&&window.__borneSon[k]&&window.__borneSon[k]();}catch(e){}}
-  function reset(anim){parts().forEach(function(e){e.style.transition=anim?'translate .45s cubic-bezier(.2,1.4,.4,1),rotate .45s':'';e.style.translate='';e.style.rotate='';e.style.zIndex='';});order=null;}
+  function reset(anim){parts().forEach(function(e){e.style.transition=anim?'translate .45s cubic-bezier(.2,1.4,.4,1),rotate .45s':'';e.style.translate='';e.style.rotate='';e.style.zIndex='';});var was=order;order=null;if(was)setTimeout(function(){try{window.__borneLorePlace&&window.__borneLorePlace();}catch(_){}},anim?500:60);}
   /* 8 nov. (Mauk Tenieb : « ton magnet-demagnet est une merde » ; demande du 25 oct. : « par succion ou aspiration ») : trois temps.
      Le lâcher : chaque tronçon se décolle, s'écarte de ses voisins et pivote, vite puis de moins en moins vite (0,7 s).
      Le flottement : les tronçons restent suspendus, ils dérivent et respirent (0,5 s).
@@ -22,7 +22,7 @@
     var cur=order||P.slice(),next;do{next=shuffle(P);}while(same(next,cur)&&P.length>1);
     if(order&&R()<.25)next=P.slice();
     place(cur,rects,top,P,false);
-    if(RM){place(next,rects,top,P,false);order=same(next,P)?null:next;busy=false;return;}
+    if(RM){place(next,rects,top,P,false);order=same(next,P)?null:next;busy=false;try{window.__borneLorePlace&&window.__borneLorePlace();}catch(_){}return;}
     requestAnimationFrame(function(){requestAnimationFrame(function(){
       son('suck');var n=cur.length,dr=[];
       /* le lâcher */
@@ -34,7 +34,7 @@
       setTimeout(function(){cur.forEach(function(e,k){var d=dr[k];e.style.transition='translate .5s ease-in-out,rotate .5s ease-in-out';
         e.style.translate=(d[0]+(R()*2-1)*6).toFixed(1)+'px '+(d[1]-5-R()*6).toFixed(1)+'px';e.style.rotate=(d[2]*.7).toFixed(1)+'deg';});},760);
       /* la succion */
-      setTimeout(function(){place(next,rects,top,P,true);order=same(next,P)?null:next;setTimeout(function(){busy=false;},900);
+      setTimeout(function(){place(next,rects,top,P,true);order=same(next,P)?null:next;setTimeout(function(){busy=false;},900);/* le meuble immobile, l'autocollant se recolle */setTimeout(function(){try{if(!busy&&window.__borneLorePlace)window.__borneLorePlace();}catch(_){}},1300);
         if(root.hasAttribute('data-bland'))setTimeout(function(){try{window.__borneSeat&&window.__borneSeat();}catch(_){}},900);},1300);
     });});}
   /* chaque tronçon prend la place suivante ; les jours d'origine entre les tronçons restent les mêmes (la caisse tombait mal sans eux) */
@@ -44,7 +44,7 @@
   /* 8 nov. : le rack des molettes accompagne la caisse à pièces dans chaque déplacement (même tronçon du meuble) ; l'aimant reste en bas à droite */
   (function follow(){var d=document.querySelector('.b-door'),k=document.querySelector('.b-knobs');if(!d||!k){setTimeout(follow,600);return;}
     new MutationObserver(function(){k.style.transition=d.style.transition;k.style.translate=d.style.translate;k.style.rotate=d.style.rotate;k.style.zIndex=d.style.zIndex;}).observe(d,{attributes:true,attributeFilter:['style']});})();
-  window.__borneDekonect=press;
+  window.__borneDekonect=press;window.__borneDekBusy=function(){return busy;};
   /* un programme s'ouvre : le meuble se remet en ordre */
   new MutationObserver(function(){if(root.dataset.prog&&order)reset(false);}).observe(root,{attributes:true,attributeFilter:['data-prog']});
   var W0=innerWidth;addEventListener('resize',function(){if(innerWidth!==W0){W0=innerWidth;if(order)reset(false);}});

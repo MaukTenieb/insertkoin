@@ -475,11 +475,11 @@
   /* l'autocollant Lore, collé au hasard n'importe où sur la caisse à pièces, de travers (Mauk Tenieb, 31 oct. : il ne fait pas partie de la plaque de la fente) */
   (function(){var slot=document.querySelector('.b-slot');if(!slot)return;
     lore.addEventListener('click',function(e){e.stopPropagation();});
-    function place(){if(!slot.offsetWidth){setTimeout(place,300);return;}if(dekon())return;if(lore._moved){if(!restore())clampLore();return;}var P=slot.getBoundingClientRect(),door=slot.closest('.b-door')||slot.parentElement,S=door.getBoundingClientRect(),avoid=[];var BL=document.documentElement.hasAttribute('data-bland')&&!getComputedStyle(document.documentElement).getPropertyValue('--r-S');[slot.querySelector('b'),slot.querySelector('i')].filter(Boolean).forEach(function(x){var r=x.getBoundingClientRect();for(var z=0;z<(BL?30:6);z++)avoid.push({left:r.left-8,top:r.top-8,right:r.right+8,bottom:r.bottom+8});});
+    function place(){if(!slot.offsetWidth){setTimeout(place,300);return;}if(window.__borneDekBusy&&window.__borneDekBusy())return;if(lore._moved){if(!restore())clampLore();return;}var P=slot.getBoundingClientRect(),door=slot.closest('.b-door')||slot.parentElement,S=door.getBoundingClientRect(),avoid=[];var BL=document.documentElement.hasAttribute('data-bland')&&!getComputedStyle(document.documentElement).getPropertyValue('--r-S');[slot.querySelector('b'),slot.querySelector('i')].filter(Boolean).forEach(function(x){var r=x.getBoundingClientRect();for(var z=0;z<(BL?30:6);z++)avoid.push({left:r.left-8,top:r.top-8,right:r.right+8,bottom:r.bottom+8});});
       /* partout (Mauk Tenieb, 31 oct., 8 h 50) : LORE collé au hasard sur la caisse à pièces, la fenêtre de la fente toujours nue ; l'ancien placement sert de repli */
       if(landPlace(P,S,door,BL)){if(!restore())setTimeout(settle,60);return;}
       /* repli, hors du téléphone couché : à cheval sur le bord gauche de la plaque, à mi-hauteur */
-      if(!BL){var w0=lore.offsetWidth||84,h0=lore.offsetHeight||38;lore.classList.remove('b-stuck');lore.classList.add('b-onbox');
+      if(!BL&&!(function(){var w0=lore.offsetWidth||84,h0=lore.offsetHeight||38,x=P.left-w0/2,y=P.top+P.height/2-h0/2;return nbRects().some(function(a){return x<a.right&&x+w0>a.left&&y<a.bottom&&y+h0>a.top;});})()){var w0=lore.offsetWidth||84,h0=lore.offsetHeight||38;lore.classList.remove('b-stuck');lore.classList.add('b-onbox');
         lore.style.setProperty('--lx',(P.left-S.left-w0/2).toFixed(1)+'px');lore.style.setProperty('--ly',(P.top-S.top+P.height/2-h0/2).toFixed(1)+'px');
         lore.style.setProperty('--ls',1);lore.style.setProperty('--lr',((Math.random()*2-1)*6).toFixed(1)+'deg');door.appendChild(lore);return;}
       /* la fente et la serrure de chaque porte (en % de la porte) */
@@ -488,6 +488,7 @@
       OPEN.forEach(function(o){for(var z=0;z<(BL?14:6);z++)avoid.push({left:P.left+P.width*o[0]/100,top:P.top+P.height*o[1]/100,right:P.left+P.width*o[2]/100,bottom:P.top+P.height*o[3]/100});});
       /* ni sur la plaque des molettes, ni sur l'aimant, ni hors du meuble */
       ['.b-knobs','.b-dekonect','.b-lamp.b-l1','.b-lamp.b-l2'].concat(BL?['#home .b-bezel','#home .b-panel']:[]).forEach(function(q){var e=document.querySelector(q);if(e&&e.offsetWidth){var r=e.getBoundingClientRect();for(var z=0;z<(BL?(q==='#home .b-panel'?3:8):3);z++)avoid.push({left:r.left-6,top:r.top-6,right:r.right+6,bottom:r.bottom+6});}});
+      nbRects().concat(['.b-knobs','.b-dekonect'].map(function(q){var e=document.querySelector(q);if(!e||!e.offsetWidth)return null;var r=e.getBoundingClientRect();return {left:r.left-4,top:r.top-4,right:r.right+4,bottom:r.bottom+4};}).filter(Boolean)).forEach(function(a){for(var z=0;z<20;z++)avoid.push(a);});
       var WR=(document.querySelector('.wrap')||document.body).getBoundingClientRect();
       [[-1e4,-1e4,WR.left+8,1e4],[WR.right-8,-1e4,1e4,1e4]].concat(BL?[[-1e4,Math.min(WR.bottom,innerHeight)-2,1e4,1e4]]:[]).forEach(function(r,i){for(var z=0;z<(i>1?12:3);z++)avoid.push({left:r[0],top:r[1],right:r[2],bottom:r[3]});});
       var C=[];for(var gx=-4;gx<=86;gx+=4)for(var gy=(BL?-30:-6);gy<=92;gy+=4)C.push([gx,gy]);C.sort(function(){return Math.random()-.5;});var w=lore.offsetWidth||108,h=lore.offsetHeight||50;
@@ -499,7 +500,8 @@
       C=[best];
       for(var k=0;k<C.length;k++){
         if(true){lore.classList.remove('b-stuck');lore.classList.add('b-onbox');lore.style.setProperty('--lx',C[k][0]+'%');lore.style.setProperty('--ly',C[k][1]+'%');
-          lore.style.setProperty('--lr',((Math.random()*2-1)*(BL?6:12)).toFixed(1)+'deg');door.appendChild(lore);return;}}}
+          lore.style.setProperty('--lr',((Math.random()*2-1)*3).toFixed(1)+'deg');/* 10 nov. : 3 degrés au plus, ses coins restent hors des voisins */door.appendChild(lore);return;}}}
+    function nbRects(){var NB=[];['.b-bezelfoot','.b-screen','#home .b-bezel','#home .b-panel','.bar','.b-dekonect','.b-copy','.b-pot','.b-cam'].forEach(function(q){var e=document.querySelector(q);if(e&&e.offsetWidth&&!e.contains(slot)){var r=e.getBoundingClientRect(),fx=/sticky|fixed/.test(getComputedStyle(e).position);NB.push({left:r.left-(fx?2:6),top:fx?-1e6:r.top-6,right:r.right+(fx?2:6),bottom:fx?1e6:r.bottom+6});}});return NB;}
     function landPlace(P,S,door,BL){var sk=document.documentElement.dataset.skin,w=lore.offsetWidth||92,h=lore.offsetHeight||44;
       /* la fenêtre sombre de la fente (en % de la plaque) ; son cadre compte comme plaque (décision du 31 oct.) */
       var OP={bois:[31,19,70,60],metal:[46,26,54,45]}[sk]||[31,19,70,60];
@@ -509,8 +511,10 @@
       /* la serrure (en % de la plaque), libre à 4 px */
       var KHp={bois:[60,62,86,92],metal:[66,58,86,86]}[sk]||[60,62,86,92],KH={l:P.left+P.width*KHp[0]/100-4,t:P.top+P.height*KHp[1]/100-4,r:P.left+P.width*KHp[2]/100+4,b:P.top+P.height*KHp[3]/100+4},PL={l:P.left,t:P.top,r:P.right,b:P.bottom};
       var kn=document.querySelector('.b-knobs'),KR=kn&&kn.getBoundingClientRect(),KN=KR&&{l:KR.left-4,t:KR.top-4,r:KR.right+4,b:KR.bottom+4};
+      /* 10 nov. (Mauk Tenieb, 22 h 25) : jamais sur le comptoir des Koins, l'écran, la console, le fronton, l'aimant ni le copyright */
+      var NB=[];['.b-bezelfoot','.b-screen','#home .b-bezel','#home .b-panel','.bar','.b-dekonect','.b-copy','.b-pot','.b-cam'].forEach(function(q){var e=document.querySelector(q);if(e&&e.offsetWidth&&!e.contains(slot)){var r=e.getBoundingClientRect(),fx=/sticky|fixed/.test(getComputedStyle(e).position);/* écran collant (téléphone couché) : toute sa colonne *//* marge : l'autocollant penche de quelques degrés, ses coins débordent de sa boîte */NB.push({l:r.left-(fx?2:8),t:fx?-1e6:r.top-12,r:r.right+(fx?2:8),b:fx?1e6:r.bottom+12});}});
       var pn=document.querySelector('#home .b-panel'),bz=document.querySelector('#home .b-bezel'),WR=document.querySelector('.wrap').getBoundingClientRect();
-      var cp=document.querySelector('.b-copy'),CPt=cp&&cp.offsetWidth?cp.getBoundingClientRect().top:1e5,top=(pn?pn.getBoundingClientRect().bottom:P.top)+14,bot=Math.min(CPt-4,(BL?Math.min(innerHeight,WR.bottom):Math.min(WR.bottom,P.bottom+P.height*.12))-3),/* 7 nov. : jamais sur la ligne du copyright */lft=Math.max(S.left,BL&&bz?bz.getBoundingClientRect().right:WR.left+8)+3,rgt=Math.min(S.right,WR.right-8)-3;
+      var cp=document.querySelector('.b-copy'),CPt=cp&&cp.offsetWidth?cp.getBoundingClientRect().top:1e5,top=dekon()?S.top-h:(pn?pn.getBoundingClientRect().bottom:P.top)+14,bot=Math.min(CPt-10,(BL?WR.bottom:Math.min(WR.bottom,P.bottom+P.height*.12))-3),/* 7 nov. : jamais sur la ligne du copyright */lft=Math.max(S.left,BL&&bz?bz.getBoundingClientRect().right:WR.left+8)+3,rgt=Math.min(S.right,WR.right-8)-3;
       /* LORE au hasard sur la caisse : la fenêtre de la fente nue (6 px), l'étiquette couverte à 15 % au plus, 45 % de sa largeur au plus hors de la plaque, sur le bois de la caisse, sous le rebord du panneau */
       /* 0,6 au plus bas sous 800 px de large, et en bois jusqu'à 900 px (décision du 31 oct.) */
       var sc=!BL?[1,.9,.8]:(innerWidth<800||(sk==='bois'&&innerWidth<900))?[1,.9,.8,.7,.6,.5]:[1,.9,.8,.7,.6];
@@ -519,20 +523,22 @@
           for(var y=top;y<=bot-H;y+=2){if(ov(O,x,y,W,H)||(KN&&ov(KN,x,y,W,H))||(LB&&ov(LB,x,y,W,H)>0))continue;
             /* hors du téléphone couché : l'autocollant chevauche le bord de la plaque (35 à 65 % de sa surface dessus), la serrure libre */
             if(!BL){var f=ov(PL,x,y,W,H)/(W*H);if(f<.35||f>.65||ov(KH,x,y,W,H))continue;}
-            C.push([x,y]);}}
+            if(NB.some(function(a){return ov(a,x,y,W,H)>0;}))continue;C.push([x,y]);}}
         if(!C.length)continue;var k=C[Math.floor(Math.random()*C.length)];
         lore.classList.remove('b-stuck');lore.classList.add('b-onbox');
         lore.style.setProperty('--lx',(k[0]+W/2-w/2-S.left).toFixed(1)+'px');lore.style.setProperty('--ly',(k[1]+H/2-h/2-S.top).toFixed(1)+'px');
         lore.style.setProperty('--ls',sc[i]);lore.style.setProperty('--lr',((Math.random()*2-1)*4).toFixed(1)+'deg');door.appendChild(lore);return true;}
       /* porte trop petite (740 × 360, bois) : à la plus petite échelle, la place qui dépasse le moins les deux plafonds ; la fenêtre de la fente, le cadre de l'écran, le rebord du panneau et les molettes restent libres */
       var s3=sc[sc.length-1],W3=w*s3+2,H3=h*s3+2,D=[],mo=1e18;
-      for(var x3=lft;x3<=rgt-W3;x3+=2)for(var y3=top;y3<=bot+2-H3;y3+=2){if(ov(O,x3,y3,W3,H3)||(KN&&ov(KN,x3,y3,W3,H3))||(LB&&ov(LB,x3,y3,W3,H3)))continue;
+      for(var x3=lft;x3<=rgt-W3;x3+=2)for(var y3=top;y3<=bot+2-H3;y3+=2){if(ov(O,x3,y3,W3,H3)||(KN&&ov(KN,x3,y3,W3,H3))||(LB&&ov(LB,x3,y3,W3,H3))||NB.some(function(a){return ov(a,x3,y3,W3,H3)>0;}))continue;
         var o3=Math.max(0,P.left-x3)+Math.max(0,x3+W3-P.right),e3=Math.max(0,o3-.45*W3)*H3+(LB?Math.max(0,ov(LB,x3,y3,W3,H3)-.15*LA):0);D.push([x3,y3,e3]);if(e3<mo)mo=e3;}
       if(!D.length)return false;D=D.filter(function(c){return c[2]<=mo+60;});var k3=D[Math.floor(Math.random()*D.length)];
       lore.classList.remove('b-stuck');lore.classList.add('b-onbox');
       lore.style.setProperty('--lx',(k3[0]+W3/2-w/2-S.left).toFixed(1)+'px');lore.style.setProperty('--ly',(k3[1]+H3/2-h/2-S.top).toFixed(1)+'px');
       lore.style.setProperty('--ls',s3);lore.style.setProperty('--lr','0deg');door.appendChild(lore);return true;}
     setTimeout(place,500);
+    /* l'aimant Dekonect a remonté le meuble : l'autocollant se recolle selon les règles, sur la caisse à sa nouvelle place */
+    window.__borneLorePlace=function(){lore._moved=false;try{sessionStorage.removeItem('borne.lore');}catch(x){}lore._try=0;place();};
     /* la caisse change de taille (mesure de l'écran, téléphone couché, skin) : l'autocollant se recolle sur sa nouvelle place */
     if(window.ResizeObserver){var rsT,rs0='',RO=new ResizeObserver(function(){var r=slot.getBoundingClientRect(),dr=(slot.closest('.b-door')||slot).getBoundingClientRect(),k=Math.round(r.width)+'x'+Math.round(r.height)+'/'+Math.round(dr.width)+'x'+Math.round(dr.height)+'/'+Math.round(r.left-dr.left)+'/'+Math.round(r.top-dr.top)+(document.documentElement.hasAttribute('data-bland')?'L':'');if(k===rs0)return;rs0=k;clearTimeout(rsT);rsT=setTimeout(place,350);});RO.observe(slot);RO.observe(slot.closest('.b-door')||slot);}
     /* le mot de l'autocollant : LORE le plus souvent, Tales, Korhogo ou Diegesis de temps en temps, comme l'enseigne qui change de nom ; le papier change de teinte ; il se déplace à la main */
@@ -568,8 +574,10 @@
       [slot.querySelector('b'),slot.querySelector('i')].forEach(function(x){if(x&&x.offsetWidth){var r=x.getBoundingClientRect();Z.push({l:r.left-m,t:r.top-m,r:r.right+m,b:r.bottom+m});}});return Z;}
     /* place choisie à la main : gardée dans ce navigateur, par skin et par cadrage, en fraction de la caisse */
     function posKey(){return (document.documentElement.dataset.skin||'')+(document.documentElement.hasAttribute('data-bland')?'L':'');}
-    function posAll(){try{return JSON.parse(localStorage.getItem('borne.lore')||'{}')||{};}catch(x){return {};}}
-    function keep(){var d=lore.closest('.b-door');if(!d||!d.offsetWidth)return;var a=posAll();a[posKey()]=[lore.offsetLeft/d.offsetWidth,lore.offsetTop/d.offsetHeight];try{localStorage.setItem('borne.lore',JSON.stringify(a));}catch(x){}}
+    /* 10 nov. (Mauk Tenieb, 22 h 25) : la place choisie à la main vaut pour la visite ; à l'arrivée, l'autocollant se colle selon les règles */
+    try{localStorage.removeItem('borne.lore');localStorage.removeItem('borne.lore.rot');}catch(x){}
+    function posAll(){try{return JSON.parse(sessionStorage.getItem('borne.lore')||'{}')||{};}catch(x){return {};}}
+    function keep(){var d=lore.closest('.b-door');if(!d||!d.offsetWidth)return;var a=posAll();a[posKey()]=[lore.offsetLeft/d.offsetWidth,lore.offsetTop/d.offsetHeight];try{sessionStorage.setItem('borne.lore',JSON.stringify(a));}catch(x){}}
     function restore(){var d=lore.closest('.b-door'),v=posAll()[posKey()];if(!d||!v||!lore.classList.contains('b-onbox'))return false;var lx=lore.style.getPropertyValue('--lx'),ly=lore.style.getPropertyValue('--ly');
       lore.style.setProperty('--lx',(v[0]*d.offsetWidth).toFixed(1)+'px');lore.style.setProperty('--ly',(v[1]*d.offsetHeight).toFixed(1)+'px');clampLore();
       if(clearLore()){lore._moved=true;return true;}lore.style.setProperty('--lx',lx);lore.style.setProperty('--ly',ly);lore._moved=false;return false;}

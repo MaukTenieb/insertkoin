@@ -83,14 +83,14 @@
   (function(){var lore=null,P={},a0=null,r0=0;
     function el(){return lore||(lore=document.querySelector('.b-lore'));}
     function rot(){var e=el();return e?parseFloat(getComputedStyle(e).getPropertyValue('--lr'))||0:0;}
-    function set(v){var e=el();if(!e)return;v=Math.max(-180,Math.min(180,v));e.style.setProperty('--lr',v.toFixed(1)+'deg');try{localStorage.setItem('borne.lore.rot',v.toFixed(1));}catch(_){}}
+    function set(v){var e=el();if(!e)return;v=Math.max(-180,Math.min(180,v));e.style.setProperty('--lr',v.toFixed(1)+'deg');try{sessionStorage.setItem('borne.lore.rot',v.toFixed(1));}catch(_){}}
     function ang(){var k=Object.keys(P);if(k.length<2)return null;var a=P[k[0]],b=P[k[1]];return Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI;}
     document.addEventListener('pointerdown',function(e){var l=el();if(!l||!l.contains(e.target))return;P[e.pointerId]={x:e.clientX,y:e.clientY};if(Object.keys(P).length===2){a0=ang();r0=rot();if(drag){clearTimeout(drag.t);drag=null;}e.preventDefault();e.stopImmediatePropagation();}},true);
     document.addEventListener('pointermove',function(e){if(!P[e.pointerId])return;P[e.pointerId]={x:e.clientX,y:e.clientY};if(a0!=null){var a=ang();if(a!=null){set(r0+a-a0);e.preventDefault();}}},{capture:true,passive:false});
     function up(e){if(P[e.pointerId]){delete P[e.pointerId];if(Object.keys(P).length<2){if(a0!=null){suppress=Date.now();try{window.__borneSon&&window.__borneSon.tick();}catch(_){}}a0=null;}}}
     document.addEventListener('pointerup',up,true);document.addEventListener('pointercancel',up,true);
     document.addEventListener('wheel',function(e){var l=el();if(!l||!l.contains(e.target)||!(e.shiftKey||e.altKey))return;e.preventDefault();set(rot()+(e.deltaY>0?6:-6));},{passive:false});
-    setTimeout(function(){try{var v=localStorage.getItem('borne.lore.rot');if(v!=null&&el())el().style.setProperty('--lr',v+'deg');}catch(_){}},1500);})();
+    setTimeout(function(){try{var v=sessionStorage.getItem('borne.lore.rot');if(v!=null&&el())el().style.setProperty('--lr',v+'deg');}catch(_){}},1500);})();
 
   /* un autre skin, d'autres places */
   new MutationObserver(function(){var saved=load();blocks.forEach(function(b){var s=saved[b.id]||[0,0];put(b,s[0],s[1],true);});}).observe(root,{attributes:true,attributeFilter:['data-skin']});
