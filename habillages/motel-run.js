@@ -113,7 +113,7 @@ window.MotelRun=function(host,want){
  var face=document.createElement('img');face.src='a/b-'+key+'.webp';face.alt='';face.className='mrun-buste';
  face.style.cssText='position:absolute;left:2%;bottom:2.5%;height:20%;width:auto;pointer-events:none;image-rendering:auto';
  host.appendChild(face);
- var px=0.5,py=0.5,dir=0,ang=0,speed=reduce?1.0:2.3,last=performance.now(),gait=0,alive=true,turn=0,idle=9,pendT=0,cell=-1,auto=true,odo=0,lastT=-9;
+ var px=0.5,py=0.5,dir=0,ang=0,speed=reduce?1.0:3.4,last=performance.now(),gait=0,alive=true,turn=0,idle=9,pendT=0,cell=-1,auto=true,odo=0,lastT=-9;
  var DX=[1,0,-1,0],DY=[0,1,0,-1],held={},ptr=null,TURN=3.1,RAD=0.34,trail=[],cx=0,cy=0,ca=0,depth=CAMD;
  var st={t:0,minClear:9,minFront:99,minDepth:99,contacts:0,cuts:0};
  var KM={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d',a:'l',q:'l',d:'r',w:'u',z:'u',s:'d'};
@@ -147,7 +147,7 @@ window.MotelRun=function(host,want){
     else if(o2.length&&odo-lastT>2.2&&Math.random()<0.4)pendT=o2[Math.floor(Math.random()*o2.length)]}
    var along=(cxm-px)*DX[dir]+(cym-py)*DY[dir];if(pendT&&along<0.3){dir=(dir+pendT)%4;pendT=0;lastT=odo}
    var lat=(cxm-px)*(-DY[dir])+(cym-py)*DX[dir],want=dir*Math.PI/2+Math.max(-0.6,Math.min(0.6,lat*2)),dd=wrap(want-ang);
-   tr=Math.max(-5.5,Math.min(5.5,dd*10));ang+=Math.max(-Math.abs(dd),Math.min(Math.abs(dd),tr*dt));sp=speed*(Math.abs(dd)>0.5?0.55:Math.abs(dd)>0.2?0.8:1)}
+   tr=Math.max(-5.5,Math.min(5.5,dd*10));ang+=Math.max(-Math.abs(dd),Math.min(Math.abs(dd),tr*dt));sp=speed*(Math.abs(dd)>0.6?0.6:1)}
   turn+=(tr-turn)*Math.min(1,dt*12);
   /* glisse le long des murs */
   var vx=Math.cos(ang)*sp*dt,vy=Math.sin(ang)*sp*dt,sx=vx>0?RAD:-RAD,sy=vy>0?RAD:-RAD;
@@ -182,8 +182,8 @@ window.MotelRun=function(host,want){
   /* le Mask, de dos, à sa taille, les pieds sur la moquette ; caché par les murs plus proches que lui */
   var rx_=px-cx,ry_=py-cy,dz=rx_*dx+ry_*dy,lx=-rx_*dy+ry_*dx;if(dz<0.3)dz=0.3;
   var fr=frames[Math.floor(gait)%4],k=(m.s/CEIL)*(H/dz)/((m.ref||1.06)/U),w=fr.width*k,h=fr.height*k,sxc=W/2*(1+lx/(dz*FOV)),feet=H/2+bob+(H/2)/dz;
-  var x0=Math.round(sxc-w/2),y0_=Math.round(feet-h),hh=Math.round(h);c.imageSmoothingEnabled=false;
-  for(var xs=Math.max(0,x0);xs<Math.min(W,x0+Math.round(w));xs++){if(zb[xs]<dz)continue;var si=Math.floor((xs+0.5-x0)/k);if(si>=0&&si<fr.width)c.drawImage(fr,si,0,1,fr.height,xs,y0_,1,hh)}
+  var x0=Math.round(sxc-w/2),y0_=Math.round(feet-h),hh=Math.round(h);c.imageSmoothingEnabled=false;c.filter='brightness(1.35)';/* 10 nov. (Mauk Tenieb, 21 h 05) : en noir et blanc, le Mask se détache en gris clair */
+  for(var xs=Math.max(0,x0);xs<Math.min(W,x0+Math.round(w));xs++){if(zb[xs]<dz)continue;var si=Math.floor((xs+0.5-x0)/k);if(si>=0&&si<fr.width)c.drawImage(fr,si,0,1,fr.height,xs,y0_,1,hh)}c.filter='none';
   st.minFront=Math.min(st.minFront,zb[W>>1]);st.minDepth=Math.min(st.minDepth,dz)}
  function shade(col,s){var r=col&255,g=(col>>8)&255,b=(col>>16)&255;return (255<<24)|(((b*s)|0)<<16)|(((g*s)|0)<<8)|((r*s)|0)}
  function loop(t){if(!alive)return;var dt=Math.max(0,Math.min(0.05,(t-last)/1000));last=t;if(!document.hidden){st.t+=dt;step(dt);var cl=clear_();st.minClear=Math.min(st.minClear,cl);if(cl<0.3)st.contacts++;cast()}requestAnimationFrame(loop)}
