@@ -1157,12 +1157,11 @@ html.borne .b-door>.b-lore.b-onbox{position:absolute;left:var(--lx,20%);top:var(
 html.borne #home .b-panel{z-index:2}
 /* 31 oct. — la plaque des molettes tient dans la caisse (elle débordait du flanc droit sous 1500 px) */
 @media (max-width:1500px) and (min-width:701px){html.borne .b-doorrow>.b-knobs{zoom:.86}}
-/* bandeau du Motel Sound : titre en continu de droite à gauche, copies jointes par un point médian, 45 px/s, transform seul */
+/* bandeau du Motel Sound : le titre traverse de droite à gauche, une occurrence à la fois, la suivante entre quand la précédente atteint le bord gauche ; 45 px/s, transform seul */
 html.borne .motel-l .b-tk{display:inline-flex;white-space:nowrap;animation:btkloop var(--tkd,10s) linear infinite;will-change:transform}
-html.borne .motel-l .b-tk.b-in{animation:btkloop var(--tkd,10s) linear infinite,btkin .4s ease-out}
 html.borne .motel-l .b-tk>.b-u{flex:none;display:inline-flex}
 html.borne .motel-l .b-sep{font-style:normal;padding:0 .7em;opacity:.5}
-@keyframes btkloop{from{transform:translate3d(0,0,0)}to{transform:translate3d(var(--tkp,-200px),0,0)}}
+@keyframes btkloop{from{transform:translate3d(var(--tkf,200px),0,0)}to{transform:translate3d(var(--tkp,-200px),0,0)}}
 @keyframes btkin{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){html.borne .motel-l .b-tk,html.borne .motel-l .b-tk.b-in{animation:none;transform:none}html.borne .motel-l .b-tk>.b-c,html.borne .motel-l .b-sep{display:none}}
 /* LORE sur la caisse à pièces, partout : son échelle suit la place trouvée */
