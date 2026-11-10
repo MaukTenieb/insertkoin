@@ -444,13 +444,16 @@
     function build(){var raw=(l.dataset.raw!=null&&l.querySelector('.b-tk'))?null:l.textContent.trim();if(raw===null)return;
       if(!raw||/^(wait a sec\.*|motel sound)$/i.test(raw)){pick();raw=window.__jukeNow||raw;}
       if(raw===cur&&l.querySelector('.b-tk'))return;cur=raw;l.dataset.raw=raw;
-      /* chaque titre défile, quelle que soit sa longueur (Mauk Tenieb, 31 oct., 8 h 58) : il entre par la droite, traverse la bande et sort à gauche, puis revient ; une seule occurrence à la fois */
-      var esc=raw.toUpperCase().replace(/</g,'&lt;');l.classList.remove('b-fit');l.innerHTML='<span class="b-tk b-one"><span>'+esc+'</span></span>';
-      var tk=l.querySelector('.b-tk'),tw=tk.firstChild.offsetWidth,bw=l.clientWidth,d=Math.max(5,(tw+bw)/38);
-      l.style.setProperty('--tkf',bw+'px');l.style.setProperty('--tkt',(-tw)+'px');l.style.setProperty('--tkd',d.toFixed(2)+'s');
-      /* le bandeau ne repart jamais de zéro : il reprend là où il en était */
-      if(!window.__tk0||window.__tkRaw!==raw){window.__tk0=performance.now();window.__tkRaw=raw;}
-      tk.style.animationDelay=(-(((performance.now()-window.__tk0)/1000)%d)).toFixed(3)+'s';}
+      /* boucle sans couture (Mauk Tenieb, 10 nov. 2026, 19 h 51) : le titre défile en continu de droite à gauche, copies jointes par un point médian ; vitesse constante de 45 px/s, quelle que soit la longueur */
+      var esc=raw.toUpperCase().replace(/&/g,'&amp;').replace(/</g,'&lt;');l.classList.remove('b-fit');
+      l.innerHTML='<span class="b-tk"><span class="b-u">'+esc+'</span></span>';
+      var tk=l.querySelector('.b-tk'),u=tk.firstChild,bw=l.clientWidth,tw=u.offsetWidth;
+      u.insertAdjacentHTML('beforeend','<i class="b-sep" aria-hidden="true">\u00b7</i>');
+      var per=u.offsetWidth,n=Math.max(2,Math.ceil(bw/Math.max(per,1))+1),i;
+      for(i=1;i<n;i++){var c=u.cloneNode(true);c.setAttribute('aria-hidden','true');c.classList.add('b-c');tk.appendChild(c);}
+      u.setAttribute('aria-label',raw);
+      l.style.setProperty('--tkp',(-per)+'px');l.style.setProperty('--tkd',(per/45).toFixed(2)+'s');
+      l.classList.toggle('b-short',tw<=bw);tk.classList.remove('b-in');void tk.offsetWidth;tk.classList.add('b-in');}
     new MutationObserver(function(){if(!l.querySelector('.b-tk')||l.childNodes.length!==1)build();else{var t=l.textContent;}}).observe(l,{childList:true,characterData:true,subtree:true});
     var setT=Object.getOwnPropertyDescriptor(Node.prototype,'textContent');
     setTimeout(build,50);addEventListener('resize',function(){cur='';build();});})();
