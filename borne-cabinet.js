@@ -59,13 +59,13 @@
   var KATA=['c4','bb','hang','mm','fi'],DICE='⚀⚁⚂⚃⚄⚅';
   var MINIS=[['c4','KONNECT4','borne-mini-c4.jpg','#f48fb1',0],['hang','AKASZTÓFA','borne-mini-hang.jpg','#f48fb1',2],['mm','MASKERMIND','borne-mini-mm.jpg','#f48fb1',3],['erratic','ERRATIK','thumb-erratic.jpg','#42a5f5',5]];
   function kata(g){var d=document.querySelector('.cab.dice b');if(d)d.dataset.d=DICE[KATA.indexOf(g)];IK().go&&IK().go('katabatik');}
-  function play(g){if(g==='diktat'){IK().openCalque&&IK().openCalque('borne-diktat.html','DIKTATFAUNE');return;}if(g==='erratic')IK().go&&IK().go('erratic');else kata(g);}
+  function play(g){if(g==='diktat'){IK().openCalque&&IK().openCalque('borne-diktat.html','diktaTfaune');return;}if(g==='erratic')IK().go&&IK().go('erratic');else kata(g);}
   function ktile(g,title,th,nc,face){var c=el('div','cab b-kata');c.style.cssText='--th:url('+th+');--nc:'+nc;
     c.innerHTML='<button type="button" class="hit" data-kata="'+g+'"><b></b>'+(face!=null?'<i class="b-face">'+DICE[face]+'</i>':'')+'</button>';c.querySelector('b').textContent=title;
     c.querySelector('button').addEventListener('click',function(){play(g);});return c;}
   var GROUPS={korhogame:{t:'KorhoGame',th:'thumb-puck.jpg',nc:'#ffa726',items:[['puck','KORONG!','thumb-puck.jpg','#ffa726'],['chess','FAUNA CHESS','thumb-chess.jpg','#ab47bc'],
       ['faunarratics','FAUNARRATIK','thumb-faunarratics.jpg','#4fc3f7']],extra:[['fi','FAUNINVADERS','borne-big-fi.jpg','#c9a84c',3],]},
-    fauneye:{t:'FaunEye',th:'borne-fauneye.jpg',nc:'#e2c27a',items:[['fauneye','BAKUBOOK','borne-fauneye.jpg','#e2c27a'],['vhs','VHS','thumb-vhs.jpg','#b9d84a'],['photo','FOTOFAUNA','thumb-photo.jpg','#ff5a5a']],extra:[['bb','MUSIK','borne-big-bb.jpg','#ff7043',2],['diktat','DIKTATFAUNE','borne-big-bb.jpg','#ff3b2f',4]]},
+    fauneye:{t:'FaunEye',th:'borne-fauneye.jpg',nc:'#e2c27a',items:[['fauneye','BAKUBOOK','borne-fauneye.jpg','#e2c27a'],['vhs','VHS','thumb-vhs.jpg','#b9d84a'],['photo','FOTOFAUNA','thumb-photo.jpg','#ff5a5a']],extra:[['bb','MUSIK','borne-big-bb.jpg','#ff7043',2],['diktat','diktaTfaune','borne-big-bb.jpg','#ff3b2f',4]]},
     surf:{t:'SurFauna',th:'thumb-repo.jpg',nc:'#7fe0ff',items:[['repo','REPORHOGO','thumb-repo.jpg','#b9d84a'],['tor','FAUNATOR','thumb-repo.jpg','#9e9e9e']]}};
   /* la graphie des noms (KorhoGame, FaunEye, SurFauna) dans une gravure tout en capitales : les minuscules en petites capitales */
   function caps(b,t){b.textContent='';b.setAttribute('aria-label',t);t.replace(/([A-Z0-9!]+)|([a-z]+)/g,function(m,U,l){var e=document.createElement(l?'small':'span');e.textContent=m;e.className=l?'b-sc':'';b.appendChild(e);return m;});}
@@ -180,7 +180,7 @@
   var CAMGO=0;
   window.__borneGo=function(k){var C=window.__borneCam;
     try{window.__borneTourStop&&window.__borneTourStop();}catch(e){}
-    /* les mini-jeux et DiktaTfaune passent par leur vraie touche : le dé de Katabatik, le calque de DiktaTfaune */
+    /* les mini-jeux et diktaTfaune passent par leur vraie touche : le dé de Katabatik, le calque de diktaTfaune */
     if(KATA.indexOf(k)>=0){kata(k);return true;}if(k==='diktat'){play('diktat');return true;}
     if(!CAMGO&&C&&C.ok()&&root.dataset.habit==='repos'&&!root.dataset.prog&&k!=='visit'){C.zoomIn(function(){CAMGO=1;try{IK().go(k);}finally{CAMGO=0;}});return true;}
     setBig(bigOf(k));CUR=k==='katabatik'?(function(){var d=document.querySelector('.cab.dice b'),f=d?DICE.indexOf(d.dataset.d):0;return KATA[f]||'c4';})():k;paintDots();
@@ -200,10 +200,10 @@
      L'ordre suit le panneau. À zéro Koin, un jeu payant se saute : le glissé va au programme suivant. */
   var ORDER=['puck','fi','faunarratics','chess','c4','hang','mm','erratic','fauneye','vhs','photo','bb','diktat','terminal','repo','tor'];
   var GRP=[['puck','fi','faunarratics','chess','c4','hang','mm','erratic'],['fauneye','vhs','photo','bb','diktat'],['terminal'],['repo','tor']];
-  var NAME={chess:'FAUNA CHESS',fi:'FAUNINVADERS',diktat:'DIKTATFAUNE',puck:'KORONG!',faunarratics:'FAUNARRATIK',bb:'MUSIK',c4:'KONNECT4',hang:'AKASZTÓFA',mm:'MASKERMIND',erratic:'ERRATIK',
+  var NAME={chess:'FAUNA CHESS',fi:'FAUNINVADERS',diktat:'diktaTfaune',puck:'KORONG!',faunarratics:'FAUNARRATIK',bb:'MUSIK',c4:'KONNECT4',hang:'AKASZTÓFA',mm:'MASKERMIND',erratic:'ERRATIK',
     fauneye:'BAKUBOOK',vhs:'VHS',photo:'FOTOFAUNA',terminal:'3615',repo:'REPORHOGO',tor:'FAUNATOR'};
   var CUR=null,SWAP=false;
-  function launch(g){if(g==='diktat'){IK().openCalque&&IK().openCalque('borne-diktat.html','DIKTATFAUNE');return;}if(KATA.indexOf(g)>=0)kata(g);else IK().go&&IK().go(g);}
+  function launch(g){if(g==='diktat'){IK().openCalque&&IK().openCalque('borne-diktat.html','diktaTfaune');return;}if(KATA.indexOf(g)>=0)kata(g);else IK().go&&IK().go(g);}
   /* 8 nov. — adresse par programme : ?p=<programme> ouvre ce programme (lien des habillages KorhogOS, DVD, télé du motel, vidéoclub) */
   window.__borneLaunch=launch;
 /* 8 nov. : ?kap=1 (barre des lieux du motel) ouvre Kapture une fois la borne prête */
