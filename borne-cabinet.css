@@ -1268,7 +1268,7 @@ html.borne:not([data-prog]) #bar.bar#bar:not(#r1):not(#r2){filter:drop-shadow(0 
 
 /* 1er nov., 10 h 50 — solde de Koins : zéro trait d'encadrement, compteur plus petit */
 html.borne .b-bezelfoot #koins#koins{box-shadow:none!important;outline:0!important;border:0!important}
-html.borne .b-bezelfoot #koins#koins.b-credit::before,html.borne .b-bezelfoot #koins#koins #kn{font-size:10px!important}
+html.borne .b-bezelfoot #koins#koins.b-credit::before,html.borne .b-bezelfoot #koins#koins #kn{font-size:12px!important}
 html.borne .b-bezelfoot #koins#koins .b-kicon{width:14px!important;height:14px!important}
 
 /* 1er nov., 11 h — téléphone couché de moins de 701 px : la bande de commandes reste la colonne de droite (la règle du téléphone debout l'étirait sur toute la largeur, par-dessus l'écran et les points) */
