@@ -52,7 +52,10 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0b0908;user-select:no
 #devise .strip{position:absolute;left:0;right:0;top:12%;height:52%;display:none;background-repeat:repeat-x;background-size:auto 100%;animation:strip 60s linear infinite}
 #devise.st .strip{display:block}#devise.st img{display:none}
 @keyframes strip{to{background-position:-1740px 0}}
-@media (prefers-reduced-motion:reduce){#devise .strip{animation:none}#slide i{transition:none}}
+/* 10 nov. (Mauk Tenieb, 21 h 11) : télécommande rangée, elle dépasse franchement, s'éclaire et se soulève par moments pour appeler l'appui */
+body.rup:not(.ropen) #remote{filter:brightness(1.05) sepia(.1) drop-shadow(0 -4px 12px rgba(255,180,110,.35)) drop-shadow(0 -6px 14px rgba(0,0,0,.6));animation:rnudge 4.5s ease-in-out 1.5s infinite}
+@keyframes rnudge{0%,78%,100%{translate:0 0}86%{translate:0 -14px}92%{translate:0 -4px}}
+@media (prefers-reduced-motion:reduce){body.rup:not(.ropen) #remote{animation:none}#devise .strip{animation:none}#slide i{transition:none}}
 #devise{background:radial-gradient(ellipse at 50% 40%,#2a1c10,#000 75%)}#devise img{position:absolute;left:50%;bottom:22%;height:72%;transform:translateX(-50%);filter:saturate(.85) contrast(1.05)}
 #devise .dv{position:absolute;left:0;right:0;bottom:0;padding:3% 5%;background:linear-gradient(transparent,rgba(0,0,0,.85) 35%);text-align:center;color:#f3e6c8;font-family:Arimo,Arial,sans-serif}
 #devise b{display:block;font-size:clamp(12px,2.6vmin,24px);letter-spacing:.08em;text-transform:uppercase;color:#ffd200}#devise p{margin:.3em 0 0;font-size:clamp(12px,2.2vmin,20px);font-style:italic}
@@ -415,12 +418,12 @@ function fit(){var W=1376,H=768,VW=innerWidth,VH=innerHeight,vh0=VH-BAR,portrait
  var rm=$('#room').style;rm.right='';rm.bottom='';
  RE.setProperty('--sw',W*CL.s+'px');RE.setProperty('--sx',CL.x+'px');RE.setProperty('--sy',CL.y+'px');RE.setProperty('--tw',215*s+'px');
  MX=null;big=false;document.body.classList.remove('tvmax');
- LY={VW:VW,VH:VH,vh0:vh0,up:up,RW:RW,rx:rx,cab:cab,cf:cf};
+ LY={VW:VW,VH:VH,vh0:vh0,up:up,RW:RW,rx:rx,cab:cab,cf:cf,pk:portrait?Math.round(Math.min(130,Math.max(PEEK,vh0*.15))):ph?72:PEEK};
  document.body.classList.toggle('cabn',!!cab&&cab.w<300);document.body.classList.toggle('cabf',cf);
  lay();zoom();setTimeout(function(){fitTtx();draw()},50)}
 /* la télécommande et le meuble repliés ou sortis, sans toucher à l'écran */
 function lay(){if(!LY)return;var re=$('#remote'),y=LY;document.body.classList.toggle('rup',y.up);document.body.classList.toggle('ropen',y.up&&rOpen);document.body.classList.toggle('cabo',y.cf&&cOpen);
- if(y.up){var RH=Math.round(y.RW*924/239),rc=Math.round(RH*(RC1-RC0)),rv=rOpen?Math.min(rc,y.vh0-8):PEEK;
+ if(y.up){var RH=Math.round(y.RW*924/239),rc=Math.round(RH*(RC1-RC0)),rv=rOpen?Math.min(rc,y.vh0-8):y.pk;
   RE.setProperty('--rx',y.rx+'px');RE.setProperty('--ry',(y.vh0-rv)+'px');RE.setProperty('--rw2',y.RW+'px');RE.setProperty('--rv',rv+'px');RE.setProperty('--rc',(rOpen?rc:RH)+'px');RE.setProperty('--rt',(rOpen?-Math.round(RH*RC0):0)+'px');RE.setProperty('--rh',RH+'px');re.style.right='';if(!rOpen)re.scrollTop=0}
  else ['--rc','--rt','--rh'].forEach(function(v){RE.removeProperty(v)});
  var c=y.cab;if(!c&&y.cf){var ch=cOpen?Math.round(y.vh0*.7):56;c={x:0,y:y.vh0-ch,w:y.VW,h:ch}}
