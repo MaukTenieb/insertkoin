@@ -421,3 +421,10 @@ body{font:var(--f);color:var(--tx);background:var(--desk)}
 
 /* 10 nov. : un nom tient sur sa ligne, coupé seulement entre deux mots (SkopoRhogo entier) */
 .di .lb{word-wrap:normal;overflow-wrap:normal;word-break:normal;max-width:92px;margin:0 -9px}
+/* 10 nov. (Mauk Tenieb, 21 h 22) : icône pressée ou choisie : un halo lumineux qui épouse le dessin, l'étiquette sur un fond arrondi ; plus de calque découpé ni de pointillés */
+.di .ig{transition:filter .18s ease,transform .12s ease}
+.di.sel .ig::after{content:none}
+.di.sel .ig,.plat .di.sel .ig,.di:active .ig,.plat .di:active .ig{filter:drop-shadow(0 0 3px rgba(255,236,170,.95)) drop-shadow(0 0 10px rgba(255,200,90,.65))}
+.di:active .ig{transform:scale(.94)}
+.di.sel .lb,.plat .di.sel .lb,.fram .di.sel .lb{outline:0;border-radius:3px;box-shadow:0 0 8px rgba(255,200,90,.45)}
+@media (prefers-reduced-motion:reduce){.di .ig{transition:none}.di:active .ig{transform:none}}

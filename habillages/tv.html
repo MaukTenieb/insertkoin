@@ -418,7 +418,8 @@ function fit(){var W=1376,H=768,VW=innerWidth,VH=innerHeight,vh0=VH-BAR,portrait
   if(av){tx=Math.max(0,rest-460);tx=Math.max(tx,mk.r+4-28*s);var cw=VW-tx-tw;if(cw>=200)cab={x:Math.round(tx+tw),y:0,w:Math.round(cw),h:vh0-PEEK-4};else cf=true;rx=VW-RW-8}
   else{tx=Math.max(0,Math.min(rest/2,rest-RW-16));tx=Math.max(tx,mk.r+4-28*s);rx=Math.round(Math.min(VW-RW-4,tx+tw+(VW-tx-tw-RW)/2))}}
  CL={s:s,x:tx-540*s,y:ty-207*s};
- WI=frame(Math.max(VW/W,VH/H,Math.min(VW/1100,VH/560)),VW/2,VH/2,605,355,VW,VH);if(WI.s>CL.s)WI=CL;
+ /* 10 nov. (Mauk Tenieb, 21 h 22) : au téléphone debout, la vue de la chambre se centre sur le poste entier, afficheur de chaîne compris */
+ WI=frame(Math.max(VW/W,VH/H,Math.min(VW/1100,VH/560)),VW/2,VH/2,portrait?704:605,355,VW,VH);if(WI.s>CL.s)WI=CL;
  var rm=$('#room').style;rm.right='';rm.bottom='';
  RE.setProperty('--sw',W*CL.s+'px');RE.setProperty('--sx',CL.x+'px');RE.setProperty('--sy',CL.y+'px');RE.setProperty('--tw',215*s+'px');
  MX=null;big=false;document.body.classList.remove('tvmax');
