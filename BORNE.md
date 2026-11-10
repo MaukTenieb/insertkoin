@@ -54,7 +54,7 @@ D'un programme à l'autre : les points sous l'écran, la manette, ou Page préc.
 - `borne-diktat.html` : DiktatFaune (FaunEye) ; 3, 5 ou 10 s au micro, choisi dans la liste quand il y en a plusieurs, demandé une fois par session ; hauteur et vitesse indépendantes, endroit ou envers ; SAVE en .wav au nom du calendrier républicain.
 - `borne-jeu.js` : chaque jeu agrandi et centré à la mesure de l'écran ; la manette choisit et enfonce les touches à l'accueil, envoie flèches et Espace dans les jeux ; son socle la déplace.
 - `borne-skopo.js` : SkopoRhogo à l'heure du visiteur.
-- `borne-fauneye.html` : BakuBook, le lecteur universel (stock de fac-similés, fichiers du visiteur, Internet Archive, Gutenberg, Wikisource, Google Books ; zoom, loupe, vignettes, typographie).
+- `borne-fauneye.html` : BakuBook, le lecteur universel (stock de fac-similés, fichiers du visiteur, Internet Archive, Gutenberg, Wikisource, Korhogo Diary (le lore sur Substack) ; zoom, loupe, vignettes, typographie).
 - `borne-fotofauna.js`, `borne-fotofauna.css` : FotoFauna, le logo et le viseur déclenchent ; caméra avant ou arrière ; Une, Superposer, Pellicule.
 - `borne-frames.css` : retouches de Reporhogo et de FaunaTor.
 - `borne-bio.html` : la bio, lue en direct du README du profil GitHub.

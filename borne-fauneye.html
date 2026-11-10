@@ -37,6 +37,7 @@ button,input,select{font:inherit}
 .stage.pages{touch-action:none;cursor:grab}
 .stage.pages.zoomed{cursor:move}
 .stage>img,.stage>canvas{max-width:100%;max-height:100%;box-shadow:0 4px 14px rgba(60,40,10,.35);background:#fff;transform-origin:50% 50%;will-change:transform;user-select:none;-webkit-user-drag:none}
+.stage .kd{text-align:center;padding-top:12vh}.stage .kd h2{font-size:1.6em;margin:0 0 .4em}.stage .kd img{max-width:100%;max-height:40vh;margin-bottom:1em}.stage .kd a{color:var(--brass2,#8a5a1c)}
 .stage article{align-self:stretch;width:100%;max-width:var(--mw,40em);margin:0 auto;overflow:auto;padding:4px 18px 40px;font-family:var(--ff,'IM Fell English',Georgia,serif);font-size:var(--fs,19px);line-height:var(--lh,1.55);background:none;touch-action:pan-y}
 .stage article pre{font:inherit!important}
 .lens{position:absolute;z-index:5;width:190px;height:190px;margin:-95px 0 0 -95px;border-radius:50%;pointer-events:none;background-repeat:no-repeat;background-color:#fff;
@@ -83,7 +84,7 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
 <button type="button" role="tab" data-p="ia">Internet Archive</button>
 <button type="button" role="tab" data-p="gut">Gutenberg</button>
 <button type="button" role="tab" data-p="ws">Wikisource</button>
-<button type="button" role="tab" data-p="gb">Google Books</button>
+<button type="button" role="tab" data-p="kd">Korhogo Diary</button>
 </nav>
 <section class="pane on" id="p-stock"><div class="shelf" id="shelf"></div></section>
 <section class="pane" id="p-file">
@@ -92,7 +93,7 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
 <section class="pane" id="p-ia"><form class="row" data-s="ia"><input type="search" name="q" aria-label="Internet Archive"><button class="brass" type="submit">⌕</button></form><div class="hits"></div><p class="note" data-n="ia"></p></section>
 <section class="pane" id="p-gut"><form class="row" data-s="gut"><input type="search" name="q" aria-label="Gutenberg"><button class="brass" type="submit">⌕</button></form><div class="hits"></div></section>
 <section class="pane" id="p-ws"><form class="row" data-s="ws"><select name="l" aria-label="Wikisource"><option value="fr">fr</option><option value="en">en</option><option value="la">la</option><option value="de">de</option><option value="it">it</option></select><input type="search" name="q" aria-label="Wikisource"><button class="brass" type="submit">⌕</button></form><div class="hits"></div></section>
-<section class="pane" id="p-gb"><form class="row" data-s="gb"><input type="search" name="q" aria-label="Google Books"><button class="brass" type="submit">⌕</button></form><div class="hits"></div><p class="note" data-n="gb"></p></section>
+<section class="pane" id="p-kd"><div class="hits"></div></section>
 <main class="view">
 <div class="stage" id="stage"><div class="wait" id="wait"></div><div class="lens" id="lens"></div></div>
 <aside class="side" aria-live="polite"><span class="au" id="au"></span><span class="ti" id="ti"></span><span class="ed" id="ed"></span><span class="src" id="src"></span></aside>
@@ -116,16 +117,16 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
 </div>
 <script>
 /* BakuBook : le lecteur universel de la borne (dans le groupe FaunEye). Le stock (fac-similés du domaine public), les fichiers du visiteur
-   (PDF, EPUB, images, CBZ, texte), et des recherches en direct : Internet Archive, Gutenberg, Wikisource, Google Books.
+   (PDF, EPUB, images, CBZ, texte), et des recherches en direct : Internet Archive, Gutenberg, Wikisource ; et le Korhogo Diary, le lore sur Substack.
    Rien n'est stocké sur le site : chaque page vient de sa source au fil de la lecture ; les fichiers restent dans le navigateur. */
 (function(){
   var L=(function(){try{return localStorage.getItem('ik.lang')==='fr'?'fr':'en';}catch(e){return 'en';}})();
   var T={fr:{stock:'En stock',file:'Fichiers',drop:'⇪',p:'page',w:'Page en chemin…',
       src:'Source : ',full:'ouvrir à la source',zoom:'Loupe',txt:'Texte',fac:'Fac-similé',none:'∅',err:'∅',
-      ia:'',gb:'',load:'Chargement…',ext:'∅ '},
+      ia:'',kd:'lire sur korhogo.substack.com',load:'Chargement…',ext:'∅ '},
     en:{stock:'In stock',file:'Files',drop:'⇪',p:'page',w:'Page on its way…',
       src:'Source: ',full:'open at the source',zoom:'Loupe',txt:'Text',fac:'Facsimile',none:'∅',err:'∅',
-      ia:'',gb:'',load:'Loading…',ext:'∅ '}}[L];
+      ia:'',kd:'read on korhogo.substack.com',load:'Loading…',ext:'∅ '}}[L];
   document.documentElement.lang=L;
   var $=function(i){return document.getElementById(i);},stage=$('stage'),wait=$('wait'),cur=null,saved={};
   try{saved=JSON.parse(localStorage.getItem('borne.fauneye')||'{}')||{};}catch(e){}
@@ -135,7 +136,7 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
 
   /* onglets */
   document.querySelector('[data-p=stock]').textContent=T.stock;document.querySelector('[data-p=file]').textContent=T.file;$('dropT').textContent=T.drop;
-  document.querySelector('[data-n=ia]').textContent=T.ia;document.querySelector('[data-n=gb]').textContent=T.gb;
+  document.querySelector('[data-n=ia]').textContent=T.ia;
   [].forEach.call(document.querySelectorAll('.tabs [data-p]'),function(b){b.onclick=function(){
     [].forEach.call(document.querySelectorAll('.tabs [data-p]'),function(x){x.setAttribute('aria-selected',x===b?'true':'false');});
     [].forEach.call(document.querySelectorAll('.pane'),function(p){p.classList.toggle('on',p.id==='p-'+b.dataset.p);});};});
@@ -315,12 +316,26 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
         fetch('https://'+l+'.wikisource.org/w/api.php?action=parse&format=json&origin=*&disableeditsection=1&prop=text&page='+encodeURIComponent(s.title)).then(function(r){return r.json();}).then(function(p){
           var d=new DOMParser().parseFromString(p.parse.text['*'],'text/html');[].forEach.call(d.querySelectorAll('.ws-noexport,.noprint,style,.mw-editsection'),function(x){x.remove();});
           [].forEach.call(d.querySelectorAll('a[href^="/wiki/"]'),function(a){a.href='https://'+l+'.wikisource.org'+a.getAttribute('href');a.target='_blank';});
-          openArticle(d.body.innerHTML,{key:'ws:'+l+':'+s.title,ti:s.title,ed:l+'.wikisource.org',srcName:'Wikisource (CC BY-SA)',href:'https://'+l+'.wikisource.org/wiki/'+encodeURIComponent(s.title)});}).catch(function(){wait.textContent=T.err;});}};}));});},
-    gb:function(q,f,pane){return fetch('https://www.googleapis.com/books/v1/volumes?filter=free-ebooks&maxResults=36&q='+encodeURIComponent(q)).then(function(r){return r.json();}).then(function(j){
-      hits(pane,(j.items||[]).map(function(v){var i=v.volumeInfo||{};var o={ti:i.title,au:(i.authors||[])[0],ed:i.publishedDate||'',srcName:'Google Books',href:i.infoLink};
-        return{ti:i.title,au:o.au,ed:o.ed,img:((i.imageLinks||{}).thumbnail||'').replace('http:','https:'),open:function(){openFrame('https://books.google.com/books?id='+encodeURIComponent(v.id)+'&pg=PP1&output=embed',o);}};}));});}};
+          openArticle(d.body.innerHTML,{key:'ws:'+l+':'+s.title,ti:s.title,ed:l+'.wikisource.org',srcName:'Wikisource (CC BY-SA)',href:'https://'+l+'.wikisource.org/wiki/'+encodeURIComponent(s.title)});}).catch(function(){wait.textContent=T.err;});}};}));});}};
   [].forEach.call(document.querySelectorAll('form[data-s]'),function(f){f.onsubmit=function(e){e.preventDefault();var q=f.q.value.trim();if(!q)return;var pane=f.parentNode;
     pane.querySelector('.hits').innerHTML='<p class="note">'+T.load+'</p>';SEARCH[f.dataset.s](q,f,pane).catch(function(){fail(pane);});};});
+
+  /* Korhogo Diary : le lore sur Substack (https://korhogo.substack.com). Chaque Movement s'ouvre sur sa page, abonnement compris ;
+     la liste vient de Substack au fil de la lecture, et la liste écrite ici prend le relais si Substack refuse la lecture. */
+  var KD='https://korhogo.substack.com',KDL=[
+    {ti:'Mighty Fauna Sips your Gas!',su:'Here is the Korhogo Fauna, bitches — MOVEMENT 1',d:'2026-09-22',s:'mighty-fauna-sips-your-gas'},
+    {ti:'MOVEMENT 2',su:'7 Pluviôse 233 — and so forth',d:'2026-09-23',s:'movement-2'},
+    {ti:'MOVEMENT 3',su:'12 Pluviôse 233 — and so forth',d:'2026-10-15',s:'movement-3'},
+    {ti:'MOVEMENT 4',su:'5 Ventôse 233 — and so forth',d:'2026-10-16',s:'movement-4'},
+    {ti:'MOVEMENT 5',su:'23 Ventôse 233 — and so forth',d:'2026-10-19',s:'movement-5'}];
+  function kdOpen(x){var href=KD+'/p/'+x.s;
+    openArticle('<div class="kd">'+(x.img?'<img alt="" src="'+esc(x.img)+'">':'')+'<h2>'+esc(x.ti)+'</h2><p><em>'+esc(x.su)+'</em></p><p>'+esc(x.d)+'</p><p><a href="'+esc(href)+'" target="_blank" rel="noopener">'+esc(T.kd)+'</a></p></div>',
+      {key:'kd:'+x.s,au:'Mauk Tenieb',ti:x.ti,ed:x.d,srcName:'Korhogo Diary',href:href});}
+  function kdList(L){hits($('p-kd'),L.map(function(x){return{ti:x.ti,au:x.su,ed:x.d,img:x.img,open:function(){kdOpen(x);}};}));}
+  kdList(KDL.slice().reverse());
+  fetch(KD+'/api/v1/archive?sort=new&limit=50').then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){
+    if(!Array.isArray(j)||!j.length)return;kdList(j.filter(function(p){return p&&p.slug;}).map(function(p){
+      return{ti:p.title,su:p.subtitle||'',d:(p.post_date||'').slice(0,10),s:p.slug,img:p.cover_image||''};}));}).catch(function(){});
 
   /* fichiers du visiteur : rien ne quitte le navigateur */
   var JSZIP='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',PDFJS='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
