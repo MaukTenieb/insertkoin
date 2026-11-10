@@ -45,8 +45,9 @@
   "use strict";
 
   var DEFAULTS = {
-    // CHANNEL.SCRAPE backend (FastAPI). Override with window.KG_VHS_LIBRARY_CONFIG.apiUrl.
-    apiUrl: "http://127.0.0.1:8001/api",
+    // CHANNEL.SCRAPE backend (FastAPI): empty by default, the published snapshot is read alone.
+    // The workshop sets it with window.KG_VHS_LIBRARY_CONFIG = { apiUrl: "http://127.0.0.1:8001/api" }.
+    apiUrl: "",
     // Global holding an optional build-time snapshot.
     snapshotKey: "KG_VHS_LIBRARY_SNAPSHOT",
     // localStorage key for the offline cache (last good tracks).
@@ -202,7 +203,7 @@
     catch (_e) { return false; }
   }
   function fetchBackend() {
-    if (!atelier()) return Promise.reject(new Error("no workshop here"));
+    if (!config.apiUrl || !atelier()) return Promise.reject(new Error("no workshop here"));
     // GET {apiUrl}/videos/all — aggregate across every scraped channel: one
     // request gives both the flat video list (tracks) and per-channel
     // metadata (tapes). (/history excludes the heavy `videos` field, so it

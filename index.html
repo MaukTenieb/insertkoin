@@ -1690,7 +1690,7 @@ function touchDrag(e){if(!T0){T0={x:e.clientX,y:e.clientY,m:mouse.slice()};retur
   let x=T0.m[0]+(pt.clientX-T0.x)*W/cw*TG[0],y=T0.m[1]+(pt.clientY-T0.y)*H/ch*TG[1];const cx=Math.max(0,Math.min(W,x)),cy=Math.max(30,Math.min(H,y));
   if(cx!==x||cy!==y)T0={x:pt.clientX,y:pt.clientY,m:[cx,cy]};mouse=[cx,cy];}
 function toScreen(e){const r=cv.getBoundingClientRect(),up=e.pointerType==='touch'?26:0,cw=Math.min(r.width,r.height*W/H),ch=Math.min(r.height,r.width*H/W),l=r.left+(r.width-cw)/2,t=r.top+(r.height-ch)/2;return[Math.round(Math.max(0,Math.min(W,(e.clientX-l)/cw*W))),Math.round(Math.max(0,Math.min(H,(e.clientY-t)/ch*H)))-up];}
-function begin(){if(G&&!G.started){G.started=true;G.e.running=true;$('msg').hidden=true;}}
+function begin(){if(G&&!G.started){if(KDUE&&KDUE===G){KDUE=null;pay();}G.started=true;G.e.running=true;$('msg').hidden=true;}}
 /* the mouse stays inside the table while a match is on: Enter (or Escape) lets it go; any click on the table takes it back */
 const locked=()=>document.pointerLockElement===cv;
 function lockIn(){if(!G||locked()||matchMedia('(pointer:coarse)').matches)return;try{const p=cv.requestPointerLock({unadjustedMovement:false});if(p&&p.catch)p.catch(()=>{});}catch(e){}}
@@ -1828,14 +1828,16 @@ function domShot(){return new Promise(res=>{const d=Math.min(2,devicePixelRatio|
 let RUN=null;
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function runOrder(){const o=R.filter(r=>r.lv<16).sort((a,b)=>a.lv-b.lv).map(r=>r.id),out=[];for(let i=0;i<16;i+=4)out.push(...shuffle(o.slice(i,i+4)));return out.concat(['aube','unkle_maukie']);}
-function startRun(){if(!pay())return false;RUN={order:runOrder(),idx:0,id:Date.now().toString(36)+Math.random().toString(36).slice(2,8),ga:0};playRun();return true;}
+/* la Koin se paie au premier geste de jeu dans la table (REFERENTIEL k.3) : le choix du Mask vérifie le compteur, begin() débite */
+let KDUE=null;function kOwe(){if(koins<1){pay();return false;}return true;}
+function startRun(){if(!kOwe())return false;RUN={order:runOrder(),idx:0,id:Date.now().toString(36)+Math.random().toString(36).slice(2,8),ga:0};playRun();KDUE=G;return true;}
 if($('run'))$('run').onclick=startRun;
 /* opponent card: number, name, motto, the six Korhogo stats */
 function card(r){$('mStats').innerHTML=Object.entries(r.st).map(([k,v])=>`<span><i>${k}</i><span class="bar0"><b style="width:${v*10}%"></b></span><em>${v}</em></span>`).join('');}
 function saveRun(){try{RUN?localStorage.setItem('ik.run',JSON.stringify(RUN)):localStorage.removeItem('ik.run');}catch(e){}}
 function loadRun(){try{const r=JSON.parse(localStorage.getItem('ik.run')||'null');if(r&&Array.isArray(r.order)&&r.order.length===18)return r;}catch(e){}return null;}
 function playRun(){saveRun();const id=RUN.order[RUN.idx];startMatch(R.findIndex(r=>r.id===id),RUN.idx);}
-function pickGuest(i){if(!pay())return;RUN=null;startMatch(i,null);}
+function pickGuest(i){if(!kOwe())return;RUN=null;startMatch(i,null);KDUE=G;}
 /* palmarès of the run: Masks beaten, then goals let in over the whole run (continues included) */
 function palmKorong(won){const P=$('palm');if(P)P.innerHTML='';if(!window.IKP)return;
   /* a duel won against a Mask picked by hand: one Mask beaten, the goals of that match */

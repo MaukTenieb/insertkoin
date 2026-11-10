@@ -12113,7 +12113,7 @@ function wrap(l,el){const w=document.createElement("label");w.className="cr";con
 let rrT=0;function rerender(){clearTimeout(rrT);rrT=setTimeout(render,90)}
 function roll(){if(!S.cur)return;S.cur.seed=1+Math.floor(Math.random()*1e6);render()}
 async function keepLayer(){if(S.session){const out=await S.session.result();endSession();S.cur=null;pushHist();S.stack.push({id:"__baked",img:out});}
- else if(S.cur){pushHist();S.stack.push(S.cur);S.cur=null}
+ else if(S.cur){const c=S.cur;S.cur=null;pushHist();S.stack.push(c)}
  THUMBS.clear();drawCtl();drawGrid();drawLayers();render()}
 /* couches figées (session interactive) et tables de couleurs importées */
 FF.register("__",{baked:{label:"·",fn:(s,p)=>p.img?scaleTo(p.img,Math.max(s.width,s.height)):s,params:{}}});

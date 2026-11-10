@@ -242,6 +242,14 @@
       return name;
     });
   };
+  /* [IK] the arcade's camera zoom loads the game's modules (css, fragment, faces, js) while it moves; KG.open then only runs the entry */
+  KG.preload=function(name){
+    var g=GAMES[name];if(!g)return Promise.resolve();
+    ensureLayer();ensureFonts();
+    var chain=loadMod('core');
+    g.mods.forEach(function(m){chain=chain.then(function(){return loadMod(m);});});
+    return chain.then(null,function(){});
+  };
   KG.isOpen=function(name){return !!sessions[name];};
   /* [IK] close from the host page (BACK / BAKU BOOM of Insert Koin): hide the game's panels the way their own close buttons leave them */
   var forced={};

@@ -182,7 +182,7 @@
     try{window.__borneTourStop&&window.__borneTourStop();}catch(e){}
     /* les mini-jeux et diktaTfaune passent par leur vraie touche : le dé de Katabatik, le calque de diktaTfaune */
     if(KATA.indexOf(k)>=0){kata(k);return true;}if(k==='diktat'){play('diktat');return true;}
-    if(!CAMGO&&C&&C.ok()&&root.dataset.habit==='repos'&&!root.dataset.prog&&k!=='visit'){C.zoomIn(function(){CAMGO=1;try{IK().go(k);}finally{CAMGO=0;}});return true;}
+    if(!CAMGO&&C&&C.ok()&&root.dataset.habit==='repos'&&!root.dataset.prog&&k!=='visit'){try{var L=window.KG;if(L&&L.preload&&L.games.indexOf(k)>=0)L.preload(k);}catch(e){}C.zoomIn(function(){CAMGO=1;try{IK().go(k);}finally{CAMGO=0;}});return true;}
     setBig(bigOf(k));CUR=k==='katabatik'?(function(){var d=document.querySelector('.cab.dice b'),f=d?DICE.indexOf(d.dataset.d):0;return KATA[f]||'c4';})():k;paintDots();
     if(k==='fauneye'){IK().ac&&IK().ac();dress('fauneye');mark(k);IK().openCalque('borne-fauneye.html','FaunEye');return true;}
     if(k==='skopo'){dress('arcade');mark(k);IK().openCalque('skoporhogo-borne.html','SkopoRhogo');return true;}
