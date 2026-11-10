@@ -106,7 +106,7 @@ function sprites(key){var m=M[key],cw=m.cw||38;return [0,1,2,3].map(function(f){
 window.MotelRun=function(host,want){
  var reduce=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
  var cv=document.createElement('canvas');cv.width=W;cv.height=H;cv.className='mrun';cv.setAttribute('role','img');cv.setAttribute('aria-label','Motel');cv.tabIndex=0;
- cv.style.cssText='image-rendering:pixelated;image-rendering:crisp-edges;display:block;width:100%;height:100%;outline:0;touch-action:manipulation';
+ cv.style.cssText='image-rendering:pixelated;image-rendering:crisp-edges;display:block;width:100%;height:100%;outline:0;touch-action:manipulation;filter:grayscale(1) contrast(1.12) brightness(1.05)';
  host.appendChild(cv);var c=cv.getContext('2d'),img=c.createImageData(W,H),buf=new Uint32Array(img.data.buffer),zb=new Float32Array(W);
  var key=M[want]?want:KEYS[Math.floor(Math.random()*KEYS.length)],m=M[key],frames=sprites(key);
  /* le buste du Mask, net, seul, dans le coin */
