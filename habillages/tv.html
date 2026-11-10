@@ -230,7 +230,8 @@ function say(id){var s=SAY[id];return s?(lang==='fr'?s[1]:s[0]):''}
 
 /* ---------- chaînes (10 nov.) : la télé de la chambre est celle de Korong! (ACQUIS l. 88) : 01 clips de Mauk Tenieb au hasard, 02 mire, 03 devise d'un Mask, puis la neige ; les infos passent au télétexte ; AV mène au magnétoscope (t19) ---------- */
 /* 10 nov., 18 h 09 (Mauk Tenieb : « plus de contenus : celui de Korong-écran ; et jouer sur les aléas des touches à chaque session ») : chaque session tire l'ordre des contenus sur les touches 1 à 16 ; la neige garde trois numéros ; chaque contenu reste sur son numéro le temps de la session */
-var CONT=['clips','images','devise','mire','k:motto','k:stats','k:sig','k:koins','k:bars','k:card','k:grid','k:radio','k:clock','snow','snow','snow'];
+/* 10 nov. (Mauk Tenieb, 23 h 19) : une des chaînes donne le télétexte */
+var CONT=['clips','images','devise','mire','k:motto','k:stats','k:sig','k:koins','k:bars','k:card','k:grid','k:radio','k:clock','ttx','snow','snow'];
 var CH=(function(){var o=null;try{o=JSON.parse(sessionStorage.getItem('ik.tvch')||'null')}catch(e){}
  if(!Array.isArray(o)||o.length!==CONT.length||CONT.some(function(c){return o.filter(function(x){return x===c}).length!==CONT.filter(function(x){return x===c}).length})){o=shuffle(CONT);try{sessionStorage.setItem('ik.tvch',JSON.stringify(o))}catch(e){}}
  return o.map(function(id,i){return {num:i+1,id:id,name:id==='clips'?'Mauk Tenieb':''}})})();
@@ -239,10 +240,10 @@ var av=false,ch=1,power=true,txt=0,vol=20,mute=false,entry='',entryT;
 function cur(){return CH.filter(function(c){return c.num===ch})[0]}
 /* l'OSD : chaque ligne trop longue pour l'écran défile en téléprompteur, jamais coupée (10 nov.) */
 function osd(s,ms){var o=$('#osd');o.innerHTML=String(s).split('<br>').map(function(l){return '<span class="ln"><i>'+l+'</i></span>'}).join('');setTimeout(function(){[].forEach.call(o.querySelectorAll('.ln'),function(l){var i=l.firstChild,dx=i.scrollWidth-l.clientWidth;l.classList.toggle('tp',dx>2);if(dx>2)l.style.setProperty('--dx',(-dx-8)+'px');l.style.setProperty('--tt',Math.max(3,dx/40)+'s');if(dx>2){clearTimeout(o._t);o._t=setTimeout(function(){o.classList.remove('on')},Math.max(ms||2600,1000+2*Math.max(3000,dx*25)))}})},30);o.classList.add('on');clearTimeout(o._t);o._t=setTimeout(function(){o.classList.remove('on')},ms||2600)}
-function zap(n){var c=CH.filter(function(x){return x.num===n})[0];if(!c){osd(p2(n)+'<br>– – –',1200);return}ch=n;var s=$('#snow');s.classList.add('on');
- setTimeout(function(){s.classList.remove('on');draw();osd(p2(c.num)+(c.name?'<br>'+c.name.toUpperCase():''))},380);$('#kch').style.setProperty('--r',(n*20)+'deg')}
+function zap(n){var c=CH.filter(function(x){return x.num===n})[0];if(!c){osd(p2(n)+'<br>– – –',1200);return}if(cur().id==='ttx'&&txt===1){txt=0;$('#ttx').className='layer'}ch=n;var s=$('#snow');s.classList.add('on');
+ setTimeout(function(){s.classList.remove('on');if(c.id==='ttx'&&!av){txt=1;$('#ttx').className='layer on';goPage(page)}draw();osd(p2(c.num)+(c.name?'<br>'+c.name.toUpperCase():''))},380);$('#kch').style.setProperty('--r',(n*20)+'deg')}
 function lid(id){return id==='clips'?'clip':id==='images'?'slide':/^k:/.test(id)?'kor':id}
-function draw(){var c=cur(),on=power&&!txt&&!av,L=['clip','mire','devise','kor','slide'];L.forEach(function(k){$('#'+k).classList.toggle('on',power&&!av&&lid(c.id)===k)});$('#pic').style.backgroundImage='none';$('#snow').classList.toggle('hold',power&&!av&&c.id==='snow');
+function draw(){var c0=cur();if(c0.id==='ttx'&&power&&!av&&!txt){txt=1;$('#ttx').className='layer on';goPage(page)}var c=c0,on=power&&!txt&&!av,L=['clip','mire','devise','kor','slide'];L.forEach(function(k){$('#'+k).classList.toggle('on',power&&!av&&lid(c.id)===k)});$('#pic').style.backgroundImage='none';$('#snow').classList.toggle('hold',power&&!av&&c.id==='snow');
  clip(on&&c.id==='clips');if(av){kor(null);slide(false);return}
  if(c.id==='mire')mire();if(c.id==='devise')devise();kor(on&&/^k:/.test(c.id)?c.id.slice(2):null);slide(on&&c.id==='images');if(txt)renderPage(page)}
 /* les programmes de la télé de Korong!, dessinés par son propre code (index.html : TVT, SIGNAME, plain, fitFont, headTV, wrapTV, tvScreen, SIGN, kfmt, la liste R0 des Masks), à l'échelle de l'écran de la chambre : 4 px de Korong! = 12 px au moins */
@@ -251,7 +252,8 @@ function idx(){return IDXP||(IDXP=fetch('../index.html').then(function(r){return
 function korLoad(cb){if(KR.ok!==null)return cb(KR.ok);idx().then(function(t){try{
  var a=t.indexOf('const TVT='),b=t.indexOf('\nfunction tvPick(',a),c=t.indexOf('function tvScreen('),d=t.indexOf('\nwindow.__tv=',c),sg=/const SIGN=\{[^}]*\};/.exec(t),kf=/function kfmt\(n\)\{return [^;]*;\}/.exec(t),r0=/const R0=(\[[\s\S]*?\]);\n/.exec(t);
  if(a<0||b<0||c<0||d<0||!sg||!kf||!r0)throw new Error('korong');KR.R0=JSON.parse(r0[1]);
- var mk=new Function('G','TV','TAU','RUN','radioOn','tvPick','tvClip','tvClipOk','$','var LANG="en",koins=0;\n'+t.slice(a,b)+'\n'+sg[0]+'\n'+kf[0]+'\n'+t.slice(c,d)+'\nreturn {draw:tvScreen,set:function(l,k){LANG=l;koins=k}};');
+ /* 10 nov. (Mauk Tenieb, 23 h 16) : dans la chambre, l'horloge de la chaîne donne l'heure du visiteur, sur 24 h */var ts=t.slice(c,d).replace('const mins=133+(e.player_score+e.opponent_score)*7,hh=String(Math.floor(mins/60)%12||12)','const mins=new Date().getHours()*60+new Date().getMinutes(),hh=String(Math.floor(mins/60))');
+ var mk=new Function('G','TV','TAU','RUN','radioOn','tvPick','tvClip','tvClipOk','$','var LANG="en",koins=0;\n'+t.slice(a,b)+'\n'+sg[0]+'\n'+kf[0]+'\n'+ts+'\nreturn {draw:tvScreen,set:function(l,k){LANG=l;koins=k}};');
  KR.fn=mk(KR.G,KR.TV,Math.PI*2,null,true,function(){},function(){},function(){return false},function(id){return document.getElementById(id)});KR.ok=true}catch(e){KR.ok=false}cb(KR.ok)}).catch(function(){KR.ok=false;cb(false)})}
 function korMask(){var R=KR.R0;KR.G.r=R[Math.floor(Math.random()*R.length)]||null;if(KR.G.r)KR.G.r.glow=KR.G.r.c}
 function korVisit(ch){korMask();var t=performance.now()/1000;KR.G.t=t;KR.G.tv=0;KR.G.tvs={ch:ch,at:t,until:1e12,snow:.18+Math.random()*.25,rally:0,best:0,lastTv:0,kw:Math.random()<.5?'KOINS':'KINOS'}}
@@ -371,6 +373,7 @@ function key(k){if(k==='av'){avOn();return}var ir=$('#ir');ir.classList.add('on'
  if(av&&power&&avKey(k))return;
  if(k==='power'){power=!power;$('#tube').style.filter='';$('#tube').classList.toggle('off',!power);$('#tvset').classList.toggle('dark',!power);if(!power){txt=0;$('#ttx').className='layer'}draw();msnd();return}if(!power)return;
  if(k==='mix'){txt=txt===2?0:2;$('#ttx').className='layer'+(txt===2?' on mix':'');if(txt)goPage(page);clip(power&&!txt&&cur().id==='clips');msnd();return}
+ if(k==='txt'&&txt===1&&cur().id==='ttx'){zap(ch%CH.length+1);return}
  if(k==='txt'){txt=txt?0:1;var t=$('#ttx');t.className='layer'+(txt===1?' on':txt===2?' on mix':'');if(txt===1)goPage(page);clip(power&&!txt&&cur().id==='clips');msnd();return}
  if(/^\d$/.test(k)){if(txt){entry+=k;var g=$('#grid');render([' P'+pad(entry,3)+'  '+A.y+'KORHOGO'].concat([]));if(entry.length===3){var n=+entry;entry='';goPage(n)}return}
   entry+=k;osd(entry);clearTimeout(entryT);entryT=setTimeout(function(){var n=+entry,z=entry==='0';entry='';if(z){osd('AV');key('av');return}if(n)zap(n)},1100);return}
@@ -386,7 +389,7 @@ function showVol(){var v=$('#vol');v.innerHTML=mute?'MUTE':'VOLUME '+'|'.repeat(
 $$('#remote button').forEach(function(b){b.addEventListener('click',function(){key(b.dataset.k)})});
 $('#kch').onclick=function(){key('chup')};
 /* 10 nov. (Mauk Tenieb, 21 h 19) : un clic sur l'afficheur de chaîne passe à la chaîne suivante */
-$('#lcd').addEventListener('click',function(e){e.stopPropagation();if(av)avOff(1);else key('chup')});$('#kvol').onclick=function(){key('volup')};$('#kpw').onclick=function(){key('power')};
+$('#lcd').addEventListener('click',function(e){e.stopPropagation();if(av)avOff(1);else if(txt)zap(ch%CH.length+1);else key('chup')});$('#kvol').onclick=function(){key('volup')};$('#kpw').onclick=function(){key('power')};
 /* 10 nov., 17 h 41 (Mauk Tenieb : « les commandes passent par le clavier ») : chiffres, flèches, Entrée et Espace, t x m p, r g y c, e, Échap ; muet quand un champ de saisie a le focus */
 addEventListener('keydown',function(e){if(e.ctrlKey||e.metaKey||e.altKey)return;var t=e.target;if(t&&t.closest&&t.closest('input,textarea,select,[contenteditable]')){if(e.key==='Escape'){e.preventDefault();e.stopPropagation();t.blur()}return}
  var k=e.key,m=null;
