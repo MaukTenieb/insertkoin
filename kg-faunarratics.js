@@ -876,7 +876,7 @@ function kkIntroAnimate(){
   p2.style.opacity='0';
   p2.classList.remove('visible');
   var done=false,t1,t2;
-  function next(){if(done)return;done=true;clearTimeout(t1);clearTimeout(t2);p1.style.display='none';p2.style.animation='';p2.classList.add('visible');off();}
+  function next(){if(done)return;done=true;clearTimeout(t1);clearTimeout(t2);p1.style.display='none';p2.style.animation='';p2.classList.add('visible');off();kkPrompter();}
   function skip(e){if(p1.style.display==='none')return off();if(e&&e.type==='keydown'&&/^(Escape|Tab|Shift|Control|Alt|Meta)$/.test(e.key))return;
     if(e){e.preventDefault();e.stopPropagation();}p1.classList.add('fadeout');t2=setTimeout(next,260);}
   function off(){document.removeEventListener('pointerdown',skip,true);document.removeEventListener('keydown',skip,true);}
@@ -887,6 +887,29 @@ function kkIntroAnimate(){
   },2200);
 }
 window.kkIntroAnimate=kkIntroAnimate;
+/* lot 7 (10 nov. 2026) : téléprompteur de la consigne (règle A46) — le texte du Kerema reste entier ; s'il déborde de sa fenêtre, il défile sur place, en boucle, à vitesse de lecture */
+var _kkRoll=null;
+function kkPrompter(){
+  var box=document.getElementById('kk-prompt'),roll=document.getElementById('kk-prompt-roll');
+  if(!box||!roll)return;
+  if(_kkRoll){try{_kkRoll.cancel();}catch(e){}_kkRoll=null;}
+  box.classList.remove('kk-rolling');box.scrollTop=0;
+  var d=Math.ceil(roll.scrollHeight-box.clientHeight);
+  if(d<=2)return;
+  box.classList.add('kk-rolling');
+  if(!roll.animate||(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches))return;
+  var lh=parseFloat(getComputedStyle(box).fontSize)*1.75||24,run=d/lh*1800,hold=2200,tot=hold+run+hold+600;
+  _kkRoll=roll.animate([
+    {transform:'translateY(0)',opacity:0,offset:0},
+    {transform:'translateY(0)',opacity:1,offset:300/tot},
+    {transform:'translateY(0)',opacity:1,offset:hold/tot},
+    {transform:'translateY(-'+d+'px)',opacity:1,offset:(hold+run)/tot},
+    {transform:'translateY(-'+d+'px)',opacity:1,offset:(tot-300)/tot},
+    {transform:'translateY(-'+d+'px)',opacity:0,offset:1}
+  ],{duration:tot,iterations:Infinity,easing:'linear'});
+}
+window.kkPrompter=kkPrompter;
+addEventListener('resize',function(){var p2=document.getElementById('kk-intro-p2');if(p2&&p2.classList.contains('visible'))kkPrompter();});
 function openFaunarratics(){
   var p=document.getElementById('konklave-panel');
   if(p){p.classList.add('open');document.body.style.overflow='hidden';kkGo('kk-intro');_kkBindBox();

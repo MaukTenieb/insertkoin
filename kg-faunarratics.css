@@ -211,3 +211,14 @@
 /* 10 nov. : l'entrée du Konklave se voit d'emblée, touche de 56 px */
 :where(.kg-layer) .kk-go{margin-top:22px;min-width:56px;min-height:56px;border:2px solid #c9a84c;border-radius:50%;background:transparent;color:#ffe08a;font-size:20px;cursor:pointer;opacity:0;animation:kkFadeUp .6s .9s forwards}
 :where(.kg-layer) #kk-intro-p2.visible::after{display:none}
+
+/* lot 7 (10 nov. 2026) : la consigne du Kerema en capitales d'interface, dans une fenêtre de téléprompteur (A46) ; ▶ toujours visible sous la fenêtre */
+:where(.kg-layer) #kk-intro-p2{padding:clamp(14px,6vh,8vw) 6vw;gap:0;}
+:where(.kg-layer) .kk-prompt{position:relative;width:100%;max-width:440px;min-height:0;flex:0 1 auto;max-height:calc(15.75em);overflow:hidden;font-size:14px;}
+:where(.kg-layer) .kk-prompt.kk-rolling{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 1.4em,#000 calc(100% - 1.4em),transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 1.4em,#000 calc(100% - 1.4em),transparent 100%);}
+:where(.kg-layer) .kk-prompt .kk-iline{max-width:none;font-size:14px;line-height:1.75;letter-spacing:.06em;text-transform:uppercase;margin:0 auto .35em;}
+:where(.kg-layer) .kk-prompt-roll{will-change:transform;}
+:where(.kg-layer) #kk-intro-p2 .kk-go{flex:0 0 auto;margin-top:18px;}
+:where(.kg-layer) #kk-intro-p1 .kk-iline{text-transform:uppercase;font-size:14px;}
+@media (max-height:460px){:where(.kg-layer) #kk-intro-p2 .kk-go{margin-top:10px;min-width:48px;min-height:48px;}}
+@media (prefers-reduced-motion:reduce){:where(.kg-layer) .kk-prompt.kk-rolling{overflow-y:auto;-webkit-mask-image:none;mask-image:none;}}
