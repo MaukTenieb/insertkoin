@@ -113,7 +113,7 @@
       gl: { curve: 0.22, corner: [0.488, 0.482, 0.012], tape: 1, k: 0.18, chroma: 1, vig: 0.4, vigK: 3.4, calmK: 0.55, cap: 576 },
       dom: {
         filter: "saturate(.78) contrast(1.08) brightness(1.03) blur(.45px) sepia(.06)",
-        scan: "rgba(0,0,0,0.11) 0 1px, transparent 1px 3px", grain: 0.042, snow: 0.55,
+        scan: "rgba(0,0,0,0.11) 0 1px, transparent 1px 3px", grain: 0.042, snow: 0.44,
         band: true, head: true, wobble: 0.003,
       },
       glass: { hi: 0.07, hiAt: "30% 10%", hiShape: "120% 90%", vig: 0.55, vigFrom: "58%", inset: 40, insetA: 0.7 },
@@ -932,7 +932,18 @@
       const c = cv.getContext("2d");
       if (!this.grainImg) this.grainImg = c.createImageData(cv.width, cv.height);
       const d = this.grainImg.data;
-      for (let i = 0; i < d.length; i += 4) { const v = Math.random() * 255 | 0; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; }
+      if (this.screen.classList.contains("ike-snow")) {
+        /* 10 nov. 2026 (Mauk Tenieb : « la neige est trop forte ») : neige d'antenne sans signal, plus douce — valeurs tirées vers le sombre,
+           traînée horizontale du balayage, gain par ligne, gris légèrement froid */
+        const W = cv.width;
+        for (let y = 0, i = 0; y < cv.height; y++) {
+          const g = 0.78 + Math.random() * 0.3; let prev = Math.random();
+          for (let x = 0; x < W; x++, i += 4) { const n = Math.random(); const v = (prev * 0.4 + n * Math.sqrt(n) * 0.6) * g; prev = v;
+            d[i] = d[i + 1] = v * 215 | 0; d[i + 2] = v * 228 + 6 | 0; d[i + 3] = 255; }
+        }
+      } else {
+        for (let i = 0; i < d.length; i += 4) { const v = Math.random() * 255 | 0; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; }
+      }
       c.putImageData(this.grainImg, 0, 0);
     }
 
