@@ -106,14 +106,14 @@ function sprites(key){var m=M[key],cw=m.cw||38;return [0,1,2,3].map(function(f){
 window.MotelRun=function(host,want){
  var reduce=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
  var cv=document.createElement('canvas');cv.width=W;cv.height=H;cv.className='mrun';cv.setAttribute('role','img');cv.setAttribute('aria-label','Motel');cv.tabIndex=0;
- cv.style.cssText='image-rendering:pixelated;image-rendering:crisp-edges;display:block;width:100%;height:100%;outline:0;touch-action:manipulation;filter:grayscale(1) contrast(1.12) brightness(1.05)';
+ cv.style.cssText='image-rendering:pixelated;image-rendering:crisp-edges;display:block;width:100%;height:100%;outline:0;touch-action:manipulation;filter:grayscale(1) contrast(1.12) brightness(1.05)';var bw=true;
  host.appendChild(cv);var c=cv.getContext('2d'),img=c.createImageData(W,H),buf=new Uint32Array(img.data.buffer),zb=new Float32Array(W);
  var key=M[want]?want:KEYS[Math.floor(Math.random()*KEYS.length)],m=M[key],frames=sprites(key);
  /* le buste du Mask, net, seul, dans le coin */
  var face=document.createElement('img');face.src='a/b-'+key+'.webp';face.alt='';face.className='mrun-buste';
  face.style.cssText='position:absolute;left:2%;bottom:2.5%;height:20%;width:auto;pointer-events:none;image-rendering:auto';
  host.appendChild(face);
- var px=0.5,py=0.5,dir=0,ang=0,speed=reduce?1.0:3.4,last=performance.now(),gait=0,alive=true,turn=0,idle=9,pendT=0,cell=-1,auto=true,odo=0,lastT=-9;
+ var px=0.5,py=0.5,dir=0,ang=0,speed=reduce?1.0:3.8,last=performance.now(),gait=0,alive=true,turn=0,idle=9,pendT=0,cell=-1,auto=true,odo=0,lastT=-9;
  var DX=[1,0,-1,0],DY=[0,1,0,-1],held={},ptr=null,TURN=3.1,RAD=0.34,trail=[],cx=0,cy=0,ca=0,depth=CAMD;
  var st={t:0,minClear:9,minFront:99,minDepth:99,contacts:0,cuts:0};
  var KM={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d',a:'l',q:'l',d:'r',w:'u',z:'u',s:'d'};
@@ -182,11 +182,11 @@ window.MotelRun=function(host,want){
   /* le Mask, de dos, à sa taille, les pieds sur la moquette ; caché par les murs plus proches que lui */
   var rx_=px-cx,ry_=py-cy,dz=rx_*dx+ry_*dy,lx=-rx_*dy+ry_*dx;if(dz<0.3)dz=0.3;
   var fr=frames[Math.floor(gait)%4],k=(m.s/CEIL)*(H/dz)/((m.ref||1.06)/U),w=fr.width*k,h=fr.height*k,sxc=W/2*(1+lx/(dz*FOV)),feet=H/2+bob+(H/2)/dz;
-  var x0=Math.round(sxc-w/2),y0_=Math.round(feet-h),hh=Math.round(h);c.imageSmoothingEnabled=false;c.filter='brightness(1.35)';/* 10 nov. (Mauk Tenieb, 21 h 05) : en noir et blanc, le Mask se détache en gris clair */
+  var x0=Math.round(sxc-w/2),y0_=Math.round(feet-h),hh=Math.round(h);c.imageSmoothingEnabled=false;if(bw)c.filter='brightness(1.35)';/* 10 nov. (Mauk Tenieb, 21 h 05) : en noir et blanc, le Mask se détache en gris clair */
   for(var xs=Math.max(0,x0);xs<Math.min(W,x0+Math.round(w));xs++){if(zb[xs]<dz)continue;var si=Math.floor((xs+0.5-x0)/k);if(si>=0&&si<fr.width)c.drawImage(fr,si,0,1,fr.height,xs,y0_,1,hh)}c.filter='none';
   st.minFront=Math.min(st.minFront,zb[W>>1]);st.minDepth=Math.min(st.minDepth,dz)}
  function shade(col,s){var r=col&255,g=(col>>8)&255,b=(col>>16)&255;return (255<<24)|(((b*s)|0)<<16)|(((g*s)|0)<<8)|((r*s)|0)}
- function loop(t){if(!alive)return;var dt=Math.max(0,Math.min(0.05,(t-last)/1000));last=t;if(!document.hidden){st.t+=dt;step(dt);var cl=clear_();st.minClear=Math.min(st.minClear,cl);if(cl<0.3)st.contacts++;cast()}requestAnimationFrame(loop)}
+ function loop(t){if(!alive)return;/* 10 nov. (Mauk Tenieb, 21 h 11) : en fond d'écran, noir et blanc ; dès que le visiteur prend la course en main, le jeu passe en couleur */var nb=idle>=2.5;if(nb!==bw){bw=nb;cv.style.filter=bw?'grayscale(1) contrast(1.12) brightness(1.05)':'none'}var dt=Math.max(0,Math.min(0.05,(t-last)/1000));last=t;if(!document.hidden){st.t+=dt;step(dt);var cl=clear_();st.minClear=Math.min(st.minClear,cl);if(cl<0.3)st.contacts++;cast()}requestAnimationFrame(loop)}
  reseed();st.cuts=0;requestAnimationFrame(loop);
  var api={stop:function(){alive=false;removeEventListener('keydown',key_);removeEventListener('keyup',keyu_);removeEventListener('blur',blur_);cv.remove();face.remove()},mask:key,st:st,
   pos:function(){return {px:px,py:py,ang:ang,cx:cx,cy:cy,depth:depth,auto:auto}}};
