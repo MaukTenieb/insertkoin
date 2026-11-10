@@ -124,6 +124,7 @@
   let state = makeState();
   let ytPromise = null;
   let retryRaf = 0;
+  let hostVolume = null; // 0..100, set by a host TV's volume key (KGVHS.volume)
   const counters = { players: 0 };
 
   const live = (s) => s === state && !s.destroyed;
@@ -573,6 +574,7 @@
     if (s.ytMuted) {
       try { s.player.mute(); } catch (_) { /* ignore */ }
     }
+    if (hostVolume !== null) { try { s.player.setVolume(hostVolume); } catch (_) { /* ignore */ } }
   }
 
   function onYouTubeState(s, event) {
@@ -925,7 +927,8 @@
   function mountScreen(s) {
     const screen = q(s, "[data-vhs-screen]");
     if (!screen || !window.IKEcran) return;
-    if (window.IKEcran.layout) s.layout = window.IKEcran.layout(s.root, { screen, controls: s.root.querySelector(".vhs-shell") });
+    // A host that places the screen itself (the room TV of the motel, habillages/tv.html) sets INSERTKOIN_VHS_CONFIG.layout = false.
+    if (window.IKEcran.layout && (window.INSERTKOIN_VHS_CONFIG || {}).layout !== false) s.layout = window.IKEcran.layout(s.root, { screen, controls: s.root.querySelector(".vhs-shell") });
     s.ecran = window.IKEcran.mount(screen, {
       program: "vhs",
       canvas: s.canvas,
@@ -1465,9 +1468,36 @@
     return idx;
   }
 
-  window.KGVHS = { open, close, refreshTracks, playByVideoId, debug, version: VERSION };
+  // Host TV bridge (habillages/tv.html): the set's volume key, and the previous / next track.
+  function volume(v) {
+    hostVolume = Math.max(0, Math.min(100, Math.round(Number(v) || 0)));
+    const s = state;
+    if (s.player && s.playerReady) { try { s.player.setVolume(hostVolume); } catch (_) { /* ignore */ } }
+    if (s.video) s.video.volume = hostVolume / 100;
+    return hostVolume;
+  }
+  function stepTrack(delta) {
+    const s = state;
+    if (s.destroyed || !listLength(s)) return -1;
+    if (s.root) s.root.classList.remove("is-fresh");
+    step(s, delta < 0 ? -1 : 1);
+    return currentIndex(s);
+  }
+
+  window.KGVHS = { open, close, refreshTracks, playByVideoId, volume, step: stepTrack, debug, version: VERSION };
 
   // Compatibility with the loader contract.
   window.kgVhsOpen = open;
   window.kgVhsClose = close;
 })();
+
+/* téléprompteur (A46) : au survol, au focus ou en lecture, une ligne qui déborde défile sur place */
+(function(){function over(el){return el&&el.scrollWidth>el.clientWidth+2&&getComputedStyle(el).whiteSpace.indexOf('nowrap')===0}
+ function find(t){for(var el=t,i=0;el&&i<4;el=el.parentElement,i++){if(el.nodeType===1&&over(el))return el}return null}
+ function on(el){if(!el)return;var dx=el.scrollWidth-el.clientWidth+10;el.style.setProperty('--tpx',(-dx)+'px');el.style.setProperty('--tpt',Math.max(3,dx/35)+'s');el.classList.add('ik-tp-on')}
+ function off(el){if(el)el.classList.remove('ik-tp-on')}
+ document.addEventListener('pointerover',function(e){if(e.target.closest&&e.target.closest('#vhs'))on(find(e.target))},true);
+ document.addEventListener('pointerout',function(e){var el=find(e.target);if(el&&!el.contains(e.relatedTarget))off(el)},true);
+ document.addEventListener('focusin',function(e){if(e.target.closest&&e.target.closest('#vhs'))on(find(e.target))},true);
+ document.addEventListener('focusout',function(e){off(find(e.target))},true);
+ setInterval(function(){[].forEach.call(document.querySelectorAll('#vhs [aria-current="true"],#vhs .is-playing,#vhs .is-current'),function(el){var x=over(el)?el:el.querySelector&&[].filter.call(el.querySelectorAll('*'),over)[0];if(x&&!x.classList.contains('ik-tp-on'))on(x)})},1500)})();

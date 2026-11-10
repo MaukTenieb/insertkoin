@@ -111,7 +111,7 @@
   padding: 0 8px; display: flex; align-items: center;
   background: #e9e3d6; color: #1b1a18; border-radius: 1px;
   font-size: 11px; letter-spacing: .04em; text-transform: uppercase;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; overflow: hidden; text-overflow: clip;
   opacity: 0; transition: opacity .2s .25s;
 }
 .vhs.is-loaded .vhs-label { opacity: 1; }
@@ -395,7 +395,7 @@
   text-align: left;
   min-height: 32px;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: clip;
   white-space: nowrap;
 }
 
@@ -455,7 +455,7 @@
   min-height: 30px;
   max-width: 100%;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: clip;
   white-space: nowrap;
   text-align: left;
   font-size: 11px;
@@ -550,7 +550,7 @@
   color: var(--vhs-accent);
   font-variant-numeric: tabular-nums;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: clip;
   white-space: nowrap;
 }
 
@@ -597,18 +597,17 @@
 
 .vhs-find-input::placeholder { color: var(--vhs-dim); }
 
-.vhs-find-sort {
-  flex: 0 0 auto;
-  min-height: 28px;
-  border: 1px dashed #555;
-  background: #0a0a0a;
-  color: var(--vhs-text);
-  font: inherit;
-  font-size: 11px;
-  padding: 0 4px;
+/* the order keys: the deck's own keys (plastic, lit when pressed), no native select */
+.vhs-find-sort { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; }
+.vhs .vhs-sort-key {
+  min-height: 44px; padding: 4px 6px; border: 0; border-radius: 2px;
+  background: linear-gradient(180deg, #3a3835, #23211f);
+  color: #b8b2a8; font: 12px/1.15 "DM Mono", monospace; letter-spacing: .02em; text-transform: uppercase;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 3px 0 #0b0a09, 0 4px 5px rgba(0,0,0,.6);
 }
-
-.vhs-find-sort:focus { outline: none; border-color: var(--vhs-accent); }
+.vhs .vhs-sort-key:hover { border: 0; color: #fff; }
+.vhs .vhs-sort-key:active { transform: translateY(2px); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 1px 0 #0b0a09; }
+.vhs .vhs-sort-key[aria-pressed="true"] { border: 0; color: var(--vhs-accent); text-shadow: 0 0 6px rgba(127,227,196,.55); }
 
 .vhs-find-count { white-space: nowrap; }
 
@@ -638,7 +637,7 @@
 
 .vhs-tapetools-name {
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: clip;
   white-space: nowrap;
   color: var(--vhs-accent);
 }
@@ -758,7 +757,7 @@
   color: #7de0ff;
   text-decoration: none;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: clip;
   white-space: nowrap;
 }
 
@@ -853,7 +852,7 @@
   width: 100%; text-align: left; min-height: 30px; padding: 6px 10px 6px 14px;
   border: 0; border-left: 4px solid #e9e3d6; border-radius: 1px;
   background: linear-gradient(90deg, #151413, #10100f); color: #cfc9be;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; overflow: hidden; text-overflow: clip;
 }
 .vhs-tracklist button:hover, .vhs-local-list button:hover { color: #fff; border-left-color: #fff; }
 .vhs-tracklist button.is-active, .vhs-local-list button.is-active,
@@ -877,10 +876,11 @@
   .vhs-flap, .vhs .vhs-key { transition: none; }
 }
 
-.vhs .vhs-find { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; }
-.vhs .vhs-find-input, .vhs .vhs-find-sort { border: 1px solid #2f2c29; border-radius: 1px; background: #0f0e0d; color: var(--vhs-text); min-height: 30px; }
+.vhs .vhs-find { display: grid; grid-template-columns: minmax(0, 1fr) auto; }
+.vhs .vhs-find-input { border: 1px solid #2f2c29; border-radius: 1px; background: #0f0e0d; color: var(--vhs-text); min-height: 30px; }
 .vhs .vhs-find-input { width: 100%; }
-.vhs .vhs-find-sort { max-width: 42vw; }
+.vhs .vhs-find-sort { grid-column: 1 / -1; }
+.vhs .vhs-find-glass { top: 15px; } /* the glass sits in the field, above the order keys */
 /* one source only: no tabs to choose from */
 .vhs-source-tabs:not(:has([data-vhs-source="local"]:not([hidden]))) { display: none; }
 
@@ -918,3 +918,7 @@
 .vhs-tape.vhs-tape-k .vhs-tape-rep { display: block; font-size: 10px; opacity: .85; }
 .vhs-tape.vhs-tape-k .vhs-tape-count { font-family: inherit; color: #6d6552; font-size: 10px; margin-left: 0; }
 .vhs-tape.vhs-tape-k.is-active { outline: 2px solid var(--vhs-accent); }
+
+/* 10 nov. (Mauk Tenieb, 18 h 31 ; A46) : un texte trop long pour sa case défile sur place en téléprompteur, jamais coupé à l'ellipse */
+@keyframes iktp{0%,12%{text-indent:0}88%,100%{text-indent:var(--tpx,0)}}
+.ik-tp-on{animation:iktp var(--tpt,4s) linear infinite alternate}

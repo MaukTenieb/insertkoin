@@ -484,13 +484,23 @@
     if (!input || input.__vhsFind) return;
     input.__vhsFind = true;
     if (findState.needle) input.value = findState.needle;
-    if (sort && findState.mode !== "native") sort.value = findState.mode;
     input.addEventListener("input", function () { findState.needle = input.value; applyFind(root); });
     if (sort) {
-      sort.addEventListener("change", function () {
-        findState.mode = sort.value;
-        if (findState.mode === "random") findState.seed = (Date.now() % 233279) + 1;
-        applyFind(root);
+      // The order keys of the deck: one key per order; Shuffle pressed again deals a new order.
+      var keys = sort.querySelectorAll("[data-vhs-sort]");
+      var mark = function () {
+        Array.prototype.forEach.call(keys, function (k) {
+          k.setAttribute("aria-pressed", k.getAttribute("data-vhs-sort") === findState.mode ? "true" : "false");
+        });
+      };
+      mark();
+      Array.prototype.forEach.call(keys, function (k) {
+        k.addEventListener("click", function () {
+          findState.mode = k.getAttribute("data-vhs-sort");
+          if (findState.mode === "random") findState.seed = (Date.now() % 233279) + 1;
+          mark();
+          applyFind(root);
+        });
       });
     }
     // New tracks (refreshTracks) must respect the current filter and sort.

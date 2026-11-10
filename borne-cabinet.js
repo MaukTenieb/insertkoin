@@ -13,7 +13,7 @@
 
   /* ---------- le toit : la plante et la caméra ---------- */
   var roof=el('div','b-roof'),pot=el('div','b-pot'),plant=el('div','b-plant'),care=el('div','b-care'),cam=el('div','b-cam');
-  pot.tabIndex=0;pot.setAttribute('role','group');pot.setAttribute('aria-label','Plante');
+  pot.tabIndex=0;pot.setAttribute('role','group');pot.setAttribute('aria-label',(document.documentElement.lang==='fr')?'Plante':'Plant');
   /* les soins de la plante suivent la langue de la borne (FR · EN) */
   [['water','💧','EAU','WATER'],['sun','☀','SOLEIL','SUN'],['cut','✂','TAILLE','PRUNE']].forEach(function(a){var b=el('button',null,'<i>'+a[1]+'</i><span data-fr="'+a[2]+'" data-en="'+a[3]+'">'+a[3]+'</span>');b.type='button';b.dataset.care=a[0];care.appendChild(b);});
   function careLang(){var fr=document.documentElement.lang==='fr';[].forEach.call(care.querySelectorAll('span[data-fr]'),function(x){x.textContent=fr?x.dataset.fr:x.dataset.en;});}
@@ -418,7 +418,7 @@
   if($('kn'))new MutationObserver(credit).observe($('kn'),{childList:true,characterData:true,subtree:true});credit();setInterval(credit,500);
 
   /* ---------- Motel Sound joue dès l'arrivée, haut-parleur coupé ; la cloche barrée le rallume ---------- */
-  var bell=el('button','b-bell','🔕');bell.type='button';bell.setAttribute('aria-label','Motel Sound : son coupé');bell.setAttribute('aria-pressed','false');
+  var bell=el('button','b-bell','🔕');bell.type='button';bell.setAttribute('aria-label',(document.documentElement.lang==='fr')?'Motel Sound : son coupé':'Motel Sound: muted');bell.setAttribute('aria-pressed','false');
   var docks=bar.querySelectorAll('.dock');(docks[0]||bar).appendChild(bell);
   var muted=true,jp=function(){try{return window.__juke&&window.__juke();}catch(e){return null;}};
   function applyMute(force){var p=jp();if(!p||!p.mute)return false;
@@ -428,7 +428,7 @@
         if(force&&p.getPlayerState&&p.getPlayerState()!==1&&p.playVideo)p.playVideo();}}catch(e){}return true;}
   var BELL='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5h4l5-4.5v14l-5-4.5H3z" fill="currentColor"/><path class="w1" d="M15.5 9a4.2 4.2 0 0 1 0 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path class="w2" d="M18.2 6.5a7.6 7.6 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path class="x" d="M15.5 9.5l5 5M20.5 9.5l-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
   function paintBell(){bell.innerHTML=BELL;bell.classList.toggle('on',!muted);bell.setAttribute('aria-pressed',String(!muted));
-    bell.setAttribute('aria-label','Motel Sound : '+(muted?'son coupé':'son ouvert'));}
+    bell.setAttribute('aria-label',(document.documentElement.lang==='fr')?'Motel Sound : '+(muted?'son coupé':'son ouvert'):'Motel Sound: '+(muted?'muted':'on'));}
   var guard=setInterval(function(){var p=jp();if(p&&p.mute){applyMute();if(muted&&p.getPlayerState&&p.getPlayerState()!==1&&p.playVideo){try{p.playVideo();}catch(e){}}}},150);
   setTimeout(function(){clearInterval(guard);guard=setInterval(applyMute,1000);},15000);
   setTimeout(function(){var n=$('radio-note'),t=$('radio-toggle');if(t&&!(n&&n.classList.contains('on')))t.click();},600);
@@ -729,7 +729,7 @@
   /* la molette 👣 */
   function knob(){var knobs=document.querySelector('.b-knobs');if(!knobs){setTimeout(knob,500);return;}if(knobs.querySelector('.b-psy'))return;
     var on=true;try{on=localStorage.getItem('borne.psy')!=='0';}catch(_){}
-    var w=document.createElement('div');w.className='b-knobw';var b=document.createElement('button');b.type='button';b.className='b-knob b-psy';b.setAttribute('aria-label','Psychopompes');
+    var w=document.createElement('div');w.className='b-knobw';var b=document.createElement('button');b.type='button';b.className='b-knob b-psy';b.setAttribute('aria-label',(document.documentElement.lang==='fr')?'Psychopompes':'Psychopomps');
     var l=document.createElement('span');l.className='b-knoblab';l.textContent='👣';w.appendChild(b);w.appendChild(l);knobs.appendChild(w);
     function apply(){b.dataset.on=on?'1':'0';b.dataset.pos=on?1:0;window.__borneNoPsy=!on;document.documentElement.classList.toggle('b-nopsy',!on);
       if(!on){try{window.__borneTourStop&&window.__borneTourStop();}catch(_){}}try{localStorage.setItem('borne.psy',on?'1':'0');}catch(_){}}

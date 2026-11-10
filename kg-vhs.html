@@ -106,15 +106,16 @@
                aria-label="Find a track on the deck"
                spellcheck="false" autocomplete="off">
         <span class="vhs-find-count" data-vhs-find-count></span>
-        <select class="vhs-find-sort" data-vhs-find-sort
-                data-vhs-i18n-aria="Sort the tracklist" aria-label="Sort the tracklist">
-          <option value="native" data-vhs-i18n="Tape order">Tape order</option>
-          <option value="date_desc" data-vhs-i18n="Newest first">Newest first</option>
-          <option value="date_asc" data-vhs-i18n="Oldest first">Oldest first</option>
-          <option value="title_az" data-vhs-i18n="Title A – Z">Title A – Z</option>
-          <option value="title_za" data-vhs-i18n="Title Z – A">Title Z – A</option>
-          <option value="random" data-vhs-i18n="Shuffle">Shuffle</option>
-        </select>
+        <!-- the order keys of the deck (no native select): one key per order, the pressed one lit -->
+        <div class="vhs-find-sort" data-vhs-find-sort role="group"
+             data-vhs-i18n-aria="Sort the tracklist" aria-label="Sort the tracklist">
+          <button type="button" class="vhs-sort-key" data-vhs-sort="native" aria-pressed="true" data-vhs-i18n="Tape order">Tape order</button>
+          <button type="button" class="vhs-sort-key" data-vhs-sort="date_desc" aria-pressed="false" data-vhs-i18n="Newest first">Newest first</button>
+          <button type="button" class="vhs-sort-key" data-vhs-sort="date_asc" aria-pressed="false" data-vhs-i18n="Oldest first">Oldest first</button>
+          <button type="button" class="vhs-sort-key" data-vhs-sort="title_az" aria-pressed="false" data-vhs-i18n="Title A – Z">Title A – Z</button>
+          <button type="button" class="vhs-sort-key" data-vhs-sort="title_za" aria-pressed="false" data-vhs-i18n="Title Z – A">Title Z – A</button>
+          <button type="button" class="vhs-sort-key" data-vhs-sort="random" aria-pressed="false" data-vhs-i18n="Shuffle">Shuffle</button>
+        </div>
       </div>
 
       <!-- Recorder bay: paste a channel URL, REC records it onto a cassette. -->

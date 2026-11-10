@@ -52,7 +52,7 @@ A few seconds after the title screen opens, then now and then, a guide wanders a
 
 ## Palmarès and Hall of Kave
 
-The 3615 MiniTale shows on its home screen (3615 KORHOGO) the five first of Korong! and of FaunInvaders, and in 3615 HALL the HALL OF KAVE: the twenty best players of all the games, one total per player, points of every game plus Koins earned. Results go out on the open Nostr network, the MiniTale's own transport; the routine of this repository rewrites [`palmares.json`](palmares.json) every hour. Rules, points, transport and checks: [PALMARES.md](PALMARES.md).
+The 3615 MiniTale shows on its home screen (3615 KORHOGO) the first five of Korong! and of FaunInvaders, and in 3615 HALL the HALL OF KAVE: the twenty best players of all the games, one total per player, points of every game plus Koins earned. Results go out on the open Nostr network, the MiniTale's own transport; the routine of this repository rewrites [`palmares.json`](palmares.json) every hour. Rules, points, transport and checks: [PALMARES.md](PALMARES.md).
 
 ## Korhogo Kuration
 

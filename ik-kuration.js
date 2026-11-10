@@ -12,13 +12,15 @@
    IKK.has(id) · IKK.toggle({id,title}) → true if kept · IKK.mine() → [{id,title}] · IKK.all() → Promise<[{pk,name,tracks,t}]>
    IKK.one(pk) → Promise<{pk,name,tracks,t}|null> · IKK.find(hex) → Promise<{…}|null> (8 to 64 hex) · IKK.url(pk) · IKK.pk() → own public key (hex) or null */
 (function () {
+  /* nostr-tools.js sits next to this file: the hall and the motel's rooms (habillages/) load the same copy */
+  var HERE = ((document.currentScript && document.currentScript.src) || '').replace(/[^\/?#]*([?#].*)?$/, '');
   var KIND = 30078, TAG = 'korhogo-kuration', SINCE = 1792713600 /* 23 Oct 2026 */, MAX = 99,
     RELAYS = ['wss://relay.damus.io', 'wss://nos.lol', 'wss://relay.primal.net', 'wss://nostr.mom'],
     NT = null, timer = 0, BASE = 'https://mauktenieb.github.io/insertkoin/';
   function get(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }
   function put(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* private window */ } }
   function load(src) { return new Promise(function (ok, ko) { var s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = ko; document.head.appendChild(s); }); }
-  function libs() { if (NT) return Promise.resolve(NT); return (window.NostrTools ? Promise.resolve() : load('nostr-tools.js')).then(function () { NT = window.NostrTools; return NT; }); }
+  function libs() { if (NT) return Promise.resolve(NT); return (window.NostrTools ? Promise.resolve() : load(HERE + 'nostr-tools.js')).then(function () { NT = window.NostrTools; return NT; }); }
   /* the browser's key, shared with the MiniTale and the palmarès (same site, same storage) */
   function key(create) {
     var h = get('vdx.nostr.sk', null);

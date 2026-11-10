@@ -37,7 +37,8 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0b0908;user-select:no
 #snow{opacity:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");z-index:20}
 #snow{pointer-events:none}#snow.on,#snow.hold{opacity:1;animation:sn .12s steps(3) infinite}
 @keyframes sn{33%{background-position:37px 61px}66%{background-position:-53px 17px}}
-#osd{position:absolute;right:6%;top:6%;font:clamp(14px,3.4vmin,34px) "VT323",monospace;color:#3cff5a;text-shadow:2px 2px 0 #000;z-index:25;display:none;text-align:right;line-height:1}
+#osd .ln{display:block;max-width:100%;overflow:hidden;white-space:nowrap}#osd .ln i{font-style:normal;display:inline-block}#osd .ln.tp i{animation:tpr var(--tt,4s) linear 1s infinite alternate}@keyframes tpr{to{transform:translateX(var(--dx))}}
+#osd{position:absolute;right:6%;top:6%;max-width:88%;font:clamp(14px,3.4vmin,34px) "VT323",monospace;color:#3cff5a;text-shadow:2px 2px 0 #000;z-index:25;display:none;text-align:right;line-height:1}
 #osd.on{display:block}
 #vol{position:absolute;left:8%;right:8%;bottom:9%;z-index:25;display:none;font:clamp(12px,2.6vmin,26px) "VT323";color:#3cff5a;text-shadow:2px 2px 0 #000}
 #vol.on{display:block}
@@ -45,6 +46,13 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0b0908;user-select:no
 #clip,#mire,#devise{display:none;background:#000}#clip.on,#mire.on,#devise.on{display:block}
 #clip iframe,#clipp{position:absolute;inset:0;width:100%!important;height:100%!important;border:0;pointer-events:none}
 #mire canvas{width:100%;height:100%;display:block}
+/* 10 nov., 18 h 09 : les programmes de la télé de Korong!, ses images (attente-01 à 27) en diaporama lent, les bandes des Masks */
+#kor,#slide{display:none;background:#070a08}#kor.on,#slide.on{display:block}#kor canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#slide i{position:absolute;inset:0;background:#000 center/cover no-repeat;opacity:0;transition:opacity 2.4s ease}#slide i.on{opacity:1}
+#devise .strip{position:absolute;left:0;right:0;top:12%;height:52%;display:none;background-repeat:repeat-x;background-size:auto 100%;animation:strip 60s linear infinite}
+#devise.st .strip{display:block}#devise.st img{display:none}
+@keyframes strip{to{background-position:-1740px 0}}
+@media (prefers-reduced-motion:reduce){#devise .strip{animation:none}#slide i{transition:none}}
 #devise{background:radial-gradient(ellipse at 50% 40%,#2a1c10,#000 75%)}#devise img{position:absolute;left:50%;bottom:22%;height:72%;transform:translateX(-50%);filter:saturate(.85) contrast(1.05)}
 #devise .dv{position:absolute;left:0;right:0;bottom:0;padding:3% 5%;background:linear-gradient(transparent,rgba(0,0,0,.85) 35%);text-align:center;color:#f3e6c8;font-family:Arimo,Arial,sans-serif}
 #devise b{display:block;font-size:clamp(12px,2.6vmin,24px);letter-spacing:.08em;text-transform:uppercase;color:#ffd200}#devise p{margin:.3em 0 0;font-size:clamp(12px,2.2vmin,20px);font-style:italic}
@@ -134,6 +142,46 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0b0908;user-select:no
 #tvset{transition:transform .9s cubic-bezier(.45,.05,.25,1)}
 .tvmax #ginfo .c,.tvmax #ghead{font-size:max(calc(14px / var(--k,1)),clamp(8px,1.5vmin,14px))}.tvmax #gmid{font-size:max(calc(14px / var(--k,1)),clamp(8px,1.6vmin,15px))}.tvmax #ginfo p{font-size:max(calc(14px / var(--k,1)),clamp(8px,1.9vmin,18px))}.tvmax .gr .n b,.tvmax .gr .n span,.tvmax .gr .s{font-size:max(calc(14px / var(--k,1)),clamp(8px,1.8vmin,17px))}.tvmax .gr .s small{font-size:max(calc(14px / var(--k,1)),clamp(8px,1.3vmin,12px))}
 .tvmax #remote{opacity:0;pointer-events:none;transition:opacity .4s}
+/* 10 nov. (Mauk Tenieb, 17 h 29) : au téléphone, la télécommande se tient debout, comme en main, sous la télé ou à sa droite ; recadrée sur ses touches, jamais réduite ; chaque touche couvre sa case de la photo */
+#remote{background:none}
+#rcrop{position:relative;width:100%;height:var(--rc,100%);overflow:hidden}
+#rimg{position:absolute;left:0;top:var(--rt,0px);width:100%;height:var(--rh,100%);background:url(a/tv/telecommande.webp) 0 0/100% 100% no-repeat}
+#remote button{transform:none}#remote button:active{transform:translateY(1px)}
+body.rup #remote{left:var(--rx)!important;top:var(--ry)!important;right:auto!important;bottom:auto!important;width:var(--rw2)!important;height:var(--rv)!important;aspect-ratio:auto!important;transform:none!important;margin:0!important;overflow:hidden;z-index:40;cursor:pointer;transition:height .28s cubic-bezier(.2,.8,.3,1),top .28s cubic-bezier(.2,.8,.3,1);filter:brightness(.8) sepia(.2) drop-shadow(0 -6px 14px rgba(0,0,0,.75))}
+body.rup.ropen #remote{overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:none;cursor:auto}
+#remote{z-index:40}
+body.rup #remote::-webkit-scrollbar{display:none}
+/* 10 nov. : la position AV — le magnétoscope du programme VHS (kg-vhs.*) branché sur ce poste ; ses cassettes passent dans l'écran de la photo, son meuble tient le reste */
+body.av #room{background:transparent;z-index:2}
+body.av #bezel,body.av #tube{background:transparent}
+body.av #pic,body.av #clip,body.av #mire,body.av #devise,body.av #ttx{display:none!important}
+body:not(.av) #vhs{display:none!important}
+body.av .kg-layer{position:static!important;width:auto!important;height:auto!important;z-index:auto!important;overflow:visible!important}
+body.av .kg-layer::before,body.av #scanlines{display:none!important}
+body.av #vhs{position:static!important;transform:none!important;background:none!important;padding:0!important;overflow:visible!important;min-height:0!important;height:100vh;display:block!important;pointer-events:none!important}
+body.av #vhs .vhs-screen{position:fixed!important;z-index:1;left:var(--vx,0);top:var(--vy,0);width:var(--vw,0);height:var(--vh,0);aspect-ratio:auto;max-height:none;min-height:0;margin:0}
+body.av #vhs .vhs-tv-foot{display:none}
+/* le tube photographié a les coins ronds : l'image du magnétoscope et celle des chaînes les suivent */
+#tube,body.av #vhs .vhs-screen{border-radius:7%/9%;overflow:hidden}
+body.av #vhs .vhs-shell{position:fixed;z-index:3;left:var(--cx);top:var(--cy);width:var(--cw);height:var(--ch);margin:0;padding:12px 10px 20px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;pointer-events:auto;background:linear-gradient(90deg,rgba(0,0,0,.5),rgba(0,0,0,0) 12px),linear-gradient(rgba(12,8,5,.6),rgba(12,8,5,.78)),url(a/tv/chambre.webp) 52% 66%/520% auto #1a110a}
+/* le magnétoscope posé sur le meuble : façade d'une pièce, touches au doigt (44 px), lettres de 12 px au moins */
+body.av #vhs .vhs-deck{width:100%;margin:2px 0 16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;padding:10px}
+body.av #vhs .vhs-keys{grid-column:1/-1;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+body.av #vhs .vhs-keys .vhs-key{width:auto;height:44px;min-height:44px;margin:0;font-size:14px;letter-spacing:0}
+body.av.cabn #vhs .vhs-deck{grid-template-columns:minmax(0,1fr)}
+body.av.cabn #vhs .vhs-keys{grid-template-columns:repeat(auto-fill,minmax(44px,1fr))}body.av.cabn #vhs .vhs-shell{padding:10px 6px 20px}body.av.cabn #vhs .vhs-deck{padding:8px 6px}
+body.av #vhs .vhs-tracklist button{font-size:12px}
+body.av #vhs .vhs-find-glass{top:22px}body.av.cabn #vhs .vhs-shelf-head{flex-wrap:wrap;gap:6px}
+body.av #vhs :is(.vhs-label,.vhs-vfd-state,.vhs-vfd-status,.vhs-shelf-title,.vhs-tape-name,.vhs-shelf-rubric,.vhs-tape-rep,.vhs-tape-count,.vhs-rec-btn,.vhs-rec-btn span,.vhs-rec-cancel,.vhs-rec-progress,.vhs-rec-progress *,.vhs-tapetools-name,.vhs-tapetools-link,.vhs-tapetools-eject,.vhs-find-count,.vhs-message,.vhs-tab){font-size:12px}
+body.av #vhs .vhs-shell :is(button,input,select){min-height:44px}
+body.av #vhs .vhs-shell .vhs-tape-all{min-width:44px}
+body.av #vhs .vhs-shell .vhs-tapetools-link{display:inline-flex;align-items:center;min-height:44px;min-width:44px;justify-content:center}
+body.av.cabn #vhs .vhs-find{grid-template-columns:minmax(0,1fr)}
+body.av.cabn #vhs .vhs-rec{display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+body.av.cabn #vhs .vhs-shelf-row{grid-template-columns:minmax(0,1fr)}
+/* 10 nov., 17 h 41 : l'écran d'abord ; le meuble prend la place restante, ou se replie en bas et s'ouvre au toucher ; la télécommande repliée laisse sa place en bas du meuble */
+body.av.cabf #vhs .vhs-shell{transition:height .28s cubic-bezier(.2,.8,.3,1),top .28s cubic-bezier(.2,.8,.3,1)}
+body.av.cabf:not(.cabo) #vhs .vhs-shell{overflow:hidden;cursor:pointer}
 </style>
 </head>
 <body>
@@ -143,27 +191,31 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0b0908;user-select:no
    <div class="layer" id="pic"></div>
    <div class="layer" id="clip"><div id="clipp"></div></div>
    <div class="layer" id="mire"><canvas width="480" height="360"></canvas></div>
-   <div class="layer" id="devise"><img alt=""><div class="dv"><b></b><p></p></div></div>
+   <div class="layer" id="devise"><img alt=""><div class="strip"></div><div class="dv"><b></b><p></p></div></div>
+   <div class="layer" id="kor"><canvas></canvas></div>
+   <div class="layer" id="slide"><i></i><i></i></div>
    <div class="layer" id="ttx"><canvas id="grid" width="480" height="500"></canvas></div>
    <div class="layer" id="snow"></div><div class="layer" id="glass"></div>
    <div id="osd"></div><div id="vol"></div>
   </div></div>
   <div id="dresser"></div><div id="halo"></div><div id="lcd"></div><div id="ctl"><button class="knob" id="kch" style="--r:0deg" title="CH"></button><span class="lbl">CHANNEL</span><button class="knob" id="kvol" style="--r:-60deg" title="VOL"></button><span class="lbl">VOLUME</span><div class="grille"></div><button class="pw" id="kpw" title="POWER"></button></div>
  </div>
- <div id="remote">
+ <div id="remote"><div id="rcrop"><div id="rimg">
   <div class="ir"><i id="ir"></i></div>
   <button data-k="1" aria-label="1" title="1" style="left:22.2%;top:17.1%"></button><button data-k="2" aria-label="2" title="2" style="left:49.4%;top:17.1%"></button><button data-k="3" aria-label="3" title="3" style="left:77.0%;top:17.1%"></button><button data-k="4" aria-label="4" title="4" style="left:22.2%;top:23.9%"></button><button data-k="5" aria-label="5" title="5" style="left:49.4%;top:23.9%"></button><button data-k="6" aria-label="6" title="6" style="left:77.0%;top:23.9%"></button><button data-k="7" aria-label="7" title="7" style="left:22.2%;top:30.1%"></button><button data-k="8" aria-label="8" title="8" style="left:49.4%;top:30.1%"></button><button data-k="9" aria-label="9" title="9" style="left:77.0%;top:30.1%"></button><button data-k="0" aria-label="0" title="0" style="left:49.4%;top:36.6%"></button><button data-k="red" aria-label="R" title="R" style="left:19.2%;top:44.2%"></button><button data-k="green" aria-label="G" title="G" style="left:39.7%;top:44.2%"></button><button data-k="yellow" aria-label="Y" title="Y" style="left:60.3%;top:44.2%"></button><button data-k="cyan" aria-label="C" title="C" style="left:80.3%;top:44.2%"></button><button data-k="txt" aria-label="TXT" title="TXT" style="left:30.5%;top:51.0%"></button><button data-k="mix" aria-label="MIX" title="MIX" style="left:69.5%;top:51.0%"></button><button data-k="volup" aria-label="VOL +" title="VOL +" style="left:29.7%;top:60.7%"></button><button data-k="voldn" aria-label="VOL −" title="VOL −" style="left:29.7%;top:66.7%"></button><button data-k="chup" aria-label="CH +" title="CH +" style="left:69.0%;top:60.7%"></button><button data-k="chdn" aria-label="CH −" title="CH −" style="left:69.0%;top:66.7%"></button><button data-k="power" aria-label="POWER" title="POWER" style="left:28.5%;top:78.6%"></button><button data-k="mute" aria-label="MUTE" title="MUTE" style="left:70.3%;top:78.6%"></button>
- </div>
+ </div></div></div>
 </div>
+<span class="motel-l" hidden></span>
 <script src="kdata.js"></script>
 <script>
 (function(){
 var $=function(s){return document.querySelector(s)},$$=function(s){return [].slice.call(document.querySelectorAll(s))};
 var D=window.KDATA,ON=/github\.io$/.test(location.hostname),B='https://mauktenieb.github.io/insertkoin/';
 var lang='en';try{lang=localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e){}
+document.documentElement.lang=lang;
 function p2(n){return String(n).padStart(2,'0')}
 /* calendrier républicain */
-var MO=['Vendémiaire','Brumaire','Frimaire','Nivôse','Pluviôse','Ventôse','Germinal','Floréal','Prairial','Messidor','Thermidor','Fructidor','Sansculottides'],DAYS=['Primidi','Duodi','Tridi','Quartidi','Quintidi','Sextidi','Septidi','Octidi','Nonidi','Décadi'];
+var MO=['Vendémiaire','Brumaire','Frimaire','Nivôse','Pluviôse','Ventôse','Germinal','Floréal','Prairial','Messidor','Thermidor','Fructidor','Sansculottides'];
 function sext(y){return y<20?(y===3||y===7||y===11||y===15):(y%4===0&&(y%100!==0||y%400===0)&&y%4000!==0)}
 function rep(d){d=d||new Date();var n=Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(1792,8,22))/864e5),y=1;for(;;){var l=sext(y)?366:365;if(n<l)break;n-=l;y++}return{d:n%30+1,m:Math.floor(n/30)+1,y:y}}
 function roman(n){var r='',v=[[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];v.forEach(function(p){while(n>=p[0]){r+=p[1];n-=p[0]}});return r}
@@ -172,24 +224,51 @@ var SAY=(window.KDATA&&KDATA.SAY)||{};
 function say(id){var s=SAY[id];return s?(lang==='fr'?s[1]:s[0]):''}
 
 /* ---------- chaînes (10 nov.) : la télé de la chambre est celle de Korong! (ACQUIS l. 88) : 01 clips de Mauk Tenieb au hasard, 02 mire, 03 devise d'un Mask, puis la neige ; les infos passent au télétexte ; AV mène au magnétoscope (t19) ---------- */
-var CH=[{num:1,id:'clips',name:'Mauk Tenieb'},{num:2,id:'mire',name:''},{num:3,id:'devise',name:''},{num:4,id:'snow',name:''},{num:5,id:'snow',name:''},{num:6,id:'snow',name:''}];
-var ch=1,power=true,txt=0,vol=20,mute=false,entry='',entryT;
+/* 10 nov., 18 h 09 (Mauk Tenieb : « plus de contenus : celui de Korong-écran ; et jouer sur les aléas des touches à chaque session ») : chaque session tire l'ordre des contenus sur les touches 1 à 16 ; la neige garde trois numéros ; chaque contenu reste sur son numéro le temps de la session */
+var CONT=['clips','images','devise','mire','k:motto','k:stats','k:sig','k:koins','k:bars','k:card','k:grid','k:radio','k:clock','snow','snow','snow'];
+var CH=(function(){var o=null;try{o=JSON.parse(sessionStorage.getItem('ik.tvch')||'null')}catch(e){}
+ if(!Array.isArray(o)||o.length!==CONT.length||CONT.some(function(c){return o.filter(function(x){return x===c}).length!==CONT.filter(function(x){return x===c}).length})){o=shuffle(CONT);try{sessionStorage.setItem('ik.tvch',JSON.stringify(o))}catch(e){}}
+ return o.map(function(id,i){return {num:i+1,id:id,name:id==='clips'?'Mauk Tenieb':''}})})();
+function chOf(id){var c=CH.filter(function(x){return x.id===id})[0];return c?c.num:0}
+var av=false,ch=1,power=true,txt=0,vol=20,mute=false,entry='',entryT;
 function cur(){return CH.filter(function(c){return c.num===ch})[0]}
-function osd(s,ms){var o=$('#osd');o.innerHTML=s;o.classList.add('on');clearTimeout(o._t);o._t=setTimeout(function(){o.classList.remove('on')},ms||2600)}
+/* l'OSD : chaque ligne trop longue pour l'écran défile en téléprompteur, jamais coupée (10 nov.) */
+function osd(s,ms){var o=$('#osd');o.innerHTML=String(s).split('<br>').map(function(l){return '<span class="ln"><i>'+l+'</i></span>'}).join('');setTimeout(function(){[].forEach.call(o.querySelectorAll('.ln'),function(l){var i=l.firstChild,dx=i.scrollWidth-l.clientWidth;l.classList.toggle('tp',dx>2);if(dx>2)l.style.setProperty('--dx',(-dx-8)+'px');l.style.setProperty('--tt',Math.max(3,dx/40)+'s');if(dx>2){clearTimeout(o._t);o._t=setTimeout(function(){o.classList.remove('on')},Math.max(ms||2600,1000+2*Math.max(3000,dx*25)))}})},30);o.classList.add('on');clearTimeout(o._t);o._t=setTimeout(function(){o.classList.remove('on')},ms||2600)}
 function zap(n){var c=CH.filter(function(x){return x.num===n})[0];if(!c){osd(p2(n)+'<br>– – –',1200);return}ch=n;var s=$('#snow');s.classList.add('on');
  setTimeout(function(){s.classList.remove('on');draw();osd(p2(c.num)+(c.name?'<br>'+c.name.toUpperCase():''))},380);$('#kch').style.setProperty('--r',(n*20)+'deg')}
-function draw(){var c=cur(),on=power&&!txt;['clip','mire','devise'].forEach(function(k){$('#'+k).classList.toggle('on',power&&c.id===(k==='clip'?'clips':k))});$('#pic').style.backgroundImage='none';$('#snow').classList.toggle('hold',power&&c.id==='snow');
- if(c.id==='mire')mire();if(c.id==='devise')devise();clip(on&&c.id==='clips');if(txt)renderPage(page)}
+function lid(id){return id==='clips'?'clip':id==='images'?'slide':/^k:/.test(id)?'kor':id}
+function draw(){var c=cur(),on=power&&!txt&&!av,L=['clip','mire','devise','kor','slide'];L.forEach(function(k){$('#'+k).classList.toggle('on',power&&!av&&lid(c.id)===k)});$('#pic').style.backgroundImage='none';$('#snow').classList.toggle('hold',power&&!av&&c.id==='snow');
+ clip(on&&c.id==='clips');if(av){kor(null);slide(false);return}
+ if(c.id==='mire')mire();if(c.id==='devise')devise();kor(on&&/^k:/.test(c.id)?c.id.slice(2):null);slide(on&&c.id==='images');if(txt)renderPage(page)}
+/* les programmes de la télé de Korong!, dessinés par son propre code (index.html : TVT, SIGNAME, plain, fitFont, headTV, wrapTV, tvScreen, SIGN, kfmt, la liste R0 des Masks), à l'échelle de l'écran de la chambre : 4 px de Korong! = 12 px au moins */
+var KR={fn:null,ok:null,ch:null,raf:0,G:{t:0,tv:0,r:null,tvs:null},TV:{x:0,y:0,w:0,h:0},R0:[]},IDXP=null;
+function idx(){return IDXP||(IDXP=fetch('../index.html').then(function(r){return r.text()}))}
+function korLoad(cb){if(KR.ok!==null)return cb(KR.ok);idx().then(function(t){try{
+ var a=t.indexOf('const TVT='),b=t.indexOf('\nfunction tvPick(',a),c=t.indexOf('function tvScreen('),d=t.indexOf('\nwindow.__tv=',c),sg=/const SIGN=\{[^}]*\};/.exec(t),kf=/function kfmt\(n\)\{return [^;]*;\}/.exec(t),r0=/const R0=(\[[\s\S]*?\]);\n/.exec(t);
+ if(a<0||b<0||c<0||d<0||!sg||!kf||!r0)throw new Error('korong');KR.R0=JSON.parse(r0[1]);
+ var mk=new Function('G','TV','TAU','RUN','radioOn','tvPick','tvClip','tvClipOk','$','var LANG="en",koins=0;\n'+t.slice(a,b)+'\n'+sg[0]+'\n'+kf[0]+'\n'+t.slice(c,d)+'\nreturn {draw:tvScreen,set:function(l,k){LANG=l;koins=k}};');
+ KR.fn=mk(KR.G,KR.TV,Math.PI*2,null,true,function(){},function(){},function(){return false},function(id){return document.getElementById(id)});KR.ok=true}catch(e){KR.ok=false}cb(KR.ok)}).catch(function(){KR.ok=false;cb(false)})}
+function korMask(){var R=KR.R0;KR.G.r=R[Math.floor(Math.random()*R.length)]||null;if(KR.G.r)KR.G.r.glow=KR.G.r.c}
+function korVisit(ch){korMask();var t=performance.now()/1000;KR.G.t=t;KR.G.tv=0;KR.G.tvs={ch:ch,at:t,until:1e12,snow:.18+Math.random()*.25,rally:0,best:0,lastTv:0,kw:Math.random()<.5?'KOINS':'KINOS'}}
+function kor(ch){cancelAnimationFrame(KR.raf);KR.ch=ch;if(!ch)return;korLoad(function(ok){if(!ok||KR.ch!==ch)return;korVisit(ch);var cv=$('#kor canvas'),x=cv.getContext('2d');
+ (function frame(){if(KR.ch!==ch)return;var tb=$('#tube'),w=tb.clientWidth,h=tb.clientHeight,dp=Math.min(2,devicePixelRatio||1),k=Math.max(3,w/140);if(cv.width!==Math.round(w*dp)||cv.height!==Math.round(h*dp)){cv.width=Math.round(w*dp);cv.height=Math.round(h*dp)}
+  KR.TV.w=w/k;KR.TV.h=h/k;KR.G.t=performance.now()/1000;var kn=0;try{kn=+localStorage.getItem('ik.koins')||0}catch(e){}KR.fn.set(lang,kn);
+  x.setTransform(k*dp,0,0,k*dp,0,0);try{KR.fn.draw(x,KR.G.t,{rally:0,player_score:0,opponent_score:0,p:{max_score:7}})}catch(e){}KR.raf=requestAnimationFrame(frame)})()})}
+/* le titre du Motel Sound pour le programme radio de Korong! */
+setInterval(function(){var b=document.querySelector('#ikbar .b-px-son'),t=b&&b.title||'',i=t.indexOf(' — ');document.querySelector('.motel-l').textContent=i>0?t.slice(i+3):''},1000);
+/* les images de Mauk Tenieb : attente-01 à attente-27, une toutes les sept secondes, tirées au hasard */
+var SL={n:0,t:0,i:0};function slide(on){clearInterval(SL.t);if(!on)return;var I=$$('#slide i');function next(){SL.n=(SL.n+1+Math.floor(Math.random()*26))%27;var a=I[SL.i%2],b=I[(SL.i+1)%2];a.style.backgroundImage='url(../attente-'+p2(SL.n+1)+'.webp)';a.classList.add('on');b.classList.remove('on');SL.i++}next();SL.t=setInterval(next,7000)}
 /* 03 : la devise d'un Mask, tirée au hasard, en ses mots (fiches) */
-var DV=-1;function devise(n){var F=D.F||[];if(!F.length)return;DV=n?(DV+1)%F.length:Math.floor(Math.random()*F.length);var f=F[DV];$('#devise img').src='a/b-'+f.slug+'.webp';$('#devise b').textContent=f.name;$('#devise p').textContent=f.motto}
+var DV=-1;function devise(n){var F=D.F||[];if(!F.length)return;DV=n?(DV+1)%F.length:Math.floor(Math.random()*F.length);var f=F[DV],st=STRIPS.indexOf(f.slug)>=0&&Math.random()<.6;$('#devise').classList.toggle('st',st);if(st)$('#devise .strip').style.backgroundImage='url(a/strip-'+f.slug+'.webp)';else $('#devise img').src='a/b-'+f.slug+'.webp';$('#devise b').textContent=f.name;$('#devise p').textContent=f.motto}
+var STRIPS=['c7h5n3o6','croisiere_noire','honey_buzzard','tsui_pen'];
 /* 02 : la mire, avec l'heure et la date républicaine */
 function mire(){var cv=$('#mire canvas'),x=cv.getContext('2d'),W=480,H=360,cols=['#c0c0c0','#c0c000','#00c0c0','#00c000','#c000c0','#c00000','#0000c0'];x.fillStyle='#000';x.fillRect(0,0,W,H);cols.forEach(function(c,i){x.fillStyle=c;x.fillRect(i*W/7,0,W/7+1,H*.66)});['#0000c0','#111','#c000c0','#111','#00c0c0','#111','#c0c0c0'].forEach(function(c,i){x.fillStyle=c;x.fillRect(i*W/7,H*.66,W/7+1,H*.08)});
  var g=['#000','#262626','#4d4d4d','#808080','#b3b3b3','#fff'];g.forEach(function(c,i){x.fillStyle=c;x.fillRect(i*W/6,H*.74,W/6+1,H*.26)});x.strokeStyle='#fff';x.lineWidth=3;x.beginPath();x.arc(W/2,H*.42,H*.33,0,Math.PI*2);x.stroke();
- var d=new Date(),r=rep();x.fillStyle='#000';x.fillRect(W/2-96,H*.36,192,46);x.fillStyle='#fff';x.font='bold 30px Arimo,Arial,sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(p2(d.getHours())+':'+p2(d.getMinutes())+':'+p2(d.getSeconds()),W/2,H*.36+24);x.font='bold 15px Arimo,Arial,sans-serif';x.fillText(r.d+' '+MO[r.m-1].toUpperCase()+' AN '+roman(r.y),W/2,H*.36+60)}
+ var d=new Date(),r=rep();x.fillStyle='#000';x.fillRect(W/2-96,H*.36,192,46);x.fillStyle='#fff';x.font='bold 30px Arimo,Arial,sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(p2(d.getHours())+':'+p2(d.getMinutes())+':'+p2(d.getSeconds()),W/2,H*.36+24);x.font='bold 25px Arimo,Arial,sans-serif';x.fillStyle='#000';var ds=r.d+' '+MO[r.m-1].toUpperCase()+' AN '+roman(r.y),dw=x.measureText(ds).width+16;x.fillRect(W/2-dw/2,H*.36+48,dw,30);x.fillStyle='#fff';x.fillText(ds,W/2,H*.36+64)}
 setInterval(function(){if(power&&!txt&&cur().id==='mire')mire()},1000);
 /* 01 : les clips de Mauk Tenieb au hasard, la liste du Motel Sound (99 titres) ; le Motel Sound de la barre se tait pendant le clip */
 var CP={p:null,ready:false,want:false,ids:null,T:{},shown:''};
-function clipIds(cb){if(CP.ids)return cb(CP.ids);fetch('../index.html').then(function(r){return r.text()}).then(function(t){var m=/var JUKE_TRACKS=(\[.*?\]);/.exec(t),a=[];try{a=m?JSON.parse(m[1]):[]}catch(e){}a.forEach(function(x){CP.T[x.id]=x.t});CP.ids=shuffle(a.map(function(x){return x.id}));cb(CP.ids)}).catch(function(){CP.ids=[];cb([])})}
+function clipIds(cb){if(CP.ids)return cb(CP.ids);fetch('../index.html').then(function(r){return r.text()}).then(function(t){var m=/var JUKE_TRACKS=(\[.*?\]);/.exec(t),a=[];try{a=m?JSON.parse(m[1]):[]}catch(e){}CP.raw=a;a.forEach(function(x){CP.T[x.id]=x.t});CP.ids=shuffle(a.map(function(x){return x.id}));cb(CP.ids)}).catch(function(){CP.ids=[];cb([])})}
 function clipVol(){if(!CP.p||!CP.ready)return;try{if(mute||!vol||!CP.user)CP.p.mute();else{CP.p.unMute();CP.p.setVolume(Math.round(vol*2.5))}}catch(e){}}
 function clip(v){CP.want=v;if(window.IKMotel&&IKMotel.hush)IKMotel.hush('tv',v);if(!v){if(CP.p&&CP.ready)try{CP.p.pauseVideo()}catch(e){}return}if(CP.p){if(CP.ready){clipVol();try{CP.p.playVideo()}catch(e){}}return}
  clipIds(function(ids){if(!ids.length||CP.p)return;function go(){CP.p=new YT.Player('clipp',{height:'100%',width:'100%',host:'https://www.youtube-nocookie.com',playerVars:{autoplay:1,mute:1,controls:0,disablekb:1,fs:0,iv_load_policy:3,modestbranding:1,playsinline:1,rel:0},
@@ -229,14 +308,14 @@ function mosaicText(text,cols,rowsN,color){var W=cols*2,H=rowsN*3,px=[];for(var 
 function pad(s,n){s=clean(s);return s.length>n?s.slice(0,n):s+' '.repeat(n-s.length)}
 function wrap(text,w){text=clean(text||'');var words=text.split(/\s+/),L=[],l='';words.forEach(function(wd){if((l+' '+wd).trim().length>w){L.push(l.trim());l=wd}else l+=' '+wd});if(l.trim())L.push(l.trim());return L}
 var F=lang==='fr';
-function hdr(num,sub){var d=new Date(),r=rep(d);var dd=DAYS[(r.d-1)%10].slice(0,3)+' '+p2(r.d)+' '+MO[r.m-1].slice(0,3);var pg=String(num);return 'P'+num+' '+A.y+'KORHOGO '+pad(pg,4)+A.w+pad(dd,11)+A.y+p2(d.getHours())+':'+p2(d.getMinutes())+'/'+p2(d.getSeconds())}
+function hdr(num,sub){var d=new Date(),r=rep(d);var dd=p2(r.d)+' '+MO[r.m-1];/* 10 nov. (Mauk Tenieb) : le mois en entier ; trop long pour sa case, il défile en téléprompteur */if(dd.length>11){var lp=dd+'   ',o=d.getSeconds()%lp.length;dd=(lp+lp).slice(o,o+11)}var pg=String(num);return 'P'+num+' '+A.y+'KORHOGO '+pad(pg,4)+A.w+pad(dd,12)+A.y+p2(d.getHours())+':'+p2(d.getMinutes())+'/'+p2(d.getSeconds())}
 function fast(a){/* ligne 24 : quatre libellés colorés */var s=A.r+pad(a[0],9)+A.g+pad(a[1],9)+A.y+pad(a[2],9)+A.c+pad(a[3],9);return s}
 function bar(colorCode,text,textColor){return colorCode+A.nb+(textColor||A.b)+pad(text,37)}
 var FASTDEF=function(){return F?['Programmes','La Fauna','Palmarès','Sommaire']:['Programs','The Fauna','Palmarès','Index']};
 var FASTNUM=[200,300,400,100];
 var PAGES={};
 PAGES[100]=function(){var L=[hdr(100)];mosaicText('KORHOGO',39,5,A.gy).forEach(function(l){L.push(l)});
- L.push(A.c+(F?'  Le monde Korhogo de Mauk Tenieb':'  Mauk Tenieb\'s Korhogo world'));L.push(A.c+(F?'  ses jeux et ses machines dans un navigateur':'  games and machines in a browser'));L.push('');
+ L.push(A.c+(F?'  Le monde Korhogo de Mauk Tenieb':'  Mauk Tenieb\'s Korhogo world'));L.push(A.c+(F?'  ses jeux et ses machines':'  games and machines in a browser'));if(F)L.push(A.c+'  dans un navigateur');L.push('');
  var idx=F?[['101','Insert Koin'],['200','Programmes'],['300','La Fauna'],['400','Palmarès Korong!'],['401','Palmarès FaunInvaders'],['500','Koins'],['600','Ce soir à la TV'],['700','Liens'],['888','Sous-titres']]:[['101','Insert Koin'],['200','Programs'],['300','The Fauna'],['400','Palmarès Korong!'],['401','Palmarès FaunInvaders'],['500','Koins'],['600','Tonight on TV'],['700','Links'],['888','Subtitles']];
  idx.forEach(function(x){L.push(A.w+' '+pad(x[1],28)+A.y+x[0])});while(L.length<23)L.push('');L.push(bar(A.b,F?' Tapez un numéro de page':' Key in a page number',A.y));L.push(fast(FASTDEF()));return L};
 PAGES[101]=function(){var L=[hdr(101),bar(A.r,'INSERT KOIN',A.w),''];var t=F?['Le monde Korhogo de Mauk Tenieb, ses jeux et ses machines dans un navigateur.','Insert Koin tourne dans le navigateur du visiteur, sur ordinateur et téléphone, tenu droit ou couché, en anglais et en français.','Par Mauk Tenieb & Korhogo.']:['Insert Koin, Mauk Tenieb\'s Korhogo world, games and machines in a browser.','Insert Koin runs in the visitor\'s browser on desktop and phone, held upright or on its side, in English and French.','By Mauk Tenieb & Korhogo.'];
@@ -259,8 +338,8 @@ PAGES[400]=palmPage(400,'korong','PALMARÈS  KORONG!','MASKS',F?'BUTS PRIS':'GOA
 PAGES[401]=palmPage(401,'fauninvaders','PALMARÈS  FAUNINVADERS','SCORE',F?'VAGUE':'WAVE');
 PAGES[500]=function(){var L=[hdr(500),bar(A.y,'KOINS',A.b),''];var t=F?['Départ à 3, plafond 99.','Un Koin par victoire, quel que soit le jeu ; un par connexion 3615 KOINS.','La première partie d\'un programme se paie au premier geste dans l\'écran ; zapper reste gratuit.','Rejouer dans un programme ouvert coûte un Koin.','À zéro Koin, un Koin gratuit revient au bout de 60 s.']:['Start with 3, ceiling 99.','One Koin per win, in any game; one per connection to 3615 KOINS.','A program\'s first game is paid at the first move on the screen; zapping stays free.','Replaying in an open program costs one Koin.','At zero, a free Koin comes back after 60 s.'];
  t.forEach(function(p){wrap(p,37).forEach(function(l,j){L.push((j?A.w+' ':A.y+'\x7f'+A.w)+l)});L.push('')});while(L.length<24)L.push('');L.push(fast(FASTDEF()));return L};
-PAGES[600]=function(){var L=[hdr(600),bar(A.b,F?'CE SOIR A LA TV':'TONIGHT ON TV',A.w),''],d=new Date(),ids=CP.ids||[],i0=Math.max(0,ids.indexOf(CP.shown));if(!CP.ids)clipIds(function(){if(txt&&page===600)renderPage(600)});
- ids.slice(i0,i0+18).forEach(function(id,i){var t=new Date(d.getTime()+i*24e4);L.push(A.y+p2(t.getHours())+':'+p2(t.getMinutes())+' '+A.c+'01 '+A.w+clean(CP.T[id]||'').replace(/_/g,' ').slice(0,28))});while(L.length<24)L.push('');L.push(fast(FASTDEF()));return L};
+PAGES[600]=function(){var L=[hdr(600),bar(A.b,F?'CE SOIR À LA TV':'TONIGHT ON TV',A.w),''],d=new Date(),ids=CP.ids||[],i0=Math.max(0,ids.indexOf(CP.shown));if(!CP.ids)clipIds(function(){if(txt&&page===600)renderPage(600)});
+ ids.slice(i0,i0+18).forEach(function(id,i){var t=new Date(d.getTime()+i*24e4);L.push(A.y+p2(t.getHours())+':'+p2(t.getMinutes())+' '+A.c+p2(chOf('clips'))+' '+A.w+clean(CP.T[id]||'').replace(/_/g,' ').slice(0,28))});while(L.length<24)L.push('');L.push(fast(FASTDEF()));return L};
 PAGES[700]=function(){var L=[hdr(700),bar(A.g,F?'LIENS':'LINKS',A.b),''];[['Lore','mauktenieb.substack.com'],['Journal','korhogo.substack.com'],['Burrows','mauktenieb.github.io/katabase'],['Bandcamp','mauktenieb.bandcamp.com'],['Threadless','korhogo.threadless.com'],['Instagram','instagram.com/mauktenieb'],['YouTube','youtube.com/@mauktenieb'],['Mauk Tenieb','github.com/MaukTenieb'],['3615','mauktenieb.github.io/3615']].forEach(function(x){L.push(A.y+x[0]);L.push(A.w+' '+x[1])});while(L.length<24)L.push('');L.push(fast(FASTDEF()));return L};
 PAGES[888]=function(){var L=[hdr(888)];for(var i=0;i<20;i++)L.push('');var s=say(cur().id)||'';L.push(A.bb+A.w+A.nb+A.bb+'                                      ');L.push(' '+A.w+A.nb+A.bb+' '+pad(s||(F?'Sous-titres':'Subtitles'),33));while(L.length<25)L.push('');return L};
 var page=100,sub=1,subT;
@@ -283,7 +362,8 @@ function msnd(){MS.want=power&&txt>0;if(window.IKMotel){msVol();IKMotel.want('tv
   if(window.YT&&YT.Player)msMake(ids);else{var pr=window.onYouTubeIframeAPIReady;window.onYouTubeIframeAPIReady=function(){if(pr)pr();msMake(ids)};var sc=document.createElement('script');sc.src='https://www.youtube.com/iframe_api';document.head.appendChild(sc)}})}
 
 /* ---------- commandes ---------- */
-function key(k){if(k==='av'){location.href=ON?'https://mauktenieb.github.io/insertkoin/?p=vhs':'../?p=vhs';return}var ir=$('#ir');ir.classList.add('on');setTimeout(function(){ir.classList.remove('on')},100);
+function key(k){if(k==='av'){avOn();return}var ir=$('#ir');ir.classList.add('on');setTimeout(function(){ir.classList.remove('on')},100);
+ if(av&&power&&avKey(k))return;
  if(k==='power'){power=!power;$('#tube').style.filter='';$('#tube').classList.toggle('off',!power);$('#tvset').classList.toggle('dark',!power);if(!power){txt=0;$('#ttx').className='layer'}draw();msnd();return}if(!power)return;
  if(k==='mix'){txt=txt===2?0:2;$('#ttx').className='layer'+(txt===2?' on mix':'');if(txt)goPage(page);clip(power&&!txt&&cur().id==='clips');msnd();return}
  if(k==='txt'){txt=txt?0:1;var t=$('#ttx');t.className='layer'+(txt===1?' on':txt===2?' on mix':'');if(txt===1)goPage(page);clip(power&&!txt&&cur().id==='clips');msnd();return}
@@ -293,36 +373,120 @@ function key(k){if(k==='av'){location.href=ON?'https://mauktenieb.github.io/inse
   if(k==='chup'){goPage(nextPage(1));return}if(k==='chdn'){goPage(nextPage(-1));return}if(k==='ok'){var f=PAGES[page];if(f&&f.subs){sub=sub%f.subs+1;renderPage(page)}return}}
  if(k==='chup')zap(ch%CH.length+1);else if(k==='chdn')zap((ch-2+CH.length)%CH.length+1);
  else if(k==='volup'||k==='voldn'){vol=Math.max(0,Math.min(40,vol+(k==='volup'?2:-2)));mute=false;showVol();msVol();clipVol()}else if(k==='mute'){mute=!mute;showVol();msVol();clipVol()}
- else if(k==='ok'){var c=cur();if(c.id==='clips'&&CP.p&&CP.ready){try{CP.p.nextVideo()}catch(e){}}else if(c.id==='devise')devise(1)}
+ else if(k==='ok'){var c=cur();if(c.id==='clips'&&CP.p&&CP.ready){try{CP.p.nextVideo()}catch(e){}}else if(c.id==='devise')devise(1);else if(/^k:/.test(c.id)&&KR.ok)korVisit(c.id.slice(2));else if(c.id==='images')slide(true)}
  else if(k==='red'||k==='green'||k==='yellow'||k==='cyan'){osd('TXT')}}
 function nextPage(d){var ks=Object.keys(PAGES).map(Number).sort(function(a,b){return a-b}),i=ks.indexOf(page);return ks[(i+d+ks.length)%ks.length]}
 function open(u){setTimeout(function(){if(ON)location.href=u;else window.open(u,'_blank','noopener')},700)}
 function showVol(){var v=$('#vol');v.innerHTML=mute?'MUTE':'VOLUME '+'|'.repeat(vol)+' '.repeat(40-vol)+' '+p2(vol);v.classList.add('on');clearTimeout(v._t);v._t=setTimeout(function(){v.classList.remove('on')},2000);$('#kvol').style.setProperty('--r',(-120+vol*6)+'deg')}
 $$('#remote button').forEach(function(b){b.addEventListener('click',function(){key(b.dataset.k)})});
 $('#kch').onclick=function(){key('chup')};$('#kvol').onclick=function(){key('volup')};$('#kpw').onclick=function(){key('power')};
-addEventListener('keydown',function(e){var m={ArrowUp:'chup',ArrowDown:'chdn',ArrowRight:'volup',ArrowLeft:'voldn',Enter:'ok',t:'txt',T:'txt',m:'mute',r:'red',g:'green',y:'yellow',c:'cyan'}[e.key];if(/^\d$/.test(e.key))m=e.key;if(m){e.preventDefault();key(m)}});
+/* 10 nov., 17 h 41 (Mauk Tenieb : « les commandes passent par le clavier ») : chiffres, flèches, Entrée et Espace, t x m p, r g y c, e, Échap ; muet quand un champ de saisie a le focus */
+addEventListener('keydown',function(e){if(e.ctrlKey||e.metaKey||e.altKey)return;var t=e.target;if(t&&t.closest&&t.closest('input,textarea,select,[contenteditable]')){if(e.key==='Escape'){e.preventDefault();e.stopPropagation();t.blur()}return}
+ var k=e.key,m=null;
+ if(/^[0-9]$/.test(k))m=k;else if(k==='ArrowUp')m='chup';else if(k==='ArrowDown')m='chdn';
+ else if(k==='ArrowLeft'||k==='ArrowRight')m=av?(k==='ArrowLeft'?'7':'9'):(k==='ArrowLeft'?'voldn':'volup');
+ else if(k==='Enter'||k===' '||k==='Spacebar'){if(t&&t.closest&&t.closest('button,a'))return;m='ok'}
+ else m=({t:'txt',x:'mix',m:'mute',p:'power',r:'red',g:'green',y:'yellow',c:'cyan',e:'eject',escape:'boom'})[k.toLowerCase()]||null;
+ if(!m)return;e.preventDefault();e.stopPropagation();
+ if(m==='boom'){if(window.__ikBoom)window.__ikBoom();return}
+ if(m==='eject'){if(av&&power)vact('eject');return}
+ key(m)},true);
 
 /* la lumière du tube sur la pièce, le numéro de chaîne dans la fenêtre du téléviseur */
-setInterval(function(){$('#lcd').textContent=power?p2(ch):'';var c=txt?'rgba(60,120,255,.30)':cur().id==='mire'?'rgba(200,200,220,.30)':cur().id==='snow'?'rgba(180,180,190,.26)':'rgba(255,190,120,.22)';$('#tvset').style.setProperty('--glow',c)},500);
+setInterval(function(){$('#lcd').textContent=power?(av?'AV':p2(ch)):'';var c=av?'rgba(140,160,255,.26)':txt?'rgba(60,120,255,.30)':cur().id==='mire'?'rgba(200,200,220,.30)':cur().id==='snow'?'rgba(180,180,190,.26)':'rgba(255,190,120,.22)';$('#tvset').style.setProperty('--glow',c)},500);
 /* taille */
 /* deux cadrages : la chambre entière, puis la caméra s'approche de la télé (2,4 s) ; un toucher hors de l'écran recule ou avance */
 function frame(s,ax,ay,qx,qy,vw,vh){var iw=1376*s,ih=768*s;return {s:s,x:Math.min(0,Math.max(vw-iw,ax-qx*s)),y:Math.min(0,Math.max(vh-ih,ay-qy*s))}}
 var CL=null,WI=null;
-function fit(){var W=1376,H=768,cx=676.5,cy=312.5,sw0=215,vw=innerWidth,vh=innerHeight,portrait=vh>vw,cover=Math.max(vw/W,vh/H);
- WI=portrait?frame(Math.max(cover,vw*.6/sw0),vw/2,vh*.4,cx,cy,vw,vh):frame(Math.max(cover,Math.min(vw/1100,vh/560),vw<1000?vw*.3/sw0:0),vw/2,vh/2,605,355,vw,vh);
- CL=portrait?frame(Math.max(cover,vw*.96/325),vw/2,vh*.4,703,312,vw,vh):frame(Math.max(cover,Math.min(vw*.56,vh*.64*1.352201)/sw0),vw*.47,vh*.47,cx,cy,vw,vh);
- var R=document.documentElement.style;R.setProperty('--sw',W*CL.s+'px');R.setProperty('--sx',CL.x+'px');R.setProperty('--sy',CL.y+'px');R.setProperty('--tw',(sw0*CL.s)+'px');MX=portrait?frame(vw*.98/sw0,vw/2,vh*.42,cx,cy,vw,vh):null;if(!MX&&big)big=false;document.body.classList.toggle('tvmax',big);zoom();setTimeout(function(){fitTtx();draw()},50)}
+var BAR=52,RC0=.14,RC1=.83,PEEK=48,RE=document.documentElement.style,LY=null,rOpen=false,cOpen=false;
+function phoneish(){return (window.matchMedia&&matchMedia('(pointer:coarse)').matches)||Math.min(innerWidth,innerHeight)<520}
+/* 10 nov., 17 h 41 : l'écran d'abord — toute la largeur au téléphone tenu droit, toute la hauteur libre couché et au bureau ; la photo de la chambre autour ; le meuble prend le reste ; la télécommande se replie en bas */
+/* 10 nov., verdict du lot T : un seul cadrage pour les chaînes et l'AV — la télé photographiée (bois du haut, cadre de métal et tube ; x 540-865, y 207-410 dans la photo) occupe toute la hauteur libre au bureau et couché, toute la largeur au téléphone tenu droit ; la bande de bois du bas glisse sous la barre ; le meuble et la télécommande prennent le reste ; le porte-clé garde sa place */
+function mkBox(){var f=document.querySelector('#mk .fob')||document.getElementById('mk'),r=f&&f.getBoundingClientRect();return r&&r.width?{r:r.right,b:r.bottom}:{r:56,b:120}}
+function fit(){var W=1376,H=768,VW=innerWidth,VH=innerHeight,vh0=VH-BAR,portrait=VH>VW,ph=phoneish(),mk=mkBox(),s,tx,ty,cab=null,cf=false,
+ up=true,RW=(portrait||ph)?192:120,rx;
+ if(portrait){s=VW/325;tx=0;var th=214*s;ty=av?0:Math.round((vh0-PEEK-th)*.45);ty=Math.max(ty,mk.b+4-26*s);
+  if(av){var ct=Math.round(ty+th+4),chh=vh0-PEEK-ct;if(chh>=200)cab={x:0,y:ct,w:VW,h:chh};else cf=true}rx=Math.round((VW-RW)/2)}
+ else{s=vh0/203;var tw=325*s,rest=VW-tw;ty=0;
+  if(av){tx=Math.max(0,rest-460);tx=Math.max(tx,mk.r+4-28*s);var cw=VW-tx-tw;if(cw>=200)cab={x:Math.round(tx+tw),y:0,w:Math.round(cw),h:vh0-PEEK-4};else cf=true;rx=VW-RW-8}
+  else{tx=Math.max(0,Math.min(rest/2,rest-RW-16));tx=Math.max(tx,mk.r+4-28*s);rx=Math.round(Math.min(VW-RW-4,tx+tw+(VW-tx-tw-RW)/2))}}
+ CL={s:s,x:tx-540*s,y:ty-207*s};
+ WI=frame(Math.max(VW/W,VH/H,Math.min(VW/1100,VH/560)),VW/2,VH/2,605,355,VW,VH);if(WI.s>CL.s)WI=CL;
+ var rm=$('#room').style;rm.right='';rm.bottom='';
+ RE.setProperty('--sw',W*CL.s+'px');RE.setProperty('--sx',CL.x+'px');RE.setProperty('--sy',CL.y+'px');RE.setProperty('--tw',215*s+'px');
+ MX=null;big=false;document.body.classList.remove('tvmax');
+ LY={VW:VW,VH:VH,vh0:vh0,up:up,RW:RW,rx:rx,cab:cab,cf:cf};
+ document.body.classList.toggle('cabn',!!cab&&cab.w<300);document.body.classList.toggle('cabf',cf);
+ lay();zoom();setTimeout(function(){fitTtx();draw()},50)}
+/* la télécommande et le meuble repliés ou sortis, sans toucher à l'écran */
+function lay(){if(!LY)return;var re=$('#remote'),y=LY;document.body.classList.toggle('rup',y.up);document.body.classList.toggle('ropen',y.up&&rOpen);document.body.classList.toggle('cabo',y.cf&&cOpen);
+ if(y.up){var RH=Math.round(y.RW*924/239),rc=Math.round(RH*(RC1-RC0)),rv=rOpen?Math.min(rc,y.vh0-8):PEEK;
+  RE.setProperty('--rx',y.rx+'px');RE.setProperty('--ry',(y.vh0-rv)+'px');RE.setProperty('--rw2',y.RW+'px');RE.setProperty('--rv',rv+'px');RE.setProperty('--rc',(rOpen?rc:RH)+'px');RE.setProperty('--rt',(rOpen?-Math.round(RH*RC0):0)+'px');RE.setProperty('--rh',RH+'px');re.style.right='';if(!rOpen)re.scrollTop=0}
+ else ['--rc','--rt','--rh'].forEach(function(v){RE.removeProperty(v)});
+ var c=y.cab;if(!c&&y.cf){var ch=cOpen?Math.round(y.vh0*.7):56;c={x:0,y:y.vh0-ch,w:y.VW,h:ch}}
+ if(c){RE.setProperty('--cx',c.x+'px');RE.setProperty('--cy',c.y+'px');RE.setProperty('--cw',c.w+'px');RE.setProperty('--ch',c.h+'px')}}
+/* les cases des touches sur la photo de la télécommande (en % de l'image entière) : x0 x1 y0 y1 */
+var ZN={1:[3,35.8,14,20.5],2:[35.8,63.2,14,20.5],3:[63.2,97,14,20.5],4:[3,35.8,20.5,27],5:[35.8,63.2,20.5,27],6:[63.2,97,20.5,27],7:[3,35.8,27,33.35],8:[35.8,63.2,27,33.35],9:[63.2,97,27,33.35],0:[35.8,63.2,33.35,40.4],
+ red:[3,26,40.4,47.6],green:[26,50,40.4,47.6],yellow:[50,73.5,40.4,47.6],cyan:[73.5,97,40.4,47.6],txt:[3,50,47.6,55],mix:[50,97,47.6,55],volup:[3,50,55,63.7],chup:[50,97,55,63.7],voldn:[3,50,63.7,72],chdn:[50,97,63.7,72],power:[3,50,72,83],mute:[50,97,72,83]};
+$$('#remote button').forEach(function(b){var z=ZN[b.dataset.k];if(!z)return;var t=b.style;t.left=z[0]+'%';t.width=(z[1]-z[0])+'%';t.top=z[2]+'%';t.height=(z[3]-z[2])+'%'});
 var near=false,big=false,MX=null;function zoom(v){if(v!=null)near=v;if(!CL)return;if(big&&near&&MX){var q=MX.s/CL.s,t0=$('#tvset');t0.style.transformOrigin='0 0';t0.style.transform='translate('+(MX.x-CL.x)+'px,'+(MX.y-CL.y)+'px) scale('+q+')';document.documentElement.style.setProperty('--k',q);return}var k=WI.s/CL.s,t=$('#tvset');t.style.transformOrigin='0 0';t.style.transform=near?'':'translate('+(WI.x-CL.x)+'px,'+(WI.y-CL.y)+'px) scale('+k+')'}
 setTimeout(function(){$('#tvset').style.transition='transform 2.4s cubic-bezier(.45,.05,.25,1)';zoom(true)},2200);
+document.body.appendChild($('#remote'));
+/* au téléphone (et en AV au bureau) la télécommande repliée en bas sort au toucher, comme on la prend en main ; un toucher ailleurs la replie */
+$('#remote').addEventListener('click',function(e){if(!document.body.classList.contains('rup')||rOpen)return;e.stopPropagation();e.preventDefault();rOpen=true;lay()},true);
+document.addEventListener('pointerdown',function(e){var t=e.target;if(rOpen&&!(t.closest&&t.closest('#remote'))){rOpen=false;lay()}if(cOpen&&!(t.closest&&t.closest('#vhs .vhs-shell'))){cOpen=false;lay()}},true);
+document.addEventListener('click',function(e){var t=e.target;if(!av||!LY||!LY.cf||cOpen||!(t.closest&&t.closest('#vhs .vhs-shell')))return;e.stopPropagation();e.preventDefault();cOpen=true;lay()},true);
 $('#room').addEventListener('click',function(e){if(e.target.closest('#tube,#remote,#ctl,#mk'))return;if(!near)zoom(true)});
 /* 8 nov. (Mauk Tenieb, 19 h 48, point 3) : au téléphone, toucher l'écran de la télé l'agrandit à toute la largeur, l'image se voit ; toucher hors de l'écran ramène la chambre */
 $('#tube').addEventListener('click',function(e){if(!MX||!near||big)return;e.stopPropagation();e.preventDefault();big=true;document.body.classList.add('tvmax');$('#tvset').style.transition='transform .9s cubic-bezier(.45,.05,.25,1)';zoom()},true);
 $('#room').addEventListener('click',function(e){if(!big||e.target.closest('#tube,#remote'))return;big=false;document.body.classList.remove('tvmax');$('#tvset').style.transition='transform .9s cubic-bezier(.45,.05,.25,1)';zoom()});
-window.__ikBoom=function(){zoom(false);if(ch!==1)zap(1)};
+window.__ikBoom=function(){if(av){avOff(1);return}zoom(false);if(ch!==1)zap(1)};
 /* 10 nov. : toucher l'image passe au clip ou au Mask suivant ; le 0 est la position AV des postes d'époque : le magnétoscope */
 $('#tube').addEventListener('click',function(){if(power&&!txt&&(!MX||big))key('ok')});
 $$('#remote button').forEach(function(b){b.addEventListener('click',function(){if(!near)zoom(true)})});
-addEventListener('resize',fit);
+addEventListener('resize',fit);addEventListener('load',fit);
+/* bascule FR · EN venue d'un autre onglet : la langue de la page suit, et avec elle les libellés et aria-labels du magnétoscope (kg-vhs.js relit <html lang>) et du télétexte */
+addEventListener('storage',function(e){if(e.key!=='ik.lang')return;lang=e.newValue==='fr'?'fr':'en';F=lang==='fr';document.documentElement.lang=lang;if(window.KGVHSRecorder&&KGVHSRecorder.refresh)KGVHSRecorder.refresh();if(txt)renderPage(page)});
+/* ---------- 10 nov. (Mauk Tenieb : « cette télé reprend la totalité des fonctionnalités de Video ») : la position AV ; le programme VHS de la borne, chargé tel quel par kg-loader.js, devient le magnétoscope branché sur ce poste ---------- */
+function cut(t,n){t=String(t).trim();return t;var c=t.slice(0,n-1),i=c.lastIndexOf(' ');return (i>n*.5?c.slice(0,i):c).replace(/[\s,;:.\-–—]+$/,'')+'…'}
+function esc(t){return String(t).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
+function loadJs(src){return new Promise(function(ok,ko){var e=document.createElement('script');e.src=src;e.onload=ok;e.onerror=ko;document.body.appendChild(e)})}
+var vhsReady=null;
+function vhsLoad(){if(vhsReady)return vhsReady;window.INSERTKOIN_VHS_CONFIG=Object.assign({},window.INSERTKOIN_VHS_CONFIG,{layout:false});
+ vhsReady=new Promise(function(ok){clipIds(ok)}).then(function(){if(!window.JUKE_TRACKS)window.JUKE_TRACKS=CP.raw||[];return window.KGVHSLibrary?0:loadJs('../kg-vhs-library.js')}).then(function(){return window.IKK?0:loadJs('../ik-kuration.js')}).then(function(){return window.KG?0:loadJs('../kg-loader.js')});
+ vhsReady.catch(function(){vhsReady=null});return vhsReady}
+function track(){if(!av)return;var r=$('#bezel').getBoundingClientRect(),k=[r.left,r.top,r.width,r.height].map(Math.round).join();if(k!==track.k){track.k=k;RE.setProperty('--vx',r.left+'px');RE.setProperty('--vy',r.top+'px');RE.setProperty('--vw',r.width+'px');RE.setProperty('--vh',r.height+'px')}requestAnimationFrame(track)}
+function avOn(){if(av||!power)return;av=true;entry='';txt=0;$('#ttx').className='layer';clip(false);msnd();document.body.classList.add('av');var sn=$('#snow');sn.classList.add('on');setTimeout(function(){sn.classList.remove('on')},500);osd('AV');fit();track.k='';track();
+ vhsLoad().then(function(){if(av)return KG.open('vhs')}).then(function(){if(!av){try{KGVHS.close();KG.close('vhs')}catch(e){}return}if(window.KGVHS&&KGVHS.volume)KGVHS.volume(mute?0:vol*2.5)}).catch(function(){osd('AV<br>– – –')})}
+function avOff(n){if(!av)return;av=false;try{if(window.KGVHS)KGVHS.close()}catch(e){}try{if(window.KG)KG.close('vhs')}catch(e){}document.body.classList.remove('av');hushVhs(false);fit();if(n&&n!==ch)zap(n);else{draw();osd(p2(ch))}}
+addEventListener('kg-vhs:close',function(){if(av)avOff(ch)});
+var hushed=false;function hushVhs(v){if(v===hushed)return;hushed=v;if(window.IKMotel&&IKMotel.hush)IKMotel.hush('vhs',v)}
+/* le Motel Sound se tait pendant la lecture d'une cassette */
+setInterval(function(){var st=av&&window.KGVHS&&KGVHS.debug?KGVHS.debug().status:'Stop';hushVhs(av&&(st==='Play'||st==='Load'))},400);
+function vbtn(a){return document.querySelector("#vhs [data-vhs-action='"+a+"']")}
+function vact(a){var b=vbtn(a);if(b&&!b.disabled)b.click()}
+function vfield(sel){var f=document.querySelector('#vhs '+sel);if(f&&f.offsetParent){f.scrollIntoView({block:'center'});try{f.focus({preventScroll:true})}catch(e){}}return f}
+function trackOsd(){setTimeout(function(){var l=document.querySelector('#vhs [data-vhs-osd-track]');if(l)osd('AV<br>'+esc(cut(l.textContent.toUpperCase(),60)),3000)},80)}
+/* CH+ / CH− : la cassette suivante ou précédente de l'étagère, mise en lecture */
+function tape(d){var sh=document.querySelector('#vhs [data-vhs-shelf]'),a=sh&&!sh.hidden?[].slice.call(sh.querySelectorAll('[data-vhs-tape-all],[data-vhs-shelf-row] .vhs-tape')).filter(function(b){return !b.hidden}):[];if(!a.length){osd('AV<br>– – –');return}
+ var i=0;a.forEach(function(b,j){if(b.classList.contains('is-active'))i=j});var b=a[(i+d+a.length)%a.length];b.click();try{b.scrollIntoView({block:'nearest',inline:'nearest'})}catch(e){}
+ var nm=b.querySelector('.vhs-tape-name');osd('AV<br>'+esc(cut((nm?nm.textContent:'').toUpperCase(),60)),3000);setTimeout(function(){if(av&&window.KGVHS&&KGVHS.debug().status!=='Play')vact('play')},350)}
+/* la télécommande en position AV : POWER, 1 à 6 et TXT rendent les chaînes ; CH± les cassettes ; 7 et 9 la piste précédente et suivante, 8 et le toucher de l'image lecture et pause ; R l'enregistreur, G le hasard, Y le cœur de la Korhogo Kuration, C la recherche ; VOL et MUTE le son du magnétoscope */
+function avKey(k){
+ if(k==='power'){avOff(ch);return true}
+ if(/^[1-6]$/.test(k)){avOff(+k);return true}
+ if(k==='0'){osd('AV');return true}
+ if(k==='7'||k==='9'){if(window.KGVHS&&KGVHS.step){KGVHS.step(k==='7'?-1:1);trackOsd()}return true}
+ if(k==='8'||k==='ok'){vact('play');return true}
+ if(k==='chup'||k==='chdn'){tape(k==='chup'?1:-1);return true}
+ if(k==='red'){var f=vfield('[data-vhs-rec-input]');if(f&&f.value.trim()){var rb=document.querySelector('#vhs [data-vhs-rec-btn]');if(rb)rb.click()}return true}
+ if(k==='green'){vact('random');trackOsd();return true}
+ if(k==='yellow'){vact('heart');return true}
+ if(k==='cyan'){vfield('[data-vhs-find-input]');return true}
+ if(k==='txt'||k==='mix'){avOff(ch);key(k);return true}
+ if(k==='mute'){vact('mute');var mb=vbtn('mute');mute=!!(mb&&mb.getAttribute('aria-pressed')==='true');showVol();return true}
+ if(k==='volup'||k==='voldn'){vol=Math.max(0,Math.min(40,vol+(k==='volup'?2:-2)));var m2=vbtn('mute');if(m2&&m2.getAttribute('aria-pressed')==='true')vact('mute');mute=false;showVol();if(window.KGVHS&&KGVHS.volume)KGVHS.volume(vol*2.5);return true}
+ return false}
 /* titre de l'onglet : l'enseigne */
 setInterval(function(){var r=Math.random();document.title=(r<.7?'Insert Koin':['Intersektion','Sektor Inn','Noir Insekt'][Math.floor(Math.random()*3)])+' — TV'},6000);
 fit();document.fonts&&document.fonts.ready.then(function(){draw()});draw();

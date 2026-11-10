@@ -1395,3 +1395,8 @@ html.borne[data-skin=metal]:not(#p1):not(#p2):not(#p3) .b-plate .b-badge{backgro
 html.borne:not(#p1):not(#p2):not(#p3) .b-plate .b-badge::before,html.borne:not(#p1):not(#p2):not(#p3) .b-plate .b-badge::after{display:none!important}
 html.borne:not(#p1):not(#p2):not(#p3) .b-plate .b-badge b{color:transparent!important;text-shadow:none!important}
 @media (max-width:900px) and (max-height:500px) and (orientation:landscape){html.borne:not([data-prog],[data-mode=device],[data-habit=fauneye],.b-immersion):not(#r1):not(#r2):not(#r3) .b-plate .b-badge{width:92px!important}}
+
+/* 10 nov. (Mauk Tenieb, 17 h 33) : la plante sans contour au survol ni au clic ; un halo chaud à la place */
+html.borne .b-pot{outline:0!important;-webkit-tap-highlight-color:transparent}
+html.borne .b-pot .b-plant{transition:filter .35s ease}
+html.borne .b-pot:hover .b-plant,html.borne .b-pot:focus-within .b-plant,html.borne .b-pot.open .b-plant{filter:drop-shadow(0 4px 4px rgba(0,0,0,.5)) drop-shadow(0 0 9px rgba(255,206,130,.55)) drop-shadow(0 0 22px rgba(255,170,80,.25))}
