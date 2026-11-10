@@ -15,8 +15,8 @@ html{-webkit-text-size-adjust:100%;overscroll-behavior:none}
 html,body{margin:0;height:100%;background:#050403;overflow:hidden;color:#ece6d6;font-family:Arimo,sans-serif;-webkit-tap-highlight-color:transparent}
 button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-select:none}
 /* 10 nov. 2026 (Mauk Tenieb, 19 h 30) : le couloir sans fin. La salle se dessine sur un tube WebGL : optique en barillet qui absorbe les bords, grain de pellicule, travelling vers le fond */
-#hall{position:fixed;inset:0;width:100%;height:100%;display:block;background:#050403;transition:filter .45s cubic-bezier(.16,1,.3,1)}
-#hall.dim{filter:brightness(.26) blur(2px)}
+#hall{position:fixed;inset:0;width:100%;height:100%;display:block;background:#050403;transition:filter 1.4s cubic-bezier(.4,0,.2,1)}
+/* 10 nov. (Mauk Tenieb, 23 h 12) : le voile ne tombe plus d'un coup : l'allée s'assombrit à peine, sans flou, en 1,4 s */#hall.dim{filter:brightness(.6)}
 #hallflat{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;display:none}
 #salle{position:fixed;left:0;right:0;top:0;bottom:var(--ikbar,52px);touch-action:none;outline:0;user-select:none;-webkit-user-select:none}
 #salle.off{pointer-events:none}
