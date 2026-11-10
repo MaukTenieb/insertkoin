@@ -251,12 +251,10 @@ function comptoir(){var tv=$('#tv');if(!cur){tv.style.backgroundImage='none';tv.
  tv.style.backgroundImage='url('+(cur.kind==='prog'?cur.p.thumb:cur.img)+')';$('.osd',tv).textContent=t('play')}
 function play(){if(!cur){go('rayon');return}if(ON)location.href=cur.url;else window.open(cur.url,'_blank','noopener')}
 $('#tv').onclick=function(){if(!swiped)play()};
-/* 10 nov. (Mauk Tenieb, 19 h 25) : le téléphone à cadran commande le Motel Sound : décrocher le lance, composer deux chiffres choisit la piste (01 à 99), raccrocher l'arrête */
-var PH={up:false,num:'',t:null,ac:null,tone:null};
-function phTone(on){try{if(on){PH.ac=PH.ac||new (window.AudioContext||window.webkitAudioContext)();var o=PH.ac.createOscillator(),g=PH.ac.createGain();o.frequency.value=440;g.gain.value=.05;o.connect(g).connect(PH.ac.destination);o.start();g.gain.setTargetAtTime(0,PH.ac.currentTime+1.2,.15);o.stop(PH.ac.currentTime+2);PH.tone=o}else if(PH.tone){PH.tone.stop();PH.tone=null}}catch(e){}}
-function phUp(v){PH.up=v;$('#hPhone').classList.toggle('up',v);$('#hPhone').setAttribute('aria-pressed',String(v));if(!window.IKMotel)return;if(v){phTone(true);IKMotel.on(true)}else{phTone(false);IKMotel.on(false)}}
+/* 10 nov. (Mauk Tenieb, 19 h 25) : le téléphone à cadran commande le Motel Sound : décrocher le lance, raccrocher l'arrête (Mauk Tenieb, 10 nov., 21 h 24) */
+var PH={up:false};
+function phUp(v){PH.up=v;$('#hPhone').classList.toggle('up',v);$('#hPhone').setAttribute('aria-pressed',String(v));if(!window.IKMotel)return;IKMotel.on(v)}
 $('#hPhone').onclick=function(){if(!swiped)phUp(!PH.up)};
-addEventListener('keydown',function(e){if(!PH.up||scene!=='comptoir'||!/^\d$/.test(e.key)||(e.target&&/INPUT|TEXTAREA/.test(e.target.tagName)))return;PH.num+=e.key;clearTimeout(PH.t);phTone(false);if(PH.num.length===2){var n=+PH.num;PH.num='';if(n&&window.IKMotel)IKMotel.dial(n)}else PH.t=setTimeout(function(){var n=+PH.num;PH.num='';if(n&&window.IKMotel)IKMotel.dial(n)},1400)});
 
 /* 7. passer d'un lieu à l'autre par la scène : travelling vers le rayon ou la lampe ; retour par le geste vers le bas, le bord de la photo, Échap, le retour du navigateur, Baku Boom */
 var SC={rayon:$('#rayon'),comptoir:$('#comptoir')},WR=$('#wrap');
