@@ -65,6 +65,16 @@ Ces quatre familles forment tout le lettrage. Décision du 30 oct., 19 h 25 : de
 - Au repos, l'écran montre SkopoRhogo en direct, à l'heure du visiteur.
 - Les commandes à l'écran ont l'allure d'un jeu : boutons pleins et biseautés, curseur clignotant, sélection par la manette.
 
+### Règle commune des écrans (Mauk Tenieb, 10 nov. 2026)
+
+Tous les écrans de l'écosystème suivent une même géométrie en trois couches : borne, programmes, SkopoRhogo, appareil photo, caméra, 3615, VHS, TV de la chambre, DVD, Video Kave.
+
+- Le cadre : même place, même taille, mêmes marges dans chaque lieu et chaque programme.
+- L'image : chaque appareil garde son format d'époque, centré dans le cadre avec les mêmes marges. Télé, magnétoscope, 3615, DVD et SkopoRhogo en 4:3 ; appareil photo et caméra en 3:2, repères de cadrage compris.
+- L'habit : matière du boîtier, bombé du tube, parasites, incrustations. Seul l'habit change d'un appareil à l'autre ; les commandes gardent leur place.
+- Téléphone en portrait : l'image en haut, sur toute la largeur ; les commandes en bas, sous le pouce. Téléphone en paysage : l'image sur toute la hauteur, les commandes sur le côté.
+- Mesure : part des écrans conformes, écart de marge en pixels, format de l'image, sur six formats (borne/tools/borne-controle.py et contrôle de la borne).
+
 ## États de la machine
 
 | État | Écran | Lumières | Son |
