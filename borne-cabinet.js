@@ -180,7 +180,7 @@
   var CAMGO=0;
   window.__borneGo=function(k){var C=window.__borneCam;
     try{window.__borneTourStop&&window.__borneTourStop();}catch(e){}
-    /* les mini-jeux et DiktatFaune passent par leur vraie touche : le dé de Katabatik, le calque de DiktatFaune */
+    /* les mini-jeux et DiktaTfaune passent par leur vraie touche : le dé de Katabatik, le calque de DiktaTfaune */
     if(KATA.indexOf(k)>=0){kata(k);return true;}if(k==='diktat'){play('diktat');return true;}
     if(!CAMGO&&C&&C.ok()&&root.dataset.habit==='repos'&&!root.dataset.prog&&k!=='visit'){C.zoomIn(function(){CAMGO=1;try{IK().go(k);}finally{CAMGO=0;}});return true;}
     setBig(bigOf(k));CUR=k==='katabatik'?(function(){var d=document.querySelector('.cab.dice b'),f=d?DICE.indexOf(d.dataset.d):0;return KATA[f]||'c4';})():k;paintDots();

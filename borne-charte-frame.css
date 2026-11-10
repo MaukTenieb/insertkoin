@@ -1,4 +1,4 @@
-/* Borne Insert Koin — charte commune, pages en cadre (3615, BakuBook, FotoFauna, Reporhogo, FaunaTor, DiktatFaune, SkopoRhogo).
+/* Borne Insert Koin — charte commune, pages en cadre (3615, BakuBook, FotoFauna, Reporhogo, FaunaTor, DiktaTfaune, SkopoRhogo).
    borne-jeu.js lie cette feuille aux cadres de même origine quand la charte est allumée, et nomme la page par html[data-ch].
    Titres : Bebas Neue #ffe3a0, halo ambre. Texte et commandes : DM Mono, 12 à 13 px au moins. Boutons : 44 px (32 px dans les claviers serrés),
    filet ambre de 1 px, état actif rempli de l'accent du groupe, encre sombre. Texte atténué : contraste de 4,5 au moins.
@@ -18,7 +18,7 @@ html.b-charte[data-ch=minitel] .k.sp{font-size:13px!important;letter-spacing:.2e
 html.b-charte[data-ch=minitel] :is(.plate span,.hint){font:500 12px/1.4 'DM Mono',ui-monospace,monospace!important;letter-spacing:.16em!important;color:#4a4033!important}
 html.b-charte[data-ch=minitel] .lang{font:500 13px/1 'DM Mono',ui-monospace,monospace!important;min-height:44px;min-width:44px}
 
-/* ---------- DiktatFaune ---------- */
+/* ---------- DiktaTfaune ---------- */
 html.b-charte[data-ch=diktat]{--dim:#c4b9a4}
 html.b-charte[data-ch=diktat] .knob{font-size:12px!important;color:var(--ch-dim)!important}
 html.b-charte[data-ch=diktat] #msg{color:var(--ch-dim)!important}

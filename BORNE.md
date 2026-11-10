@@ -27,7 +27,7 @@ https://mauktenieb.github.io/borne/ range Insert Koin dans une borne d'arcade. L
 - Chaque programme s'ouvre directement sur son propre écran, sans carte-titre de la borne ; au repos, l'écran montre SkopoRhogo en direct.
 - En jeu, la page reste immobile : Espace, flèches et molette vont au jeu ; un jeu plus haut que l'écran se réduit d'un bloc et tient entier.
 - Le passage : lancer un jeu rapproche la caméra de la borne jusqu'à ce que l'écran remplisse la fenêtre, en une demi-seconde ; Baku Boom fait le tilt, le tube s'éteint, puis la caméra recule de l'écran plein cadre jusqu'à la borne entière.
-- Panneau : BC, TL, IG en rangée de départ ; la manette au milieu, entre quatre touches-pavés lumineuses, KorhoGame (grands jeux d'un côté, Katabatik et son dé de l'autre), FaunEye (BakuBook, VHS, FotoFauna, Musik, DiktatFaune), 3615, SURFAUNA (Reporhogo, FaunaTor) ; la plaque émaillée Mauk Tenieb sur le bord avant, qui ouvre https://github.com/mauktenieb.
+- Panneau : BC, TL, IG en rangée de départ ; la manette au milieu, entre quatre touches-pavés lumineuses, KorhoGame (grands jeux d'un côté, Katabatik et son dé de l'autre), FaunEye (BakuBook, VHS, FotoFauna, Musik, DiktaTfaune), 3615, SURFAUNA (Reporhogo, FaunaTor) ; la plaque émaillée Mauk Tenieb sur le bord avant, qui ouvre https://github.com/mauktenieb.
 - Porte : la fente INSERT KOIN (décompte de la Koin gratuite à zéro Koin) ; les molettes 🧤 (skin bois ou métal), 🎶 (tout le son), FR · EN et 👣 (les psychopompes, présents par défaut), sur leur plaque à droite de la porte ; l'aimant Dekonect en bas à droite ; tout en bas, le copyright.
 
 ## Grammaire commune
@@ -51,14 +51,14 @@ D'un programme à l'autre : les points sous l'écran, la manette, ou Page préc.
 - `borne-presence.js` : Online Applicants, une diode et un chiffre au pied de l'écran ; chaque visiteur s'annonce toutes les 20 s sous un numéro tiré au hasard, sur un canal MQTT public (trois relais) ; zéro nom, zéro cookie.
 - `borne-son.js` : les sons de la mécanique, enregistrements réels du domaine public (borne/snd/, sources dans snd/SOURCES.md), plusieurs variantes par geste, hauteur et volume tirés au hasard ; synthèse en repli si une prise manque.
 - Immersion (bouton au pied de l'écran) : l'écran seul en plein écran ; un glissé parti d'un bord change de programme ; ✕ ou Échap pour sortir. Le Minitel s'affiche plus lumineux ; la Kam de Kapture indique BAK ou FRONT.
-- `borne-diktat.html` : DiktatFaune (FaunEye) ; 3, 5 ou 10 s au micro, choisi dans la liste quand il y en a plusieurs, demandé une fois par session ; hauteur et vitesse indépendantes, endroit ou envers ; SAVE en .wav au nom du calendrier républicain.
+- `borne-diktat.html` : DiktaTfaune (FaunEye) ; 3, 5 ou 10 s au micro, choisi dans la liste quand il y en a plusieurs, demandé une fois par session ; hauteur et vitesse indépendantes, endroit ou envers ; SAVE en .wav au nom du calendrier républicain.
 - `borne-jeu.js` : chaque jeu agrandi et centré à la mesure de l'écran ; la manette choisit et enfonce les touches à l'accueil, envoie flèches et Espace dans les jeux ; son socle la déplace.
 - `borne-skopo.js` : SkopoRhogo à l'heure du visiteur.
 - `borne-fauneye.html` : BakuBook, le lecteur universel (stock de fac-similés, fichiers du visiteur, Internet Archive, Gutenberg, Wikisource, Korhogo Diary (le lore sur Substack) ; zoom, loupe, vignettes, typographie).
 - `borne-fotofauna.js`, `borne-fotofauna.css` : FotoFauna, le logo et le viseur déclenchent ; caméra avant ou arrière ; Une, Superposer, Pellicule.
 - `borne-frames.css` : retouches de Reporhogo et de FaunaTor.
 - `borne-bio.html` : la bio, lue en direct du README du profil GitHub.
-- `borne-musik.js` : les cinq derniers sons enregistrés ou traités dans DiktatFaune deviennent cinq pistes en bas de Musik (IndexedDB « borne », magasin « diktat ») ; chaque pas joue le son depuis son début, une mesure au plus ; KAVE IT! les mêle à l'export.
+- `borne-musik.js` : les cinq derniers sons enregistrés ou traités dans DiktaTfaune deviennent cinq pistes en bas de Musik (IndexedDB « borne », magasin « diktat ») ; chaque pas joue le son depuis son début, une mesure au plus ; KAVE IT! les mêle à l'export.
 - `borne-say.txt` : une phrase des psychopompes pour les arrêts propres à la borne (touches, BC, liseuse, FaunInvaders, Musik) ; leurs répliques d'Insert Koin restent celles de l'artiste.
 - `borne-lobby.json` : zones cliquables des 18 Masks sur l'image de l'écran titre, devant Korong!.
 

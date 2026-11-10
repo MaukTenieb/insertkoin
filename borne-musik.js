@@ -1,17 +1,17 @@
-/* Musik ← DiktatFaune : les cinq derniers sons enregistrés ou traités dans DiktatFaune deviennent cinq pistes, en bas de la grille de Musik.
-   DiktatFaune range chaque son (le dernier traitement d'un enregistrement remplace sa version précédente) dans IndexedDB, base « borne », magasin « diktat ».
+/* Musik ← DiktaTfaune : les cinq derniers sons enregistrés ou traités dans DiktaTfaune deviennent cinq pistes, en bas de la grille de Musik.
+   DiktaTfaune range chaque son (le dernier traitement d'un enregistrement remplace sa version précédente) dans IndexedDB, base « borne », magasin « diktat ».
    Musik lit ces sons à l'ouverture et les joue au pas de la grille, en direct comme dans KAVE IT!. */
 (function(){
   var DB='borne',ST='diktat',MAX=5;
   function db(){return new Promise(function(ok,ko){try{var r=indexedDB.open(DB,1);r.onupgradeneeded=function(){r.result.createObjectStore(ST,{keyPath:'id'});};r.onsuccess=function(){ok(r.result);};r.onerror=function(){ko(r.error);};}catch(e){ko(e);}});}
   function all(){return db().then(function(d){return new Promise(function(ok){var q=d.transaction(ST).objectStore(ST).getAll();q.onsuccess=function(){ok((q.result||[]).sort(function(a,b){return b.t-a.t;}));};q.onerror=function(){ok([]);};});}).catch(function(){return [];});}
-  /* DiktatFaune : un son par enregistrement ; ses traitements (hauteur, vitesse, sens) remplacent la version rangée ; on garde les cinq plus récents */
+  /* DiktaTfaune : un son par enregistrement ; ses traitements (hauteur, vitesse, sens) remplacent la version rangée ; on garde les cinq plus récents */
   function put(clip){return db().then(function(d){return new Promise(function(ok){var tx=d.transaction(ST,'readwrite'),os=tx.objectStore(ST);os.put(clip);
       var q=os.getAll();q.onsuccess=function(){(q.result||[]).sort(function(a,b){return b.t-a.t;}).slice(MAX).forEach(function(x){os.delete(x.id);});};
       tx.oncomplete=function(){ok();try{(window.top||window).dispatchEvent(new Event('borne-diktat'));}catch(e){}};tx.onerror=function(){ok();};});}).catch(function(){});}
   window.__borneDiktat={all:all,put:put,MAX:MAX};
 
-  /* Musik : les pistes DiktatFaune s'ajoutent sous les 18 Masks */
+  /* Musik : les pistes DiktaTfaune s'ajoutent sous les 18 Masks */
   var CLIPS=[],COL='#ff3b2f';
   function voiceOf(ac,c){ac.__ikDk=ac.__ikDk||{};var b=ac.__ikDk[c.id];if(b)return b;b=ac.createBuffer(1,c.data.length,c.sr);b.getChannelData(0).set(c.data);ac.__ikDk[c.id]=b;return b;}
   function hook(){
