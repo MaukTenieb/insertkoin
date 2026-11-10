@@ -132,7 +132,8 @@ body.rup:not(.ropen) #remote{filter:brightness(1.05) sepia(.1) drop-shadow(0 -4p
 #ctl button::after{display:none}
 #kvol{left:59.302%;top:43.75%}
 #kch{left:59.302%;top:46.875%}
-#lcd{position:absolute;left:58.576%;top:30.208%;width:3.052%;height:8.333%;z-index:7;display:flex;align-items:center;justify-content:center;font:700 calc(var(--sw,100vw)*.016) "VT323",monospace;color:#ff3a1e;text-shadow:0 0 6px #ff2a10;opacity:.85;pointer-events:none}
+#lcd{position:absolute;left:58.576%;top:30.208%;width:3.052%;height:8.333%;z-index:7;display:flex;align-items:center;justify-content:center;font:700 calc(var(--sw,100vw)*.016) "VT323",monospace;color:#ff3a1e;text-shadow:0 0 6px #ff2a10;opacity:.85;cursor:pointer;touch-action:manipulation}
+#lcd:hover{opacity:1;text-shadow:0 0 9px #ff2a10}
 .dark #lcd{opacity:0}
 #remote{position:fixed;right:2.5vw;bottom:-2vh;z-index:20;display:block;width:min(clamp(84px,10vmin,124px),calc(70vh * .2587));aspect-ratio:0.2587;padding:0;background:url(a/tv/telecommande.webp) 0 0/100% 100% no-repeat;border-radius:0;box-shadow:none;filter:brightness(.62) sepia(.25) drop-shadow(-8px 10px 14px rgba(0,0,0,.75));transform:rotate(-7deg)}
 #remote button{position:absolute;width:25%;height:5.6%;transform:translate(-50%,-50%);background:transparent!important;box-shadow:none!important;border-radius:40%;color:transparent;font-size:0}
@@ -383,7 +384,9 @@ function nextPage(d){var ks=Object.keys(PAGES).map(Number).sort(function(a,b){re
 function open(u){setTimeout(function(){if(ON)location.href=u;else window.open(u,'_blank','noopener')},700)}
 function showVol(){var v=$('#vol');v.innerHTML=mute?'MUTE':'VOLUME '+'|'.repeat(vol)+' '.repeat(40-vol)+' '+p2(vol);v.classList.add('on');clearTimeout(v._t);v._t=setTimeout(function(){v.classList.remove('on')},2000);$('#kvol').style.setProperty('--r',(-120+vol*6)+'deg')}
 $$('#remote button').forEach(function(b){b.addEventListener('click',function(){key(b.dataset.k)})});
-$('#kch').onclick=function(){key('chup')};$('#kvol').onclick=function(){key('volup')};$('#kpw').onclick=function(){key('power')};
+$('#kch').onclick=function(){key('chup')};
+/* 10 nov. (Mauk Tenieb, 21 h 19) : un clic sur l'afficheur de chaîne passe à la chaîne suivante */
+$('#lcd').addEventListener('click',function(e){e.stopPropagation();if(av)avOff(1);else key('chup')});$('#kvol').onclick=function(){key('volup')};$('#kpw').onclick=function(){key('power')};
 /* 10 nov., 17 h 41 (Mauk Tenieb : « les commandes passent par le clavier ») : chiffres, flèches, Entrée et Espace, t x m p, r g y c, e, Échap ; muet quand un champ de saisie a le focus */
 addEventListener('keydown',function(e){if(e.ctrlKey||e.metaKey||e.altKey)return;var t=e.target;if(t&&t.closest&&t.closest('input,textarea,select,[contenteditable]')){if(e.key==='Escape'){e.preventDefault();e.stopPropagation();t.blur()}return}
  var k=e.key,m=null;
