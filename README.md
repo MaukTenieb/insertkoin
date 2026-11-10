@@ -21,7 +21,7 @@ The home screen is the motel painting, then the cabinets. Every visit draws its 
 | **Erratik** | The memory game. |
 | **Faunarratik** | A tale built with the Masks. Every block of a Mask's sheet (portrait, stats, formula, appearance, faction, masks, motto, profile, powers, Maskomatics, hexagram, mini-stories, Krewsmatics) is a card to pick; the text blocks lie face down, a tap turns one over and takes it, up to three, and the Mask changes expression. *Show all* turns every card over. *Let the Kerema wrap it* saves the tale as a text file. English only. |
 | **Katabatik** | A die is thrown on the cabinet: Konnect4, Sampler, Akasztófa (the Hungarian hangman, on a Hungarian keyboard; a vowel counts with its accents or bare; a win brings a short unsigned quotation to guess), Mastermind or FaunInvaders (the 18 Masks march and drop bombs; each Mask throws in its own way, after its character: Ts'ui Pên's bomb forks into two paths, one real; Honey Buzzard's stops in mid-air and comes back lower; Hátra Lövés's comes back from the ground; Maiden Call's comes to the player who comes to it; `?fi=classic` in the address brings back the throws of the first version). |
-| **3615** | The K Terminal, a Minitel emulator: https://mauktenieb.github.io/3615/ |
+| **3615** | The K Terminal, the MiniTale: https://mauktenieb.github.io/3615/ |
 | **VHS** | A television on a tape deck: Motel Sound and your own YouTube tapes. |
 | **FotoFauna** | The photo editor: takes or opens a photo and applies 44 looks. |
 | **FaunaTor** | Opens web pages and v3 .onion sites through Tor clients that run in the page. |
@@ -52,11 +52,11 @@ A few seconds after the title screen opens, then now and then, a guide wanders a
 
 ## Palmarès and Hall of Kave
 
-The 3615 Minitel shows on its home screen (3615 KORHOGO) the five first of Korong! and of FaunInvaders, and in 3615 HALL the HALL OF KAVE: the twenty best players of all the games, one total per player, points of every game plus Koins earned. Results go out on the open Nostr network, the Minitel's own transport; the routine of this repository rewrites [`palmares.json`](palmares.json) every hour. Rules, points, transport and checks: [PALMARES.md](PALMARES.md).
+The 3615 MiniTale shows on its home screen (3615 KORHOGO) the five first of Korong! and of FaunInvaders, and in 3615 HALL the HALL OF KAVE: the twenty best players of all the games, one total per player, points of every game plus Koins earned. Results go out on the open Nostr network, the MiniTale's own transport; the routine of this repository rewrites [`palmares.json`](palmares.json) every hour. Rules, points, transport and checks: [PALMARES.md](PALMARES.md).
 
 ## Korhogo Kuration
 
-In the VHS deck, the key ♡ puts the track playing into the visitor's own cassette, « Korhogo Kuration », shown on the deck's shelf; the key ♥ takes it out again. The cassette goes out on the open Nostr network, signed with the Minitel's key (`ik-kuration.js`, one addressable event per visitor, kind 30078, `d` = `korhogo-kuration`); the browser key appears with the first ♡. Each cassette has a short address, `https://mauktenieb.github.io/k/<first 12 characters of the public key>`; the root site's 404 page sends it on to `insertkoin/?k=`, or to `fr.html?k=` for a French browser. [`kuration.html`](https://mauktenieb.github.io/insertkoin/kuration.html) lists every cassette with a « play all » link on YouTube; `kuration.html?k=<key>` shows one cassette, its tracks and its author; the Minitel lists them in 3615 KURATIONS.
+In the VHS deck, the key ♡ puts the track playing into the visitor's own cassette, « Korhogo Kuration », shown on the deck's shelf; the key ♥ takes it out again. The cassette goes out on the open Nostr network, signed with the MiniTale's key (`ik-kuration.js`, one addressable event per visitor, kind 30078, `d` = `korhogo-kuration`); the browser key appears with the first ♡. Each cassette has a short address, `https://mauktenieb.github.io/k/<first 12 characters of the public key>`; the root site's 404 page sends it on to `insertkoin/?k=`, or to `fr.html?k=` for a French browser. [`kuration.html`](https://mauktenieb.github.io/insertkoin/kuration.html) lists every cassette with a « play all » link on YouTube; `kuration.html?k=<key>` shows one cassette, its tracks and its author; the MiniTale lists them in 3615 KURATIONS.
 
 ## Koins
 
@@ -101,7 +101,7 @@ FotoFauna, the photo editor of Insert Koin, reproduces the looks of the photo ap
 
 ## The screen
 
-`ik-ecran.js` draws the one screen of the machines: the same 4:3 picture, the same frame, the same size and the same place in every program. On a wide screen it stands on the left, as large as the height allows, and the program's controls stand on the right; on a phone it stands on top, full width, and the controls follow below. Each program changes only the rendering of the glass (VHS tape wear; the Minitel's bulging tube, reflection and phosphor; the clean viewfinder of the camera; the camcorder's REC and counter) and its controls: the deck of the VHS, the keyboard of the Minitel, the modes, shutter, looks and settings of FotoFauna. A canvas, a video or an image goes through one WebGL pass; a page made of HTML, or the YouTube player, gets layers laid over it. The dressing stays on its own layers, so saved images keep the program's own picture. FX OFF and reduced motion freeze the noise and the bands; a phone gets a lighter screen.
+`ik-ecran.js` draws the one screen of the machines: the same 4:3 picture, the same frame, the same size and the same place in every program. On a wide screen it stands on the left, as large as the height allows, and the program's controls stand on the right; on a phone it stands on top, full width, and the controls follow below. Each program changes only the rendering of the glass (VHS tape wear; the MiniTale's bulging tube, reflection and phosphor; the clean viewfinder of the camera; the camcorder's REC and counter) and its controls: the deck of the VHS, the keyboard of the MiniTale, the modes, shutter, looks and settings of FotoFauna. A canvas, a video or an image goes through one WebGL pass; a page made of HTML, or the YouTube player, gets layers laid over it. The dressing stays on its own layers, so saved images keep the program's own picture. FX OFF and reduced motion freeze the noise and the bands; a phone gets a lighter screen.
 
 ## Habillages
 
@@ -142,7 +142,7 @@ Every file is at the top level; the folders are `habillages/`, `tor/`, `notes/`,
 | `manifest.webmanifest`, `sw.js`, `icon.png`, `favicon.png` | installation and offline use (`sw.js`: pages and code from the network first, images from the cache) |
 | `robots.txt`, `sitemap.xml`, `llms.txt` | robots.txt welcomes search and answer engines and turns away training crawlers |
 | `ik-name.js` | names every saved file by the Republican calendar (`fotofauna.html` has its own copy) |
-| `ik-ecran.js` | the shared screen: one layout (screen rectangle, controls slot) and one glass rendering per program (VHS, Minitel, viewfinder, camcorder, Korong!, Katabatik, SkopoRhogo, plain programs); the VHS, Kapture, the local 3615 and the FotoFauna test build (`fotofauna-test.html`) use it |
+| `ik-ecran.js` | the shared screen: one layout (screen rectangle, controls slot) and one glass rendering per program (VHS, MiniTale, viewfinder, camcorder, Korong!, Katabatik, SkopoRhogo, plain programs); the VHS, Kapture, the local 3615 and the FotoFauna test build (`fotofauna-test.html`) use it |
 | `build-fr.py` | builds `fr.html` from `index.html` |
 
 ### Workflows (`.github/workflows/`)
@@ -168,7 +168,7 @@ The notes follow the house prose rules of the method repo ([prose/RULES.md](http
 <!-- network:start -->
 ## Korhogo
 
-Mauk Tenieb's transmedia world. [Katabase](https://mauktenieb.github.io/katabase): concept albums, the 18 Masks, the lore · [3615 KORHOGO](https://mauktenieb.github.io/3615/): the Minitel terminal.
+Mauk Tenieb's transmedia world. [Katabase](https://mauktenieb.github.io/katabase): concept albums, the 18 Masks, the lore · [3615 KORHOGO](https://mauktenieb.github.io/3615/): the MiniTale.
 
 [Bandcamp](https://mauktenieb.bandcamp.com): music and sales · [Substack](https://korhogo.substack.com): the journal · [YouTube](https://www.youtube.com/@mauktenieb): clips and mini-films.
 

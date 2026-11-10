@@ -17,4 +17,6 @@ s=sub(s,f'<meta property="og:description" content="{EN_DESC}"><meta property="og
       f'<meta property="og:description" content="{FR_DESC}"><meta property="og:url" content="https://mauktenieb.github.io/insertkoin/fr.html">',1,'ogdesc')
 # the artist's wish and the disambiguation, in French in the French page's JSON-LD
 s=s.replace("The artist's wish: an artistic, playful and technical layer, like a portable, multitasking and narrative fictional OS.","L’envie de l’artiste : une couche artistique, ludique et technique, comme un OS fictionnel portable, multitâche et narratif.")
+# the French page sends the visitor to KorhogOS in French (hand fix of fr.html, now built)
+s=sub(s,"sessionStorage.setItem('ik.os','1');}catch","sessionStorage.setItem('ik.os','1');localStorage.setItem('ik.lang','fr');}catch",1,'oslang')
 open(D+'fr.html','w',encoding='utf8').write(s); print('fr.html built',len(s))

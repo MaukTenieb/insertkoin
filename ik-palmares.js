@@ -2,13 +2,13 @@
  * Code: MIT licence, Copyright (c) 2026 Mauk Tenieb (see LICENSE).
  * Korhogo material: Copyright © Mauk Tenieb & Korhogo, all rights reserved. No use for training artificial intelligence.
  */
-/* IKP — the palmarès of Korong! and FaunInvaders, carried by the open Nostr network (the Minitel's own transport):
+/* IKP — the palmarès of Korong! and FaunInvaders, carried by the open Nostr network (the MiniTale's own transport):
    rules in palmares-rules.js, method in PALMARES.md; the official ten, rewritten every hour by the routine of this
    repository, sit in palmares.json.
    IKP.top(game)                 → Promise<[{ini,a,b,t}]>: palmares.json merged with what the relays hold right now
    IKP.record(game,{a,b,run},cb) → asks the three initials once per run when the entry takes a place, signs it with
-                                   the Minitel's key and sends it to the relays, then cb(top,rank)
-   IKP.line(rank)                → "#3 — 3615 KORHOGO" (the board sits on the Minitel's home screen)
+                                   the MiniTale's key and sends it to the relays, then cb(top,rank)
+   IKP.line(rank)                → "#3 — 3615 KORHOGO" (the board sits on the MiniTale's home screen)
    korong: a = Masks beaten in the run, b = goals let in; fauninvaders: a = score, b = wave */
 (function(){
   var INI={},R=null,NT=null,LIVE=[];
@@ -16,7 +16,7 @@
   function lastIni(){try{return localStorage.getItem('ik.ini')||'AAA';}catch(e){return 'AAA';}}
   function load(src){return new Promise(function(ok,ko){var s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=ko;document.head.appendChild(s);});}
   function libs(){if(R&&NT)return Promise.resolve();return Promise.all([window.IKPR?0:load('palmares-rules.js'),window.NostrTools?0:load('nostr-tools.js')]).then(function(){R=window.IKPR;NT=window.NostrTools;});}
-  /* the browser's key, shared with the Minitel (same site, same storage) */
+  /* the browser's key, shared with the MiniTale (same site, same storage) */
   function key(){var h=null;try{h=JSON.parse(localStorage.getItem('vdx.nostr.sk'));}catch(e){}
     if(!h||!/^[0-9a-f]{64}$/.test(h)){var b=NT.generateSecretKey();h=Array.prototype.map.call(b,function(x){return('0'+x.toString(16)).slice(-2);}).join('');try{localStorage.setItem('vdx.nostr.sk',JSON.stringify(h));}catch(e){}}
     var u=new Uint8Array(32);for(var i=0;i<32;i++)u[i]=parseInt(h.substr(i*2,2),16);return u;}
@@ -73,7 +73,7 @@
       if(INI[e.run])go(INI[e.run]);else ask(go);
     });
   }
-  /* in the games, a single line: the rank, and where the whole list lives (the Minitel) */
+  /* in the games, a single line: the rank, and where the whole list lives (the MiniTale) */
   function line(rank){if(!rank)return '';return (fr()?(rank===1?'1er':rank+'e'):'#'+rank)+' \u2014 3615 KORHOGO';}
   function html(game,t,rank){
     if(!t||!t.length)return '';

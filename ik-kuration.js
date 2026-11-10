@@ -4,10 +4,10 @@
  */
 /* IKK, Korhogo Kuration: a visitor keeps tracks with the heart key of the VHS deck and makes a cassette of them.
    The list stays in this browser (localStorage ik.kuration), appears on the deck's shelf as the cassette
-   « Korhogo Kuration », and goes out on the open Nostr network (the Minitel's transport), signed with
-   the Minitel's key: one addressable event per visitor (kind 30078, d = korhogo-kuration); each version replaces
+   « Korhogo Kuration », and goes out on the open Nostr network (the MiniTale's transport), signed with
+   the MiniTale's key: one addressable event per visitor (kind 30078, d = korhogo-kuration); each version replaces
    the previous one. Anyone opens it at insertkoin/?k=<public key>; kuration.html lists every visitor's cassette,
-   kuration.html?k=<key> shows one; the Minitel service 3615 KURATIONS lists them too.
+   kuration.html?k=<key> shows one; the MiniTale service 3615 KURATIONS lists them too.
    The browser key appears with the first heart: reading the list creates zero keys.
    IKK.has(id) · IKK.toggle({id,title}) → true if kept · IKK.mine() → [{id,title}] · IKK.all() → Promise<[{pk,name,tracks,t}]>
    IKK.one(pk) → Promise<{pk,name,tracks,t}|null> · IKK.find(hex) → Promise<{…}|null> (8 to 64 hex) · IKK.url(pk) · IKK.pk() → own public key (hex) or null */
@@ -19,7 +19,7 @@
   function put(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* private window */ } }
   function load(src) { return new Promise(function (ok, ko) { var s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = ko; document.head.appendChild(s); }); }
   function libs() { if (NT) return Promise.resolve(NT); return (window.NostrTools ? Promise.resolve() : load('nostr-tools.js')).then(function () { NT = window.NostrTools; return NT; }); }
-  /* the browser's key, shared with the Minitel and the palmarès (same site, same storage) */
+  /* the browser's key, shared with the MiniTale and the palmarès (same site, same storage) */
   function key(create) {
     var h = get('vdx.nostr.sk', null);
     if ((!h || !/^[0-9a-f]{64}$/.test(h)) && !create) return null;
