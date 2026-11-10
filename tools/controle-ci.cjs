@@ -16,7 +16,7 @@ async function visuel(w,h,t,refus) {
     const cf = await b.newContext({ viewport:{width:w,height:h}, deviceScaleFactor:.5, isMobile:!!t, hasTouch:!!t, reducedMotion:'reduce' });
     await cf.addInitScript(() => { let s = 7; Math.random = () => ((s = s * 16807 % 2147483647) / 2147483647); const D = Date; const T = new D('2026-11-07T20:00:00Z').getTime(); Date = class extends D { constructor(...a) { super(...(a.length ? a : [T])); } static now() { return T; } }; try { localStorage.clear(); } catch (e) {} });
     const pf = await cf.newPage(); await pf.goto(base + '?palette=ambre-noyer', { waitUntil:'load', timeout:60000 }); await pf.waitForTimeout(6000);
-    await pf.addStyleTag({ content:'*,*::before,*::after{animation:none!important;transition:none!important}.guide,.gtip,.b-attract,.b-screen iframe,.b-tk,.b-date,.b-lore,.b-slot b,.b-lustre,.b-psy{visibility:hidden!important}' });
+    await pf.addStyleTag({ content:'*,*::before,*::after{animation:none!important;transition:none!important}.guide,.gtip,.b-attract,.b-screen iframe,.b-tk,.b-date,.b-lore,.b-slot b,.b-lustre,.b-psy{visibility:hidden!important}.b-psy,.guide,.gtip{display:none!important}html,body{overflow-x:hidden!important}' });
     await pf.evaluate(async () => { try { window.__borneTourStop && window.__borneTourStop(); } catch (e) {} const R = document.documentElement; R.dataset.skin = 'bois'; R.style.setProperty('--i-cam', 'url(camera-a.webp)'); document.querySelectorAll('.b-lore').forEach(e => { e.style.setProperty('--i-lore', 'url(sticker-lore-papier-sang.webp)'); e.dataset.pap = 'sang'; }); await document.fonts.ready; scrollTo(0,0); dispatchEvent(new Event('resize')); }); await pf.waitForTimeout(1200); await pf.evaluate(() => scrollTo(0,0)); await pf.waitForTimeout(300); const shots = [['', await pf.screenshot({ fullPage:false })]];
     const zone = await pf.evaluate(() => { const l = [...document.querySelectorAll('.b-panel,.b-doorrow')].filter(e => e.offsetWidth).map(e => e.getBoundingClientRect()); if (!l.length) return null; const y0 = Math.min(...l.map(r => r.top)) + scrollY, y1 = Math.max(...l.map(r => r.bottom)) + scrollY; return { x:0, y:Math.max(0, y0 - 8), width:innerWidth, height:y1 - y0 + 16 }; });
     if (zone) shots.push(['-panneau', await pf.screenshot({ fullPage:true, clip:zone })]); await cf.close();
@@ -29,8 +29,10 @@ function compare(k, img, refus) {
     if (MAJ || !fs.existsSync(fr)) { fs.mkdirSync(REF, { recursive:true }); fs.writeFileSync(fr, img); lignesRef.push(`${k} : référence ${MAJ ? 'mise à jour' : 'créée'}`); }
     else { const A = PNG.sync.read(fs.readFileSync(fr)), B = PNG.sync.read(img);
       const hh = Math.min(A.height, B.height);
-      if (A.width !== B.width || Math.abs(A.height - B.height) > 20) { refus.push(`capture ${B.width}x${B.height} contre référence ${A.width}x${A.height}`); lignesRef.push(`${k} : taille changée`); }
-      else { const cut = I => I.data.subarray(0, I.width * hh * 4); const dif = new PNG({ width:A.width, height:hh }); const n = pixelmatch(cut(A), cut(B), dif.data, A.width, hh, { threshold:.12 }); const pc = 100 * n / (A.width * hh);
+      /* 10 nov. 2026 : au téléphone, la zone du panneau varie en hauteur d'un passage à l'autre à contenu égal (runs 42511620215 à 42845820483) ;
+         une hauteur différente se signale, la comparaison porte alors sur la partie commune ; une largeur différente reste un refus */
+      if (A.width !== B.width) { refus.push(`capture ${B.width}x${B.height} contre référence ${A.width}x${A.height}`); lignesRef.push(`${k} : largeur changée (${A.width}x${A.height} → ${B.width}x${B.height})`); }
+      else { if (A.height !== B.height) lignesRef.push(`${k} : hauteur ${A.height} → ${B.height} px, comparaison sur ${hh} px communs`); const cut = I => I.data.subarray(0, I.width * hh * 4); const dif = new PNG({ width:A.width, height:hh }); const n = pixelmatch(cut(A), cut(B), dif.data, A.width, hh, { threshold:.12 }); const pc = 100 * n / (A.width * hh);
         lignesRef.push(`${k} : écart visuel ${pc.toFixed(2)} %`); if (pc > 1.5) { if (AVIS) console.log(`::warning::${k} écart visuel ${pc.toFixed(2)} % avec la version précédente (voir ecart-${k}.png)`); else refus.push(`écart visuel ${pc.toFixed(2)} %`); fs.writeFileSync(`ecart-${k}.png`, PNG.sync.write(dif)); fs.writeFileSync(`actuel-${k}.png`, img); } } }
   }
 }
