@@ -16,7 +16,7 @@ html,body{margin:0;height:100%;background:#050403;overflow:hidden;color:#ece6d6;
 button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-select:none}
 /* 10 nov. 2026 (Mauk Tenieb, 19 h 30) : le couloir sans fin. La salle se dessine sur un tube WebGL : optique en barillet qui absorbe les bords, grain de pellicule, travelling vers le fond */
 #hall{position:fixed;inset:0;width:100%;height:100%;display:block;background:#050403;transition:filter 1.4s cubic-bezier(.4,0,.2,1)}
-/* 10 nov. (Mauk Tenieb, 23 h 12) : le voile ne tombe plus d'un coup : l'allée s'assombrit à peine, sans flou, en 1,4 s */#hall.dim{filter:brightness(.6)}
+/* 10 nov. (Mauk Tenieb, 23 h 12 et 23 h 17) : zéro voile sombre sur l'allée ; le grain de film mouvant reste */#hall.dim{filter:none}
 #hallflat{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;display:none}
 #salle{position:fixed;left:0;right:0;top:0;bottom:var(--ikbar,52px);touch-action:none;outline:0;user-select:none;-webkit-user-select:none}
 #salle.off{pointer-events:none}
@@ -29,7 +29,7 @@ button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-sel
 #wrap>.scene{grid-area:1/1}
 .scene{position:relative;width:var(--sw);height:var(--sh);opacity:0;visibility:hidden;transition:opacity .2s ease-out,visibility 0s .2s;
  -webkit-mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 3.5%,#000 96.5%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 3.5%,#000 96.5%,transparent);mask-composite:intersect}
-.scene.on{opacity:1;visibility:visible;transition:opacity .3s cubic-bezier(.16,1,.3,1)}
+.scene.on{opacity:1;visibility:visible;transition:opacity .9s cubic-bezier(.4,0,.2,1)}/* 10 nov. : le rayon et le comptoir paraissent en fondu lent */
 .scene::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 75% 80% at 50% 50%,transparent 55%,rgba(0,0,0,.5))}
 .scene>img.bg{position:absolute;inset:0;width:100%;height:100%;display:block}
 .hot{position:absolute;cursor:pointer;outline:0}
