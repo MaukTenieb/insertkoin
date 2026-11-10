@@ -20,8 +20,8 @@ html,body{margin:0;height:100%;background:#050403;overflow:hidden;color:#ece6d6;
 .scene>img.bg{position:absolute;inset:0;width:100%;height:100%;display:block}
 .hot{position:absolute;cursor:pointer}
 .hot{outline:0;-webkit-tap-highlight-color:transparent}
-/* le téléphone à cadran du comptoir mène au 3615 (Mauk Tenieb, 8 oct., t20 : « téléphone à cadran → 3615 ») ; lueur au survol, sans étiquette */
-#hPhone{border-radius:50%}#hPhone::after{content:'';position:absolute;inset:-35%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,214,150,.30),rgba(255,180,90,.10) 55%,transparent);opacity:0;transition:opacity .35s;pointer-events:none}#hPhone:hover::after,#hPhone:focus-visible::after{opacity:1}/* 10 nov. : zéro contour au survol ni au clic (Mauk Tenieb, 17 h 33) */
+/* le téléphone à cadran du comptoir commande le Motel Sound (Mauk Tenieb, 10 nov., 19 h 25) ; lueur au survol, lueur tenue quand il est décroché, sans étiquette */
+#hPhone{border-radius:50%}#hPhone::after{content:'';position:absolute;inset:-35%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,214,150,.30),rgba(255,180,90,.10) 55%,transparent);opacity:0;transition:opacity .35s;pointer-events:none}#hPhone:hover::after,#hPhone:focus-visible::after,#hPhone.up::after{opacity:1}#hPhone.up::after{animation:phglow 2.4s ease-in-out infinite}@keyframes phglow{50%{opacity:.55}}/* 10 nov. : zéro contour au survol ni au clic (Mauk Tenieb, 17 h 33) */
 /* rayon : jaquettes debout, face visible, derrière les barres chromées */
 .box{position:absolute;cursor:pointer;transform-origin:50% 100%;transition:transform .15s}
 .box::before{content:"";position:absolute;top:1.5%;bottom:0;left:-5%;width:5%;background:linear-gradient(90deg,#050505,#1c1c1c 60%,#2a2a2a);transform:skewY(-12deg);transform-origin:100% 0}
@@ -75,7 +75,7 @@ html,body{margin:0;height:100%;background:#050403;overflow:hidden;color:#ece6d6;
  <div class="scene on" id="salle"><img class="bg" src="a/vc/vc-01-salle.webp" alt=""><div class="hot" id="hAisle" style="left:42%;top:30%;width:16%;height:32%"></div><div class="hot" id="hLeft" style="left:0;top:8%;width:42%;height:84%"></div><div class="hot" id="hRight" style="left:58%;top:8%;width:42%;height:84%"></div></div>
  <div class="scene" id="rayon"><img class="bg" src="a/vc/vc-02-rayon.webp" alt=""><div id="boxes"></div><div class="rail" id="rails"></div>
   <div id="case"><div class="face"></div><div class="back"></div><div class="acts"></div></div></div>
- <div class="scene" id="comptoir"><img class="bg" src="a/vc/vc-03-comptoir.webp" alt=""><div id="tv"><div class="osd"></div></div><div class="hot" id="hPhone" style="left:45.6%;top:50.8%;width:10.2%;height:11.4%" aria-label="3615"></div></div>
+ <div class="scene" id="comptoir"><img class="bg" src="a/vc/vc-03-comptoir.webp" alt=""><div id="tv"><div class="osd"></div></div><div class="hot" id="hPhone" style="left:45.6%;top:50.8%;width:10.2%;height:11.4%" aria-label="Motel Sound"></div></div>
  <div id="nav"></div><button id="lang"></button>
 </div>
 <script src="kdata.js"></script>
@@ -122,7 +122,12 @@ var SC=['salle','rayon','comptoir'];
 function go(id){$$('.scene').forEach(function(s){s.classList.toggle('on',s.id===id)});$$('#nav button').forEach(function(b){b.classList.toggle('on',b.dataset.s===id)});if(id==='comptoir')comptoir();/* au téléphone debout, la photo glisse vers le centre utile du plan : au comptoir, la télé et le téléphone */var W=$('#wrap');if(innerHeight>innerWidth){var sw=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sw'))||0,c=id==='comptoir'?.415:.5;W.scrollLeft=Math.max(0,sw*c-innerWidth/2)}}
 function nav(){var n=$('#nav');n.innerHTML='';SC.forEach(function(s){var b=h('button',null,t(s));b.dataset.s=s;b.onclick=function(){go(s)};n.appendChild(b)});$('#lang').textContent=lang==='fr'?'EN':'FR';var on=$$('.scene.on')[0];if(on)$$('#nav button').forEach(function(b){b.classList.toggle('on',b.dataset.s===on.id)})}
 /* 10 nov. (Mauk Tenieb, 18 h 16 : minimalisme des textes) : zéro menu écrit ; les rayons mènent aux cassettes, le fond de l'allée au comptoir ; Échap et Baku Boom ramènent à la salle */
-['hLeft','hRight'].forEach(function(id){$('#'+id).onclick=function(){go('rayon')}});$('#hAisle').onclick=function(){go('comptoir')};$('#hPhone').onclick=function(){var u=ON?'https://mauktenieb.github.io/insertkoin/?p=terminal':'../?p=terminal';location.href=u};
+['hLeft','hRight'].forEach(function(id){$('#'+id).onclick=function(){go('rayon')}});$('#hAisle').onclick=function(){go('comptoir')};/* 10 nov. (Mauk Tenieb, 19 h 25) : le téléphone à cadran commande le Motel Sound : décrocher le lance, composer deux chiffres choisit la piste (01 à 99), raccrocher l'arrête */
+var PH={up:false,num:'',t:null,ac:null,tone:null};
+function phTone(on){try{if(on){PH.ac=PH.ac||new (window.AudioContext||window.webkitAudioContext)();var o=PH.ac.createOscillator(),g=PH.ac.createGain();o.frequency.value=440;g.gain.value=.05;o.connect(g).connect(PH.ac.destination);o.start();g.gain.setTargetAtTime(0,PH.ac.currentTime+1.2,.15);o.stop(PH.ac.currentTime+2);PH.tone=o}else if(PH.tone){PH.tone.stop();PH.tone=null}}catch(e){}}
+function phUp(v){PH.up=v;$('#hPhone').classList.toggle('up',v);if(!window.IKMotel)return;if(v){phTone(true);IKMotel.on(true)}else{phTone(false);IKMotel.on(false)}}
+$('#hPhone').onclick=function(){phUp(!PH.up)};
+addEventListener('keydown',function(e){if(!PH.up||!$('#comptoir').classList.contains('on')||!/^\d$/.test(e.key)||(e.target&&/INPUT|TEXTAREA/.test(e.target.tagName)))return;PH.num+=e.key;clearTimeout(PH.t);phTone(false);if(PH.num.length===2){var n=+PH.num;PH.num='';if(n&&window.IKMotel)IKMotel.dial(n)}else PH.t=setTimeout(function(){var n=+PH.num;PH.num='';if(n&&window.IKMotel)IKMotel.dial(n)},1400)});
 $('#lang').onclick=function(){lang=lang==='fr'?'en':'fr';document.documentElement.lang=lang;try{localStorage.setItem('ik.lang',lang)}catch(e){}nav();if($('#case').classList.contains('on')&&cur)take(cur)};
 addEventListener('keydown',function(e){if(e.key!=='Escape')return;if($('#case').classList.contains('on'))$('#case').classList.remove('on');else go('salle')});
 window.__ikBoom=function(){$('#case').classList.remove('on');go('salle')};

@@ -34,13 +34,13 @@ IMM.addEventListener('click',function(){var d=document.documentElement;try{if(do
 BOOM.addEventListener('click',function(){if(window.__ikBoom){window.__ikBoom();return}});
 LG.addEventListener('click',function(){try{localStorage.setItem('ik.lang',lang==='fr'?'en':'fr')}catch(e){}location.reload()});
 /* le lecteur du Motel Sound */
-var want={panel:false,tv:false},user=false,pl=null,ready=false,ids=null,vol=100,muted=false,title='';
+var want={panel:false,tv:false},user=false,pl=null,ready=false,ids=null,vol=100,muted=false,title='',ORD=null,pend=null;
 try{want.panel=localStorage.getItem('ik.motel')==='1'}catch(e){}
 function list(cb){if(ids)return cb(ids);fetch(HALL+'index.html').then(function(r){return r.text()}).then(function(t){var m=/var JUKE_TRACKS=(\[.*?\]);/.exec(t);try{var a=m?JSON.parse(m[1]):[];ids=a.map(function(x){return x.id});ids.T={};a.forEach(function(x){ids.T[x.id]=x.t})}catch(e){ids=[]}cb(ids)}).catch(function(){ids=[];cb(ids)})}
 function make(a){var d=document.createElement('div');d.id='ikp-yt';d.setAttribute('aria-hidden','true');d.style.cssText='position:fixed;left:-9999px;top:0;width:160px;height:90px';document.body.appendChild(d);
- var o=a.slice();for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=o[i];o[i]=o[j];o[j]=t}
+ var o=a.slice();for(var i=o.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=o[i];o[i]=o[j];o[j]=t}ORD=o;
  function go(){pl=new YT.Player('ikp-yt',{height:'90',width:'160',host:'https://www.youtube-nocookie.com',playerVars:{autoplay:1,controls:0,playsinline:1,rel:0},
-  events:{onReady:function(){ready=true;pl.loadPlaylist({playlist:o,index:0});pl.setLoop(true);sync()},onError:function(){try{pl.nextVideo()}catch(e){}},
+  events:{onReady:function(){ready=true;var i0=pend!=null&&ids?Math.max(0,o.indexOf(ids[pend-1])):0;pend=null;pl.loadPlaylist({playlist:o,index:i0});pl.setLoop(true);sync()},onError:function(){try{pl.nextVideo()}catch(e){}},
    onStateChange:function(){try{var v=pl.getVideoData&&pl.getVideoData();var id=v&&v.video_id;title=((ids.T&&ids.T[id])||(v&&v.title)||'').replace(/_/g,' ');$t()}catch(e){}}}})}
  if(window.YT&&YT.Player)go();else{var pr=window.onYouTubeIframeAPIReady;window.onYouTubeIframeAPIReady=function(){if(pr)pr();go()};var sc=document.createElement('script');sc.src='https://www.youtube.com/iframe_api';document.head.appendChild(sc)}}
 function $t(){MSB.title=title?'Motel Sound — '+title:'Motel Sound'}
@@ -51,7 +51,9 @@ function sync(){var on=(want.panel||want.tv)&&!Object.keys(hush).some(function(k
  if(!pl){list(function(a){if(a.length&&!pl&&!document.getElementById('ikp-yt'))make(a)});return}
  if(ready)try{if(muted||!vol)pl.mute();else{pl.unMute();pl.setVolume(vol)}pl.playVideo()}catch(e){}}
 ['pointerdown','keydown'].forEach(function(ev){addEventListener(ev,function f(){if(!user){user=true;sync()}},{capture:true,once:true})});
-window.IKMotel={hush:function(k,v){hush[k]=!!v;sync()},want:function(k,v){want[k]=!!v;sync()},vol:function(v){vol=Math.max(0,Math.min(100,v));sync()},mute:function(m){muted=!!m;sync()}};
+/* 10 nov. : le téléphone du comptoir compose un numéro de piste du Motel Sound (1 à 99, ordre de la liste du hall) */
+function dial(n){user=true;want.panel=true;try{localStorage.setItem('ik.motel','1')}catch(e){}if(pl&&ready&&ORD&&ids){var i=ORD.indexOf(ids[n-1]);if(i>=0)try{pl.playVideoAt(i)}catch(e){}}else pend=n;sync()}
+window.IKMotel={dial:dial,on:function(v){user=true;want.panel=!!v;try{localStorage.setItem('ik.motel',v?'1':'0')}catch(e){}sync()},count:function(cb){list(function(a){cb(a.length)})},hush:function(k,v){hush[k]=!!v;sync()},want:function(k,v){want[k]=!!v;sync()},vol:function(v){vol=Math.max(0,Math.min(100,v));sync()},mute:function(m){muted=!!m;sync()}};
 function add(){document.body.appendChild(P);sync();if(KOS)setTimeout(function(){dispatchEvent(new Event('resize'))},60)}
 if(document.body)add();else document.addEventListener('DOMContentLoaded',add);
 })();
