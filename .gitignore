@@ -1,4 +1,5 @@
-.claude/
+.claude/*
+!.claude/skills/
 tools/ref/
 controle-*.png
 ecart-*.png
