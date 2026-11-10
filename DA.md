@@ -74,6 +74,7 @@ Tous les écrans de l'écosystème suivent une même géométrie en trois couche
 - L'habit : matière du boîtier, bombé du tube, parasites, incrustations. Seul l'habit change d'un appareil à l'autre ; les commandes gardent leur place.
 - Téléphone en portrait : l'image en haut, sur toute la largeur ; les commandes en bas, sous le pouce. Téléphone en paysage : l'image sur toute la hauteur, les commandes sur le côté.
 - Mesure : part des écrans conformes, écart de marge en pixels, format de l'image, sur six formats (borne/tools/borne-controle.py et contrôle de la borne).
+- Barre universelle (Mauk Tenieb, 10 nov. 2026, 19 h 37), la même dans chaque lieu : Baku Boom, Kapture, DiktaTfaune, Immersion, playlist du Motel Sound. La manette fait passer d'une pièce à l'autre : KorhogOS, TV, Borne, Video Kave, DVD.
 
 ## États de la machine
 
