@@ -884,7 +884,7 @@ function kkIntroAnimate(){
   t1=setTimeout(function(){
     if(p1) p1.classList.add('fadeout');
     t2=setTimeout(next,800);
-  },5400);
+  },2200);
 }
 window.kkIntroAnimate=kkIntroAnimate;
 function openFaunarratics(){

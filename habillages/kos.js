@@ -397,7 +397,7 @@ var SAYS={korong:'Shufflepuck: challenge us!|Shufflepuck : défie-nous !',chess:
 function lineFor(n){var k=n.prog?n.prog.id:n.name,s=SAYS[k];if(!s&&n.fiche)return n.fiche.motto;if(!s)return '';var a=s.split('|');return S.lang==='fr'?(a[1]||a[0]):a[0]}
 function initPsy(){var ids=['c7h5n3o6','honey_buzzard','croisiere_noire','tsui_pen'];var id=S.psyId||ids[Math.floor(Math.random()*4)];
  psy=$('#psy');bal=$('#bal');$('.spr',psy).style.backgroundImage='url(a/strip-'+id+'.webp)';psy.style.display=S.psy?'':'none';if(!S.psy)bal.classList.remove('on');
- if(!psy.style.left){psy.style.left=(S.theme==='plat'?(innerWidth/2-48):(innerWidth-120))+'px';psy.style.top=(innerHeight-160)+'px'}}
+ if(!psy.style.left){psy.style.left=(S.theme==='plat'?(innerWidth/2-48):(innerWidth-120))+'px';var fp=$('#fp');psy.style.top=Math.max(60,(fp&&fp.offsetHeight?fp.getBoundingClientRect().top:innerHeight)-psy.offsetHeight-12)+'px'}}
 function balloon(o,el){if(!bal)return;bal.innerHTML='<b>'+esc(o.name)+'</b>'+esc(o.line||'');bal.classList.add('on');var r=(el||psy).getBoundingClientRect(),p=psy.getBoundingClientRect(),bw=bal.offsetWidth,bh=bal.offsetHeight;
  var x=Math.max(4,Math.min(innerWidth-bw-4,p.left+p.width/2-bw/2)),y=p.top-bh-10,below=false;if(y<4){y=p.bottom+10;below=true}bal.classList.toggle('below',below);bal.style.left=x+'px';bal.style.top=y+'px';bal.style.setProperty('--ax',Math.max(10,Math.min(bw-20,p.left+p.width/2-x-5))+'px');clearTimeout(balT);balT=setTimeout(function(){bal.classList.remove('on')},4500)}
 /* 8 nov. (Mauk Tenieb, 17 h 59) : le psychopompe va vraiment s'asseoir sur chaque icône : un bond, la base posée sur le haut de l'image, une réception */
