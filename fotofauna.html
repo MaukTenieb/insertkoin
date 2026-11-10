@@ -254,6 +254,188 @@ html.ike-on .app[data-ike-layout=narrow] .ctrl{border-radius:0}
 @media (max-width:999px){#pane-looks{display:flex;flex-direction:column}#pane-looks.has-ctl .guide{order:-1;position:sticky;top:45px;z-index:11;max-height:46vh;overflow-y:auto;border-bottom:1px solid #221e17}}
 </style>
 <link rel="stylesheet" href="borne-fotofauna.css">
+<style id="ff-lota">
+/* ===== lot A : viseur 3:2, barillet des familles, planche-contact, tiroir des réglages ===== */
+.ff-gchips{display:flex;flex-wrap:wrap;gap:6px;min-width:0;max-height:var(--ffgh,46px);overflow:hidden}
+.ff-gchips.open{max-height:none;overflow:visible}
+.ff-gchips .ff-all{order:-2}.ff-gchips .gchip[aria-pressed=true]{order:-1}
+#genres{display:flex;gap:6px;align-items:flex-start;min-width:0}
+.ff-gmore{flex:none;font-size:12px}
+.ff-app{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:6px 6px 5px;background:var(--panel);border-bottom:1px solid var(--line2);font:400 16px/1 var(--disp);letter-spacing:.12em;color:var(--ink2);text-transform:uppercase}
+.ff-app small{font:400 12px/1 var(--num);letter-spacing:.06em;color:var(--mute)}
+.ff-end{grid-column:1/-1;display:block;height:1px}
+button{-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+@media (hover:none){.key:hover,.chip:hover{background:var(--key);color:#e9e3d6}.key.prim:hover{background:linear-gradient(180deg,#d9b55a,#a8862f);color:#14100a}}
+/* l'écran : la fenêtre 3:2 de l'appareil, noire, dans le boîtier gainé ; la photo tient dedans */
+html.ike-on #stage{background:var(--pebble)}
+html.ike-on #stage .ff-win{position:absolute;z-index:0;background:#000;box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),0 0 0 1px #000}
+html.ike-on #stage canvas#view{position:relative;z-index:1}
+/* la case des commandes : une grille, trois tenues (data-ffl, posé par ffLayout) */
+html.ike-on #ctrl{display:grid!important;gap:0!important;overflow:hidden!important;grid-template-columns:minmax(0,1fr);
+ grid-template-rows:auto auto auto auto auto minmax(0,1fr);grid-template-areas:"head" "acts" "shut" "vid" "stat" "insp"}
+html.ike-on #ffRail{display:contents}
+html.ike-on #ctrl header.top{grid-area:head;display:flex!important;flex-wrap:nowrap!important;align-items:center;gap:6px;height:auto;min-height:0;padding:5px 8px!important}
+html.ike-on #ctrl header.top .logo{margin:0!important;flex:none;min-height:40px}
+html.ike-on #ctrl header.top .logo .word{display:none}
+html.ike-on #ctrl header.top #bShoot,html.ike-on #ctrl header.top #bOpen{flex:1 1 0;min-width:0;width:auto}
+html.ike-on #ctrl header.top .key{min-height:40px}
+html.ike-on #ctrl #actions{grid-area:acts;padding:6px 8px 0!important;gap:6px}
+html.ike-on #ctrl #shutterRow{grid-area:shut;padding:6px 8px 0}
+html.ike-on #ctrl #vidBar{grid-area:vid;padding:6px 8px 0}
+html.ike-on #ctrl #status{grid-area:stat;padding:4px 8px 0;min-height:0;font-size:12px}
+html.ike-on #ctrl #status:has(#stText:empty):has(#stAct[hidden]):has(#stopAi[hidden]){display:none}
+html.ike-on #ctrl #inspector{grid-area:insp;min-height:0;display:flex;flex-direction:column;overflow:hidden;height:auto;margin-top:6px}
+html.ike-on #ctrl .dock{position:static;padding:0 10px;gap:16px;flex:none}
+html.ike-on #ctrl .dock button,html.ike-on #ctrl #laboBtn{min-height:40px!important;padding:6px 0 8px;font-size:12px}
+html.ike-on #ctrl .pane{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:8px}
+html.ike-on #ctrl #pane-looks{display:flex;flex-direction:column;padding:6px 8px 6px;overflow:hidden}
+html.ike-on #ctrl #pane-looks[hidden]{display:none}
+/* texte à l'écran : 12 px au moins */
+html.ike-on .key,html.ike-on .chip,html.ike-on .lang b,html.ike-on .pvMode button,html.ike-on .badge,html.ike-on .gchip,html.ike-on .tool h3,html.ike-on .tool label,html.ike-on #keysForm label,html.ike-on .vTime,html.ike-on .film .it b{font-size:12px}
+html.ike-on .key{letter-spacing:.1em}
+html.ike-on .lookBar .lf,html.ike-on .lookBar .ls,html.ike-on .fam small,html.ike-on .gchip small{font-size:12px}
+/* parcourir : recherche en tête ; barillet à gauche sur toute la hauteur ; genres, planche et tiroir à droite */
+html.ike-on #ctrl .browse{flex:1 1 auto!important;min-height:0;overflow:hidden!important;padding:0!important;display:grid;gap:6px;
+ grid-template-columns:var(--ffbarw,136px) minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto;
+ grid-template-areas:"srch srch" "bar gen" "bar pl" "bar drw"}
+html.ike-on #ctrl .browse>.search{grid-area:srch}
+html.ike-on #ctrl .search #q{min-height:36px;padding:5px 9px}
+html.ike-on #ctrl #bRand{min-height:36px!important;padding:5px 10px}
+html.ike-on #ctrl #count{display:none}
+/* le barillet : une molette crantée, treize crans gravés et remplis de blanc ; le cran choisi face à l'index ambre */
+html.ike-on #ctrl #fams{grid-area:bar;position:relative;display:grid!important;grid-auto-flow:column;grid-template-rows:repeat(var(--ffbr,13),minmax(0,1fr));grid-auto-columns:minmax(0,1fr);
+ gap:0;margin:0;padding:0 0 0 7px;overflow:hidden!important;min-height:0;max-width:none;-webkit-mask-image:none!important;mask-image:none!important;border-radius:4px;
+ background:repeating-linear-gradient(180deg,#4a4033 0 1px,#14110c 1px 3px) 0 0/6px 100% no-repeat,linear-gradient(180deg,#050403 0,#221e17 9%,#302a20 50%,#221e17 91%,#050403 100%);
+ box-shadow:inset 0 0 0 1px #000,inset -1px 0 0 rgba(255,255,255,.05),0 4px 10px rgba(0,0,0,.5)}
+html.ike-on #ctrl #fams .fam{position:relative;min-height:0!important;height:auto;width:100%;display:flex;align-items:center;justify-content:space-between;gap:4px;padding:0 6px 0 12px;margin:0;
+ border:0;border-radius:0;border-top:1px solid rgba(0,0,0,.6);box-shadow:inset 0 1px 0 rgba(255,255,255,.05);background:transparent;
+ font:400 15px/1 var(--disp);letter-spacing:.06em;text-transform:uppercase;color:#e4dccb;text-align:left;white-space:nowrap;overflow:visible;scroll-snap-align:none;text-shadow:0 1px 0 #000}
+html.ike-on #ctrl #fams .fam::after{content:"";position:absolute;left:0;right:0;top:calc(-1 * var(--ffhit,0px));bottom:calc(-1 * var(--ffhit,0px))}
+html.ike-on #ctrl #fams .fam:first-child{border-top:0;box-shadow:none}
+html.ike-on #ctrl #fams .fam>.tp{flex:1;min-width:0}
+html.ike-on #ctrl #fams .fam small{flex:none;font:400 12px/1 var(--num);letter-spacing:0;color:#9a9078;text-shadow:none}
+html.ike-on #ctrl #fams .fam:hover{color:#fff}
+html.ike-on #ctrl #fams .fam[aria-pressed=true]{background:linear-gradient(90deg,rgba(255,224,138,.13),rgba(255,224,138,.03) 70%,transparent);color:var(--acc2)}
+html.ike-on #ctrl #fams .fam[aria-pressed=true] small{color:var(--acc)}
+html.ike-on #ctrl #fams .fam[aria-pressed=true]::before{content:"";position:absolute;left:0;top:50%;margin-top:-6px;border:6px solid transparent;border-left:7px solid var(--acc);border-right:0}
+/* genres repliables et compteur */
+html.ike-on #ctrl .ff-genrow{grid-area:gen;display:flex;align-items:flex-start;gap:6px;min-width:0}
+html.ike-on #ctrl #genres{flex:1;min-width:0}
+html.ike-on #ctrl .gchip{min-height:32px!important;padding:5px 8px;letter-spacing:.04em}
+html.ike-on #ctrl .ff-gchips{--ffgh:32px}
+html.ike-on #ctrl .ff-count{flex:none;margin-left:auto;font:400 12px/32px "Press Start 2P",monospace;color:var(--acc);white-space:nowrap}
+/* la planche-contact : une bande qui défile seule, en-têtes d'appli collants, numéros de vue dans la marge du film */
+html.ike-on #ctrl #grid{grid-area:pl;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;
+ grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:6px;padding:0 2px 6px 0;align-content:start;contain:content}
+html.ike-on #ctrl #grid .ff-app{position:sticky;top:0;z-index:3}
+html.ike-on #ctrl #grid .frame{padding:15px 4px 6px;gap:3px;background-position:0 9px,0 calc(100% - 2px)}
+html.ike-on #ctrl #grid .frame::before{display:none}
+html.ike-on #ctrl #grid .frame b,html.ike-on #ctrl #grid .frame i{display:block;-webkit-line-clamp:unset}
+html.ike-on #ctrl #grid .ff-ed{position:absolute;left:3px;right:3px;top:0;font:400 12px/1 var(--num);letter-spacing:0;color:var(--mute);text-decoration:none;text-shadow:0 0 2px #000,0 0 2px #000}
+html.ike-on #ctrl #grid .ff-ed u{text-decoration:none;color:var(--acc)}
+html.ike-on #ctrl #grid .frame[aria-pressed=true]::after{top:12px}
+/* le tiroir des réglages, sous la planche : nom et appli sur une ligne ; ouvert, la notice et les réglages */
+html.ike-on #ctrl #guide{grid-area:drw;position:relative;top:auto;order:0;display:grid;grid-template-columns:minmax(0,1fr) 40px;align-items:center;gap:2px 6px;
+ padding:5px 6px 8px 8px;max-height:calc(var(--ffch,600px) * .34);overflow-y:auto;overscroll-behavior:contain;border-top:1px solid var(--line2);border-bottom:0;background:var(--bg2);box-shadow:0 -8px 14px -10px rgba(0,0,0,.9);flex:none;z-index:1}
+html.ike-on #ctrl #guide[hidden]{display:none}
+html.ike-on #ctrl #guide #label{display:contents}
+html.ike-on #ctrl #guide .ln{grid-column:1;grid-row:1;margin:0;font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.ike-on #ctrl #guide .ls{grid-column:1;grid-row:2}
+html.ike-on #ctrl #guide .lf{grid-column:1/-1;grid-row:3;margin-top:4px}
+html.ike-on #ctrl #guide .lh{grid-column:1/-1;grid-row:4;max-height:none;overflow:visible}
+html.ike-on #ctrl #guide #ctl{grid-column:1/-1;grid-row:5;min-width:0}
+html.ike-on #ctrl #guide .cr{grid-template-columns:minmax(72px,40%) minmax(0,1fr)}
+html.ike-on #ctrl .ff-drw{grid-column:2;grid-row:1/3;align-self:start;position:sticky;top:0;width:40px;height:40px;padding:0;border:1px solid #000;border-radius:3px;background:var(--key);color:var(--acc2);box-shadow:0 3px 0 #000,inset 0 1px 0 rgba(255,255,255,.08)}
+html.ike-on #ctrl .ff-drw svg{width:18px;height:18px;transform:rotate(180deg)}
+html.ike-on #ctrl #guide.ff-shut .ff-drw svg{transform:none}
+html.ike-on #ctrl #guide.ff-shut :is(.lf,.lh,#ctl){display:none}
+/* téléphone debout : l'écran en haut ; la tête sous l'écran ; les actions en bas, sous le pouce */
+html.ike-on #ctrl[data-ffl=port]{grid-template-rows:auto auto auto auto minmax(0,1fr) auto;grid-template-areas:"head" "shut" "vid" "stat" "insp" "acts"}
+html.ike-on #ctrl[data-ffl=port] #actions{padding:6px 8px calc(8px + env(safe-area-inset-bottom))!important;background:var(--panel);border-top:1px solid #000;box-shadow:0 -6px 14px rgba(0,0,0,.5);z-index:2}
+html.ike-on #ctrl[data-ffl=port] #actions .key{min-height:48px}
+html.ike-on #ctrl[data-ffl=port] #fams .fam{font-size:13px}
+/* téléphone couché : l'écran à gauche sur toute la hauteur ; les touches en rail sur le bord droit ; barillet et planche entre les deux */
+html.ike-on #ctrl[data-ffl=land]{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto auto minmax(0,1fr);grid-template-areas:"shut rail" "vid rail" "stat rail" "insp rail";column-gap:6px!important}
+html.ike-on #ctrl[data-ffl=land] #ffRail{grid-area:rail;display:grid;grid-auto-flow:column;grid-template-rows:repeat(var(--ffrr,9),38px);grid-auto-columns:38px;gap:3px;align-content:start;padding:3px;border-radius:0 6px 6px 0;background:var(--plate);box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
+html.ike-on #ctrl[data-ffl=land] #ffRail>header.top,html.ike-on #ctrl[data-ffl=land] #ffRail>#actions{display:contents!important}
+html.ike-on #ctrl[data-ffl=land] #ffRail .key{width:38px;height:38px;min-width:0!important;min-height:0!important;padding:0!important;margin:0!important;gap:0}
+html.ike-on #ctrl[data-ffl=land] #ffRail .key>span{display:none}
+html.ike-on #ctrl[data-ffl=land] #ffRail .key svg{display:block!important}
+html.ike-on #ctrl[data-ffl=land] #ffRail .lang{flex-direction:column;padding:2px!important}
+html.ike-on #ctrl[data-ffl=land] #ffRail .lang b{padding:2px 4px;font-size:12px}
+html.ike-on #ctrl[data-ffl=land] #ffRail .logo{width:38px;height:38px;min-height:0!important;padding:0!important;margin:0!important;justify-content:center;border-radius:50%}
+html.ike-on #ctrl[data-ffl=land] #ffRail .logo .mark{width:34px;height:34px}
+html.ike-on #ctrl[data-ffl=land] #inspector{margin-top:0}
+html.ike-on #ctrl[data-ffl=land] .dock{gap:14px;padding:0 6px}
+html.ike-on #ctrl[data-ffl=land] .dock button,html.ike-on #ctrl[data-ffl=land] #laboBtn{min-height:32px!important;padding:3px 0 5px}
+html.ike-on #ctrl[data-ffl=land] #pane-looks{padding:4px 0 0}
+html.ike-on #ctrl[data-ffl=land] .browse{gap:4px}
+html.ike-on #ctrl[data-ffl=land] .search #q,html.ike-on #ctrl[data-ffl=land] #bRand{min-height:32px!important}
+html.ike-on #ctrl[data-ffl=land] #fams .fam{font-size:13px;white-space:nowrap}
+html.ike-on #ctrl[data-ffl=land] #fams .fam small{display:none}
+html.ike-on #ctrl[data-ffl=land] .gchip{min-height:30px!important}
+html.ike-on #ctrl[data-ffl=land] .ff-gchips{--ffgh:30px}
+html.ike-on #ctrl[data-ffl=land] .ff-count{line-height:30px}
+html.ike-on #ctrl[data-ffl=land] #grid{grid-template-columns:repeat(auto-fill,minmax(70px,1fr))}
+html.ike-on #ctrl #bRand{font-size:12px}
+html.ike-on #ctrl .search{align-items:center}
+html.ike-on #ctrl .ff-count{order:9}
+html.ike-on #ctrl[data-ffl=land] #bRand{gap:0;width:34px;padding:0!important;justify-content:center}
+html.ike-on #ctrl[data-ffl=land] #bRand>span{display:none}
+html.ike-on #ctrl[data-ffl=land] #ffRail{grid-template-rows:repeat(var(--ffrr,9),36px);grid-auto-columns:36px;gap:2px}
+html.ike-on #ctrl[data-ffl=land] #ffRail .key,html.ike-on #ctrl[data-ffl=land] #ffRail .logo{width:36px;height:36px}
+html.ike-on #ctrl[data-ffl=land] #ffRail .logo .mark{width:32px;height:32px}
+html.ike-on #ctrl[data-ffl=land] #grid{grid-template-columns:repeat(auto-fill,minmax(64px,1fr))}
+html.ike-on #ctrl #grid .ff-app{padding:4px 4px 4px;font-size:15px}
+/* téléprompteur : le nom trop long défile sur place, jamais coupé */
+.tp{display:block;overflow:hidden;white-space:nowrap;min-width:0;text-overflow:clip!important}
+.tp>.tpi{display:inline-block;white-space:nowrap}
+.tp.run>.tpi{animation:fftp var(--tpt,6s) ease-in-out infinite alternate}
+@keyframes fftp{0%,18%{transform:translateX(0)}82%,100%{transform:translateX(var(--tpd,0))}}
+html.ike-on #ctrl .ff-app>.tp{flex:1}
+html.ike-on #ctrl #guide .ln.tp{display:block;text-overflow:clip}
+/* plaque gravée du boîtier */
+html.ike-on #stage .ff-plate{position:absolute;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:center;pointer-events:none;
+ font-family:var(--disp);letter-spacing:.3em;text-transform:uppercase;color:#cfc6b2;text-shadow:0 -1px 0 rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.14);white-space:nowrap;line-height:1}
+/* ordinateur à case courte (borne) : toutes les touches sur une rangée de plaque, le tiroir plus bas */
+html.ike-on #ctrl[data-ffl=short]{grid-template-rows:auto auto auto auto minmax(0,1fr);grid-template-areas:"head" "shut" "vid" "stat" "insp"}
+html.ike-on #ctrl[data-ffl=short] #ffRail{grid-area:head;display:flex;align-items:center;gap:3px;padding:4px 6px;background:var(--plate);border-radius:6px 6px 0 0;box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
+html.ike-on #ctrl[data-ffl=short] #ffRail>header.top,html.ike-on #ctrl[data-ffl=short] #ffRail>#actions{display:contents!important}
+html.ike-on #ctrl[data-ffl=short] #ffRail .key{flex:1 1 0;min-width:0!important;height:38px;min-height:0!important;padding:0!important;margin:0!important;gap:0}
+html.ike-on #ctrl[data-ffl=short] #ffRail .key>span{display:none}
+html.ike-on #ctrl[data-ffl=short] #ffRail .key svg{display:block!important}
+html.ike-on #ctrl[data-ffl=short] #ffRail .lang{flex:0 0 auto;padding:0 3px!important}
+html.ike-on #ctrl[data-ffl=short] #ffRail .lang b{padding:4px 4px;font-size:12px}
+html.ike-on #ctrl[data-ffl=short] #ffRail .logo{flex:none;width:38px;height:38px;min-height:0!important;padding:0!important;margin:0!important;justify-content:center;border-radius:50%}
+html.ike-on #ctrl[data-ffl=short] #ffRail .logo .mark{width:34px;height:34px}
+html.ike-on #ctrl[data-ffl=short] .dock button,html.ike-on #ctrl[data-ffl=short] #laboBtn{min-height:36px!important;padding:4px 0 6px}
+html.ike-on #ctrl[data-ffl=short] #guide{max-height:124px}
+html.ike-on #ctrl[data-ffl=short] .gchip{min-height:30px!important}
+html.ike-on #ctrl[data-ffl=short] .ff-gchips{--ffgh:30px}
+/* téléphone debout : poignée de la feuille montante */
+html.ike-on #ctrl .ff-grip{display:none}
+html.ike-on #ctrl[data-ffl=port]{grid-template-rows:auto auto auto auto auto minmax(0,1fr) auto;grid-template-areas:"grip" "head" "shut" "vid" "stat" "insp" "acts";transition:top .22s ease-out,height .22s ease-out;z-index:8}
+html.ike-on #ctrl[data-ffl=port] .ff-grip{grid-area:grip;display:block;height:22px;cursor:ns-resize;touch-action:none;background:var(--panel);position:relative}
+html.ike-on #ctrl[data-ffl=port] .ff-grip::before{content:"";position:absolute;left:50%;top:8px;width:44px;height:5px;margin-left:-22px;border-radius:3px;background:#4a4033;box-shadow:inset 0 1px 0 rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.08)}
+html.ike-on #ctrl[data-ffl=port] .ff-grip::after{content:"";position:absolute;left:0;right:0;top:-11px;bottom:-11px}
+html.ike-on #ctrl[data-ffl=port] .dock button,html.ike-on #ctrl[data-ffl=port] #laboBtn{min-height:40px!important}
+/* rail du téléphone couché : rien ne déborde */
+html.ike-on #ctrl[data-ffl=land] #ffRail .key,html.ike-on #ctrl[data-ffl=land] #ffRail .logo{overflow:hidden}
+html.ike-on #ctrl[data-ffl=land] #ffRail{overflow:hidden}
+html.ike-on #ctrl #grid .tp.run>.tpi{animation:none}
+html.ike-on #ctrl #grid .inv .tp.run>.tpi,html.ike-on #ctrl #grid .ff-app.inv .tp.run>.tpi{animation:fftp var(--tpt,6s) ease-in-out infinite alternate}
+html.ike-on #ctrl[data-ffl=col] #guide{max-height:132px}
+html.ike-on #ctrl[data-ffl=short] #guide{max-height:104px}
+html.ike-on #ctrl[data-ffl=short] #ffRail .key,html.ike-on #ctrl[data-ffl=short] #ffRail .logo{overflow:hidden}
+html.ike-on #ctrl :is(#laboBtn,#bMenu,#bRand,.dock button){overflow:hidden}
+html.ike-on #ctrl[data-ffl=port] header.top{padding:3px 8px!important}
+html.ike-on #ctrl[data-ffl=port] header.top .key,html.ike-on #ctrl[data-ffl=port] header.top .logo{min-height:40px}
+html.ike-on #ctrl[data-ffl=port] .dock button,html.ike-on #ctrl[data-ffl=port] #laboBtn{min-height:38px!important;padding:4px 0 6px}
+html.ike-on #ctrl[data-ffl=port] .search #q,html.ike-on #ctrl[data-ffl=port] #bRand{min-height:36px!important}
+html.ike-on #ctrl[data-ffl=port] #actions .key{min-height:44px}
+html.ike-on #ctrl[data-ffl=port] .gchip{min-height:30px!important}
+html.ike-on #ctrl[data-ffl=port] .ff-gchips{--ffgh:30px}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -12050,7 +12232,16 @@ function paint(img){const c=$("view");if(c.width!==img.width||c.height!==img.hei
 let ECRAN=null; /* l'écran commun d'Insert Koin, quand le site le fournit (voir ecranOn) */
 /* le viseur occupe toute la place disponible, à l'échelle, petites images agrandies */
 function fit(){const c=$("view"),col=$("stageCol");if(!c.width||!col)return;
- if(ECRAN){const s=$("stage"),w=s.clientWidth,h=s.clientHeight;if(!w||!h)return;const k=Math.max(.05,Math.min(w/c.width,h/c.height,4));c.style.width=Math.floor(c.width*k)+"px";c.style.height=Math.floor(c.height*k)+"px";return}
+ if(ECRAN){/* règle commune des écrans : l'appareil photo garde son format 3:2, centré dans l'écran commun, mêmes marges en haut et en bas
+   (à gauche et à droite si l'écran est plus large que 3:2) ; la photo tient dans la fenêtre 3:2 ; les repères de cadrage suivent la fenêtre */
+  const s=$("stage"),w=s.clientWidth,h=s.clientHeight;if(!w||!h)return;let ww=w,wh=Math.floor(w*2/3);if(wh>h){wh=h;ww=Math.floor(h*3/2)}
+  const wx=Math.floor((w-ww)/2),wy=Math.floor((h-wh)/2);let win=s.querySelector(".ff-win");if(!win){win=document.createElement("div");win.className="ff-win";win.setAttribute("aria-hidden","true");s.insertBefore(win,s.firstChild)}
+  Object.assign(win.style,{left:wx+"px",top:wy+"px",width:ww+"px",height:wh+"px"});
+  /* le nom de l'appareil, gravé sur le boîtier au-dessus de la fenêtre */
+  let pl=s.querySelector(".ff-plate");if(!pl){pl=document.createElement("div");pl.className="ff-plate";pl.setAttribute("aria-hidden","true");pl.textContent=(document.querySelector(".logo .word")||{}).textContent||"FotoFauna";s.appendChild(pl)}
+  Object.assign(pl.style,{top:"0px",height:Math.max(14,wy)+"px",fontSize:Math.max(12,Math.min(18,Math.round(wy*.62)))+"px"});
+  const mk=s.querySelector(".ike-marks"),m=Math.round(Math.min(ww,wh)*.05);if(mk)Object.assign(mk.style,{inset:"auto",left:(wx+m)+"px",top:(wy+m)+"px",width:(ww-2*m)+"px",height:(wh-2*m)+"px"});
+  const k=Math.max(.05,Math.min(ww/c.width,wh/c.height,4));c.style.width=Math.floor(c.width*k)+"px";c.style.height=Math.floor(c.height*k)+"px";return}
  const desk=matchMedia("(min-width:1000px)").matches,pad=desk?28:16;
  let W=col.clientWidth-(desk?48:20)-pad,H;
  if(desk){const cs=getComputedStyle(col),used=$("actions").offsetHeight+$("status").offsetHeight+($("shutterRow").hidden?0:$("shutterRow").offsetHeight+12)+($("vidBar").hidden?0:$("vidBar").offsetHeight+12)+parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom)+28;H=col.clientHeight-used-pad}
@@ -12063,21 +12254,51 @@ function statusAction(msg,label,fn){setStatus(msg);const b=$("stAct");b.textCont
 function setLabel(){const L=S.cur&&FF.ops[S.cur.id];$("lbFam").textContent=L?famName(famOf(L))+(subOf(L)?" · "+subName(subOf(L)):""):t("taxonOrig");
  const pn=L&&S.cur.pi>=0&&L.presets?labelTxt(L,L.presets[S.cur.pi].label):null;$("lbName").textContent=L?(pn?L.label+" · "+pn:L.label):(S.stack.length?FF.ops[S.stack[S.stack.length-1].id]?.label||t("orig"):t("orig"));
  $("lbSrc").textContent=L?(APPN[L.app]||L.app):"";const pv=L&&S.cur.pi>=0&&L.presets?L.presets[S.cur.pi]:null,nt=(pv&&(pv.note||(itemOf(L,pv.label)||{}).note))||(L&&L.note)||"";$("lbHint").textContent=L&&L.kind==="interactive"?t("pourHint"):nt;
- const g=$("guide"),on=!!(S.cur||S.session);g.hidden=!on;$("pane-looks").classList.toggle("has-ctl",on);
- if(VM&&!L)$("lbName").textContent=t("mVideo");const bd=$("badge");if(REC){vtick(true)}else if(CAM){bd.textContent="● "+t("live");bd.className="badge rec";bd.hidden=false}else if(S.cmp){bd.textContent=t("orig");bd.className="badge";bd.hidden=false}else bd.hidden=true}
+ const g=$("guide"),on=!!(S.cur||S.session);if(g.hidden===on){g.hidden=!on;if(ECRAN)ffDrawer()}$("pane-looks").classList.toggle("has-ctl",on);
+ if(VM&&!L)$("lbName").textContent=t("mVideo");if(ECRAN){tpWrap($("lbName"));requestAnimationFrame(()=>fitTp($("guide")))}const bd=$("badge");if(REC){vtick(true)}else if(CAM){bd.textContent="● "+t("live");bd.className="badge rec";bd.hidden=false}else if(S.cmp){bd.textContent=t("orig");bd.className="badge";bd.hidden=false}else bd.hidden=true}
 
 /* ---------- familles, procédés, fiches ---------- */
 function visibleCards(){const q=S.q.toLowerCase();return CARDS.filter(c=>q?(c.name+" "+labelTxt(c.op,c.name)+" "+c.op.label+" "+(APPN[c.op.app]||"")+" "+(c.op.taxon||"")+" "+famName(famOf(c.op))+" "+subName(subOf(c.op))).toLowerCase().includes(q):famOf(c.op)===S.fam&&(!S.sub||subOf(c.op)===S.sub))}
 function drawFams(){const box=$("fams");box.innerHTML="";
- let r=$("bRand");if(!r){r=document.createElement("button");r.type="button";r.className="fam shuf";r.id="bRand";r.onclick=randomLook;$("q").after(r)}r.innerHTML=`<svg class="ic" aria-hidden="true"><use href="#i-dice"/></svg>${esc(t("shuffle"))}`;
- for(const [id] of FAMS){const n=CARDS.filter(c=>famOf(c.op)===id).length;if(!n)continue;const b=document.createElement("button");b.type="button";b.className="fam";b.setAttribute("aria-pressed",String(!S.q&&S.fam===id));b.innerHTML=`<span>${esc(famName(id))}</span><small>${n}</small>`;b.onclick=()=>{S.fam=id;S.sub=null;S.q="";$("q").value="";LS.set("pf_fam",id);drawFams();drawGrid();b.scrollIntoView({block:"nearest",inline:"nearest"})};box.appendChild(b)}
- const on=box.querySelector(".fam[aria-pressed=true]");if(on){const x=on.getBoundingClientRect().left-box.getBoundingClientRect().left+box.scrollLeft;box.scrollLeft=x+on.offsetWidth>box.clientWidth-20?x-14:0}
+ let r=$("bRand");if(!r){r=document.createElement("button");r.type="button";r.className="fam shuf";r.id="bRand";r.onclick=randomLook;$("q").after(r)}r.innerHTML=`<svg class="ic" aria-hidden="true"><use href="#i-dice"/></svg><span>${esc(t("shuffle"))}</span>`;r.title=t("shuffle");r.setAttribute("aria-label",t("shuffle"));
+ for(const [id] of FAMS){const n=CARDS.filter(c=>famOf(c.op)===id).length;if(!n)continue;const b=document.createElement("button");b.type="button";b.className="fam";b.setAttribute("aria-pressed",String(!S.q&&S.fam===id));b.innerHTML=`<span class="tp"><span class="tpi">${esc(famName(id))}</span></span><small>${n}</small>`;b.onclick=()=>{S.fam=id;S.sub=null;S.q="";$("q").value="";LS.set("pf_fam",id);drawFams();drawGrid();if(!ECRAN)b.scrollIntoView({block:"nearest",inline:"nearest"})};b.title=famName(id)+" · "+n;box.appendChild(b)}
+ requestAnimationFrame(()=>fitTp(box));const on=box.querySelector(".fam[aria-pressed=true]");if(on){const x=on.getBoundingClientRect().left-box.getBoundingClientRect().left+box.scrollLeft;box.scrollLeft=x+on.offsetWidth>box.clientWidth-20?x-14:0}
  $("count").textContent=CARDS.length+" "+(LANG==="fr"?"rendus":"looks")+" · "+Object.keys(FF.apps).filter(a=>a!=="__").length+" "+t("apps")}
+/* planche-contact (lot A) : genres en puces repliables, « All »/« Tout » en tête ; fiches groupées par appli sous un en-tête collant ;
+   rendu par tranches de 60 fiches (la tranche suivante vient quand le bas de la planche approche) ; compteur n/N */
+const PL={list:[],n:0,key:"",io:null,step:60,open:false};
+function plScroller(){const g=$("grid");return /(auto|scroll)/.test(getComputedStyle(g).overflowY)?g:null}
 function drawGrid(){const g=$("genres");g.innerHTML="";const subs=[...new Set(CARDS.filter(c=>famOf(c.op)===S.fam).map(c=>subOf(c.op)))].filter(Boolean).sort((a,b)=>SUBORD(a)-SUBORD(b));
- if(!S.q&&subs.length>1){const ch=document.createElement("div");ch.className="rail";
-  [[null,t("all")]].concat(subs.map(s=>[s,subName(s)])).forEach(([s,n])=>{const b=document.createElement("button");b.type="button";b.className="gchip";b.setAttribute("aria-pressed",String(S.sub===s));const k=CARDS.filter(c=>famOf(c.op)===S.fam&&(!s||subOf(c.op)===s)).length;b.innerHTML=`${esc(n)} <small>${k}</small>`;b.onclick=()=>{S.sub=s;drawGrid()};ch.appendChild(b)});g.appendChild(ch)}
- const grid=$("grid");grid.innerHTML="";for(const c of visibleCards()){const b=document.createElement("button");b.type="button";b.className="frame spec";b.dataset.k=c.k;b.setAttribute("aria-pressed",String(!!S.cur&&(S.cur.id+(S.cur.pi>=0?"#"+S.cur.pi:""))===c.k));
-  if(c.note&&LANG==="fr")b.title=c.note;b.innerHTML=`<div class="ph"></div><b>${labelHTML(c.op,c.name)}</b><i>${esc(APPN[c.op.app]||c.op.app)}${c.pi<0&&c.op.presets&&c.op.presets.length?" · "+(c.op.presets.length+1)+" "+t("variants"):""}</i>`;b.onclick=()=>pick(c);b._c=c;grid.appendChild(b);IO.observe(b)}}
+ if(!S.q&&subs.length>1){const ch=document.createElement("div");ch.className="ff-gchips";ch.classList.toggle("open",PL.open);
+  [[null,t("all")]].concat(subs.map(s=>[s,subName(s)])).forEach(([s,n])=>{const b=document.createElement("button");b.type="button";b.className="gchip"+(s?"":" ff-all");b.setAttribute("aria-pressed",String(S.sub===s));const k=CARDS.filter(c=>famOf(c.op)===S.fam&&(!s||subOf(c.op)===s)).length;b.innerHTML=`${esc(n)} <small>${k}</small>`;b.onclick=()=>{S.sub=s;PL.open=false;drawGrid()};ch.appendChild(b)});
+  const mo=document.createElement("button");mo.type="button";mo.className="gchip ff-gmore";mo.setAttribute("aria-expanded",String(PL.open));mo.onclick=()=>{PL.open=!PL.open;ch.classList.toggle("open",PL.open);mo.setAttribute("aria-expanded",String(PL.open));gMore()};
+  g.append(ch,mo);requestAnimationFrame(gMore)}
+ const key=S.fam+"|"+S.sub+"|"+S.q,same=key===PL.key,grid=$("grid"),sc=plScroller(),top=same&&sc?sc.scrollTop:0,want=same?Math.max(PL.step,PL.n):PL.step;
+ PL.key=key;PL.list=visibleCards();PL.n=0;grid.innerHTML="";if(PL.io)PL.io.disconnect();
+ const end=document.createElement("i");end.className="ff-end";end.setAttribute("aria-hidden","true");grid.appendChild(end);
+ PL.io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting))plMore(PL.step)},{root:sc,rootMargin:"0px 0px 600px 0px"});
+ /* le téléprompteur des fiches tourne seulement dans le champ de la planche */
+ if(PL.tio)PL.tio.disconnect();PL.tio=ECRAN?new IntersectionObserver(es=>{for(const e of es)e.target.classList.toggle("inv",e.isIntersecting)},{root:sc}):null;
+ plMore(want);PL.io.observe(end);if(sc)sc.scrollTop=top;plCount()}
+function plMore(k){const grid=$("grid"),end=grid.querySelector(".ff-end"),L=PL.list,stop=Math.min(L.length,PL.n+k),nw=[];
+ for(;PL.n<stop;PL.n++){const c=L[PL.n],prev=L[PL.n-1];
+  if(!prev||prev.op.app!==c.op.app){const h=document.createElement("div");h.className="ff-app";h.setAttribute("role","presentation");let m=0;for(let j=PL.n;j<L.length&&L[j].op.app===c.op.app;j++)m++;h.innerHTML=`<span class="tp"><span class="tpi">${esc(APPN[c.op.app]||c.op.app)}</span></span><small>${m}</small>`;grid.insertBefore(h,end);nw.push(h)}
+  const b=document.createElement("button");b.type="button";b.className="frame spec";b.dataset.k=c.k;b.dataset.n=PL.n+1;b.setAttribute("aria-pressed",String(!!S.cur&&(S.cur.id+(S.cur.pi>=0?"#"+S.cur.pi:""))===c.k));
+  if(c.note&&LANG==="fr")b.title=c.note;const vr=c.pi<0&&c.op.presets&&c.op.presets.length?(c.op.presets.length+1)+" "+t("variants"):"";
+  /* dans l'écran commun, l'en-tête collant nomme l'appli : la fiche garde son nom et, s'il y en a, le nombre de variantes */
+  b.innerHTML=`<div class="ph"></div>`+(ECRAN?`<s class="ff-ed tp"><span class="tpi"><u>${PL.n+1}▸</u> ${esc(APPN[c.op.app]||c.op.app)}</span></s><b class="tp"><span class="tpi">${labelHTML(c.op,c.name)}</span></b>`+(vr?`<i class="tp"><span class="tpi">${esc(vr)}</span></i>`:""):`<b>${labelHTML(c.op,c.name)}</b>`+`<i>${esc(APPN[c.op.app]||c.op.app)}${vr?" · "+vr:""}</i>`);b.onclick=()=>pick(c);b._c=c;grid.insertBefore(b,end);IO.observe(b);nw.push(b)}
+ end.hidden=PL.n>=L.length;plCount();if(ECRAN){if(PL.tio)nw.forEach(e=>PL.tio.observe(e));requestAnimationFrame(()=>fitTp(nw.flatMap(e=>[...e.querySelectorAll(".tp")])))}}
+/* téléprompteur (règle de Mauk Tenieb, 10 nov. 2026) : un nom plus long que sa case défile sur place, d'un bord à l'autre, puis revient */
+function tpWrap(e){if(!e||(e.firstElementChild&&e.firstElementChild.classList.contains("tpi")))return;const i=document.createElement("span");i.className="tpi";while(e.firstChild)i.appendChild(e.firstChild);e.appendChild(i);e.classList.add("tp")}
+function fitTp(root){const L=Array.isArray(root)?root:[...(root||document).querySelectorAll(".tp")],d=L.map(e=>{const i=e.firstElementChild;return i?i.scrollWidth-e.clientWidth:0});
+ L.forEach((e,k)=>{const on=d[k]>1&&e.clientWidth>0;e.classList.toggle("run",on);if(on){e.style.setProperty("--tpd",-Math.ceil(d[k]+2)+"px");e.style.setProperty("--tpt",(4+d[k]/16).toFixed(1)+"s")}})}
+/* une fiche hors des tranches déjà rendues : les tranches suivantes viennent jusqu'à elle */
+function plReveal(k){const i=PL.list.findIndex(c=>c.k===k);if(i>=PL.n)plMore(i+1-PL.n+PL.step);return $("grid").querySelector(`[data-k="${CSS.escape(k)}"]`)}
+let plT=0;function plCount(){if(plT)return;plT=requestAnimationFrame(()=>{plT=0;const o=$("ffCount");if(!o)return;const grid=$("grid"),sc=plScroller(),N=PL.list.length;let n=Math.min(N,PL.n);
+ if(sc){const b=sc.getBoundingClientRect().bottom;n=0;for(const e of grid.querySelectorAll(".frame")){const r=e.getBoundingClientRect();if(r.top<b-r.height*.5)n=+e.dataset.n;else break}}
+ o.textContent=n+"/"+N;o.setAttribute("aria-label",(LANG==="fr"?"vue ":"frame ")+n+" / "+N);o.title=$("count").textContent})}
+function gMore(){const ch=document.querySelector("#genres .ff-gchips"),mo=document.querySelector("#genres .ff-gmore");if(!ch||!mo)return;const bs=[...ch.children],t0=bs.length?bs[0].offsetTop:0,hid=bs.filter(b=>b.offsetTop>t0+4).length;
+ mo.textContent=PL.open?"▴":"▾ "+(hid?"+"+hid:"");mo.hidden=!PL.open&&!hid;mo.setAttribute("aria-label",t("all")+" · "+bs.length)}
 const IO=new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting){IO.unobserve(e.target);thumbQ.push(e.target);pumpThumbs()}},{rootMargin:"300px"});
 const thumbQ=[];let thumbRun=0;
 async function pumpThumbs(){if(thumbRun||!S.tiny)return;thumbRun=1;try{while(thumbQ.length){const el=thumbQ.shift();if(!el.isConnected)continue;const c=el._c,key=S.ver+"|"+S.stack.map(layerKey).join("|")+"|"+c.k;let url=THUMBS.get(key);
@@ -12250,7 +12471,7 @@ $("fSecond").onchange=async e=>{const f=e.target.files[0];if(!f)return;S.second=
 $("fPhotos").onchange=async e=>{const fs=[...e.target.files].slice(0,8);S.images=[];for(const f of fs)S.images.push(scaleTo(await readFile(f),2000));if(!S.second&&S.images[0])S.second=S.images[0];CACHE.clear();THUMBS.clear();drawLayers();drawGrid();render();e.target.value=""};
 $("bUndo").onclick=async()=>{if(CAM){stopCam();render();return}if(S.session){endSession();S.cur=null;drawCtl();render();return}if(S.cur){S.cur=null;drawCtl();drawGrid();render();return}const h=S.hist.pop();if(!h)return;if(h.src!==S.src){S.src=h.src;S.prev=scaleTo(S.src,1000);S.tiny=scaleTo(S.src,200);S.ver++;S.face=await detectFace(S.prev)}S.stack=h.stack;S.cur=h.cur;THUMBS.clear();drawCtl();drawGrid();drawLayers();render()};
 $("bKeep").onclick=()=>keepLayer();
-function randomLook(){const L=CARDS.filter(c=>c.op.kind!=="interactive"&&c.op.kind!=="capture");const c=L[Math.floor(Math.random()*L.length)];S.fam=famOf(c.op);S.sub=null;S.q="";$("q").value="";drawFams();drawGrid();pick(c);const el=$("grid").querySelector(`[data-k="${CSS.escape(c.k)}"]`);if(el)el.scrollIntoView({block:"nearest"})}
+function randomLook(){const L=CARDS.filter(c=>c.op.kind!=="interactive"&&c.op.kind!=="capture");const c=L[Math.floor(Math.random()*L.length)];S.fam=famOf(c.op);S.sub=null;S.q="";$("q").value="";drawFams();drawGrid();pick(c);const el=plReveal(c.k);if(el){el.setAttribute("aria-pressed","true");el.scrollIntoView({block:"nearest"})}}
 let qT=0;$("q").addEventListener("input",e=>{clearTimeout(qT);qT=setTimeout(()=>{S.q=e.target.value.trim();drawFams();drawGrid()},160)});
 
 /* ---------- caméra : viseur en direct sur la grande scène, déclencheur rond ---------- */
@@ -12402,13 +12623,48 @@ window.__ffSaveRaw=saveRaw;
 function ecranOn(){if(!window.IKEcran||!IKEcran.layout||ECRAN)return;document.documentElement.classList.add("ike-on");
  const app=$("app"),ctl=document.createElement("div");ctl.id="ctrl";ctl.className="ctrl";
  [document.querySelector("header.top"),$("shutterRow"),$("vidBar"),$("actions"),$("status"),$("inspector"),document.querySelector("footer.credit")].forEach(e=>{if(e)ctl.appendChild(e)});
- app.appendChild($("stage"));app.appendChild(ctl);
+ app.appendChild($("stage"));app.appendChild(ctl);ffParts(ctl);
  ECRAN=IKEcran.mount($("stage"),{program:"photo",z:4});
- IKEcran.layout(app,{screen:$("stage"),controls:ctl,onlayout:()=>fit()});
+ IKEcran.layout(app,{screen:$("stage"),controls:ctl,onlayout:()=>{fit();ffLayout()}});
+ if(window.ResizeObserver)new ResizeObserver(()=>ffLayout()).observe(ctl);
  const pl=$("player");
  new MutationObserver(()=>ecranSync()).observe(pl,{attributes:true,attributeFilter:["hidden"]});
  pl.addEventListener("timeupdate",()=>{if(!pl.hidden)ECRAN.osd({counter:hms(pl.currentTime)})});
  fit()}
+/* lot A : la case des commandes en trois tenues, selon la place que l'écran commun lui laisse.
+   col (ordinateur) : tête sur une ligne, actions, onglets, puis barillet des familles à gauche et planche-contact à droite, réglages en tiroir sous la planche ;
+   land (téléphone couché) : les touches en rail sur le bord droit, barillet et planche sur toute la hauteur ;
+   port (téléphone debout) : l'écran en haut, les actions en bas, sous le pouce. */
+function ffParts(ctl){const rail=document.createElement("div");rail.id="ffRail";rail.className="ff-rail";ctl.insertBefore(rail,ctl.firstChild);
+ rail.append(document.querySelector("header.top"),$("actions"));
+ const br=document.querySelector("#pane-looks .browse"),gr=document.createElement("div");gr.className="ff-genrow";$("genres").before(gr);gr.append($("genres"));
+ const cnt=document.createElement("span");cnt.id="ffCount";cnt.className="ff-count";br.querySelector(".search").append(cnt);br.append($("guide"));
+ const tg=document.createElement("button");tg.type="button";tg.className="ff-drw";tg.id="ffDrw";tg.innerHTML='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+ tg.onclick=()=>{S.drw=$("guide").classList.contains("ff-shut");ffDrawer()};$("guide").prepend(tg);
+ $("grid").addEventListener("scroll",plCount,{passive:true});
+ const gp=document.createElement("div");gp.id="ffGrip";gp.className="ff-grip";gp.tabIndex=0;gp.setAttribute("role","slider");gp.setAttribute("aria-orientation","vertical");gp.setAttribute("aria-valuemin","0");gp.setAttribute("aria-valuemax","2");gp.setAttribute("aria-valuenow","0");gp.setAttribute("aria-label",t("t_looks"));
+ let gy=null;gp.addEventListener("pointerdown",e=>{gy=e.clientY;gp.setPointerCapture(e.pointerId)});gp.addEventListener("pointerup",e=>{if(gy==null)return;const d=e.clientY-gy;gy=null;ffSheet(d<-24?SHEET+1:d>24?SHEET-1:(SHEET+1)%3)});
+ gp.addEventListener("keydown",e=>{if(e.key==="ArrowUp"){e.preventDefault();ffSheet(SHEET+1)}else if(e.key==="ArrowDown"){e.preventDefault();ffSheet(SHEET-1)}});ctl.insertBefore(gp,ctl.firstChild);
+ document.querySelector("#pane-looks .browse").addEventListener("click",e=>{if($("ctrl").dataset.ffl==="port"&&SHEET===0&&e.target.closest("#fams,.ff-genrow"))ffSheet(1)});
+ $("grid").addEventListener("scroll",()=>{if($("ctrl").dataset.ffl==="port"&&SHEET===0&&$("grid").scrollTop>40)ffSheet(1)},{passive:true});
+ $("stage").addEventListener("pointerdown",()=>{if(SHEET&&!CAM)ffSheet(0)});
+ document.querySelectorAll("#ffRail .key").forEach(k=>{const sp=k.querySelector("span[data-i]");if(sp&&sp.textContent){k.title=sp.textContent;k.setAttribute("aria-label",sp.textContent)}});
+ document.querySelectorAll("#ffRail .key").forEach(k=>{const sp=k.querySelector("span[data-i]");if(sp&&!k.title)new MutationObserver(()=>{k.title=sp.textContent;k.setAttribute("aria-label",sp.textContent)}).observe(sp,{childList:true,characterData:true,subtree:true})})}
+function ffDrawer(){const g=$("guide");if(!g)return;const shut=S.drw===false||(S.drw==null&&$("ctrl")&&$("ctrl").dataset.ffl!=="col");g.classList.toggle("ff-shut",shut);const t=$("ffDrw");if(t){t.setAttribute("aria-expanded",String(!shut));t.setAttribute("aria-label",$("lbName").textContent)}requestAnimationFrame(()=>{ffBar();plCount()})}
+let SHEET=0;
+function ffSheet(n){n=Math.max(0,Math.min(2,n));if(n===SHEET)return;SHEET=n;ffLayout()}
+function ffLayout(){const c=$("ctrl"),app=$("app");if(!c||!c.clientHeight)return;const nar=app.dataset.ikeLayout==="narrow";
+ /* téléphone debout : la case des commandes monte en feuille, trois crans (sous l'écran, au tiers de l'écran, sur l'écran) */
+ if(nar&&window.IKEcran){const g=IKEcran.geometry(app.clientWidth,app.clientHeight),H=app.clientHeight,y=SHEET===0?g.controls.y:SHEET===1?g.screen.y+Math.round(g.screen.h*.3):g.screen.y;
+  c.style.setProperty("top",y+"px","important");c.style.setProperty("height",Math.max(0,H-y)+"px","important");c.dataset.ffs=SHEET;const gr=$("ffGrip");if(gr)gr.setAttribute("aria-valuenow",SHEET)}else{SHEET=0;c.dataset.ffs=0}
+ const h=c.clientHeight,mode=nar?"port":h<480?"land":h<700?"short":"col";
+ if(c.dataset.ffl!==mode){c.dataset.ffl=mode;ffDrawer()}
+ c.style.setProperty("--ffch",h+"px");if(mode==="land")c.style.setProperty("--ffrr",Math.max(1,Math.floor((h-4)/38)));ffBar();requestAnimationFrame(()=>fitTp(c))}
+/* barillet : treize crans sur la hauteur ; sous 22 px par cran, deux colonnes */
+/* barillet : treize crans sur la hauteur ; au doigt, chaque cran offre 44 px (deux colonnes au besoin, zone de prise invisible au-delà du dessin) */
+function ffBar(){const f=$("fams"),c=$("ctrl");if(!f||!c)return;const n=f.children.length||13,br=f.parentElement,H=br.clientHeight-(br.querySelector(".search")||{offsetHeight:0}).offsetHeight-6,
+ touch=matchMedia("(pointer:coarse)").matches,min=touch?44:22,k=H/n>=min?1:2,rows=Math.ceil(n/k),rh=H/rows,bw={col:136,short:136,port:118,land:116}[c.dataset.ffl]||136;
+ f.style.setProperty("--ffbr",rows);f.style.setProperty("--ffhit","0px");br.style.setProperty("--ffbarw",(k===1?bw:k*96)+"px");f.dataset.c=k}
 ecranOn();
 
 /* ---------- langue ---------- */

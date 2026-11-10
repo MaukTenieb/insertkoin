@@ -90,31 +90,4 @@
   new MutationObserver(sync).observe(P,{attributes:true,attributeFilter:['data-palette','data-usure','data-skin']});
 })();
 
-/* i3 : la rangée des familles s'arrête sur une puce entière ; la puce active reste visible en entier */
-(function(){
-  var F=document.getElementById('fams');if(!F)return;
-  function snap(){
-    var on=F.querySelector('.fam[aria-pressed="true"]'),x=F.scrollLeft,L=F.getBoundingClientRect().left;
-    if(on){var r=on.getBoundingClientRect();if(r.left<L||r.right>L+F.clientWidth)x=on.offsetLeft-F.firstElementChild.offsetLeft;}
-    var best=0;[].forEach.call(F.children,function(c){var o=c.offsetLeft-F.firstElementChild.offsetLeft;if(o<=x+1)best=o;});
-    F.scrollLeft=best;
-  }
-  new MutationObserver(function(){requestAnimationFrame(snap);}).observe(F,{childList:true});
-  requestAnimationFrame(snap);setTimeout(snap,600);
-})();
-
-/* i3 cycle 2 : flèche › au bord droit des rangées de puces tant qu'il reste des puces à droite ; un appui avance d'une largeur */
-(function(){
-  function arm(R){
-    if(!R||R.parentNode.classList.contains('ff-row'))return;
-    var w=document.createElement('div');w.className='ff-row';R.parentNode.insertBefore(w,R);w.appendChild(R);
-    var b=document.createElement('button');b.type='button';b.className='ff-more';b.setAttribute('aria-label','suite');b.textContent='›';w.appendChild(b);
-    function up(){w.classList.toggle('more',R.scrollLeft+R.clientWidth<R.scrollWidth-4);}
-    b.onclick=function(){R.scrollBy({left:R.clientWidth*.8,behavior:'smooth'});};
-    R.addEventListener('scroll',up,{passive:true});addEventListener('resize',up);
-    new MutationObserver(function(){requestAnimationFrame(up);}).observe(R,{childList:true});up();setTimeout(up,800);
-  }
-  arm(document.getElementById('fams'));
-  var G=document.getElementById('genres');
-  if(G){var scan=function(){[].forEach.call(G.querySelectorAll('.rail'),arm);};new MutationObserver(scan).observe(G,{childList:true});scan();}
-})();
+/* lot A : le barillet montre les treize familles d'un coup et les genres se déplient sur place ; la rangée à défilement, son arrêt sur puce et sa flèche › quittent la page. */
