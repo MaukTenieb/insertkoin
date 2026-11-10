@@ -98,7 +98,8 @@ function nav(url,push){
   hideNotice();document.body.classList.remove('home');
   $('url').value=url;
   reloadFn=function(){nav(url,false);};
-  if(/\.onion/i.test(url)){
+  var oh='';try{oh=new URL(/^[a-z][a-z0-9+.-]*:\/\//i.test(url.trim())?url.trim():'http://'+url.trim()).hostname;}catch(e){}
+  if(/\.onion$/i.test(oh)){
     var u=url.trim();
     $('tab').dataset.onion=u;
     if(push)mark('onion:'+url);
