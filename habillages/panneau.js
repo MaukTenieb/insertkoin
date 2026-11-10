@@ -22,7 +22,9 @@ var FIX='#ikbar [data-k="0"]{box-sizing:border-box!important;width:100%!importan
 '#ikbar .b-px,#ikbar .b-imm,#ikbar .b-boom,#ikbar .b-stick{box-sizing:border-box!important;flex:0 0 auto!important;display:flex!important;align-items:center!important;justify-content:center!important;align-content:center!important;padding:0!important;line-height:1!important;width:var(--ikc)!important;min-width:var(--ikc)!important;max-width:var(--ikc)!important;height:var(--ikc)!important;margin:0!important}'+
 '#ikbar{--ikc:clamp(28px,9vw,36px)}#ikbar .b-boom,#ikbar .b-stick{--ikc:clamp(30px,10vw,40px)}'+
 '#ikbar .b-px>svg,#ikbar .b-imm>i{flex:0 0 auto!important;position:static!important;transform:none!important;margin:0!important;width:56%!important;height:56%!important;inset:auto!important}'+
-'#ikbar .b-imm>span{display:none!important}#ikbar .b-px-lg{font-size:11px!important;letter-spacing:0!important}'+
+'#ikbar .b-px>svg,#ikbar .b-imm>i{position:relative!important;left:calc(var(--ikc) * -0.057)!important;top:calc(var(--ikc) * -0.099)!important}'+
+/* bouton-gris.webp montre le bouton de trois quarts : sa face claire a son centre à (41,5 ; 38,5) sur 94 × 96 ; le pictogramme se pose au centre de la face, pas de la case */
+'#ikbar .b-imm>span{display:none!important}#ikbar .b-px-lg{font-size:11px!important;letter-spacing:0!important;padding:0 calc(var(--ikc) * 0.114) calc(var(--ikc) * 0.198) 0!important}'+
 '#ikbar .b-boom>i,#ikbar .b-stick>i{flex:0 0 auto!important;position:static!important;transform:none!important;margin:0!important;width:86%!important;height:86%!important;inset:auto!important;background-size:contain!important;background-position:center!important}'+
 '#ikbar .b-stick>i::before{position:absolute!important;inset:0!important;width:auto!important;height:auto!important;transform:none!important;background-position:50% 50%!important;background-size:contain!important}#ikbar .b-stick>i{position:relative!important}'+
 '#ikbar .koins{flex:0 0 auto!important;display:flex!important;align-items:center!important;gap:6px!important;margin-right:auto!important}#ikbar .koins .b-kicon{position:static!important;transform:none!important;margin:0!important}';
