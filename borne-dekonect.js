@@ -40,7 +40,7 @@
   /* chaque tronçon prend la place suivante ; les jours d'origine entre les tronçons restent les mêmes (la caisse tombait mal sans eux) */
   function place(seq,rects,top,P,anim){var gaps=rects.map(function(r,i){return i<rects.length-1?Math.max(0,rects[i+1].top-r.bottom):0;});var y=top;seq.forEach(function(e,k){var r=rects[P.indexOf(e)],dy=y-r.top;y+=r.height+(gaps[k]||0);
       e.style.transition=anim?'translate .36s cubic-bezier(.6,0,.95,.35) '+(k*110)+'ms,rotate .36s cubic-bezier(.6,0,.95,.35) '+(k*110)+'ms':'none';e.style.translate='0px '+dy+'px';e.style.rotate='0deg';
-      if(anim)setTimeout(function(){son('clack');knock(k);if(e.animate&&!RM)e.animate([{transform:'translateY(0)'},{transform:'translateY(3px) scaleY(.985)'},{transform:'translateY(0)'}],{duration:150,easing:'ease-out'});e.style.zIndex='';},360+k*110);});}
+      if(anim)setTimeout(function(){son('clack');knock(k);if(e.animate&&!RM)e.animate([{transform:'translateY(0)'},{transform:'translateY(3px) scaleY(.985)'},{transform:'translateY(0)'}],{duration:150,easing:'ease-out'});/* 10 nov. : la caisse déplacée garde son autocollant au-dessus des tronçons voisins */e.style.zIndex=(e.classList.contains('b-door')&&!same(seq,P))?'5':'';},360+k*110);});}
   /* 8 nov. : le rack des molettes accompagne la caisse à pièces dans chaque déplacement (même tronçon du meuble) ; l'aimant reste en bas à droite */
   (function follow(){var d=document.querySelector('.b-door'),k=document.querySelector('.b-knobs');if(!d||!k){setTimeout(follow,600);return;}
     new MutationObserver(function(){k.style.transition=d.style.transition;k.style.translate=d.style.translate;k.style.rotate=d.style.rotate;k.style.zIndex=d.style.zIndex;}).observe(d,{attributes:true,attributeFilter:['style']});})();
