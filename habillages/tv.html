@@ -381,7 +381,7 @@ function showVol(){var v=$('#vol');v.innerHTML=mute?'MUTE':'VOLUME '+'|'.repeat(
 $$('#remote button').forEach(function(b){b.addEventListener('click',function(){key(b.dataset.k)})});
 $('#kch').onclick=function(){key('chup')};$('#kvol').onclick=function(){key('volup')};$('#kpw').onclick=function(){key('power')};
 /* 10 nov., 17 h 41 (Mauk Tenieb : « les commandes passent par le clavier ») : chiffres, flèches, Entrée et Espace, t x m p, r g y c, e, Échap ; muet quand un champ de saisie a le focus */
-addEventListener('keydown',function(e){if(e.ctrlKey||e.metaKey||e.altKey)return;var t=e.target;if(t&&t.closest&&t.closest('input,textarea,select,[contenteditable]')){if(e.key==='Escape'){e.preventDefault();e.stopPropagation();t.blur()}return}
+addEventListener('keydown',function(e){if(e.ctrlKey||e.metaKey||e.altKey)return;var t=e.target;if(t&&t.closest&&t.closest('#ikbar'))return;if(t&&t.closest&&t.closest('input,textarea,select,[contenteditable]')){if(e.key==='Escape'){e.preventDefault();e.stopPropagation();t.blur()}return}
  var k=e.key,m=null;
  if(/^[0-9]$/.test(k))m=k;else if(k==='ArrowUp')m='chup';else if(k==='ArrowDown')m='chdn';
  else if(k==='ArrowLeft'||k==='ArrowRight')m=av?(k==='ArrowLeft'?'7':'9'):(k==='ArrowLeft'?'voldn':'volup');
