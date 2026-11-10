@@ -14,7 +14,10 @@
       +'#zoom{position:fixed!important;left:10px;bottom:10px;z-index:20;display:flex!important;gap:6px}html body #zoom button,html body .b-open{width:34px!important;height:34px!important;min-width:0!important;min-height:0!important;padding:0!important;border-radius:50%!important;border:1px solid rgba(255,224,138,.35)!important;background:rgba(10,9,8,.88)!important;box-shadow:none!important;color:#ffe08a!important;font:16px/1 monospace!important;cursor:pointer;opacity:1;text-shadow:none!important}html body #zoom button:hover,html body .b-open:hover{opacity:1}html body #zoom button::after,html body .b-open::after{content:"";position:absolute;inset:-5px}html body #zoom button,html body .b-open{position:relative}@media (pointer:coarse),(max-width:520px){html body #zoom{display:none!important}html body .b-open{left:10px!important;bottom:10px!important;top:auto!important}}'/* 8 nov. : au toucher, ⤢ reste au pied de l\'écran, face à la date, au lieu d\'un coin isolé (LISTE n°56) */
       +'html body .b-open{position:fixed!important;left:92px;bottom:10px;z-index:20}'
       /* la chambre paraît d'un bloc, déjà cadrée et rejouée, en fondu */
-      +'#view{opacity:0;transition:opacity .6s ease}html.sk-ready #view{opacity:1}';
+      +'#view{opacity:0;transition:opacity .6s ease}html.sk-ready #view{opacity:1}'
+      /* 10 nov. (Mauk Tenieb, 21 h 42) : à l'allumage, une neige fine le temps du chargement ; la chambre paraît une fois cadrée pour de bon, sans zoom ni saut */
+      +'#stage::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.42;background:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27160%27 height=%27160%27%3E%3Cfilter id=%27n%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%27.9%27 numOctaves=%272%27 stitchTiles=%27stitch%27/%3E%3CfeColorMatrix values=%270 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -.5%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23n)%27/%3E%3C/svg%3E");animation:sksnow .3s steps(3) infinite;transition:opacity .6s ease}'
+      +'html.sk-ready #stage::after{opacity:0;animation:none}@keyframes sksnow{33%{background-position:47px 23px}66%{background-position:-31px 59px}}@media (prefers-reduced-motion:reduce){#stage::after{animation:none}}';
     setTimeout(function(){document.documentElement.classList.add('sk-ready');},6000);
     document.head.appendChild(st);}
   function nowMin(){var d=new Date();return d.getHours()*60+d.getMinutes()+d.getSeconds()/60;}
@@ -41,8 +44,9 @@
       op.onclick=function(){try{parent.postMessage({borne:'open'},'*');}catch(_){}};document.body.appendChild(op);}
     pinch(R);
     if(!attract){var st2=document.createElement('style');st2.textContent='header button,aside button,#zoom button{min-height:44px;min-width:44px}';document.head.appendChild(st2);}
-    cover();addEventListener('resize',function(){setTimeout(cover,0);});setTimeout(cover,300);setTimeout(cover,1500);
-    if(attract)requestAnimationFrame(function(){requestAnimationFrame(function(){cover();document.documentElement.classList.add('sk-ready');});});}
+    cover();addEventListener('resize',function(){setTimeout(cover,0);});setTimeout(cover,300);
+    /* la chambre paraît après le dernier cadrage, quand la borne autour a pris sa taille */
+    setTimeout(function(){cover();if(attract)requestAnimationFrame(function(){requestAnimationFrame(function(){document.documentElement.classList.add('sk-ready');});});},1200);}
   /* pincement à deux doigts : la loupe suit les doigts */
   function pinch(R){var v=document.getElementById('view'),P={},d0=0;if(!v||!R.zoomAt)return;
     v.addEventListener('pointerdown',function(e){P[e.pointerId]=[e.clientX,e.clientY];var k=Object.keys(P);if(k.length===2){var a=P[k[0]],b=P[k[1]];d0=Math.hypot(a[0]-b[0],a[1]-b[1]);}});

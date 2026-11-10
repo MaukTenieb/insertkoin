@@ -26,8 +26,7 @@
 
   /* ---------- le cadre et l'écran ---------- */
   var bezel=el('div','b-bezel'),scr=el('div','b-screen'),glass=el('div','b-glass');glass.id='b-glass';scr.appendChild(glass);
-  /* 10 nov. (Mauk Tenieb, 21 h 32) : au repos, l'écran montre une image de Mauk Tenieb tirée au hasard (attente-01 à 27), en fondu, sous une neige fine ; plus de chambre SkopoRhogo zoomée */
-  var att=el('div','b-attract','<i class="b-pic"></i><i class="b-pic"></i><canvas class="b-snow" aria-hidden="true"></canvas>');att.setAttribute('aria-hidden','true');glass.appendChild(att);
+  var att=el('div','b-attract'),skf=document.createElement('iframe');skf.title='SkopoRhogo';skf.setAttribute('tabindex','-1');att.appendChild(skf);glass.appendChild(att);
   var date=el('div','b-date','<b></b>');glass.appendChild(date);
   
   ['select','game','calque'].forEach(function(id){if($(id))glass.appendChild($(id));});
@@ -283,16 +282,12 @@
   wrap.addEventListener('click',function(e){var a=e.target.closest('[data-swap="bio"]');if(!a)return;e.preventDefault();e.stopPropagation();full('borne-bio.html','MAUK TENIEB');},true);
 
   /* ---------- SkopoRhogo tourne seulement quand il est à l'écran ---------- */
-  var PICS=att.querySelectorAll('.b-pic'),SNOW=att.querySelector('.b-snow'),RM=matchMedia('(prefers-reduced-motion: reduce)').matches,pi=0,last=-1,pT=0,sR=0,on=false;
-  function pick(){var n;do{n=1+Math.floor(Math.random()*27)}while(n===last);last=n;return 'attente-'+(n<10?'0':'')+n+'.webp';}
-  function next(){var u=pick(),im=new Image();im.onload=function(){var a=PICS[pi],b=PICS[1-pi];a.style.backgroundImage='url('+u+')';a.classList.add('on');b.classList.remove('on');pi=1-pi;};im.src=u;}
-  function snow(){if(!on)return;var w=SNOW.width=Math.max(80,Math.round(SNOW.clientWidth/3)),h=SNOW.height=Math.max(60,Math.round(SNOW.clientHeight/3)),x=SNOW.getContext('2d'),d=x.createImageData(w,h),q=d.data;
-    for(var k=0;k<q.length;k+=4){var v=Math.random()*255|0;q[k]=q[k+1]=q[k+2]=v;q[k+3]=Math.random()<.5?255:0}x.putImageData(d,0,0);if(!RM)sR=setTimeout(function(){requestAnimationFrame(snow)},70);}
-  function wake(){if(on)return;on=true;if(!PICS[0].classList.contains('on')&&!PICS[1].classList.contains('on'))next();clearInterval(pT);pT=setInterval(next,9000);snow();}
-  function sleep(){on=false;clearInterval(pT);clearTimeout(sR);}
+  function wake(){if(!skf.src||skf.src.indexOf('skoporhogo-borne.html')<0)skf.src='skoporhogo-borne.html?attract=1';try{skf.contentWindow.postMessage({borne:'wake'},'*');}catch(e){}}
+  function sleep(){try{skf.contentWindow.postMessage({borne:'sleep'},'*');}catch(e){}}
+  addEventListener('message',function(e){if(e.source===skf.contentWindow&&e.data&&e.data.borne==='open'&&root.dataset.habit==='repos')IK().go&&IK().go('skopo');});
   document.addEventListener('visibilitychange',function(){if(document.hidden)sleep();else if(root.dataset.habit==='repos')wake();});
   /* aux trois quarts hors de la fenêtre, la chambre dort ; elle se réveille quand l'écran revient en vue */
-  if('IntersectionObserver' in window)new IntersectionObserver(function(es){es.forEach(function(e){if(e.intersectionRatio>=.25){if(root.dataset.habit==='repos')wake();}else sleep();});},{threshold:[0,.25,.5]}).observe(att);
+  if('IntersectionObserver' in window)new IntersectionObserver(function(es){es.forEach(function(e){if(!skf.src)return;if(e.intersectionRatio>=.25){if(root.dataset.habit==='repos')wake();}else sleep();});},{threshold:[0,.25,.5]}).observe(skf);
 
   /* ---------- la manette, en miroir : elle penche avec les flèches et les glissés dans l'écran ---------- */
   var mini=el('div','b-stick b-stick-mini','<i></i>');mini.setAttribute('aria-hidden','true');foot.insertBefore(mini,bb);
