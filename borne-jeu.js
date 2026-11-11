@@ -157,7 +157,10 @@
       if(inGame())analog(dx,dy,st.c);
       else{var n=performance.now();if(set.length&&n-lastStep>320){lastStep=n;mark(set.indexOf('ArrowLeft')>=0||set.indexOf('ArrowUp')>=0?-1:1);}}},true);
     function end(e){if(!st||e.pointerId!==st.id)return;var m=st.moved;st=null;stick.classList.remove('b-grip');if(window.__borneTilt)window.__borneTilt(0,0);if(m&&window.__borneSon)window.__borneSon.twang(1);AN.x=AN.y=0;hold([]);
-      if(!m)press();}
+      if(!m){/* 11 nov. 2026 (Mauk Tenieb, 19 h 38, « 1 a et c ») : la mini-manette du pied de la borne reste la manette des jeux ; programme ouvert hors jeu (TV, VHS, BakuBook, photo, 3615…), un appui bref mène au faux wiki */
+        if(stick.classList.contains('b-stick-mini')){var gk=window.__borneProg;
+          if(gk&&!/^(puck|korong|chess|erratic|erratik|faunarratics|faunarratik|katabatik|invaders|maskermind|konnect4|akasztofa|c4|bb|hang|mm|fi)$/.test(gk)){setTimeout(function(){location.href='habillages/wiki.html'},140);return}}
+        press();}}
     stick.addEventListener('pointerup',end,true);stick.addEventListener('pointercancel',end,true);
     stick.addEventListener('click',function(e){e.stopPropagation();},true);}
   function scan(){document.querySelectorAll('.b-stick').forEach(wire);}

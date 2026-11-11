@@ -171,7 +171,7 @@
     if(h==='repos'){wake();camsOff();}else sleep();}
   /* la caméra s'éteint dès que FotoFauna quitte l'écran */
   function camsOff(){[].forEach.call(document.querySelectorAll('iframe'),function(f){try{var w=f.contentWindow;if(w&&typeof w.stopCam==='function')w.stopCam();}catch(e){}});}
-  function mark(k){[cabs,subG].forEach(function(r){if(r)r.querySelectorAll('.cab').forEach(function(c){var b=c.querySelector('[data-go]');c.classList.toggle('on-air',!!b&&b.dataset.go===k);});});}
+  function mark(k){window.__borneProg=k;[cabs,subG].forEach(function(r){if(r)r.querySelectorAll('.cab').forEach(function(c){var b=c.querySelector('[data-go]');c.classList.toggle('on-air',!!b&&b.dataset.go===k);});});}
   /* les grands jeux agrandissent l'écran à la hauteur de la fenêtre ; FaunInvaders redresse l'écran à la verticale, comme les bornes de 1978 */
   function bigOf(k){if(k==='katabatik'){var d=document.querySelector('.cab.dice b'),f=d?DICE.indexOf(d.dataset.d):-1;return f===4?'tate':f===1?'wide':'';}
     return {puck:'wide',chess:'wide',faunarratics:'wide'}[k]||'';}
