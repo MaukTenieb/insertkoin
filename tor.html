@@ -346,6 +346,8 @@ function resultsPage(q,web,onion,errWeb,errOnion){
   sandbox(true);$('view').srcdoc=h;
 }
 window.__torGo=function(u){go(u,true);};
+/* 11 nov. 2026 (Mauk Tenieb) : ?q= venu du faux wiki : recherche DuckDuckGo seule, zéro .onion */
+var QP=new URLSearchParams(location.search),WEBONLY=QP.get('w')==='1';
 window.__torSearch=function(q){
   q=String(q||'').trim();if(!q)return;
   if(/^https?:\/\//i.test(q)||/\.onion/i.test(q)){go(q,true);return;}
@@ -361,6 +363,7 @@ window.__torSearch=function(q){
     reloadFn=function(){__torSearch(q);};
     status('');}
   fetchVia(ddgUrl(q)).then(function(t){web=parseDdg(t);}).catch(function(){errWeb=' ';}).then(fin);
+  if(WEBONLY){fin();return;}
   fetchVia(ahmiaUrl(q)).then(function(t){onion=parseAhmia(t);}).catch(function(){errOnion=' ';}).then(fin);
 };
 
@@ -408,6 +411,7 @@ $('lang').addEventListener('click',function(){setLang(LANG==='fr'?'en':'fr');rel
 $('view').addEventListener('load',function(){if($('view').srcdoc)setTimeout(function(){try{$('view').contentDocument&&$('view').contentDocument.getElementById('q')&&$('view').contentDocument.getElementById('q').focus();}catch(e){}},0);});
 
 setLang(LANG);home();
+if(QP.get('q'))__torSearch(QP.get('q'));
 })();
 </script>
 </body>
