@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Insert Koin — Wiki</title>
-<meta name="robots" content="noindex">
-<link rel="canonical" href="https://mauktenieb.github.io/insertkoin/">
+<meta name="description" content="Korhogo, Delboy, the Ideal. Mauk Tenieb, Evald Ilyenkov, Hervé Delboy, alchemy, dialectical materialism, the Korhogo Fauna.">
+<link rel="canonical" href="https://mauktenieb.github.io/insertkoin/habillages/wiki.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Korhogo, Delboy, the Ideal","alternativeHeadline":"Korhogo, Delboy, l'Idéel","inLanguage":["en","fr"],"author":{"@id":"https://mauktenieb.github.io/#person","@type":"Person","name":"Mauk Tenieb"},"about":["Korhogo","Evald Ilyenkov","Hervé Delboy","Alchemy"],"url":"https://mauktenieb.github.io/insertkoin/habillages/wiki.html","isBasedOn":"https://github.com/MaukTenieb/method/blob/main/KORHOGO-DELBOY-IDEEL.md","copyrightHolder":"Korhogo"}</script>
 <style>
 /* Le wiki du motel (Mauk Tenieb, 11 nov. 2026, 14 h 14) : nom tiré au hasard à chaque visite, entrées tirées des fiches de la Fauna et des programmes (kdata.js), mots de Mauk Tenieb seuls ; page d'encyclopédie en ligne des années 2000, sur papier crème */
 @font-face{font-family:Arimo;src:url(a/f/arimo-latin-400-normal.woff2) format('woff2')}
@@ -58,8 +59,8 @@ h2{font:400 21px/1.3 Garamond,Georgia,serif;border-bottom:1px solid var(--rule);
 /* 11 nov. 2026 (Mauk Tenieb, 14 h 49) : faux wiki — un seul article, l'interview « Korhogo, Delboy, l'Idéel », sous un nom tiré au hasard ; zéro symbole, zéro citation */
 var lang='en';try{lang=localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e){}var FR=lang==='fr';document.documentElement.lang=lang;
 var NAMES=['KalabWiki','Weaky','WigWiki','Kerema','FauxRhogo'],NQ=(location.search.match(/[?&]n=([A-Za-z]+)/)||[])[1],NM=NAMES.indexOf(NQ)>=0?NQ:NAMES[Math.floor(Math.random()*NAMES.length)];
-document.getElementById('nm').textContent=NM;document.title=NM;
-var o=((window.WIKITXT||{}).ideel||{})[FR?'fr':'en']||{t:'',p:[]};
+document.getElementById('nm').textContent=NM;
+var o=((window.WIKITXT||{}).ideel||{})[FR?'fr':'en']||{t:'',p:[]};document.title=o.t+' — '+NM;
 /* onglet : Article (circa mois et an du calendrier républicain, toujours en français) — Mauk Tenieb, 11 nov. 2026, 15 h 15 */
 var MOR=['Vendémiaire','Brumaire','Frimaire','Nivôse','Pluviôse','Ventôse','Germinal','Floréal','Prairial','Messidor','Thermidor','Fructidor','Sansculottides'];function sext(y){return y<20?(y===3||y===7||y===11||y===15):(y%4===0&&(y%100!==0||y%400===0)&&y%4000!==0)}function rep(d){var n=Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(1792,8,22))/864e5),y=1;for(;;){var l=sext(y)?366:365;if(n<l)break;n-=l;y++}return{m:Math.floor(n/30),y:y}}var RD=rep(new Date());
 document.getElementById('main').innerHTML='<div id="tabs"><span class="on">Article (circa '+MOR[RD.m]+' '+RD.y+')</span></div><h1>'+o.t.replace(/</g,'&lt;')+'</h1>'+o.p.map(function(x){return '<p'+(/^—/.test(x)?' class="dl"':'')+'>'+x+'</p>'}).join('');
