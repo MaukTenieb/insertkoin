@@ -416,5 +416,12 @@ setLang(LANG);home();
 if(QP.get('q'))__torSearch(QP.get('q'));
 })();
 </script>
+<script>/* 11 nov. 2026 (Mauk Tenieb) : FaunaTor seul, hors borne : la mini-barre commune des lieux ; FR · EN y règle la langue de FaunaTor */
+(function(){if(window.top!==window.self)return;document.documentElement.classList.add('ikb');
+var st=document.createElement('style');st.textContent='html.ikb body{height:calc(100% - 52px)}html.ikb header{padding-left:58px}';document.head.appendChild(st);
+['habillages/motel.js','habillages/panneau.js'].forEach(function(u){var s=document.createElement('script');s.src=u;s.async=false;document.body.appendChild(s)});
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('#ikbar .b-px-lg');if(!b)return;e.preventDefault();e.stopImmediatePropagation();
+var l='en';try{l=localStorage.getItem('tor.lang')==='fr'?'en':'fr';localStorage.setItem('tor.lang',l);localStorage.setItem('ik.lang',l)}catch(x){}location.reload()},true);})();
+</script>
 </body>
 </html>
