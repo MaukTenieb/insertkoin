@@ -331,9 +331,19 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
     {ti:'MOVEMENT 5',su:'23 Ventôse 233 — and so forth',d:'2026-10-19',s:'movement-5'}];
   /* 11 nov. 2026 (Mauk Tenieb, 19 h 31) : le Movement se lit dans la visionneuse, texte de Substack (ce que Substack livre, l'aperçu pour un billet payant), puis le lien vers la source */
   var KDR='https://faunator.mauktenieb.workers.dev/?url=';
-  function kdGet(u){return fetch(u).then(function(r){if(!r.ok)throw 0;return r.json();}).catch(function(){return fetch(KDR+encodeURIComponent(u)).then(function(r){if(!r.ok)throw 0;return r.json();});});}
+  /* lecture en cascade : API Substack (directe, puis relais, deux essais), page du billet par le relais, puis lecteur r.jina.ai ; Substack limite parfois le relais (429) */
+  function kdWait(ms){return new Promise(function(ok){setTimeout(ok,ms);});}
+  function kdFetch(u,j){return fetch(u,j?{headers:{'Accept':'application/json'}}:undefined).then(function(r){if(!r.ok)throw r.status;return j?r.json():r.text();});}
+  function kdMd(md){return md.split(/\n{2,}/).map(function(b){b=b.trim();if(!b)return '';var e=esc(b).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/(^|[^*])\*([^*\n]+)\*/g,'$1<i>$2</i>').replace(/\n/g,'<br>');
+    var h=/^(#{1,4})\s+/.exec(b);return h?'<h3>'+e.replace(/^#{1,4}\s+/,'')+'</h3>':'<p>'+e+'</p>';}).join('');}
+  function kdBody(x){var api=KD+'/api/v1/posts/'+x.s,pg=KD+'/p/'+x.s;
+    return kdFetch(api,1).catch(function(){return kdFetch(KDR+encodeURIComponent(api),1);}).catch(function(){return kdWait(1500).then(function(){return kdFetch(KDR+encodeURIComponent(api),1);});})
+      .then(function(p){if(!p||!p.body_html)throw 0;return p;})
+      .catch(function(){return kdFetch(KDR+encodeURIComponent(pg)).then(function(h){var d=new DOMParser().parseFromString(h,'text/html'),c=d.querySelector('.available-content .body, .available-content, .body.markup');if(!c)throw 0;
+        var t=d.querySelector('h1.post-title, h1'),st=d.querySelector('h3.subtitle');return{title:t&&t.textContent.trim(),subtitle:st&&st.textContent.trim(),body_html:c.innerHTML};});})
+      .catch(function(){return kdFetch('https://r.jina.ai/'+pg,1).then(function(j){var c=j&&j.data&&j.data.content;if(!c)throw 0;return{title:j.data.title,body_html:kdMd(c)};});});}
   function kdOpen(x){var href=KD+'/p/'+x.s;wait.textContent=T.load;
-    kdGet(KD+'/api/v1/posts/'+x.s).then(function(p){if(!p||!p.body_html)throw 0;
+    kdBody(x).then(function(p){if(!p||!p.body_html)throw 0;
       openArticle('<h2 class="kdh">'+esc(p.title||x.ti)+'</h2>'+(p.subtitle?'<p class="kds"><em>'+esc(p.subtitle)+'</em></p>':'')+(p.cover_image?'<img alt="" src="'+esc(p.cover_image)+'">':'')+p.body_html+'<p class="kdl"><a href="'+esc(href)+'" target="_blank" rel="noopener">'+esc(T.kd)+'</a></p>',
         {key:'kd:'+x.s,au:'Mauk Tenieb',ti:p.title||x.ti,ed:(p.post_date||x.d||'').slice(0,10),srcName:'Korhogo Diary',href:href});}).catch(function(){kdCard(x,href);});}
   function kdCard(x,href){
