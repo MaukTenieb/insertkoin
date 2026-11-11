@@ -39,6 +39,7 @@ h2{font:400 21px/1.3 Garamond,Georgia,serif;border-bottom:1px solid var(--rule);
 .motto{font:italic 20px/1.4 Garamond,Georgia,serif;margin:6px 0 14px}
 .toc{display:inline-block;border:1px solid var(--rule);background:#fbf8ef;padding:8px 14px;font-size:13px;margin:4px 0 8px}.toc ol{margin:4px 0 0;padding-left:20px}
 .cols{columns:3 180px;column-gap:24px;font-size:14px}.cols div{break-inside:avoid;margin:0 0 2px}
+.dl{margin:0 0 .7em}
 .cat{clear:both;margin-top:30px;border:1px solid var(--rule);background:#fbf8ef;padding:5px 10px;font-size:12px}
 .foot{font-size:11px;color:#6d6553;margin-top:16px}
 @media (max-width:760px){#w{grid-template-columns:1fr;grid-template-rows:auto 1fr}#side{border-right:0;border-bottom:1px solid var(--rule);padding:10px 12px 10px 52px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center}
@@ -56,6 +57,7 @@ h2{font:400 21px/1.3 Garamond,Georgia,serif;border-bottom:1px solid var(--rule);
  <main id="main" aria-live="polite"></main>
 </div>
 <script src="kdata.js"></script>
+<script src="wiki-texts.js"></script>
 <script>
 (function(){
 var D=window.KDATA||{F:[],P:[],SAY:{}},lang='en';try{lang=localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e){}var FR=lang==='fr';document.documentElement.lang=lang;
@@ -67,6 +69,8 @@ var $=function(s){return document.querySelector(s)};$('#q').placeholder=T.q;$('#
 $('#h-nav').textContent=T.nav;$('#h-f').textContent=T.f;$('#h-p').textContent=T.p;
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 var E=[];D.F.forEach(function(f){E.push({k:'m',id:f.slug,name:f.name,o:f})});D.P.forEach(function(p){E.push({k:'p',id:p.id,name:p.name,o:p})});
+/* 11 nov. 2026 (Mauk Tenieb, 14 h 29) : en dernière entrée, l'interview « Korhogo, Delboy, l'Idéel », dans la langue du visiteur */
+var TX=window.WIKITXT||{},TE=Object.keys(TX).map(function(k){var v=TX[k][FR?'fr':'en'];return {k:'t',id:k,name:v.t,o:v}});E=E.concat(TE);
 function href(e){return '#/'+e.k+'/'+e.id}
 /* chaque nom d'entrée cité dans un texte devient un lien */
 var NAMEX=E.slice().sort(function(a,b){return b.name.length-a.name.length}),RX=new RegExp('('+NAMEX.map(function(e){return e.name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}).join('|')+')','g');
@@ -74,11 +78,11 @@ function linky(s,self){return esc(s).replace(RX,function(m){var e=NAMEX.filter(f
 function say(id){var s=(D.SAY||{})[id];return s?(FR?s[1]:s[0]):''}
 function nav(){$('#nav').innerHTML='<li><a href="#/">'+T.home+'</a></li><li><a href="#/hasard">'+T.rnd+'</a></li><li><a href="#/tout">'+T.all+'</a></li>';
  $('#lf').innerHTML=D.F.map(function(f){return '<li><a href="#/m/'+f.slug+'">'+esc(f.name)+'</a></li>'}).join('');
- $('#lp').innerHTML=D.P.map(function(p){return '<li><a href="#/p/'+p.id+'">'+esc(p.name)+'</a></li>'}).join('')}
+ $('#lp').innerHTML=D.P.map(function(p){return '<li><a href="#/p/'+p.id+'">'+esc(p.name)+'</a></li>'}).join('')+TE.map(function(e){return '<li style="margin-top:10px"><a href="'+href(e)+'">'+esc(e.name)+'</a></li>'}).join('')}
 function tabs(){return '<div id="tabs"><span class="on">'+T.art+'</span></div>'}
 function list(es){return '<div class="cols">'+es.slice().sort(function(a,b){return a.name.localeCompare(b.name)}).map(function(e){return '<div><a href="'+href(e)+'">'+esc(e.name)+'</a></div>'}).join('')+'</div>'}
 function home(){var G=D.F.filter(function(f){return f.motto&&/[A-Za-zÀ-ÿ]{3}/.test(f.motto)}),f=G[Math.floor(Math.random()*G.length)]||{};
- return tabs()+'<h1>'+esc(NM)+'</h1><p class="motto">“'+esc(f.motto||'')+'”</p><p class="from"><a href="#/m/'+f.slug+'">'+esc(f.name||'')+'</a></p><h2>'+T.f+'</h2>'+list(E.filter(function(e){return e.k==='m'}))+'<h2>'+T.p+'</h2>'+list(E.filter(function(e){return e.k==='p'}))}
+ return tabs()+'<h1>'+esc(NM)+'</h1><p class="motto">“'+esc(f.motto||'')+'”</p><p class="from"><a href="#/m/'+f.slug+'">'+esc(f.name||'')+'</a></p><h2>'+T.f+'</h2>'+list(E.filter(function(e){return e.k==='m'}))+'<h2>'+T.p+'</h2>'+list(E.filter(function(e){return e.k==='p'}))+(TE.length?'<h2>&nbsp;</h2>'+TE.map(function(e){return '<p><a href="'+href(e)+'">'+esc(e.name)+'</a></p>'}).join(''):'')}
 var LAB={sub:'',formula:'Formula',appearance:'Appearance',faction:'Faction',masks:'Masks',profile:'Profile',powers:'Powers',maskomatics:'Maskomatics',hexagram:'Hexagram','mini-stories':'Mini-stories',krewsmatics:'Krewsmatics',korong:'Korong!'};
 function mask(f){var st=f.stats||{},sec=['appearance','profile','faction','masks','powers','maskomatics','hexagram','mini-stories','krewsmatics','korong'].filter(function(k){return k==='korong'?(f.korong_en||f.korong_fr):f[k]});
  var h=tabs()+'<h1>'+esc(f.name)+'</h1><p class="from">'+T.from+'</p>';
@@ -97,6 +101,7 @@ function route(){var r=location.hash.replace(/^#\/?/,'').split('/'),m=$('#main')
  if(r[0]==='tout')h=tabs()+'<h1>'+T.all+'</h1>'+list(E);
  else if(r[0]==='m'&&find('m',r[1]))h=mask(find('m',r[1]).o);
  else if(r[0]==='p'&&find('p',r[1]))h=prog(find('p',r[1]).o);
+ else if(r[0]==='t'&&find('t',r[1])){var o=find('t',r[1]).o;h=tabs()+'<h1>'+esc(o.t)+'</h1><p class="from">'+T.from+'</p>'+o.p.map(function(x){return '<p'+(/^—/.test(x)?' class="dl"':'')+'>'+x+'</p>'}).join('')}
  else if(r[0]==='q'){var q=decodeURIComponent(r[1]||'').toLowerCase(),hit=E.filter(function(e){return (e.name+' '+JSON.stringify(e.o)).toLowerCase().indexOf(q)>=0});h=tabs()+'<h1>'+esc(q)+'</h1>'+(hit.length?list(hit):'<p>'+T.none+'</p>')}
  else h=home();
  m.innerHTML=h;var s=r[2]&&document.getElementById('s-'+r[2]);if(s)s.scrollIntoView();else scrollTo(0,0)}
