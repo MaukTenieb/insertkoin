@@ -46,7 +46,7 @@ function palmText(){var L=['INSERT KOIN · PALMARÈS · '+D.PALM.updated,'','KOR
  D.PALM.fauninvaders.forEach(function(r,i){L.push(p2(i+1)+'  '+r[0]+'   '+String(r[1]).padStart(5,' ')+'   '+p2(r[2]))});return L.join('\r\n')}
 var FAUNA=dir(S.lang==='fr'?'La Fauna':'The Fauna',D.F.map(function(f){return node({name:f.name,kind:'msk',icon:'m:'+f.slug,size:9000+f.name.length*137,date:COMMIT,fiche:f})}),'fauna');
 /* 11 nov. 2026 (Mauk Tenieb, 14 h 19) : à la racine de K:, un raccourci vers le wiki du motel, sous un nom tiré au hasard à chaque ouverture de l'OS ; le wiki reprend ce nom */
-var WKN=['KalabWiki','Weaky','WigWiki','Kerema'][Math.floor(Math.random()*4)];var WIKI=node({name:WKN,kind:'lieu',icon:'scroll',url:'wiki.html?n='+WKN,size:4096,date:COMMIT});
+var WKN=['KalabWiki','Weaky','WigWiki','Kerema','FauxRhogo'][Math.floor(Math.random()*5)];var WIKI=node({name:WKN,kind:'lieu',icon:'scroll',url:'wiki.html?n='+WKN,size:4096,date:COMMIT});
 var ROOT=dir('K:',[
  dir('KorhoGame',group('KorhoGame').concat([dir('Katabatik',group('Katabatik'))])),
  dir('FaunEye',group('FaunEye')),

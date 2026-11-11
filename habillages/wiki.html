@@ -57,7 +57,7 @@ h2{font:400 21px/1.3 Garamond,Georgia,serif;border-bottom:1px solid var(--rule);
 (function(){
 /* 11 nov. 2026 (Mauk Tenieb, 14 h 49) : faux wiki — un seul article, l'interview « Korhogo, Delboy, l'Idéel », sous un nom tiré au hasard ; zéro symbole, zéro citation */
 var lang='en';try{lang=localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e){}var FR=lang==='fr';document.documentElement.lang=lang;
-var NAMES=['KalabWiki','Weaky','WigWiki','Kerema'],NQ=(location.search.match(/[?&]n=([A-Za-z]+)/)||[])[1],NM=NAMES.indexOf(NQ)>=0?NQ:NAMES[Math.floor(Math.random()*NAMES.length)];
+var NAMES=['KalabWiki','Weaky','WigWiki','Kerema','FauxRhogo'],NQ=(location.search.match(/[?&]n=([A-Za-z]+)/)||[])[1],NM=NAMES.indexOf(NQ)>=0?NQ:NAMES[Math.floor(Math.random()*NAMES.length)];
 document.getElementById('nm').textContent=NM;document.title=NM;
 var o=((window.WIKITXT||{}).ideel||{})[FR?'fr':'en']||{t:'',p:[]};
 /* onglet : Article (circa mois et an du calendrier républicain, toujours en français) — Mauk Tenieb, 11 nov. 2026, 15 h 15 */
