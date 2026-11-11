@@ -60,7 +60,7 @@ h2{font:400 21px/1.3 Garamond,Georgia,serif;border-bottom:1px solid var(--rule);
 (function(){
 var D=window.KDATA||{F:[],P:[],SAY:{}},lang='en';try{lang=localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e){}var FR=lang==='fr';document.documentElement.lang=lang;
 /* le nom du wiki change à chaque visite */
-var NAMES=['KalabWiki','Weaky','WigWiki','Kerema'],NM=NAMES[Math.floor(Math.random()*NAMES.length)];
+var NAMES=['KalabWiki','Weaky','WigWiki','Kerema'],NQ=(location.search.match(/[?&]n=([A-Za-z]+)/)||[])[1],NM=NAMES.indexOf(NQ)>=0?NQ:NAMES[Math.floor(Math.random()*NAMES.length)];
 document.getElementById('nm').textContent=NM;document.title=NM;
 var T=FR?{nav:'Navigation',f:'La Fauna',p:'Programmes',home:'Accueil',rnd:'Au hasard',all:'Toutes les entrées',art:'Article',q:'Rechercher',none:'Zéro entrée',from:'Une entrée de '+NM,cat:'Catégorie',toc:'Sommaire'}:{nav:'Navigation',f:'The Fauna',p:'Programs',home:'Main page',rnd:'Random entry',all:'All entries',art:'Article',q:'Search',none:'Zero entries',from:'An entry of '+NM,cat:'Category',toc:'Contents'};
 var $=function(s){return document.querySelector(s)};$('#q').placeholder=T.q;$('#q').setAttribute('aria-label',T.q);
@@ -103,7 +103,7 @@ function route(){var r=location.hash.replace(/^#\/?/,'').split('/'),m=$('#main')
 $('#q').addEventListener('keydown',function(e){if(e.key==='Enter'&&this.value.trim()){location.hash='#/q/'+encodeURIComponent(this.value.trim());this.blur()}});
 nav();addEventListener('hashchange',route);route();
 /* Baku Boom remet le wiki à sa page d'accueil, sous un nouveau nom */
-window.__ikBoom=function(){location.hash='';location.reload()};
+window.__ikBoom=function(){location.replace(location.pathname)};
 })();
 </script>
 <script src="motel.js"></script>

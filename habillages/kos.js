@@ -45,6 +45,8 @@ function palmText(){var L=['INSERT KOIN · PALMARÈS · '+D.PALM.updated,'','KOR
  D.PALM.korong.forEach(function(r,i){L.push(p2(i+1)+'  '+r[0]+'   '+p2(r[1])+'   '+p2(r[2]))});L.push('','FAUNINVADERS   score · wave');
  D.PALM.fauninvaders.forEach(function(r,i){L.push(p2(i+1)+'  '+r[0]+'   '+String(r[1]).padStart(5,' ')+'   '+p2(r[2]))});return L.join('\r\n')}
 var FAUNA=dir(S.lang==='fr'?'La Fauna':'The Fauna',D.F.map(function(f){return node({name:f.name,kind:'msk',icon:'m:'+f.slug,size:9000+f.name.length*137,date:COMMIT,fiche:f})}),'fauna');
+/* 11 nov. 2026 (Mauk Tenieb, 14 h 19) : à la racine de K:, un raccourci vers le wiki du motel, sous un nom tiré au hasard à chaque ouverture de l'OS ; le wiki reprend ce nom */
+var WKN=['KalabWiki','Weaky','WigWiki','Kerema'][Math.floor(Math.random()*4)];var WIKI=node({name:WKN,kind:'lieu',icon:'scroll',url:'wiki.html?n='+WKN,size:4096,date:COMMIT});
 var ROOT=dir('K:',[
  dir('KorhoGame',group('KorhoGame').concat([dir('Katabatik',group('Katabatik'))])),
  dir('FaunEye',group('FaunEye')),
@@ -53,7 +55,8 @@ var ROOT=dir('K:',[
  dir('SkopoRhogo',group('SkopoRhogo')),
  FAUNA,
  dir('Lore',[url('Lore','https://mauktenieb.substack.com','scroll'),url('Journal','https://korhogo.substack.com','scroll'),url('Mighty Fauna Sips Your Gas','https://korhogo.substack.com/p/mighty-fauna-sips-your-gas','scroll')]),
- dir('Mauk Tenieb',[url('Bio','https://github.com/MaukTenieb','plaque'),url('Burrows','https://mauktenieb.github.io/katabase','rabbit'),url('Bandcamp','https://mauktenieb.bandcamp.com','vinyl'),url('Threadless','https://korhogo.threadless.com','tshirt'),url('Instagram','https://www.instagram.com/mauktenieb','polaroid'),url('YouTube','https://www.youtube.com/@mauktenieb','vhs'),url('ORCID','https://orcid.org/0009-0007-9096-8267'),url('Discogs','https://www.discogs.com/artist/9104440-Mauk-Tenieb','vinyl')]),
+ dir('Mauk Tenieb',[url('Bio','https://github.com/MaukTenieb','plaque'),url('Burrows','https://mauktenieb.github.io/katabase','rabbit'),url('Bandcamp','https://mauktenieb.bandcamp.com','vinyl'),url('Threadless','https://korhogo.threadless.com','tshirt'),url('Instagram','https://www.instagram.com/mauktenieb','polaroid'),url('YouTube','https://www.youtube.com/@mauktenieb','vhs'),url('ORCID','https://orcid.org/0009-0007-9096-8267'),url('MusicBrainz','https://musicbrainz.org/artist/701a6795-f583-4567-b8f4-0d05f961d63f','vinyl')]),
+ WIKI,
  txt('README.md',D.README),txt('LICENSE',D.LICENSE),txt('Palmarès.txt',palmText())
 ],'drive');
 ROOT.kind='drive';
