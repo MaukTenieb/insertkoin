@@ -114,7 +114,7 @@ window.MotelRun=function(host,want){
  face.style.cssText='position:absolute;left:2%;bottom:2.5%;height:20%;width:auto;pointer-events:none;image-rendering:auto';
  host.appendChild(face);
  var px=0.5,py=0.5,dir=0,ang=0,speed=reduce?1.0:3.8,last=performance.now(),gait=0,alive=true,turn=0,idle=9,pendT=0,cell=-1,auto=true,odo=0,lastT=-9;
- var DX=[1,0,-1,0],DY=[0,1,0,-1],held={},ptr=null,TURN=3.1,RAD=0.34,trail=[],cx=0,cy=0,ca=0,depth=CAMD;
+ var DX=[1,0,-1,0],DY=[0,1,0,-1],held={},ptr=null,tq=0,TURN=3.1,RAD=0.34,trail=[],cx=0,cy=0,ca=0,depth=CAMD;
  var st={t:0,minClear:9,minFront:99,minDepth:99,contacts:0,cuts:0};
  var KM={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d',a:'l',q:'l',d:'r',w:'u',z:'u',s:'d'};
  function own(e){return !(e.target&&e.target.closest&&e.target.closest('input,textarea,.win'))}
@@ -122,9 +122,10 @@ window.MotelRun=function(host,want){
  function keyu_(e){var k=KM[e.key.length===1?e.key.toLowerCase():e.key];if(k)held[k]=0}
  function blur_(){held={};ptr=null}
  addEventListener('keydown',key_);addEventListener('keyup',keyu_);addEventListener('blur',blur_);
- cv.addEventListener('pointerdown',function(e){var r=cv.getBoundingClientRect();ptr={x:e.clientX,cx:r.left+r.width/2,w:r.width};idle=0;try{cv.setPointerCapture(e.pointerId)}catch(_){}});
+ function down_(e){var r=cv.getBoundingClientRect();ptr={x:e.clientX,x0:e.clientX,t0:Date.now(),cx:r.left+r.width/2,w:r.width};idle=0}
+ cv.addEventListener('pointerdown',function(e){down_(e);try{cv.setPointerCapture(e.pointerId)}catch(_){}});
  cv.addEventListener('pointermove',function(e){if(ptr){ang+=(e.clientX-ptr.x)*0.011;ptr.x=e.clientX;idle=0}});
- function up_(){ptr=null}cv.addEventListener('pointerup',up_);cv.addEventListener('pointercancel',up_);
+ function up_(){if(ptr&&Date.now()-ptr.t0<300&&Math.abs(ptr.x-ptr.x0)<10)tq+=(ptr.x0<ptr.cx?-1:1)*Math.PI/2;ptr=null}cv.addEventListener('pointerup',up_);cv.addEventListener('pointercancel',up_);
  function open_(x,y){return !solid(Math.floor(x),Math.floor(y))}
  function wrap(a){while(a>Math.PI)a-=2*Math.PI;while(a<-Math.PI)a+=2*Math.PI;return a}
  function free(gx,gy,d){return !solid(gx+DX[d],gy+DY[d])}
@@ -133,9 +134,10 @@ window.MotelRun=function(host,want){
  /* distance du Mask au mur le plus proche */
  function clear_(){var gx=Math.floor(px),gy=Math.floor(py),best=9;for(var j=-1;j<=1;j++)for(var i=-1;i<=1;i++){if(!solid(gx+i,gy+j))continue;
   var qx=Math.max(gx+i,Math.min(px,gx+i+1)),qy=Math.max(gy+j,Math.min(py,gy+j+1));best=Math.min(best,Math.hypot(px-qx,py-qy))}return best}
- function step(dt){var man_=held.l||held.r||held.u||held.d||ptr;if(man_)idle=0;else idle+=dt;var tr=0,sp=speed,gx=Math.floor(px),gy=Math.floor(py);
+ function step(dt){var man_=held.l||held.r||held.u||held.d||ptr||tq;if(man_)idle=0;else idle+=dt;var tr=0,sp=speed,gx=Math.floor(px),gy=Math.floor(py);
   if(idle<2.5){/* le joueur tient la course ; devant un mur, il freine et dévie */
    auto=false;tr=((held.r?1:0)-(held.l?1:0))*TURN;if(ptr){var o=(ptr.x-ptr.cx)/(ptr.w/2);if(Math.abs(o)>0.25)tr+=Math.max(-1,Math.min(1,o))*TURN}
+   if(tq){/* clic bref : un quart de tour du côté cliqué (11 nov., Mauk Tenieb) */var qa=Math.min(Math.abs(tq),TURN*1.3*dt),qs=tq>0?1:-1;tr+=qs*qa/dt;tq-=qs*qa;if(Math.abs(tq)<1e-3)tq=0}
    if(held.u)sp=speed*1.5;if(held.d)sp=speed*0.35;
    var fw=probe(ang,1.6);if(fw<1.2){sp*=Math.max(0.1,(fw-0.35)/0.85);var l=probe(ang-0.7,1.6),r=probe(ang+0.7,1.6),sg=r>=l?1:-1;if(tr*sg<0&&fw<0.9)tr=0;tr+=sg*TURN*1.5*(1-fw/1.2)}
    ang+=tr*dt;pendT=0}
@@ -189,6 +191,7 @@ window.MotelRun=function(host,want){
  function loop(t){if(!alive)return;/* 10 nov. (Mauk Tenieb, 21 h 11) : en fond d'écran, noir et blanc ; dès que le visiteur prend la course en main, le jeu passe en couleur */var nb=idle>=2.5;if(nb!==bw){bw=nb;cv.style.filter=bw?'grayscale(1) contrast(1.12) brightness(1.05)':'none'}var dt=Math.max(0,Math.min(0.05,(t-last)/1000));last=t;if(!document.hidden){st.t+=dt;step(dt);var cl=clear_();st.minClear=Math.min(st.minClear,cl);if(cl<0.3)st.contacts++;cast()}requestAnimationFrame(loop)}
  reseed();st.cuts=0;requestAnimationFrame(loop);
  var api={stop:function(){alive=false;removeEventListener('keydown',key_);removeEventListener('keyup',keyu_);removeEventListener('blur',blur_);cv.remove();face.remove()},mask:key,st:st,
+  down:down_,up:up_,move:function(e){if(ptr){ang+=(e.clientX-ptr.x)*0.011;ptr.x=e.clientX;idle=0}},
   pos:function(){return {px:px,py:py,ang:ang,cx:cx,cy:cy,depth:depth,auto:auto}}};
  window.MotelRun.cur=api;return api};
 })();

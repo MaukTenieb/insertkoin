@@ -332,7 +332,7 @@ function msgBox(title,text,icon){var body=h('div','dbody');body.innerHTML='<div 
 /* ---------- Panneau de configuration ---------- */
 var APPLETS=function(){return[sys(t('display'),'computer',displayDlg),sys(t('language'),'url',langDlg),sys(t('psy'),'m:'+(S.psyId||'c7h5n3o6'),psyDlg),sys(t('datetime'),'koin',dateDlg)]};
 function control(){var d=dir(t('control'),APPLETS(),'control');d.parent=null;return explorer(d)}
-var WALLS=[['Motel','run'],['attente-01','a/att-01.webp'],['attente-23','a/att-23.webp'],['attente-09','a/att-09.webp'],['poster','a/poster-800.webp'],['attente-19','a/att-19.webp'],['attente-09 (motif)','a/cde-tile.webp'],[S.lang==='fr'?'(Aucun)':'(None)','']];
+var WALLS=[['D(r)IVE INN','run'],['attente-01','a/att-01.webp'],['attente-23','a/att-23.webp'],['attente-09','a/att-09.webp'],['poster','a/poster-800.webp'],['attente-19','a/att-19.webp'],['attente-09 (motif)','a/cde-tile.webp'],[S.lang==='fr'?'(Aucun)':'(None)','']];
 var SCHEMES=[['std','KorhogOS Standard'],['plat','Platine'],['fram','Framboise'],['motif','Motif']];
 function displayDlg(){var body=h('div','dbody');body.style.cssText='flex:1;min-height:0';var w;var pick={wall:S.wall>=0?S.wall:WDEF[S.theme][0],mode:S.wallMode||WDEF[S.theme][1],theme:S.theme};
  function bg(){var d=h('div');var mon=h('div','monitor','<div class="sc"></div>');d.appendChild(mon);var sc=$('.sc',mon);function pv(){var u=WALLS[pick.wall][1];sc.style.backgroundImage=(u&&u!=='run')?'url('+u+')':'none';sc.style.backgroundSize=pick.mode==='cover'?'cover':pick.mode==='tile'?'24px':'40%';sc.style.backgroundRepeat=pick.mode==='tile'?'repeat':'no-repeat'}
@@ -386,7 +386,10 @@ function deskBind(el,n,key){var sx,sy,ox,oy,moved=false,down=false;
  el.addEventListener('dblclick',function(){openNode(n)});
  el.addEventListener('contextmenu',function(e){e.preventDefault();e.stopPropagation();ctxMenu(n,e)})}
 $('#desk')&&0;
-function deskEvents(){var d=$('#desk');d.addEventListener('pointerdown',function(e){if(e.target===d||e.target.id==='icons'||e.target.id==='wall'||e.target.closest('#runbox')){$$('.di.sel').forEach(function(x){x.classList.remove('sel')});SEL=null}});
+function deskEvents(){var d=$('#desk');/* 11 nov. 2026 (Mauk Tenieb) : D(r)IVE INN se pilote au clic sur le bureau nu, clic bref à gauche ou à droite = un quart de tour, appui tenu = virage */
+ d.addEventListener('pointerdown',function(e){if(e.button||!RUN||!RUN.down)return;if(!(e.target===d||e.target.id==='icons'||e.target.id==='wall'||e.target.closest('#runbox')))return;var c=$('#runbox canvas');if(!c)return;var r=c.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)return;RUN.down(e);
+  function mv(x){RUN&&RUN.move&&RUN.move(x)}function up(){RUN&&RUN.up&&RUN.up();removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up)}addEventListener('pointermove',mv);addEventListener('pointerup',up);addEventListener('pointercancel',up)});
+ d.addEventListener('pointerdown',function(e){if(e.target===d||e.target.id==='icons'||e.target.id==='wall'||e.target.closest('#runbox')){$$('.di.sel').forEach(function(x){x.classList.remove('sel')});SEL=null}});
  d.addEventListener('contextmenu',function(e){if(e.target.closest('.win,.di'))return;e.preventDefault();popMenu([[t('arrange'),function(){S.pos={};save();renderDesk()}],[t('refresh'),renderDesk],'-',[t('props'),displayDlg]],{getBoundingClientRect:function(){return{left:e.clientX,top:e.clientY,right:e.clientX,bottom:e.clientY}}},'at')})}
 var WDEF={std:[0,'center'],plat:[7,'cover'],fram:[2,'cover'],motif:[6,'tile']};
 var RUN=null;
