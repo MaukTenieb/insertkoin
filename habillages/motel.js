@@ -63,7 +63,10 @@ function fill(){try{lang=localStorage.getItem('ik.lang')||lang}catch(e){}var fr=
  c.innerHTML='';L.forEach(function(x){var a=document.createElement('a');a.href=href(x[0]);a.title=fr?x[1]:x[2];a.setAttribute('aria-label',a.title);a.innerHTML=picto(x[3],BG);if(x[0]===here)a.setAttribute('aria-current','page');c.appendChild(a)})}
 fill();
 w.appendChild(b);w.appendChild(c);
-function tog(v){w.classList.toggle('on',v);b.setAttribute('aria-expanded',String(v))}
+function tog(v){w.classList.toggle('on',v);b.setAttribute('aria-expanded',String(v));if(!v){c.style.left='';c.style.top=''}}
+/* 11 nov. 2026 (Mauk Tenieb, 13 h 57) : la manette de la barre double le porte-clé : elle ouvre la même plaque des lieux, posée contre elle ; sans porte-clé à l'écran (KorhogOS), la plaque seule */
+if(window.__ikNoFob)b.style.display='none';
+window.__ikKeys=function(r){if(w.classList.contains('on')){tog(false);return}fill();tog(true);if(!r)return;var M=w.getBoundingClientRect(),bw=c.offsetWidth,bh=c.offsetHeight,x=Math.max(6,Math.min(innerWidth-bw-6,r.left+r.width/2-bw/2)),y=r.top>innerHeight/2?r.top-bh-8:r.bottom+8;c.style.left=Math.round(x-M.left)+'px';c.style.top=Math.round(y-M.top)+'px';var f=c.querySelector('a:not([aria-current])');if(f)f.focus({preventScroll:true})};
 b.addEventListener('click',function(e){e.stopPropagation();var v=!w.classList.contains('on');if(v)fill();tog(v)});
 document.addEventListener('click',function(e){if(!w.contains(e.target))tog(false)});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&w.classList.contains('on')){tog(false);b.focus();e.stopPropagation();e.preventDefault()}},true);
