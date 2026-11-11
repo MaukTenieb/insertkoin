@@ -118,3 +118,6 @@
   var G=document.getElementById('genres');
   if(G){var scan=function(){[].forEach.call(G.querySelectorAll('.rail'),arm);};new MutationObserver(scan).observe(G,{childList:true});scan();}
 })();
+
+/* i3 cycle 3 : SHUFFLE garde un nom lisible par les lecteurs d'écran quand il passe en pictogramme */
+(function(){var b=document.getElementById('bRand');if(!b)return;function nm(){var t=(b.textContent||'').trim();if(t)b.setAttribute('aria-label',t);}nm();new MutationObserver(nm).observe(b,{childList:true,characterData:true,subtree:true});})();
