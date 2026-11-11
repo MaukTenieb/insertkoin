@@ -60,7 +60,9 @@ var lang='en';try{lang=localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e)
 var NAMES=['KalabWiki','Weaky','WigWiki','Kerema'],NQ=(location.search.match(/[?&]n=([A-Za-z]+)/)||[])[1],NM=NAMES.indexOf(NQ)>=0?NQ:NAMES[Math.floor(Math.random()*NAMES.length)];
 document.getElementById('nm').textContent=NM;document.title=NM;
 var o=((window.WIKITXT||{}).ideel||{})[FR?'fr':'en']||{t:'',p:[]};
-document.getElementById('main').innerHTML='<div id="tabs"><span class="on">'+(FR?'Article':'Article')+'</span></div><h1>'+o.t.replace(/</g,'&lt;')+'</h1>'+o.p.map(function(x){return '<p'+(/^—/.test(x)?' class="dl"':'')+'>'+x+'</p>'}).join('');
+/* onglet : Article (circa mois et an du calendrier républicain, toujours en français) — Mauk Tenieb, 11 nov. 2026, 15 h 15 */
+var MOR=['Vendémiaire','Brumaire','Frimaire','Nivôse','Pluviôse','Ventôse','Germinal','Floréal','Prairial','Messidor','Thermidor','Fructidor','Sansculottides'];function sext(y){return y<20?(y===3||y===7||y===11||y===15):(y%4===0&&(y%100!==0||y%400===0)&&y%4000!==0)}function rep(d){var n=Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(1792,8,22))/864e5),y=1;for(;;){var l=sext(y)?366:365;if(n<l)break;n-=l;y++}return{m:Math.floor(n/30),y:y}}var RD=rep(new Date());
+document.getElementById('main').innerHTML='<div id="tabs"><span class="on">Article (circa '+MOR[RD.m]+' '+RD.y+')</span></div><h1>'+o.t.replace(/</g,'&lt;')+'</h1>'+o.p.map(function(x){return '<p'+(/^—/.test(x)?' class="dl"':'')+'>'+x+'</p>'}).join('');
 /* Baku Boom remet le wiki à sa page d'accueil, sous un nouveau nom */
 window.__ikBoom=function(){location.replace(location.pathname)};
 })();
