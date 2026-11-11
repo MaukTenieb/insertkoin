@@ -90,7 +90,7 @@ main::after{content:"";position:absolute;inset:16px;border-radius:14px/12px;poin
 (function(){
 'use strict';
 var LANG='fr';
-try{LANG=localStorage.getItem('ik.lang')||localStorage.getItem('tor.lang')||'en';if(LANG!=='fr')LANG='en';}catch(e){}
+try{LANG=localStorage.getItem('tor.lang')||'en';if(LANG!=='fr')LANG='en';}catch(e){}
 function L(fr,en){return LANG==='en'?en:fr;}
 function $(id){return document.getElementById(id);}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
@@ -278,7 +278,7 @@ function ahmiaUrl(q){return 'https://ahmia.fi/search/?q='+encodeURIComponent(q);
 function ddgUnwrap(href){try{var u=new URL(href,'https://html.duckduckgo.com');var ud=u.searchParams.get('uddg');return ud||u.href;}catch(e){return null;}}
 function parseDdg(text){
   var out=[],doc=new DOMParser().parseFromString(text,'text/html');
-  doc.querySelectorAll('a.result__a').forEach(function(a){
+  doc.querySelectorAll('a.result__a, a.result-link').forEach(function(a){
     var u=ddgUnwrap(a.getAttribute('href')||'');
     if(!u||!/^https?:/i.test(u))return;
     var d='';var box=a.closest('.result');if(box){var sn=box.querySelector('.result__snippet');if(sn)d=sn.textContent.trim();}
@@ -362,7 +362,9 @@ window.__torSearch=function(q){
     resultsPage(q,web,onion,errWeb,errOnion);
     reloadFn=function(){__torSearch(q);};
     status('');}
-  fetchVia(ddgUrl(q)).then(function(t){web=parseDdg(t);}).catch(function(){errWeb=' ';}).then(fin);
+  /* 11 nov. 2026 : DuckDuckGo, puis sa version lite, puis un second essai une fois Tor chaud */
+  function webTry(n){return fetchVia(ddgUrl(q)).then(parseDdg).catch(function(){return [];}).then(function(r){return r.length?r:fetchVia('https://lite.duckduckgo.com/lite/?q='+encodeURIComponent(q)).then(parseDdg).catch(function(){return [];});}).then(function(r){return r.length||n?r:new Promise(function(ok){setTimeout(ok,5000);}).then(function(){return webTry(1);});});}
+  webTry(0).then(function(r){web=r;if(!r.length)errWeb=' ';}).then(fin);
   if(WEBONLY){fin();return;}
   fetchVia(ahmiaUrl(q)).then(function(t){onion=parseAhmia(t);}).catch(function(){errOnion=' ';}).then(fin);
 };
