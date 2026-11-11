@@ -90,7 +90,7 @@ html.borne .b-date i{font-family:'DM Mono',monospace!important;font-size:12px!im
 html.borne .b-row2 .menu a{font-size:11px!important}
 html.borne .bar .dock:first-of-type #export-pl,html.borne .b-px{font-size:11px!important}
 html.borne .b-slot b,html.borne .b-slot b *{font-size:10px!important}
-/* Online Applicants : discret, lisible (contraste 4,5 au moins) */
+/* online : discret, lisible (contraste 4,5 au moins) */
 html.borne .b-online,html.borne .b-online span{color:rgba(235,225,205,.66)!important}
 /* zones de toucher de 44 px, dessin inchangé */
 html.borne :is(.b-bell,#export-pl,.b-imm,.b-px){position:relative}

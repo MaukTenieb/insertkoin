@@ -1,4 +1,4 @@
-/* Borne Insert Koin — Online Applicants.
+/* Borne Insert Koin — online.
    Chaque visiteur annonce sa présence toutes les 20 s sur un canal MQTT public, par WebSocket, sous un numéro tiré au hasard
    (zéro nom, zéro adresse, zéro cookie). Le compteur montre les numéros entendus dans les 50 dernières secondes, visiteur compris.
    Trois relais publics, essayés l'un après l'autre, à partir du premier geste du visiteur ; après un échec, l'attente double jusqu'à une minute. */
@@ -16,7 +16,7 @@
   function send(p){try{if(ws&&ws.readyState===1)ws.send(p);}catch(e){}}
   function say(kind){send(pub(kind+':'+ME));}
   function paint(){var now=Date.now(),n=1;for(var k in SEEN){if(now-SEEN[k]>50000)delete SEEN[k];else n++;}
-    if(!el)return;el.querySelector('b').textContent=n>99?'99+':String(n);var w=n===1?'Online Applicant':'Online Applicants';el.querySelector('span').textContent=w;el.hidden=false;el.title=n+' '+w;}
+    if(!el)return;el.querySelector('b').textContent=n>99?'99+':String(n);var w='online';el.querySelector('span').textContent=w;el.hidden=false;el.title=n+' '+w;}
   function onmsg(buf){var a=new Uint8Array(buf),i=0;
     while(i<a.length){var h=a[i++],m=1,l=0,d;do{d=a[i++];l+=(d&127)*m;m*=128;}while(d&128);var p=a.subarray(i,i+l);i+=l;
       if((h>>4)===2){send(sub());say('hello');paint();}
@@ -33,7 +33,7 @@
   document.addEventListener('visibilitychange',function(){if(document.hidden){if(ws){say('bye');try{ws.close();}catch(e){}}}else if(!ws&&started)open();});
   addEventListener('pagehide',function(){say('bye');});
   function mount(){var foot=document.querySelector('.b-bezelfoot');if(!foot){setTimeout(mount,600);return;}
-    el=document.createElement('div');el.className='b-online';el.hidden=true;el.innerHTML='<i></i><b>1</b><span>Online Applicants</span>';
+    el=document.createElement('div');el.className='b-online';el.hidden=true;el.innerHTML='<i></i><b>1</b><span>online</span>';
     var boom=foot.querySelector('.b-stick-mini')||foot.querySelector('.b-boom');foot.insertBefore(el,boom);paint();}
   /* le compteur se branche au premier geste du visiteur : avant, zéro connexion vers les relais */
   function first(){if(started)return;started=true;['pointerdown','keydown','wheel','touchstart'].forEach(function(t){removeEventListener(t,first,true);});open();}

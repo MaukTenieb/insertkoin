@@ -410,7 +410,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 .stage .tvclip::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.3) 0 1px,transparent 1px 3px),radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.6));pointer-events:none}
 @keyframes tvon{0%{transform:scaleY(.02);filter:brightness(4)}100%{transform:none}}
 
-/* the Kerema's die: once per tournament it sets the swing of the applicant's paddle */
+/* the Kerema's die: once per tournament it sets the swing of the kandiKtat's paddle */
 .stage .kdie{position:absolute;inset:0;z-index:7;display:grid;place-items:center;align-content:center;gap:6px;pointer-events:none;background:radial-gradient(closest-side,rgba(7,6,10,.78),rgba(7,6,10,0));opacity:0;transition:opacity .25s}
 .stage .kdie.on{opacity:1}
 .stage .kdie.ghost{background:none}.stage .kdie.ghost.on{opacity:.5}.stage .kdie.ghost .d{font-size:clamp(48px,9vw,90px)}
@@ -521,7 +521,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
   <section id="game" class="game" hidden>
     <div class="hud">
       <span class="hudl"><button class="btn" type="button" data-back data-i18n="back">← BACK</button><button id="back" class="btn boom" type="button">BAKU BOOM</button></span>
-      <div class="score" aria-live="polite"><span class="who" data-i18n="you">APPLICANT</span><span id="sP">0</span><span style="color:var(--dim)">-</span><span id="sO">0</span><span class="who" id="oName"></span><span class="sig" id="oSig" aria-hidden="true"></span></div>
+      <div class="score" aria-live="polite"><span class="who" data-i18n="you">KANDIKTAT</span><span id="sP">0</span><span style="color:var(--dim)">-</span><span id="sO">0</span><span class="who" id="oName"></span><span class="sig" id="oSig" aria-hidden="true"></span></div>
       <span class="hudr"></span>
     </div>
     <div class="stage" id="stage"><span class="rot" aria-hidden="true">⟳</span><span class="turn" aria-hidden="true"><i></i></span>
@@ -530,7 +530,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
       <div class="count" id="count" hidden></div>
       <div class="champ" id="champ" hidden><canvas id="chCv" width="1024" height="686"></canvas><div class="chT"><b data-i18n="champ">MAKE A NOISY SILENCE!</b></div><button class="btn hot" type="button" id="chOk">OK</button></div>
       <div class="over" id="over" hidden>
-        <h2 id="ovT">APPLICANT WON</h2>
+        <h2 id="ovT">KANDIKTAT WON</h2>
         <p id="ovS"></p>
         <div class="row">
           <button id="again" class="btn" type="button">REMATCH</button>
@@ -1481,7 +1481,7 @@ const spd=e=>Math.hypot(e.puck_vx||0,e.puck_vz||0);
 function jolt(n){const s=document.querySelector('.stage');if(!s)return;s.style.setProperty('--j',n+'px');s.classList.remove('jolt');void s.offsetWidth;s.classList.add('jolt');}
 function snap(e){return{px:e.puck_x,pz:e.puck_z,ox:e.opp_x,oz:e.opp_z,ax:e.pad_x,az:e.pad_z};}
 function hud(){$('sP').textContent=G.e.player_score;$('sO').textContent=G.e.opponent_score;}
-/* ---- the Kerema decides: once per tournament a die sets the applicant's swing, from -15 % (⚀) to +15 % (⚅) ---- */
+/* ---- the Kerema decides: once per tournament a die sets the kandiKtat's swing, from -15 % (⚀) to +15 % (⚅) ---- */
 const KV=[.85,.91,.97,1.03,1.09,1.15],KDC=['#ffe08a','#ff5a5a','#4fc3f7','#7fdc8a','#ab47bc','#ff9a1a','#f48fb1','#e8e0c8'];
 /* the Kerema weighs your Koins: the rich earned them before, so many Koins lean to the high faces, few to the low ones (about 7 Koins: even) */
 function kThrow(){const b=Math.max(-1,Math.min(1,(Math.log2((typeof koins==='number'?koins:3)+1)-3)/5));const w=[0,1,2,3,4,5].map(f=>Math.exp(b*(f-2.5)*.55));let t=Math.random()*w.reduce((a,x)=>a+x,0);for(let f=0;f<6;f++){if((t-=w[f])<=0)return f;}return 5;}
@@ -1505,7 +1505,7 @@ function kDraw(c){const f=G.fl;if(!f)return;const bob=Math.sin(f.age*2.4)*5,[sx,
   const a=Math.min(1,f.age*2,(f.life-f.age))*.62;if(a<=0)return;c.save();c.globalAlpha=a;c.textAlign='center';c.textBaseline='middle';c.shadowColor=f.kc;c.shadowBlur=10;c.fillStyle=f.kc;
   c.font=Math.round(sz)+'px "DejaVu Sans","Segoe UI Symbol",sans-serif';c.fillText(DICE[f.f],sx,sy);c.shadowBlur=6;c.fillStyle='#fff';c.font='400 '+Math.max(9,Math.round(sz*.42))+'px "Bebas Neue",Impact,sans-serif';c.fillText(f.ask,sx,sy-sz*.78);c.restore();}
 /* now and then, once the score has shown, the Kerema's sarcasm comes on the TV */
-const KSAY={en:["Factualists want to liquefy you!","For us, you'll always remain an applicant.","Lasciate ogne speranza, voi ch'intrate.","A Kave is a hive. Honey, you're the bee.","Born to bee wild?","@'s Krews are the best.","(Ho)ney obliviscaris."],
+const KSAY={en:["Factualists want to liquefy you!","For us, you'll always remain a kandiKtat.","Lasciate ogne speranza, voi ch'intrate.","A Kave is a hive. Honey, you're the bee.","Born to bee wild?","@'s Krews are the best.","(Ho)ney obliviscaris."],
  fr:["Les Divisionistes le font par zéro !","Si tu es perdu(e), perds-toi dans le Lore.","Croire, c'est subir.","Lasciate ogne speranza, voi ch'intrate.","Tu es ruche de tes acquis.","Eat the ruche.","Kave la bouche ouverte !","Miel de fleur ? Bah. De pétrole.","T'as du poten(m)iel hein !","Miel, mon mardi !","(Ho)ney obliviscaris."]};
 let kSaidAt=-1e9,kLast='';
 function kSay(force){if(!G||G.e.isOver()||$("game").hidden)return;const now=performance.now();if(!force&&(now-kSaidAt<11000||(G.kSaid||0)>=10||Math.random()>.35||G.fl))return;
@@ -1712,10 +1712,10 @@ $('snd').setAttribute('aria-pressed',sound);$('snd').textContent=sound?'FX ON':'
 /* the jukebox steps back when a tape, the Sampler or the Kerema's voice takes the room */
 setInterval(()=>{try{const jukePlayer=window.__juke&&window.__juke();if(!jukePlayer||!jukePlayer.setVolume)return;const v=document.getElementById('vhs'),vhsOn=v&&v.offsetParent!==null&&v.classList.contains('is-loaded'),talk=window.speechSynthesis&&speechSynthesis.speaking,samp=window._bbPlaying===true;const want=(vhsOn||talk||samp)?12:100;if(want!==window.__jukeVol){window.__jukeVol=want;jukePlayer.setVolume(want);}}catch(e){}},500);
 /* ================= INSERT KOIN shell ================= */
-const I18N={en:{run:'ARCADE',pick:'◉ 1',you:'APPLICANT',serve:'▶',
-  win:'APPLICANT WON',lose:'MASK WON',champ:'MAKE A NOISY SILENCE!',next:'NEXT',cont:'CONTINUE',again:'REMATCH',select:'SELECT',back:'← BACK',nokoin:'◉ 0 · ',beaten:'MASKS DOWN',runof:'RUN',kap:'KAPTURE',yes:'YES',no:'NO'},
- fr:{run:'ARCADE',pick:'◉ 1',you:'APPLICANT',serve:'▶',
-  win:'APPLICANT WON',lose:'MASK WON',champ:'MAKE A NOISY SILENCE!',next:'SUIVANT',cont:'CONTINUER',again:'REVANCHE',select:'CHOISIR',back:'← RETOUR',nokoin:'◉ 0 · ',beaten:'MASKS DOWN',runof:'PARTIE',kap:'KAPTURE',yes:'OUI',no:'NON'}};
+const I18N={en:{run:'ARCADE',pick:'◉ 1',you:'KANDIKTAT',serve:'▶',
+  win:'KANDIKTAT WON',lose:'MASK WON',champ:'MAKE A NOISY SILENCE!',next:'NEXT',cont:'CONTINUE',again:'REMATCH',select:'SELECT',back:'← BACK',nokoin:'◉ 0 · ',beaten:'MASKS DOWN',runof:'RUN',kap:'KAPTURE',yes:'YES',no:'NO'},
+ fr:{run:'ARCADE',pick:'◉ 1',you:'KANDIKTAT',serve:'▶',
+  win:'KANDIKTAT WON',lose:'MASK WON',champ:'MAKE A NOISY SILENCE!',next:'SUIVANT',cont:'CONTINUER',again:'REVANCHE',select:'CHOISIR',back:'← RETOUR',nokoin:'◉ 0 · ',beaten:'MASKS DOWN',runof:'PARTIE',kap:'KAPTURE',yes:'OUI',no:'NON'}};
 let LANG='en';try{LANG=window.IK_LANG||localStorage.getItem('ik.lang')||'en';}catch(e){LANG=window.IK_LANG||'en';}if(LANG!=='fr')LANG='en';
 const tr=k=>(I18N[LANG]&&I18N[LANG][k])||I18N.en[k]||k;
 function applyLang(){document.documentElement.lang=LANG;document.querySelectorAll('[data-i18n]').forEach(el=>{el.innerHTML=tr(el.dataset.i18n);});$('lang').textContent=LANG==='en'?'FR':'EN';if(G)hud();}

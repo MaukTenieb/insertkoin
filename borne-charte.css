@@ -100,7 +100,7 @@ html.b-charte #kg-root #vhs .vhs-tape-count{font-size:12.5px!important}
 html.b-charte #kg-root #vhs .vhs-tape.vhs-tape-k :is(.vhs-tape-rep,.vhs-tape-count){font-size:12.5px!important;opacity:1!important}
 html.b-charte #kg-root #vhs .vhs-tape.vhs-tape-k .vhs-tape-count{color:#4d473a!important}
 
-/* ---------- la console en appareil Minitel : « Online Applicants » à l'encre sur la crème ---------- */
+/* ---------- la console en appareil Minitel : « online » à l'encre sur la crème ---------- */
 html.b-charte[data-mode=device][data-habit=minitel] .b-online,html.b-charte[data-mode=device][data-habit=minitel] .b-online b{color:#3a3026!important}
 html.b-charte #kg-root #mm-panel .mm-fb .mm-no{color:#d0d0d0!important}
 html.b-charte #kg-root #mem .card-f-name{font-size:clamp(12px,1.6vw,.85rem)!important}

@@ -130,7 +130,7 @@ function nav(url,push){
     var u=url.trim();
     $('tab').dataset.onion=u;
     if(push)mark('onion:'+url);
-    status(L('L’applicant doit être patient…','The applicant must be patient…'));
+    status(L('Le kandiKtat doit être patient…','The kandiKtat must be patient…'));
     probeTor(u).then(function(ok){
       if(ok){sandbox(false);$('view').removeAttribute('srcdoc');$('view').src=u;status('');return;}
       var gates=onionGates(u);
@@ -258,7 +258,7 @@ function onionInline(base,html){
 }
 function textLen(html){try{var d=new DOMParser().parseFromString(html,'text/html');d.querySelectorAll('script,style,noscript').forEach(function(n){n.remove();});return (d.body&&d.body.textContent||'').replace(/\s+/g,' ').length;}catch(e){return 0;}}
 function read(url){
-  status(L('L’applicant doit être patient…','The applicant must be patient…'));
+  status(L('Le kandiKtat doit être patient…','The kandiKtat must be patient…'));
   return any([fetchRaw(url),torGet(url)]).then(function(h){
     if(textLen(h)>400){show(url,h,false);return;}
     /* a page built by its scripts: the reader runs them */
@@ -353,7 +353,7 @@ window.__torSearch=function(q){
   if(/^https?:\/\//i.test(q)||/\.onion/i.test(q)){go(q,true);return;}
   if(/^[\w.-]+\.[a-z]{2,}(\/|$)/i.test(q)){go('https://'+q,true);return;}
   $('url').value=q;document.body.classList.remove('home');
-  status(L('L\u2019applicant doit être patient…','The applicant must be patient…'));
+  status(L('Le kandiKtat doit être patient…','The kandiKtat must be patient…'));
   hideNotice();$('tab').dataset.onion='';
   var done=0,web=[],onion=[],errWeb=null,errOnion=null;
   function fin(){done++;if(done<2)return;
