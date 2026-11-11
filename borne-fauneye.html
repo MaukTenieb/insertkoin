@@ -38,6 +38,7 @@ button,input,select{font:inherit}
 .stage.pages.zoomed{cursor:move}
 .stage>img,.stage>canvas{max-width:100%;max-height:100%;box-shadow:0 4px 14px rgba(60,40,10,.35);background:#fff;transform-origin:50% 50%;will-change:transform;user-select:none;-webkit-user-drag:none}
 .stage .kd{text-align:center;padding-top:12vh}.stage .kd h2{font-size:1.6em;margin:0 0 .4em}.stage .kd img{max-width:100%;max-height:40vh;margin-bottom:1em}.stage .kd a{color:var(--brass2,#8a5a1c)}
+.stage article .kdh{font-size:1.6em;margin:.6em 0 .2em;text-align:center}.stage article .kds{text-align:center;margin-top:0}.stage article .kdl{text-align:center;margin-top:2em}.stage article .kdl a{color:var(--brass2,#8a5a1c)}.stage article .subscription-widget-wrap,.stage article .button-wrapper,.stage article .paywall,.stage article .captioned-button-wrap{display:none}
 .stage article{align-self:stretch;width:100%;max-width:var(--mw,40em);margin:0 auto;overflow:auto;padding:4px 18px 40px;font-family:var(--ff,'IM Fell English',Georgia,serif);font-size:var(--fs,19px);line-height:var(--lh,1.55);background:none;touch-action:pan-y}
 .stage article pre{font:inherit!important}
 .lens{position:absolute;z-index:5;width:190px;height:190px;margin:-95px 0 0 -95px;border-radius:50%;pointer-events:none;background-repeat:no-repeat;background-color:#fff;
@@ -328,7 +329,14 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
     {ti:'MOVEMENT 3',su:'12 Pluviôse 233 — and so forth',d:'2026-10-15',s:'movement-3'},
     {ti:'MOVEMENT 4',su:'5 Ventôse 233 — and so forth',d:'2026-10-16',s:'movement-4'},
     {ti:'MOVEMENT 5',su:'23 Ventôse 233 — and so forth',d:'2026-10-19',s:'movement-5'}];
-  function kdOpen(x){var href=KD+'/p/'+x.s;
+  /* 11 nov. 2026 (Mauk Tenieb, 19 h 31) : le Movement se lit dans la visionneuse, texte de Substack (ce que Substack livre, l'aperçu pour un billet payant), puis le lien vers la source */
+  var KDR='https://faunator.mauktenieb.workers.dev/?url=';
+  function kdGet(u){return fetch(u).then(function(r){if(!r.ok)throw 0;return r.json();}).catch(function(){return fetch(KDR+encodeURIComponent(u)).then(function(r){if(!r.ok)throw 0;return r.json();});});}
+  function kdOpen(x){var href=KD+'/p/'+x.s;wait.textContent=T.load;
+    kdGet(KD+'/api/v1/posts/'+x.s).then(function(p){if(!p||!p.body_html)throw 0;
+      openArticle('<h2 class="kdh">'+esc(p.title||x.ti)+'</h2>'+(p.subtitle?'<p class="kds"><em>'+esc(p.subtitle)+'</em></p>':'')+(p.cover_image?'<img alt="" src="'+esc(p.cover_image)+'">':'')+p.body_html+'<p class="kdl"><a href="'+esc(href)+'" target="_blank" rel="noopener">'+esc(T.kd)+'</a></p>',
+        {key:'kd:'+x.s,au:'Mauk Tenieb',ti:p.title||x.ti,ed:(p.post_date||x.d||'').slice(0,10),srcName:'Korhogo Diary',href:href});}).catch(function(){kdCard(x,href);});}
+  function kdCard(x,href){
     openArticle('<div class="kd">'+(x.img?'<img alt="" src="'+esc(x.img)+'">':'')+'<h2>'+esc(x.ti)+'</h2><p><em>'+esc(x.su)+'</em></p><p>'+esc(x.d)+'</p><p><a href="'+esc(href)+'" target="_blank" rel="noopener">'+esc(T.kd)+'</a></p></div>',
       {key:'kd:'+x.s,au:'Mauk Tenieb',ti:x.ti,ed:x.d,srcName:'Korhogo Diary',href:href});}
   function kdList(L){hits($('p-kd'),L.map(function(x){return{ti:x.ti,au:x.su,ed:x.d,img:x.img,open:function(){kdOpen(x);}};}));}
