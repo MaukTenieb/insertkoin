@@ -1,8 +1,5 @@
 name: voir
-on:
-  workflow_dispatch:
-    inputs:
-      script: {required: false, default: 'voir-tv.py'}
+on: {workflow_dispatch: {}}
 jobs:
   voir:
     runs-on: ubuntu-latest
@@ -12,6 +9,6 @@ jobs:
       - run: |
           pip install -q playwright pillow && python3 -m playwright install --with-deps chromium >/dev/null
           mkdir -p /tmp/v && cd /tmp/v
-          python3 "$GITHUB_WORKSPACE/.github/voir/${{ github.event.inputs.script }}" || true
+          python3 "$GITHUB_WORKSPACE/.github/voir/voir-tv.py" || true
           git init -q -b voir && git config user.name check && git config user.email actions@users.noreply.github.com
           git add -A && git commit -qm "voir" && git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" voir
