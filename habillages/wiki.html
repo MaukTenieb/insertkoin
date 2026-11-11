@@ -29,7 +29,8 @@ a.new{color:var(--red)}
 #q{width:100%;font:13px Arimo,Arial,sans-serif;padding:5px 6px;border:1px solid var(--rule);background:#fffdf6;color:var(--ink);border-radius:0}
 #main{background:var(--paper);padding:22px 32px 40px;border-left:1px solid #fff8}
 #tabs{display:flex;gap:2px;margin:-6px 0 14px;font-size:12px}
-#tabs span{border:1px solid var(--rule);border-bottom:0;padding:3px 10px;background:#fbf8ef}#tabs span.on{background:var(--paper);font-weight:700}
+#tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;align-items:flex-end;border-bottom:1px solid var(--rule)}#tabs::-webkit-scrollbar{display:none}
+#tabs span,#tabs button{flex:0 0 auto;border:1px solid var(--rule);border-bottom:0;padding:3px 10px;background:#ece4d0;font:12px Arimo,Arial,sans-serif;color:var(--link);white-space:nowrap}#tabs button{cursor:pointer;-webkit-tap-highlight-color:transparent}#tabs button:hover{background:#fbf8ef;text-decoration:underline}#tabs span.on{background:var(--paper);font-weight:700;color:var(--ink);margin-bottom:-1px;padding-bottom:4px}#tabs .gap{margin-left:14px}#tabs .kq{margin-left:auto;border:0;background:none;color:#6d6553;padding:3px 0 3px 14px}
 h1{font:400 30px/1.2 Garamond,Georgia,serif;margin:0 0 4px;border-bottom:1px solid var(--rule);padding-bottom:4px}
 .from{font-size:12px;color:#6d6553;margin:0 0 16px}
 h2{font:400 21px/1.3 Garamond,Georgia,serif;border-bottom:1px solid var(--rule);margin:22px 0 8px;padding-bottom:2px}
@@ -61,9 +62,13 @@ var lang='en';try{lang=localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e)
 var NAMES=['KalabWiki','Weaky','WigWiki','Kerema','FauxRhogo'],NQ=(location.search.match(/[?&]n=([A-Za-z]+)/)||[])[1],NM=NAMES.indexOf(NQ)>=0?NQ:NAMES[Math.floor(Math.random()*NAMES.length)];
 document.getElementById('nm').textContent=NM;
 var o=((window.WIKITXT||{}).ideel||{})[FR?'fr':'en']||{t:'',p:[]};document.title=o.t+' — '+NM;
+document.getElementById('main').addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('#tabs button');if(!b)return;e.stopPropagation();var t=document.querySelector('#ikbar '+b.getAttribute('data-s'));if(t)t.click()});
+setInterval(function(){var k=document.querySelector('#ikbar .kn'),q=document.querySelector('#tabs .kq');if(k&&q)q.textContent='Koins '+k.textContent.trim()},1000);
 /* onglet : Article (circa mois et an du calendrier républicain, toujours en français) — Mauk Tenieb, 11 nov. 2026, 15 h 15 */
 var MOR=['Vendémiaire','Brumaire','Frimaire','Nivôse','Pluviôse','Ventôse','Germinal','Floréal','Prairial','Messidor','Thermidor','Fructidor','Sansculottides'];function sext(y){return y<20?(y===3||y===7||y===11||y===15):(y%4===0&&(y%100!==0||y%400===0)&&y%4000!==0)}function rep(d){var n=Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(1792,8,22))/864e5),y=1;for(;;){var l=sext(y)?366:365;if(n<l)break;n-=l;y++}return{m:Math.floor(n/30),y:y}}var RD=rep(new Date());
-document.getElementById('main').innerHTML='<div id="tabs"><span class="on">Article (circa '+MOR[RD.m]+' '+RD.y+')</span></div><h1>'+o.t.replace(/</g,'&lt;')+'</h1>'+o.p.map(function(x){return '<p'+(/^—/.test(x)?' class="dl"':'')+'>'+x+'</p>'}).join('');
+/* 11 nov. 2026 (Mauk Tenieb, 15 h 31, « 1b ») : les onglets du faux wiki reprennent les fonctions de la barre minimale, sous leur nom ; la barre du bas reste */
+var TB=[['Motel Sound','.b-px-son'],['PL','.b-px-pl'],['Kapture','.b-px-kap'],['diktaTfaune','.b-px-dik'],['FR · EN','.b-px-lg'],['Immersion','.b-imm'],['Baku Boom','.b-boom']];
+document.getElementById('main').innerHTML='<div id="tabs"><span class="on">Article (circa '+MOR[RD.m]+' '+RD.y+')</span>'+TB.map(function(t){return '<button type="button" data-s="'+t[1]+'">'+t[0]+'</button>'}).join('')+'<button type="button" class="gap" data-s=".b-stick">KorhogOS</button><span class="kq"></span></div><h1>'+o.t.replace(/</g,'&lt;')+'</h1>'+o.p.map(function(x){return '<p'+(/^—/.test(x)?' class="dl"':'')+'>'+x+'</p>'}).join('');
 /* Baku Boom remet le wiki à sa page d'accueil, sous un nouveau nom */
 window.__ikBoom=function(){location.replace(location.pathname)};
 })();
