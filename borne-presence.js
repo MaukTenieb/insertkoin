@@ -5,7 +5,7 @@
 (function(){
   var BROKERS=['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt','wss://test.mosquitto.org:8081/mqtt'];
   if(window.__presenceBrokers)BROKERS=window.__presenceBrokers;
-  var TOPIC='mauktenieb/insertkoin/borne/applicants/v1',ME=Math.random().toString(36).slice(2,10),SEEN={},ws=null,bi=0,beat=0,ping=0,el=null;
+  var TOPIC='mauktenieb/insertkoin/borne/kandiktat/v1',ME=Math.random().toString(36).slice(2,10),SEEN={},ws=null,bi=0,beat=0,ping=0,el=null;
   var enc=new TextEncoder(),dec=new TextDecoder();
   function len(n){var o=[];do{var d=n%128;n=Math.floor(n/128);if(n>0)d|=128;o.push(d);}while(n>0);return o;}
   function str(s){var b=enc.encode(s);return [b.length>>8,b.length&255].concat([].slice.call(b));}
