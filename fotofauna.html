@@ -90,7 +90,7 @@ main.left{background:var(--pebble);min-width:0}
 .shutter:hover{background:radial-gradient(circle at 40% 35%,#ffdca2,#ea9628)}
 .shutter:active{transform:scale(.94)}
 .shutter{position:relative}
-.shutter.vid{background:radial-gradient(circle at 40% 35%,#ff8a72,#c8321e)}
+.shutter.vid{background:radial-gradient(circle at 40% 35%,#ff8a72,#c8321e)}.shutter.son{background:radial-gradient(circle at 40% 35%,#ffd27a,#e08a1e)}
 .shutter.rec::after{content:"";position:absolute;inset:29%;border-radius:3px;background:#f4efdf}
 .shutter.rec{animation:recp 1.2s ease-in-out infinite}
 @keyframes recp{50%{box-shadow:0 0 0 2px var(--line2),0 0 0 8px rgba(200,50,30,.35)}}
@@ -289,7 +289,7 @@ html.ike-on .app[data-ike-layout=narrow] .ctrl{border-radius:0}
     <div class="flashFx" id="flashFx" hidden></div>
     <div class="busy" id="busy" hidden></div>
    </div>
-   <div class="shutterRow" id="shutterRow" hidden><div class="pvMode" id="pvMode" role="group"><button type="button" data-m="photo" aria-pressed="true" data-i="mPhoto"></button><button type="button" data-m="video" aria-pressed="false" data-i="mVideo"></button></div><div class="advance" aria-hidden="true"></div><button class="shutter" id="shutter" type="button" data-al="shutter"></button><button class="key" id="camOff" type="button" data-al="camOff"><svg class="ic" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+   <div class="shutterRow" id="shutterRow" hidden><div class="pvMode" id="pvMode" role="group"><button type="button" data-m="photo" aria-pressed="true" data-i="mPhoto"></button><button type="button" data-m="video" aria-pressed="false" data-i="mVideo"></button><button type="button" data-m="son" aria-pressed="false" data-i="mSon"></button></div><div class="advance" aria-hidden="true"></div><button class="shutter" id="shutter" type="button" data-al="shutter"></button><button class="key" id="camOff" type="button" data-al="camOff"><svg class="ic" aria-hidden="true"><use href="#i-close"/></svg></button></div>
    <div class="vidBar" id="vidBar" hidden><button class="key" id="vPlay" type="button" data-al="vPlay"><svg class="ic" aria-hidden="true"><use href="#i-pause"/></svg></button><input type="range" id="vSeek" min="0" max="1000" step="1" value="0" data-al="vSeek"><span class="vTime" id="vTime">0:00:00</span></div>
   </div>
   <div class="actions" id="actions">
@@ -11960,7 +11960,7 @@ Object.assign(W.fr,{keepL:"Valider",dice:"Tirer",layers:"Couches",noLayer:"Image
  recipe:"Recette",recExport:"Exporter",recImport:"Importer",recDone:"Recette importée.",recBad:"Recette illisible.",recPng:"Cette image contient une recette.",recLoad:"Charger",recBaked:"Les couches de coulée Koloid restent hors de la recette : ce sont des images figées.",
  recHint:"La recette garde la pile des effets, leurs réglages, leurs graines et les tables de couleurs. Un PNG enregistré ici la porte aussi.",
  lut:"Table de couleurs (.cube, HaldCLUT)",lutDone:"Table chargée : {n}³.",lutBad:"Table illisible : ",
- mPhoto:"Photo",mVideo:"Vidéo",vPlay:"Lecture, pause",vSeek:"Position dans la vidéo",recStart:"Filmer",recStop:"Arrêter de filmer",micOff:"Micro fermé : vidéo muette.",
+ mPhoto:"Photo",mVideo:"Vidéo",mSon:"Son",sonStart:"Enregistrer le son",sonStop:"Arrêter le son",sonDone:"Son de {s} s : fichier WAV enregistré, piste ajoutée à Musik.",sonBad:"Micro fermé : son indisponible.",vPlay:"Lecture, pause",vSeek:"Position dans la vidéo",recStart:"Filmer",recStop:"Arrêter de filmer",micOff:"Micro fermé : vidéo muette.",
  clipDone:"Clip de {s} s, effets compris.",vidBad:"Vidéo illisible dans ce navigateur.",stillOnly:"image fixe seulement",stillSkip:"Image fixe seulement, hors vidéo : {n}",
  exClip:"Enregistrer la vidéo",exClipHint:"Toute la vidéo passe dans la pile d'effets, à la taille choisie, avec sa bande son.",vidRender:"Rendu : image {i} / {n}",vidEnc:"Encodage : {s} s",
  frameN:"Image {i} / {n}…",recording:"Enregistrement : {s} s",gifDone:"GIF : {k} Ko",vidDone:"Vidéo : {k} Ko",noRec:"Ce navigateur enregistre la vidéo hors de MediaRecorder : export vidéo indisponible.",rawSaved:"Photo brute enregistrée : "});
@@ -11972,7 +11972,7 @@ Object.assign(W.en,{keepL:"Keep",dice:"Roll",layers:"Layers",noLayer:"Original i
  recipe:"Recipe",recExport:"Export",recImport:"Import",recDone:"Recipe imported.",recBad:"Unreadable recipe.",recPng:"This image carries a recipe.",recLoad:"Load",recBaked:"Koloid pour layers stay out of the recipe: they are frozen images.",
  recHint:"The recipe keeps the stack of effects, their settings, their seeds and the colour tables. A PNG saved here carries it too.",
  lut:"Colour table (.cube, HaldCLUT)",lutDone:"Table loaded: {n}³.",lutBad:"Unreadable table: ",
- mPhoto:"Photo",mVideo:"Video",vPlay:"Play, pause",vSeek:"Position in the video",recStart:"Film",recStop:"Stop filming",micOff:"Microphone closed: silent video.",
+ mPhoto:"Photo",mVideo:"Video",mSon:"Sound",sonStart:"Record sound",sonStop:"Stop sound",sonDone:"{s} s sound: WAV file saved, track added to Musik.",sonBad:"Microphone closed: sound unavailable.",vPlay:"Play, pause",vSeek:"Position in the video",recStart:"Film",recStop:"Stop filming",micOff:"Microphone closed: silent video.",
  clipDone:"{s} s clip, effects included.",vidBad:"This browser cannot read this video.",stillOnly:"still image only",stillSkip:"Still image only, left out of the video: {n}",
  exClip:"Save the video",exClipHint:"The whole video runs through the effect stack, at the chosen size, with its soundtrack.",vidRender:"Render: frame {i} / {n}",vidEnc:"Encoding: {s} s",
  frameN:"Frame {i} / {n}…",recording:"Recording: {s} s",gifDone:"GIF: {k} KB",vidDone:"Video: {k} KB",noRec:"This browser cannot record video (MediaRecorder).",rawSaved:"Raw photo saved: "});
@@ -12342,11 +12342,24 @@ $("vSeek").oninput=e=>{if(!VM)return;const d=VM.dur||VM.v.duration;rng(e.target)
 $("vSeek").onchange=()=>$("vSeek").blur();
 
 /* mode du déclencheur : Photo ou Vidéo ; le micro est demandé au passage en Vidéo seulement */
-function setPvMode(m){if(REC)return;PVMODE=m==="video"?"video":"photo";document.querySelectorAll("#pvMode button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m===PVMODE)));
- $("shutter").classList.toggle("vid",PVMODE==="video");$("shutter").setAttribute("aria-label",t(PVMODE==="video"?"recStart":"shutter"));if(PVMODE==="video")askMic()}
+function setPvMode(m){if(REC||SREC)return;PVMODE=m==="video"?"video":m==="son"?"son":"photo";document.querySelectorAll("#pvMode button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.m===PVMODE)));
+ $("shutter").classList.toggle("vid",PVMODE==="video");$("shutter").classList.toggle("son",PVMODE==="son");$("shutter").setAttribute("aria-label",t(PVMODE==="video"?"recStart":PVMODE==="son"?"sonStart":"shutter"));if(PVMODE!=="photo")askMic()}
 document.querySelectorAll("#pvMode button").forEach(b=>b.onclick=()=>setPvMode(b.dataset.m));
 async function askMic(){if(MIC||!CAM||!navigator.mediaDevices)return;try{const s=await navigator.mediaDevices.getUserMedia({audio:true});if(CAM)MIC=s;else s.getTracks().forEach(x=>x.stop())}catch{MIC=null;setStatus(t("micOff"))}}
-function shutterPress(){if(PVMODE==="video"){REC?recStop():recStart();return}shoot()}
+function shutterPress(){if(PVMODE==="video"){REC?recStop():recStart();return}if(PVMODE==="son"){SREC?sonStop():sonStart();return}shoot()}
+/* 12 nov. 2026 (Mauk Tenieb) : le Kamescope — PhotoFauna mêlé à diktaTfaune produit des fichiers image, vidéo et son ; le son, pris au micro, part en WAV et dans Musik (IndexedDB « borne », magasin « diktat », les cinq plus récents, comme diktaTfaune) */
+let SREC=null;
+async function sonStart(){let st=MIC;try{if(!st)st=MIC=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}})}catch{setStatus(t("sonBad"),"err");return}
+  if(!window.MediaRecorder){setStatus(t("sonBad"),"err");return}
+  const ch=[],mr=new MediaRecorder(new MediaStream(st.getAudioTracks()));mr.ondataavailable=e=>{if(e.data&&e.data.size)ch.push(e.data)};mr.onstop=()=>sonDone(new Blob(ch,{type:mr.mimeType||"audio/webm"}));
+  SREC={mr,t0:Date.now()};mr.start();$("shutter").classList.add("rec");$("shutter").setAttribute("aria-label",t("sonStop"));SREC.cap=setTimeout(()=>{if(SREC)sonStop()},60000)}
+function sonStop(){if(!SREC)return;clearTimeout(SREC.cap);try{SREC.mr.stop()}catch{}$("shutter").classList.remove("rec");$("shutter").setAttribute("aria-label",t("sonStart"));}
+async function sonDone(blob){const s=SREC;SREC=null;try{const ac=new(window.AudioContext||window.webkitAudioContext)(),buf=await ac.decodeAudioData(await blob.arrayBuffer()),d=buf.getChannelData(0),sr=buf.sampleRate;
+  const n=d.length,w=new DataView(new ArrayBuffer(44+n*2)),str=(o,x)=>{for(let i=0;i<x.length;i++)w.setUint8(o+i,x.charCodeAt(i))};str(0,"RIFF");w.setUint32(4,36+n*2,true);str(8,"WAVE");str(12,"fmt ");w.setUint32(16,16,true);w.setUint16(20,1,true);w.setUint16(22,1,true);w.setUint32(24,sr,true);w.setUint32(28,sr*2,true);w.setUint16(32,2,true);w.setUint16(34,16,true);str(36,"data");w.setUint32(40,n*2,true);for(let i=0;i<n;i++){const v=Math.max(-1,Math.min(1,d[i]));w.setInt16(44+i*2,v<0?v*32768:v*32767,true)}
+  const name=(window.ikName?ikName("kamescope","wav"):"kamescope-"+Date.now()+".wav"),a=document.createElement("a");a.href=URL.createObjectURL(new Blob([w],{type:"audio/wav"}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);
+  const clip={id:"k"+Date.now(),name:name.replace(/\.wav$/,""),t:Date.now(),sr:sr,data:new Float32Array(d)};
+  const r=indexedDB.open("borne",1);r.onupgradeneeded=()=>r.result.createObjectStore("diktat",{keyPath:"id"});r.onsuccess=()=>{const tx=r.result.transaction("diktat","readwrite"),os=tx.objectStore("diktat");os.put(clip);const q=os.getAll();q.onsuccess=()=>{(q.result||[]).sort((x,y)=>y.t-x.t).slice(5).forEach(x=>os.delete(x.id))};tx.oncomplete=()=>{try{(window.top||window).dispatchEvent(new Event("borne-diktat"))}catch{}}};
+  setStatus(t("sonDone").replace("{s}",(n/sr).toFixed(1)));ac.close&&ac.close()}catch(e){setStatus(t("sonBad"),"err")}}
 /* filmer : le viseur (effets compris) passe dans un canvas de taille fixe, enregistré avec le micro */
 function recStart(){if(!CAM||REC)return;if(!canRec()){setStatus(t("noRec"),"err");return}const v=$("view");if(v.width<16){return}
  const w=v.width&~1,h=v.height&~1,rc=document.createElement("canvas");rc.width=w;rc.height=h;const g=rc.getContext("2d");g.drawImage(v,0,0,w,h);
