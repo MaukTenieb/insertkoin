@@ -120,7 +120,7 @@ body.rup:not(.ropen) #remote{filter:brightness(1.05) sepia(.1) drop-shadow(0 -4p
 #room{display:block;padding:0;background:#050403;overflow:hidden}
 #tvset{position:absolute;left:var(--sx,0);top:var(--sy,0);width:var(--sw,100vw);height:auto;aspect-ratio:1376/768;background:none;border-radius:0;box-shadow:none;padding:0;margin:0}
 #tvset::before{display:none}
-#tvset::after{content:"";position:absolute;inset:0;background:url(a/tv/chambre.webp) 0 0/100% 100% no-repeat;z-index:5;pointer-events:none}
+#tvset::after{content:"";position:absolute;inset:0;background:url(a/tv/chambre.webp?v=1112) 0 0/100% 100% no-repeat;z-index:5;pointer-events:none}
 #bezel{position:absolute;left:39.099%;top:32.682%;width:19.331%;height:26.693%;padding:0;background:#000;border-radius:0;box-shadow:none;z-index:4}
 #tube{border-radius:0}
 #glass{z-index:29;pointer-events:none;background:url(a/tv/vitre.webp) center/cover no-repeat;mix-blend-mode:screen;opacity:.12;transition:opacity .4s}
@@ -169,7 +169,7 @@ body.av #vhs .vhs-screen{position:fixed!important;z-index:1;left:var(--vx,0);top
 body.av #vhs .vhs-tv-foot{display:none}
 /* le tube photographié a les coins ronds : l'image du magnétoscope et celle des chaînes les suivent */
 #tube,body.av #vhs .vhs-screen{border-radius:7%/9%;overflow:hidden}
-body.av #vhs .vhs-shell{position:fixed;z-index:3;left:var(--cx);top:var(--cy);width:var(--cw);height:var(--ch);margin:0;padding:12px 10px 20px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;pointer-events:auto;background:linear-gradient(90deg,rgba(0,0,0,.5),rgba(0,0,0,0) 12px),linear-gradient(rgba(12,8,5,.6),rgba(12,8,5,.78)),url(a/tv/chambre.webp) 52% 66%/520% auto #1a110a}
+body.av #vhs .vhs-shell{position:fixed;z-index:3;left:var(--cx);top:var(--cy);width:var(--cw);height:var(--ch);margin:0;padding:12px 10px 20px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;pointer-events:auto;background:linear-gradient(90deg,rgba(0,0,0,.5),rgba(0,0,0,0) 12px),linear-gradient(rgba(12,8,5,.6),rgba(12,8,5,.78)),url(a/tv/chambre.webp?v=1112) 52% 66%/520% auto #1a110a}
 /* le magnétoscope posé sur le meuble : façade d'une pièce, touches au doigt (44 px), lettres de 12 px au moins */
 body.av #vhs .vhs-deck{width:100%;margin:2px 0 16px;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;padding:10px}
 body.av #vhs .vhs-keys{grid-column:1/-1;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
