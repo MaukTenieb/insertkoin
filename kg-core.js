@@ -230,6 +230,19 @@ if(typeof window.toggleRadio!=='function'){
     if(t&&!(t.closest&&t.closest('.kg-layer'))){try{t.click();}catch(e){}}
   };
 }
+/* [IK] 12 nov. 2026 (audit, cale C : 'unsafe-eval' retiré de la CSP) : les data-action se lisent sans évaluer de code.
+   Grammaire admise, la seule employée dans les fragments et les jeux : appels séparés par « ; », nom(…) ou objet.nom(…),
+   arguments littéraux (nombres, chaînes entre ' ou ", true, false, null) ou les mots event et this. Toute autre forme est refusée et signalée. */
+function kgSplit(src,sep){var out=[],cur='',q=null,d=0;for(var i=0;i<src.length;i++){var c=src[i];
+  if(q){cur+=c;if(c==='\\'){cur+=src[++i]||'';continue;}if(c===q)q=null;continue;}
+  if(c==="'"||c==='"'){q=c;cur+=c;continue;}if(c==='('){d++;}else if(c===')'){d--;}
+  if(c===sep&&d===0){out.push(cur);cur='';continue;}cur+=c;}if(cur.trim())out.push(cur);return out;}
+function kgArg(x,el,ev){x=x.trim();if(x==='')return undefined;if(x==='event')return ev;if(x==='this')return el;if(x==='true')return true;if(x==='false')return false;if(x==='null')return null;
+  if(/^-?\d+(\.\d+)?$/.test(x))return +x;var q=x[0];if((q==="'"||q==='"')&&x[x.length-1]===q){return x.slice(1,-1).replace(/\\(.)/g,'$1');}throw new Error('argument refusé: '+x);}
+function kgRunAct(act,el,ev){kgSplit(act,';').forEach(function(st){st=st.trim();if(!st)return;var m=/^([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*)\s*\(([\s\S]*)\)$/.exec(st);
+  if(!m)throw new Error('instruction refusée: '+st);var path=m[1].split('.'),o=window,ctx=window;for(var i=0;i<path.length;i++){ctx=o;o=o?o[path[i]]:undefined;}
+  if(typeof o!=='function')throw new Error('fonction absente: '+m[1]);var args=m[2].trim()?kgSplit(m[2],',').map(function(a){return kgArg(a,el,ev);}):[];o.apply(path.length>1?ctx:el,args);});}
+window.kgRunAct=kgRunAct;
 // data-action delegation: same logic as the original body click handler (kofa.js, onReady block),
 // but limited to clicks inside the KG layer so the host page is not affected.
 document.addEventListener('click',function(e){
@@ -241,10 +254,7 @@ document.addEventListener('click',function(e){
   if(!t)return;
   var act=t.getAttribute('data-action');
   if(act){
-    try{
-      var fn=new Function('event',act);
-      fn.call(t,e);
-    }catch(err){console.warn('act:',act,err);}
+    try{kgRunAct(act,t,e);}catch(err){console.warn('act:',act,err);}
   }
 });
 // ESC key: the original handler also tests site-only panels; only the game branches are kept.
