@@ -29,7 +29,7 @@ button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-sel
 #wrap>.scene{grid-area:1/1}
 .scene{position:relative;width:var(--sw);height:var(--sh);opacity:0;visibility:hidden;transition:opacity .2s ease-out,visibility 0s .2s;
  -webkit-mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 3.5%,#000 96.5%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 3.5%,#000 96.5%,transparent);mask-composite:intersect}
-.scene.on{opacity:1;visibility:visible;transition:opacity .9s cubic-bezier(.4,0,.2,1)}/* 10 nov. : le rayon et le comptoir paraissent en fondu lent */
+.scene.on{opacity:1;visibility:visible;transition:opacity .25s ease-out}/* 10 nov. : le rayon et le comptoir paraissent en fondu lent */
 .scene::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 75% 80% at 50% 50%,transparent 55%,rgba(0,0,0,.5))}
 .scene>img.bg{position:absolute;inset:0;width:100%;height:100%;display:block}
 .hot{position:absolute;cursor:pointer;outline:0}
@@ -133,20 +133,21 @@ function fit(){var W=innerWidth,Hh=innerHeight-barH(),sw=Math.min(W,Hh*IA);PAN=f
 /* 2. le couloir : un tube WebGL ; barillet, aberration de lentille, vignette, grain ; deux tirages du même plan, l'un dans l'autre, font un travelling sans fin */
 var cv=$('#hall'),gl=null,P=null,U={},TEX=null,img=new Image(),ready=false;
 /* 10 nov. (A51) : l'allée sans fond ; le fond de l'allée contient la même allée, trois fois plus petite, à l'infini (récursion au point de fuite), sous l'optique en barillet qui mange les bords */
-var K=.2,Z0=.93,KD=.33,V=[.5,.458],HOLE=[580/1376,255/768,800/1376,488/768],R0=HOLE.map(function(x,j){var c=V[j%2];return c+(x-c)/KD}),FV=[150/1376,150/768];
+var K=.2,Z0=.93,KD=.33,V=[.5,.458],HOLE=[580/1376,255/768,800/1376,500/768],R0=HOLE.map(function(x,j){var c=V[j%2];return c+(x-c)/KD}),FV=[120/1376,70/768];
 var S={D:0,v:0,push:0,foc:[.5,.49],hl:[0,0,0],hlT:[0,0,0],lum:RM?1:.1,tm:0,intro:-1};
 var CREEP=RM?0:.022;
 var VS='attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
 var FS='precision highp float;uniform sampler2D T;uniform vec2 R,Vp,Fo,Fv;uniform float Uu,Lk,Kd,Kk,Z,Pu,Lu,Tm,Ia,E1,F1;uniform vec3 Hl;uniform vec4 M1,M0;'+
 'vec2 fin(vec2 s){return Fo+(s-Fo)*(1.-.6*Pu);}'+
 'float ins(vec2 s){vec2 m=min(s,1.-s);return smoothstep(0.,.06,m.x)*smoothstep(0.,.09,m.y);}'+
+'float in2(vec2 s){vec2 m=min(s,1.-s);return smoothstep(0.,.12,m.x)*smoothstep(0.,.18,s.y)*smoothstep(0.,.05,1.-s.y);}'+
 'float bx(vec2 p,vec4 r,vec2 f){return smoothstep(r.x,r.x+f.x,p.x)*smoothstep(r.z,r.z-f.x,p.x)*smoothstep(r.y,r.y+f.y,p.y)*smoothstep(r.w,r.w-f.y,p.y);}'+
 'void main(){vec2 q=(gl_FragCoord.xy-.5*R)/R.y;q.y=-q.y;float a=R.x/R.y,r2=dot(q,q)/(a*a*.25+.25),c=max(1.,a/Ia);'+
-' float f=Z*(1.+Kk*r2);vec2 p0=fin(.5+q*f/(c*vec2(Ia,1.))),ab=(p0-.5)*.008*r2;float s=exp(Uu*Lk),w=1.;vec3 col=vec3(0.);'+
+' float f=Z*(1.+Kk*r2);vec2 p0=fin(.5+q*f/(c*vec2(Ia,1.))),ab=(p0-.5)*.004*r2;float s=exp(Uu*Lk),w=1.;vec3 col=vec3(0.);'+
 ' for(int k=0;k<6;k++){vec2 t=Vp+(p0-Vp)/s,d=ab/s;vec3 x=vec3(texture2D(T,t+d).r,texture2D(T,t).g,texture2D(T,t-d).b);'+
 '  float l=1.-smoothstep(.40,.45,t.x),r=smoothstep(.55,.60,t.x);vec2 le=(t-vec2(.5,.497))/vec2(.06,.14);float lp=exp(-dot(le,le)*1.6);'+
-'  x*=1.+(l*Hl.x+r*Hl.y)*.35;x+=vec3(1.,.78,.5)*lp*(.09+.45*Hl.z);float e=k==0?ins(t):k==1?mix(1.,ins(t),E1):1.;'+
-'  float m=0.;if(k<5){vec2 tn=Vp+(p0-Vp)/(s*Kd);m=k==0?bx(tn,M1,Fv*F1):bx(tn,M0,Fv);}col+=w*(1.-m)*x*e;w*=m;s*=Kd;}'+
+'  x*=1.+(l*Hl.x+r*Hl.y)*.35;x+=vec3(1.,.78,.5)*lp*(.09+.45*Hl.z);float e=k==0?ins(t)*(1.-smoothstep(.8,1.,Uu)):1.;'+
+'  float m=0.;if(k<5){vec2 tn=Vp+(p0-Vp)/(s*Kd);m=k==0?bx(tn,M1,Fv*F1)*mix(in2(tn),ins(tn),smoothstep(.75,1.,Uu)):bx(tn,M0,Fv);}col+=w*(1.-m)*x*e;w*=m;s*=Kd;}'+
 ' col*=clamp(1.-.62*pow(r2,1.5),0.,1.)*Lu;float y=dot(col,vec3(.299,.587,.114));col=mix(vec3(y),col,.88)*.96+.018;'+
 ' float n=fract(sin(dot(gl_FragCoord.xy+floor(Tm*24.)*vec2(17.,31.),vec2(12.9898,78.233)))*43758.5453);col+=(n-.5)*.075;'+
 ' gl_FragColor=vec4(col,1.);}';
@@ -266,7 +267,11 @@ $('#hPhone').onclick=function(){if(!swiped)phUp(!PH.up)};
 /* 7. passer d'un lieu à l'autre par la scène : travelling vers le rayon ou la lampe ; retour par le geste vers le bas, le bord de la photo, Échap, le retour du navigateur, Baku Boom */
 var SC={rayon:$('#rayon'),comptoir:$('#comptoir')},WR=$('#wrap');
 function center(){if(!PAN)return;var sw=parseFloat(getComputedStyle(root).getPropertyValue('--sw'))||0,c=scene==='comptoir'?.415:.5;WR.scrollLeft=Math.max(0,sw*c-innerWidth/2)}
-function reveal(id){scene=id;warm();Object.keys(SC).forEach(function(k){SC[k].classList.toggle('on',k===id)});WR.classList.add('live');hs.classList.add('off');cv.classList.add('dim');$('#grain').classList.add('on');
+/* 12 nov. (Mauk Tenieb : « la plongée soudaine par voile sombre ») : vers un rayon, un quart de tour ; l'étagère entre de côté */
+function turn(el,id){if(RM||!el.animate)return;var L=S.foc[0]<.5,o=id==='rayon'?(L?'0% 50%':'100% 50%'):'50% 50%';
+ var k0=id==='rayon'?'perspective(1400px) translateX('+(L?-18:18)+'%) rotateY('+(L?58:-58)+'deg)':'perspective(1400px) translateZ(-260px)';
+ el.animate([{transform:k0,transformOrigin:o,opacity:.15,filter:'brightness(.75)'},{transform:'none',transformOrigin:o,opacity:1,filter:'none'}],{duration:id==="rayon"?720:460,easing:"cubic-bezier(.25,.6,.25,1)"})}
+function reveal(id){scene=id;warm();turn(SC[id],id);Object.keys(SC).forEach(function(k){SC[k].classList.toggle('on',k===id)});WR.classList.add('live');hs.classList.add('off');cv.classList.add('dim');$('#grain').classList.add('on');
  if(id==='comptoir')comptoir();center();
  setTimeout(function(){if(scene!==id)return;if(id==='rayon'){var b=BOX[inHand?TAPES.indexOf(inHand):0];if(b)b.focus({preventScroll:true})}else $('#tv').focus({preventScroll:true})},RM?0:220)}
 function show(id){shut();if(id!=='comptoir')vcClip(false);if(id===scene&&!busy)return;
