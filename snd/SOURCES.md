@@ -117,3 +117,6 @@ Les temps donnent la découpe dans le fichier original.
 | `creak-4` | craquement de bois | wood_cracking_04.ogg | 100 CC0 wood and metal SFX | https://raw.githubusercontent.com/lavenderdotpet/CC0-Public-Domain-Sounds/f2b6264f9ab89fabc266914c3654685d68c5a39b/100-CC0-wood-metal-SFX/wood_cracking_04.ogg | CC0 1.0 | entier, ralenti 1/1,35 |
 | `creak-5` | grincement de bois | wood_squeak_01.ogg | 100 CC0 wood and metal SFX | https://raw.githubusercontent.com/lavenderdotpet/CC0-Public-Domain-Sounds/f2b6264f9ab89fabc266914c3654685d68c5a39b/100-CC0-wood-metal-SFX/wood_squeak_01.ogg | CC0 1.0 | entier, ralenti 1/1,15 |
 | `creak-6` | grincement de bois | wood_squeak_02.ogg | 100 CC0 wood and metal SFX | https://raw.githubusercontent.com/lavenderdotpet/CC0-Public-Domain-Sounds/f2b6264f9ab89fabc266914c3654685d68c5a39b/100-CC0-wood-metal-SFX/wood_squeak_02.ogg | CC0 1.0 | entier, ralenti 1/1,15 |
+
+## snd/pads — coupes des albums de Mauk Tenieb (12 nov. 2026)
+Dix-huit coupes de 1,6 s tirées des dépôts Internet Archive de Mauk Tenieb (archive.org/details/@mauk_tenieb449) : Esiön (20k368), Cassette Zero, Interzone Men at Work, Ritual Jazz in Interzone, Der Golem, Furia (Part I), Tribute to Miles Davis, Libri Carolini, Carthago, Our Times. Volume ramené à −16 LUFS, fondus de 5 et 150 ms. © Korhogo, tous droits réservés ; entraînement d'IA interdit.

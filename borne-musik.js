@@ -30,7 +30,7 @@
   /* à chaque nouveau son, la grille garde les pas des 18 Masks et des sons déjà là */
   function refresh(){all().then(function(L){var old={};try{(window._bbTracks||[]).forEach(function(t){if(t.voice==='diktat')old[t.clip.id]=t.steps;});}catch(e){}
       CLIPS=L.slice(0,MAX).reverse();var T=window._bbTracks;if(!T)return;
-      for(var i=T.length-1;i>=0;i--)if(T[i].voice==='diktat')T.splice(i,1);
+      for(var i=T.length-1;i>=0;i--)if(T[i].voice==='diktat'&&!T[i].pad)T.splice(i,1);
       CLIPS.forEach(function(c){T.push({name:c.name,color:COL,voice:'diktat',clip:c,root:0,steps:old[c.id]||[0,0,0,0,0,0,0,0],pitch:null,deg:0});});
       try{if(document.getElementById('bb-grid'))window.bbRender();}catch(e){}});}
   if(window.top===window)hook();
