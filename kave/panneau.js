@@ -40,7 +40,7 @@ DIK.innerHTML=SVGL+'<rect x="9" y="3" width="6" height="11" rx="3" fill="none" s
 KAP.parentNode.insertBefore(DIK,KAP.nextSibling);
 /* 10 nov. 2026 (Mauk Tenieb, 20 h 27 : « La manette qui permet de changer d'environnement, c'est bien ») : la manette de la barre mène à la pièce suivante du motel */
 var STK=q('.b-stick');if(STK){/* 11 nov. 2026 (Mauk Tenieb, 14 h 14) : la manette mène au wiki ; dans le wiki, elle mène à KorhogOS */
- var WK=/wiki\.html$/.test(location.pathname),nx=WK?['habillages/kos.html','KorhogOS']:['habillages/wiki.html','Wiki'];
+ var WK=/wiki\.html$/.test(location.pathname),nx=WK?['kave/kos.html','KorhogOS']:['kave/wiki.html','Wiki'];
  STK.removeAttribute('aria-hidden');STK.setAttribute('role','button');STK.tabIndex=0;STK.setAttribute('aria-label',nx[1]);STK.title=nx[1];STK.style.cursor='pointer';STK.style.pointerEvents='auto';
  var go=function(){var i=STK.querySelector('i');if(i){i.style.transition='transform .12s cubic-bezier(.3,1.6,.5,1)';i.style.transformOrigin='50% 100%';i.style.transform='rotate(14deg)'}setTimeout(function(){location.href=(ON?HALL:'../')+nx[0]},140)};
  STK.addEventListener('click',go);STK.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}})}DIK.addEventListener('click',function(){location.href=HALL+'?p=diktat'});

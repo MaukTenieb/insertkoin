@@ -5,7 +5,7 @@ R = {}
 with sync_playwright() as p:
     b = p.chromium.launch()
     pg = b.new_page(viewport={'width': 1280, 'height': 800}); err = []; pg.on('pageerror', lambda x: err.append(str(x)[:160]))
-    pg.goto('https://mauktenieb.github.io/insertkoin/habillages/tv.html'); pg.wait_for_timeout(5000)
+    pg.goto('https://mauktenieb.github.io/insertkoin/kave/tv.html'); pg.wait_for_timeout(5000)
     for i in range(17):
         pg.wait_for_timeout(4500)
         R[f'ch{i:02d}'] = pg.evaluate("(document.querySelector('#lcd')||{}).textContent||''")

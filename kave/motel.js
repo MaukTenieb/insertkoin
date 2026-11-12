@@ -3,12 +3,12 @@
 (function(){
 if(window.top!==window.self||document.getElementById('mk'))return;
 /* lieu retenu pour le visiteur qui revient ; l'entrée du site (index.html de la borne, session « Audit ») le lira */
-try{var lp=location.pathname;localStorage.setItem('ik.lieu',/\/habillages\//.test(lp)?(lp.split('/').pop()||'index.html'):'../')}catch(e){}
+try{var lp=location.pathname;localStorage.setItem('ik.lieu',/\/kave\//.test(lp)?(lp.split('/').pop()||'index.html'):'../')}catch(e){}
 var lang='en';try{lang=localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e){}
 var B=/github\.io$/.test(location.hostname)?'https://mauktenieb.github.io/insertkoin/':'../';
 var here=(location.pathname.split('/').pop()||'').replace(/\?.*/,'');
-/* dans la borne (hall), les lieux sont dans habillages/ ; le porte-clé se retire pendant un programme */
-var HALL=!/\/habillages\//.test(location.pathname),P=HALL?'habillages/':'';if(HALL)here='../';
+/* dans la borne (hall), les lieux sont dans kave/ ; le porte-clé se retire pendant un programme */
+var HALL=!/\/kave\//.test(location.pathname),P=HALL?'kave/':'';if(HALL)here='../';
 /* les lieux : un pictogramme par lieu, sur une plaque émaillée */
 var L=[['../','Insert Koin','Insert Koin','borne'],['tv.html','TV','TV','tele'],['videoclub.html','Video Kave','Video Kave','vhs'],['kos.html','KorhogOS','KorhogOS','ordi']];
 /* pictogrammes en aplat, 40 × 40, encre crème ; c = couleur du fond (évidements) */

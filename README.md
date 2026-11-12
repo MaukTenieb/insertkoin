@@ -105,7 +105,7 @@ FotoFauna, the photo editor of Insert Koin, reproduces the looks of the photo ap
 
 ## Habillages
 
-`habillages/` dresses the programs of Insert Koin as four other machines. `kos.html`: KorhogOS, a desktop in four period skins (Windows 95, Mac OS 8, Raspberry Pi, CDE), with icons, Explorer, Notepad, an MS-DOS prompt and a Control Panel. `dvd.html`: the menu of a DVD from the early 2000s, with its language screen, warning, chapters and bonus. `tv.html`: the TV of a motel, its programme guide on channel 1 and its teletext. `videoclub.html`: a video store, its shelf of 33 tapes, a tape in hand, face and back, and the TV of the counter. Each program opens the arcade on itself through `?p=`: `https://mauktenieb.github.io/insertkoin/?p=chess` (keys: chess, fi, puck, faunarratics, c4, hang, mm, erratic, fauneye, vhs, photo, bb, diktat, terminal, repo, tor, katabatik, skopo).
+`kave/` dresses the programs of Insert Koin as four other machines. `kos.html`: KorhogOS, a desktop in four period skins (Windows 95, Mac OS 8, Raspberry Pi, CDE), with icons, Explorer, Notepad, an MS-DOS prompt and a Control Panel. `dvd.html`: the menu of a DVD from the early 2000s, with its language screen, warning, chapters and bonus. `tv.html`: the TV of a motel, its programme guide on channel 1 and its teletext. `videoclub.html`: a video store, its shelf of 33 tapes, a tape in hand, face and back, and the TV of the counter. Each program opens the arcade on itself through `?p=`: `https://mauktenieb.github.io/insertkoin/?p=chess` (keys: chess, fi, puck, faunarratics, c4, hang, mm, erratic, fauneye, vhs, photo, bb, diktat, terminal, repo, tor, katabatik, skopo).
 
 ## Saved files
 
@@ -115,7 +115,7 @@ Insert Koin names everything it saves (FotoFauna, Faunarratik, the Sampler, Kapt
 
 ## Files
 
-Every file is at the top level; the folders are `habillages/`, `tor/`, `notes/`, `tools/` and `.github/`. One upload updates the site.
+Every file is at the top level; the folders are `kave/`, `tor/`, `notes/`, `tools/` and `.github/`. One upload updates the site.
 
 | Files | Role |
 |---|---|

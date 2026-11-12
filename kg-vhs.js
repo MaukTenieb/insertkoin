@@ -927,7 +927,7 @@
   function mountScreen(s) {
     const screen = q(s, "[data-vhs-screen]");
     if (!screen || !window.IKEcran) return;
-    // A host that places the screen itself (the room TV of the motel, habillages/tv.html) sets INSERTKOIN_VHS_CONFIG.layout = false.
+    // A host that places the screen itself (the room TV of the motel, kave/tv.html) sets INSERTKOIN_VHS_CONFIG.layout = false.
     if (window.IKEcran.layout && (window.INSERTKOIN_VHS_CONFIG || {}).layout !== false) s.layout = window.IKEcran.layout(s.root, { screen, controls: s.root.querySelector(".vhs-shell") });
     s.ecran = window.IKEcran.mount(screen, {
       program: "vhs",
@@ -1468,7 +1468,7 @@
     return idx;
   }
 
-  // Host TV bridge (habillages/tv.html): the set's volume key, and the previous / next track.
+  // Host TV bridge (kave/tv.html): the set's volume key, and the previous / next track.
   function volume(v) {
     hostVolume = Math.max(0, Math.min(100, Math.round(Number(v) || 0)));
     const s = state;

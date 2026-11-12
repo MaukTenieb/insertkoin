@@ -12,7 +12,7 @@
    IKK.has(id) · IKK.toggle({id,title}) → true if kept · IKK.mine() → [{id,title}] · IKK.all() → Promise<[{pk,name,tracks,t}]>
    IKK.one(pk) → Promise<{pk,name,tracks,t}|null> · IKK.find(hex) → Promise<{…}|null> (8 to 64 hex) · IKK.url(pk) · IKK.pk() → own public key (hex) or null */
 (function () {
-  /* nostr-tools.js sits next to this file: the hall and the motel's rooms (habillages/) load the same copy */
+  /* nostr-tools.js sits next to this file: the hall and the motel's rooms (kave/) load the same copy */
   var HERE = ((document.currentScript && document.currentScript.src) || '').replace(/[^\/?#]*([?#].*)?$/, '');
   var KIND = 30078, TAG = 'korhogo-kuration', SINCE = 1792713600 /* 23 Oct 2026 */, MAX = 99,
     RELAYS = ['wss://relay.damus.io', 'wss://nos.lol', 'wss://relay.primal.net', 'wss://nostr.mom'],
