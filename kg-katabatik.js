@@ -600,10 +600,14 @@ function c4Init(){
   if(typeof FAUNA!=='undefined'&&FAUNA.length>=2){
     var _c4Name1='Player',_c4Name2='Mask';
   var picks=[];
-    while(picks.length<2){
-      var r=Math.floor(Math.random()*FAUNA.length);
-      if(picks.indexOf(r)<0) picks.push(r);
-    }
+    /* [IK] 12 nov. (Mauk Tenieb) : le jeton adverse prend toujours une couleur très différente du jeton du joueur (écart CIE76 de 45 au moins, sinon le plus grand écart) */
+    picks.push(Math.floor(Math.random()*FAUNA.length));
+    var _lab=function(h){h=String(h||'#888').replace('#','');if(h.length===3)h=h.replace(/(.)/g,'$1$1');var v=[0,2,4].map(function(i){var c=parseInt(h.substr(i,2),16)/255;return c>0.04045?Math.pow((c+0.055)/1.055,2.4):c/12.92});
+      var X=(v[0]*0.4124+v[1]*0.3576+v[2]*0.1805)/0.95047,Y=v[0]*0.2126+v[1]*0.7152+v[2]*0.0722,Z=(v[0]*0.0193+v[1]*0.1192+v[2]*0.9505)/1.08883,f=function(t){return t>0.008856?Math.cbrt(t):7.787*t+16/116};
+      return [116*f(Y)-16,500*(f(X)-f(Y)),200*(f(Y)-f(Z))]};
+    var _l0=_lab(FAUNA[picks[0]].c),_far=[],_bestI=-1,_bestD=-1;
+    for(var _i=0;_i<FAUNA.length;_i++){if(_i===picks[0])continue;var _l=_lab(FAUNA[_i].c),_d=Math.hypot(_l[0]-_l0[0],_l[1]-_l0[1],_l[2]-_l0[2]);if(_d>=45)_far.push(_i);if(_d>_bestD){_bestD=_d;_bestI=_i;}}
+    picks.push(_far.length?_far[Math.floor(Math.random()*_far.length)]:_bestI);
     col1=FAUNA[picks[0]].c||col1;
     col2=FAUNA[picks[1]].c||col2;
     _c4Name1=FAUNA[picks[0]].name||'Player';
