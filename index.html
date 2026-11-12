@@ -1758,7 +1758,7 @@ function go(k){if(window.__borneGo&&window.__borneGo(k))return;ac();
   if(k==='skopo')return openCalque('skoporhogo.html','SkopoRhogo');
   if(k==='tor'){try{localStorage.setItem('tor.lang',LANG);}catch(e){}return openCalque('tor.html','FaunaTor',null,true);}
   const t={chess:'FAUNA CHESS',erratic:'ERRATIK',faunarratics:'FAUNARRATIK',katabatik:'KATABATIK',kapture:'KAPTURE',vhs:'VHS'}[k];
-  if(k==='katabatik'){const d=document.querySelector('.cab.dice b'),f=d?Math.max(0,DICE.indexOf(d.dataset.d)):Math.floor(Math.random()*6);window.__ikKata=['c4','bb','hang','mm','fi'][f>4?Math.floor(Math.random()*5):f];}
+  if(k==='katabatik'){const d=document.querySelector('.cab.dice b'),f=d?Math.max(0,DICE.indexOf(d.dataset.d)):Math.floor(Math.random()*6);window.__ikKata=['c4','bb','hang','mm','fi'][f>4?[0,2,4][Math.floor(Math.random()*3)]:f];}
   if(t)return openGame(k,t);}
 /* Korhogo games: only the code of the game asked for is loaded (kg/), inside the frame, under the bar */
 function openGame(k,title){window.__borneGame&&window.__borneGame(k);clearInterval(cfWatch);if(window.KG)KG.close();$('ctitle').textContent=title;$('cf').hidden=true;$('kg-root').hidden=false;show('calque');
@@ -1891,7 +1891,7 @@ TILES.forEach((c,i)=>{const h=c.querySelector('.hit');c.style.setProperty('--i',
 /* Katabatik: the die is thrown on the tile — ⚀ ⚁ ⚂ ⚃ ⚄ name the game, ⚅ throws it again.
    Each throw lands on a face other than the previous throw's and other than the last game played (kept across visits). */
 const dieMem={get(k){try{const v=localStorage.getItem('ik.die.'+k);return v==null?-1:+v;}catch(e){return -1;}},set(k,v){try{localStorage.setItem('ik.die.'+k,String(v));}catch(e){}}};
-function dieFace(){const ban=[dieMem.get('throw'),dieMem.get('game')],ok=[0,1,2,3,4,5].filter(f=>ban.indexOf(f)<0);let f=ok[Math.floor(Math.random()*ok.length)];
+function dieFace(){const ban=[dieMem.get('throw'),dieMem.get('game')],ok=[0,2,4,5].filter(f=>ban.indexOf(f)<0);/* 12 nov. (Mauk Tenieb) : Musik (⚁) sort du dé, MaskerMind (⚃) aussi */let f=ok[Math.floor(Math.random()*ok.length)];
   try{const a=new Uint32Array(1);crypto.getRandomValues(a);f=ok[a[0]%ok.length];}catch(e){}dieMem.set('throw',f);if(f<5)dieMem.set('game',f);return f;}
 function throwDie(c,h){if(c._busy)return;c._busy=true;clearInterval(c._roll);ac();const b=c.querySelector('b');
   let d=c.querySelector('.bigdie');if(!d){d=document.createElement('span');d.className='bigdie';d.setAttribute('aria-hidden','true');c.appendChild(d);}

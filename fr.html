@@ -1691,7 +1691,7 @@ function touchDrag(e){if(!T0){T0={x:e.clientX,y:e.clientY,m:mouse.slice()};retur
   let x=T0.m[0]+(pt.clientX-T0.x)*W/cw*TG[0],y=T0.m[1]+(pt.clientY-T0.y)*H/ch*TG[1];const cx=Math.max(0,Math.min(W,x)),cy=Math.max(30,Math.min(H,y));
   if(cx!==x||cy!==y)T0={x:pt.clientX,y:pt.clientY,m:[cx,cy]};mouse=[cx,cy];}
 function toScreen(e){const r=cv.getBoundingClientRect(),up=e.pointerType==='touch'?26:0,cw=Math.min(r.width,r.height*W/H),ch=Math.min(r.height,r.width*H/W),l=r.left+(r.width-cw)/2,t=r.top+(r.height-ch)/2;return[Math.round(Math.max(0,Math.min(W,(e.clientX-l)/cw*W))),Math.round(Math.max(0,Math.min(H,(e.clientY-t)/ch*H)))-up];}
-function begin(){if(G&&!G.started){G.started=true;G.e.running=true;$('msg').hidden=true;}}
+function begin(){if(G&&!G.started){if(KDUE&&KDUE===G){KDUE=null;pay();}G.started=true;G.e.running=true;$('msg').hidden=true;}}
 /* the mouse stays inside the table while a match is on: Enter (or Escape) lets it go; any click on the table takes it back */
 const locked=()=>document.pointerLockElement===cv;
 function lockIn(){if(!G||locked()||matchMedia('(pointer:coarse)').matches)return;try{const p=cv.requestPointerLock({unadjustedMovement:false});if(p&&p.catch)p.catch(()=>{});}catch(e){}}
@@ -1759,7 +1759,7 @@ function go(k){if(window.__borneGo&&window.__borneGo(k))return;ac();
   if(k==='skopo')return openCalque('skoporhogo.html','SkopoRhogo');
   if(k==='tor'){try{localStorage.setItem('tor.lang',LANG);}catch(e){}return openCalque('tor.html','FaunaTor',null,true);}
   const t={chess:'FAUNA CHESS',erratic:'ERRATIK',faunarratics:'FAUNARRATIK',katabatik:'KATABATIK',kapture:'KAPTURE',vhs:'VHS'}[k];
-  if(k==='katabatik'){const d=document.querySelector('.cab.dice b'),f=d?Math.max(0,DICE.indexOf(d.dataset.d)):Math.floor(Math.random()*6);window.__ikKata=['c4','bb','hang','mm','fi'][f>4?Math.floor(Math.random()*5):f];}
+  if(k==='katabatik'){const d=document.querySelector('.cab.dice b'),f=d?Math.max(0,DICE.indexOf(d.dataset.d)):Math.floor(Math.random()*6);window.__ikKata=['c4','bb','hang','mm','fi'][f>4?[0,2,4][Math.floor(Math.random()*3)]:f];}
   if(t)return openGame(k,t);}
 /* Korhogo games: only the code of the game asked for is loaded (kg/), inside the frame, under the bar */
 function openGame(k,title){window.__borneGame&&window.__borneGame(k);clearInterval(cfWatch);if(window.KG)KG.close();$('ctitle').textContent=title;$('cf').hidden=true;$('kg-root').hidden=false;show('calque');
@@ -1829,14 +1829,16 @@ function domShot(){return new Promise(res=>{const d=Math.min(2,devicePixelRatio|
 let RUN=null;
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function runOrder(){const o=R.filter(r=>r.lv<16).sort((a,b)=>a.lv-b.lv).map(r=>r.id),out=[];for(let i=0;i<16;i+=4)out.push(...shuffle(o.slice(i,i+4)));return out.concat(['aube','unkle_maukie']);}
-function startRun(){if(!pay())return false;RUN={order:runOrder(),idx:0,id:Date.now().toString(36)+Math.random().toString(36).slice(2,8),ga:0};playRun();return true;}
+/* la Koin se paie au premier geste de jeu dans la table (REFERENTIEL k.3) : le choix du Mask vérifie le compteur, begin() débite */
+let KDUE=null;function kOwe(){if(koins<1){pay();return false;}return true;}
+function startRun(){if(!kOwe())return false;RUN={order:runOrder(),idx:0,id:Date.now().toString(36)+Math.random().toString(36).slice(2,8),ga:0};playRun();KDUE=G;return true;}
 if($('run'))$('run').onclick=startRun;
 /* opponent card: number, name, motto, the six Korhogo stats */
 function card(r){$('mStats').innerHTML=Object.entries(r.st).map(([k,v])=>`<span><i>${k}</i><span class="bar0"><b style="width:${v*10}%"></b></span><em>${v}</em></span>`).join('');}
 function saveRun(){try{RUN?localStorage.setItem('ik.run',JSON.stringify(RUN)):localStorage.removeItem('ik.run');}catch(e){}}
 function loadRun(){try{const r=JSON.parse(localStorage.getItem('ik.run')||'null');if(r&&Array.isArray(r.order)&&r.order.length===18)return r;}catch(e){}return null;}
 function playRun(){saveRun();const id=RUN.order[RUN.idx];startMatch(R.findIndex(r=>r.id===id),RUN.idx);}
-function pickGuest(i){if(!pay())return;RUN=null;startMatch(i,null);}
+function pickGuest(i){if(!kOwe())return;RUN=null;startMatch(i,null);KDUE=G;}
 /* palmarès of the run: Masks beaten, then goals let in over the whole run (continues included) */
 function palmKorong(won){const P=$('palm');if(P)P.innerHTML='';if(!window.IKP)return;
   /* a duel won against a Mask picked by hand: one Mask beaten, the goals of that match */
@@ -1890,7 +1892,7 @@ TILES.forEach((c,i)=>{const h=c.querySelector('.hit');c.style.setProperty('--i',
 /* Katabatik: the die is thrown on the tile — ⚀ ⚁ ⚂ ⚃ ⚄ name the game, ⚅ throws it again.
    Each throw lands on a face other than the previous throw's and other than the last game played (kept across visits). */
 const dieMem={get(k){try{const v=localStorage.getItem('ik.die.'+k);return v==null?-1:+v;}catch(e){return -1;}},set(k,v){try{localStorage.setItem('ik.die.'+k,String(v));}catch(e){}}};
-function dieFace(){const ban=[dieMem.get('throw'),dieMem.get('game')],ok=[0,1,2,3,4,5].filter(f=>ban.indexOf(f)<0);let f=ok[Math.floor(Math.random()*ok.length)];
+function dieFace(){const ban=[dieMem.get('throw'),dieMem.get('game')],ok=[0,2,4,5].filter(f=>ban.indexOf(f)<0);/* 12 nov. (Mauk Tenieb) : Musik (⚁) sort du dé, MaskerMind (⚃) aussi */let f=ok[Math.floor(Math.random()*ok.length)];
   try{const a=new Uint32Array(1);crypto.getRandomValues(a);f=ok[a[0]%ok.length];}catch(e){}dieMem.set('throw',f);if(f<5)dieMem.set('game',f);return f;}
 function throwDie(c,h){if(c._busy)return;c._busy=true;clearInterval(c._roll);ac();const b=c.querySelector('b');
   let d=c.querySelector('.bigdie');if(!d){d=document.createElement('span');d.className='bigdie';d.setAttribute('aria-hidden','true');c.appendChild(d);}
@@ -2108,6 +2110,7 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
   Object.assign(SAY.en,{"g-korhogame":"Challenge us! Or roll for a mini-game.","g-fauneye":"The Kerema sees you anyway.","g-surf":"Find any repo on anything. Browse .onion sites.","bc":"The artist's Bandcamp. U gotta stay tuned...","fauneye":"Read it all.","fi":"Factualists want to liquefy you!","bb":"Touched by a muse?"});
   Object.assign(SAY.fr,{"g-korhogame":"Défie-nous ! Ou jette le dé, joue à des mini-jeux.","g-fauneye":"Visionne, lis, prends tes photos.","g-surf":"Tomates, salade, .onion ! Et toutes les ressources \"code\" sur… tout.","bc":"BC de l'artiste. U gotta stay tuned...","fauneye":"Lis tout ça.","fi":"Les Divisionistes font ça par zéro !","bb":"Touched by a muse?"});
   /* 12 nov. 2026 (Mauk Tenieb, 19 h 29) : en anglais, les formules des psychopompes de l'OS tombent aussi, au hasard et à chances égales, sur les commandes que survole le guide de la borne */
+  const SAYX={"skopo": ["Watch out!", "Live love?"], "g-fauneye": ["Soul window", "Whoever has ears..."], "fauneye": ["Soul window", "Whoever has ears..."], "g-surf": ["SurfAce", "SurfAss", "Surf us"], "bio": ["Meet your uncle", "Meet Mau-krap"], "lore": ["Lore thy neighbah", "Peace and Lore", "Everyone I lore is dead"]};function sayPick(L,k){const X=LANG!=='fr'&&SAYX[k];if(!X)return L[k];const P=X.concat(L[k]?[L[k]]:[]);return P[Math.floor(Math.random()*P.length)];}
   window.__borneSAY=function(){try{return SAY[LANG]||SAY.en;}catch(e){return SAY.en;}};
   const g=document.createElement('div');g.className='guide gone';g.setAttribute('role','button');g.setAttribute('aria-label','Guide');g.tabIndex=0;
   /* 8 nov. (Mauk Tenieb) : les psychopompes passent devant la caméra du toit. Le guide et sa bulle quittent la caisse (isolée pour les palettes) pour une scène posée sur #home, au-dessus du toit */
