@@ -44,6 +44,8 @@ for (const [w,h,t] of formats) {
   await p.goto(base, { waitUntil:'load', timeout:60000 }); await p.waitForTimeout(4000);
   await p.addStyleTag({ content:'.b-guide,.guide{visibility:hidden!important}' });
   const largeur = await p.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+  /* 12 nov. 2026 (Mauk Tenieb, 20 h 01) : cale — l'écran de la borne tient entier dans la fenêtre à l'arrivée, mesuré avant tout défilement du test */
+  const entier = await p.evaluate(() => { const e = document.querySelector('.b-screen'); if (!e) return false; const r = e.getBoundingClientRect(); return r.top >= -1 && r.bottom <= innerHeight + 1 && r.height > 50; });
   const refus = []; let vus = 0;
   for (const s of cmds) {
     const n = await p.$$eval(s, l => l.length);
@@ -79,8 +81,8 @@ for (const [w,h,t] of formats) {
   if (ch && (Math.abs(ch[0]) > 2 || !ch[1])) refus.push('menu Fauna Chess décalé de ' + ch[0] + ' px' + (ch[1] ? '' : ', hors du verre'));
   lignesPts.push(`${w}x${h} : menu Fauna Chess ${ch ? 'écart ' + ch[0] + ' px' : 'non ouvert'}`);
   await p.keyboard.press('Escape'); await p.waitForTimeout(1000);
-  const f = err.length + (largeur > 1 ? 1 : 0) + refus.length + (vus < 8 ? 1 : 0); fautes += f;
-  lignes.push(`${w}x${h} : erreurs ${err.length}${err[0] ? ' (' + err[0].slice(0,120) + ')' : ''} ; défilement latéral ${largeur} px ; commandes testées ${vus}, couvertes ${refus.length}${refus.length ? ' (' + refus.join(', ') + ')' : ''}`);
+  const f = err.length + (largeur > 1 ? 1 : 0) + refus.length + (vus < 8 ? 1 : 0) + (entier ? 0 : 1); fautes += f;
+  lignes.push(`${w}x${h} : erreurs ${err.length}${err[0] ? ' (' + err[0].slice(0,120) + ')' : ''} ; défilement latéral ${largeur} px ; écran entier à l'arrivée ${entier ? 'oui' : 'NON'} ; commandes testées ${vus}, couvertes ${refus.length}${refus.length ? ' (' + refus.join(', ') + ')' : ''}`);
   await c.close();
 }
 await b.close(); console.log(lignes.join('\n')); console.log(lignesPts.join('\n')); console.log(lignesRef.join('\n')); console.log(fautes ? `ÉCHEC : ${fautes} défaut(s)` : 'OK : borne conforme sur 6 formats');
