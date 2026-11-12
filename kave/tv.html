@@ -115,24 +115,25 @@ body.rup:not(.ropen) #remote{filter:brightness(1.05) sepia(.1) drop-shadow(0 -4p
 #remote .ir i.on{background:#f33;box-shadow:0 0 8px #f33}
 @media (max-aspect-ratio:1/1){#room{flex-direction:column}#tvset{padding:5% 5% 18% 5%;aspect-ratio:1.05/1}#ctl{left:5%;right:5%;top:auto;bottom:3%;width:auto;height:12%;flex-direction:row;justify-content:space-between}.knob{width:auto;height:80%}.grille{height:60%;flex:1}}
 
+/* 12 nov. (Mauk Tenieb) : nouvelle photo de la chambre ; l'écran vert devient transparent, le tube passe dessous */
 /* 8 nov. (Mauk Tenieb) : la chambre photographiée d'une seule prise — la télé, la commode et la lampe dans la même lumière ; l'écran vert découpé reçoit les programmes ; la télécommande au premier plan */
 #room{display:block;padding:0;background:#050403;overflow:hidden}
 #tvset{position:absolute;left:var(--sx,0);top:var(--sy,0);width:var(--sw,100vw);height:auto;aspect-ratio:1376/768;background:none;border-radius:0;box-shadow:none;padding:0;margin:0}
 #tvset::before{display:none}
 #tvset::after{content:"";position:absolute;inset:0;background:url(a/tv/chambre.webp) 0 0/100% 100% no-repeat;z-index:5;pointer-events:none}
-#bezel{position:absolute;left:41.352%;top:30.339%;width:15.625%;height:20.703%;padding:0;background:#000;border-radius:0;box-shadow:none}
+#bezel{position:absolute;left:39.099%;top:32.682%;width:19.331%;height:26.693%;padding:0;background:#000;border-radius:0;box-shadow:none;z-index:4}
 #tube{border-radius:0}
 #glass{z-index:29;pointer-events:none;background:url(a/tv/vitre.webp) center/cover no-repeat;mix-blend-mode:screen;opacity:.12;transition:opacity .4s}
 .off #glass{mix-blend-mode:normal;opacity:.9}.off>.layer:not(#glass),.off>#osd,.off>#vol{opacity:0!important}
-#halo{position:absolute;left:22.456%;top:8.203%;width:53.416%;height:75.391%;z-index:6;pointer-events:none;background:radial-gradient(closest-side,var(--glow,rgba(60,90,220,.32)),transparent);mix-blend-mode:screen;opacity:.55;transition:background .8s,opacity .4s}
+#halo{position:absolute;left:24.8%;top:8.6%;width:53.416%;height:75.391%;z-index:6;pointer-events:none;background:radial-gradient(closest-side,var(--glow,rgba(60,90,220,.32)),transparent);mix-blend-mode:screen;opacity:.55;transition:background .8s,opacity .4s}
 .dark #halo{opacity:0}
 #dresser,#ctl .lbl,#ctl .grille,#kpw{display:none}
 #ctl{position:absolute;inset:0;width:auto!important;height:auto!important;display:block!important;z-index:7;pointer-events:none}
 #ctl button{position:absolute;pointer-events:auto;height:auto!important;background:transparent!important;box-shadow:none!important;border:0;padding:0;cursor:pointer;border-radius:30%;width:2.18%;aspect-ratio:1;transform:translate(-50%,-50%)}
 #ctl button::after{display:none}
-#kvol{left:60.03%;top:43.945%;width:3.4%;aspect-ratio:5;border-radius:3px}
-#kch{left:60.03%;top:42.708%;width:3.4%;aspect-ratio:5;border-radius:3px}
-#lcd{position:absolute;left:58.576%;top:30.208%;width:3.052%;height:8.333%;z-index:7;display:flex;align-items:center;justify-content:center;font:700 calc(var(--sw,100vw)*.016) "VT323",monospace;color:#ff3a1e;text-shadow:0 0 6px #ff2a10;opacity:.85;cursor:pointer;touch-action:manipulation}
+#kvol{left:63.953%;top:40.234%;width:2.035%;aspect-ratio:2;border-radius:3px}
+#kch{left:61.919%;top:40.234%;width:2.035%;aspect-ratio:2;border-radius:3px}
+#lcd{position:absolute;left:60.756%;top:32.161%;width:4.360%;height:5.859%;z-index:7;display:flex;align-items:center;justify-content:center;font:700 calc(var(--sw,100vw)*.022) "VT323",monospace;color:#ff3a1e;text-shadow:0 0 6px #ff2a10;opacity:.85;cursor:pointer;touch-action:manipulation}
 #lcd:hover{opacity:1;text-shadow:0 0 9px #ff2a10}
 .dark #lcd{opacity:0}
 #remote{position:fixed;right:2.5vw;bottom:-2vh;z-index:20;display:block;width:min(clamp(84px,10vmin,124px),calc(70vh * .2587));aspect-ratio:0.2587;padding:0;background:url(a/tv/telecommande.webp) 0 0/100% 100% no-repeat;border-radius:0;box-shadow:none;filter:brightness(.62) sepia(.25) drop-shadow(-8px 10px 14px rgba(0,0,0,.75));transform:rotate(-7deg)}
@@ -442,20 +443,20 @@ var CL=null,WI=null;
 var BAR=52,RC0=.14,RC1=.83,PEEK=48,RE=document.documentElement.style,LY=null,rOpen=false,cOpen=false;
 function phoneish(){return (window.matchMedia&&matchMedia('(pointer:coarse)').matches)||Math.min(innerWidth,innerHeight)<520}
 /* 10 nov., 17 h 41 : l'écran d'abord — toute la largeur au téléphone tenu droit, toute la hauteur libre couché et au bureau ; la photo de la chambre autour ; le meuble prend le reste ; la télécommande se replie en bas */
-/* 10 nov., verdict du lot T : un seul cadrage pour les chaînes et l'AV — la télé photographiée (bois du haut, cadre de métal et tube ; x 540-865, y 207-410 dans la photo) occupe toute la hauteur libre au bureau et couché, toute la largeur au téléphone tenu droit ; la bande de bois du bas glisse sous la barre ; le meuble et la télécommande prennent le reste ; le porte-clé garde sa place */
+/* 10 nov., verdict du lot T : un seul cadrage pour les chaînes et l'AV — la télé photographiée (bois du haut, cadre de métal et tube ; x 498-920, y 212-495 dans la photo, depuis le 12 nov.) occupe toute la hauteur libre au bureau et couché, toute la largeur au téléphone tenu droit ; la bande de bois du bas glisse sous la barre ; le meuble et la télécommande prennent le reste ; le porte-clé garde sa place */
 function mkBox(){var f=document.querySelector('#mk .fob')||document.getElementById('mk'),r=f&&f.getBoundingClientRect();return r&&r.width?{r:r.right,b:r.bottom}:{r:56,b:120}}
 function fit(){var W=1376,H=768,VW=innerWidth,VH=innerHeight,vh0=VH-BAR,portrait=VH>VW,ph=phoneish(),mk=mkBox(),s,tx,ty,cab=null,cf=false,
  up=true,RW=(portrait||ph)?192:120,rx;
- if(portrait){s=VW/325;tx=0;var th=214*s;ty=av?0:Math.round((vh0-PEEK-th)*.45);ty=Math.max(ty,mk.b+4-26*s);
+ if(portrait){s=VW/422;tx=0;var th=290*s;ty=av?0:Math.round((vh0-PEEK-th)*.45);ty=Math.max(ty,mk.b+4-26*s);
   if(av){var ct=Math.round(ty+th+4),chh=vh0-PEEK-ct;if(chh>=200)cab={x:0,y:ct,w:VW,h:chh};else cf=true}rx=Math.round((VW-RW)/2)}
- else{s=vh0/203;var tw=325*s,rest=VW-tw;ty=0;
+ else{s=vh0/283;var tw=422*s,rest=VW-tw;ty=0;
   if(av){tx=Math.max(0,rest-460);tx=Math.max(tx,mk.r+4-28*s);var cw=VW-tx-tw;if(cw>=200)cab={x:Math.round(tx+tw),y:0,w:Math.round(cw),h:vh0-PEEK-4};else cf=true;rx=VW-RW-8}
   else{tx=Math.max(0,Math.min(rest/2,rest-RW-16));tx=Math.max(tx,mk.r+4-28*s);rx=Math.round(Math.min(VW-RW-4,tx+tw+(VW-tx-tw-RW)/2))}}
- CL={s:s,x:tx-540*s,y:ty-207*s};
+ CL={s:s,x:tx-498*s,y:ty-212*s};
  /* 10 nov. (Mauk Tenieb, 21 h 22) : au téléphone debout, la vue de la chambre se centre sur le poste entier, afficheur de chaîne compris */
- WI=frame(Math.max(VW/W,VH/H,Math.min(VW/1100,VH/560)),VW/2,VH/2,portrait?704:605,355,VW,VH);if(WI.s>CL.s)WI=CL;
+ WI=frame(Math.max(VW/W,VH/H,Math.min(VW/1100,VH/560)),VW/2,VH/2,709,370,VW,VH);if(WI.s>CL.s)WI=CL;
  var rm=$('#room').style;rm.right='';rm.bottom='';
- RE.setProperty('--sw',W*CL.s+'px');RE.setProperty('--sx',CL.x+'px');RE.setProperty('--sy',CL.y+'px');RE.setProperty('--tw',215*s+'px');
+ RE.setProperty('--sw',W*CL.s+'px');RE.setProperty('--sx',CL.x+'px');RE.setProperty('--sy',CL.y+'px');RE.setProperty('--tw',266*s+'px');
  MX=null;big=false;document.body.classList.remove('tvmax');
  LY={VW:VW,VH:VH,vh0:vh0,up:up,RW:RW,rx:rx,cab:cab,cf:cf,pk:portrait?Math.round(Math.min(130,Math.max(PEEK,vh0*.15))):ph?72:PEEK};
  document.body.classList.toggle('cabn',!!cab&&cab.w<300);document.body.classList.toggle('cabf',cf);
