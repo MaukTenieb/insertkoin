@@ -483,7 +483,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
       <div class="cab dice" style="--th:url(thumb-katabatik.jpg);--nc:#f48fb1"><button type="button" class="hit" data-go="katabatik"><b data-d="⚄">KATABATIK</b></button></div>
       <div class="cab tel" style="--th:url(thumb-3615.jpg);--nc:#66bb6a"><button type="button" class="hit" data-go="terminal"><b>3615</b></button></div>
       <div class="cab" style="--th:url(thumb-vhs.jpg);--nc:#b9d84a"><button type="button" class="hit" data-go="vhs"><b>VHS</b></button></div>
-      <div class="cab" style="--th:url(thumb-photo.jpg);--nc:#ff5a5a"><button type="button" class="hit" data-go="photo"><b>FotoFauna</b></button></div>
+      <div class="cab" style="--th:url(thumb-photo.jpg);--nc:#ff5a5a"><button type="button" class="hit" data-go="photo"><b>KamOrhogo</b></button></div>
       <div class="cab" style="--th:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect width='400' height='400' fill='%2307060a'/%3E%3Ccircle cx='200' cy='168' r='96' fill='none' stroke='%23c9a84c' stroke-opacity='.45' stroke-width='3'/%3E%3Ccircle cx='200' cy='168' r='66' fill='none' stroke='%23c9a84c' stroke-opacity='.7' stroke-width='3'/%3E%3Ccircle cx='200' cy='168' r='36' fill='none' stroke='%23ffe08a' stroke-width='3'/%3E%3Ccircle cx='200' cy='118' r='10' fill='%23d32f2f'/%3E%3C/svg%3E&quot;);--nc:#7e57c2"><button type="button" class="hit" data-go="tor"><b>F<small>AUNA</small>T<small>OR</small></b></button></div>
       <div class="cab" style="--th:url(thumb-skopo.jpg);--nc:#4fc3f7"><button type="button" class="hit" data-go="skopo"><b>SKOPO<small style="font-size:1em;color:#e8c96a">RHOGO</small></b></button></div>
       <div class="cab" data-swap="repo" style="--th:url(thumb-repo.jpg);--nc:#b9d84a"><button type="button" class="hit" data-go="repo"><b>REPO<small style="font-size:1em;color:#e8c96a">RHOGO</small></b></button></div>
@@ -1753,7 +1753,7 @@ function go(k){if(window.__borneGo&&window.__borneGo(k))return;ac();
   if(k==='terminal'){try{localStorage.setItem('vdx.lang',LANG);}catch(e){}calqueSrc('/3615/').then(function(s){openCalque(s+'?svc=korhogo','3615');},function(){openCalque('3615-local.html','3615');});return;}
   if(k==='kal'){try{localStorage.setItem('vdx.lang',LANG);}catch(e){}calqueSrc('/3615/').then(function(s){openCalque(s+(s.indexOf('?')<0?'?svc=koins':'&svc=koins'),'3615 KOINS');},function(){openCalque('3615-local.html?svc=koins','3615 KOINS');});return;}
   if(k==='visit'){calqueSrc('/katabase/').then(function(s){openCalque(s,'BURROWS');kataLang();});return;}
-  if(k==='photo'){photoLang();return openCalque('fotofauna.html','FotoFauna');}
+  if(k==='photo'){photoLang();return openCalque('fotofauna.html','KamOrhogo');}
   if(k==='repo')return openCalque('reporhogo.html','Reporhogo');
   if(k==='skopo')return openCalque('skoporhogo.html','SkopoRhogo');
   if(k==='tor'){try{localStorage.setItem('tor.lang',LANG);}catch(e){}return openCalque('tor.html','FaunaTor',null,true);}
@@ -1798,7 +1798,7 @@ function kapChoose(){if(document.querySelector('.over.kapc'))return;const m=docu
   document.body.appendChild(m);const[a,b,c]=m.querySelectorAll('button');
   a.onclick=()=>{m.remove();skreen();};b.onclick=()=>{m.remove();openGame('kapture','KAPTURE');};const esc=e=>{if(e.key==='Escape'&&document.body.contains(m)){e.stopImmediatePropagation();e.preventDefault();m.remove();removeEventListener('keydown',esc,true);}};addEventListener('keydown',esc,true);m.addEventListener('click',e=>{if(e.target===m)m.remove();});a.focus();}
 /* the picture travels to FotoFauna as a file, and FotoFauna opens on it */
-window.ikToFotoFauna=function(blob,how){photoLang();openCalque('fotofauna.html','FotoFauna',w=>{const go=()=>{if(typeof w.__ikImport==='function')w.__ikImport(blob,how);else setTimeout(go,150);};go();},true);};
+window.ikToFotoFauna=function(blob,how){photoLang();openCalque('fotofauna.html','KamOrhogo',w=>{const go=()=>{if(typeof w.__ikImport==='function')w.__ikImport(blob,how);else setTimeout(go,150);};go();},true);};
 /* SKREEN: on a computer, the browser shares this very tab (one consent, the exact picture of the page);
    elsewhere, the page is redrawn from what it shows: canvases, images and videos, frames included */
 async function skreen(){const done=b=>{if(b)ikToFotoFauna(b,'skreen');};

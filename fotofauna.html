@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>FotoFauna + FaunAI — Insert Koin</title>
-<meta name="description" content="FotoFauna + FaunAI, the photo booth of Insert Koin by Mauk Tenieb: a taxonomy of photographic processes — film stocks, cameras, 19th-century plates and prints, sensors, painting, print shops, mosaics, data glitches, retouching — applied to your photo, plus free AI images and videos.">
+<title>KamOrhogo — Insert Koin</title>
+<meta name="description" content="KamOrhogo, the camera of Insert Koin by Mauk Tenieb: photos and videos through 1,998 looks from 2010s photo apps, sound from the microphone with pitch, speed and direction, sent to Musik.">
 <meta name="robots" content="index,follow,noai,noimageai">
 <meta name="author" content="Mauk Tenieb">
 <meta name="theme-color" content="#07060a">
@@ -90,7 +90,7 @@ main.left{background:var(--pebble);min-width:0}
 .shutter:hover{background:radial-gradient(circle at 40% 35%,#ffdca2,#ea9628)}
 .shutter:active{transform:scale(.94)}
 .shutter{position:relative}
-.shutter.vid{background:radial-gradient(circle at 40% 35%,#ff8a72,#c8321e)}.shutter.son{background:radial-gradient(circle at 40% 35%,#ffd27a,#e08a1e)}
+.shutter.vid{background:radial-gradient(circle at 40% 35%,#ff8a72,#c8321e)}#sonPanel{position:fixed;left:50%;transform:translateX(-50%);width:min(720px,94vw);bottom:max(12px,env(safe-area-inset-bottom));z-index:9000;box-shadow:0 10px 40px rgba(0,0,0,.7);background:rgba(11,9,8,.985);border:1px solid rgba(255,167,38,.45);border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:8px;font:12px "DM Mono",monospace;color:#ffe3a0}#sonPanel[hidden]{display:none}#sonW{width:100%;height:70px;background:#050403;border-radius:4px}.sonRow{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}.sonK{display:flex;flex-direction:column;gap:3px;flex:1;min-width:140px;letter-spacing:.12em}.sonK input{width:100%;accent-color:#ffa726}#sonPanel button{min-height:44px;min-width:44px;padding:0 14px;background:#14100a;color:#ffe3a0;border:1px solid rgba(255,167,38,.55);border-radius:5px;font:inherit;letter-spacing:.12em;cursor:pointer}#sonPanel button.on{background:#ffa726;color:#0b0908}.shutter.son{background:radial-gradient(circle at 40% 35%,#ffd27a,#e08a1e)}
 .shutter.rec::after{content:"";position:absolute;inset:29%;border-radius:3px;background:#f4efdf}
 .shutter.rec{animation:recp 1.2s ease-in-out infinite}
 @keyframes recp{50%{box-shadow:0 0 0 2px var(--line2),0 0 0 8px rgba(200,50,30,.35)}}
@@ -272,7 +272,7 @@ html.ike-on .app[data-ike-layout=narrow] .ctrl{border-radius:0}
 </defs></svg>
 <div class="app" id="app">
 <header class="top">
- <div class="logo"><svg class="mark" aria-hidden="true"><use href="#i-aperture"/></svg><span class="word">FotoFauna <small>+ FaunAI</small></span></div>
+ <div class="logo"><svg class="mark" aria-hidden="true"><use href="#i-aperture"/></svg><span class="word" style="text-transform:none">KamOrhogo</span></div>
  <button class="key" id="bShoot" type="button"><svg class="ic" aria-hidden="true"><use href="#i-camera"/></svg><span data-i="shoot"></span></button>
  <button class="key" id="bOpen" type="button"><svg class="ic" aria-hidden="true"><use href="#i-open"/></svg><span data-i="open"></span></button>
  <button class="key lang" id="bLang" type="button"><b data-l="en">EN</b><b data-l="fr">FR</b></button>
@@ -11868,7 +11868,7 @@ fr:{ph:"Décris une image, ou le mouvement de la vidéo",open:"Ouvrir",shoot:"Pr
  keys_txt:"Pollinations et AI Horde fabriquent les images sans clé. Pour la vidéo, Puter fonctionne avec un compte Puter gratuit : un clic sur Continue la première fois, 3 vidéos de 5 secondes par mois. Les Spaces vidéo de Hugging Face tournent sur ZeroGPU, qui accorde zéro seconde de GPU aux appels anonymes : un jeton Hugging Face gratuit leur ouvre un quota quotidien. Chaque clé reste dans ce navigateur et part seulement vers son service.",
  eng_sum:"{n} moteurs · {v} pour la vidéo · recensement du {d}",census:"Recenser les moteurs",census_run:"Recensement… {x}",census_done:"{n} moteurs.",puter_left:"Puter : {c} crédits restants ce mois-ci, soit {v} vidéo(s) de 5 s.",puter_none:"Puter : compte relié à la première vidéo.",
  camErr:"La caméra reste fermée : le navigateur refuse l'accès. Choisis une photo avec Ouvrir.",shutter:"Déclencher",camOff:"Fermer la caméra",count:"{n} spécimens",all:"Tout",found:"{n} spécimens pour « {q} »",after:"d'après {a}",recon:", reconstitué d'après le nom",taxonOrig:"Photo d'origine",wordsHint2:"Les mots viennent de Labo, Outils",pourHint:"Appuie sur l'image et promène le doigt pour verser le révélateur ; reste au même endroit et la plaque brûle. Sur téléphone, incline l'appareil.",search:"Chercher un procédé",random:"Au hasard",
- foot:"Code MIT. FotoFauna + FaunAI, le photomaton d'Insert Koin",credits:"Pellicules : RawTherapee Film Simulation Collection (Pat David, Pavlov Dmitry, Michael Ezra), CC BY-SA 4.0. Poussières : scans de Daniela Ivanova (FilmDamageSimulator), licence MIT. Noms de pellicules cités à titre descriptif."},
+ foot:"Code MIT. KamOrhogo, la caméra d'Insert Koin : photo, vidéo, son",credits:"Pellicules : RawTherapee Film Simulation Collection (Pat David, Pavlov Dmitry, Michael Ezra), CC BY-SA 4.0. Poussières : scans de Daniela Ivanova (FilmDamageSimulator), licence MIT. Noms de pellicules cités à titre descriptif."},
 en:{ph:"Describe an image, or the motion of the video",open:"Open",shoot:"Shoot",undo:"Undo",save:"Save",img:"Image",vid:"Video",stop:"Stop",labo:"Lab",
  orig:"Original",variant:"Tap again for a variant",spot:"Tap the image to move the measuring spot",need:"Write a sentence for the image first.",working:"working",queue:"in queue",done:"Done in",stopped:"Stopped.",
  fail_img:"Every image engine failed. Try again in a minute.",fail_vid:"Every video engine failed. Paste a free Hugging Face token under Lab, Keys, or click Continue in the Puter window.",
@@ -11886,7 +11886,7 @@ en:{ph:"Describe an image, or the motion of the video",open:"Open",shoot:"Shoot"
  keys_txt:"Pollinations and AI Horde make images without a key. For video, Puter runs on a free Puter account: one click on Continue the first time, 3 five-second videos a month. The Hugging Face video Spaces run on ZeroGPU, which gives anonymous callers zero GPU seconds: a free Hugging Face token opens a daily quota. Each key stays in this browser and goes only to its own service.",
  eng_sum:"{n} engines · {v} for video · census {d}",census:"Census of engines",census_run:"Census… {x}",census_done:"{n} engines.",puter_left:"Puter: {c} credits left this month, that is {v} five-second video(s).",puter_none:"Puter: account linked at the first video.",
  camErr:"The camera stays closed: the browser refuses access. Choose a photo with Open.",shutter:"Shutter",camOff:"Close the camera",count:"{n} specimens",all:"All",found:"{n} specimens for “{q}”",after:"after {a}",recon:", rebuilt from the name only",taxonOrig:"Original photo",wordsHint2:"Words come from Lab, Tools",pourHint:"Press the image and move your finger to pour the developer; stay in one place and the plate burns. On a phone, tilt the device.",search:"Search a process",random:"Random",
- foot:"MIT code. FotoFauna + FaunAI, the photo booth of Insert Koin",credits:"Films: RawTherapee Film Simulation Collection (Pat David, Pavlov Dmitry, Michael Ezra), CC BY-SA 4.0. Dust: scans by Daniela Ivanova (FilmDamageSimulator), MIT licence. Film names used descriptively."}};
+ foot:"MIT code. KamOrhogo, the camera of Insert Koin: photo, video, sound",credits:"Films: RawTherapee Film Simulation Collection (Pat David, Pavlov Dmitry, Michael Ezra), CC BY-SA 4.0. Dust: scans by Daniela Ivanova (FilmDamageSimulator), MIT licence. Film names used descriptively."}};
 /* langue : le site pilote la page par le bouton #bLang et la clé obturama.lang (JSON "en" / "fr") ; l'anglais est la langue par défaut du site */
 let LANG=(()=>{const v=LS.get("obturama.lang","en");return v==="fr"?"fr":"en"})();
 /* ---------- traduction anglaise des réglages des modules (libellés de curseurs, options françaises) ----------
@@ -11960,7 +11960,7 @@ Object.assign(W.fr,{keepL:"Valider",dice:"Tirer",layers:"Couches",noLayer:"Image
  recipe:"Recette",recExport:"Exporter",recImport:"Importer",recDone:"Recette importée.",recBad:"Recette illisible.",recPng:"Cette image contient une recette.",recLoad:"Charger",recBaked:"Les couches de coulée Koloid restent hors de la recette : ce sont des images figées.",
  recHint:"La recette garde la pile des effets, leurs réglages, leurs graines et les tables de couleurs. Un PNG enregistré ici la porte aussi.",
  lut:"Table de couleurs (.cube, HaldCLUT)",lutDone:"Table chargée : {n}³.",lutBad:"Table illisible : ",
- mPhoto:"Photo",mVideo:"Vidéo",mSon:"Son",sonStart:"Enregistrer le son",sonStop:"Arrêter le son",sonDone:"Son de {s} s : fichier WAV enregistré, piste ajoutée à Musik.",sonBad:"Micro fermé : son indisponible.",vPlay:"Lecture, pause",vSeek:"Position dans la vidéo",recStart:"Filmer",recStop:"Arrêter de filmer",micOff:"Micro fermé : vidéo muette.",
+ mPhoto:"Photo",mVideo:"Vidéo",mSon:"Son",sP:"HAUTEUR",sS:"VITESSE",sFw:"▶ ENDROIT",sBw:"◀ ENVERS",sPlay:"ÉCOUTER",sSave:"SAUVER",sonStart:"Enregistrer le son",sonStop:"Arrêter le son",sonDone:"Son de {s} s, dans Musik. SAUVER donne le fichier WAV.",sonBad:"Micro fermé : son indisponible.",vPlay:"Lecture, pause",vSeek:"Position dans la vidéo",recStart:"Filmer",recStop:"Arrêter de filmer",micOff:"Micro fermé : vidéo muette.",
  clipDone:"Clip de {s} s, effets compris.",vidBad:"Vidéo illisible dans ce navigateur.",stillOnly:"image fixe seulement",stillSkip:"Image fixe seulement, hors vidéo : {n}",
  exClip:"Enregistrer la vidéo",exClipHint:"Toute la vidéo passe dans la pile d'effets, à la taille choisie, avec sa bande son.",vidRender:"Rendu : image {i} / {n}",vidEnc:"Encodage : {s} s",
  frameN:"Image {i} / {n}…",recording:"Enregistrement : {s} s",gifDone:"GIF : {k} Ko",vidDone:"Vidéo : {k} Ko",noRec:"Ce navigateur enregistre la vidéo hors de MediaRecorder : export vidéo indisponible.",rawSaved:"Photo brute enregistrée : "});
@@ -11972,7 +11972,7 @@ Object.assign(W.en,{keepL:"Keep",dice:"Roll",layers:"Layers",noLayer:"Original i
  recipe:"Recipe",recExport:"Export",recImport:"Import",recDone:"Recipe imported.",recBad:"Unreadable recipe.",recPng:"This image carries a recipe.",recLoad:"Load",recBaked:"Koloid pour layers stay out of the recipe: they are frozen images.",
  recHint:"The recipe keeps the stack of effects, their settings, their seeds and the colour tables. A PNG saved here carries it too.",
  lut:"Colour table (.cube, HaldCLUT)",lutDone:"Table loaded: {n}³.",lutBad:"Unreadable table: ",
- mPhoto:"Photo",mVideo:"Video",mSon:"Sound",sonStart:"Record sound",sonStop:"Stop sound",sonDone:"{s} s sound: WAV file saved, track added to Musik.",sonBad:"Microphone closed: sound unavailable.",vPlay:"Play, pause",vSeek:"Position in the video",recStart:"Film",recStop:"Stop filming",micOff:"Microphone closed: silent video.",
+ mPhoto:"Photo",mVideo:"Video",mSon:"Sound",sP:"PITCH",sS:"SPEED",sFw:"▶ FORWARD",sBw:"◀ BACKWARD",sPlay:"PLAY",sSave:"SAVE",sonStart:"Record sound",sonStop:"Stop sound",sonDone:"{s} s sound, in Musik. SAVE gives the WAV file.",sonBad:"Microphone closed: sound unavailable.",vPlay:"Play, pause",vSeek:"Position in the video",recStart:"Film",recStop:"Stop filming",micOff:"Microphone closed: silent video.",
  clipDone:"{s} s clip, effects included.",vidBad:"This browser cannot read this video.",stillOnly:"still image only",stillSkip:"Still image only, left out of the video: {n}",
  exClip:"Save the video",exClipHint:"The whole video runs through the effect stack, at the chosen size, with its soundtrack.",vidRender:"Render: frame {i} / {n}",vidEnc:"Encoding: {s} s",
  frameN:"Frame {i} / {n}…",recording:"Recording: {s} s",gifDone:"GIF: {k} KB",vidDone:"Video: {k} KB",noRec:"This browser cannot record video (MediaRecorder).",rawSaved:"Raw photo saved: "});
@@ -12255,7 +12255,7 @@ let qT=0;$("q").addEventListener("input",e=>{clearTimeout(qT);qT=setTimeout(()=>
 
 /* ---------- caméra : viseur en direct sur la grande scène, déclencheur rond ---------- */
 let CAM=null;
-$("bShoot").onclick=async()=>{if(CAM){shutterPress();return}endSession();closeVideo();try{const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:(window.__ffFacing||"environment"),width:{ideal:1280}},audio:false});const v=$("cam");v.srcObject=st;await v.play();CAM={st,v,run:1};
+$("bShoot").onclick=async()=>{if(CAM||PVMODE==="son"){shutterPress();return}endSession();closeVideo();try{const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:(window.__ffFacing||"environment"),width:{ideal:1280}},audio:false});const v=$("cam");v.srcObject=st;await v.play();CAM={st,v,run:1};
   $("stageWrap").classList.add("live");$("shutterRow").hidden=false;$("bShoot").querySelector("span").textContent=t("shutter");VSIDE=VMAX;VFT=0;STN="";setPvMode(PVMODE);setLabel();fit();vloop()}catch(e){CAM=null;$("fShoot").click()}};
 function stopCam(){if(!CAM)return;if(REC)recStop(true);if(MIC){MIC.getTracks().forEach(x=>x.stop());MIC=null}VLOOP.tok++;STN="";CAM.run=0;CAM.st.getTracks().forEach(t=>t.stop());CAM=null;$("stageWrap").classList.remove("live");$("shutterRow").hidden=true;$("bShoot").querySelector("span").textContent=t("shoot");setLabel();fit()}
 async function shoot(){if(!CAM)return;const v=CAM.v,c=FF.util.canvas(v.videoWidth,v.videoHeight),g=c.getContext("2d");g.translate(c.width,0);g.scale(-1,1);g.drawImage(v,0,0);const fx=$("flashFx");fx.hidden=false;fx.style.opacity=1;setTimeout(()=>{fx.style.opacity=0;setTimeout(()=>fx.hidden=true,300)},60);
@@ -12354,12 +12354,31 @@ async function sonStart(){let st=MIC;try{if(!st)st=MIC=await navigator.mediaDevi
   const ch=[],mr=new MediaRecorder(new MediaStream(st.getAudioTracks()));mr.ondataavailable=e=>{if(e.data&&e.data.size)ch.push(e.data)};mr.onstop=()=>sonDone(new Blob(ch,{type:mr.mimeType||"audio/webm"}));
   SREC={mr,t0:Date.now()};mr.start();$("shutter").classList.add("rec");$("shutter").setAttribute("aria-label",t("sonStop"));SREC.cap=setTimeout(()=>{if(SREC)sonStop()},60000)}
 function sonStop(){if(!SREC)return;clearTimeout(SREC.cap);try{SREC.mr.stop()}catch{}$("shutter").classList.remove("rec");$("shutter").setAttribute("aria-label",t("sonStart"));}
-async function sonDone(blob){const s=SREC;SREC=null;try{const ac=new(window.AudioContext||window.webkitAudioContext)(),buf=await ac.decodeAudioData(await blob.arrayBuffer()),d=buf.getChannelData(0),sr=buf.sampleRate;
-  const n=d.length,w=new DataView(new ArrayBuffer(44+n*2)),str=(o,x)=>{for(let i=0;i<x.length;i++)w.setUint8(o+i,x.charCodeAt(i))};str(0,"RIFF");w.setUint32(4,36+n*2,true);str(8,"WAVE");str(12,"fmt ");w.setUint32(16,16,true);w.setUint16(20,1,true);w.setUint16(22,1,true);w.setUint32(24,sr,true);w.setUint32(28,sr*2,true);w.setUint16(32,2,true);w.setUint16(34,16,true);str(36,"data");w.setUint32(40,n*2,true);for(let i=0;i<n;i++){const v=Math.max(-1,Math.min(1,d[i]));w.setInt16(44+i*2,v<0?v*32768:v*32767,true)}
-  const name=(window.ikName?ikName("kamescope","wav"):"kamescope-"+Date.now()+".wav"),a=document.createElement("a");a.href=URL.createObjectURL(new Blob([w],{type:"audio/wav"}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);
-  const clip={id:"k"+Date.now(),name:name.replace(/\.wav$/,""),t:Date.now(),sr:sr,data:new Float32Array(d)};
-  const r=indexedDB.open("borne",1);r.onupgradeneeded=()=>r.result.createObjectStore("diktat",{keyPath:"id"});r.onsuccess=()=>{const tx=r.result.transaction("diktat","readwrite"),os=tx.objectStore("diktat");os.put(clip);const q=os.getAll();q.onsuccess=()=>{(q.result||[]).sort((x,y)=>y.t-x.t).slice(5).forEach(x=>os.delete(x.id))};tx.oncomplete=()=>{try{(window.top||window).dispatchEvent(new Event("borne-diktat"))}catch{}}};
-  setStatus(t("sonDone").replace("{s}",(n/sr).toFixed(1)));ac.close&&ac.close()}catch(e){setStatus(t("sonBad"),"err")}}
+async function sonDone(blob){SREC=null;try{const ac=new(window.AudioContext||window.webkitAudioContext)(),buf=await ac.decodeAudioData(await blob.arrayBuffer());ac.close&&ac.close();
+  SON={raw:new Float32Array(buf.getChannelData(0)),sr:buf.sampleRate,rev:false,out:null,id:"k"+Date.now(),name:(window.ikName?ikName("kamorhogo","wav"):"kamorhogo-"+Date.now()+".wav").replace(/\.wav$/,"")};
+  sonPanel();sonRender();sonPlay();setStatus(t("sonDone").replace("{s}",(SON.raw.length/SON.sr).toFixed(1)))}catch(e){setStatus(t("sonBad"),"err")}}
+/* diktaTfaune, entré dans KamOrhogo (12 nov. 2026, Mauk Tenieb : « 2a ») : hauteur, vitesse, sens ; chaque réglage rejoint Musik, SAUVER donne le fichier WAV */
+let SON=null,SONAC=null,SONSRC=null;
+function sonAC(){if(!SONAC)SONAC=new(window.AudioContext||window.webkitAudioContext)();if(SONAC.state==="suspended")SONAC.resume();return SONAC}
+function sonStretch(x,f){const N=2048,H=N/4,w=new Float32Array(N);for(let i=0;i<N;i++)w[i]=.5-.5*Math.cos(2*Math.PI*i/N);const L=Math.max(N,Math.round(x.length*f)),y=new Float32Array(L+N),nr=new Float32Array(L+N);
+  for(let po=0;po<L;po+=H){let pi=Math.round(po/f);if(pi+N>x.length)pi=Math.max(0,x.length-N);for(let k=0;k<N;k++){y[po+k]+=(x[pi+k]||0)*w[k];nr[po+k]+=w[k]}}for(let j=0;j<y.length;j++)if(nr[j]>1e-3)y[j]/=nr[j];return y.subarray(0,L)}
+function sonResample(x,r){const n=Math.floor(x.length/r),y=new Float32Array(n);for(let i=0;i<n;i++){const p=i*r,a=Math.floor(p),f=p-a;y[i]=(x[a]||0)*(1-f)+(x[a+1]||0)*f}return y}
+function sonRender(){if(!SON)return;const semi=+$("sonP").value,sp=Math.pow(2,+$("sonS").value/4),r=Math.pow(2,semi/12);let y=sonResample(sonStretch(SON.raw,r/sp),r);if(SON.rev)y=y.slice().reverse();
+  let pk=0;for(let i=0;i<y.length;i++)pk=Math.max(pk,Math.abs(y[i]));if(pk>0)for(let i=0;i<y.length;i++)y[i]=y[i]/pk*.92;SON.out=y;sonDraw();sonLbl();
+  const clip={id:SON.id,name:SON.name,t:Date.now(),sr:SON.sr,data:y},rq=indexedDB.open("borne",1);rq.onupgradeneeded=()=>rq.result.createObjectStore("diktat",{keyPath:"id"});
+  rq.onsuccess=()=>{const tx=rq.result.transaction("diktat","readwrite"),os=tx.objectStore("diktat");os.put(clip);const q=os.getAll();q.onsuccess=()=>{(q.result||[]).sort((a,b)=>b.t-a.t).slice(5).forEach(x=>os.delete(x.id))};tx.oncomplete=()=>{try{(window.top||window).dispatchEvent(new Event("borne-diktat"))}catch{}}}}
+function sonDraw(){const c=$("sonW"),g=c.getContext("2d");g.clearRect(0,0,c.width,c.height);if(!SON||!SON.out)return;const o=SON.out,st=Math.max(1,Math.floor(o.length/c.width));g.strokeStyle="#ffa726";g.lineWidth=2;g.beginPath();
+  for(let x=0;x<c.width;x++){let m=0;for(let k=0;k<st;k++)m=Math.max(m,Math.abs(o[x*st+k]||0));g.moveTo(x,c.height/2-m*c.height/2);g.lineTo(x,c.height/2+m*c.height/2)}g.stroke()}
+function sonPlay(){if(!SON||!SON.out)return;const a=sonAC();if(SONSRC)try{SONSRC.stop()}catch{}const b=a.createBuffer(1,SON.out.length,SON.sr);b.getChannelData(0).set(SON.out);SONSRC=a.createBufferSource();SONSRC.buffer=b;SONSRC.connect(a.destination);SONSRC.start()}
+function sonSave(){if(!SON||!SON.out)return;const d=SON.out,sr=SON.sr,n=d.length,w=new DataView(new ArrayBuffer(44+n*2)),str=(o,x)=>{for(let i=0;i<x.length;i++)w.setUint8(o+i,x.charCodeAt(i))};
+  str(0,"RIFF");w.setUint32(4,36+n*2,true);str(8,"WAVE");str(12,"fmt ");w.setUint32(16,16,true);w.setUint16(20,1,true);w.setUint16(22,1,true);w.setUint32(24,sr,true);w.setUint32(28,sr*2,true);w.setUint16(32,2,true);w.setUint16(34,16,true);str(36,"data");w.setUint32(40,n*2,true);
+  for(let i=0;i<n;i++){const v=Math.max(-1,Math.min(1,d[i]));w.setInt16(44+i*2,v<0?v*32768:v*32767,true)}const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([w],{type:"audio/wav"}));a.download=SON.name+".wav";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000)}
+function sonLbl(){$("sonPl").textContent=t("sP")+" "+(+$("sonP").value>0?"+":"")+$("sonP").value;$("sonSl").textContent=t("sS")+" ×"+Math.pow(2,+$("sonS").value/4).toFixed(2).replace(/\.?0+$/,"");$("sonD").textContent=t(SON&&SON.rev?"sBw":"sFw")}
+function sonPanel(){if($("sonPanel")){$("sonPanel").hidden=false;$("sonP").value=0;$("sonS").value=0;return}const p=document.createElement("div");p.id="sonPanel";
+  p.innerHTML='<canvas id="sonW" width="900" height="120"></canvas><div class="sonRow"><label class="sonK"><span id="sonPl"></span><input id="sonP" type="range" min="-12" max="12" step="1" value="0"></label><label class="sonK"><span id="sonSl"></span><input id="sonS" type="range" min="-4" max="4" step="1" value="0"></label></div><div class="sonRow"><button type="button" id="sonD"></button><button type="button" id="sonPlay"></button><button type="button" id="sonSave"></button><button type="button" id="sonX" aria-label="×">×</button></div>';
+  document.body.appendChild(p);$("sonPlay").textContent=t("sPlay");$("sonSave").textContent=t("sSave");
+  ["sonP","sonS"].forEach(id=>{$(id).oninput=sonLbl;$(id).onchange=()=>{sonRender();sonPlay()}});$("sonD").onclick=()=>{SON.rev=!SON.rev;$("sonD").classList.toggle("on",SON.rev);sonRender();sonPlay()};
+  $("sonPlay").onclick=sonPlay;$("sonSave").onclick=sonSave;$("sonX").onclick=()=>{p.hidden=true}}
 /* filmer : le viseur (effets compris) passe dans un canvas de taille fixe, enregistré avec le micro */
 function recStart(){if(!CAM||REC)return;if(!canRec()){setStatus(t("noRec"),"err");return}const v=$("view");if(v.width<16){return}
  const w=v.width&~1,h=v.height&~1,rc=document.createElement("canvas");rc.width=w;rc.height=h;const g=rc.getContext("2d");g.drawImage(v,0,0,w,h);
@@ -12649,5 +12668,6 @@ function i18n(){document.documentElement.lang=LANG;
 __ffBoot();
 </script>
 <script src="borne-fotofauna.js"></script>
+<script>(function(){if(!/[?&]son=1/.test(location.search))return;var n=0,t=setInterval(function(){if(typeof setPvMode==="function"&&document.getElementById("shutterRow")){clearInterval(t);try{document.getElementById("shutterRow").hidden=false;setPvMode("son")}catch(e){}}else if(++n>80)clearInterval(t)},100)})();</script>
 </body>
 </html>

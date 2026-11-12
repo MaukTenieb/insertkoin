@@ -215,7 +215,7 @@ addEventListener('wheel',function(e){if(scene!=='salle'||busy||$('#case.on'))ret
 function act(z){if(z==='L')go('rayon',[.22,.5]);else if(z==='R')go('rayon',[.78,.5]);else if(z==='E')go('comptoir',[.5,.497]);else{S.v=Math.min(1.6,S.v+.7);kick()}}
 
 /* 4. les cassettes : 18 Masks puis les programmes ; jaquette absente = buste canonique sur fond noir */
-var PROG=['korong','chess','erratik','faunarratik','invaders','katabatik','bakubook','vhs','fotofauna','musik','diktat','3615','reporhogo','faunator','skopo'];
+var PROG=['korong','chess','erratik','faunarratik','invaders','katabatik','bakubook','vhs','fotofauna','musik','3615','reporhogo','faunator','skopo'];
 var TAPES=D.F.map(function(f){return{kind:'mask',id:f.slug,title:f.name,img:'a/vc/vc-mask-'+f.slug+'.webp',fallback:'a/b-'+f.slug+'.webp',num:f.num,f:f,url:B+'fauna-'+f.slug+'.html'}})
  .concat(PROG.map(function(id){var p=D.P.filter(function(x){return x.id===id})[0];return p&&{kind:'prog',id:id,title:p.name,img:'a/vc/vc-prog-'+id+'.webp',p:p,url:p.url}}).filter(Boolean));
 /* le rayon : quatre étagères relevées sur la photo (surface à 29,5 / 50,5 / 71 / 92,5 % ; intérieur 11 à 89 %) */
