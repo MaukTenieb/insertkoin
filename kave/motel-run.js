@@ -140,8 +140,7 @@ window.MotelRun=function(host,want){
    auto=false;var tg=(held.r?1:0)-(held.l?1:0);if(ptr){var o=(ptr.x-ptr.cx)/(ptr.w/2);if(Math.abs(o)>0.25)tg+=Math.max(-1,Math.min(1,o))}tg=Math.max(-1,Math.min(1,tg));
    hT=tg?hT+dt:0;tr=tg*TURN*(hT<0.17?0.5:1);
    if(tq){var qa=Math.min(Math.abs(tq),TURN*1.3*dt),qs=tq>0?1:-1;tr+=qs*qa/dt;tq-=qs*qa;if(Math.abs(tq)<1e-3)tq=0}
-   var fw=probe(ang,1.6);if((fw<1.1&&!tg&&!tq)||stuck>0.05){var bd2=-1,bs2=-0.2;for(var d1=0;d1<4;d1++){if(!free(gx,gy,d1)&&!(d1%2===0?open_(px+DX[d1]*0.9,py):open_(px,py+DY[d1]*0.9)))continue;var c1=Math.cos(ang-d1*Math.PI/2);if(c1>bs2){bs2=c1;bd2=d1}}
-    if(bd2>=0){var dd2=wrap(bd2*Math.PI/2-ang);tr=Math.max(-4.5,Math.min(4.5,dd2*9));lane=bd2}}
+   /* 12 nov., 23 h 13 (Mauk Tenieb : « arrête de vibrer […] à la Quake ou à la Doom ») : zéro virage forcé ; le glissement se règle au contact du mur, plus bas */
    ang+=tr*dt;pendT=0}
   else{/* pilote automatique : couloir, centre, bifurcations au hasard, virage engagé dès l'entrée du carrefour */
    var id=gx*100003+gy,cxm=gx+0.5,cym=gy+0.5;
@@ -154,12 +153,17 @@ window.MotelRun=function(host,want){
    tr=Math.max(-5.5,Math.min(5.5,dd*10));ang+=Math.max(-Math.abs(dd),Math.min(Math.abs(dd),tr*dt));sp=speed*(Math.abs(dd)>0.6?0.6:1)}
   turn+=(tr-turn)*Math.min(1,dt*12);
   /* glisse le long des murs */
-  var vx=Math.cos(ang)*sp*dt,vy=Math.sin(ang)*sp*dt,sx=vx>0?RAD:-RAD,sy=vy>0?RAD:-RAD;
-  var mx=0,my=0;if(open_(px+vx+sx,py-RAD)&&open_(px+vx+sx,py+RAD)){px+=vx;mx=1}
-  if(open_(px-RAD,py+vy+sy)&&open_(px+RAD,py+vy+sy)){py+=vy;my=1}
-  /* bloqué sur un axe : retour rapide au milieu de la travée */
-  if(!auto&&(!mx||!my)){var k2=Math.min(1,dt*9);if(!my&&open_(px,Math.floor(py)+0.5))py+=(Math.floor(py)+0.5-py)*k2;if(!mx&&open_(Math.floor(px)+0.5,py))px+=(Math.floor(px)+0.5-px)*k2}
-  stuck=(!mx||!my)?stuck+dt:0;
+  /* glisse le long des murs, comme Doom et Quake : la composante qui bute s'annule, l'autre garde au moins 75 % de la vitesse ; de front, le Mask part du côté le plus ouvert ; au contact, le cap s'aligne sur le mur sans dépasser (pas d'oscillation) */
+  var vx=Math.cos(ang)*sp*dt,vy=Math.sin(ang)*sp*dt,V=sp*dt;
+  function okX(nx){var s2=nx>px?RAD:-RAD;return open_(nx+s2,py-RAD+0.001)&&open_(nx+s2,py+RAD-0.001)}
+  function okY(ny){var s2=ny>py?RAD:-RAD;return open_(px-RAD+0.001,ny+s2)&&open_(px+RAD-0.001,ny+s2)}
+  var bx=!okX(px+vx),by=!okY(py+vy),slide=null;
+  if(bx&&!by){var cy2=Math.abs(vy)<0.15*V?(probe(Math.PI/2,2)>=probe(-Math.PI/2,2)?1:-1)*0.75*V:(vy>0?1:-1)*Math.max(Math.abs(vy),0.75*V);if(okY(py+cy2))py+=cy2;slide=cy2>0?Math.PI/2:-Math.PI/2}
+  else if(by&&!bx){var cx2=Math.abs(vx)<0.15*V?(probe(0,2)>=probe(Math.PI,2)?1:-1)*0.75*V:(vx>0?1:-1)*Math.max(Math.abs(vx),0.75*V);if(okX(px+cx2))px+=cx2;slide=cx2>0?0:Math.PI}
+  else if(bx&&by){var cands=[[0.75*V,0,0],[-0.75*V,0,Math.PI],[0,0.75*V,Math.PI/2],[0,-0.75*V,-Math.PI/2]].filter(function(c){return c[0]?okX(px+c[0]):okY(py+c[1])}).sort(function(a,b){return Math.cos(b[2]-ang)-Math.cos(a[2]-ang)});if(cands.length){px+=cands[0][0];py+=cands[0][1];slide=cands[0][2]}}
+  else{px+=vx;py+=vy}
+  if(slide!=null&&!auto&&!tq&&!((held.l||held.r)||(ptr&&Math.abs((ptr.x-ptr.cx)/(ptr.w/2))>0.25))){var dd3=wrap(slide-ang),st3=Math.min(Math.abs(dd3),3.2*dt);ang+=dd3>0?st3:-st3}
+  stuck=slide!=null?stuck+dt:0;
   ang=wrap(ang);gait+=sp*dt*3.4;odo+=sp*dt;camera()}
  function sight(x,y){var n=Math.ceil(Math.hypot(px-x,py-y)/0.05);for(var i=1;i<n;i++){var t=i/n;if(!open_(x+(px-x)*t,y+(py-y)*t))return false}return true}
  /* caméra sur la trace du Mask, un pas derrière lui, tournée vers lui */
