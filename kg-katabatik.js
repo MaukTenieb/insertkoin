@@ -1609,6 +1609,8 @@ function hangBand(kEl){
     cv.addEventListener('pointermove',function(e){if(ptr)ptr.x=toX(e);});
     cv.addEventListener('pointerup',function(){ptr=null;});cv.addEventListener('pointercancel',function(){ptr=null;});
     window.addEventListener('resize',function(){if(shown())fit();});}
+  /* [IK] 12 nov. : lecture de l'état pour les démos enregistrées de la TV (kave/a/tv/demo) */
+  window.__fiS=function(){return S?{S:S,pos:pos}:null;};
   window.fiOpen=function(){
     if(!cv){cv=document.getElementById('fi-canvas');if(!cv)return;ctx=cv.getContext('2d');bind();
       MASKS.forEach(function(m){var im=new Image();im.src='sprite-'+m.id+'.webp';SPR[m.id]=im;});}
