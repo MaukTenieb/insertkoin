@@ -69,6 +69,9 @@
     .row{ font-size:15px; }
   }
   aside, aside *, #hint{ text-transform:uppercase; letter-spacing:0; }
+
+/* 11 nov. 2026 (Mauk Tenieb, 21 h 50) : au lancement, zéro dézoom sur les structures internes : neige, puis la chambre déjà cadrée */
+#stage{position:relative}#view{opacity:0;transition:opacity .7s ease}#view.ok{opacity:1}#stage.vz::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:#0b0d0c url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27160%27 height=%27160%27%3E%3Cfilter id=%27n%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%27.9%27 numOctaves=%272%27 stitchTiles=%27stitch%27/%3E%3CfeColorMatrix values=%270 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -.5%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23n)%27/%3E%3C/svg%3E");opacity:.55;animation:skv .3s steps(3) infinite}@keyframes skv{50%{background-position:37px 61px}}
 </style>
 </head>
 <body>
@@ -1453,5 +1456,6 @@ window.__room={updateRoster,SPEEDS,VIEW,applyView,zoomAt,step:stepSim,AG,SP,setS
 })();
 </script>
 <script src="borne-skopo.js"></script>
+<script>(function(){var st=document.getElementById("stage"),v=document.getElementById("view");st.classList.add("vz");function ok(){var last="",same=0,n=0,t=setInterval(function(){var k=v.style.width+"x"+v.style.height+"|"+v.width+"x"+v.height;same=k===last?same+1:0;last=k;if((same>=6&&++n>8)||n++>60){clearInterval(t);v.classList.add("ok");setTimeout(function(){st.classList.remove("vz")},700)}},100)}if(document.readyState==="complete")ok();else addEventListener("load",ok)})();</script>
 </body>
 </html>
