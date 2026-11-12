@@ -137,6 +137,7 @@ Every file is at the top level; the folders are `habillages/`, `tor/`, `notes/`,
 | `fotofauna.html` | FotoFauna |
 | `tor.html`, `faunator-tor.js`, `tor-web*`, `tor-onion*`, `tor/` | FaunaTor and its Tor clients; `faunator-worker.js`, an optional Cloudflare Worker relay |
 | `skoporhogo.html`, `three.min.js` | SkopoRhogo and three.js r128 |
+| `epub.min.js`, `pdf.min.js`, `pdf.worker.min.js`, `jszip.min.js` | BakuBook's readers |
 | `reporhogo.html` | Reporhogo |
 | `fonts.css`, `font-*.woff2` | the fonts, served by the site |
 | `manifest.webmanifest`, `sw.js`, `icon.png`, `favicon.png` | installation and offline use (`sw.js`: pages and code from the network first, images from the cache) |
@@ -186,6 +187,7 @@ Third-party components:
 - FaunaTor's Tor clients: webtor-rs by privacy-ethereum and by andrewtheguy (MIT, see `TOR-LICENSES.txt`).
 - Akasztófa's stanzas: József Attila's poems up to 1928, in verse and in prose (public domain), taken from the [ELTE Poetry Corpus](https://github.com/ELTE-DH/poetry-corpus) (MEK edition) → `kg-hang-ja.json`.
 - SkopoRhogo uses [three.js](https://threejs.org) r128 (MIT).
+- BakuBook reads EPUB, PDF and ZIP with [epub.js](https://github.com/futurepress/epub.js) 0.3.93 (BSD-2-Clause), [PDF.js](https://mozilla.github.io/pdf.js/) 3.11.174 (Apache-2.0) and [JSZip](https://stuk.github.io/jszip/) 3.10.1 (MIT), served from the site.
 - Fonts: Bebas Neue, DM Mono, Press Start 2P, Archivo, and one glyph of Noto Sans Egyptian Hieroglyphs (Honey Buzzard's sign in the Mastermind) (SIL Open Font License), served from the site.
 
 Characters, images and music: Mauk Tenieb. Motel Sound plays through YouTube.
