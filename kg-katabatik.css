@@ -133,3 +133,17 @@
   width:min(326px,calc(100vw - 48px))!important;min-width:0!important;height:48px!important;min-height:48px!important;padding:0 16px!important;letter-spacing:.2em}
 :where(.kg-layer) .hang-band b{font-size:19px;letter-spacing:.04em}
 :where(.kg-layer) .hang-band small{font-size:13px}
+
+/* [IK] 12 nov. (Mauk Tenieb : Akasztófa, visibilité, design, beauté) : lettres trouvées dorées et vives, lettres ratées rayées en rouge ; cases du mot plus grandes, la lettre révélée apparaît en éclat */
+#hang-word{gap:7px}
+.hang-cell{min-width:30px;font-family:'Press Start 2P',monospace;font-size:22px;line-height:1.4;color:#ffe08a;text-shadow:0 0 10px rgba(255,200,90,.55);border-bottom:3px solid rgba(201,168,76,.45);text-align:center}
+.hang-cell.hang-on{animation:hgpop .35s cubic-bezier(.2,1.4,.4,1)}
+@keyframes hgpop{0%{transform:scale(.3);opacity:0}100%{transform:none;opacity:1}}
+#hang-cat{color:rgba(255,224,138,.82)!important}
+#hang-status{color:#ffe08a!important}
+.hang-key{background:#14100a!important;color:#ffe3a0!important;border-color:rgba(201,168,76,.55)!important}
+.hang-key.hang-used{opacity:1!important}
+.hang-key.hang-hit{background:#2c2410!important;color:#ffd54f!important;border-color:#ffd54f!important;box-shadow:0 0 10px rgba(255,213,79,.35)!important}
+.hang-key.hang-bad{color:rgba(211,47,47,.75)!important;border-color:rgba(211,47,47,.35)!important;text-decoration:line-through;text-decoration-thickness:2px;background:#0b0706!important}
+@media (prefers-reduced-motion:reduce){.hang-cell.hang-on{animation:none}}
+@media (max-width:420px){.hang-cell{font-size:16px;min-width:22px}}

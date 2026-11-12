@@ -1059,7 +1059,7 @@ function hangDraw(){
     var kh='';
     for(var r2=0;r2<HANG_ROWS.length;r2++){kh+='<div class="hang-row">';for(var k2=0;k2<HANG_ROWS[r2].length;k2++)(function(L){
       var used=_hang.guessed[L]!==undefined||_hang.over;
-      kh+='<button class="hang-key'+(used?' hang-used':'')+'"'+(used?' disabled':'')+' data-action="hangGuess(\''+L+'\')">'+L+'</button>';
+      var gk=_hang.guessed[L];kh+='<button class="hang-key'+(used?' hang-used':'')+(gk===true?' hang-hit':gk===false?' hang-bad':'')+'"'+(used?' disabled':'')+' data-action="hangGuess(\''+L+'\')">'+L+'</button>';
     })(HANG_ROWS[r2][k2]);kh+='</div>';}
     kEl.innerHTML=kh;
     hangBand(kEl);
@@ -1085,7 +1085,7 @@ function hangGuess(L){
   var fam=HANG_FAM.filter(function(f){return f.indexOf(L)>=0;})[0]||L,hit=false;
   for(var f=0;f<fam.length;f++){var on=_hang.word.indexOf(fam[f])>=0;_hang.guessed[fam[f]]=on;if(on)hit=true;}
   if(!hit)_hang.guessed[L]=false;
-  if(!hit){_hang.miss++;_hangPartAt=Date.now();hangFall(L);}else kbSfx('tick',6);
+  if(!hit){_hang.miss++;_hangPartAt=Date.now();hangFall(L);hangTone(false);}else hangTone(true);
   var done=true;
   for(var i=0;i<_hang.word.length;i++)if(!_hang.guessed[_hang.word[i]]){done=false;break;}
   if(done){
@@ -1101,13 +1101,31 @@ function hangGuess(L){
   hangDraw();
 }
 window.hangNew=hangNew;window.hangGuess=hangGuess;
+/* [IK] 12 nov. (Mauk Tenieb : « design, beauté, sons ») : une lettre trouvée sonne en carillon qui monte avec le mot ; une lettre ratée, un coup sourd et la corde qui grince */
+function hangTone(hit){
+  try{
+    var ac=hangArp.ac||(hangArp.ac=new(window.AudioContext||window.webkitAudioContext)());
+    if(ac.state==='suspended'&&(!window.__ikFx||window.__ikFx.on()))try{ac.resume();}catch(_r){}
+    if(window.__ikFx&&!window.__ikFx.on())return;
+    var t=ac.currentTime+.01,o,g;
+    if(hit){
+      var n=0;for(var i=0;i<_hang.word.length;i++)if(_hang.guessed[_hang.word[i]])n++;
+      var base=392*Math.pow(2,Math.min(12,n)/12);
+      [1,1.5,2].forEach(function(m,k){o=ac.createOscillator();o.type=k?'sine':'triangle';o.frequency.value=base*m;g=ac.createGain();g.gain.setValueAtTime(0,t+k*.05);g.gain.linearRampToValueAtTime(.05/(k+1),t+k*.05+.01);g.gain.exponentialRampToValueAtTime(.0005,t+k*.05+.6);o.connect(g);g.connect(ac.destination);o.start(t+k*.05);o.stop(t+k*.05+.62);});
+    } else {
+      o=ac.createOscillator();o.type='sine';o.frequency.setValueAtTime(110,t);o.frequency.exponentialRampToValueAtTime(42,t+.25);g=ac.createGain();g.gain.setValueAtTime(.16,t);g.gain.exponentialRampToValueAtTime(.0005,t+.32);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+.34);
+      var len=Math.floor(ac.sampleRate*.5),b=ac.createBuffer(1,len,ac.sampleRate),d=b.getChannelData(0);for(var j=0;j<len;j++){var ph=j/ac.sampleRate;d[j]=(Math.random()*2-1)*Math.max(0,Math.sin(ph*Math.PI/0.5))*(0.5+0.5*Math.sin(ph*2*Math.PI*23));}
+      var s2=ac.createBufferSource();s2.buffer=b;var f=ac.createBiquadFilter();f.type='bandpass';f.frequency.setValueAtTime(900,t+.12);f.frequency.linearRampToValueAtTime(520,t+.6);f.Q.value=9;var g2=ac.createGain();g2.gain.value=.12;s2.connect(f);f.connect(g2);g2.connect(ac.destination);s2.start(t+.12);
+    }
+  }catch(_e){}
+}
 function hangArp(win){
   try{
     /* [IK] one context for the hangman, kept: a new one per game ran out after a dozen games */
     var ac=hangArp.ac||(hangArp.ac=new(window.AudioContext||window.webkitAudioContext)());
     if(ac.state==='suspended'&&(!window.__ikFx||window.__ikFx.on()))try{ac.resume();}catch(_r){}
     var t0=ac.currentTime+.03;
-    var seq=win?[440,554,659,880]:[220,208,196,185];
+    var seq=win?[440,554,659,880,1109,1319]:[220,208,196,185,147];
     seq.forEach(function(f,i){
       var o=ac.createOscillator();o.type='triangle';o.frequency.value=f;
       var g=ac.createGain();g.gain.setValueAtTime(0,t0+i*.11);
