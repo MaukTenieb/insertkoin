@@ -165,16 +165,19 @@ window.MotelRun=function(host,want){
   else{px+=vx;py+=vy}
   if(slide!=null&&!auto&&!tq&&!((held.l||held.r)||(ptr&&Math.abs((ptr.x-ptr.cx)/(ptr.w/2))>0.25))){var dd3=wrap(slide-ang),st3=Math.min(Math.abs(dd3),3.2*dt);ang+=dd3>0?st3:-st3}
   stuck=slide!=null?stuck+dt:0;
-  ang=wrap(ang);gait+=sp*dt*3.4;odo+=sp*dt;camera()}
+  ang=wrap(ang);gait+=sp*dt*3.4;odo+=sp*dt;CDT=dt;camera()}
  function sight(x,y){var n=Math.ceil(Math.hypot(px-x,py-y)/0.05);for(var i=1;i<n;i++){var t=i/n;if(!open_(x+(px-x)*t,y+(py-y)*t))return false}return true}
  /* caméra sur la trace du Mask, un pas derrière lui, tournée vers lui */
- function reseed(){var b=Math.min(CAMD,probe(ang+Math.PI,CAMD+0.3)-0.2);trail=[[px-Math.cos(ang)*b,py-Math.sin(ang)*b],[px,py]];st.cuts++}
+ /* 13 nov. 2026 (Mauk Tenieb : la scène « se refait » quand le Mask bute contre un mur) : la caméra ne saute plus derrière lui ; elle tourne autour de lui en 0,7 s, à distance tenue du mur */
+ var CDT=0.016,ORB=0,OA0=0;
+ function reseed(){if(trail.length&&depth){ORB=0.7;OA0=Math.atan2(cy-py,cx-px)}var b=Math.min(CAMD,probe(ang+Math.PI,CAMD+0.3)-0.2);trail=[[px-Math.cos(ang)*b,py-Math.sin(ang)*b],[px,py]];st.cuts++}
  function camera(){var L=trail[trail.length-1];if(!L||Math.hypot(px-L[0],py-L[1])>0.03)trail.push([px,py]);if(trail.length>500)trail.shift();
   var q=null;for(var i=trail.length-2;i>=0;i--){var A=trail[i];if(!sight(A[0],A[1])){q=trail[i+1];break}if(Math.hypot(A[0]-px,A[1]-py)>=CAMD){var B=trail[i+1],lo=0,hi=1;for(var k=0;k<10;k++){var mid=(lo+hi)/2,x=A[0]+(B[0]-A[0])*mid,y=A[1]+(B[1]-A[1])*mid;if(Math.hypot(x-px,y-py)>=CAMD)lo=mid;else hi=mid}q=[A[0]+(B[0]-A[0])*lo,A[1]+(B[1]-A[1])*lo];break}}
   if(!q){q=trail[0];if(Math.hypot(q[0]-px,q[1]-py)<0.3){reseed();q=trail[0]}}
   var hx=Math.cos(ang),hy=Math.sin(ang),rx=px-q[0],ry=py-q[1],rl=Math.hypot(rx,ry)||1;
   if((rx*hx+ry*hy)/rl<-0.3){reseed();q=trail[0];rx=px-q[0];ry=py-q[1];rl=Math.hypot(rx,ry)||1}
-  cx=q[0];cy=q[1];ca=Math.atan2(ry,rx);depth=rl}
+  cx=q[0];cy=q[1];ca=Math.atan2(ry,rx);depth=rl;
+  if(ORB>0){var tb=Math.atan2(cy-py,cx-px),k=1-ORB/0.7;k=k*k*(3-2*k);var bb=OA0+wrap(tb-OA0)*k,dd=Math.max(0.35,Math.min(CAMD,probe(bb,CAMD+0.3)-0.2));cx=px+Math.cos(bb)*dd;cy=py+Math.sin(bb)*dd;ca=Math.atan2(py-cy,px-cx);depth=dd;ORB-=CDT}}
  function cast(){
   var dx=Math.cos(ca),dy=Math.sin(ca),plx=-dy*FOV,ply=dx*FOV,bob=reduce?0:Math.sin(gait*3.2)*1.2;
   /* sol et plafond */
