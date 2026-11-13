@@ -1950,7 +1950,7 @@ const FC=R.map(r=>r.glow).filter(c=>!/^#(1|0)/.test(c));
     sparks=sparks.filter(s=>(s.l-=dt*.55)>0);for(const s of sparks){s.x+=s.vx;s.y+=s.vy;s.vy-=.01;s.vx*=.985;const gg=x.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*6);gg.addColorStop(0,hexA(s.c,.9*s.l));gg.addColorStop(1,hexA(s.c,0));x.fillStyle=gg;x.fillRect(s.x-s.r*6,s.y-s.r*6,s.r*12,s.r*12);}}
   requestAnimationFrame(step);})();
 /* the whole screen switches like a CRT channel */
-const _show=show;show=function(id){const was=['home','select','game','calque'].find(s=>!$(s).hidden);_show(id);if(was&&was!==id){const el=$(id);el.classList.remove('crt');void el.offsetWidth;el.classList.add('crt');if(AC&&sound){burst(4000,'highpass',.05,.12);tone(1200,.06,'sine',.02,.3);}}};
+const _show=show;show=function(id){const was=['home','select','game','calque'].find(s=>!$(s).hidden);_show(id);if(was&&was!==id){const el=$(id);el.classList.remove('crt');void el.offsetWidth;el.classList.add('crt');/* 13 nov. 2026 : l'allumage fini, la classe part ; sinon un cadre chargé pendant l'allumage reste figé sur le trait blanc (navigateur de l'app) */clearTimeout(el._crt);el._crt=setTimeout(()=>el.classList.remove('crt'),450);if(AC&&sound){burst(4000,'highpass',.05,.12);tone(1200,.06,'sine',.02,.3);}}};
 /* ================= extras: Koins across the sites, saved run, feel, champion ================= */
 /* Koins earned in 3615 Koins (same origin) show up here at once */
 function syncKoins(){try{const k=localStorage.getItem('ik.koins');if(k!==null&&+k!==koins){{const dk=+k-koins;if(dk>0&&typeof koinDrop==='function')setTimeout(()=>koinDrop(dk),0);}koins=+k;freeAt=+(localStorage.getItem('ik.freeAt')||0);$('kn').textContent=kfmt(koins);koinFx();}}catch(e){}$('kal').hidden=koins>0;}
