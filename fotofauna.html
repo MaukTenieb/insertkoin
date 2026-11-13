@@ -12136,7 +12136,7 @@ function paint(img){const c=$("view");if(c.width!==img.width||c.height!==img.hei
 let ECRAN=null; /* l'écran commun d'Insert Koin, quand le site le fournit (voir ecranOn) */
 /* le viseur occupe toute la place disponible, à l'échelle, petites images agrandies */
 function fit(){const c=$("view"),col=$("stageCol");if(!c.width||!col)return;
- if(ECRAN){const s=$("stage"),w=s.clientWidth,h=s.clientHeight;if(!w||!h)return;const k=Math.max(.05,Math.min(w/c.width,h/c.height,4));c.style.width=Math.floor(c.width*k)+"px";c.style.height=Math.floor(c.height*k)+"px";return}
+ if(ECRAN){const s=$("stage"),w=s.clientWidth,h=s.clientHeight;if(!w||!h)return;const k=Math.max(.05,Math.min(w/c.width,h/c.height,4));c.style.width=Math.floor(c.width*k)+"px";c.style.height=Math.floor(c.height*k)+"px";/* équerres du viseur posées sur l'image, pas sur l'écran */requestAnimationFrame(()=>{const m=s.querySelector(".ike-marks");if(!m)return;const a=s.getBoundingClientRect(),b=c.getBoundingClientRect(),e=Math.round(Math.min(b.width,b.height)*.04);m.style.inset=`${Math.round(b.top-a.top+e)}px ${Math.round(a.right-b.right+e)}px ${Math.round(a.bottom-b.bottom+e)}px ${Math.round(b.left-a.left+e)}px`});return}
  const desk=matchMedia("(min-width:1000px)").matches,pad=desk?28:16;
  let W=col.clientWidth-(desk?48:20)-pad,H;
  if(desk){const cs=getComputedStyle(col),used=$("actions").offsetHeight+$("status").offsetHeight+($("shutterRow").hidden?0:$("shutterRow").offsetHeight+12)+($("vidBar").hidden?0:$("vidBar").offsetHeight+12)+parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom)+28;H=col.clientHeight-used-pad}
