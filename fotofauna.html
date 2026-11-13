@@ -12017,7 +12017,9 @@ const REND={busy:0,tok:0};
 function scaleTo(img,max){const k=Math.min(1,max/Math.max(img.width,img.height));if(k>=1)return img;return FF.util.scaleSmooth(img,Math.max(1,Math.round(img.width*k)),Math.max(1,Math.round(img.height*k)))}
 function readFile(f){return new Promise((res,rej)=>{const u=URL.createObjectURL(f),im=new Image();im.onload=()=>{const c=FF.util.canvas(im.naturalWidth,im.naturalHeight);c.getContext("2d").drawImage(im,0,0);URL.revokeObjectURL(u);res(FF.util.fromCanvas(c))};im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error("image"))};im.src=u})}
 const MASKS=['unkle_maukie','dogxim','c7h5n3o6','naphta','tsui_pen','honey_buzzard','hatra_loves','croisiere_noire','aube','silent_pact','maiden_call','plague_of_justinian','poisoned_well','cadaver_synod','truce','auvergne','grand_colonel','malika'];
-const ikMask=()=>"mask-"+MASKS[Math.floor(Math.random()*MASKS.length)]+".webp";
+/* 13 nov. (Mauk Tenieb) : image d'ouverture = un lieu du motel (Video Kave, chambres), plus de portrait de Mask */
+const IK_LIEUX=["kave/a/vc/vc-01-salle.webp","kave/a/vc/vc-02-rayon.webp","room-puck-1.webp","room-puck-2.webp","room-puck-3.webp","room-puck-4.webp","room-puck-5.webp","room-puck-6.webp"];
+const ikMask=()=>IK_LIEUX[Math.floor(Math.random()*IK_LIEUX.length)];
 async function startImage(){const u=window.__pfStart||ikMask();
  try{const im=new Image();im.src=u;await im.decode();const c=FF.util.canvas(im.naturalWidth,im.naturalHeight);c.getContext("2d").drawImage(im,0,0);return FF.util.fromCanvas(c)}
  catch{const c=FF.util.canvas(800,800),g=c.getContext("2d"),gr=g.createLinearGradient(0,0,800,800);gr.addColorStop(0,"#c9a84c");gr.addColorStop(1,"#07060a");g.fillStyle=gr;g.fillRect(0,0,800,800);return FF.util.fromCanvas(c)}}
