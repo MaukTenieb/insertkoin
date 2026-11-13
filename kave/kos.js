@@ -73,7 +73,7 @@ function sumSize(n){var s=0;walk(n,function(x){if(x.size)s+=x.size});return s}
 
 /* ---------- ouverture ---------- */
 function openNode(n){
- if(!n)return;
+ if(!n)return;window.__petN=n;
  if(n.kind==='dir'||n.kind==='drive'||n.kind==='bin')return explorer(n);
  if(n.kind==='exe')return runProg(n);
  if(n.kind==='msk')return fiche(n);
@@ -104,7 +104,7 @@ function win(o){
  if(o.status){var st=h('div','wstat');o.status.forEach(function(s){st.appendChild(h('div','thin',esc(s)))});wb.appendChild(st);o.statusEl=st}
  if(!o.dlg)el.appendChild(h('div','grip'));
  $('#desk').appendChild(el);
- var w={key:o.key,el:el,title:o.title,icon:o.icon,ws:S.ws,o:o};WINS.push(w);
+ var w={key:o.key,el:el,title:o.title,icon:o.icon,ws:S.ws,o:o};WINS.push(w);if(window.__petWin&&!o.dlg)setTimeout(function(){window.__petWin(w)},350);
  el.addEventListener('pointerdown',function(){front(w)});
  $('.x',tb).onclick=function(e){e.stopPropagation();closeWin(w)};
  if(!o.dlg){$('.n',tb).onclick=function(e){e.stopPropagation();el.classList.add('min');front(null)};$('.m',tb).onclick=function(e){e.stopPropagation();el.classList.toggle('max')};tb.addEventListener('dblclick',function(){el.classList.toggle('max')})}
@@ -414,20 +414,60 @@ var PSYID='';function initPsy(){var ids=['c7h5n3o6','honey_buzzard','croisiere_n
 function balloon(o,el){if(!bal)return;bal.innerHTML=(o.name?'<b>'+esc(o.name)+'</b>':'')+esc(o.line||'');bal.classList.add('on');var r=(el||psy).getBoundingClientRect(),p=psy.getBoundingClientRect(),bw=bal.offsetWidth,bh=bal.offsetHeight;
  var x=Math.max(4,Math.min(innerWidth-bw-4,p.left+p.width/2-bw/2)),y=p.top-bh-10,below=false;if(y<4){y=p.bottom+10;below=true}bal.classList.toggle('below',below);bal.style.left=x+'px';bal.style.top=y+'px';bal.style.setProperty('--ax',Math.max(10,Math.min(bw-20,p.left+p.width/2-x-5))+'px');clearTimeout(balT);balT=setTimeout(function(){bal.classList.remove('on')},4500)}
 /* 8 nov. (Mauk Tenieb, 17 h 59) : le psychopompe va vraiment s'asseoir sur chaque icône : un bond, la base posée sur le haut de l'image, une réception */
-function goTo(el,cb){var im=el.querySelector('.ig>*')||el.querySelector('.ig')||el,r=im.getBoundingClientRect(),pw=psy.offsetWidth,ph=psy.offsetHeight;var x=r.left+r.width/2-pw/2+(Math.random()-.5)*r.width*.3,y=r.top-ph+2;if(y<0)y=0;psy.classList.remove('land','hop');void psy.offsetWidth;psy.classList.add('hop');psy.style.left=Math.max(4,Math.min(innerWidth-pw-4,x))+'px';psy.style.top=Math.max(0,Math.min(innerHeight-ph-4,y))+'px';setTimeout(function(){psy.classList.remove('hop');void psy.offsetWidth;psy.classList.add('land');setTimeout(function(){psy.classList.remove('land')},460);cb()},900)}
-function say(n,el){if(!S.psy||!psy)return;idle=0;var line=lineFor(n);if(!line)return;goTo(el,function(){balloon({line:line},el)})}
+function goTo(el,cb){var im=el.querySelector('.ig>*')||el.querySelector('.ig')||el,r=im.getBoundingClientRect(),pw=psy.offsetWidth,ph=psy.offsetHeight;var x=r.left+r.width/2-pw/2+(Math.random()-.5)*r.width*.3,y=r.top-ph+2;if(y<0)y=0;psy.classList.remove('land','hop');void psy.offsetWidth;psy.classList.add('hop');psy.style.left=Math.max(4,Math.min(innerWidth-pw-4,x))+'px';psy.style.top=Math.max(0,Math.min(innerHeight-ph-4,y))+'px';setTimeout(function(){psy.classList.remove('hop');void psy.offsetWidth;psy.classList.add('land');setTimeout(function(){psy.classList.remove('land')},460);cb()},psy.classList.contains('fou')?450:900)}
+function say(n,el){if(!S.psy||!psy)return;idle=0;var line=lineFor(n);if(!line)return;if(window.__petHold)window.__petHold();goTo(el,function(){balloon({line:line},el);if(window.__petFree)setTimeout(window.__petFree,2600)})}
 function buildTour(){tour=$$('#icons .di').sort(function(){return Math.random()-.5});ti=0}
 window.__ikBoom=function(){/* 10 nov. (Mauk Tenieb, 21 h 05) : dans l'OS, Baku Boom réinitialise, l'OS se relance */WINS.slice().forEach(closeWin);location.reload()};
-setInterval(function(){if(!S.psy||!psy||document.hidden||!$('#boot').classList.contains('out'))return;if(++idle<3)return;if(WINS.some(function(w){return !w.el.classList.contains('min')&&w.el.style.display!=='none'}))return;if(ti>=tour.length)buildTour();var e=tour[ti++];if(!e||!e.offsetWidth)return;var line=lineFor(e._n)||'';goTo(e,line?function(){balloon({line:line},e)}:function(){});idle=line?1:2},2700);
+setInterval(function(){if(window.__petOn&&window.__petOn())return;if(!S.psy||!psy||document.hidden||!$('#boot').classList.contains('out'))return;if(++idle<3)return;if(WINS.some(function(w){return !w.el.classList.contains('min')&&w.el.style.display!=='none'}))return;if(ti>=tour.length)buildTour();var e=tour[ti++];if(!e||!e.offsetWidth)return;var line=lineFor(e._n)||'';goTo(e,line?function(){balloon({line:line},e)}:function(){});idle=line?1:2},2700);
 ['pointerdown','keydown','wheel'].forEach(function(ev){addEventListener(ev,function(){idle=0},{passive:true})});
+
+/* ---------- 13 nov. 2026 (Mauk Tenieb, 1 h 55 et 1 h 57) : le psychopompe de l'OS, bête de bureau un peu foufou.
+   Au démarrage, une visite fofolle : il saute vite d'icône en icône. Ensuite il vit sur le bureau : il marche sur la barre des tâches,
+   grimpe aux bords de l'écran, s'assoit sur la barre de titre des fenêtres, tombe quand la fenêtre se ferme, suit la fenêtre qu'on déplace,
+   dort quand rien ne bouge ; à l'ouverture d'un programme il monte sur sa fenêtre et dit sa réplique (« 1a », 1 h 57 : sans malice). */
+var PET={on:false,x:0,y:0,vx:0,vy:0,dir:1,st:'fall',plat:null,off:0,t:0,sit:0,lt:0,calm:0,next:0,climbTo:0};
+function petSync(){PET.x=psy.offsetLeft;PET.y=psy.offsetTop}
+function petStart(){if(!psy||!S.psy)return;petSync();psy.classList.add('pet');PET.on=true;PET.st='fall';PET.vx=0;PET.vy=0;PET.next=performance.now()+30000+Math.random()*30000}
+window.__petOn=function(){return PET.on};
+window.__petHold=function(){PET.on=false;if(psy){psy.classList.remove('pet');psy.style.rotate='';psy.style.scale=''}};
+window.__petFree=function(){if(!PET.on)petStart()};
+window.__petThrow=function(vx,vy){if(!PET.on)return false;petSync();PET.vx=vx*55;PET.vy=vy*55;PET.st='fall';PET.plat=null;return true};
+function petFloor(){var fl=innerHeight,tb=$('#taskbar');if(tb&&tb.offsetHeight){var r=tb.getBoundingClientRect();if(r.top>innerHeight/2)fl=r.top}return fl}
+function petPlats(){var a=[{top:petFloor(),l:-1e4,r:1e4,el:null}];WINS.forEach(function(w){var e=w.el;if(!e.isConnected||e.classList.contains('min')||e.style.display==='none'||w.ws!==S.ws)return;var r=e.getBoundingClientRect();if(r.width>60&&r.top>20)a.push({top:r.top,l:r.left,r:r.right,el:e})});return a}
+window.__petTour=function(){if(!S.psy||!psy)return;window.__petHold();var ic=$$('#icons .di').filter(function(e){return e.offsetWidth}).sort(function(){return Math.random()-.5}).slice(0,8),i=0;psy.classList.add('fou');
+ (function nx(){if(i>=ic.length){psy.classList.remove('fou');setTimeout(petStart,300);return}var e=ic[i++],line=i%2?lineFor(e._n||{}):'';goTo(e,function(){if(line)balloon({line:line},e);setTimeout(nx,line?650:120)})})()};
+window.__petWin=function(w){if(!S.psy||!psy||!$('#boot').classList.contains('out'))return;var n=window.__petN,tb=w.el.querySelector('.tb')||w.el;window.__petHold();goTo(tb,function(){var line=n?lineFor(n):'';if(line)balloon({line:line},tb);petStart();PET.st='sit';PET.plat=w.el;PET.off=psy.offsetLeft-w.el.getBoundingClientRect().left;PET.sit=performance.now()+3500})};
+['pointerdown','keydown','wheel','pointermove'].forEach(function(ev){addEventListener(ev,function(){PET.calm=0;if(PET.st==='sleep'){PET.st='walk';if(bal)bal.classList.remove('on')}},{passive:true})});
+function petTick(ts){requestAnimationFrame(petTick);var dt=Math.min(.05,(ts-(PET.lt||ts))/1000);PET.lt=ts;if(!PET.on||!S.psy||!psy||document.hidden||psy.classList.contains('drag'))return;
+ var pw=psy.offsetWidth,ph=psy.offsetHeight,W=innerWidth,now=performance.now();PET.t+=dt;PET.calm+=dt;
+ if(PET.st==='fall'){var y0=PET.y+ph;PET.vy+=1900*dt;PET.x+=PET.vx*dt;PET.y+=PET.vy*dt;PET.vx*=.995;
+  if(PET.x<0){PET.x=0;PET.vx=-PET.vx*.5}if(PET.x>W-pw){PET.x=W-pw;PET.vx=-PET.vx*.5}if(PET.y<0){PET.y=0;PET.vy=Math.abs(PET.vy)*.3}
+  if(PET.vy>0){var cx=PET.x+pw/2,best=null;petPlats().forEach(function(p){if(cx>=p.l&&cx<=p.r&&p.top>=y0-2&&p.top<=PET.y+ph&&(!best||p.top<best.top))best=p});
+   if(best){PET.y=best.top-ph;PET.plat=best.el;PET.off=best.el?PET.x-best.el.getBoundingClientRect().left:0;PET.vx=0;PET.vy=0;PET.st=Math.random()<.4?'sit':'walk';PET.sit=now+1500+Math.random()*2500;psy.classList.remove('land');void psy.offsetWidth;psy.classList.add('land');setTimeout(function(){psy.classList.remove('land')},460)}}
+  psy.style.rotate=(PET.vx*.02)+'deg'}
+ else if(PET.st==='climb'){PET.y-=70*dt;psy.style.rotate=(PET.x<=1?90:-90)+'deg';if(PET.y<=PET.climbTo){PET.st='fall';PET.vx=(PET.x<=1?1:-1)*260;PET.vy=-260;psy.style.rotate=''}}
+ else{var p=PET.plat,L=0,R=W-pw,top=petFloor();
+  if(p){if(!p.isConnected||p.classList.contains('min')||p.style.display==='none'){PET.st='fall';PET.plat=null;PET.vy=0;return}var r=p.getBoundingClientRect();top=r.top;L=Math.max(0,r.left);R=Math.min(W-pw,r.right-pw);PET.x=r.left+PET.off}
+  PET.y=top-ph;
+  if(PET.st==='sit'||PET.st==='sleep'){psy.style.rotate='';if(PET.st==='sit'&&now>PET.sit)PET.st='walk';if(PET.calm>28&&PET.st!=='sleep'&&!p){PET.st='sleep';if(bal){balloon({line:'Zzz'})}}}
+  if(PET.st==='walk'){var sp=58;PET.x+=PET.dir*sp*dt;psy.style.rotate=(Math.sin(PET.t*11)*5)+'deg';psy.style.scale=PET.dir<0?'-1 1':'';
+   if(PET.x<=L){PET.x=L;if(!p&&L<=0&&Math.random()<.35){PET.st='climb';PET.climbTo=80+Math.random()*(top-ph-200)}else PET.dir=1}
+   if(PET.x>=R){PET.x=R;if(!p&&R>=W-pw-1&&Math.random()<.35){PET.st='climb';PET.climbTo=80+Math.random()*(top-ph-200)}else PET.dir=-1}
+   if(Math.random()<dt*.18){PET.st='sit';PET.sit=now+1800+Math.random()*3500}
+   else if(Math.random()<dt*.12){PET.st='fall';PET.vy=-720-Math.random()*300;PET.vx=PET.dir*(160+Math.random()*160);PET.plat=null}
+   else if(Math.random()<dt*.05)PET.dir=-PET.dir;
+   }
+  if(p)PET.off=PET.x-p.getBoundingClientRect().left}
+ psy.style.left=Math.round(PET.x)+'px';psy.style.top=Math.round(PET.y)+'px'}
+requestAnimationFrame(petTick);
 function psyDrag(){psy=$("#psy");psy.addEventListener('pointerdown',function(e){e.stopPropagation();var r=psy.getBoundingClientRect(),ox=e.clientX-r.left,oy=e.clientY-r.top,lx=e.clientX,ly=e.clientY,vx=0,vy=0;psy.classList.add('drag');psy.setPointerCapture(e.pointerId);
  function mv(ev){vx=ev.clientX-lx;vy=ev.clientY-ly;lx=ev.clientX;ly=ev.clientY;psy.style.left=ev.clientX-ox+'px';psy.style.top=ev.clientY-oy+'px'}
- function up(){psy.removeEventListener('pointermove',mv);psy.removeEventListener('pointerup',up);psy.classList.remove('drag');var pw=psy.offsetWidth,ph=psy.offsetHeight;psy.style.left=Math.max(4,Math.min(innerWidth-pw-4,psy.offsetLeft+vx*14))+'px';psy.style.top=Math.max(4,Math.min(innerHeight-ph-4,psy.offsetTop+vy*14))+'px';idle=-2}
+ function up(){psy.removeEventListener('pointermove',mv);psy.removeEventListener('pointerup',up);psy.classList.remove('drag');if(window.__petThrow&&window.__petThrow(vx,vy))return;var pw=psy.offsetWidth,ph=psy.offsetHeight;psy.style.left=Math.max(4,Math.min(innerWidth-pw-4,psy.offsetLeft+vx*14))+'px';psy.style.top=Math.max(4,Math.min(innerHeight-ph-4,psy.offsetTop+vy*14))+'px';idle=-2}
  psy.addEventListener('pointermove',mv);psy.addEventListener('pointerup',up)})}
 
 /* ---------- démarrage ---------- */
 function boot(again){var b=$('#boot');b.className='';b.innerHTML='';WINS.slice().forEach(closeWin);var th=S.theme,done=false;
- function end(){if(done)return;done=true;b.className='out';b.innerHTML='';buildTour()}
+ function end(){if(done)return;done=true;b.className='out';b.innerHTML='';buildTour();if(window.__petTour)setTimeout(window.__petTour,700)}
  b.onclick=end;document.addEventListener('keydown',function k(){document.removeEventListener('keydown',k);end()});
  if(th==='std'){b.innerHTML='<pre>'+t('starting')+'</pre>';setTimeout(function(){if(done)return;b.innerHTML='<div class="splash95" style="background-image:url(../attente-04.webp)"><div class="wm"><b>Korhog</b><i>OS</i><small>Insert Koin · Korhogo Fauna</small></div><div class="pb"></div></div>'},700);setTimeout(end,2600)}
  else if(th==='plat'){b.innerHTML='<div class="macbox"><div style="margin-bottom:8px">'+ic('koin',32).replace('<svg','<svg style="margin:0 auto 8px"')+'</div>'+t('welcome')+'<div class="bar"><i></i></div></div><div class="macext"></div>';var ex=$('.macext',b),list=['koin','minitel','vhs','camera','book','musik','mic','onion','repo','skopo','jukebox','webcam'];

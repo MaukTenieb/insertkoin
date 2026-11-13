@@ -428,3 +428,9 @@ body{font:var(--f);color:var(--tx);background:var(--desk)}
 .di:active .ig{transform:scale(.94)}
 .di.sel .lb,.plat .di.sel .lb,.fram .di.sel .lb{outline:0;border-radius:3px;box-shadow:0 0 8px rgba(255,200,90,.45)}
 @media (prefers-reduced-motion:reduce){.di .ig{transition:none}.di:active .ig{transform:none}}
+
+/* 13 nov. : psychopompe en bête de bureau (pas de glissé CSS : la physique le place) ; visite fofolle au démarrage */
+#psy.pet{transition:none!important}
+#psy.fou{transition:left .45s cubic-bezier(.3,1.4,.5,1),top .45s cubic-bezier(.3,1.4,.5,1)!important}
+#psy.fou.hop{animation:khop .45s cubic-bezier(.3,0,.4,1) both}
+#psy.fou .spr{animation:spr .6s steps(1) infinite}
