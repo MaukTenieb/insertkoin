@@ -280,7 +280,7 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
   function iaOpen(id,base){wait.textContent=T.load;fetch('https://archive.org/metadata/'+encodeURIComponent(id)).then(function(r){return r.json();}).then(function(m){
       var md=m.metadata||{},files=m.files||[],txt=(files.filter(function(f){return /_djvu\.txt$/.test(f.name);})[0]||{}).name,
       n=+md.imagecount||files.filter(function(f){return /\.(jp2|jpg)$/i.test(f.name)&&/_(jp2|raw)?\//.test(f.name);}).length||1;
-      var ti=base&&base.ti||[].concat(md.title||id)[0];shelve({id:id,ti:ti,c:base&&base.c});
+      var ti=base&&base.ti||[].concat(md.title||id)[0];(base&&base.auto)||shelve({id:id,ti:ti,c:base&&base.c});
       iaBook(id,{n:base&&base.n||n,start:base&&base.start,au:base&&base.au||[].concat(md.creator||'')[0],ti:ti,ed:base&&base.ed||[].concat(md.date||md.year||'')[0],txt:txt});})
     .catch(function(){if(base)iaBook(id,base);else wait.textContent=T.err;});}
 
@@ -378,7 +378,7 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
 
   /* un livre pris sur l'étagère de la borne s'ouvre directement */
   var next=null;try{next=JSON.parse(localStorage.getItem('borne.fauneye.next')||'null');localStorage.removeItem('borne.fauneye.next');}catch(e){}
-  if(next&&next.id){var st=STOCK.filter(function(k){return k.id===next.id;})[0];iaOpen(next.id,st||null);}else iaOpen(STOCK[0].id,STOCK[0]);
+  if(next&&next.id){var st=STOCK.filter(function(k){return k.id===next.id;})[0];iaOpen(next.id,st||null);}else{/* 13 nov. 2026 (Mauk Tenieb) : un livre du stock tiré au hasard à chaque ouverture, rangé sur l'étagère seulement si le visiteur le choisit */var k=STOCK[Math.floor(Math.random()*STOCK.length)];iaOpen(k.id,Object.assign({},k,{auto:1}));}
 })();
 </script>
 </body>
