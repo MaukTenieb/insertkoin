@@ -25,7 +25,7 @@ button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-sel
 #wrap{position:fixed;left:0;right:0;top:0;bottom:var(--ikbar,52px);display:grid;align-items:center;justify-items:center;overflow:hidden;scrollbar-width:none;pointer-events:none}
 #wrap::-webkit-scrollbar{display:none}
 #wrap.pan{overflow-x:auto;overflow-y:hidden;justify-items:start;touch-action:pan-x}
-#wrap.live{pointer-events:auto}
+#wrap.live{pointer-events:auto;background:#000}.vfull .scene{-webkit-mask-image:none;mask-image:none}
 #wrap>.scene{grid-area:1/1}
 .scene{position:relative;width:var(--sw);height:var(--sh);opacity:0;visibility:hidden;transition:opacity .2s ease-out,visibility 0s .2s;
  -webkit-mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 3.5%,#000 96.5%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 3.5%,#000 96.5%,transparent);mask-composite:intersect}
@@ -125,7 +125,8 @@ function eout(x){return 1-Math.pow(1-x,4)}
 
 /* 1. mise à l'échelle : rayon et comptoir entiers à l'écran ; au téléphone debout, la photo garde une hauteur lisible et glisse sous le doigt */
 var PAN=false,BH=17.2;
-function fit(){var W=innerWidth,Hh=innerHeight-barH(),sw=Math.min(W,Hh*IA);PAN=false;
+/* 13 nov. 2026 (Mauk Tenieb : « attention aux marges des grandes images ») : la photo couvre l'écran quand la coupe reste sous 12 % ; sinon elle tient entière sur fond noir, le couloir ne transparaît plus dans les marges */
+function fit(){var W=innerWidth,Hh=innerHeight-barH(),sw=Math.min(W,Hh*IA),cov=Math.max(W,Hh*IA),full=cov/sw<=1.12;if(full)sw=cov;PAN=false;root.classList.toggle('vfull',full);
  if(sw<700&&innerHeight>innerWidth){PAN=true;sw=Math.min(Hh*.92,700)*IA}
  var sh=sw/IA;root.style.setProperty('--sw',sw+'px');root.style.setProperty('--sh',sh+'px');
  $('#wrap').classList.toggle('pan',PAN);
@@ -178,8 +179,10 @@ function toPhoto(px,py){var W=innerWidth,H=innerHeight,a=W/H,qx=(px-W/2)/H,qy=(p
  var o=[V[0]+(p[0]-V[0])/s,V[1]+(p[1]-V[1])/s];o.p0=p;return o}
 /* zones de la photo : rayons à gauche et à droite, lampe du comptoir au fond, sol et plafond pour avancer */
 /* le fond de l'allée, où qu'il soit dans la récursion, mène au comptoir */
+/* 13 nov. 2026 (Mauk Tenieb : « que le visiteur puisse parcourir ce couloir infini un temps ») : le comptoir se découvre après quatre à huit sas parcourus, tirés au hasard à chaque visite ; avant, le fond de l'allée fait avancer */
+var GOAL=RM?0:4+Math.random()*4,FOUND=false;function found(){if(!FOUND&&S.D>=GOAL)FOUND=true;return FOUND}
 function zone(px,py){var s=toPhoto(px,py),z=s.p0||s,ex=(z[0]-V[0])/.07,ey=(z[1]-V[1])/.14;
- if(ex*ex+ey*ey<1)return 'E';if(s[1]<.03||s[1]>.97)return 'F';if(s[0]<.44)return 'L';if(s[0]>.56)return 'R';return 'F'}
+ if(ex*ex+ey*ey<1&&found())return 'E';if(s[1]<.03||s[1]>.97)return 'F';if(s[0]<.44)return 'L';if(s[0]>.56)return 'R';return 'F'}
 /* la boucle : le travelling lent, l'élan des gestes, les fondus de lumière */
 var TW=[],raf=0,last=0,t0=0;
 function tween(k,to,ms,fn,done){TW=TW.filter(function(x){return x.k!==k});TW.push({k:k,a:S[k],b:to,t:performance.now(),ms:RM?1:ms,fn:fn||ease,done:done});kick()}
@@ -326,7 +329,7 @@ addEventListener('keydown',function(e){if(e.defaultPrevented||e.altKey||e.ctrlKe
  if(CASE.classList.contains('on')){if(k==='Escape'||k==='Backspace'){e.preventDefault();nope()}else if(k==='ArrowLeft'||k==='ArrowRight'){e.preventDefault();var bs=$$('#case .btn');(k==='ArrowLeft'?bs[0]:bs[1]).focus()}else if(k==='Tab'){var q=$$('#case .btn');if(document.activeElement===q[1]&&!e.shiftKey){e.preventDefault();q[0].focus()}else if(document.activeElement===q[0]&&e.shiftKey){e.preventDefault();q[1].focus()}}return}
  if(busy)return;
  if(scene==='salle'){if(k==='ArrowUp'||k==='w'||k==='z'){e.preventDefault();S.v=Math.min(1.6,S.v+.45);kick()}else if(k==='ArrowDown'||k==='s'){e.preventDefault();S.v=Math.max(-1.6,S.v-.45);kick()}
-  else if(k==='ArrowLeft')go('rayon',[.22,.5]);else if(k==='ArrowRight')go('rayon',[.78,.5]);else if(k==='Enter'||k===' '){e.preventDefault();go('comptoir',[.5,.497])}return}
+  else if(k==='ArrowLeft')go('rayon',[.22,.5]);else if(k==='ArrowRight')go('rayon',[.78,.5]);else if(k==='Enter'||k===' '){e.preventDefault();if(found())go('comptoir',[.5,.497]);else{S.v=Math.min(1.6,S.v+.7);kick()}}return}
  if(k==='Escape'||k==='Backspace'){e.preventDefault();back();return}
  if(scene==='rayon'){var a=document.activeElement,i=BOX.indexOf(a);if(k==='Enter'||k===' '){if(i>=0){e.preventDefault();take(TAPES[i],a)}return}
   var dr={ArrowUp:-1,ArrowDown:1}[k]||0,dc={ArrowLeft:-1,ArrowRight:1}[k]||0;if(!dr&&!dc)return;e.preventDefault();if(i<0){BOX[0].focus();return}
