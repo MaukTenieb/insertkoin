@@ -114,6 +114,10 @@ html body header.top #bLang{margin-left:auto}
 .shutterRow #pvMode,.shutterRow .advance,.shutterRow #shutter,.shutterRow #camOff{display:none!important}
 #dock button[role=tab]{display:grid;place-items:center;min-width:56px}#dock button[role=tab] .ic{width:24px;height:24px}
 .ff-modes button .ic{width:20px;height:20px;display:block}
+.kmk{order:0;flex:none;width:40px;align-self:stretch;position:relative;margin:-8px 0 0}
+.kmk #mk.in{position:absolute!important;left:3px!important;top:0!important;display:block!important;z-index:40}
+.kmk #mk.in .fob{width:26px;padding:0}
+.kmk #mk.in .board{top:66px}
 .recShelf{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px}
 .recShelf button{flex:none;font:500 11px/1 var(--num);letter-spacing:.1em;padding:9px 10px;min-height:36px;border:1px solid var(--line2);border-radius:3px;background:#0f0d0a;color:#e8e0c8}
 .recShelf button i{font-style:normal;margin-left:8px;color:var(--mute)}
@@ -319,6 +323,7 @@ html.ike-on .app[data-ike-layout=narrow] .ctrl{border-radius:0}
  <div class="logo"><svg class="mark" aria-hidden="true"><use href="#i-aperture"/></svg><span class="word" style="text-transform:none">KamOrhogo</span></div>
  <button class="key" id="bShoot" type="button"><svg class="ic" aria-hidden="true"><use href="#i-camera"/></svg><span data-i="shoot"></span></button>
  <button class="key" id="bOpen" type="button"><svg class="ic" aria-hidden="true"><use href="#i-open"/></svg><span data-i="open"></span></button>
+ <div class="kmk" id="kmk"></div>
  <div class="kb" id="kb"><div class="sw" role="group" id="kSrc"><button type="button" data-k="scr" data-al="kScr"><svg class="ic" aria-hidden="true"><use href="#i-scr"/></svg></button><button type="button" data-k="cam" data-al="kCam"><svg class="ic" aria-hidden="true"><use href="#i-kam"/></svg></button></div><div class="sw" role="group" id="kObj"><button type="button" data-o="open" data-al="kOpen"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg></button><button type="button" data-o="mask" data-al="kMask"><svg class="ic" aria-hidden="true"><use href="#i-blind"/></svg></button></div><div class="sw" role="group" id="kPv"><button type="button" data-v="photo" data-al="kPik"><svg class="ic" aria-hidden="true"><use href="#i-pik"/></svg></button><button type="button" data-v="video" data-al="kVid"><svg class="ic" aria-hidden="true"><use href="#i-vid"/></svg></button></div><button class="key kt" id="kMik" type="button" aria-pressed="false" data-al="kMik"><svg class="ic" aria-hidden="true"><use href="#i-mic"/></svg></button><button class="key kt" id="kWand" type="button" data-al="kWand"><svg class="ic" aria-hidden="true"><use href="#i-wand"/></svg></button><button class="key kt" id="kImp" type="button" data-al="open"><svg class="ic" aria-hidden="true"><use href="#i-open"/></svg></button></div>
  <button class="key lang" id="bLang" type="button"><b data-l="en">EN</b><b data-l="fr">FR</b></button>
  <button class="key" id="bMenu" type="button" data-al="labo"><svg class="ic" aria-hidden="true"><use href="#i-more"/></svg></button>
@@ -12784,5 +12789,6 @@ function i18n(){document.documentElement.lang=LANG;
 __ffBoot();
 </script>
 <script src="borne-fotofauna.js"></script>
+<script>window.IK_MK="kmk"</script><script src="kave/motel.js"></script>
 </body>
 </html>

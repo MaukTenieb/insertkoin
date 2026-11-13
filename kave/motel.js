@@ -1,7 +1,9 @@
 /* Le porte-clé du motel : les cinq lieux d'Insert Koin (hall, chambre, vidéoclub, bureau), au même coin de chaque page.
    Décision de Mauk Tenieb, 8 nov. 2026 : les univers sont les lieux d'un même motel. */
 (function(){
-if(window.top!==window.self||document.getElementById('mk'))return;
+/* 13 nov. : un programme peut accrocher le porte-clé chez lui (window.IK_MK = id du conteneur), même dans un cadre ; les lieux s'ouvrent alors en pleine page */
+var MKIN=window.IK_MK&&document.getElementById(window.IK_MK);
+if((window.top!==window.self&&!MKIN)||document.getElementById('mk'))return;
 /* lieu retenu pour le visiteur qui revient ; l'entrée du site (index.html de la borne, session « Audit ») le lira */
 try{var lp=location.pathname;localStorage.setItem('ik.lieu',/\/kave\//.test(lp)?(lp.split('/').pop()||'index.html'):'../')}catch(e){}
 var lang='en';try{lang=localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e){}
@@ -60,14 +62,14 @@ function href(u){return u==='../'?(HALL?'./':B):P+u}
 var BG='#3b2416';
 function fill(){try{lang=localStorage.getItem('ik.lang')||lang}catch(e){}var fr=lang==='fr';
  b.setAttribute('aria-label',fr?'Porte-clé du motel : les lieux':'Motel key tag: the places');c.setAttribute('aria-label',fr?'Les lieux du motel':'The motel places');
- c.innerHTML='';L.forEach(function(x){var a=document.createElement('a');a.href=href(x[0]);a.title=fr?x[1]:x[2];a.setAttribute('aria-label',a.title);a.innerHTML=picto(x[3],BG);if(x[0]===here)a.setAttribute('aria-current','page');c.appendChild(a)})}
+ c.innerHTML='';L.forEach(function(x){var a=document.createElement('a');a.href=href(x[0]);if(MKIN)a.target='_top';a.title=fr?x[1]:x[2];a.setAttribute('aria-label',a.title);a.innerHTML=picto(x[3],BG);if(x[0]===here)a.setAttribute('aria-current','page');c.appendChild(a)})}
 fill();
 w.appendChild(b);w.appendChild(c);
 function tog(v){w.classList.toggle('on',v);b.setAttribute('aria-expanded',String(v))}
 b.addEventListener('click',function(e){e.stopPropagation();var v=!w.classList.contains('on');if(v)fill();tog(v)});
 document.addEventListener('click',function(e){if(!w.contains(e.target))tog(false)});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&w.classList.contains('on')){tog(false);b.focus();e.stopPropagation();e.preventDefault()}},true);
-function add(){document.body.appendChild(w);var t=getComputedStyle(document.documentElement).getPropertyValue('--mk-top');if(t)w.style.top=t}
+function add(){if(MKIN){w.classList.add('in');MKIN.appendChild(w);return}document.body.appendChild(w);var t=getComputedStyle(document.documentElement).getPropertyValue('--mk-top');if(t)w.style.top=t}
 /* au hall, sur un écran sans marge à gauche du meuble (téléphone), le porte-clé pend au toit et défile avec la page : il cesse de flotter sur le meuble (Mauk Tenieb, 8 nov.) */
 function hall(){var wr=document.querySelector('.wrap');if(!wr||!document.querySelector('.b-panel'))return;var R=wr.getBoundingClientRect();
  if(R.left>=56){w.style.position='';w.style.left='';return}
