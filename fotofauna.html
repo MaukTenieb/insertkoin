@@ -12424,7 +12424,9 @@ document.querySelectorAll("#kSrc button").forEach(b=>b.onclick=()=>kSrc(b.datase
 if(!(navigator.mediaDevices&&navigator.mediaDevices.getDisplayMedia))document.querySelector('#kSrc [data-k="scr"]').hidden=true;
 document.querySelectorAll("#kObj button").forEach(b=>b.onclick=()=>{KMASK=b.dataset.o==="mask";kPaint()});
 document.querySelectorAll("#kPv button").forEach(b=>b.onclick=()=>{if(REC||SREC)return;PIKVID=b.dataset.v;kEff()});
-$("kMik").onclick=()=>{if(SREC){sonStop();return}if(REC)return;MK=!MK;kEff()};
+/* le micro sur la commode : l'image du dictaphone tant qu'aucune prise du visiteur n'occupe l'écran */
+async function kMikPic(){if(S.own||CAM||VM)return;try{const u=window.__pfStart;window.__pfStart=MK?"kave/a/mikro.webp":ikMask();const im=await startImage();window.__pfStart=u;if(!S.own&&!CAM)await setSource(im,false);render()}catch{}}
+$("kMik").onclick=()=>{if(SREC){sonStop();return}if(REC)return;MK=!MK;kEff();kMikPic()};
 $("kWand").onclick=()=>{showPane("ai");const p=$("prompt");if(p){p.focus();if(!matchMedia("(min-width:1000px)").matches)p.scrollIntoView({behavior:"smooth",block:"center"})}};
 $("kImp").onclick=()=>$("fOpen").click();
 /* la recette : la pile de rendus gardée dans l'appareil, reprise d'un appui sur l'étagère */
@@ -12434,7 +12436,7 @@ function recDraw(){const a=recShelf(),el=$("recShelf");el.hidden=!a.length;el.in
 $("kRec").onclick=()=>{const {r}=recipeNow();if(!r.layers.length){setStatus(t("recEmpty"));return}const a=recShelf(),d=new Date();a.unshift({n:hudRep(d).split(" ").slice(0,2).join(" ")+" "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")+" ·"+r.layers.length,r});
  try{localStorage.setItem(RK,JSON.stringify(a.slice(0,24)))}catch{}recDraw();setStatus(t("recKept"),"ok")};
 recDraw();kPaint();
-if(/[?&]son=1/.test(location.search)){MK=true;kEff()}
+if(/[?&]son=1/.test(location.search)){MK=true;kEff();window.__pfStart=window.__pfStart||"kave/a/mikro.webp"}
 /* effets du dictaphone */
 function sBiq(x,sr,type,f,q){const w=2*Math.PI*f/sr,c=Math.cos(w),al=Math.sin(w)/(2*q);let b0,b1,b2;if(type==="lp"){b0=(1-c)/2;b1=1-c;b2=b0}else if(type==="hp"){b0=(1+c)/2;b1=-(1+c);b2=b0}else{b0=al;b1=0;b2=-al}
  const a0=1+al,a1=-2*c,a2=1-al,y=new Float32Array(x.length);let x1=0,x2=0,y1=0,y2=0;for(let i=0;i<x.length;i++){const v=(b0*x[i]+b1*x1+b2*x2-a1*y1-a2*y2)/a0;x2=x1;x1=x[i];y2=y1;y1=v;y[i]=v}return y}
