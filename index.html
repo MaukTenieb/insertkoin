@@ -1157,6 +1157,13 @@ function rollRoom(gid){pickRoom();const pk=a=>Math.floor(Math.random()*a.length)
 function drawPic(c,id,x,y,w,h,tone){const im=id&&MASKIMG[id];c.fillStyle='#2a2620';c.fillRect(x,y,w,h);if(!im||!im.complete||!im.naturalWidth)return;
   const iw=im.naturalWidth,ih=im.naturalHeight,k=Math.max(w/iw,h/ih)*1.15,sw=w/k,sh=h/k,sx=(iw-sw)/2,sy=Math.max(0,ih*.08);c.save();c.beginPath();c.rect(x,y,w,h);c.clip();c.drawImage(im,sx,sy,sw,sh,x,y,w,h);
   c.globalCompositeOperation='multiply';c.fillStyle=tone||'rgba(170,150,120,.55)';c.fillRect(x,y,w,h);c.globalCompositeOperation='source-over';c.fillStyle='rgba(255,240,200,.05)';c.fillRect(x,y,w,h*.4);c.restore();}
+/* 13 nov. 2026 (Mauk Tenieb : « des tableaux au mur qui vont pas ») : le portrait du mur de droite suit la fuite du mur (bord lointain plus court), en bandes verticales */
+function drawPicQ(c,id,Q){const xs=Q.map(p=>p[0]),ys=Q.map(p=>p[1]),w=Math.max(8,Math.round(Math.max(...xs)-Math.min(...xs))),h=Math.max(8,Math.round(Math.max(...ys)-Math.min(...ys)));
+  const off=document.createElement('canvas');off.width=w*2;off.height=h*2;const o=off.getContext('2d');o.scale(2,2);drawPic(o,id,0,0,w,h);
+  const[TL,TR,BR,BL]=Q,N=Math.max(6,w),Lr=(a,b,u)=>[a[0]+(b[0]-a[0])*u,a[1]+(b[1]-a[1])*u];
+  for(let i=0;i<N;i++){const u0=i/N,u1=(i+1)/N,A=Lr(TL,TR,u0),B=Lr(TL,TR,u1),C=Lr(BL,BR,u0),sw=off.width/N;
+    c.save();c.beginPath();c.moveTo(A[0],A[1]);c.lineTo(B[0]+.4,B[1]);c.lineTo(Lr(BL,BR,u1)[0]+.4,Lr(BL,BR,u1)[1]);c.lineTo(C[0],C[1]);c.closePath();c.clip();
+    c.setTransform(c.getTransform().multiply(new DOMMatrix([(B[0]-A[0])/sw,(B[1]-A[1])/sw,(C[0]-A[0])/off.height,(C[1]-A[1])/off.height,A[0],A[1]])));c.drawImage(off,u0*off.width,0,sw+.5,off.height,0,0,sw+.5,off.height);c.restore()}}
 const TXC={};function cached(key,w,h,fn){if(!TXC[key]){const[k,q]=cnv(w,h);fn(q,w,h);TXC[key]=k;}return TXC[key];}
 function paintPaper(c,w,h,uw){c.drawImage(cached('p'+w+'x'+h+RV.k,w,h,(q,w,h)=>paperRaw(q,w,h,uw)),0,0);}
 function paperRaw(c,w,h,uw){/* the wallpaper of the painting: sage ground, mottled, sparse sprigs of dusty roses */
@@ -1312,7 +1319,8 @@ function buildRoom(){roomLoad();const c=bg;c.imageSmoothingEnabled=true;c.clearR
     if(ROOM&&BUST&&BUSTPIC.complete&&BUSTPIC.naturalWidth){const q=BUSTCELL[ROOM.n+'.'+BUST];if(q){const[qx,qy,qw,qh]=q,kx=W/1264,ky=H/848;c.drawImage(BUSTPIC,qx,qy,qw,qh,ROOM.b[0]-qw*kx/2,ROOM.b[1]-qh*ky,qw*kx,qh*ky);}}
     if(ROOM){const[tx,ty,tw,th]=ROOM.tv;TV.x=Math.round(tx);TV.y=Math.round(ty);TV.w=Math.round(tw);TV.h=Math.round(th);CLK.x=tx+13;CLK.y=ty-12;}
     const[p0x,p0y]=P3(170,-40,RZ),[p1x,p1y]=P3(300,110,RZ);if(ROOM&&ROOM.p1)drawPic(c,RV.pics&&RV.pics[0],...ROOM.p1);else drawPic(c,RV.pics&&RV.pics[0],p0x+1.2,p0y+1.2,p1x-p0x-2.4,p1y-p0y-2.4);
-    const[q0x,q0y]=P3(RX,-10,2070),[q1x,q1y]=P3(RX,190,1880);if(ROOM&&ROOM.p2)drawPic(c,RV.pics&&RV.pics[1],...ROOM.p2);else drawPic(c,RV.pics&&RV.pics[1],Math.min(q0x,q1x)+.8,q0y+1,Math.abs(q1x-q0x)-1.6,q1y-q0y-2);
+    const[q0x,q0y]=P3(RX,-10,2070),[q1x,q1y]=P3(RX,190,1880);{const[f0x,f0y]=P3(RX,-10,2070),[f1x,f1y]=P3(RX,190,2070),[n0x,n0y]=P3(RX,-10,1880),[n1x,n1y]=P3(RX,190,1880);let Q=[[f0x+.8,f0y+1],[n0x-.8,n0y+1],[n1x-.8,n1y-1],[f1x+.8,f1y-1]];
+     if(ROOM&&ROOM.p2){const[x,y,w,h]=ROOM.p2,r=(f1y-f0y)/(n1y-n0y),d=h*(1-r)/2;Q=[[x,y+d],[x+w,y],[x+w,y+h],[x,y+h-d]];}drawPicQ(c,RV.pics&&RV.pics[1],Q);}
     /* the board on the left wall: YOU, the Mask's name, and the tallies, chalked in red */
     /* drawn flat on its own sheet, then laid on the wall in true perspective (narrow vertical strips: the far side is shorter) */
     const BD=document.createElement('canvas');BD.width=BD.height=200;const q=BD.getContext('2d');q.scale(2,2);
@@ -1662,11 +1670,17 @@ function puck(c,x,z){const r=G.e.p.puck_size,col=G.r.glow,dark=col==='#141418'||
   c.fillStyle='rgba(255,255,255,.5)';c.fillRect(cx-rx*.35,cy-h-ry*.45,Math.max(.5,rx*.3),.5);}
 /* the night's haze thickens as the match goes on: an even veil, with nothing drifting across the room */
 function smoke(c){const p=prog();c.fillStyle=`rgba(190,180,160,${.03+p*.1})`;c.fillRect(0,0,W,H);}
+/* 13 nov. 2026 (Mauk Tenieb : « sur PC la perspective du plateau est atroce » ; « la taille des Masks est trop grande par rapport à la pièce ») :
+   le plateau gardait l'horizon du Shufflepuck Café de 1989 (9 % du haut), les chambres photographiées l'ont à hauteur d'œil (37 %).
+   Le plateau et ses pièces se tassent verticalement autour du bord du joueur (y 330) pour poser l'horizon à y 128 ; le Mask s'assied au nouveau bout du plateau, réduit à 82 %.
+   Le moteur garde sa géométrie : seul l'affichage change, et le pointeur repasse par la transformation inverse. */
+const PK=(330-128)/(330-30),PKS=.82,pky=y=>330-(330-y)*PK,pkinv=y=>330-(330-y)/PK;
 function render(a,dt){const c=ctx,e=G.e,p=G.prev,q=G.cur,L=(u,v)=>u+(v-u)*a;
-  room(c);c.drawImage(ctL,0,0,W,H);
+  const sq=()=>{c.save();c.translate(0,330);c.scale(1,PK);c.translate(0,-330)};
+  room(c);sq();c.drawImage(ctL,0,0,W,H);c.restore();
   const cl=(v,lo,hi)=>v<lo?lo:(v>hi?hi:v),sck=e.p.puck_size,pdk=e.p.pad_size,bdk=e.p.back_pad_size;
   const ox=cl(L(p.ox,q.ox),bdk-250,250-bdk),oz=cl(L(p.oz,q.oz),0,e.p.back),px=cl(L(p.px,q.px),sck-250,250-sck),pz=cl(L(p.pz,q.pz),0,e.p.back),ax=cl(e.running?mouse[0]-ORIGIN_H:L(p.ax,q.ax),pdk-250,250-pdk),az=cl(e.running?330-mouse[1]:L(p.az,q.az),0,300);
-  portrait(c,Math.round(ox*.08));c.drawImage(rlL,0,0,W,H);
+  c.save();c.translate(W/2,pky(BASE));c.scale(PKS,PKS);c.translate(-W/2,-BASE);portrait(c,Math.round(ox*.08));c.restore();sq();c.drawImage(rlL,0,0,W,H);
   let oa=.95;if(G.r.sig==='silent')oa=Math.max(.06,Math.min(.95,1.1-Math.hypot(px-ox,pz-oz)/320));if(e.down>0)oa=0;
   const objs=[{z:az,d:()=>plate(c,ax,az,e.p.pad_size,'rgba(233,226,207,.16)','#e9e2cf',1)}];if(G.fl)objs.push({z:G.fl.z,d:()=>kDraw(c)});
   if(oa>0){objs.push({z:oz,d:()=>plate(c,ox,oz,e.p.back_pad_size,G.r.pad[0],G.r.pad[2],oa)});if(e.p.twins)objs.push({z:oz,d:()=>plate(c,-ox,oz,e.p.back_pad_size,G.r.pad2[0],G.r.pad2[2],oa)});}
@@ -1674,7 +1688,7 @@ function render(a,dt){const c=ctx,e=G.e,p=G.prev,q=G.cur,L=(u,v)=>u+(v-u)*a;
   objs.sort((m,n)=>n.z-m.z).forEach(o=>o.d());veil(c);
   if(e.cracks.length){c.lineWidth=1;c.strokeStyle='rgba(0,0,0,.6)';c.beginPath();for(const s of e.cracks){c.moveTo(s[0]+1.5,s[1]+1.5);c.lineTo(s[2]+1.5,s[3]+1.5);}c.stroke();
     c.strokeStyle='#f4f8ff';c.beginPath();for(const s of e.cracks){c.moveTo(s[0]+.5,s[1]+.5);c.lineTo(s[2]+.5,s[3]+.5);}c.stroke();}
-  smoke(c);
+  c.restore();smoke(c);
   if(G.flash>0){c.fillStyle=`rgba(236,240,255,${Math.min(.5,G.flash*2.5)})`;c.fillRect(0,0,W,H);}}
 function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;
   if(G&&!$('game').hidden&&!document.hidden){G.t+=dt;if(G.hitT>0)G.hitT-=dt;if(G.trailT>0)G.trailT-=dt;if(G.flash>0)G.flash-=dt;kFloat(dt);if(G.faceT>0&&G.faceT<90)G.faceT-=dt;G.blinkT-=dt;if(G.blinkT<0)G.blinkT=1.6+Math.random()*3.5;
@@ -1688,9 +1702,9 @@ const TOUCH=new Set();
 let T0=null;const TG=[1.7,2.2];window.__mouse=()=>mouse.slice();window.__pk=()=>G;
 function touchDrag(e){if(!T0){T0={x:e.clientX,y:e.clientY,m:mouse.slice()};return;}const r=cv.getBoundingClientRect(),evs=e.getCoalescedEvents?e.getCoalescedEvents():[];const pt=evs.length?evs[evs.length-1]:e;
   const cw=Math.min(r.width,r.height*W/H),ch=Math.min(r.height,r.width*H/W);/* in full screen the picture is letterboxed inside the canvas box */
-  let x=T0.m[0]+(pt.clientX-T0.x)*W/cw*TG[0],y=T0.m[1]+(pt.clientY-T0.y)*H/ch*TG[1];const cx=Math.max(0,Math.min(W,x)),cy=Math.max(30,Math.min(H,y));
+  let x=T0.m[0]+(pt.clientX-T0.x)*W/cw*TG[0],y=T0.m[1]+(pt.clientY-T0.y)*H/ch*TG[1]/PK;const cx=Math.max(0,Math.min(W,x)),cy=Math.max(30,Math.min(H,y));
   if(cx!==x||cy!==y)T0={x:pt.clientX,y:pt.clientY,m:[cx,cy]};mouse=[cx,cy];}
-function toScreen(e){const r=cv.getBoundingClientRect(),up=e.pointerType==='touch'?26:0,cw=Math.min(r.width,r.height*W/H),ch=Math.min(r.height,r.width*H/W),l=r.left+(r.width-cw)/2,t=r.top+(r.height-ch)/2;return[Math.round(Math.max(0,Math.min(W,(e.clientX-l)/cw*W))),Math.round(Math.max(0,Math.min(H,(e.clientY-t)/ch*H)))-up];}
+function toScreen(e){const r=cv.getBoundingClientRect(),up=e.pointerType==='touch'?26:0,cw=Math.min(r.width,r.height*W/H),ch=Math.min(r.height,r.width*H/W),l=r.left+(r.width-cw)/2,t=r.top+(r.height-ch)/2;return[Math.round(Math.max(0,Math.min(W,(e.clientX-l)/cw*W))),Math.round(Math.max(30,Math.min(H,pkinv(Math.max(0,Math.min(H,(e.clientY-t)/ch*H))-up))))];}
 function begin(){if(G&&!G.started){if(KDUE&&KDUE===G){KDUE=null;pay();}G.started=true;G.e.running=true;$('msg').hidden=true;}}
 /* the mouse stays inside the table while a match is on: Enter (or Escape) lets it go; any click on the table takes it back */
 const locked=()=>document.pointerLockElement===cv;
