@@ -121,5 +121,22 @@ Les temps donnent la découpe dans le fichier original.
 ## snd/pads — coupes des albums de Mauk Tenieb (12 nov. 2026)
 Dix-huit coupes de 1,6 s tirées des dépôts Internet Archive de Mauk Tenieb (archive.org/details/@mauk_tenieb449) : Esiön (20k368), Cassette Zero, Interzone Men at Work, Ritual Jazz in Interzone, Der Golem, Furia (Part I), Tribute to Miles Davis, Libri Carolini, Carthago, Our Times. Volume ramené à −16 LUFS, fondus de 5 et 150 ms. © Korhogo, tous droits réservés ; entraînement d'IA interdit.
 
+## snd/pads : coupes des sorties des alias (13 nov. 2026)
+Huit coupes de 1,6 s, même traitement (−16 LUFS, fondus de 5 et 150 ms), tirées des dépôts Internet Archive de Mauk Tenieb ; chaque coupe sonne pour le Mask de son alias dans Musik.
+- dogXim : `dogxim-entering-1` (191,7 s), `dogxim-entering-2` (473,4 s) : Entering the Dogxim, https://archive.org/details/dog-xim-entering-the-dogxim-c-korhogo-rec-2024
+- C7H5N3O6 : `c7h5n3o6-arts-all-about-1` (53,9 s) : Art's All About Dealing with Evil, https://archive.org/details/c-7-h-5-n-3-o-6-arts-all-about-dealing-with-evil-c-korhogo-rec-2024 ; `c7h5n3o6-bayou-1` (304,4 s) : Anthropobots Fuck You in the Bayou, https://archive.org/details/c-7-h-5-n-3-o-6-anthropobots-fuck-you-in-the-bayou-c-anthropobot-2024aanthropobot
+- Ts'ui Pên : `tsui-pen-jardin-1` (213,7 s), `tsui-pen-jardin-2` (481,4 s) : El jardín de senderos que se bifurcan, https://archive.org/details/tsui-pen-el-jardin-de-senderos-que-se-bifurcan
+- Auvergne : `auvergne-court-complexe-1` (83,5 s), `auvergne-court-complexe-2` (198,9 s) : Court Complexe (Live Mix 186), https://archive.org/details/auvergne-court-complexe-live-mix-186-1
+© Korhogo, tous droits réservés ; entraînement d'IA interdit.
+
+## kave/a/tv/clip : clips pour la platine vidéo de Musik (13 nov. 2026)
+Cinq extraits de 12 s des clips de Mauk Tenieb et de ses alias (Internet Archive), 360 px de haut, H.264 à image clé toutes les 5 images (le scratch recule et avance aussitôt), AAC 96 kb/s à −16 LUFS.
+- `clip-interzone-is-internet` (120 s) : Interzone is Internet (Bad-to-the-bone Officer Take), https://archive.org/details/mauk-tenieb-interzone-is-internet-bad-to-the-bone-officer-take
+- `clip-mola-golem` (300 s) : Der Golem, Mola Golem (Live Mix 124), https://archive.org/details/mauk-tenieb-der-golem-mola-gole
+- `clip-bayou` (298 s) : Anthropobots Fuck You in the Bayou, C7H5N3O6
+- `clip-jardin` (470 s, bandeau du haut recadré) : El jardín de senderos que se bifurcan, Ts'ui Pên
+- `clip-court-complexe` (80 s) : Court Complexe (Live Mix 186), Auvergne
+© Korhogo, tous droits réservés ; entraînement d'IA interdit.
+
 ## Voix du Kerema (kave/a/kerema/kerema-1 à 6.mp3)
 Répliques du Kerema dites par la voix MBROLA us2 (espeak-ng, mbrola-us2), hauteur abaissée, filtrée en ligne téléphonique (320-3200 Hz), compressée, -18 LUFS. Fabrication : 13 nov. 2026.

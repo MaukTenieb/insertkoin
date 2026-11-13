@@ -228,6 +228,9 @@ wr("skoporhogo-borne.html", k2)
 cap("fotofauna.html", 'getUserMedia({video:{facingMode:"user",width:{ideal:1280}},audio:false})', 'getUserMedia({video:{facingMode:(window.__ffFacing||"environment"),width:{ideal:1280}},audio:false})')  # caméra arrière par défaut
 cap("fotofauna.html", "let img=vframe(src,!!CAM,VSIDE);", "let img=vframe(src,!!CAM&&window.__ffMirror!==false,VSIDE);")
 cap("fotofauna.html", "</head>", '<link rel="stylesheet" href="borne-fotofauna.css">\n</head>')
+# 13 nov. 2026 (RELAIS § 28, 4b) : la vidéo tournée dans KamOrhogo part aussi vers la platine de Musik (borne-musik.js, __borneVid)
+_vo = 'if(discard)return;const type=(R.rec.mimeType||R.mt||"video/webm").split(";")[0],blob=new Blob(R.chunks,{type});'
+cap("fotofauna.html", _vo, _vo + '\n /* 13 nov. 2026 : la vidéo tournée part aussi vers la platine de Musik (borne-musik.js, __borneVid) */try{const BV=window.top&&window.top!==window&&window.top.__borneVid;if(BV)BV.put({id:"v"+Date.now(),name:"KamOrhogo "+new Date().toTimeString().slice(0,5),t:Date.now(),blob,type})}catch{}')
 t = rd("fotofauna.html")
 if "borne-fotofauna.js" not in t:
     i = t.rfind("</body>"); wr("fotofauna.html", t[:i] + '<script src="borne-fotofauna.js"></script>\n' + t[i:])

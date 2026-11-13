@@ -10,6 +10,13 @@
       var q=os.getAll();q.onsuccess=function(){(q.result||[]).sort(function(a,b){return b.t-a.t;}).slice(MAX).forEach(function(x){os.delete(x.id);});};
       tx.oncomplete=function(){ok();try{(window.top||window).dispatchEvent(new Event('borne-diktat'));}catch(e){}};tx.onerror=function(){ok();};});}).catch(function(){});}
   window.__borneDiktat={all:all,put:put,MAX:MAX};
+  /* 13 nov. 2026 (RELAIS § 28, 4b) : les vidéos tournées dans KamOrhogo vont à la platine de Musik ; base « borne-vid », magasin « clips », les cinq plus récentes */
+  function vdb(){return new Promise(function(ok,ko){try{var r=indexedDB.open('borne-vid',1);r.onupgradeneeded=function(){r.result.createObjectStore('clips',{keyPath:'id'});};r.onsuccess=function(){ok(r.result);};r.onerror=function(){ko(r.error);};}catch(e){ko(e);}});}
+  window.__borneVid={
+    all:function(){return vdb().then(function(d){return new Promise(function(ok){var q=d.transaction('clips').objectStore('clips').getAll();q.onsuccess=function(){ok((q.result||[]).sort(function(a,b){return b.t-a.t;}));};q.onerror=function(){ok([]);};});}).catch(function(){return [];});},
+    put:function(clip){return vdb().then(function(d){return new Promise(function(ok){var tx=d.transaction('clips','readwrite'),os=tx.objectStore('clips');os.put(clip);
+      var q=os.getAll();q.onsuccess=function(){(q.result||[]).sort(function(a,b){return b.t-a.t;}).slice(MAX).forEach(function(x){os.delete(x.id);});};
+      tx.oncomplete=function(){ok();try{window.dispatchEvent(new Event('borne-vid'));}catch(e){}};tx.onerror=function(){ok();};});}).catch(function(){});}};
 
   /* Musik : les pistes diktaTfaune s'ajoutent sous les 18 Masks */
   var CLIPS=[],COL='#ff3b2f';

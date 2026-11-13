@@ -12545,6 +12545,7 @@ function recStart(){if(!CAM||REC)return;if(!canRec()){setStatus(t("noRec"),"err"
 async function recStop(discard){const R=REC;if(!R)return;REC=null;const done=new Promise(r=>R.rec.onstop=r);try{R.rec.stop()}catch{}await done;
  const dur=(performance.now()-R.t0)/1000;$("shutter").classList.remove("rec");document.querySelectorAll("#pvMode button").forEach(b=>b.disabled=false);setPvMode(PVMODE);setLabel();ecranSync();
  if(discard)return;const type=(R.rec.mimeType||R.mt||"video/webm").split(";")[0],blob=new Blob(R.chunks,{type});
+ /* 13 nov. 2026 : la vidéo tournée part aussi vers la platine de Musik (borne-musik.js, __borneVid) */try{const BV=window.top&&window.top!==window&&window.top.__borneVid;if(BV)BV.put({id:"v"+Date.now(),name:"KamOrhogo "+new Date().toTimeString().slice(0,5),t:Date.now(),blob,type})}catch{}
  try{await openVideo(blob,{kind:"clip",bare:true,dur});setStatus(t("clipDone",{s:dur.toFixed(1)}),"ok")}catch(e){setStatus(String(e.message||e),"err")}}
 
 /* enregistrer la vidéo courante avec la pile : 1) chaque image rendue à la taille choisie (JPEG en mémoire), 2) lecture en temps réel enregistrée */
