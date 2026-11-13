@@ -12476,8 +12476,9 @@ const SFX={echo:(x,sr)=>{const d=Math.round(.27*sr),y=new Float32Array(x.length+
  low:(x,sr)=>sBiq(sBiq(x,sr,"lp",380,.7),sr,"lp",380,.7),high:(x,sr)=>sBiq(sBiq(x,sr,"hp",2400,.7),sr,"hp",2400,.7),
  stut:(x,sr)=>{const B=Math.round(.09*sr),o=[];for(let i=0,k=0;i<x.length;i+=B,k++){const c=x.subarray(i,Math.min(x.length,i+B));o.push(c);if(k%3===1){o.push(c);o.push(c)}}const y=new Float32Array(o.reduce((a,c)=>a+c.length,0));let p=0;for(const c of o){y.set(c,p);p+=c.length}return y},
  ghost:(x,sr)=>sCave(x.slice().reverse(),sr).reverse()};
-const SFXN={fr:[["",'SANS'],["echo","ÉCHO"],["cave","CAVERNE"],["phone","TÉLÉPHONE"],["radio","RADIO"],["robot","ROBOT"],["fuzz","DISTO"],["bit","8 BITS"],["trem","TRÉMOLO"],["chorus","CHORUS"],["low","GRAVE"],["high","AIGU"],["stut","BÉGAIEMENT"],["ghost","FANTÔME"]],
- en:[["",'DRY'],["echo","ECHO"],["cave","CAVE"],["phone","PHONE"],["radio","RADIO"],["robot","ROBOT"],["fuzz","FUZZ"],["bit","8-BIT"],["trem","TREMOLO"],["chorus","CHORUS"],["low","LOW"],["high","HIGH"],["stut","STUTTER"],["ghost","GHOST"]]};
+/* 13 nov. 2026 : effets rangés par pyramide mesurée (écart spectral et temporel au son sec, pénalité d'écrêtage et de perte ; signal vocal de synthèse) */
+const SFXN={fr:[["",'SANS'],["cave","CAVERNE"],["low","GRAVE"],["radio","RADIO"],["ghost","FANTÔME"],["fuzz","DISTO"],["bit","8 BITS"],["high","AIGU"],["stut","BÉGAIEMENT"],["echo","ÉCHO"],["phone","TÉLÉPHONE"],["trem","TRÉMOLO"],["chorus","CHORUS"],["robot","ROBOT"]],
+ en:[["",'DRY'],["cave","CAVE"],["low","LOW"],["radio","RADIO"],["ghost","GHOST"],["fuzz","FUZZ"],["bit","8-BIT"],["high","HIGH"],["stut","STUTTER"],["echo","ECHO"],["phone","PHONE"],["trem","TREMOLO"],["chorus","CHORUS"],["robot","ROBOT"]]};
 function sonStop(){if(!SREC)return;clearTimeout(SREC.cap);try{SREC.mr.stop()}catch{}$("shutter").classList.remove("rec");$("shutter").setAttribute("aria-label",t("sonStart"));}
 async function sonDone(blob){SREC=null;try{const ac=new(window.AudioContext||window.webkitAudioContext)(),buf=await ac.decodeAudioData(await blob.arrayBuffer());ac.close&&ac.close();
   SON={raw:new Float32Array(buf.getChannelData(0)),sr:buf.sampleRate,rev:false,out:null,id:"k"+Date.now(),name:(window.ikName?ikName("kamorhogo","wav"):"kamorhogo-"+Date.now()+".wav").replace(/\.wav$/,"")};
