@@ -280,6 +280,7 @@ function vdraw(){var cv=VIS.cv;if(!cv||!document.body.contains(cv))return;reques
   if(ch.verb>.02){g.filter='blur(14px) brightness(1.4)';g.globalCompositeOperation='screen';g.globalAlpha=a*ch.verb*.7;g.drawImage(m,x,y,w,h);g.globalCompositeOperation='source-over'}});
  g.filter='none';g.globalAlpha=1;if(!VIS.layers.length){g.fillStyle='rgba(239,227,207,.08)';for(var i=0;i<H;i+=3)g.fillRect(0,i,W,1)}}
 /* ---------- la platine : le disque tourne à 33 tours ; le saisir, c'est scratcher ---------- */
+function ttImg(u){var im=new Image();im.src=base()+u;return im}var TTI={deck:ttImg('a-tt-platine.webp'),disc:ttImg('a-tt-disque.webp'),arm:ttImg('a-tt-bras.webp')};
 var TT={rpm:33,pitch:0,ang:0,pos:0,buf:null,rev:null,name:'',hold:false,src:null,t0:0,last:0,lastA:0,motor:false};
 function ttLoad(it){if(!it||!it.buf)return;TT.buf=it.buf;TT.name=it.name;var c=ac();if(!c)return;var b=it.buf,r=c.createBuffer(b.numberOfChannels,b.length,b.sampleRate);for(var k=0;k<b.numberOfChannels;k++){var d=b.getChannelData(k),o=r.getChannelData(k);for(var i=0;i<d.length;i++)o[i]=d[d.length-1-i]}TT.rev=r;TT.pos=0;
   var h=$('#mz-tth',ROOT);if(h)h.textContent=it.name.toUpperCase()}
@@ -295,13 +296,14 @@ function ttInit(){var cv=$('#mz-tt',ROOT);if(!cv||cv.__ev)return;cv.__ev=1;var c
   function draw(){if(!ROOT||!document.body.contains(cv))return;requestAnimationFrame(draw);var now=performance.now();
     if(TT.motor&&!TT.hold){var dt=(now-TT.last)/1000,rr=ttRate()*(TT.back?-1:1);TT.last=now;TT.ang+=dt*rr/REV*Math.PI*2;TT.pos+=dt*rr;if(TT.buf&&(TT.pos>=TT.buf.duration||TT.pos<=0))ttStop()}
     if(TT.vid&&!TT.hold&&TT.back&&TT.motor){try{TT.vid.pause();TT.vid.currentTime=Math.max(0,TT.vid.currentTime-(now-(TT.vl||now))/1000*ttRate())}catch(e){}}TT.vl=now;
-    var W=cv.width,R=W/2*.86;c2.clearRect(0,0,W,W);c2.fillStyle='#2b2620';c2.fillRect(0,0,W,W);c2.save();c2.translate(W*.46,W*.52);
-    c2.fillStyle='#5a544c';c2.beginPath();c2.arc(0,0,R+3,0,7);c2.fill();c2.fillStyle='#0e0d0c';c2.beginPath();c2.arc(0,0,R-2,0,7);c2.fill();c2.strokeStyle='rgba(255,255,255,.05)';for(var i=0;i<14;i++){c2.beginPath();c2.arc(0,0,R-8-i*5,0,7);c2.stroke()}
-    c2.rotate(TT.ang);c2.fillStyle=TT.buf?'#c8243a':'#3a3129';c2.beginPath();c2.arc(0,0,R*.36,0,7);c2.fill();c2.fillStyle='#efe3cf';c2.fillRect(-2,-R*.34,4,R*.16);
-    c2.fillStyle='#0e0d0c';c2.beginPath();c2.arc(0,0,4,0,7);c2.fill();c2.restore();
-    c2.save();c2.translate(W*.9,W*.12);c2.fillStyle='#8c7a5c';c2.beginPath();c2.arc(0,0,14,0,7);c2.fill();c2.fillStyle='#1a1612';c2.beginPath();c2.arc(0,0,6,0,7);c2.fill();var aa=TT.buf?(TT.hold||TT.motor?.5:.42):.18;c2.rotate(aa);c2.strokeStyle='#b08d57';c2.lineWidth=6;c2.lineCap='round';c2.beginPath();c2.moveTo(0,0);c2.lineTo(0,W*.62);c2.stroke();c2.fillStyle='#d9cfb4';c2.fillRect(-7,W*.6,14,22);c2.restore()}
+    /* 13 nov. 2026 (Mauk Tenieb) : la vraie platine photographiée (a-tt-platine.webp), le disque (a-tt-disque.webp) qui tourne sur le plateau, le bras (a-tt-bras.webp) qui se pose au sillon pendant la lecture et suit la place dans le sample */
+    var W=cv.width,k=W/1024;c2.clearRect(0,0,W,W);if(TTI.deck.complete&&TTI.deck.naturalWidth)c2.drawImage(TTI.deck,0,0,W,W);else{c2.fillStyle='#2b2620';c2.fillRect(0,0,W,W)}
+    c2.save();c2.translate(396.5*k,485.5*k);c2.rotate(TT.ang);var dr=255*k;if(TTI.disc.complete&&TTI.disc.naturalWidth)c2.drawImage(TTI.disc,-dr,-dr,dr*2,dr*2);
+    if(TT.buf){c2.fillStyle='rgba(200,36,58,.85)';c2.beginPath();c2.arc(0,0,dr*.3,0,7);c2.fill();c2.fillStyle='#0e0d0c';c2.beginPath();c2.arc(0,0,3*k*2,0,7);c2.fill()}c2.restore();
+    var on=TT.buf&&(TT.hold||TT.motor),pr=TT.buf&&TT.buf.duration?Math.max(0,Math.min(1,TT.pos/TT.buf.duration)):0,tg=on?(26+14*pr)*Math.PI/180:0;TT.arm=(TT.arm||0)+(tg-(TT.arm||0))*.12;
+    if(TTI.arm.complete&&TTI.arm.naturalWidth){c2.save();c2.translate(785*k,330*k);c2.rotate(TT.arm);c2.drawImage(TTI.arm,(687-785)*k,(348-330)*k,TTI.arm.naturalWidth*k,TTI.arm.naturalHeight*k);c2.restore()}}
   draw();
-  var ang=function(e){var r=cv.getBoundingClientRect();return Math.atan2(e.clientY-r.top-r.height/2,e.clientX-r.left-r.width/2)};
+  var ang=function(e){var r=cv.getBoundingClientRect();return Math.atan2(e.clientY-r.top-r.height*485.5/1024,e.clientX-r.left-r.width*396.5/1024)};
   cv.addEventListener('pointerdown',function(e){e.preventDefault();cv.setPointerCapture(e.pointerId);ttStop();TT.hold=true;TT.lastA=ang(e);TT.last=performance.now();cv.style.cursor='grabbing'});
   cv.addEventListener('pointermove',function(e){if(!TT.hold)return;var a=ang(e),d=a-TT.lastA;if(d>Math.PI)d-=Math.PI*2;if(d<-Math.PI)d+=Math.PI*2;var now=performance.now(),dt=Math.max(.008,(now-TT.last)/1000);
     TT.lastA=a;TT.last=now;TT.ang+=d;var dp=d/(Math.PI*2)*REV;if(TT.vid){try{TT.vid.pause();TT.vid.currentTime=Math.max(0,Math.min((TT.vid.duration||1e9)-.04,TT.vid.currentTime+d/(Math.PI*2)))}catch(e){}}if(Math.abs(dp)>1e-4){ttGrain(dp/dt,dt);TT.pos=Math.max(0,TT.buf?Math.min(TT.buf.duration-.01,TT.pos+dp):0)}});
