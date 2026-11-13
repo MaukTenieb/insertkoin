@@ -458,7 +458,7 @@ setInterval(function(){$('#lcd').textContent=power?(av?'AV':p2(ch)):'';var c=av?
 /* deux cadrages : la chambre entière, puis la caméra s'approche de la télé (2,4 s) ; un toucher hors de l'écran recule ou avance */
 function frame(s,ax,ay,qx,qy,vw,vh){var iw=1376*s,ih=768*s;return {s:s,x:Math.min(0,Math.max(vw-iw,ax-qx*s)),y:Math.min(0,Math.max(vh-ih,ay-qy*s))}}
 var CL=null,WI=null;
-var BAR=52,RC0=.14,RC1=.83,PEEK=48,RE=document.documentElement.style,LY=null,rOpen=false,cOpen=false;
+var BAR=52,RC0=0,RC1=.83,PEEK=48,RE=document.documentElement.style,LY=null,rOpen=false,cOpen=false;
 function phoneish(){return (window.matchMedia&&matchMedia('(pointer:coarse)').matches)||Math.min(innerWidth,innerHeight)<520}
 /* 10 nov., 17 h 41 : l'écran d'abord — toute la largeur au téléphone tenu droit, toute la hauteur libre couché et au bureau ; la photo de la chambre autour ; le meuble prend le reste ; la télécommande se replie en bas */
 /* 10 nov., verdict du lot T : un seul cadrage pour les chaînes et l'AV — la télé photographiée (bois du haut, cadre de métal et tube ; x 498-920, y 212-495 dans la photo, depuis le 12 nov.) occupe toute la hauteur libre au bureau et couché, toute la largeur au téléphone tenu droit ; la bande de bois du bas glisse sous la barre ; le meuble et la télécommande prennent le reste ; le porte-clé garde sa place */

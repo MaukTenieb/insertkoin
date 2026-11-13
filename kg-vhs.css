@@ -922,3 +922,17 @@
 /* 10 nov. (Mauk Tenieb, 18 h 31 ; A46) : un texte trop long pour sa case défile sur place en téléprompteur, jamais coupé à l'ellipse */
 @keyframes iktp{0%,12%{text-indent:0}88%,100%{text-indent:var(--tpx,0)}}
 .ik-tp-on{animation:iktp var(--tpt,4s) linear infinite alternate}
+
+/* 13 nov. 2026 (Mauk Tenieb : « revoir le design des cassettes ») : chaque cassette de la réserve est une VHS vue de face — boîtier noir, étiquette crème écrite au feutre, fenêtre et deux bobines */
+.vhs-tape.vhs-tape-k{position:relative;width:150px;min-height:78px;padding:6px 9px 26px;border:0;border-radius:4px;transform:none!important;
+  background:linear-gradient(#efe8d6,#e6dcc2) 6px 6px/calc(100% - 12px) 44px no-repeat,linear-gradient(#232120,#141312);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -2px 0 rgba(0,0,0,.6),0 2px 3px rgba(0,0,0,.6)}
+.vhs-tape.vhs-tape-k .vhs-tape-name,.vhs-tape.vhs-tape-k .vhs-tape-rep,.vhs-tape.vhs-tape-k .vhs-tape-count{position:relative;padding:0 4px}
+.vhs-tape.vhs-tape-k .vhs-tape-name{font-size:13px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:clip}
+.vhs-tape.vhs-tape-k .vhs-tape-rep{font-size:10px;line-height:1.15}
+.vhs-tape.vhs-tape-k .vhs-tape-count{display:none}
+.vhs-tape.vhs-tape-k::after{content:"";position:absolute;left:30px;right:30px;bottom:6px;height:15px;border-radius:2px;
+  background:radial-gradient(circle at 18% 50%,#0b0a09 0 3px,#d9d4c8 3.5px 5px,#3a3835 5.5px 6.5px,transparent 7px),radial-gradient(circle at 82% 50%,#0b0a09 0 3px,#d9d4c8 3.5px 5px,#3a3835 5.5px 6.5px,transparent 7px),linear-gradient(#2c2a27,#1a1918);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.8),0 1px 0 rgba(255,255,255,.08)}
+.vhs-tape.vhs-tape-k.is-active{outline:2px solid #e8e0cc;outline-offset:2px}
+.vhs-shelf-row{gap:8px}

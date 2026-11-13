@@ -937,9 +937,10 @@
            traînée horizontale du balayage, gain par ligne, gris légèrement froid */
         const W = cv.width;
         for (let y = 0, i = 0; y < cv.height; y++) {
-          const g = 0.78 + Math.random() * 0.3; let prev = Math.random();
-          for (let x = 0; x < W; x++, i += 4) { const n = Math.random(); const v = (prev * 0.4 + n * Math.sqrt(n) * 0.6) * g; prev = v;
-            d[i] = d[i + 1] = v * 215 | 0; d[i + 2] = v * 228 + 6 | 0; d[i + 3] = 255; }
+          /* 13 nov. 2026 (Mauk Tenieb : « la neige est moche ») : neige d'antenne franche — points noirs et blancs fins, contraste net, une bande de balayage plus claire qui descend */
+          const band = ((performance.now() / 2600) % 1.3) * cv.height, g = 0.92 + Math.random() * 0.12 + (Math.abs(y - band) < cv.height * 0.06 ? 0.22 : 0);
+          for (let x = 0; x < W; x++, i += 4) { const n = Math.random(); const v = Math.min(1, (n < 0.5 ? n * n * 2 : 1 - (1 - n) * (1 - n) * 2) * g);
+            d[i] = d[i + 1] = v * 240 | 0; d[i + 2] = v * 246 | 0; d[i + 3] = 255; }
         }
       } else {
         for (let i = 0; i < d.length; i += 4) { const v = Math.random() * 255 | 0; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; }

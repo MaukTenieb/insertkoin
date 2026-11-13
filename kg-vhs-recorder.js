@@ -132,7 +132,7 @@
         if (crit) b.title = crit;
       }
       b.appendChild(name);
-      var when = tape.shelf ? ((en && tape.rep_en) || tape.rep) : "";
+      var when = tape.shelf ? ((en && tape.rep_en) || tape.rep) : ""; when = String(when).replace(/^(\d+)\s+(\S+)\s+(?:an|year)\s+(\d+)$/i, function (m, d, mo, y) { return d + " " + mo.toLowerCase() + " " + y; });
       if (when) { var rp = global.document.createElement("span"); rp.className = "vhs-tape-rep"; rp.textContent = when; b.appendChild(rp); }
 
       var count = global.document.createElement("span");
