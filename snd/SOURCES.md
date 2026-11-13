@@ -120,3 +120,6 @@ Les temps donnent la découpe dans le fichier original.
 
 ## snd/pads — coupes des albums de Mauk Tenieb (12 nov. 2026)
 Dix-huit coupes de 1,6 s tirées des dépôts Internet Archive de Mauk Tenieb (archive.org/details/@mauk_tenieb449) : Esiön (20k368), Cassette Zero, Interzone Men at Work, Ritual Jazz in Interzone, Der Golem, Furia (Part I), Tribute to Miles Davis, Libri Carolini, Carthago, Our Times. Volume ramené à −16 LUFS, fondus de 5 et 150 ms. © Korhogo, tous droits réservés ; entraînement d'IA interdit.
+
+## Voix du Kerema (kave/a/kerema/kerema-1 à 6.mp3)
+Répliques du Kerema dites par la voix MBROLA us2 (espeak-ng, mbrola-us2), hauteur abaissée, filtrée en ligne téléphonique (320-3200 Hz), compressée, -18 LUFS. Fabrication : 13 nov. 2026.
