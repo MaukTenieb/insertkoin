@@ -1818,7 +1818,13 @@ function kapChoose(){if(document.querySelector('.over.kapc'))return;const m=docu
 window.ikToFotoFauna=function(blob,how){photoLang();openCalque('fotofauna.html','KamOrhogo',w=>{const go=()=>{if(typeof w.__ikImport==='function')w.__ikImport(blob,how);else setTimeout(go,150);};go();},true);};
 /* SKREEN: on a computer, the browser shares this very tab (one consent, the exact picture of the page);
    elsewhere, the page is redrawn from what it shows: canvases, images and videos, frames included */
-async function skreen(){const done=b=>{if(b)ikToFotoFauna(b,'skreen');};
+/* 13 nov. 2026 (Mauk Tenieb : « le Kapture marche pas depuis plein de minibarres ») : un seul tir à la fois ; navigateur qui refuse le partage d'onglet (app Claude, téléphone) : la page se redessine en entier, textes compris, par html2canvas (MIT), le programme ouvert d'abord */
+function h2c(win){return new Promise((ok,ko)=>{if(win.html2canvas)return ok(win.html2canvas);const sc=win.document.createElement('script');sc.src=new URL('html2canvas.min.js',location.href).href;sc.onload=()=>ok(win.html2canvas);sc.onerror=ko;win.document.head.appendChild(sc);});}
+async function pageShot(){let win=window,el=document.documentElement;try{const f=document.querySelector('#calque:not([hidden]) iframe,#game:not([hidden]) iframe');if(f&&f.contentDocument&&f.getBoundingClientRect().width>100){win=f.contentWindow;el=f.contentDocument.documentElement;}}catch(e){}
+  const H=await h2c(win),d=Math.min(2,devicePixelRatio||1),c=await H(el,{backgroundColor:'#000',scale:d,useCORS:true,logging:false,width:win.innerWidth,height:win.innerHeight,windowWidth:win.innerWidth,windowHeight:win.innerHeight,x:win.scrollX,y:win.scrollY});
+  return new Promise(r=>c.toBlob(r,'image/png'));}
+let SKB=0;
+async function skreen(){if(Date.now()-SKB<3000)return;SKB=Date.now();const done=b=>{if(b)ikToFotoFauna(b,'skreen');};
   const md=navigator.mediaDevices;
   if(md&&md.getDisplayMedia&&!matchMedia('(pointer:coarse)').matches){
     try{const s=await md.getDisplayMedia({video:{displaySurface:'browser'},audio:false,preferCurrentTab:true,selfBrowserSurface:'include',surfaceSwitching:'exclude'});
@@ -1826,6 +1832,7 @@ async function skreen(){const done=b=>{if(b)ikToFotoFauna(b,'skreen');};
       await new Promise(r=>setTimeout(r,250));
       const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);
       s.getTracks().forEach(t=>t.stop());c.toBlob(done,'image/png');return;}catch(e){}}
+  try{const b=await pageShot();if(b&&b.size>2000)return done(b);}catch(e){}
   domShot().then(done);}
 function domShot(){return new Promise(res=>{const d=Math.min(2,devicePixelRatio||1),W=innerWidth,H=innerHeight,c=document.createElement('canvas');c.width=Math.round(W*d);c.height=Math.round(H*d);
   const x=c.getContext('2d');x.scale(d,d);x.fillStyle=getComputedStyle(document.body).backgroundColor||'#000';if(/rgba\(0, 0, 0, 0\)|transparent/.test(x.fillStyle))x.fillStyle='#000';x.fillRect(0,0,W,H);
