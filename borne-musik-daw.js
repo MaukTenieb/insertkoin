@@ -380,13 +380,17 @@ function place(c,x,y,w,h,z){var b=STG.figs[c.id];if(!b||b.classList.contains('dr
   b.style.left=x.toFixed(1)+'px';b.style.top=y.toFixed(1)+'px';b.style.width=w.toFixed(1)+'px';b.style.height=h.toFixed(1)+'px';b.style.zIndex=z;
   b.classList.toggle('on',on);b.classList.toggle('cue',S.pend.some(function(q){return q.id===c.id}));b.setAttribute('aria-pressed',String(on))}
 /* géométrie : tout se calcule depuis la taille du plateau ; chaque Mask garde sa stature (toise du vidéoclub) ; au fond, la réserve sur une ou plusieurs rangées selon la largeur ; devant, les Masks posés */
-function stageLayout(){var st=STG.el;if(!st||st.hidden)return;var W=st.clientWidth,H=st.clientHeight;if(!W||!H)return;
+/* la Scène tient dans la partie visible de Musik : zéro rangée sous le pied de la borne ni sous les points du sélecteur */
+function stageFit(st){var mz=ROOT,pv=st.style.height;st.style.height='';var nat=st.getBoundingClientRect().height,m=mz.getBoundingClientRect(),r=st.getBoundingClientRect(),av=Math.floor(mz.clientHeight-(r.top-m.top+mz.scrollTop)-6);
+  var h=av>=150&&av<nat-1?av+'px':'';if(h!==pv||st.style.height!==h)st.style.height=h}
+function stageLayout(){var st=STG.el;if(!st||st.hidden)return;stageFit(st);var W=st.clientWidth,H=st.clientHeight;if(!W||!H)return;
   var M=masks(),front=M.filter(tgt),back=M.filter(function(c){return !tgt(c)}),hb=H*.3,per=Math.max(6,Math.min(18,Math.floor(W/(hb*ASP*.72))));
   back.forEach(function(c,i){var r=Math.floor(i/per),n=Math.min(per,back.length-r*per),j=i-r*per,k=1-r*.16,h=hb*k*STAT[c.mask]/1.98,w=h*ASP,slot=W/n;place(c,(j+.5)*slot-w/2,H*(.42-r*.075)-h,w,h,10-r)});
-  /* devant : une rangée tant que chaque Mask garde 52 px de large au moins ; au-delà, des rangées en gradins, la plus proche en bas */
-  var n=front.length,pf=Math.max(1,Math.floor(W/52)),R=Math.ceil(n/pf);
-  front.forEach(function(c,i){var r=R-1-Math.floor(i/pf),m=Math.min(pf,n-Math.floor(i/pf)*pf),j=i%pf,slot=W/m,k=1-r*.14,hf=Math.min(H*(R>1?.34:.53),W/Math.min(n,pf)/ASP*1.3)*k,h=hf*STAT[c.mask]/1.98,w=h*ASP;
-    place(c,(j+.5)*slot-w/2,H*(.97-r*.15)-h,w,h,30-r*3+(j%2))});
+  /* devant : le nombre de rangées en gradins qui donne aux Masks posés la plus grande taille ; 52 px de large au moins par Mask ; la plus proche en bas */
+  var n=front.length,HB=H*(back.length?.55:.92),R=1,hf=0,pf=n;
+  for(var q=1;q<=6&&n;q++){var p2=Math.ceil(n/q);if(W/p2<52&&q<6)continue;var f2=Math.min(H*.53,HB/(1+(q-1)*.62),W/p2/ASP*1.3);if(f2>hf*1.04){hf=f2;R=q;pf=p2}}
+  front.forEach(function(c,i){var r=R-1-Math.floor(i/pf),m=Math.min(pf,n-Math.floor(i/pf)*pf),j=i%pf,slot=W/m,k=1-r*.1,h=hf*k*STAT[c.mask]/1.98,w=h*ASP;
+    place(c,(j+.5)*slot-w/2,H*.97-r*hf*.62-h,w,h,30-r*3+(j%2))});
   st.classList.toggle('lit',n>0)}
 function pose(c,on){S.pend=S.pend.filter(function(q){return q.id!==c.id});
   if(!S.play){if(on)S.stage[c.id]=1;else delete S.stage[c.id];if(on&&ac())play(true)}else if(!!S.stage[c.id]!==on)S.pend.push({id:c.id,on:on});stageLayout()}

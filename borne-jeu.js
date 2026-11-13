@@ -36,7 +36,8 @@
     /* un jeu plus haut que l'écran (pendu, MaskerMind, Sampler) : ses éléments se réduisent ensemble (zoom), le jeu tient entier, centré, sans défilement caché */
     [].forEach.call(p.children,function(c){if(c.style.zoom)c.style.zoom='';});
     /* 13 nov. 2026 (critique Impeccable de Musik, P0) : Musik garde sa taille réelle et défile ; la réduction d'ensemble le rendait illisible (11 px affichés à 5 px) */
-    if(p.querySelector(':scope>#mz'))return;
+    /* 13 nov. 2026, 22 h : un agrandissement posé avant l'arrivée de Musik (tablettes, x1,31) rognait 62 px de chaque côté ; Musik le retire */
+    if(p.querySelector(':scope>#mz')){p.style.transform='';p.style.transformOrigin='';p.classList.remove('b-fit');cur=p;return;}
     var ps=getComputedStyle(p),pv=(parseFloat(ps.paddingTop)||0)+(parseFloat(ps.paddingBottom)||0);
     /* la hauteur réelle du jeu : chaque élément compte pour ce qu'il montre, débordement compris */
     function need(){var t=0,col=/column/.test(getComputedStyle(p).flexDirection)||getComputedStyle(p).display!=='flex';if(!col||getComputedStyle(p).display==='grid')return p.scrollHeight-pv;
