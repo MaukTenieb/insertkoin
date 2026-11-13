@@ -268,10 +268,10 @@ var PH={up:false};
 function phTone(v){try{var A=window.__phA||(window.__phA=new(window.AudioContext||window.webkitAudioContext)()),t=A.currentTime,g=A.createGain();g.connect(A.destination);
  if(v){[350,440].forEach(function(f){var o=A.createOscillator();o.frequency.value=f;o.connect(g);o.start(t);o.stop(t+.9)});g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.06,t+.02);g.gain.setValueAtTime(.06,t+.8);g.gain.linearRampToValueAtTime(0,t+.9)}
  else{var n=A.createBuffer(1,2205,44100),d=n.getChannelData(0);for(var i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/180);var s2=A.createBufferSource();s2.buffer=n;s2.connect(g);g.gain.value=.5;s2.start(t)}}catch(e){}}
-function phUp(v){PH.up=v;if(!v)try{speechSynthesis.cancel()}catch(e){}phTone(v);var o=$('#tv .osd');if(o){o.textContent=v?'\u260E MOTEL SOUND':'';clearTimeout(PH.t);if(v)PH.t=setTimeout(function(){if(o.textContent.indexOf('MOTEL')>0)o.textContent=cur?t('play'):''},2600)}$('#hPhone').classList.toggle('up',v);$('#hPhone').setAttribute('aria-pressed',String(v));if(!window.IKMotel)return;IKMotel.on(v)}
+function phUp(v){PH.up=v;if(!v)try{speechSynthesis.cancel()}catch(e){}phTone(v);$('#hPhone').classList.toggle('up',v);$('#hPhone').setAttribute('aria-pressed',String(v));if(!window.IKMotel)return;IKMotel.on(v)}
 $('#hPhone').onclick=function(){if(!swiped){if(!PH.up&&PH.ring){kerema();return}phUp(!PH.up)}};
 /* 13 nov. 2026 (Mauk Tenieb : « c'est le Kerema qui parle ») : le téléphone du comptoir sonne de temps en temps ; décroché pendant qu'il sonne, le Kerema parle —
-   une de ses répliques déjà écrites dans les jeux (Katabatik, Fauna Chess), dite d'une voix lente et grave, et tapée sur la télé du comptoir ; puis le Motel Sound prend la ligne. */
+   une de ses répliques déjà écrites dans les jeux (Katabatik, Fauna Chess), dite d'une voix lente et grave, sans rien d'écrit (Mauk Tenieb : « zéro lore écrit ») ; puis le Motel Sound prend la ligne. */
 var KER=['Kerema sees you anyway.','Touched by a muse?','U gotta stay tuned...','Need a hand? Shake ur Kalabass.','Kerema holds — for now.','Kerema awaits.'];
 function ringOnce(){try{var A=window.__phA||(window.__phA=new(window.AudioContext||window.webkitAudioContext)()),t=A.currentTime,g=A.createGain(),o=A.createOscillator(),o2=A.createOscillator(),am=A.createGain(),lf=A.createOscillator();
  o.frequency.value=440;o2.frequency.value=480;lf.type='square';lf.frequency.value=20;var lg=A.createGain();lg.gain.value=.5;lf.connect(lg);lg.connect(am.gain);am.gain.value=.5;o.connect(am);o2.connect(am);am.connect(g);g.connect(A.destination);
@@ -281,8 +281,8 @@ function ring(){if(PH.up||PH.ring||scene!=='comptoir'||document.hidden){PH.rt=se
  (function r(){if(!PH.ring)return;ringOnce();if(++n>=6){PH.ring=0;$('#hPhone').classList.remove('ringing');PH.rt=setTimeout(ring,90000+Math.random()*150000);return}PH.rr=setTimeout(r,3000)})()}
 function kerema(){PH.ring=0;clearTimeout(PH.rr);$('#hPhone').classList.remove('ringing');PH.up=true;$('#hPhone').classList.add('up');$('#hPhone').setAttribute('aria-pressed','true');
  var line=KER[Math.floor(Math.random()*KER.length)],o=$('#tv .osd');clearTimeout(PH.t);
- if(o){o.classList.add('ker');o.textContent='';var i=0;(function ty(){if(i<=line.length){o.textContent=line.slice(0,i++)+(i<=line.length?'█':'');PH.t=setTimeout(ty,55)}})()}
- var t0=performance.now(),done=0,go=function(){if(done)return;done=1;var w=Math.max(0,line.length*55+2600-(performance.now()-t0));setTimeout(function(){if(o){o.classList.remove('ker');if(PH.up)o.textContent='☎ MOTEL SOUND'}if(window.IKMotel&&PH.up)IKMotel.on(true)},w)};
+ 
+ var t0=performance.now(),done=0,go=function(){if(done)return;done=1;var w=Math.max(0,line.length*55+2600-(performance.now()-t0));setTimeout(function(){if(window.IKMotel&&PH.up)IKMotel.on(true)},w)};
  try{var u=new SpeechSynthesisUtterance(line);u.lang='en-US';u.pitch=.35;u.rate=.78;u.volume=.9;u.onend=go;u.onerror=go;speechSynthesis.cancel();speechSynthesis.speak(u);setTimeout(function(){if(speechSynthesis.speaking)return;go()},6000)}catch(e){setTimeout(go,line.length*55+600)}
  PH.rt=setTimeout(ring,120000+Math.random()*120000)}
 PH.rt=setTimeout(ring,25000+Math.random()*35000);window.__vcRing=ring;

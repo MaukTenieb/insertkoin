@@ -9,7 +9,7 @@
   var SEL=[
     ['plante','.b-pot'],['camera','.b-cam'],['fronton','.bar .brand'],/* la barre son (titre, PL, son, haut-parleur) reste fixe : Mauk Tenieb, 8 nov. */
     ['burrows','.b-land'],/* Lore : son propre glissé (borne-cabinet.js) ; deux systèmes à la fois le faisaient sauter et le posaient sur l'écran */['koins','.b-bezelfoot #koins'],['boom','.b-bezelfoot .b-boom'],
-    /* 13 nov. 2026 (Mauk Tenieb : « manette et boutons se déplacent à la main : je veux pas ») : manette, mini-manette et boutons restent fixés au meuble */['plaque','.b-plate .b-badge'],['fente','.b-slot'],['molettes','.b-knobs']
+    ['boutons','.b-row2 .menu'],['manette','.b-panel .cabinets > .b-stick'],['manette-mini','.b-bezelfoot .b-stick-mini'],['plaque','.b-plate .b-badge'],['fente','.b-slot'],['molettes','.b-knobs']
   ];
   var MAG=14,HOME=40,LONG=260;
   var blocks=[],drag=null,suppress=0;
@@ -54,9 +54,10 @@
   function stickBlocks(){return blocks.filter(function(b){return b.id.indexOf('manette')===0&&b.el.offsetParent;});}
   function socleHit(b,e){var r=b.el.getBoundingClientRect();if(!r.width||e.clientX<r.left||e.clientX>r.right)return false;
     var cut=r.top+r.height*window.__borneStickCut(b.el),low=r.bottom+(e.pointerType==='mouse'?0:Math.max(0,TOUCH-(r.bottom-cut)));return e.clientY>=cut&&e.clientY<=low;}
+  /* 13 nov. 2026 (Mauk Tenieb) : manette, mini-manette et boutons échappent à la main ; seul l'aimant les chahute, comme d'habitude */
+  var NOHAND=/^(manette|boutons)/;
   function down(e){if(e.button>0||drag)return;var b=of(e.target);
-    if(b&&b.id.indexOf('manette')===0){if(!socleHit(b,e))return;}
-    else if(!b){stickBlocks().forEach(function(s){if(!b&&socleHit(s,e))b=s;});if(!b)return;}
+    if(b&&NOHAND.test(b.id))return;
     if(!b)return;
     /* souris : le socle se saisit dès 8 px de glissé ; doigt : appui long de 260 ms (le glissé du doigt sert le défilement et le levier) */
     drag={b:b,id:e.pointerId,x:e.clientX,y:e.clientY,dx:b.dx,dy:b.dy,on:false,touch:!(e.pointerType==='mouse'&&b.id.indexOf('manette')===0),t:0};
