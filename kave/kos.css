@@ -431,6 +431,6 @@ body{font:var(--f);color:var(--tx);background:var(--desk)}
 
 /* 13 nov. : psychopompe en bête de bureau (pas de glissé CSS : la physique le place) ; visite fofolle au démarrage */
 #psy.pet{transition:none!important}
-#psy.fou{transition:left .45s cubic-bezier(.3,1.4,.5,1),top .45s cubic-bezier(.3,1.4,.5,1)!important}
-#psy.fou.hop{animation:khop .45s cubic-bezier(.3,0,.4,1) both}
-#psy.fou .spr{animation:spr .6s steps(1) infinite}
+#psy.fou{transition:left .7s cubic-bezier(.3,1.3,.5,1),top .7s cubic-bezier(.3,1.3,.5,1)!important}
+#psy.fou.hop{animation:khop .7s cubic-bezier(.3,0,.4,1) both}
+#psy.fou .spr{animation:spr 1.2s steps(1) infinite}

@@ -114,7 +114,7 @@ window.MotelRun=function(host,want){
  face.style.cssText='position:absolute;left:2%;bottom:2.5%;height:20%;width:auto;pointer-events:none;image-rendering:auto';
  host.appendChild(face);
  var px=0.5,py=0.5,dir=0,ang=0,speed=reduce?1.0:3.8,last=performance.now(),gait=0,alive=true,turn=0,idle=9,pendT=0,cell=-1,auto=true,odo=0,lastT=-9;
- var DX=[1,0,-1,0],DY=[0,1,0,-1],held={},ptr=null,tq=0,TURN=1.55,RAD=0.34,hT=0,stuck=0,lane=-1,trail=[],cx=0,cy=0,ca=0,depth=CAMD;
+ var lOff=0,lTo=0,DX=[1,0,-1,0],DY=[0,1,0,-1],held={},ptr=null,tq=0,TURN=1.55,RAD=0.34,hT=0,stuck=0,lane=-1,trail=[],cx=0,cy=0,ca=0,depth=CAMD;
  var st={t:0,minClear:9,minFront:99,minDepth:99,contacts:0,cuts:0};
  var KM={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d',a:'l',q:'l',d:'r',w:'u',z:'u',s:'d'};
  function own(e){return !(e.target&&e.target.closest&&e.target.closest('input,textarea,.win'))}
@@ -144,12 +144,13 @@ window.MotelRun=function(host,want){
    ang+=tr*dt;pendT=0}
   else{/* pilote automatique : couloir, centre, bifurcations au hasard, virage engagé dès l'entrée du carrefour */
    var id=gx*100003+gy,cxm=gx+0.5,cym=gy+0.5;
-   if(!auto){auto=true;var bd=dir,bs=-9;for(var d0=0;d0<4;d0++){if(!free(gx,gy,d0))continue;var sc=Math.cos(ang-d0*Math.PI/2);if(sc>bs){bs=sc;bd=d0}}dir=bd;cell=id;pendT=0}
-   if(id!==cell){cell=id;pendT=0;var o2=[1,3].filter(function(t){return free(gx,gy,(dir+t)%4)});
+   if(!auto){auto=true;var bd=dir,bs=-9;for(var d0=0;d0<4;d0++){if(!free(gx,gy,d0))continue;var sc=Math.cos(ang-d0*Math.PI/2);if(sc>bs){bs=sc;bd=d0}}dir=bd;cell=id;pendT=0;lOff=-((cxm-px)*(-DY[dir])+(cym-py)*DX[dir]);lOff=Math.max(-.26,Math.min(.26,lOff));lTo=lOff}
+   if(id!==cell){cell=id;pendT=0;if(Math.random()<.35)lTo=Math.max(-.26,Math.min(.26,lOff+(Math.random()-.5)*.3));var o2=[1,3].filter(function(t){return free(gx,gy,(dir+t)%4)});
     if(!free(gx,gy,dir))pendT=o2.length?o2[Math.floor(Math.random()*o2.length)]:2;/* mur une case devant : virage obligé */
     else if(o2.length&&odo-lastT>2.2&&Math.random()<0.4)pendT=o2[Math.floor(Math.random()*o2.length)]}
-   var along=(cxm-px)*DX[dir]+(cym-py)*DY[dir];if(pendT&&along<0.3){dir=(dir+pendT)%4;pendT=0;lastT=odo}
-   var lat=(cxm-px)*(-DY[dir])+(cym-py)*DX[dir],want=dir*Math.PI/2+Math.max(-0.6,Math.min(0.6,lat*2)),dd=wrap(want-ang);
+   var along=(cxm-px)*DX[dir]+(cym-py)*DY[dir];if(pendT&&along<0.3){var nd=(dir+pendT)%4;lOff=-((cxm-px)*(-DY[nd])+(cym-py)*DX[nd]);lOff=Math.max(-.3,Math.min(.3,lOff));lTo=lOff*.6;dir=nd;pendT=0;lastT=odo}
+   /* 13 nov. (Mauk Tenieb : « pourquoi il revient en milieu de travée : non ; des parcours réalistes ») : le pilote garde sa ligne dans la travée, la fait dériver doucement, sort d'un virage à l'endroit où il l'a pris */
+   lOff+=(lTo-lOff)*Math.min(1,dt*.6);var lat=(cxm-px)*(-DY[dir])+(cym-py)*DX[dir]+lOff,want=dir*Math.PI/2+Math.max(-0.35,Math.min(0.35,lat*1.1)),dd=wrap(want-ang);
    tr=Math.max(-5.5,Math.min(5.5,dd*10));ang+=Math.max(-Math.abs(dd),Math.min(Math.abs(dd),tr*dt));sp=speed*(Math.abs(dd)>0.6?0.6:1)}
   turn+=(tr-turn)*Math.min(1,dt*12);
   /* glisse le long des murs */
