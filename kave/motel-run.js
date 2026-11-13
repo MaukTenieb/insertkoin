@@ -149,7 +149,7 @@ window.MotelRun=function(host,want){
     if(!free(gx,gy,dir))pendT=o2.length?o2[Math.floor(Math.random()*o2.length)]:2;/* mur une case devant : virage obligé */
     else if(o2.length&&odo-lastT>2.2&&Math.random()<0.4)pendT=o2[Math.floor(Math.random()*o2.length)]}
    var along=(cxm-px)*DX[dir]+(cym-py)*DY[dir];if(pendT&&along<0.3){dir=(dir+pendT)%4;pendT=0;lastT=odo}
-   var lat=(cxm-px)*(-DY[dir])+(cym-py)*DX[dir],want=dir*Math.PI/2+Math.max(-0.6,Math.min(0.6,lat*2)),dd=wrap(want-ang);
+   var lat=(cxm-px)*(-DY[dir])+(cym-py)*DX[dir],want=dir*Math.PI/2,dd=wrap(want-ang);/* 13 nov. (Mauk Tenieb, 15 h 31 : « Interdiction des retours à la travée ») : le pilote garde sa ligne, zéro rappel au milieu */
    tr=Math.max(-5.5,Math.min(5.5,dd*10));ang+=Math.max(-Math.abs(dd),Math.min(Math.abs(dd),tr*dt));sp=speed*(Math.abs(dd)>0.6?0.6:1)}
   turn+=(tr-turn)*Math.min(1,dt*12);
   /* glisse le long des murs */
@@ -164,16 +164,19 @@ window.MotelRun=function(host,want){
   else{px+=vx;py+=vy}
   if(slide!=null&&!auto&&!tq&&!((held.l||held.r)||(ptr&&Math.abs((ptr.x-ptr.cx)/(ptr.w/2))>0.25))){var dd3=wrap(slide-ang),st3=Math.min(Math.abs(dd3),9*dt);ang+=dd3>0?st3:-st3}
   stuck=slide!=null?stuck+dt:0;
-  ang=wrap(ang);gait+=sp*dt*3.4;odo+=sp*dt;camera()}
+  ang=wrap(ang);gait+=sp*dt*3.4;odo+=sp*dt;cdt=dt;camera()}
  function sight(x,y){var n=Math.ceil(Math.hypot(px-x,py-y)/0.05);for(var i=1;i<n;i++){var t=i/n;if(!open_(x+(px-x)*t,y+(py-y)*t))return false}return true}
- /* caméra sur la trace du Mask, un pas derrière lui, tournée vers lui */
- function reseed(){var b=Math.min(CAMD,probe(ang+Math.PI,CAMD+0.3)-0.2);trail=[[px-Math.cos(ang)*b,py-Math.sin(ang)*b],[px,py]];st.cuts++}
- function camera(){var L=trail[trail.length-1];if(!L||Math.hypot(px-L[0],py-L[1])>0.03)trail.push([px,py]);if(trail.length>500)trail.shift();
-  var q=null;for(var i=trail.length-2;i>=0;i--){var A=trail[i];if(!sight(A[0],A[1])){q=trail[i+1];break}if(Math.hypot(A[0]-px,A[1]-py)>=CAMD){var B=trail[i+1],lo=0,hi=1;for(var k=0;k<10;k++){var mid=(lo+hi)/2,x=A[0]+(B[0]-A[0])*mid,y=A[1]+(B[1]-A[1])*mid;if(Math.hypot(x-px,y-py)>=CAMD)lo=mid;else hi=mid}q=[A[0]+(B[0]-A[0])*lo,A[1]+(B[1]-A[1])*lo];break}}
-  if(!q){q=trail[0];if(Math.hypot(q[0]-px,q[1]-py)<0.3){reseed();q=trail[0]}}
-  var hx=Math.cos(ang),hy=Math.sin(ang),rx=px-q[0],ry=py-q[1],rl=Math.hypot(rx,ry)||1;
-  if((rx*hx+ry*hy)/rl<-0.3){reseed();q=trail[0];rx=px-q[0];ry=py-q[1];rl=Math.hypot(rx,ry)||1}
-  cx=q[0];cy=q[1];ca=Math.atan2(ry,rx);depth=rl}
+ /* 13 nov. 2026 (Mauk Tenieb, 15 h 37 : « La caméra re-merde » ; 6 h 09 et 13 h 35 : la scène « se refait » quand le Mask bute contre un mur) :
+    caméra de poursuite à la Quake (chase cam) : derrière le Mask sur son cap, un pas en arrière, tournée vers lui ; elle suit le cap par un ressort,
+    se rapproche à l'instant où un mur passe derrière elle et s'éloigne en douceur ; zéro coupure, zéro saut de plan. */
+ var cdt=0.016,cyaw=null;
+ function back(a){var d=probe(a,CAMD+0.3),s=0.12,l=Math.cos(a+Math.PI/2)*s,m=Math.sin(a+Math.PI/2)*s,x0=px,y0=py;
+  px=x0+l;py=y0+m;d=Math.min(d,probe(a,CAMD+0.3));px=x0-l;py=y0-m;d=Math.min(d,probe(a,CAMD+0.3));px=x0;py=y0;return Math.max(0.35,d-0.18)}
+ function reseed(){cyaw=ang;depth=Math.min(CAMD,back(ang+Math.PI));cx=px-Math.cos(ang)*depth;cy=py-Math.sin(ang)*depth;ca=ang}
+ function camera(){if(cyaw===null)reseed();
+  var k=Math.min(1,cdt*(reduce?3:5));cyaw=wrap(cyaw+wrap(ang-cyaw)*k);
+  var room=Math.min(CAMD,back(cyaw+Math.PI));depth+=(room-depth)*Math.min(1,cdt*(room<depth?14:3));depth=Math.min(depth,Math.max(0.3,probe(cyaw+Math.PI,CAMD+0.3)-0.06));
+  cx=px-Math.cos(cyaw)*depth;cy=py-Math.sin(cyaw)*depth;ca=cyaw}
  function cast(){
   var dx=Math.cos(ca),dy=Math.sin(ca),plx=-dy*FOV,ply=dx*FOV,bob=reduce?0:Math.sin(gait*3.2)*1.2;
   /* sol et plafond */
@@ -198,7 +201,7 @@ window.MotelRun=function(host,want){
   st.minFront=Math.min(st.minFront,zb[W>>1]);st.minDepth=Math.min(st.minDepth,dz)}
  function shade(col,s){var r=col&255,g=(col>>8)&255,b=(col>>16)&255;return (255<<24)|(((b*s)|0)<<16)|(((g*s)|0)<<8)|((r*s)|0)}
  function loop(t){if(!alive)return;/* 10 nov. (Mauk Tenieb, 21 h 11) : en fond d'écran, noir et blanc ; dès que le visiteur prend la course en main, le jeu passe en couleur */var nb=idle>=2.5;if(nb!==bw){bw=nb;cv.style.filter=bw?'grayscale(1) contrast(1.12) brightness(1.05)':'none'}var dt=Math.max(0,Math.min(0.05,(t-last)/1000));last=t;if(!document.hidden){st.t+=dt;step(dt);var cl=clear_();st.minClear=Math.min(st.minClear,cl);if(cl<0.3)st.contacts++;cast()}requestAnimationFrame(loop)}
- reseed();st.cuts=0;requestAnimationFrame(loop);
+ reseed();requestAnimationFrame(loop);
  var api={stop:function(){alive=false;removeEventListener('keydown',key_);removeEventListener('keyup',keyu_);removeEventListener('blur',blur_);cv.remove();face.remove()},mask:key,st:st,
   down:down_,up:up_,move:function(e){if(ptr){ang+=(e.clientX-ptr.x)*0.0055;ptr.x=e.clientX;idle=0}},
   pos:function(){return {px:px,py:py,ang:ang,cx:cx,cy:cy,depth:depth,auto:auto}}};
