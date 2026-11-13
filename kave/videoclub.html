@@ -34,7 +34,7 @@ button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-sel
 .scene>img.bg{position:absolute;inset:0;width:100%;height:100%;display:block}
 .hot{position:absolute;cursor:pointer;outline:0}
 /* le téléphone à cadran du comptoir commande le Motel Sound (Mauk Tenieb, 10 nov., 19 h 25) ; lueur au survol, lueur tenue quand il est décroché, sans étiquette */
-#hPhone{border-radius:50%;left:calc(70.5% - max(5.1%,24px));top:calc(60.2% - max(5.7%,24px));width:max(10.2%,48px);height:max(11.4%,48px)}
+#hPhone{border-radius:50%;left:calc(80.3% - max(5.1%,24px));top:calc(79.7% - max(5.7%,24px));width:max(10.2%,48px);height:max(11.4%,48px)}
 #hPhone::after{content:'';position:absolute;inset:-35%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,214,150,.30),rgba(255,180,90,.10) 55%,transparent);opacity:0;transition:opacity .35s;pointer-events:none}
 #hPhone:focus-visible::after,#hPhone.up::after{opacity:1}#hPhone.up::after{animation:phglow 2.4s ease-in-out infinite}@keyframes phglow{50%{opacity:.55}}
 @media (hover:hover) and (pointer:fine){#hPhone:hover::after{opacity:1}}
@@ -80,7 +80,7 @@ button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-sel
 @media (max-aspect-ratio:1/1){#case{flex-direction:column;justify-content:flex-start;overflow:auto;padding:16px 0 0;gap:14px}#case .face{height:auto;width:min(78vw,44vh)}#case .back{height:auto;width:min(92vw,560px);overflow:visible}#case .acts{justify-content:stretch}#case .acts .btn{flex:1}}
 /* comptoir : la cassette louée passe dans le magnétoscope, l'image sur le téléviseur */
 /* 10 nov. (21 h 37) : cadre calé au pixel sur le verre de la photo ; verre bombé, sans excès : coins plus ronds, bords assombris, reflet courbe */
-#tv{position:absolute;left:43.31%;top:31.9%;width:13.59%;height:18.75%;border-radius:4%/5%;background:transparent center/cover;box-shadow:inset 0 0 9px 4px rgba(0,0,0,.6);cursor:pointer;overflow:hidden;filter:saturate(1.2) contrast(1.08) blur(.4px);outline:0}
+#tv{position:absolute;left:66.42%;top:45.57%;width:15.33%;height:21.35%;border-radius:4%/5%;background:transparent center/cover;box-shadow:inset 0 0 9px 4px rgba(0,0,0,.6);cursor:pointer;overflow:hidden;filter:saturate(1.2) contrast(1.08) blur(.4px);outline:0}
 #tv::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(ellipse 120% 90% at 32% 18%,rgba(255,255,255,.12),rgba(255,255,255,0) 45%),radial-gradient(ellipse at 50% 50%,transparent 48%,rgba(0,0,0,.62))}
 #tv:focus-visible{box-shadow:inset 0 0 6px 2px rgba(0,0,0,.55),0 0 18px 5px rgba(255,190,110,.5)}
 #tv .osd{position:absolute;left:7%;top:7%;font:max(12px,calc(var(--sh)*.022))/1 VT323,monospace;color:#fff;text-shadow:1px 1px 0 #000,0 0 3px rgba(255,255,255,.4);white-space:nowrap}
@@ -97,8 +97,8 @@ button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-sel
 <canvas id="hall" aria-hidden="true"></canvas><img id="hallflat" alt="">
 <div id="salle" tabindex="-1" aria-label="Video Kave"></div>
 <div id="wrap">
- <div class="scene" id="rayon"><img class="bg" data-src="a/vc/vc-02-rayon.webp" alt=""><div id="boxes"></div><div class="rail" id="rails"></div></div>
- <div class="scene" id="comptoir"><img class="bg" data-src="a/vc/vc-03-comptoir.webp" alt=""><div id="tv" role="button" tabindex="0" aria-label="VCR"><div class="osd"></div></div><div class="hot" id="hPhone" role="button" tabindex="0" aria-label="Motel Sound"></div></div>
+ <div class="scene" id="rayon"><img class="bg" data-src="a/vc/vc-02-rayon.webp?v=1114" alt=""><div id="boxes"></div><div class="rail" id="rails"></div></div>
+ <div class="scene" id="comptoir"><img class="bg" data-src="a/vc/vc-03-comptoir.webp?v=1114" alt=""><div id="tv" role="button" tabindex="0" aria-label="VCR"><div class="osd"></div></div><div class="hot" id="hPhone" role="button" tabindex="0" aria-label="Motel Sound"></div></div>
 </div>
 <div id="case" role="dialog" aria-modal="true"><div class="face"></div><div class="back"></div></div>
 <div id="grain" aria-hidden="true"></div>
@@ -134,7 +134,7 @@ function fit(){var W=innerWidth,Hh=innerHeight-barH(),sw=Math.min(W,Hh*IA);PAN=f
 var cv=$('#hall'),gl=null,P=null,U={},TEX=null,img=new Image(),ready=false;
 /* 13 nov. 2026 (Mauk Tenieb) : nouvelles photos de l'allée, du rayon et du comptoir ; point de fuite, rayon et comptoir recalés */
 /* 10 nov. (A51) : l'allée sans fond ; le fond de l'allée contient la même allée, trois fois plus petite, à l'infini (récursion au point de fuite), sous l'optique en barillet qui mange les bords */
-var K=.2,Z0=.93,KD=.33,V=[.5,.469],HOLE=[560/1376,250/768,816/1376,480/768],R0=HOLE.map(function(x,j){var c=V[j%2];return c+(x-c)/KD}),FV=[120/1376,70/768];
+var K=.2,Z0=.93,KD=.33,V=[.494,.508],HOLE=[552/1376,275/768,808/1376,505/768],R0=HOLE.map(function(x,j){var c=V[j%2];return c+(x-c)/KD}),FV=[120/1376,70/768];
 var S={D:0,v:0,push:0,foc:[.5,.49],hl:[0,0,0],hlT:[0,0,0],lum:RM?1:.1,tm:0,intro:-1};
 var CREEP=RM?0:.022;
 var VS='attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
@@ -200,8 +200,8 @@ function startHall(){if(gl){gl.activeTexture(gl.TEXTURE0);TEX=gl.createTexture()
   gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,img);['TEXTURE_WRAP_S','TEXTURE_WRAP_T'].forEach(function(k){gl.texParameteri(gl.TEXTURE_2D,gl[k],gl.CLAMP_TO_EDGE)});
   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);ready=true;size()}
  if(!RM)S.intro=performance.now();else S.lum=1;kick()}
-if(!glInit()){cv.style.display='none';var fl=$('#hallflat');fl.style.display='block';fl.src='a/vc/vc-01-salle.webp?v=1113'}
-img.onload=startHall;img.src='a/vc/vc-01-salle.webp?v=1113';
+if(!glInit()){cv.style.display='none';var fl=$('#hallflat');fl.style.display='block';fl.src='a/vc/vc-01-salle.webp?v=1114'}
+img.onload=startHall;img.src='a/vc/vc-01-salle.webp?v=1114';
 
 /* 3. les gestes dans la salle : glisser ou molette pour avancer, toucher un rayon, toucher la lampe du fond */
 var hs=$('#salle'),pd=null;
@@ -220,14 +220,14 @@ var PROG=['korong','chess','erratik','faunarratik','invaders','katabatik','bakub
 var TAPES=D.F.map(function(f){return{kind:'mask',id:f.slug,title:f.name,img:'a/vc/vc-mask-'+f.slug+'.webp',fallback:'a/b-'+f.slug+'.webp',num:f.num,f:f,url:B+'fauna-'+f.slug+'.html'}})
  .concat(PROG.map(function(id){var p=D.P.filter(function(x){return x.id===id})[0];return p&&{kind:'prog',id:id,title:p.name,img:'a/vc/vc-prog-'+id+'.webp',p:p,url:p.url}}).filter(Boolean));
 /* le rayon : quatre étagères relevées sur la photo (surface à 29,5 / 50,5 / 71 / 92,5 % ; intérieur 11 à 89 %) */
-var SHELF=[28.9,50.0,68.75,89.2],X0=31.8,X1=68.2,PER=9,BOX=[],LOADED=false;
+var SHELF=[31.6,49.5,67.3,85.3],X0=34.5,X1=66.3,PER=9,BOX=[],LOADED=false;
 function rayon(){var host=$('#boxes');host.innerHTML='';BOX=[];var bw=BH*768/1376*5/7;
  TAPES.forEach(function(tp,i){var row=Math.floor(i/PER),col=i%PER;if(row>3)return;var n=Math.min(PER,TAPES.length-row*PER),gap=(X1-X0-n*bw)/(n+1);
   var b=h('div','box');b.setAttribute('role','button');b.tabIndex=0;b.setAttribute('aria-label',tp.title);b.dataset.r=row;b.dataset.c=col;b.dataset.i=i;
   b.style.cssText='left:'+(X0+gap+col*(bw+gap))+'%;top:'+(SHELF[row]-BH)+'%;width:'+bw+'%;height:'+BH+'%;--bw:calc(var(--sw)*'+(bw/100)+')';
   var s=h('div','sleeve '+tp.kind);s.innerHTML='<div class="t">'+esc(tp.title)+'</div><div class="k">KORHOGO</div>'+(tp.num?'<div class="n">'+tp.num+'</div>':'');s._tp=tp;if(LOADED)setImg(s,tp);b.appendChild(s);
   b.onclick=function(){if(!swiped)take(tp,b)};host.appendChild(b);BOX.push(b)});
- var r=$('#rails');r.innerHTML='';SHELF.forEach(function(y){var d=h('div');d.style.cssText='position:absolute;inset:0;background:url(a/vc/vc-02-rayon.webp) 0 0/100% 100%;clip-path:inset('+(y-4.2)+'% 9% '+(100-y+0.4)+'% 9%)';r.appendChild(d)})}
+ var r=$('#rails');r.innerHTML='';SHELF.forEach(function(y){var d=h('div');d.style.cssText='position:absolute;inset:0;background:url(a/vc/vc-02-rayon.webp?v=1114) 0 0/100% 100%;clip-path:inset('+(y-4.2)+'% 9% '+(100-y+0.4)+'% 9%)';r.appendChild(d)})}
 function setImg(el,tp){if(el._set)return;el._set=1;var im=new Image();im.onload=function(){el.style.backgroundImage='url('+tp.img+')'};im.onerror=function(){el.style.background='#0b0908 url('+tp.fallback+') 50% 85%/80% auto no-repeat'};im.src=tp.img}
 /* les images du rayon et du comptoir arrivent après la salle : au premier geste, ou quatre secondes après le chargement */
 function warm(){if(LOADED)return;LOADED=true;$$('img[data-src]').forEach(function(i){i.src=i.dataset.src;i.removeAttribute('data-src')});$$('#boxes .sleeve').forEach(function(s){setImg(s,s._tp)})}
@@ -267,7 +267,7 @@ $('#hPhone').onclick=function(){if(!swiped)phUp(!PH.up)};
 
 /* 7. passer d'un lieu à l'autre par la scène : travelling vers le rayon ou la lampe ; retour par le geste vers le bas, le bord de la photo, Échap, le retour du navigateur, Baku Boom */
 var SC={rayon:$('#rayon'),comptoir:$('#comptoir')},WR=$('#wrap');
-function center(){if(!PAN)return;var sw=parseFloat(getComputedStyle(root).getPropertyValue('--sw'))||0,c=scene==='comptoir'?.57:.5;WR.scrollLeft=Math.max(0,sw*c-innerWidth/2)}
+function center(){if(!PAN)return;var sw=parseFloat(getComputedStyle(root).getPropertyValue('--sw'))||0,c=scene==='comptoir'?.68:.5;WR.scrollLeft=Math.max(0,sw*c-innerWidth/2)}
 /* 12 nov. (Mauk Tenieb : « la plongée soudaine par voile sombre ») : vers un rayon, un quart de tour ; l'étagère entre de côté */
 function turn(el,id){if(RM||!el.animate)return;var L=S.foc[0]<.5,o=id==='rayon'?(L?'0% 50%':'100% 50%'):'50% 50%';
  var k0=id==='rayon'?'perspective(1400px) translateX('+(L?-18:18)+'%) rotateY('+(L?58:-58)+'deg)':'perspective(1400px) translateZ(-260px)';
@@ -275,7 +275,7 @@ function turn(el,id){if(RM||!el.animate)return;var L=S.foc[0]<.5,o=id==='rayon'?
 function reveal(id){scene=id;warm();turn(SC[id],id);Object.keys(SC).forEach(function(k){SC[k].classList.toggle('on',k===id)});WR.classList.add('live');hs.classList.add('off');cv.classList.add('dim');$('#grain').classList.add('on');
  if(id==='comptoir')comptoir();center();
  setTimeout(function(){if(scene!==id)return;if(id==='rayon'){var b=BOX[inHand?TAPES.indexOf(inHand):0];if(b)b.focus({preventScroll:true})}else $('#tv').focus({preventScroll:true})},RM?0:220)}
-function show(id){shut();if(id!=='comptoir')vcClip(false);if(id===scene&&!busy)return;
+window.__vcShow=function(id){show(id)};function show(id){shut();if(id!=='comptoir')vcClip(false);if(id===scene&&!busy)return;
  if(id==='salle'){scene='salle';busy=false;Object.keys(SC).forEach(function(k){SC[k].classList.remove('on')});WR.classList.remove('live');hs.classList.remove('off');cv.classList.remove('dim');$('#grain').classList.remove('on');tween('push',0,520,eout);hs.focus({preventScroll:true});kick();return}
  if(scene==='salle'&&!RM&&gl){busy=true;S.hlT=[0,0,0];tween('push',1,430,ease,function(){busy=false;if(scene==='salle')reveal(id)});return}
  S.push=1;reveal(id);kick()}
