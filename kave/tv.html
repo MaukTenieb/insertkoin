@@ -59,7 +59,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:#0b0908;user-select:no
 /* 10 nov. (Mauk Tenieb, 21 h 11) : télécommande rangée, elle dépasse franchement, s'éclaire et se soulève par moments pour appeler l'appui */
 body.rup #remote{touch-action:none}
 body.rup:not(.ropen) #remote{filter:brightness(1.05) sepia(.1) drop-shadow(0 -4px 12px rgba(255,180,110,.35)) drop-shadow(0 -6px 14px rgba(0,0,0,.6));animation:rnudge 4.5s ease-in-out 1.5s infinite}
-@keyframes rnudge{0%,78%,100%{translate:0 0}86%{translate:0 -14px}92%{translate:0 -4px}}
+/* 13 nov. 2026 (Mauk Tenieb : « faut qu'elle bouge, mais pas qu'elle soit décapitée ») : la télécommande saute en sortant de la barre, sa partie visible grandit d'autant, jamais coupée */@property --nud{syntax:'<length>';inherits:false;initial-value:0px}body.rup:not(.ropen) #remote{top:calc(var(--ry) - var(--nud))!important;height:calc(var(--rv) + var(--nud))!important}@keyframes rnudge{0%,78%,100%{--nud:0px}86%{--nud:14px}92%{--nud:4px}}
 @media (prefers-reduced-motion:reduce){body.rup:not(.ropen) #remote{animation:none}#devise .strip{animation:none}#slide i{transition:none}}
 #devise{background:radial-gradient(ellipse at 50% 40%,#2a1c10,#000 75%)}#devise img{position:absolute;left:50%;bottom:22%;height:72%;transform:translateX(-50%);filter:saturate(.85) contrast(1.05)}
 #devise .dv{position:absolute;left:0;right:0;bottom:0;padding:3% 5%;background:linear-gradient(transparent,rgba(0,0,0,.85) 35%);text-align:center;color:#f3e6c8;font-family:Arimo,Arial,sans-serif}
