@@ -172,6 +172,20 @@ html #kg-root #bb-panel.mz-on.mz-on.mz-on.mz-on{display:flex!important;flex-dire
 #mz .mzpitch{writing-mode:vertical-lr;direction:rtl;width:22px;height:140px;accent-color:var(--amb)}
 #mz #mz-rpm button{min-width:44px}
 .mzghost{position:fixed;z-index:2147483600;pointer-events:none;padding:6px 9px;border-radius:3px;background:var(--amb);color:#1a1006;font:700 10px/1 "DM Mono",monospace}
+/* 13 nov. 2026 (décision de Mauk Tenieb : pas de façade TR-808) : le rack devient l'écran d'un séquenceur des années 1980 (Fairlight CMI, Page R) — verre noir bombé, phosphore vert, trame ; chaque voix garde la couleur de son Mask sur une étiquette Dymo en relief */
+#mz .mzrack{background:radial-gradient(ellipse at 50% 45%,#07160b 0%,#020804 70%,#010402 100%)!important;border:10px solid #2a2724;border-radius:14px/18px;box-shadow:inset 0 0 40px rgba(0,0,0,.9),inset 0 0 2px rgba(120,255,150,.25),0 2px 0 #3a3632,0 6px 14px rgba(0,0,0,.6)!important;position:relative}
+#mz .mzrack::after{content:"";position:sticky;display:block;pointer-events:none;left:0;bottom:0;height:0}
+#mz .mzrack{background-image:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px),radial-gradient(ellipse at 50% 45%,#07160b 0%,#020804 70%,#010402 100%)!important}
+#mz .mzs{background:transparent!important;box-shadow:inset 0 0 0 1px rgba(110,255,140,.16)!important;border-radius:1px!important}
+#mz .mzs.b{box-shadow:inset 0 0 0 1px rgba(110,255,140,.28)!important}
+#mz .mzs.on{background:#7dff95!important;box-shadow:0 0 4px rgba(125,255,149,.65),inset 0 0 0 1px #c9ffd3!important}
+#mz .mzs.cur{outline:0!important;box-shadow:inset 0 0 0 1px #c9ffd3,0 0 3px rgba(201,255,211,.5)!important}
+#mz .mzs.on.cur{background:#e4ffe9!important}
+#mz .mznm{height:17px!important;min-height:0!important;max-height:17px!important;align-self:center;font-size:10px!important;background:var(--c)!important;color:#fff!important;border-radius:2px!important;font-weight:700!important;letter-spacing:.12em!important;text-transform:uppercase;text-shadow:0 -1px 0 rgba(0,0,0,.45),0 1px 0 rgba(255,255,255,.25)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 -1px 0 rgba(0,0,0,.35),0 1px 1px rgba(0,0,0,.6)!important;filter:saturate(.75) brightness(.8)}
+#mz .mznm i{display:none}
+#mz .mzrow.sel .mznm{filter:none;outline:1px solid #7dff95;outline-offset:1px}
+#mz .mzled{background:radial-gradient(circle at 35% 35%,#d7ffdf,#3fd65a 55%,#145a22)!important}
+#mz .mzadd{border-color:rgba(110,255,140,.35)!important;color:#7dff95!important}
 @media (max-width:760px),(orientation:portrait){#mz{grid-template-rows:auto auto auto;overflow:auto}#mz .mzmain{grid-template-columns:1fr;min-height:auto}#mz .mzdeck,#mz .mzbar{min-height:auto}#mz .mzrack{height:56vh;max-height:none}#mz .mzside{flex-direction:row}#mz .mzscrbox{flex:1.6}#mz .mzttbox{flex:1}#mz .mzdeck{grid-template-columns:1fr}#mz .mznm{width:44px;padding:0;justify-content:center}#mz .mznm span{display:none}#mz .mznm i{width:14px;height:14px;border-radius:3px}#mz .mzrow{height:42px;margin-bottom:4px}#mz .mzs{height:40px;flex:1 0 30px}#mz .mzs.g{margin-left:0}#mz .mzbar{gap:4px;padding:5px}#mz .mzbar .mzbt{min-width:40px}#mz #mz-tk .mzkn{width:40px}#mz #mz-tk .mzkn svg{width:34px;height:34px}#mz .mztt{width:150px;height:150px}#mz .mzside{flex-direction:column}#mz .mzscrbox{flex:none}#mz .mzttbox{flex:none}}
 #mz #mz-pg{display:none;align-items:center}#mz #mz-pg button{min-width:40px}#mz .mzpgl{min-width:42px;text-align:center;color:var(--ink);font-size:11px}
 @media (orientation:landscape) and (max-height:520px){#mz{overflow:auto;grid-template-rows:auto auto auto}#mz .mzrack{max-height:70vh}}
