@@ -3,7 +3,7 @@
 https://mauktenieb.github.io/borne/ range Insert Koin dans une borne d'arcade. L'Insert Koin en ligne (dépôt `insertkoin`) reste intact.
 
 ## Fabrication
-- Depuis le 30 oct. 2026, la borne est sa propre source : ses programmes divergent d'Insert Koin (Konnect4, Fauna Chess, FaunInvaders, polices, palmarès). La copie automatique depuis insertkoin (`tools/aspire-borne.sh`) est retirée ; une correction d'Insert Koin passe dans la borne à la main, fichier par fichier. `insertkoin.html` reste la base de `borne-build.py`, qui fabrique `index.html` et `fr.html`.
+- Depuis le 30 oct. 2026, la borne est sa propre source : ses programmes divergent d'Insert Koin (Konnect4, Fauna Chess, FaunInvaders, polices, palmarès). La borne abandonne la copie automatique depuis insertkoin (`tools/aspire-borne.sh`) ; une correction d'Insert Koin passe dans la borne à la main, fichier par fichier. `insertkoin.html` reste la base de `borne-build.py`, qui fabrique `index.html` et `fr.html`.
 - `tools/borne-controle.py` mesure la borne sur cinq fenêtres avant et après chaque lot.
 - `borne-build.py` fabrique `index.html` (la borne) depuis `insertkoin.html` et `skoporhogo-borne.html` depuis `skoporhogo.html`. Il pose les crochets de la borne (`window.__ik`, `__borneGo`, `__borneHome`, `__borneGame`, `__borneBoom`), applique les noms canoniques (FotoFauna, KorhoName, SkopoRhogo), le plafond de 99 et les retouches de la grammaire commune aux copies affichées.
 

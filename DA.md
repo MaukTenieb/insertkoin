@@ -1,4 +1,4 @@
-# Borne Insert Koin — direction artistique
+# Borne Insert Koin : direction artistique
 
 La borne est une borne d'arcade dédiée des années 1980 à 1985, posée dans une salle sombre. Chaque élément de la page a son équivalent sur une vraie borne de cette époque. Un élément sans équivalent sort, ou devient l'objet qui lui correspond.
 
