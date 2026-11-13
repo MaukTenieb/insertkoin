@@ -122,7 +122,7 @@ html #kg-root #bb-panel.mz-on.mz-on.mz-on.mz-on{display:flex!important;flex-dire
 #mz .mzscr{display:block;width:100%;aspect-ratio:16/9;height:auto;border-radius:3px;background:#080706;box-shadow:inset 0 0 0 1px #000,0 0 0 1px rgba(255,255,255,.05)}
 #mz .mzttbox{align-items:center;flex:1;justify-content:center}
 #mz .mzlibh{display:flex;align-items:center;gap:6px}#mz #mz-kind button{display:grid;place-items:center;min-width:38px}#mz #mz-kind svg{width:18px;height:18px}
-#mz{--pl:#17130e;--pl2:#221c14;--ink:#efe3cf;--dim:#b3a994;--amb:var(--pal-accent,#f2a93b);--led:#c8302a;flex:1;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:6px;color:var(--ink);font:500 10px/1 "DM Mono",monospace;letter-spacing:.08em;user-select:none;-webkit-user-select:none}
+#mz{--pl:#17130e;--pl2:#221c14;--ink:#efe3cf;--dim:#b3a994;--amb:var(--pal-accent,#f2a93b);--led:#c8302a;flex:1;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:6px;color:var(--ink);font:500 11px/1 "DM Mono",monospace;letter-spacing:.08em;user-select:none;-webkit-user-select:none}
 #mz button{font:inherit;color:inherit;cursor:pointer}
 #mz .mzbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 8px;background:linear-gradient(#2a2219,#17120c);border-radius:6px;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 0 1px #000}
 #mz .mzbt{display:grid;place-items:center;min-width:40px;height:40px;padding:0 8px;border:0;border-radius:4px;background:linear-gradient(#3a3027,#1d1812);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 2px 3px rgba(0,0,0,.65);color:var(--ink)}
@@ -157,22 +157,22 @@ html #kg-root #bb-panel.mz-on.mz-on.mz-on.mz-on{display:flex!important;flex-dire
 #mz .mzadd svg{width:16px;height:16px}
 #mz .mzdeck{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:6px;align-items:stretch}
 #mz .mzbox{background:linear-gradient(#2b241b,#18130d);border-radius:6px;box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 0 0 1px #000;padding:6px 8px;display:flex;flex-direction:column;gap:4px;min-width:0}
-#mz .mzbox h4{margin:0;font:700 9px/1 "DM Mono",monospace;letter-spacing:.2em;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#mz .mzbox h4{margin:0;font:700 11px/1 "DM Mono",monospace;letter-spacing:.2em;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #mz .mzbox h4 b{color:var(--c,var(--amb))}
 #mz .mzkns{display:flex;flex-wrap:wrap;gap:4px 6px}
 #mz .mzfw{display:flex;align-items:center;justify-content:center;width:34px;height:84px;background:#1a1612;border-radius:3px;box-shadow:inset 0 1px 3px rgba(0,0,0,.8)}#mz .mzfad{writing-mode:vertical-lr;direction:rtl;width:24px;height:76px;margin:0;accent-color:#d9cfb4}
 #mz .mzvu{display:flex;gap:2px;margin-top:4px}#mz .mzvu i{flex:1;height:6px;border-radius:1px;background:#2a241e}#mz .mzvu i.g{background:#5bd15b;box-shadow:0 0 3px #5bd15b}#mz .mzvu i.a{background:#f2a93b;box-shadow:0 0 3px #f2a93b}#mz .mzvu i.r{background:#c8302a;box-shadow:0 0 3px #c8302a}
 #mz .mzkn{display:flex;flex-direction:column;align-items:center;gap:3px;width:48px;touch-action:none;cursor:ns-resize}
-#mz .mzkn svg{width:44px;height:44px;display:block}#mz .mzkn small{font-size:10px;letter-spacing:.1em;color:#cfc6b2}
+#mz .mzkn svg{width:44px;height:44px;display:block}#mz .mzkn small{font-size:11px;letter-spacing:.1em;color:#cfc6b2}
 #mz .mzlib{display:flex;flex-wrap:wrap;gap:4px;overflow:auto;max-height:96px;align-content:flex-start}
-#mz .mzlb{flex:none;width:118px;height:44px;padding:0 8px;border:0;border-radius:4px;color:#2b2620;font-weight:700;font-size:10px;background:linear-gradient(#e9e1cc,#d9cfb4) padding-box;border:5px solid #2a231c;border-width:6px 6px 14px;background-clip:padding-box;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 1px 2px rgba(0,0,0,.6);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;touch-action:none;display:flex;align-items:center;gap:6px}
+#mz .mzlb{flex:none;width:118px;height:44px;padding:0 8px;border:0;border-radius:4px;color:#2b2620;font-weight:700;font-size:11px;background:linear-gradient(#e9e1cc,#d9cfb4) padding-box;border:5px solid #2a231c;border-width:6px 6px 14px;background-clip:padding-box;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 1px 2px rgba(0,0,0,.6);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;touch-action:none;display:flex;align-items:center;gap:6px}
 #mz .mzlb::before{content:"";flex:none;width:6px;height:18px;border-radius:2px;background:var(--c)}
 #mz .mzlb{position:relative}#mz .mzlb::after{content:"";position:absolute;left:50%;bottom:-11px;width:34px;height:7px;margin-left:-17px;border-radius:4px;background:radial-gradient(circle at 20% 50%,#0d0b09 2px,transparent 3px),radial-gradient(circle at 80% 50%,#0d0b09 2px,transparent 3px),#3a3129}
 #mz .mzlib{max-height:118px;gap:6px}
 #mz .mzttrow{display:flex;align-items:center;gap:10px;width:100%;justify-content:center}#mz .mztt{width:min(210px,100%);height:auto;aspect-ratio:1;touch-action:none;cursor:grab}
 #mz .mzpitch{writing-mode:vertical-lr;direction:rtl;width:22px;height:140px;accent-color:var(--amb)}
 #mz #mz-rpm button{min-width:44px}
-.mzghost{position:fixed;z-index:2147483600;pointer-events:none;padding:6px 9px;border-radius:3px;background:var(--amb);color:#1a1006;font:700 10px/1 "DM Mono",monospace}
+.mzghost{position:fixed;z-index:2147483600;pointer-events:none;padding:6px 9px;border-radius:3px;background:var(--amb);color:#1a1006;font:700 11px/1 "DM Mono",monospace}
 /* 13 nov. 2026 (décision de Mauk Tenieb : pas de façade TR-808) : le rack devient l'écran d'un séquenceur des années 1980 (Fairlight CMI, Page R) — verre noir bombé, phosphore vert, trame ; chaque voix garde la couleur de son Mask sur une étiquette Dymo en relief */
 #mz .mzrack{background:radial-gradient(ellipse at 50% 45%,#07160b 0%,#020804 70%,#010402 100%)!important;border:10px solid #2a2724;border-radius:14px/18px;box-shadow:inset 0 0 40px rgba(0,0,0,.9),inset 0 0 2px rgba(120,255,150,.25),0 2px 0 #3a3632,0 6px 14px rgba(0,0,0,.6)!important;position:relative}
 #mz .mzrack::after{content:"";position:sticky;display:block;pointer-events:none;left:0;bottom:0;height:0}
@@ -182,7 +182,7 @@ html #kg-root #bb-panel.mz-on.mz-on.mz-on.mz-on{display:flex!important;flex-dire
 #mz .mzs.on{background:#7dff95!important;box-shadow:0 0 4px rgba(125,255,149,.65),inset 0 0 0 1px #c9ffd3!important}
 #mz .mzs.cur{outline:0!important;box-shadow:inset 0 0 0 1px #c9ffd3,0 0 3px rgba(201,255,211,.5)!important}
 #mz .mzs.on.cur{background:#e4ffe9!important}
-#mz .mznm{height:17px!important;min-height:0!important;max-height:17px!important;align-self:center;font-size:10px!important;background:var(--c)!important;color:#fff!important;border-radius:2px!important;font-weight:700!important;letter-spacing:.12em!important;text-transform:uppercase;text-shadow:0 -1px 0 rgba(0,0,0,.45),0 1px 0 rgba(255,255,255,.25)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 -1px 0 rgba(0,0,0,.35),0 1px 1px rgba(0,0,0,.6)!important;filter:saturate(.75) brightness(.8)}
+#mz .mznm{height:17px!important;min-height:0!important;max-height:17px!important;align-self:center;font-size:11px!important;background:var(--c)!important;color:#fff!important;border-radius:2px!important;font-weight:700!important;letter-spacing:.12em!important;text-transform:uppercase;text-shadow:0 -1px 0 rgba(0,0,0,.45),0 1px 0 rgba(255,255,255,.25)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 -1px 0 rgba(0,0,0,.35),0 1px 1px rgba(0,0,0,.6)!important;filter:saturate(.75) brightness(.8)}
 #mz .mznm i{display:none}
 #mz .mzrow.sel .mznm{filter:none;outline:1px solid #7dff95;outline-offset:1px}
 #mz .mzled{background:radial-gradient(circle at 35% 35%,#d7ffdf,#3fd65a 55%,#145a22)!important}

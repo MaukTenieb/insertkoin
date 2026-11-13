@@ -207,7 +207,7 @@ function drawClock(){var s=$('#aclk');if(!s)return;var d=new Date(),a=(d.getHour
  function hand(deg,len,w){var r=deg*Math.PI/180;return '<line x1="22" y1="22" x2="'+(22+Math.sin(r)*len)+'" y2="'+(22-Math.cos(r)*len)+'" stroke="#000" stroke-width="'+w+'"/>'}
  var ticks='';for(var i=0;i<12;i++){var r=i*30*Math.PI/180;ticks+='<rect x="'+(21+Math.sin(r)*18)+'" y="'+(21-Math.cos(r)*18)+'" width="2" height="2" fill="#2c2f3b"/>'}
  s.innerHTML='<circle cx="22" cy="22" r="20" fill="#e4e6ee" stroke="#6b7187" stroke-width="2"/>'+ticks+hand(a,11,2.5)+hand(b,16,1.5);
- var r2=rep(d);var m=$('#fpm');if(m){m.textContent=MO[r2.m-1].slice(0,4)+'.';$('#fpd').textContent=r2.d;$('#fpy').textContent=r2.y}}
+ var r2=rep(d);var m=$('#fpm');if(m){m.textContent=MO[r2.m-1].toLowerCase();$('#fpd').textContent=r2.d;$('#fpy').textContent=r2.y}}
 
 /* plateau */
 function trayEl(th){var tr=h('div');tr.id=th==='std'?'tray':'';if(th==='std')tr.className='';
@@ -496,3 +496,4 @@ $('#startbtn').innerHTML=KICON('koin',16)+'<span>'+t('start')+'</span>';
 $('#startbtn').onclick=function(e){e.stopPropagation();if($('#startmenu')){closeMenus();return}startMenu()};
 deskEvents();psyDrag();build();boot();
 })();
+
