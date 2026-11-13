@@ -200,8 +200,8 @@ function startHall(){if(gl){gl.activeTexture(gl.TEXTURE0);TEX=gl.createTexture()
   gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,img);['TEXTURE_WRAP_S','TEXTURE_WRAP_T'].forEach(function(k){gl.texParameteri(gl.TEXTURE_2D,gl[k],gl.CLAMP_TO_EDGE)});
   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);ready=true;size()}
  if(!RM)S.intro=performance.now();else S.lum=1;kick()}
-if(!glInit()){cv.style.display='none';var fl=$('#hallflat');fl.style.display='block';fl.src='a/vc/vc-01-salle.webp'}
-img.onload=startHall;img.src='a/vc/vc-01-salle.webp';
+if(!glInit()){cv.style.display='none';var fl=$('#hallflat');fl.style.display='block';fl.src='a/vc/vc-01-salle.webp?v=1113'}
+img.onload=startHall;img.src='a/vc/vc-01-salle.webp?v=1113';
 
 /* 3. les gestes dans la salle : glisser ou molette pour avancer, toucher un rayon, toucher la lampe du fond */
 var hs=$('#salle'),pd=null;
