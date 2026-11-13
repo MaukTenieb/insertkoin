@@ -218,6 +218,7 @@ html #kg-root #bb-panel.mz-on.mz-on.mz-on.mz-on{display:flex!important;flex-dire
 #mz .mzlight{position:absolute;left:50%;top:-12%;width:86%;height:124%;transform:translateX(-50%);pointer-events:none;background:radial-gradient(ellipse 46% 64% at 50% 0%,color-mix(in srgb,var(--sc) 34%,transparent),transparent 72%),radial-gradient(ellipse 52% 12% at 50% 84%,color-mix(in srgb,var(--sc) 26%,transparent),transparent 80%);mix-blend-mode:screen;opacity:.55;transition:opacity .9s ease;animation:mzbreath 5.5s ease-in-out infinite alternate}
 #mz .mzstage.lit .mzlight{opacity:1}
 @keyframes mzbreath{from{filter:brightness(.82)}to{filter:brightness(1.08)}}
+#mz .mzstage button.mzfig{min-width:0;min-height:0}
 #mz .mzfig{position:absolute;padding:0;pointer-events:none;border:0;background:none;cursor:grab;touch-action:none;transition:left .55s cubic-bezier(.3,.7,.2,1),top .55s cubic-bezier(.3,.7,.2,1),width .55s cubic-bezier(.3,.7,.2,1),height .55s cubic-bezier(.3,.7,.2,1),filter .7s ease;filter:brightness(.3) saturate(.35)}
 #mz .mzfig img{transform-origin:50% 100%;display:block;width:100%;height:100%;object-fit:contain;object-position:50% 100%;pointer-events:none;-webkit-user-drag:none}
 #mz .mzfig::after{content:"";position:absolute;left:12%;right:12%;bottom:-4%;height:9%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.75),transparent);z-index:-1}
@@ -382,8 +383,10 @@ function place(c,x,y,w,h,z){var b=STG.figs[c.id];if(!b||b.classList.contains('dr
 function stageLayout(){var st=STG.el;if(!st||st.hidden)return;var W=st.clientWidth,H=st.clientHeight;if(!W||!H)return;
   var M=masks(),front=M.filter(tgt),back=M.filter(function(c){return !tgt(c)}),hb=H*.3,per=Math.max(6,Math.min(18,Math.floor(W/(hb*ASP*.72))));
   back.forEach(function(c,i){var r=Math.floor(i/per),n=Math.min(per,back.length-r*per),j=i-r*per,k=1-r*.16,h=hb*k*STAT[c.mask]/1.98,w=h*ASP,slot=W/n;place(c,(j+.5)*slot-w/2,H*(.42-r*.075)-h,w,h,10-r)});
-  var n=front.length,slot=W/Math.max(1,n),hf=Math.min(H*.53,slot/ASP*1.3);
-  front.forEach(function(c,i){var h=hf*STAT[c.mask]/1.98,w=h*ASP;place(c,(i+.5)*slot-w/2,H*.97-h,w,h,20+(i%2))});
+  /* devant : une rangée tant que chaque Mask garde 52 px de large au moins ; au-delà, des rangées en gradins, la plus proche en bas */
+  var n=front.length,pf=Math.max(1,Math.floor(W/52)),R=Math.ceil(n/pf);
+  front.forEach(function(c,i){var r=R-1-Math.floor(i/pf),m=Math.min(pf,n-Math.floor(i/pf)*pf),j=i%pf,slot=W/m,k=1-r*.14,hf=Math.min(H*(R>1?.34:.53),W/Math.min(n,pf)/ASP*1.3)*k,h=hf*STAT[c.mask]/1.98,w=h*ASP;
+    place(c,(j+.5)*slot-w/2,H*(.97-r*.15)-h,w,h,30-r*3+(j%2))});
   st.classList.toggle('lit',n>0)}
 function pose(c,on){S.pend=S.pend.filter(function(q){return q.id!==c.id});
   if(!S.play){if(on)S.stage[c.id]=1;else delete S.stage[c.id];if(on&&ac())play(true)}else if(!!S.stage[c.id]!==on)S.pend.push({id:c.id,on:on});stageLayout()}
