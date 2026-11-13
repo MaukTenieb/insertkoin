@@ -241,7 +241,7 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 .cab.tel b{font-family:"Press Start 2P",monospace;font-size:clamp(.9rem,1.5vw,1.2rem);letter-spacing:.05em;color:#dfffe4}
 .cab .num{position:absolute;left:10px;top:8px;z-index:2;font-family:"DM Mono",monospace;font-size:.58rem;letter-spacing:.2em;color:var(--nc);text-shadow:0 0 8px var(--nc);pointer-events:none}
 .cab.boot{animation:boot .5s}@keyframes boot{0%{filter:brightness(3) saturate(0)}30%{filter:brightness(.4)}100%{filter:brightness(1)}}
-.crt{animation:crt .38s cubic-bezier(.2,.8,.2,1)}@keyframes crt{0%{transform:scaleY(.004) scaleX(.6);filter:brightness(4)}45%{transform:scaleY(.04) scaleX(1);filter:brightness(2.4)}100%{transform:none;filter:none}}
+.crt{animation:crt .38s cubic-bezier(.2,.8,.2,1)}/* 13 nov. 2026 (Mauk Tenieb : « virer ce gros plan [...] puis ça dézoome ») : l'allumage d'un programme garde l'image en place ; seule la lumière monte */@keyframes crt{0%{opacity:.15;filter:brightness(2.6)}45%{opacity:1;filter:brightness(1.5)}100%{opacity:1;filter:none}}
 .copy{margin:22px 0 0;text-align:center;font-family:"DM Mono",monospace;font-size:.62rem;letter-spacing:.22em;color:var(--dim)}
 .copy b{font-weight:400;color:var(--gold2);text-shadow:0 0 10px color-mix(in srgb,var(--pal-titre,var(--pal-titre,#ffe08a)) 40%,transparent)}
 @media (max-width:560px){.cab b{font-size:.8rem;letter-spacing:.03em}}
