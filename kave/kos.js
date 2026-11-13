@@ -55,7 +55,7 @@ var ROOT=dir('K:',[
  dir('SkopoRhogo',group('SkopoRhogo')),
  FAUNA,
  dir('Lore',[url('Lore','https://mauktenieb.substack.com','scroll'),url('Journal','https://korhogo.substack.com','scroll'),url('Mighty Fauna Sips Your Gas','https://korhogo.substack.com/p/mighty-fauna-sips-your-gas','scroll')]),
- dir('Mauk Tenieb',[url('Bio','https://github.com/MaukTenieb','plaque'),url('Burrows','https://mauktenieb.github.io/katabase','rabbit'),url('Bandcamp','https://mauktenieb.bandcamp.com','vinyl'),url('Threadless','https://korhogo.threadless.com','tshirt'),url('Instagram','https://www.instagram.com/mauktenieb','polaroid'),url('YouTube','https://www.youtube.com/@mauktenieb','vhs'),url('ORCID','https://orcid.org/0009-0007-9096-8267'),url('MusicBrainz','https://musicbrainz.org/artist/701a6795-f583-4567-b8f4-0d05f961d63f','vinyl')]),
+ dir('Mauk Tenieb',[url('Bio','https://github.com/MaukTenieb','plaque'),url('Burrows','https://mauktenieb.github.io/katabase','rabbit'),url('Bandcamp','https://mauktenieb.bandcamp.com','vinyl'),url('Threadless','https://korhogo.threadless.com','tshirt'),url('Instagram','https://www.instagram.com/mauktenieb','polaroid'),url('YouTube','https://www.youtube.com/@mauktenieb','vhs'),url('ORCID','https://orcid.org/0009-0007-9096-8267'),url('MusicBrainz','https://musicbrainz.org/artist/701a6795-f583-4567-b8f4-0d05f961d63f','catalog')]),
  WIKI,
  txt('README.md',D.README),txt('LICENSE',D.LICENSE),txt('Palmarès.txt',palmText())
 ],'drive');
