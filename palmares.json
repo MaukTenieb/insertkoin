@@ -1,7 +1,7 @@
 {
- "updated": "2026-11-11T06:31Z",
+ "updated": "2026-11-13T09:35Z",
  "relays": {
-  "wss://relay.damus.io": 35,
+  "wss://relay.damus.io": 0,
   "wss://nos.lol": 49,
   "wss://relay.primal.net": 55,
   "wss://nostr.mom": 52
@@ -128,7 +128,7 @@
   {
    "who": "515d1f59029568f92203b036679dbd033a010db2748ae3eaa4904327ec96c52a",
    "name": "BHO",
-   "t": 1794275263,
+   "t": 1794537247,
    "c": {
     "ka": 1,
     "kb": 7,
@@ -139,7 +139,7 @@
     "c4": 0,
     "hg": 1,
     "mm": 0,
-    "ko": 72
+    "ko": 73
    },
    "pts": 1362
   },
