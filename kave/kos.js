@@ -368,7 +368,7 @@ function shutdownNow(){WINS.slice().forEach(closeWin);var s=$('#safe');s.textCon
 function bakuBoom(){var d=$('#desk');d.animate([{transform:'translate(-6px,2px)'},{transform:'translate(5px,-3px)'},{transform:'translate(-3px,1px)'},{transform:'none'}],{duration:320});WINS.slice().forEach(closeWin)}
 
 /* ---------- bureau ---------- */
-function lieux(){var fr=S.lang==='fr';return[[{name:'Insert Koin',kind:'lieu',url:'../',icon:'borne'},'borne',1,1],[{name:'TV',kind:'lieu',url:'tv.html',icon:'tele'},'tele',1,1],[{name:'Video Kave',kind:'lieu',url:'videoclub.html',icon:'vhs'},'vhs',1,1]]}
+function lieux(){var fr=S.lang==='fr';return[[{name:'Insert Koin',kind:'lieu',url:'../?hall=1',icon:'borne'},'borne',1,1],[{name:'TV',kind:'lieu',url:'tv.html',icon:'tele'},'tele',1,1],[{name:'Video Kave',kind:'lieu',url:'videoclub.html',icon:'vhs'},'vhs',1,1]]}
 function deskItems(){var drive=Object.assign({},ROOT);drive.real=ROOT;
  return lieux().concat([[ROOT,'drive'],[findNode('KorhoGame')],[findNode('FaunEye')],[findNode('SurFauna')],[prog(D.P.filter(function(p){return p.id==='3615'})[0]),null,1],[prog(D.P.filter(function(p){return p.id==='skopo'})[0]),null,1],[prog(D.P.filter(function(p){return p.id==='musik'})[0]),null,1],[FAUNA],[findNode('Lore'),null],[url('GitHub','https://github.com/MaukTenieb','plaque'),null,1],[findNode('Mauk Tenieb'),'plaque']])}
 function renderDesk(){var host=$('#icons');host.innerHTML='';

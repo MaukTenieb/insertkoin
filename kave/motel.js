@@ -58,7 +58,7 @@ var b=document.createElement('button');b.className='fob';b.type='button';b.setAt
 b.innerHTML='<span class="sw"><span class="tw">'+svg+svg+'</span></span>';
 (function(){var im=new Image();im.onload=function(){w.classList.add('img');b.querySelector('.tw').innerHTML='<img src="'+IMG+'" alt=""><img src="'+IMG+'" alt="">'};im.src=IMG})();
 var c=document.createElement('nav');c.className='board';
-function href(u){return u==='../'?(HALL?'./':B):P+u}
+function href(u){return u==='../'?(HALL?'./?hall=1':B+'?hall=1'):P+u}
 var BG='#3b2416';
 function fill(){try{lang=localStorage.getItem('ik.lang')||lang}catch(e){}var fr=lang==='fr';
  b.setAttribute('aria-label',fr?'Porte-clé du motel : les lieux':'Motel key tag: the places');c.setAttribute('aria-label',fr?'Les lieux du motel':'The motel places');
