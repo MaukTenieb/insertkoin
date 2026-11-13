@@ -2138,7 +2138,7 @@ const _build=buildLobby;buildLobby=function(){_build();const r=loadRun();const b
   window.__borneSAY=function(){try{return SAY[LANG]||SAY.en;}catch(e){return SAY.en;}};
   const g=document.createElement('div');g.className='guide gone';g.setAttribute('role','button');g.setAttribute('aria-label','Guide');g.tabIndex=0;
   /* 8 nov. (Mauk Tenieb) : les psychopompes passent devant la caméra du toit. Le guide et sa bulle quittent la caisse (isolée pour les palettes) pour une scène posée sur #home, au-dessus du toit */
-  const STG=document.createElement('div');STG.className='gstage';STG.style.cssText='position:absolute;left:0;top:0;width:0;height:0;z-index:3;pointer-events:none';document.body.appendChild(STG);STG.appendChild(g);
+  const STG=document.createElement('div');STG.className='gstage';STG.style.cssText='position:absolute;left:0;top:0;width:100%;height:0;overflow-x:clip;overflow-y:visible;z-index:3;pointer-events:none';document.body.appendChild(STG);STG.appendChild(g);
   (function sync(){const t=home.getClientRects().length?home:(home.closest('.wrap')||document.body),r=t.getBoundingClientRect(),v=[r.left+scrollX,r.top+scrollY,r.width,r.height].map(Math.round);if(v.join()!==STG._v){STG._v=v.join();STG.style.left=v[0]+'px';STG.style.top=v[1]+'px';STG.style.width=v[2]+'px';STG.style.height=v[3]+'px';}requestAnimationFrame(sync);})();
   /* 1er nov. : au pupitre couché, #home passe en display:contents et n'a plus de boîte ; les coordonnées du guide se prennent alors sur son vrai conteneur */
   const GC=()=>{const o=g.offsetParent;return o&&o!==document.body?o:(home.getClientRects().length?home:(g.offsetParent||document.body));},GB=()=>GC().getBoundingClientRect(),GW=()=>GC().clientWidth;
