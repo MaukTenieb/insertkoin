@@ -38,9 +38,9 @@
     /* chaque bouton dit ce qu'il fait (S12) */
     [].forEach.call(document.querySelectorAll('#speeds button'),function(b,i){var t=i===0?'PAUSE':b.textContent+(i===1?' · DIRECT':'');b.title=t;b.setAttribute('aria-label',t);});
     if(attract){if(R.VIEW&&R.applyView){R.VIEW.z=innerWidth<400?1.25:1;R.applyView();/* la chambre entière dans l’écran, la date sur le noir (S13) ; au téléphone, les Masks gardent leur taille */}
-      var zm=document.getElementById('zoom');if(zm)document.body.appendChild(zm);
+      var zm=document.getElementById('zoom');if(zm)document.body.appendChild(zm);/* 13 nov. 2026 (passe anti-IA) : − et ＋ dessinés en traits, comme la sérigraphie d'une façade */if(zm)[].forEach.call(zm.querySelectorAll('button'),function(b,i){var plus=/＋|\+/.test(b.textContent);b.setAttribute('aria-label',plus?'Zoom +':'Zoom −');b.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="'+(plus?'M5 12h14M12 5v14':'M5 12h14')+'" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"/></svg>'});
       var cd=document.getElementById('card');if(cd)document.body.appendChild(cd);
-      var op=document.createElement('button');op.className='b-open';op.type='button';op.textContent='⤢';op.setAttribute('aria-label','SkopoRhogo');
+      var op=document.createElement('button');op.className='b-open';op.type='button';op.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"/></svg>';op.setAttribute('aria-label','SkopoRhogo');
       op.onclick=function(){try{parent.postMessage({borne:'open'},'*');}catch(_){}};document.body.appendChild(op);}
     pinch(R);
     if(!attract){var st2=document.createElement('style');st2.textContent='header button,aside button,#zoom button{min-height:44px;min-width:44px}';document.head.appendChild(st2);}

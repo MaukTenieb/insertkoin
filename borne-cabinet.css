@@ -1407,3 +1407,11 @@ html.borne .b-dot.on{box-shadow:inset 0 -1px 1px rgba(0,0,0,.4)!important}
 /* 13 nov. 2026 (Mauk Tenieb : « la minibarre est mal incrustée » dans FaunEye) : sur le flanc de bois, la barre devient une planchette de noyer sombre à filet de laiton, comme la barre de lecture du BakuBook */
 html.borne[data-habit=fauneye] .b-bezelfoot{background:linear-gradient(180deg,#3a2416,#22150b)!important;border-top:2px solid #b8892f!important;border-bottom:1px solid #120a05!important;box-shadow:inset 0 1px 0 rgba(240,213,140,.18),0 2px 6px rgba(0,0,0,.55)!important;border-radius:4px}
 html.borne[data-habit=fauneye] .b-bezelfoot::before,html.borne[data-habit=fauneye] .b-bezelfoot::after{display:none!important}
+/* 13 nov. 2026, passe anti-IA de la couche commune (Mauk Tenieb : « beaucoup de la DA fait IA ») : la lueur reste aux objets qui émettent (diodes, afficheurs, tube, touche rétroéclairée) ; titres, menus, dés, chiffres imprimés et pièces d'échecs gardent une ombre portée d'encre, sans halo */
+html.borne :is(.brand,.logo,.msg .big,.over h2,.kdrop,.cab .bigdie,.heroText .logo,.count,.menu a,.menu button,.copy b,.cab.dice b,.cab .num,.kgain,.stage .rot,.sig,.dk.kal,.champ .chT b,.stage .kdie .d,.stage .kdie b,.score .kd,#radio-toggle #radio-note,[data-swap=bio] small,[data-swap=bio] span,.spot.won){text-shadow:0 1px 0 rgba(0,0,0,.6)!important}
+html.borne :is(.cab.dice b,.spot.won)::after,html.borne .guide::before,html.borne .guide::after{text-shadow:0 1px 0 rgba(0,0,0,.6)!important}
+html.borne #kg-root #chess-board .piece{text-shadow:0 1px 2px rgba(0,0,0,.9)!important}
+html.borne #m-board .card.kcur,html.borne #chess-board .sq.kcur{box-shadow:none!important}
+html.borne :is(#chess,#mem,#mm-panel,#hang-panel,#bb-panel,#konklave-panel) button:active{box-shadow:inset 0 2px 3px rgba(0,0,0,.45)!important}
+html.borne .b-dot.on::after{box-shadow:none!important}
+html.borne .b-bezelfoot #koins.b-credit{background:linear-gradient(170deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.015) 38%,transparent 40%),#070605!important}
