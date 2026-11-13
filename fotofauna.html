@@ -116,8 +116,32 @@ html body header.top #bLang{margin-left:auto}
 .ff-modes button .ic{width:20px;height:20px;display:block}
 .kmk{order:0;flex:none;width:40px;align-self:stretch;position:relative;margin:-8px 0 0}
 .kmk #mk.in{position:absolute!important;left:3px!important;top:0!important;display:block!important;z-index:40}
-.kmk #mk.in .fob{width:26px;padding:0}
+.kmk #mk.in .fob{width:18px;padding:0}
 .kmk #mk.in .board{top:66px}
+/* 13 nov. : critique du juge externe — interrupteurs à glissière (gorge, curseur chromé, LED ambre), boutons à impulsion neutres, vraie pyramide en tête de la grille, tête du téléphone en trois rangées alignées */
+.sw{position:relative;margin-top:7px;padding:3px;background:#1a1714!important;border-radius:5px;box-shadow:inset 0 2px 3px rgba(0,0,0,.85),0 1px 0 rgba(255,255,255,.4)!important}
+.sw::before{content:"";position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:3px;background:linear-gradient(#efebe1,#8e8a80);box-shadow:0 1px 2px rgba(0,0,0,.7),inset 0 1px 0 #fff;transition:transform .2s cubic-bezier(.3,1.4,.5,1),opacity .15s}
+.sw:has(button:last-child[aria-pressed=true])::before{transform:translateX(100%)}
+.sw:not(:has([aria-pressed=true]))::before{opacity:0}
+.sw:has(button[hidden])::before{width:calc(100% - 6px);transform:none}
+.sw button,.sw button[aria-pressed=true]{position:relative;z-index:1;background:none!important;color:#8d8577}
+.sw button[aria-pressed=true]{color:#2b2620}
+.sw button[aria-pressed=true]::after{content:"";position:absolute;top:-10px;left:50%;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:#f2a93b;box-shadow:0 0 5px #f2a93b}
+.actions .key.prim,.actions .key.prim:hover{background:linear-gradient(180deg,#36302a,#1d1914);color:var(--ink,#e8e0c8)}
+.actions .key:active{transform:translateY(2px);box-shadow:inset 0 2px 3px rgba(0,0,0,.7)!important}
+#count{display:none}
+#status:has(#stText:empty):not(:has(button:not([hidden]))){display:none}
+.strip.pyr{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+.strip.pyr .frame{grid-column:span 2}
+.strip.pyr .frame:nth-child(1){grid-column:span 6}
+.strip.pyr .frame:nth-child(2),.strip.pyr .frame:nth-child(3){grid-column:span 3}
+.strip.pyr .frame:nth-child(-n+3) :is(img,.ph){aspect-ratio:4/3}
+@media (max-width:760px){
+ html body header.top{row-gap:10px}
+ .kb{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 8px}
+ .kb .sw{display:flex}.kb .sw button{flex:1;width:auto}
+ .kb .kt{width:100%}
+}
 .recShelf{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px}
 .recShelf button{flex:none;font:500 11px/1 var(--num);letter-spacing:.1em;padding:9px 10px;min-height:36px;border:1px solid var(--line2);border-radius:3px;background:#0f0d0a;color:#e8e0c8}
 .recShelf button i{font-style:normal;margin-left:8px;color:var(--mute)}
@@ -12138,7 +12162,7 @@ function drawGrid(){const g=$("genres");g.innerHTML="";if(!S.q&&S.fam==='__top')
  const subs=[...new Set(CARDS.filter(c=>famOf(c.op)===S.fam).map(c=>subOf(c.op)))].filter(Boolean).sort((a,b)=>SUBORD(a)-SUBORD(b));
  if(!S.q&&S.fam!=='__top'&&subs.length>1){const ch=document.createElement("div");ch.className="rail";
   [[null,t("all")]].concat(subs.map(s=>[s,subName(s)])).forEach(([s,n])=>{const b=document.createElement("button");b.type="button";b.className="gchip";b.setAttribute("aria-pressed",String(S.sub===s));const k=CARDS.filter(c=>famOf(c.op)===S.fam&&(!s||subOf(c.op)===s)).length;b.innerHTML=`${esc(n)} <small>${k}</small>`;b.onclick=()=>{S.sub=s;drawGrid()};ch.appendChild(b)});g.appendChild(ch)}
- const grid=$("grid");grid.innerHTML="";for(const c of visibleCards()){const b=document.createElement("button");b.type="button";b.className="frame spec";b.dataset.k=c.k;b.setAttribute("aria-pressed",String(!!S.cur&&(S.cur.id+(S.cur.pi>=0?"#"+S.cur.pi:""))===c.k));
+ const grid=$("grid");grid.innerHTML="";grid.classList.toggle("pyr",!S.q&&S.fam==='__top');for(const c of visibleCards()){const b=document.createElement("button");b.type="button";b.className="frame spec";b.dataset.k=c.k;b.setAttribute("aria-pressed",String(!!S.cur&&(S.cur.id+(S.cur.pi>=0?"#"+S.cur.pi:""))===c.k));
   if(c.note&&LANG==="fr")b.title=c.note;b.innerHTML=`<div class="ph"></div><b>${labelHTML(c.op,c.name)}</b><i>${esc(APPN[c.op.app]||c.op.app)}${c.pi<0&&c.op.presets&&c.op.presets.length?" · "+(c.op.presets.length+1)+" "+t("variants"):""}</i>`;b.onclick=()=>pick(c);b._c=c;grid.appendChild(b);IO.observe(b)}}
 const IO=new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting){IO.unobserve(e.target);thumbQ.push(e.target);pumpThumbs()}},{rootMargin:"300px"});
 const thumbQ=[];let thumbRun=0;
