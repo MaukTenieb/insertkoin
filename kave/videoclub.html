@@ -98,7 +98,7 @@ button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-sel
 <div id="salle" tabindex="-1" aria-label="Video Kave"></div>
 <div id="wrap">
  <div class="scene" id="rayon"><img class="bg" data-src="a/vc/vc-02-rayon.webp?v=1114" alt=""><div id="boxes"></div><div class="rail" id="rails"></div></div>
- <div class="scene" id="comptoir"><img class="bg" data-src="a/vc/vc-03-comptoir.webp?v=1114" alt=""><div id="tv" role="button" tabindex="0" aria-label="VCR"><div class="osd"></div></div><div class="hot" id="hPhone" role="button" tabindex="0" aria-label="Motel Sound"></div></div>
+ <div class="scene" id="comptoir"><img class="bg" data-src="a/vc/vc-03-comptoir.webp?v=1115" alt=""><div id="tv" role="button" tabindex="0" aria-label="VCR"><div class="osd"></div></div><div class="hot" id="hPhone" role="button" tabindex="0" aria-label="Motel Sound"></div></div>
 </div>
 <div id="case" role="dialog" aria-modal="true"><div class="face"></div><div class="back"></div></div>
 <div id="grain" aria-hidden="true"></div>
@@ -134,14 +134,14 @@ function fit(){var W=innerWidth,Hh=innerHeight-barH(),sw=Math.min(W,Hh*IA);PAN=f
 var cv=$('#hall'),gl=null,P=null,U={},TEX=null,img=new Image(),ready=false;
 /* 13 nov. 2026 (Mauk Tenieb) : nouvelles photos de l'allée, du rayon et du comptoir ; point de fuite, rayon et comptoir recalés */
 /* 10 nov. (A51) : l'allée sans fond ; le fond de l'allée contient la même allée, trois fois plus petite, à l'infini (récursion au point de fuite), sous l'optique en barillet qui mange les bords */
-var K=.2,Z0=.93,KD=.33,V=[.494,.508],HOLE=[552/1376,275/768,808/1376,505/768],R0=HOLE.map(function(x,j){var c=V[j%2];return c+(x-c)/KD}),FV=[120/1376,70/768];
+var K=.2,Z0=.93,KD=.33,V=[.494,.508],HOLE=[552/1376,275/768,808/1376,505/768],R0=HOLE.map(function(x,j){var c=V[j%2];return c+(x-c)/KD}),FV=[180/1376,115/768];
 var S={D:0,v:0,push:0,foc:[.5,.49],hl:[0,0,0],hlT:[0,0,0],lum:RM?1:.1,tm:0,intro:-1};
 var CREEP=RM?0:.022;
 var VS='attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
 var FS='precision highp float;uniform sampler2D T;uniform vec2 R,Vp,Fo,Fv;uniform float Uu,Lk,Kd,Kk,Z,Pu,Lu,Tm,Ia,E1,F1;uniform vec3 Hl;uniform vec4 M1,M0;'+
 'vec2 fin(vec2 s){return Fo+(s-Fo)*(1.-.6*Pu);}'+
 'float ins(vec2 s){vec2 m=min(s,1.-s);return smoothstep(0.,.06,m.x)*smoothstep(0.,.09,m.y);}'+
-'float in2(vec2 s){vec2 m=min(s,1.-s);return smoothstep(0.,.12,m.x)*smoothstep(0.,.18,s.y)*smoothstep(0.,.05,1.-s.y);}'+
+'float in2(vec2 s){vec2 m=min(s,1.-s);return smoothstep(0.,.2,m.x)*smoothstep(0.,.26,s.y)*smoothstep(0.,.09,1.-s.y);}'+
 'float bx(vec2 p,vec4 r,vec2 f){return smoothstep(r.x,r.x+f.x,p.x)*smoothstep(r.z,r.z-f.x,p.x)*smoothstep(r.y,r.y+f.y,p.y)*smoothstep(r.w,r.w-f.y,p.y);}'+
 'void main(){vec2 q=(gl_FragCoord.xy-.5*R)/R.y;q.y=-q.y;float a=R.x/R.y,r2=dot(q,q)/(a*a*.25+.25),c=max(1.,a/Ia);'+
 ' float f=Z*(1.+Kk*r2);vec2 p0=fin(.5+q*f/(c*vec2(Ia,1.))),ab=(p0-.5)*.004*r2;float s=exp(Uu*Lk),w=1.;vec3 col=vec3(0.);'+
@@ -262,7 +262,11 @@ function play(){if(!cur){go('rayon');return}if(ON)location.href=cur.url;else win
 $('#tv').onclick=function(){if(!swiped)play()};
 /* 10 nov. (Mauk Tenieb, 19 h 25) : le téléphone à cadran commande le Motel Sound : décrocher le lance, raccrocher l'arrête (Mauk Tenieb, 10 nov., 21 h 24) */
 var PH={up:false};
-function phUp(v){PH.up=v;$('#hPhone').classList.toggle('up',v);$('#hPhone').setAttribute('aria-pressed',String(v));if(!window.IKMotel)return;IKMotel.on(v)}
+/* 13 nov. 2026 (Mauk Tenieb : « faut que le téléphone ait une fonction ») : décrocher donne la tonalité et le Motel Sound s'annonce sur la télé du comptoir ; raccrocher, le déclic */
+function phTone(v){try{var A=window.__phA||(window.__phA=new(window.AudioContext||window.webkitAudioContext)()),t=A.currentTime,g=A.createGain();g.connect(A.destination);
+ if(v){[350,440].forEach(function(f){var o=A.createOscillator();o.frequency.value=f;o.connect(g);o.start(t);o.stop(t+.9)});g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.06,t+.02);g.gain.setValueAtTime(.06,t+.8);g.gain.linearRampToValueAtTime(0,t+.9)}
+ else{var n=A.createBuffer(1,2205,44100),d=n.getChannelData(0);for(var i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/180);var s2=A.createBufferSource();s2.buffer=n;s2.connect(g);g.gain.value=.5;s2.start(t)}}catch(e){}}
+function phUp(v){PH.up=v;phTone(v);var o=$('#tv .osd');if(o){o.textContent=v?'\u260E MOTEL SOUND':'';clearTimeout(PH.t);if(v)PH.t=setTimeout(function(){if(o.textContent.indexOf('MOTEL')>0)o.textContent=cur?t('play'):''},2600)}$('#hPhone').classList.toggle('up',v);$('#hPhone').setAttribute('aria-pressed',String(v));if(!window.IKMotel)return;IKMotel.on(v)}
 $('#hPhone').onclick=function(){if(!swiped)phUp(!PH.up)};
 
 /* 7. passer d'un lieu à l'autre par la scène : travelling vers le rayon ou la lampe ; retour par le geste vers le bas, le bord de la photo, Échap, le retour du navigateur, Baku Boom */
@@ -275,7 +279,9 @@ function turn(el,id){if(RM||!el.animate)return;var L=S.foc[0]<.5,o=id==='rayon'?
 function reveal(id){scene=id;warm();turn(SC[id],id);Object.keys(SC).forEach(function(k){SC[k].classList.toggle('on',k===id)});WR.classList.add('live');hs.classList.add('off');cv.classList.add('dim');$('#grain').classList.add('on');
  if(id==='comptoir')comptoir();center();
  setTimeout(function(){if(scene!==id)return;if(id==='rayon'){var b=BOX[inHand?TAPES.indexOf(inHand):0];if(b)b.focus({preventScroll:true})}else $('#tv').focus({preventScroll:true})},RM?0:220)}
-window.__vcShow=function(id){show(id)};function show(id){shut();if(id!=='comptoir')vcClip(false);if(id===scene&&!busy)return;
+/* 13 nov. 2026 (Mauk Tenieb : « le passage au bureau du fond est trop brusque ») : le comptoir s'ouvre par un fondu au noir */
+var FD=document.createElement('div');FD.style.cssText='position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;z-index:60;transition:opacity .32s ease';document.body.appendChild(FD);
+window.__vcShow=function(id){show(id)};function show(id){if(id==='comptoir'&&scene==='salle'&&!RM&&!FD.__on){FD.__on=1;FD.style.opacity='1';setTimeout(function(){busy=false;S.push=1;reveal(id);kick();setTimeout(function(){FD.style.transition='opacity .55s ease';FD.style.opacity='0';setTimeout(function(){FD.style.transition='opacity .32s ease';FD.__on=0},560)},60)},330);return}shut();if(id!=='comptoir')vcClip(false);if(id===scene&&!busy)return;
  if(id==='salle'){scene='salle';busy=false;Object.keys(SC).forEach(function(k){SC[k].classList.remove('on')});WR.classList.remove('live');hs.classList.remove('off');cv.classList.remove('dim');$('#grain').classList.remove('on');tween('push',0,520,eout);hs.focus({preventScroll:true});kick();return}
  if(scene==='salle'&&!RM&&gl){busy=true;S.hlT=[0,0,0];tween('push',1,430,ease,function(){busy=false;if(scene==='salle')reveal(id)});return}
  S.push=1;reveal(id);kick()}

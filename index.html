@@ -1608,8 +1608,8 @@ function fxDraw(c,r,x,y,fw,fh,f){const t=G.t,L=(FXF[r.id]&&FXF[r.id][f|0])||FX[r
     else if(q.k==='steam'&&G.face===6||q.k==='steam'&&(t%6)<1.2){c.fillStyle='rgba(230,230,230,.3)';for(const[a,b]of q.pts)for(let i=0;i<3;i++){const s=((t*1.5+i/3)%1);c.fillRect(x+a+(a<66?-s*8:s*8),y+b+s*4,1+s*4,1+s*2);}}}}
 /* some Masks stand lower, so their hind legs go behind the table */
 /* the Masks sit at the far end of the table: scaled to the room (dogXim, a teenager, smaller than the adults) */
-/* 13 nov. 2026 (Mauk Tenieb : « vérifie la taille des Masks, les uns par rapport aux autres ») : tailles d'après l'âge et la stature du tableau THE FAUNA — Poisoned Well enfant de 8-10 ans, dogXim adolescent de 12-14 ans, Maiden Call, Aube, Malika et Naphta femmes, Honey Buzzard très grand, Croisière Noire massif ; les autres, adultes, à 0,84 */
-const SINK={croisiere_noire:6},BIG={croisiere_noire:.92,dogxim:.72,poisoned_well:.6,maiden_call:.8,aube:.8,malika:.8,naphta:.8,honey_buzzard:1},SIZE=.84;
+/* 13 nov. 2026 (Mauk Tenieb : « vérifie la taille des Masks, les uns par rapport aux autres ») : tailles d'après l'âge et la stature du tableau THE FAUNA — Poisoned Well enfant de 8-10 ans, dogXim adolescent de 12-14 ans, Maiden Call, Aube, Malika et Naphta femmes, Honey Buzzard très grand, C7H5N3O6 et Silent Pact grands (entre Croisière Noire et Honey Buzzard), Croisière Noire massif ; les autres, adultes, à 0,84 */
+const SINK={croisiere_noire:6},BIG={croisiere_noire:.92,dogxim:.72,poisoned_well:.6,maiden_call:.8,aube:.8,malika:.8,naphta:.8,c7h5n3o6:.96,silent_pact:.96,honey_buzzard:1},SIZE=.84;
 function portrait(c,ox){const r=G.r;if(!r.sheet)return;const e=G.e,f=faceNow(),fw=r.fw,fh=r.fh,t=G.t;
   const stoic=r.sig==='silent';let sink=0;if(!stoic){if(G.hitT>0)sink+=2;if(e.down>0)sink+=8;}
   const lag=e.player_score-e.opponent_score;if(!stoic)sink+=Math.max(0,Math.min(8,lag));
