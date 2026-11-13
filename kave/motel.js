@@ -66,7 +66,7 @@ function fill(){try{lang=localStorage.getItem('ik.lang')||lang}catch(e){}var fr=
 fill();
 w.appendChild(b);w.appendChild(c);
 function tog(v){w.classList.toggle('on',v);b.setAttribute('aria-expanded',String(v))}
-b.addEventListener('click',function(e){e.stopPropagation();var v=!w.classList.contains('on');if(v)fill();tog(v)});
+b.addEventListener('click',function(e){e.stopPropagation();if(MKIN&&window.IK_MK_GO){(window.top||window).location.href=new URL(href(window.IK_MK_GO),location.href).href;return}var v=!w.classList.contains('on');if(v)fill();tog(v)});
 document.addEventListener('click',function(e){if(!w.contains(e.target))tog(false)});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&w.classList.contains('on')){tog(false);b.focus();e.stopPropagation();e.preventDefault()}},true);
 function add(){if(MKIN){w.classList.add('in');MKIN.appendChild(w);return}document.body.appendChild(w);var t=getComputedStyle(document.documentElement).getPropertyValue('--mk-top');if(t)w.style.top=t}
