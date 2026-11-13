@@ -19,7 +19,7 @@
 try{var _l=localStorage.getItem('ik.lang');if(_l)localStorage.setItem('obturama.lang',JSON.stringify(_l==='fr'?'fr':'en'));}catch(e){}</script>
 <script>/* l'écran commun d'Insert Koin (ik-ecran.js, à côté de la page sur le site) : chargé quand la page est servie ;
    ouverte depuis le disque (file:), la page garde sa propre disposition */
-if(location.protocol!=='file:')document.write('<script src="ik-ecran.js"><\/script>');</script>
+if(location.protocol!=='file:')document.write('<script src="ik-tableaux.js"><\/script><script src="ik-ecran.js"><\/script>');</script>
 <style>
 :root{--bg:#07060a;--bg2:#0a0906;--panel:#0b0a08;--raise:#151209;--raise2:#1c180e;--line:#2c271e;--line2:#4a3d22;--ink:#f4efdf;--ink2:#d9d1be;--mute:#a89f8a;--faint:#8f8672;
  --acc:#c9a84c;--acc2:#ffe08a;--acc-ink:#0b0805;--accSoft:rgba(201,168,76,.16);--edge:#e8742a;--pencil:#d9341f;--ok:#9fd3c0;--err:#ff8f7a;--hd:58px;
@@ -12105,7 +12105,7 @@ const MASKS=['unkle_maukie','dogxim','c7h5n3o6','naphta','tsui_pen','honey_buzza
 const IK_LIEUX=["kave/a/vc/vc-01-salle.webp","kave/a/vc/vc-02-rayon.webp","room-puck-1.webp","room-puck-2.webp","room-puck-3.webp","room-puck-4.webp","room-puck-5.webp","room-puck-6.webp"];
 const ikMask=()=>IK_LIEUX[Math.floor(Math.random()*IK_LIEUX.length)];
 async function startImage(){const u=window.__pfStart||ikMask();
- try{const im=new Image();im.src=u;await im.decode();const c=FF.util.canvas(im.naturalWidth,im.naturalHeight);c.getContext("2d").drawImage(im,0,0);return FF.util.fromCanvas(c)}
+ try{if(window.ikTableaux&&/room-puck-\d/.test(u))return FF.util.fromCanvas(await ikTableaux(u));const im=new Image();im.src=u;await im.decode();const c=FF.util.canvas(im.naturalWidth,im.naturalHeight);c.getContext("2d").drawImage(im,0,0);return FF.util.fromCanvas(c)}
  catch{const c=FF.util.canvas(800,800),g=c.getContext("2d"),gr=g.createLinearGradient(0,0,800,800);gr.addColorStop(0,"#c9a84c");gr.addColorStop(1,"#07060a");g.fillStyle=gr;g.fillRect(0,0,800,800);return FF.util.fromCanvas(c)}}
 /* visage : détecteur du navigateur, sinon zone de peau (YCbCr) */
 function faceGuess(im){try{const W=im.width,H=im.height,d=im.data,N=20,cs=new Float32Array(N*N),cn=new Float32Array(N*N);

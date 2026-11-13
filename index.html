@@ -1153,7 +1153,7 @@ const MASKIMG={};function maskImg(id){if(!MASKIMG[id]){const im=new Image();im.d
 function rollRoom(gid){pickRoom();const pk=a=>Math.floor(Math.random()*a.length),i=pk(RVS.paper),j=pk(RVS.rose),k=pk(RVS.carpet);
   RV={k:i+'.'+j+'.'+k,p:RVS.paper[i],r:RVS.rose[j],c:RVS.carpet[k],print:Math.floor(Math.random()*RVS.print),lamp:[[255,210,140],[255,180,120],[230,220,255],[255,140,150]][pk([0,0,0,0])]};
   /* the paintings on the walls: Fauna, drawn at random (never the guest at the table) */
-  const ids=R0.map(r=>r.id).filter(x=>x!==gid).sort(()=>Math.random()-.5);RV.pics=ids.slice(0,2);RV.pics.forEach(maskImg);bgKey=-1;}
+  const ids=R0.map(r=>r.id).filter(x=>x!==gid).sort(()=>Math.random()-.5);RV.pics=ids.slice(0,3);RV.pics.forEach(maskImg);bgKey=-1;}
 function drawPic(c,id,x,y,w,h,tone){const im=id&&MASKIMG[id];c.fillStyle='#2a2620';c.fillRect(x,y,w,h);if(!im||!im.complete||!im.naturalWidth)return;
   const iw=im.naturalWidth,ih=im.naturalHeight,k=Math.max(w/iw,h/ih)*1.15,sw=w/k,sh=h/k,sx=(iw-sw)/2,sy=Math.max(0,ih*.08);c.save();c.beginPath();c.rect(x,y,w,h);c.clip();c.drawImage(im,sx,sy,sw,sh,x,y,w,h);
   c.globalCompositeOperation='multiply';c.fillStyle=tone||'rgba(170,150,120,.55)';c.fillRect(x,y,w,h);c.globalCompositeOperation='source-over';c.fillStyle='rgba(255,240,200,.05)';c.fillRect(x,y,w,h*.4);c.restore();}
@@ -1318,9 +1318,10 @@ function buildRoom(){roomLoad();const c=bg;c.imageSmoothingEnabled=true;c.clearR
   if(ROOMPIC.complete&&ROOMPIC.naturalWidth){c.save();c.imageSmoothingEnabled=true;c.clearRect(0,0,W,H);c.drawImage(ROOMPIC,0,0,W,H);
     if(ROOM&&BUST&&BUSTPIC.complete&&BUSTPIC.naturalWidth){const q=BUSTCELL[ROOM.n+'.'+BUST];if(q){const[qx,qy,qw,qh]=q,kx=W/1264,ky=H/848;c.drawImage(BUSTPIC,qx,qy,qw,qh,ROOM.b[0]-qw*kx/2,ROOM.b[1]-qh*ky,qw*kx,qh*ky);}}
     if(ROOM){const[tx,ty,tw,th]=ROOM.tv;TV.x=Math.round(tx);TV.y=Math.round(ty);TV.w=Math.round(tw);TV.h=Math.round(th);CLK.x=tx+13;CLK.y=ty-12;}
-    const[p0x,p0y]=P3(170,-40,RZ),[p1x,p1y]=P3(300,110,RZ);if(ROOM&&ROOM.p1)drawPic(c,RV.pics&&RV.pics[0],...ROOM.p1);else drawPic(c,RV.pics&&RV.pics[0],p0x+1.2,p0y+1.2,p1x-p0x-2.4,p1y-p0y-2.4);
+    /* 13 nov. 2026 (Mauk Tenieb) : chaque cadre peint de la chambre reçoit un portrait de la Fauna au hasard (ik-tableaux.js) */
+    if(ROOM&&window.IK_TAB&&IK_TAB[ROOM.n])IK_TAB[ROOM.n].forEach((Q,i)=>drawPicQ(c,RV.pics&&RV.pics[i],Q.map(p=>[p[0]*W/1024,p[1]*H/687])));else{const[p0x,p0y]=P3(170,-40,RZ),[p1x,p1y]=P3(300,110,RZ);if(ROOM&&ROOM.p1)drawPic(c,RV.pics&&RV.pics[0],...ROOM.p1);else drawPic(c,RV.pics&&RV.pics[0],p0x+1.2,p0y+1.2,p1x-p0x-2.4,p1y-p0y-2.4);
     const[q0x,q0y]=P3(RX,-10,2070),[q1x,q1y]=P3(RX,190,1880);{const[f0x,f0y]=P3(RX,-10,2070),[f1x,f1y]=P3(RX,190,2070),[n0x,n0y]=P3(RX,-10,1880),[n1x,n1y]=P3(RX,190,1880);let Q=[[f0x+.8,f0y+1],[n0x-.8,n0y+1],[n1x-.8,n1y-1],[f1x+.8,f1y-1]];
-     if(ROOM&&ROOM.p2){const[x,y,w,h]=ROOM.p2,r=(f1y-f0y)/(n1y-n0y),d=h*(1-r)/2;Q=[[x,y+d],[x+w,y],[x+w,y+h],[x,y+h-d]];}drawPicQ(c,RV.pics&&RV.pics[1],Q);}
+     if(ROOM&&ROOM.p2){const[x,y,w,h]=ROOM.p2,r=(f1y-f0y)/(n1y-n0y),d=h*(1-r)/2;Q=[[x,y+d],[x+w,y],[x+w,y+h],[x,y+h-d]];}drawPicQ(c,RV.pics&&RV.pics[1],Q);}}
     /* the board on the left wall: YOU, the Mask's name, and the tallies, chalked in red */
     /* drawn flat on its own sheet, then laid on the wall in true perspective (narrow vertical strips: the far side is shorter) */
     const BD=document.createElement('canvas');BD.width=BD.height=200;const q=BD.getContext('2d');q.scale(2,2);
@@ -2280,7 +2281,7 @@ requestAnimationFrame(frame);
 <script src="borne-dekonect.js"></script>
 <script src="borne-arcade.js"></script>
 <script src="borne-plante.js"></script>
-<script src="borne-musik.js"></script><script src="borne-musik-pads.js"></script><script src="borne-musik-daw.js"></script>
+<script src="borne-musik.js"></script><script src="borne-musik-pads.js"></script><script src="ik-tableaux.js"></script><script src="borne-musik-daw.js"></script>
 <script src="kave/motel.js"></script>
 </body>
 </html>
