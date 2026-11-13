@@ -42,7 +42,7 @@
   var pv=$('pvMode');if(pv)pv.addEventListener('click',function(){setTimeout(paint,0);});
 
   /* ---------- la prise ---------- */
-  function frame(){var v=CAM.v,c=FF.util.canvas(v.videoWidth,v.videoHeight),g=c.getContext('2d');if(window.__ffMirror){g.translate(c.width,0);g.scale(-1,1);}g.drawImage(v,0,0);return c;}
+  function frame(){var v=CAM.v,c=FF.util.canvas(v.videoWidth,v.videoHeight),g=c.getContext('2d');if(window.__ffMirror&&!CAM.scr){g.translate(c.width,0);g.scale(-1,1);}g.drawImage(v,0,0);return c;}
   function flash(){var fx=$('flashFx');fx.hidden=false;fx.style.opacity=1;setTimeout(function(){fx.style.opacity=0;setTimeout(function(){fx.hidden=true;},300);},60);}
   async function open(c){var keep=S.stack.concat(S.cur?[S.cur]:[]),img=FF.util.fromCanvas(c);pushHist();await setSource(img,true);S.stack=keep.filter(function(x){return x.id!=='__baked';});
     THUMBS.clear();drawLayers();drawGrid();render();return img;}
@@ -64,8 +64,9 @@
     stopCam();var im=await open(c);saveRaw(im);};
   /* ---------- l'écran lui-même déclenche : un appui sur le viseur prend la photo, ou lance et arrête la vidéo ---------- */
   var p0=null;
-  stage.addEventListener('pointerdown',function(e){if(!CAM||e.target.closest('button'))return;p0=[e.clientX,e.clientY];});
-  stage.addEventListener('pointerup',function(e){if(!CAM||!p0||e.target.closest('button'))return;var d=Math.hypot(e.clientX-p0[0],e.clientY-p0[1]);p0=null;if(d>12)return;
+  var SNAP=function(){return CAM||(typeof PVMODE!=='undefined'&&PVMODE==='son');};
+  stage.addEventListener('pointerdown',function(e){if(!SNAP()||e.target.closest('button'))return;p0=[e.clientX,e.clientY];});
+  stage.addEventListener('pointerup',function(e){if(!SNAP()||!p0||e.target.closest('button'))return;var d=Math.hypot(e.clientX-p0[0],e.clientY-p0[1]);p0=null;if(d>12)return;
     var r=stage.getBoundingClientRect(),o=document.createElement('i');o.className='ff-tap';o.style.left=(e.clientX-r.left)+'px';o.style.top=(e.clientY-r.top)+'px';stage.appendChild(o);setTimeout(function(){o.remove();},500);
     $('shutter').click();});
   new MutationObserver(function(){stage.classList.toggle('ff-live',!!CAM);}).observe(row,{attributes:true,attributeFilter:['hidden']});

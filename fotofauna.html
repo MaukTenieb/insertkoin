@@ -94,6 +94,27 @@ main.left{background:var(--pebble);min-width:0}
 .shutter.rec::after{content:"";position:absolute;inset:29%;border-radius:3px;background:#f4efdf}
 .shutter.rec{animation:recp 1.2s ease-in-out infinite}
 @keyframes recp{50%{box-shadow:0 0 0 2px var(--line2),0 0 0 8px rgba(200,50,30,.35)}}
+/* 13 nov. (Mauk Tenieb) : le corps du caméscope — trois interrupteurs, MIKRO, baguette ; pile, retour, sauver, recette */
+html body header.top{display:flex!important;flex-wrap:wrap;align-items:center;height:auto!important;min-height:var(--hd);row-gap:8px;padding-block:8px}
+html body header.top #bShoot,html body header.top #bOpen{display:none!important}
+.kb{display:flex;flex-wrap:wrap;gap:6px;align-items:center;flex:1 1 100%;order:2}
+.sw{display:flex;padding:3px;border-radius:3px;background:#0a0906;box-shadow:inset 0 0 0 1px var(--line2),0 1px 0 rgba(255,255,255,.5)}
+.sw button{font:500 10.5px/1 var(--num);letter-spacing:.14em;padding:10px 9px;min-height:36px;border:0;border-radius:2px;background:none;color:#9a9282;position:relative}
+.sw button[aria-pressed=true]{background:var(--acc);color:var(--acc-ink)}
+.sw button[hidden]{display:none}
+.kt{min-height:42px;padding-inline:10px}.kt span{font:500 10.5px/1 var(--num);letter-spacing:.14em}
+#kMik[aria-pressed=true]{background:#c8243a;color:#fff;box-shadow:0 0 12px rgba(200,36,58,.6)}
+#actions .key svg{display:block!important;width:22px;height:22px}
+.stage.masked #view,.stage.masked .ff-ghost{opacity:0}
+.stage.masked{background:#000}
+.stage.ff-live #badge{display:none!important}
+.shutterRow #pvMode,.shutterRow .advance,.shutterRow #shutter,.shutterRow #camOff{display:none!important}
+.recShelf{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px}
+.recShelf button{flex:none;font:500 11px/1 var(--num);letter-spacing:.1em;padding:9px 10px;min-height:36px;border:1px solid var(--line2);border-radius:3px;background:#0f0d0a;color:#e8e0c8}
+.recShelf button i{font-style:normal;margin-left:8px;color:var(--mute)}
+#sonPanel .sonFx{display:flex;flex-wrap:wrap;gap:5px}
+#sonPanel .sonFx button{font:500 10px/1 var(--num);letter-spacing:.1em;padding:8px 8px;min-height:32px}
+#sonPanel .sonFx button[aria-pressed=true]{background:#ffa726;color:#1a1208}
 .hud{position:absolute;inset:0;pointer-events:none;z-index:6;font:400 clamp(9px,1.6vw,14px)/1 "Press Start 2P",var(--num),monospace;color:#f4f1e6;text-shadow:1px 1px 0 #000,0 0 6px rgba(0,0,0,.6);letter-spacing:.06em}
 .hud>span{position:absolute}.hTL{top:6%;left:6%}.hTR{top:6%;right:6%}.hBL{bottom:6%;left:6%}.hBR{bottom:6%;right:6%;text-align:right}
 .hud .rec{color:#ff3b30}.hud .dot{display:inline-block;width:.8em;height:.8em;border-radius:50%;background:#ff3b30;margin-right:.5em;vertical-align:-.05em;animation:hblink 1s steps(1) infinite}@keyframes hblink{50%{opacity:0}}
@@ -269,7 +290,12 @@ html.ike-on .app[data-ike-layout=narrow] .ctrl{border-radius:0}
 <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 7 5 11l4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 11h9a5 5 0 0 1 0 10h-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
 <symbol id="i-dice" viewBox="0 0 24 24"><rect x="4.5" y="4.5" width="15" height="15" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="9" cy="9" r="1.3" fill="currentColor"/><circle cx="15" cy="15" r="1.3" fill="currentColor"/><circle cx="15" cy="9" r="1.3" fill="currentColor"/><circle cx="9" cy="15" r="1.3" fill="currentColor"/></symbol>
 <symbol id="i-compare" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 3v18" stroke="currentColor" stroke-width="1.6"/><path d="M12 5h6a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-6z" fill="currentColor" opacity=".35"/></symbol>
-<symbol id="i-save" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 17v1.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-save" viewBox="0 0 24 24"><path d="M12 3.5v12M7 11l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 20.2h8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+<symbol id="i-stack" viewBox="0 0 24 24"><path d="M12 3.5 3.5 8 12 12.5 20.5 8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m3.5 12 8.5 4.5 8.5-4.5M3.5 16l8.5 4.5 8.5-4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-back" viewBox="0 0 24 24"><path d="M19.5 12h-14M11 6 5 12l6 6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-recipe" viewBox="0 0 24 24"><rect x="5.5" y="3.5" width="13" height="17" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 8h7M8.5 11.5h7M8.5 15h4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+<symbol id="i-wand" viewBox="0 0 24 24"><path d="M4 20 15.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17.5 2.5v4M15.5 4.5h4M20.5 9v3M19 10.5h3M10.5 3v2.6M9.2 4.3h2.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
 <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></symbol>
 <symbol id="i-pause" viewBox="0 0 24 24"><path d="M7.5 5.5h3v13h-3zM13.5 5.5h3v13h-3z" fill="currentColor"/></symbol>
 <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
@@ -280,6 +306,7 @@ html.ike-on .app[data-ike-layout=narrow] .ctrl{border-radius:0}
  <div class="logo"><svg class="mark" aria-hidden="true"><use href="#i-aperture"/></svg><span class="word" style="text-transform:none">KamOrhogo</span></div>
  <button class="key" id="bShoot" type="button"><svg class="ic" aria-hidden="true"><use href="#i-camera"/></svg><span data-i="shoot"></span></button>
  <button class="key" id="bOpen" type="button"><svg class="ic" aria-hidden="true"><use href="#i-open"/></svg><span data-i="open"></span></button>
+ <div class="kb" id="kb"><div class="sw" role="group" id="kSrc"><button type="button" data-k="scr">SKREEN</button><button type="button" data-k="cam">KAM</button></div><div class="sw" role="group" id="kObj"><button type="button" data-o="open">OPEN</button><button type="button" data-o="mask">MASKED</button></div><div class="sw" role="group" id="kPv"><button type="button" data-v="photo">PIK</button><button type="button" data-v="video">VID</button></div><button class="key kt" id="kMik" type="button" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-mic"/></svg><span>MIKRO</span></button><button class="key kt" id="kWand" type="button" aria-label="FaunAI" title="FaunAI"><svg class="ic" aria-hidden="true"><use href="#i-wand"/></svg></button><button class="key kt" id="kImp" type="button" data-al="open"><svg class="ic" aria-hidden="true"><use href="#i-open"/></svg></button></div>
  <button class="key lang" id="bLang" type="button"><b data-l="en">EN</b><b data-l="fr">FR</b></button>
  <button class="key" id="bMenu" type="button" data-al="labo"><svg class="ic" aria-hidden="true"><use href="#i-more"/></svg></button>
 </header>
@@ -299,10 +326,11 @@ html.ike-on .app[data-ike-layout=narrow] .ctrl{border-radius:0}
    <div class="vidBar" id="vidBar" hidden><button class="key" id="vPlay" type="button" data-al="vPlay"><svg class="ic" aria-hidden="true"><use href="#i-pause"/></svg></button><input type="range" id="vSeek" min="0" max="1000" step="1" value="0" data-al="vSeek"><span class="vTime" id="vTime">0:00:00</span></div>
   </div>
   <div class="actions" id="actions">
-   <button class="key" id="bUndo" type="button"><svg class="ic" aria-hidden="true"><use href="#i-undo"/></svg><span data-i="undo"></span></button>
-   <button class="key" id="bKeep" type="button"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg><span data-i="keepL"></span></button>
-   <button class="key" id="cmpBtn" type="button" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-compare"/></svg><span data-i="compare"></span></button>
-   <button class="key prim" id="bSave" type="button"><svg class="ic" aria-hidden="true"><use href="#i-save"/></svg><span data-i="save"></span></button>
+   <button class="key" id="bKeep" type="button" data-al="keepL"><svg class="ic" aria-hidden="true"><use href="#i-stack"/></svg></button>
+   <button class="key" id="bUndo" type="button" data-al="undo"><svg class="ic" aria-hidden="true"><use href="#i-back"/></svg></button>
+   <button class="key prim" id="bSave" type="button" data-al="save"><svg class="ic" aria-hidden="true"><use href="#i-save"/></svg></button>
+   <button class="key" id="kRec" type="button" data-al="recKeep"><svg class="ic" aria-hidden="true"><use href="#i-recipe"/></svg></button>
+   <button class="key" id="cmpBtn" type="button" aria-pressed="false" hidden><svg class="ic" aria-hidden="true"><use href="#i-compare"/></svg><span data-i="compare"></span></button>
   </div>
   <div class="status" id="status" aria-live="polite"><span id="stText"></span><button class="chip" id="stAct" type="button" hidden></button><button class="chip" id="stopAi" type="button" hidden data-i="stop"></button></div>
  </section>
@@ -310,6 +338,7 @@ html.ike-on .app[data-ike-layout=narrow] .ctrl{border-radius:0}
   <div class="dock" role="tablist" id="dock"><button role="tab" type="button" data-pane="looks" data-i="t_looks" aria-selected="true"></button><button role="tab" type="button" id="laboBtn" data-pane="lab" data-i="labo" aria-selected="false"></button><button role="tab" type="button" data-pane="ai" aria-selected="false">FaunAI</button></div>
   <div class="pane" id="pane-looks">
    <div class="browse">
+    <div class="recShelf" id="recShelf" hidden></div>
     <div class="search"><input id="q" type="search" data-ph="search" autocomplete="off"></div>
     <nav class="rail" id="fams"></nav>
     <div id="genres"></div>
@@ -11984,6 +12013,7 @@ Object.assign(W.en,{keepL:"Keep",dice:"Roll",layers:"Layers",noLayer:"Original i
  frameN:"Frame {i} / {n}…",recording:"Recording: {s} s",gifDone:"GIF: {k} KB",vidDone:"Video: {k} KB",noRec:"This browser cannot record video (MediaRecorder).",rawSaved:"Raw photo saved: "});
 /* libellés repris de la page en ligne */
 Object.assign(W.fr,{open:"Ouvrir",save:"Enregistrer"});Object.assign(W.en,{open:"Open",save:"Save"});
+Object.assign(W.fr,{keepL:"Empiler",recKeep:"Garder la recette",recKept:"Recette gardée",recEmpty:"Pile vide"});Object.assign(W.en,{keepL:"Stack",recKeep:"Keep the recipe",recKept:"Recipe kept",recEmpty:"Empty stack"});
 
 /* ---------- arbre des procédés ---------- */
 const FAMS=FF.arbre.FAM;
@@ -12266,7 +12296,7 @@ let CAM=null;
 $("bShoot").onclick=async()=>{if(CAM||PVMODE==="son"){shutterPress();return}endSession();closeVideo();try{const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:(window.__ffFacing||"environment"),width:{ideal:1280}},audio:false});const v=$("cam");v.srcObject=st;await v.play();CAM={st,v,run:1};
   $("stageWrap").classList.add("live");$("shutterRow").hidden=false;$("bShoot").querySelector("span").textContent=t("shutter");VSIDE=VMAX;VFT=0;STN="";setPvMode(PVMODE);setLabel();fit();vloop()}catch(e){CAM=null;$("fShoot").click()}};
 function stopCam(){if(!CAM)return;if(REC)recStop(true);if(MIC){MIC.getTracks().forEach(x=>x.stop());MIC=null}VLOOP.tok++;STN="";CAM.run=0;CAM.st.getTracks().forEach(t=>t.stop());CAM=null;$("stageWrap").classList.remove("live");$("shutterRow").hidden=true;$("bShoot").querySelector("span").textContent=t("shoot");setLabel();fit()}
-async function shoot(){if(!CAM)return;const v=CAM.v,c=FF.util.canvas(v.videoWidth,v.videoHeight),g=c.getContext("2d");g.translate(c.width,0);g.scale(-1,1);g.drawImage(v,0,0);const fx=$("flashFx");fx.hidden=false;fx.style.opacity=1;setTimeout(()=>{fx.style.opacity=0;setTimeout(()=>fx.hidden=true,300)},60);
+async function shoot(){if(!CAM)return;const v=CAM.v,c=FF.util.canvas(v.videoWidth,v.videoHeight),g=c.getContext("2d");if(!CAM.scr){g.translate(c.width,0);g.scale(-1,1)}g.drawImage(v,0,0);const fx=$("flashFx");fx.hidden=false;fx.style.opacity=1;setTimeout(()=>{fx.style.opacity=0;setTimeout(()=>fx.hidden=true,300)},60);
  stopCam();const keep=S.stack.concat(S.cur?[S.cur]:[]),img=FF.util.fromCanvas(c);pushHist();await setSource(img,true);S.stack=keep.filter(L=>L.id!=="__baked");THUMBS.clear();drawLayers();drawGrid();render();saveRaw(img)}
 $("shutter").onclick=shutterPress;$("camOff").onclick=()=>{if(REC){recStop();return}stopCam();render()};
 /* chaque prise part tout de suite sur le disque, brute, avant tout rendu (page en ligne : saveRaw) */
@@ -12306,7 +12336,7 @@ const nextF=()=>new Promise(r=>{let d=0;const f=()=>{if(!d){d=1;r()}};requestAni
 async function vloop(){const me=++VLOOP.tok;let key="",lastT=-1;
  while(me===VLOOP.tok){const src=CAM?CAM.v:VM?VM.v:null;if(!src)break;
   if(!VBUSY&&src.readyState>=2&&src.videoWidth){const L=S.cmp?[]:vidLayers(),k=L.map(layerKey).join("|")+"|"+VSIDE,tt=src.currentTime;
-   if(CAM||tt!==lastT||k!==key){const t0=performance.now();let img=vframe(src,!!CAM&&window.__ffMirror!==false,VSIDE);
+   if(CAM||tt!==lastT||k!==key){const t0=performance.now();let img=vframe(src,!!CAM&&!CAM.scr&&window.__ffMirror!==false,VSIDE);
     if(img){img=await vchain(img,L,true);if(me!==VLOOP.tok)break;vpaint(img);if(REC)REC.g.drawImage($("view"),0,0,REC.rc.width,REC.rc.height)}
     vadapt(performance.now()-t0);lastT=tt;key=k;stillNote()}}
   vtick();await nextF()}}
@@ -12316,7 +12346,7 @@ function vtick(force){const now=performance.now();if(!force&&now-VTK<250)return;
  if(REC){const b=$("badge");b.textContent="● REC "+hms(s);b.className="badge rec";b.hidden=!!ECRAN}
  if(VM){const d=VM.dur||VM.v.duration;$("vTime").textContent=hms(s)+(isFinite(d)&&d>0?" / "+hms(d):"");const r=$("vSeek");if(document.activeElement!==r&&isFinite(d)&&d>0){r.value=Math.round(Math.min(1,s/d)*1000);rng(r)}
   $("vPlay").querySelector("use").setAttribute("href",VM.v.paused?"#i-play":"#i-pause")}
- if(ECRAN&&s!=null)ECRAN.osd({counter:hms(s)})}
+ if(ECRAN&&s!=null)ECRAN.osd({counter:REC?"":hms(s)})}
 /* écran commun : « camescope » pendant l'enregistrement et la lecture d'une vidéo, « photo » sinon */
 function ecranSync(){if(!ECRAN)return;const pl=$("player"),on=!!REC||!!VM||!pl.hidden,pr=on?"camescope":"photo";
  if(pr!==ECP){ECP=pr;IKEcran.mount($("stage"),{profile:pr})}if(on)ECRAN.osd({rec:!!REC,counter:hms(REC?(performance.now()-REC.t0)/1000:VM?VM.v.currentTime:pl.currentTime)})}
@@ -12354,21 +12384,23 @@ function setPvMode(m){if(REC||SREC)return;PVMODE=m==="video"?"video":m==="son"?"
  $("shutter").classList.toggle("vid",PVMODE==="video");$("shutter").classList.toggle("son",PVMODE==="son");$("shutter").setAttribute("aria-label",t(PVMODE==="video"?"recStart":PVMODE==="son"?"sonStart":"shutter"));if(PVMODE!=="photo")askMic()}
 document.querySelectorAll("#pvMode button").forEach(b=>b.onclick=()=>setPvMode(b.dataset.m));
 async function askMic(){if(MIC||!CAM||!navigator.mediaDevices)return;try{const s=await navigator.mediaDevices.getUserMedia({audio:true});if(CAM)MIC=s;else s.getTracks().forEach(x=>x.stop())}catch{MIC=null;setStatus(t("micOff"))}}
-function shutterPress(){if(PVMODE==="video"){REC?recStop():recStart();return}if(PVMODE==="son"){SREC?sonStop():sonStart();return}shoot()}
+function shutterPress(){if(PVMODE==="video"){if(REC){recStop();return}if(MK&&!MIC){navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}}).then(m=>{MIC=m;recStart()}).catch(()=>recStart());return}recStart();return}if(PVMODE==="son"){SREC?sonStop():sonStart();return}shoot()}
 /* 12 nov. 2026 (Mauk Tenieb) : le Kamescope — PhotoFauna mêlé à diktaTfaune produit des fichiers image, vidéo et son ; le son, pris au micro, part en WAV et dans Musik (IndexedDB « borne », magasin « diktat », les cinq plus récents, comme diktaTfaune) */
 let SREC=null;
 async function sonStart(){let st=MIC;try{if(!st)st=MIC=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}})}catch{setStatus(t("sonBad"),"err");return}
   if(!window.MediaRecorder){setStatus(t("sonBad"),"err");return}
   const ch=[],mr=new MediaRecorder(new MediaStream(st.getAudioTracks()));mr.ondataavailable=e=>{if(e.data&&e.data.size)ch.push(e.data)};mr.onstop=()=>sonDone(new Blob(ch,{type:mr.mimeType||"audio/webm"}));
-  SREC={mr,t0:Date.now()};mr.start();$("shutter").classList.add("rec");$("shutter").setAttribute("aria-label",t("sonStop"));SREC.cap=setTimeout(()=>{if(SREC)sonStop()},60000)}
+  SREC={mr,t0:Date.now()};mr.start();$("shutter").classList.add("rec");$("shutter").setAttribute("aria-label",t("sonStop"));SREC.cap=0}
 /* 13 nov. : écran du caméscope — mode et REC, compteur, pile, date républicaine, vumètre du micro en mode SON */
 const HUD={an:null,buf:null,src:null};
+let MK=false,PIKVID="photo",KMASK=false;
 function hudRep(d){const sx=y=>y<20?(y===3||y===7||y===11||y===15):(y%4===0&&(y%100!==0||y%400===0)&&y%4000!==0);let n=Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(1792,8,22))/864e5),y=1;for(;;){const l=sx(y)?366:365;if(n<l)break;n-=l;y++}
  const MO=["Vendémiaire","Brumaire","Frimaire","Nivôse","Pluviôse","Ventôse","Germinal","Floréal","Prairial","Messidor","Thermidor","Fructidor","Sansculottides"];
  let r="",v=y;[[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],[50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]].forEach(p=>{while(v>=p[0]){r+=p[1];v-=p[0]}});return (n%30+1)+" "+MO[Math.floor(n/30)].toUpperCase()+" "+(LANG==="fr"?"AN ":"YEAR ")+r}
 async function hudMic(){if(HUD.an||HUD.wait)return;HUD.wait=1;try{if(!MIC)MIC=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});const A=new (window.AudioContext||window.webkitAudioContext)();HUD.src=A.createMediaStreamSource(new MediaStream(MIC.getAudioTracks()));HUD.an=A.createAnalyser();HUD.an.fftSize=1024;HUD.buf=new Float32Array(1024);HUD.src.connect(HUD.an);HUD.ac=A}catch{}HUD.wait=0}
 function hudOff(){if(HUD.ac){try{HUD.ac.close()}catch{}}HUD.an=HUD.src=HUD.ac=null}
-(function hudLoop(){const h=$("hud"),cam=$("stageWrap").classList.contains("live"),live=cam||!!SREC||PVMODE==="son";h.hidden=!live;
+let HUDC=null;
+(function hudLoop(){if(typeof kEff==="function"){const c=CAM?(CAM.scr?2:1):0;if(c!==HUDC||(!REC&&!SREC&&PVMODE!==(MK&&!CAM?"son":PIKVID))){HUDC=c;kEff()}}const h=$("hud"),cam=$("stageWrap").classList.contains("live"),live=cam||!!SREC||PVMODE==="son";h.hidden=!live;
  if(live){const recOn=!!REC||!!SREC,md=PVMODE==="video"?"VIDEO":PVMODE==="son"?(LANG==="fr"?"SON":"SOUND"):"PHOTO";
   $("hMode").innerHTML=recOn?'<span class="rec"><i class="dot"></i>REC</span>':"STBY "+md;
   const t0=REC&&REC.t0?REC.t0:SREC?SREC.t0:0,el=recOn?Math.max(0,((SREC?Date.now():performance.now())-t0)/1000):0;
@@ -12377,6 +12409,49 @@ function hudOff(){if(HUD.ac){try{HUD.ac.close()}catch{}}HUD.an=HUD.src=HUD.ac=nu
   const vu=$("hVu");if(PVMODE==="son"){vu.hidden=false;if(cam||SREC||MIC)hudMic();if(HUD.an){HUD.an.getFloatTimeDomainData(HUD.buf);let m=0;for(const x of HUD.buf)m+=x*x;const db=20*Math.log10(Math.sqrt(m/HUD.buf.length)+1e-6);$("hVuB").style.width=Math.max(0,Math.min(100,(db+60)/60*100))+"%"}}else{vu.hidden=true;if(HUD.an&&!SREC)hudOff()}}
  else if(HUD.an)hudOff();
  requestAnimationFrame(hudLoop)})();
+/* 13 nov. (Mauk Tenieb) : le corps du caméscope. SKREEN/KAM : la source (un appui sur la position allumée la coupe) ; OPEN/MASKED : l'objectif visible ou noir ;
+   PIK/VID ; MIKRO : avec VID et une source, le son de la vidéo ; seul, le dictaphone (sans limite de durée) et ses effets de son. L'écran de prise de vue déclenche. */
+function kEff(){const eff=MK&&!CAM?"son":PIKVID;if(!REC&&!SREC&&PVMODE!==eff)setPvMode(eff);kPaint()}
+function kPaint(){const src=CAM?(CAM.scr?"scr":"cam"):"";document.querySelectorAll("#kSrc button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.k===src)));
+ document.querySelectorAll("#kObj button").forEach(b=>b.setAttribute("aria-pressed",String((b.dataset.o==="mask")===KMASK)));
+ document.querySelectorAll("#kPv button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.v===PIKVID)));
+ $("kMik").setAttribute("aria-pressed",String(MK));$("stage").classList.toggle("masked",KMASK&&!!CAM)}
+async function kSrc(kind){if(REC||SREC)return;const was=CAM?(CAM.scr?"scr":"cam"):"";if(CAM){stopCam();render()}if(was===kind){kEff();return}
+ endSession();closeVideo();try{const st=kind==="scr"?await navigator.mediaDevices.getDisplayMedia({video:true,audio:false}):await navigator.mediaDevices.getUserMedia({video:{facingMode:(window.__ffFacing||"environment"),width:{ideal:1280}},audio:false});
+  const v=$("cam");v.srcObject=st;await v.play();CAM={st,v,run:1,scr:kind==="scr"};if(CAM.scr)st.getVideoTracks()[0].addEventListener("ended",()=>{if(CAM&&CAM.scr){stopCam();render();kEff()}});
+  $("stageWrap").classList.add("live");$("shutterRow").hidden=false;VSIDE=VMAX;VFT=0;STN="";setLabel();fit();vloop()}catch(e){CAM=null;if(kind==="cam")$("fShoot").click()}kEff()}
+document.querySelectorAll("#kSrc button").forEach(b=>b.onclick=()=>kSrc(b.dataset.k));
+if(!(navigator.mediaDevices&&navigator.mediaDevices.getDisplayMedia))document.querySelector('#kSrc [data-k="scr"]').hidden=true;
+document.querySelectorAll("#kObj button").forEach(b=>b.onclick=()=>{KMASK=b.dataset.o==="mask";kPaint()});
+document.querySelectorAll("#kPv button").forEach(b=>b.onclick=()=>{if(REC||SREC)return;PIKVID=b.dataset.v;kEff()});
+$("kMik").onclick=()=>{if(SREC){sonStop();return}if(REC)return;MK=!MK;kEff()};
+$("kWand").onclick=()=>{showPane("ai");const p=$("prompt");if(p){p.focus();if(!matchMedia("(min-width:1000px)").matches)p.scrollIntoView({behavior:"smooth",block:"center"})}};
+$("kImp").onclick=()=>$("fOpen").click();
+/* la recette : la pile de rendus gardée dans l'appareil, reprise d'un appui sur l'étagère */
+const RK="ik.kam.recettes";function recShelf(){let a=[];try{a=JSON.parse(localStorage.getItem(RK)||"[]")}catch{}return a}
+function recDraw(){const a=recShelf(),el=$("recShelf");el.hidden=!a.length;el.innerHTML="";a.forEach((x,i)=>{const b=document.createElement("button");b.type="button";b.textContent=x.n;const k=document.createElement("i");k.textContent="×";k.setAttribute("aria-label",t("drop"));b.appendChild(k);
+ b.onclick=e=>{if(e.target===k){const z=recShelf();z.splice(i,1);try{localStorage.setItem(RK,JSON.stringify(z))}catch{}recDraw();return}try{loadRecipe(x.r)}catch{setStatus(t("recBad"),"err")}};el.appendChild(b)})}
+$("kRec").onclick=()=>{const {r}=recipeNow();if(!r.layers.length){setStatus(t("recEmpty"));return}const a=recShelf(),d=new Date();a.unshift({n:hudRep(d).split(" ").slice(0,2).join(" ")+" "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")+" ·"+r.layers.length,r});
+ try{localStorage.setItem(RK,JSON.stringify(a.slice(0,24)))}catch{}recDraw();setStatus(t("recKept"),"ok")};
+recDraw();kPaint();
+if(/[?&]son=1/.test(location.search)){MK=true;kEff()}
+/* effets du dictaphone */
+function sBiq(x,sr,type,f,q){const w=2*Math.PI*f/sr,c=Math.cos(w),al=Math.sin(w)/(2*q);let b0,b1,b2;if(type==="lp"){b0=(1-c)/2;b1=1-c;b2=b0}else if(type==="hp"){b0=(1+c)/2;b1=-(1+c);b2=b0}else{b0=al;b1=0;b2=-al}
+ const a0=1+al,a1=-2*c,a2=1-al,y=new Float32Array(x.length);let x1=0,x2=0,y1=0,y2=0;for(let i=0;i<x.length;i++){const v=(b0*x[i]+b1*x1+b2*x2-a1*y1-a2*y2)/a0;x2=x1;x1=x[i];y2=y1;y1=v;y[i]=v}return y}
+function sCave(x,sr){const k=sr/44100,tail=Math.round(sr*2.2),n=x.length+tail,o=new Float32Array(n);for(const [d0,fb] of [[1557,.84],[1617,.83],[1491,.85],[1422,.86]]){const d=Math.round(d0*k*1.6),b=new Float32Array(n);for(let i=0;i<n;i++){b[i]=(x[i]||0)+(i>=d?b[i-d]*fb:0);o[i]+=b[i]*.25}}
+ let y=o;for(const d0 of [225,556]){const d=Math.round(d0*k),z=new Float32Array(n);for(let i=0;i<n;i++){const dd=i>=d?z[i-d]:0;z[i]=-.5*y[i]+(i>=d?y[i-d]:0)+.5*dd}y=z}const r=new Float32Array(n);for(let i=0;i<n;i++)r[i]=(x[i]||0)*.55+y[i]*.6;return r}
+const SFX={echo:(x,sr)=>{const d=Math.round(.27*sr),y=new Float32Array(x.length+d*5);for(let i=0;i<y.length;i++)y[i]=(x[i]||0)+(i>=d?y[i-d]*.45:0);return y},
+ cave:sCave,phone:(x,sr)=>sBiq(sBiq(x,sr,"hp",400,.7),sr,"lp",3000,.7).map(v=>Math.tanh(v*2.5)),
+ radio:(x,sr)=>sBiq(x,sr,"bp",1300,.8).map(v=>Math.tanh(v*5)*.7+(Math.random()-.5)*.03),
+ robot:(x,sr)=>x.map((v,i)=>v*Math.sin(2*Math.PI*55*i/sr)*1.6),fuzz:x=>x.map(v=>Math.tanh(v*14)*.8),
+ bit:x=>{const y=new Float32Array(x.length);let h=0;for(let i=0;i<x.length;i++){if(i%7===0)h=Math.round(x[i]*7)/7;y[i]=h}return y},
+ trem:(x,sr)=>x.map((v,i)=>v*(.55+.45*Math.sin(2*Math.PI*6*i/sr))),
+ chorus:(x,sr)=>x.map((v,i)=>{const d=(.018+.006*Math.sin(2*Math.PI*.8*i/sr))*sr,j=i-d,a=Math.floor(j),f=j-a;return v*.6+((x[a]||0)*(1-f)+(x[a+1]||0)*f)*.6}),
+ low:(x,sr)=>sBiq(sBiq(x,sr,"lp",380,.7),sr,"lp",380,.7),high:(x,sr)=>sBiq(sBiq(x,sr,"hp",2400,.7),sr,"hp",2400,.7),
+ stut:(x,sr)=>{const B=Math.round(.09*sr),o=[];for(let i=0,k=0;i<x.length;i+=B,k++){const c=x.subarray(i,Math.min(x.length,i+B));o.push(c);if(k%3===1){o.push(c);o.push(c)}}const y=new Float32Array(o.reduce((a,c)=>a+c.length,0));let p=0;for(const c of o){y.set(c,p);p+=c.length}return y},
+ ghost:(x,sr)=>sCave(x.slice().reverse(),sr).reverse()};
+const SFXN={fr:[["",'SANS'],["echo","ÉCHO"],["cave","CAVERNE"],["phone","TÉLÉPHONE"],["radio","RADIO"],["robot","ROBOT"],["fuzz","DISTO"],["bit","8 BITS"],["trem","TRÉMOLO"],["chorus","CHORUS"],["low","GRAVE"],["high","AIGU"],["stut","BÉGAIEMENT"],["ghost","FANTÔME"]],
+ en:[["",'DRY'],["echo","ECHO"],["cave","CAVE"],["phone","PHONE"],["radio","RADIO"],["robot","ROBOT"],["fuzz","FUZZ"],["bit","8-BIT"],["trem","TREMOLO"],["chorus","CHORUS"],["low","LOW"],["high","HIGH"],["stut","STUTTER"],["ghost","GHOST"]]};
 function sonStop(){if(!SREC)return;clearTimeout(SREC.cap);try{SREC.mr.stop()}catch{}$("shutter").classList.remove("rec");$("shutter").setAttribute("aria-label",t("sonStart"));}
 async function sonDone(blob){SREC=null;try{const ac=new(window.AudioContext||window.webkitAudioContext)(),buf=await ac.decodeAudioData(await blob.arrayBuffer());ac.close&&ac.close();
   SON={raw:new Float32Array(buf.getChannelData(0)),sr:buf.sampleRate,rev:false,out:null,id:"k"+Date.now(),name:(window.ikName?ikName("kamorhogo","wav"):"kamorhogo-"+Date.now()+".wav").replace(/\.wav$/,"")};
@@ -12387,7 +12462,7 @@ function sonAC(){if(!SONAC)SONAC=new(window.AudioContext||window.webkitAudioCont
 function sonStretch(x,f){const N=2048,H=N/4,w=new Float32Array(N);for(let i=0;i<N;i++)w[i]=.5-.5*Math.cos(2*Math.PI*i/N);const L=Math.max(N,Math.round(x.length*f)),y=new Float32Array(L+N),nr=new Float32Array(L+N);
   for(let po=0;po<L;po+=H){let pi=Math.round(po/f);if(pi+N>x.length)pi=Math.max(0,x.length-N);for(let k=0;k<N;k++){y[po+k]+=(x[pi+k]||0)*w[k];nr[po+k]+=w[k]}}for(let j=0;j<y.length;j++)if(nr[j]>1e-3)y[j]/=nr[j];return y.subarray(0,L)}
 function sonResample(x,r){const n=Math.floor(x.length/r),y=new Float32Array(n);for(let i=0;i<n;i++){const p=i*r,a=Math.floor(p),f=p-a;y[i]=(x[a]||0)*(1-f)+(x[a+1]||0)*f}return y}
-function sonRender(){if(!SON)return;const semi=+$("sonP").value,sp=Math.pow(2,+$("sonS").value/4),r=Math.pow(2,semi/12);let y=sonResample(sonStretch(SON.raw,r/sp),r);if(SON.rev)y=y.slice().reverse();
+function sonRender(){if(!SON)return;const semi=+$("sonP").value,sp=Math.pow(2,+$("sonS").value/4),r=Math.pow(2,semi/12);let y=sonResample(sonStretch(SON.raw,r/sp),r);if(SON.rev)y=y.slice().reverse();if(SON.fx&&SFX[SON.fx])y=SFX[SON.fx](y,SON.sr);
   let pk=0;for(let i=0;i<y.length;i++)pk=Math.max(pk,Math.abs(y[i]));if(pk>0)for(let i=0;i<y.length;i++)y[i]=y[i]/pk*.92;SON.out=y;sonDraw();sonLbl();
   const clip={id:SON.id,name:SON.name,t:Date.now(),sr:SON.sr,data:y},rq=indexedDB.open("borne",1);rq.onupgradeneeded=()=>rq.result.createObjectStore("diktat",{keyPath:"id"});
   rq.onsuccess=()=>{const tx=rq.result.transaction("diktat","readwrite"),os=tx.objectStore("diktat");os.put(clip);const q=os.getAll();q.onsuccess=()=>{(q.result||[]).sort((a,b)=>b.t-a.t).slice(5).forEach(x=>os.delete(x.id))};tx.oncomplete=()=>{try{(window.top||window).dispatchEvent(new Event("borne-diktat"))}catch{}}}}
@@ -12398,15 +12473,16 @@ function sonSave(){if(!SON||!SON.out)return;const d=SON.out,sr=SON.sr,n=d.length
   str(0,"RIFF");w.setUint32(4,36+n*2,true);str(8,"WAVE");str(12,"fmt ");w.setUint32(16,16,true);w.setUint16(20,1,true);w.setUint16(22,1,true);w.setUint32(24,sr,true);w.setUint32(28,sr*2,true);w.setUint16(32,2,true);w.setUint16(34,16,true);str(36,"data");w.setUint32(40,n*2,true);
   for(let i=0;i<n;i++){const v=Math.max(-1,Math.min(1,d[i]));w.setInt16(44+i*2,v<0?v*32768:v*32767,true)}const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([w],{type:"audio/wav"}));a.download=SON.name+".wav";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000)}
 function sonLbl(){$("sonPl").textContent=t("sP")+" "+(+$("sonP").value>0?"+":"")+$("sonP").value;$("sonSl").textContent=t("sS")+" ×"+Math.pow(2,+$("sonS").value/4).toFixed(2).replace(/\.?0+$/,"");$("sonD").textContent=t(SON&&SON.rev?"sBw":"sFw")}
-function sonPanel(){if($("sonPanel")){$("sonPanel").hidden=false;$("sonP").value=0;$("sonS").value=0;return}const p=document.createElement("div");p.id="sonPanel";
-  p.innerHTML='<canvas id="sonW" width="900" height="120"></canvas><div class="sonRow"><label class="sonK"><span id="sonPl"></span><input id="sonP" type="range" min="-12" max="12" step="1" value="0"></label><label class="sonK"><span id="sonSl"></span><input id="sonS" type="range" min="-4" max="4" step="1" value="0"></label></div><div class="sonRow"><button type="button" id="sonD"></button><button type="button" id="sonPlay"></button><button type="button" id="sonSave"></button><button type="button" id="sonX" aria-label="×">×</button></div>';
+function sonPanel(){if($("sonPanel")){$("sonPanel").hidden=false;$("sonP").value=0;$("sonS").value=0;document.querySelectorAll("#sonFx button").forEach(z=>z.setAttribute("aria-pressed",String(!z.dataset.fx)));return}const p=document.createElement("div");p.id="sonPanel";
+  p.innerHTML='<canvas id="sonW" width="900" height="120"></canvas><div class="sonRow"><label class="sonK"><span id="sonPl"></span><input id="sonP" type="range" min="-12" max="12" step="1" value="0"></label><label class="sonK"><span id="sonSl"></span><input id="sonS" type="range" min="-4" max="4" step="1" value="0"></label></div><div class="sonFx" id="sonFx"></div><div class="sonRow"><button type="button" id="sonD"></button><button type="button" id="sonPlay"></button><button type="button" id="sonSave"></button><button type="button" id="sonX" aria-label="×">×</button></div>';
   document.body.appendChild(p);$("sonPlay").textContent=t("sPlay");$("sonSave").textContent=t("sSave");
   ["sonP","sonS"].forEach(id=>{$(id).oninput=sonLbl;$(id).onchange=()=>{sonRender();sonPlay()}});$("sonD").onclick=()=>{SON.rev=!SON.rev;$("sonD").classList.toggle("on",SON.rev);sonRender();sonPlay()};
-  $("sonPlay").onclick=sonPlay;$("sonSave").onclick=sonSave;$("sonX").onclick=()=>{p.hidden=true}}
+  $("sonPlay").onclick=sonPlay;$("sonSave").onclick=sonSave;$("sonX").onclick=()=>{p.hidden=true};
+  SFXN[LANG==="fr"?"fr":"en"].forEach(([k,n])=>{const b=document.createElement("button");b.type="button";b.dataset.fx=k;b.textContent=n;b.setAttribute("aria-pressed",String(!k));b.onclick=()=>{SON.fx=k;document.querySelectorAll("#sonFx button").forEach(z=>z.setAttribute("aria-pressed",String(z===b)));sonRender();sonPlay()};$("sonFx").appendChild(b)})}
 /* filmer : le viseur (effets compris) passe dans un canvas de taille fixe, enregistré avec le micro */
 function recStart(){if(!CAM||REC)return;if(!canRec()){setStatus(t("noRec"),"err");return}const v=$("view");if(v.width<16){return}
  const w=v.width&~1,h=v.height&~1,rc=document.createElement("canvas");rc.width=w;rc.height=h;const g=rc.getContext("2d");g.drawImage(v,0,0,w,h);
- const st=rc.captureStream(VFPS);(MIC?MIC.getAudioTracks().filter(x=>x.readyState==="live"):[]).forEach(x=>st.addTrack(x));
+ const st=rc.captureStream(VFPS);(MIC&&MK?MIC.getAudioTracks().filter(x=>x.readyState==="live"):[]).forEach(x=>st.addTrack(x));
  const mt=pickMime(),rec=new MediaRecorder(st,mt?{mimeType:mt,videoBitsPerSecond:2500000}:{}),chunks=[];rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
  REC={rec,chunks,rc,g,mt,t0:performance.now()};rec.start(500);
  $("shutter").classList.add("rec");$("shutter").setAttribute("aria-label",t("recStop"));document.querySelectorAll("#pvMode button").forEach(b=>b.disabled=true);setLabel();ecranSync();vtick(true)}
@@ -12639,7 +12715,7 @@ async function aiGenerate(want){if(STOP)return;const prompt=$("prompt").value.tr
  catch(e){if(STOP.signal.aborted)aiSt.end(t("stopped"));else aiSt.end(NETFAIL&&NETFAIL===TRIES.length?t("net"):t(want==="image"?"fail_img":"fail_vid"),"err")}
  finally{STOP=null;$("goImg").disabled=$("goVid").disabled=false;drawEngines()}}
 $("goImg").onclick=()=>aiGenerate("image");$("goVid").onclick=()=>aiGenerate("video");$("stopAi").onclick=()=>STOP&&STOP.abort();
-$("prompt").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();aiGenerate("image")}});
+$("prompt").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();aiGenerate(PIKVID==="video"?"video":"image")}});
 
 /* ---------- pellicule : images et vidéos fabriquées, gardées dans ce navigateur ---------- */
 const DB=(()=>{let p=null;const open=()=>p||(p=new Promise((res,rej)=>{try{const r=indexedDB.open("photofauna-faunai",1);r.onupgradeneeded=()=>{r.result.createObjectStore("kv");r.result.createObjectStore("reel",{keyPath:"id"})};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}}));
@@ -12692,6 +12768,5 @@ function i18n(){document.documentElement.lang=LANG;
 __ffBoot();
 </script>
 <script src="borne-fotofauna.js"></script>
-<script>(function(){if(!/[?&]son=1/.test(location.search))return;var n=0,t=setInterval(function(){if(typeof setPvMode==="function"&&document.getElementById("shutterRow")){clearInterval(t);try{document.getElementById("shutterRow").hidden=false;setPvMode("son")}catch(e){}}else if(++n>80)clearInterval(t)},100)})();</script>
 </body>
 </html>
