@@ -375,7 +375,7 @@ function stageInit(){var st=$('#mz-stg',ROOT);if(!st||st.__ev)return;st.__ev=1;S
   var t=el('canvas');t.width=t.height=1;var g=t.getContext('2d',{willReadFrequently:true});
   (function glow(){if(!document.body.contains(st))return;setTimeout(glow,500);if(st.hidden||!VIS.cv)return;try{g.clearRect(0,0,1,1);g.drawImage(VIS.cv,0,0,1,1);var d=g.getImageData(0,0,1,1).data,m=Math.max(d[0],d[1],d[2]);
     st.style.setProperty('--sc',m<28?'#ffa726':'rgb('+Math.round(d[0]*255/m)+','+Math.round(d[1]*255/m)+','+Math.round(d[2]*255/m)+')')}catch(e){}})()}
-function place(c,x,y,w,h,z){var b=STG.figs[c.id];if(!b||b.classList.contains('drag'))return;var on=tgt(c);
+function place(c,x,y,w,h,z){var b=STG.figs[c.id];if(!b||b.classList.contains('drag'))return;var on=tgt(c);var W=STG.el.clientWidth;x=Math.max(0,Math.min(W-w,x));
   b.style.left=x.toFixed(1)+'px';b.style.top=y.toFixed(1)+'px';b.style.width=w.toFixed(1)+'px';b.style.height=h.toFixed(1)+'px';b.style.zIndex=z;
   b.classList.toggle('on',on);b.classList.toggle('cue',S.pend.some(function(q){return q.id===c.id}));b.setAttribute('aria-pressed',String(on))}
 /* géométrie : tout se calcule depuis la taille du plateau ; chaque Mask garde sa stature (toise du vidéoclub) ; au fond, la réserve sur une ou plusieurs rangées selon la largeur ; devant, les Masks posés */
