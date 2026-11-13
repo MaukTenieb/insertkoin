@@ -1312,8 +1312,8 @@ function buildRoom(){roomLoad();const c=bg;c.imageSmoothingEnabled=true;c.clearR
   if(ROOMPIC.complete&&ROOMPIC.naturalWidth){c.save();c.imageSmoothingEnabled=true;c.clearRect(0,0,W,H);c.drawImage(ROOMPIC,0,0,W,H);
     if(ROOM&&BUST&&BUSTPIC.complete&&BUSTPIC.naturalWidth){const q=BUSTCELL[ROOM.n+'.'+BUST];if(q){const[qx,qy,qw,qh]=q,kx=W/1264,ky=H/848;c.drawImage(BUSTPIC,qx,qy,qw,qh,ROOM.b[0]-qw*kx/2,ROOM.b[1]-qh*ky,qw*kx,qh*ky);}}
     if(ROOM){const[tx,ty,tw,th]=ROOM.tv;TV.x=Math.round(tx);TV.y=Math.round(ty);TV.w=Math.round(tw);TV.h=Math.round(th);CLK.x=tx+13;CLK.y=ty-12;}
-    const[p0x,p0y]=P3(170,-40,RZ),[p1x,p1y]=P3(300,110,RZ);drawPic(c,RV.pics&&RV.pics[0],p0x+1.2,p0y+1.2,p1x-p0x-2.4,p1y-p0y-2.4);
-    const[q0x,q0y]=P3(RX,-10,2070),[q1x,q1y]=P3(RX,190,1880);drawPic(c,RV.pics&&RV.pics[1],Math.min(q0x,q1x)+.8,q0y+1,Math.abs(q1x-q0x)-1.6,q1y-q0y-2);
+    const[p0x,p0y]=P3(170,-40,RZ),[p1x,p1y]=P3(300,110,RZ);if(ROOM&&ROOM.p1)drawPic(c,RV.pics&&RV.pics[0],...ROOM.p1);else drawPic(c,RV.pics&&RV.pics[0],p0x+1.2,p0y+1.2,p1x-p0x-2.4,p1y-p0y-2.4);
+    const[q0x,q0y]=P3(RX,-10,2070),[q1x,q1y]=P3(RX,190,1880);if(ROOM&&ROOM.p2)drawPic(c,RV.pics&&RV.pics[1],...ROOM.p2);else drawPic(c,RV.pics&&RV.pics[1],Math.min(q0x,q1x)+.8,q0y+1,Math.abs(q1x-q0x)-1.6,q1y-q0y-2);
     /* the board on the left wall: YOU, the Mask's name, and the tallies, chalked in red */
     /* drawn flat on its own sheet, then laid on the wall in true perspective (narrow vertical strips: the far side is shorter) */
     const BD=document.createElement('canvas');BD.width=BD.height=200;const q=BD.getContext('2d');q.scale(2,2);
@@ -1321,7 +1321,7 @@ function buildRoom(){roomLoad();const c=bg;c.imageSmoothingEnabled=true;c.clearR
     q.fillStyle='rgba(200,36,58,.85)';q.textBaseline='top';q.font='9px "Press Start 2P",monospace';q.fillText(tr?tr('you'):'YOU',10,8);
     q.font='6px "Press Start 2P",monospace';q.fillText(G?G.r.name.toUpperCase().slice(0,12):'',8,52);
     q.strokeStyle='rgba(200,36,58,.85)';q.lineWidth=1.4;for(let r2=0;r2<2;r2++)for(let i=0;i<Math.min(15,sc[r2]);i++){const g=Math.floor(i/5),k=i%5,gx=10+g*26,gy=r2?66:24;q.beginPath();if(k<4){q.moveTo(gx+k*4.5,gy);q.lineTo(gx+k*4.5+1,gy+16);}else{q.moveTo(gx-3,gy+14);q.lineTo(gx+19,gy+2);}q.stroke();}
-    const T0=[58.6,25.2],T1=[85.8,26.6],D0=[58.6,101.8],D1=[85.8,91.6],L=(p,r,u)=>[p[0]+(r[0]-p[0])*u,p[1]+(r[1]-p[1])*u],N=40,SW=200,SH=200;
+    const[T0,T1,D0,D1]=ROOM&&ROOM.sl?ROOM.sl:[[58.6,25.2],[85.8,26.6],[58.6,101.8],[85.8,91.6]],L=(p,r,u)=>[p[0]+(r[0]-p[0])*u,p[1]+(r[1]-p[1])*u],N=40,SW=200,SH=200;
     for(let i=0;i<N;i++){const u0=i/N,u1=(i+1)/N,sw=SW/N,A=L(T0,T1,u0),Bq=L(T0,T1,u1),C=L(D0,D1,u0);
       const ta=(Bq[0]-A[0])/sw,tb=(Bq[1]-A[1])/sw,tc=(C[0]-A[0])/SH,td=(C[1]-A[1])/SH;
       c.setTransform(2*ta,2*tb,2*tc,2*td,2*(A[0]-ta*u0*SW),2*(A[1]-tb*u0*SW));c.drawImage(BD,u0*SW,0,sw+.6,SH,u0*SW,0,sw+.6,SH);}
@@ -1336,7 +1336,7 @@ const ROOMS=[{s:'room-puck-1.webp?v=1113',tv:[328.1,70.9,64.8,50.2],win:[122.3,1
  {s:'room-puck-3.webp?v=1113',tv:[321.2,62.0,71.7,58.3],win:[122.7,16.2,44.2,62.8],b:[401,58.7,.95],bd:1},
  {s:'room-puck-4.webp?v=1113',tv:[324.8,66.4,68.1,49.9],win:[123.5,16.2,46.6,62.8],b:[402,60.4,.95]},
  {s:'room-puck-5.webp?v=1113',tv:[324.8,66.4,68.1,49.9],win:[123.5,16.2,46.6,62.8],b:[402,60.4,.95],bd:1},
- {s:'room-puck-6.webp',tv:[328.5,59.5,62.0,59.1],win:[128.0,13.7,42.0,65.5],b:[394.33,53.39,0.75]}];
+ {s:'room-puck-6.webp?v=1113',tv:[337.1,66.9,63.6,59.7],win:[129.6,27.1,42.5,62.4],b:[413,59.3,.95],p1:[285.6,27.1,30.8,38.1],p2:[464.6,35.6,19.4,55.5],sl:[[60.8,30.4],[86.7,29.2],[60.8,101.3],[86.7,97.2]]}];
 /* the bust on the television: drawn at random per match (Marx, Christ, Lenin, Marianne, Hegel), from busts-puck.png
    (each bust tinted to each room's light); b = [centre x, base y, scale] of the bust in canvas units */
 const BUSTS=["marx", "christ", "lenin", "marianne", "hegel"],BUSTCELL={"1.marx":[5,21,46,68],"1.christ":[60,18,47,71],"1.lenin":[120,28,40,61],"1.marianne":[172,6,47,83],"1.hegel":[226,7,52,82],"2.marx":[4,109,47,69],"2.christ":[60,106,48,72],"2.lenin":[120,116,40,62],"2.marianne":[172,94,48,84],"2.hegel":[225,95,53,83],"3.marx":[4,196,48,71],"3.christ":[59,193,49,74],"3.lenin":[119,203,41,64],"3.marianne":[171,180,49,87],"3.hegel":[225,181,54,86],"4.marx":[4,287,47,69],"4.christ":[60,284,48,72],"4.lenin":[120,294,40,62],"4.marianne":[172,272,48,84],"4.hegel":[225,273,53,83],"5.marx":[6,382,43,63],"5.christ":[62,379,44,66],"5.lenin":[121,388,37,57],"5.marianne":[174,368,44,77],"5.hegel":[228,369,48,76],"6.marx":[9,480,37,54],"6.christ":[65,478,38,56],"6.lenin":[124,485,32,49],"6.marianne":[177,468,38,66],"6.hegel":[231,469,41,65]};
