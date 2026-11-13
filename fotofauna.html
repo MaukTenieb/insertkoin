@@ -97,18 +97,22 @@ main.left{background:var(--pebble);min-width:0}
 /* 13 nov. (Mauk Tenieb) : le corps du caméscope — trois interrupteurs, MIKRO, baguette ; pile, retour, sauver, recette */
 html body header.top{display:flex!important;flex-wrap:wrap;align-items:center;height:auto!important;min-height:var(--hd);row-gap:8px;padding-block:8px}
 html body header.top #bShoot,html body header.top #bOpen{display:none!important}
-.kb{display:flex;flex-wrap:wrap;gap:6px;align-items:center;flex:1 1 100%;order:2}
+.kb{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-start;flex:1 1 100%;order:2}
 .sw{display:flex;padding:3px;border-radius:3px;background:#0a0906;box-shadow:inset 0 0 0 1px var(--line2),0 1px 0 rgba(255,255,255,.5)}
-.sw button{font:500 10.5px/1 var(--num);letter-spacing:.14em;padding:10px 9px;min-height:36px;border:0;border-radius:2px;background:none;color:#9a9282;position:relative}
+.sw button{display:grid;place-items:center;width:46px;height:42px;padding:0;border:0;border-radius:2px;background:none;color:#8d8577;position:relative;transition:background .15s,color .15s}
+.sw button .ic{width:22px;height:22px}
+.sw button:hover{color:#e8e0c8}
 .sw button[aria-pressed=true]{background:var(--acc);color:var(--acc-ink)}
 .sw button[hidden]{display:none}
-.kt{min-height:42px;padding-inline:10px}.kt span{font:500 10.5px/1 var(--num);letter-spacing:.14em}
+.kt{display:grid;place-items:center;width:48px;height:48px;padding:0}.kt .ic{width:22px;height:22px}
 #kMik[aria-pressed=true]{background:#c8243a;color:#fff;box-shadow:0 0 12px rgba(200,36,58,.6)}
 #actions .key svg{display:block!important;width:22px;height:22px}
 .stage.masked #view,.stage.masked .ff-ghost{opacity:0}
 .stage.masked{background:#000}
 .stage.ff-live #badge{display:none!important}
 .shutterRow #pvMode,.shutterRow .advance,.shutterRow #shutter,.shutterRow #camOff{display:none!important}
+#dock button[role=tab]{display:grid;place-items:center;min-width:56px}#dock button[role=tab] .ic{width:24px;height:24px}
+.ff-modes button .ic{width:20px;height:20px;display:block}
 .recShelf{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px}
 .recShelf button{flex:none;font:500 11px/1 var(--num);letter-spacing:.1em;padding:9px 10px;min-height:36px;border:1px solid var(--line2);border-radius:3px;background:#0f0d0a;color:#e8e0c8}
 .recShelf button i{font-style:normal;margin-left:8px;color:var(--mute)}
@@ -296,6 +300,14 @@ html.ike-on .app[data-ike-layout=narrow] .ctrl{border-radius:0}
 <symbol id="i-recipe" viewBox="0 0 24 24"><rect x="5.5" y="3.5" width="13" height="17" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 8h7M8.5 11.5h7M8.5 15h4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
 <symbol id="i-wand" viewBox="0 0 24 24"><path d="M4 20 15.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17.5 2.5v4M15.5 4.5h4M20.5 9v3M19 10.5h3M10.5 3v2.6M9.2 4.3h2.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
 <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+<symbol id="i-scr" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="12" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M9 20.5h6M12 16.5v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+<symbol id="i-kam" viewBox="0 0 24 24"><rect x="2.5" y="8" width="13" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m15.5 11 5.5-3v9l-5.5-3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M5 8V5.5h6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="6" cy="12.5" r="1.2" fill="currentColor"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+<symbol id="i-blind" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="currentColor" opacity=".9"/><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 12h8" stroke="#0a0906" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-pik" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m4.5 17 5-5.5 3.5 3.5 2.5-2.5 4 4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="16" cy="9" r="1.5" fill="currentColor"/></symbol>
+<symbol id="i-vid" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3 8h18M3 16h18M7 4.5v3.5M12 4.5v3.5M17 4.5v3.5M7 16v3.5M12 16v3.5M17 16v3.5" stroke="currentColor" stroke-width="1.4"/><path d="m10.5 10 3.5 2-3.5 2z" fill="currentColor"/></symbol>
+<symbol id="i-looks" viewBox="0 0 24 24"><circle cx="9" cy="9.5" r="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="15" cy="9.5" r="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="14.5" r="5" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+<symbol id="i-lab" viewBox="0 0 24 24"><path d="M9.5 3.5h5M10.5 3.5v6L5 19a1.3 1.3 0 0 0 1.1 2h11.8a1.3 1.3 0 0 0 1.1-2l-5.5-9.5v-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M7.5 15h9" stroke="currentColor" stroke-width="1.6"/></symbol>
 <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></symbol>
 <symbol id="i-pause" viewBox="0 0 24 24"><path d="M7.5 5.5h3v13h-3zM13.5 5.5h3v13h-3z" fill="currentColor"/></symbol>
 <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
@@ -306,7 +318,7 @@ html.ike-on .app[data-ike-layout=narrow] .ctrl{border-radius:0}
  <div class="logo"><svg class="mark" aria-hidden="true"><use href="#i-aperture"/></svg><span class="word" style="text-transform:none">KamOrhogo</span></div>
  <button class="key" id="bShoot" type="button"><svg class="ic" aria-hidden="true"><use href="#i-camera"/></svg><span data-i="shoot"></span></button>
  <button class="key" id="bOpen" type="button"><svg class="ic" aria-hidden="true"><use href="#i-open"/></svg><span data-i="open"></span></button>
- <div class="kb" id="kb"><div class="sw" role="group" id="kSrc"><button type="button" data-k="scr">SKREEN</button><button type="button" data-k="cam">KAM</button></div><div class="sw" role="group" id="kObj"><button type="button" data-o="open">OPEN</button><button type="button" data-o="mask">MASKED</button></div><div class="sw" role="group" id="kPv"><button type="button" data-v="photo">PIK</button><button type="button" data-v="video">VID</button></div><button class="key kt" id="kMik" type="button" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-mic"/></svg><span>MIKRO</span></button><button class="key kt" id="kWand" type="button" aria-label="FaunAI" title="FaunAI"><svg class="ic" aria-hidden="true"><use href="#i-wand"/></svg></button><button class="key kt" id="kImp" type="button" data-al="open"><svg class="ic" aria-hidden="true"><use href="#i-open"/></svg></button></div>
+ <div class="kb" id="kb"><div class="sw" role="group" id="kSrc"><button type="button" data-k="scr" data-al="kScr"><svg class="ic" aria-hidden="true"><use href="#i-scr"/></svg></button><button type="button" data-k="cam" data-al="kCam"><svg class="ic" aria-hidden="true"><use href="#i-kam"/></svg></button></div><div class="sw" role="group" id="kObj"><button type="button" data-o="open" data-al="kOpen"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg></button><button type="button" data-o="mask" data-al="kMask"><svg class="ic" aria-hidden="true"><use href="#i-blind"/></svg></button></div><div class="sw" role="group" id="kPv"><button type="button" data-v="photo" data-al="kPik"><svg class="ic" aria-hidden="true"><use href="#i-pik"/></svg></button><button type="button" data-v="video" data-al="kVid"><svg class="ic" aria-hidden="true"><use href="#i-vid"/></svg></button></div><button class="key kt" id="kMik" type="button" aria-pressed="false" data-al="kMik"><svg class="ic" aria-hidden="true"><use href="#i-mic"/></svg></button><button class="key kt" id="kWand" type="button" data-al="kWand"><svg class="ic" aria-hidden="true"><use href="#i-wand"/></svg></button><button class="key kt" id="kImp" type="button" data-al="open"><svg class="ic" aria-hidden="true"><use href="#i-open"/></svg></button></div>
  <button class="key lang" id="bLang" type="button"><b data-l="en">EN</b><b data-l="fr">FR</b></button>
  <button class="key" id="bMenu" type="button" data-al="labo"><svg class="ic" aria-hidden="true"><use href="#i-more"/></svg></button>
 </header>
@@ -335,7 +347,7 @@ html.ike-on .app[data-ike-layout=narrow] .ctrl{border-radius:0}
   <div class="status" id="status" aria-live="polite"><span id="stText"></span><button class="chip" id="stAct" type="button" hidden></button><button class="chip" id="stopAi" type="button" hidden data-i="stop"></button></div>
  </section>
  <section class="inspector" id="inspector">
-  <div class="dock" role="tablist" id="dock"><button role="tab" type="button" data-pane="looks" data-i="t_looks" aria-selected="true"></button><button role="tab" type="button" id="laboBtn" data-pane="lab" data-i="labo" aria-selected="false"></button><button role="tab" type="button" data-pane="ai" aria-selected="false">FaunAI</button></div>
+  <div class="dock" role="tablist" id="dock"><button role="tab" type="button" data-pane="looks" data-al="t_looks" aria-selected="true"><svg class="ic" aria-hidden="true"><use href="#i-looks"/></svg></button><button role="tab" type="button" id="laboBtn" data-pane="lab" data-al="labo" aria-selected="false"><svg class="ic" aria-hidden="true"><use href="#i-lab"/></svg></button><button role="tab" type="button" data-pane="ai" data-al="kWand" aria-selected="false"><svg class="ic" aria-hidden="true"><use href="#i-wand"/></svg></button></div>
   <div class="pane" id="pane-looks">
    <div class="browse">
     <div class="recShelf" id="recShelf" hidden></div>
@@ -12013,6 +12025,7 @@ Object.assign(W.en,{keepL:"Keep",dice:"Roll",layers:"Layers",noLayer:"Original i
  frameN:"Frame {i} / {n}…",recording:"Recording: {s} s",gifDone:"GIF: {k} KB",vidDone:"Video: {k} KB",noRec:"This browser cannot record video (MediaRecorder).",rawSaved:"Raw photo saved: "});
 /* libellés repris de la page en ligne */
 Object.assign(W.fr,{open:"Ouvrir",save:"Enregistrer"});Object.assign(W.en,{open:"Open",save:"Save"});
+Object.assign(W.fr,{kScr:"Écran",kCam:"Caméra",kOpen:"Viseur ouvert",kMask:"Objectif masqué",kPik:"Photo",kVid:"Vidéo",kMik:"Micro",kWand:"FaunAI"});Object.assign(W.en,{kScr:"Screen",kCam:"Camera",kOpen:"Open viewfinder",kMask:"Masked lens",kPik:"Photo",kVid:"Video",kMik:"Mic",kWand:"FaunAI"});
 Object.assign(W.fr,{keepL:"Empiler",recKeep:"Garder la recette",recKept:"Recette gardée",recEmpty:"Pile vide"});Object.assign(W.en,{keepL:"Stack",recKeep:"Keep the recipe",recKept:"Recipe kept",recEmpty:"Empty stack"});
 
 /* ---------- arbre des procédés ---------- */
@@ -12107,7 +12120,7 @@ function setLabel(){const L=S.cur&&FF.ops[S.cur.id];$("lbFam").textContent=L?fam
 /* ---------- familles, procédés, fiches ---------- */
 function visibleCards(){const q=S.q.toLowerCase();return CARDS.filter(c=>q?(c.name+" "+labelTxt(c.op,c.name)+" "+c.op.label+" "+(APPN[c.op.app]||"")+" "+(c.op.taxon||"")+" "+famName(famOf(c.op))+" "+subName(subOf(c.op))).toLowerCase().includes(q):famOf(c.op)===S.fam&&(!S.sub||subOf(c.op)===S.sub))}
 function drawFams(){const box=$("fams");box.innerHTML="";
- let r=$("bRand");if(!r){r=document.createElement("button");r.type="button";r.className="fam shuf";r.id="bRand";r.onclick=randomLook;$("q").after(r)}r.innerHTML=`<svg class="ic" aria-hidden="true"><use href="#i-dice"/></svg>${esc(t("shuffle"))}`;
+ let r=$("bRand");if(!r){r=document.createElement("button");r.type="button";r.className="fam shuf";r.id="bRand";r.onclick=randomLook;$("q").after(r)}r.innerHTML=`<svg class="ic" aria-hidden="true"><use href="#i-dice"/></svg>`;r.setAttribute("aria-label",t("shuffle"));r.title=t("shuffle");
  for(const [id] of FAMS){const n=CARDS.filter(c=>famOf(c.op)===id).length;if(!n)continue;const b=document.createElement("button");b.type="button";b.className="fam";b.setAttribute("aria-pressed",String(!S.q&&S.fam===id));b.innerHTML=`<span>${esc(famName(id))}</span><small>${n}</small>`;b.onclick=()=>{S.fam=id;S.sub=null;S.q="";$("q").value="";LS.set("pf_fam",id);drawFams();drawGrid();b.scrollIntoView({block:"nearest",inline:"nearest"})};box.appendChild(b)}
  const on=box.querySelector(".fam[aria-pressed=true]");if(on){const x=on.getBoundingClientRect().left-box.getBoundingClientRect().left+box.scrollLeft;box.scrollLeft=x+on.offsetWidth>box.clientWidth-20?x-14:0}
  $("count").textContent=CARDS.length+" "+(LANG==="fr"?"rendus":"looks")+" · "+Object.keys(FF.apps).filter(a=>a!=="__").length+" "+t("apps")}
@@ -12396,7 +12409,7 @@ const HUD={an:null,buf:null,src:null};
 let MK=false,PIKVID="photo",KMASK=false;
 function hudRep(d){const sx=y=>y<20?(y===3||y===7||y===11||y===15):(y%4===0&&(y%100!==0||y%400===0)&&y%4000!==0);let n=Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(1792,8,22))/864e5),y=1;for(;;){const l=sx(y)?366:365;if(n<l)break;n-=l;y++}
  const MO=["Vendémiaire","Brumaire","Frimaire","Nivôse","Pluviôse","Ventôse","Germinal","Floréal","Prairial","Messidor","Thermidor","Fructidor","Sansculottides"];
- let r="",v=y;[[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],[50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]].forEach(p=>{while(v>=p[0]){r+=p[1];v-=p[0]}});return (n%30+1)+" "+MO[Math.floor(n/30)].toUpperCase()+" "+(LANG==="fr"?"AN ":"YEAR ")+r}
+ let r="",v=y;[[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],[50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]].forEach(p=>{while(v>=p[0]){r+=p[1];v-=p[0]}});return (n%30+1)+" "+MO[Math.floor(n/30)].toLowerCase()+" "+y}
 async function hudMic(){if(HUD.an||HUD.wait)return;HUD.wait=1;try{if(!MIC)MIC=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});const A=new (window.AudioContext||window.webkitAudioContext)();HUD.src=A.createMediaStreamSource(new MediaStream(MIC.getAudioTracks()));HUD.an=A.createAnalyser();HUD.an.fftSize=1024;HUD.buf=new Float32Array(1024);HUD.src.connect(HUD.an);HUD.ac=A}catch{}HUD.wait=0}
 function hudOff(){if(HUD.ac){try{HUD.ac.close()}catch{}}HUD.an=HUD.src=HUD.ac=null}
 let HUDC=null;
@@ -12765,7 +12778,7 @@ async function faunaiStart(){CENSUS=(await DB.get("census"))||null;REEL=((await 
 
 /* ---------- langue, démarrage ---------- */
 function i18n(){document.documentElement.lang=LANG;
- document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));document.querySelectorAll("[data-ph]").forEach(e=>e.placeholder=t(e.dataset.ph));document.querySelectorAll("[data-al]").forEach(e=>e.setAttribute("aria-label",t(e.dataset.al)));$("q").setAttribute("aria-label",t("search"));$("prompt").setAttribute("aria-label",t("ph"));
+ document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));document.querySelectorAll("[data-ph]").forEach(e=>e.placeholder=t(e.dataset.ph));document.querySelectorAll("[data-al]").forEach(e=>{e.setAttribute("aria-label",t(e.dataset.al));e.title=t(e.dataset.al)});$("q").setAttribute("aria-label",t("search"));$("prompt").setAttribute("aria-label",t("ph"));
  drawFams();drawGrid();drawReel();drawEngines();drawLabo();setLabel()}
 __ffBoot();
 </script>

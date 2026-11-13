@@ -377,7 +377,7 @@
   var MO=['vendémiaire','brumaire','frimaire','nivôse','pluviôse','ventôse','germinal','floréal','prairial','messidor','thermidor','fructidor','sans-culottides'];
   var lastM=-1;
   function tick(){var d=new Date(),r=window.ikRep?window.ikRep(d):null,h=d.getHours(),m=d.getMinutes();
-    date.firstChild.textContent=(r?(r.month===13?'jour '+r.day+' des sans-culottides an '+r.year:r.day+' '+MO[r.month-1]+' '+r.year)+' · ':'')+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+    date.firstChild.textContent=(r?(r.month===13?'jour '+r.day+' des sans-culottides '+r.year:r.day+' '+MO[r.month-1]+' '+r.year)+' · ':'')+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
     var c0=cs(),key=(r?r.month*40+r.day:0)+'/'+Math.round(c0.d*50)+'/'+Math.round(c0.g*50)+'/'+Math.round(neglect(c0)*50)+'/'+c0.cut+'/'+Math.round((Date.now()-c0.cutAt)/(DAY/4));if(key!==lastM){lastM=key;plantRender(r);plant.title=r?MO[r.month-1]:'';}}
   tick();setInterval(tick,15000);
   /* taille de la plante : 8,5 % de la hauteur du meuble (toit + corps), posée sur le toit ; le toit prend cette hauteur (--p2h) */

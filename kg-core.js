@@ -77,7 +77,7 @@ function kkRepublicanDate(){/* always in French, whatever the page's language */
       J=['jour de la Vertu','jour du Génie','jour du Travail',"jour de l'Opinion",'jour des Récompenses','jour de la Révolution'];
   var r=window.ikRep?window.ikRep():null;
   if(!r){var d=new Date(),n=Math.round((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-Date.UTC(d.getFullYear()-(d.getMonth()<8||(d.getMonth()===8&&d.getDate()<22)?1:0),8,22))/864e5);r={year:d.getFullYear()-1791-(d.getMonth()<8||(d.getMonth()===8&&d.getDate()<22)?1:0),month:Math.floor(n/30)+1,day:n%30+1};}
-  return (r.month<13?r.day+' '+M[r.month-1]:J[r.day-1])+' an '+r.year;
+  return (r.month<13?r.day+' '+M[r.month-1]:J[r.day-1])+' '+r.year;
 }
 
 function kaptureRandomMask(){

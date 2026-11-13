@@ -27,7 +27,7 @@ function rep(d){d=d||new Date();var n=Math.round((Date.UTC(d.getFullYear(),d.get
 function roman(n){var r='',v=[[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];v.forEach(function(p){while(n>=p[0]){r+=p[1];n-=p[0]}});return r}
 function p2(n){return String(n).padStart(2,'0')}
 function repShort(d){var r=rep(d);return p2(r.d)+'/'+p2(r.m)+'/'+r.y+' '+p2(d.getHours())+':'+p2(d.getMinutes())}
-function repLong(d){var r=rep(d);return r.d+' '+MO[r.m-1]+' an '+roman(r.y)}
+function repLong(d){var r=rep(d);return r.d+' '+MO[r.m-1].toLowerCase()+' '+r.y}
 var COMMIT=new Date('2026-11-07T16:51:54Z');
 
 /* ---------- icônes ---------- */
@@ -207,7 +207,7 @@ function drawClock(){var s=$('#aclk');if(!s)return;var d=new Date(),a=(d.getHour
  function hand(deg,len,w){var r=deg*Math.PI/180;return '<line x1="22" y1="22" x2="'+(22+Math.sin(r)*len)+'" y2="'+(22-Math.cos(r)*len)+'" stroke="#000" stroke-width="'+w+'"/>'}
  var ticks='';for(var i=0;i<12;i++){var r=i*30*Math.PI/180;ticks+='<rect x="'+(21+Math.sin(r)*18)+'" y="'+(21-Math.cos(r)*18)+'" width="2" height="2" fill="#2c2f3b"/>'}
  s.innerHTML='<circle cx="22" cy="22" r="20" fill="#e4e6ee" stroke="#6b7187" stroke-width="2"/>'+ticks+hand(a,11,2.5)+hand(b,16,1.5);
- var r2=rep(d);var m=$('#fpm');if(m){m.textContent=MO[r2.m-1].slice(0,4)+'.';$('#fpd').textContent=r2.d;$('#fpy').textContent='an '+roman(r2.y)}}
+ var r2=rep(d);var m=$('#fpm');if(m){m.textContent=MO[r2.m-1].slice(0,4)+'.';$('#fpd').textContent=r2.d;$('#fpy').textContent=r2.y}}
 
 /* plateau */
 function trayEl(th){var tr=h('div');tr.id=th==='std'?'tray':'';if(th==='std')tr.className='';
@@ -354,12 +354,12 @@ function psyDlg(){var body=h('div','dbody');var ids=['c7h5n3o6','honey_buzzard',
  var w=dialog({key:'psy',title:t('psy'),w:430,body:body});body.appendChild(btnRow(w,function(){S.psy=$('#ps',body).checked;S.psyId=$('input[name=pid]:checked',body).value;S.psyPick=S.psyId;PSYID='';save();initPsy()}))}
 function dateDlg(){var body=h('div','dbody'),now=new Date(),r=rep(now);var cal='<div class="cal">'+'';/* A46 : zéro nom de jour de décade */
  var len=r.m===13?(sext(r.y)?6:5):30;for(var i=1;i<=30;i++)cal+='<div class="'+(i===r.d?'on':'')+'"'+(i>len?' style="color:#aaa"':'')+'>'+(i<=len?i:'')+'</div>';cal+='</div>';
- body.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><b>'+MO[r.m-1]+' an '+roman(r.y)+'</b></div>'+cal+'<div class="hr"></div>'+'<div class="prow"><div>'+t('today')+' :</div><div>'+repLong(now)+'</div><div>'+t('greg')+' :</div><div>'+now.toLocaleDateString(S.lang==='fr'?'fr-FR':'en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+'</div></div>';
+ body.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><b>'+MO[r.m-1].toLowerCase()+' '+r.y+'</b></div>'+cal+'<div class="hr"></div>'+'<div class="prow"><div>'+t('today')+' :</div><div>'+repLong(now)+'</div><div>'+t('greg')+' :</div><div>'+now.toLocaleDateString(S.lang==='fr'?'fr-FR':'en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+'</div></div>';
  var w=dialog({key:'date',title:(S.lang==='fr'?'Propriétés de ':'')+t('datetime')+(S.lang==='fr'?'':' Properties'),icon:'koin',w:420,body:body});body.appendChild(btnRow(w))}
 
 /* ---------- Aide, À propos, Arrêter ---------- */
 function help(){return notepad(t('help')+' KorhogOS',D.README)}
-function about(){var body=h('div','dbody');body.innerHTML='<div style="display:flex;gap:16px">'+ic('koin',32)+'<div><b>KorhogOS</b><br>Insert Koin · an '+roman(rep().y)+'<br>© Korhogo™, Korhogo Fauna™ & Mauk Tenieb<br><br>'+t('reg')+'<br>Mauk Tenieb<br>Korhogo<div class="hr"></div>https://mauktenieb.github.io/insertkoin/</div></div>';
+function about(){var body=h('div','dbody');body.innerHTML='<div style="display:flex;gap:16px">'+ic('koin',32)+'<div><b>KorhogOS</b><br>Insert Koin · '+rep().y+'<br>© Korhogo™, Korhogo Fauna™ & Mauk Tenieb<br><br>'+t('reg')+'<br>Mauk Tenieb<br>Korhogo<div class="hr"></div>https://mauktenieb.github.io/insertkoin/</div></div>';
  var w=dialog({key:'about',title:t('about'),w:400,body:body});var b=h('div','btns');var ok=h('button','btn def',t('ok'));ok.onclick=function(){closeWin(w)};b.appendChild(ok);body.appendChild(b)}
 function shutdownDlg(){var body=h('div','dbody');body.innerHTML='<div style="display:flex;gap:14px">'+ic('shutdown',32)+'<div><div style="margin-bottom:8px">'+t('shutq')+'</div><label style="display:block;margin:3px 0"><input type="radio" name="sd" value="0" checked> '+t('shut1')+'</label><label style="display:block;margin:3px 0"><input type="radio" name="sd" value="1"> '+t('shut2')+'</label><label style="display:block;margin:3px 0"><input type="radio" name="sd" value="2"> '+t('shut3')+'</label></div></div>';
  var w=dialog({key:'shut',title:t('shuttitle'),w:390,body:body});var b=h('div','btns'),y=h('button','btn def',t('yes')),n=h('button','btn',t('no'));b.appendChild(y);b.appendChild(n);body.appendChild(b);

@@ -23,8 +23,9 @@
     new MutationObserver(sync).observe($('shutter'),{attributes:true,attributeFilter:['class']});new MutationObserver(sync).observe(row,{attributes:true,attributeFilter:['hidden']});sync();}
 
   /* ---------- les commandes de prise : UNE · SUPERPOSER · PELLICULE ; avant / arrière ; ✓ ---------- */
+  var FFI={"one": "<rect x=\"5\" y=\"5\" width=\"14\" height=\"14\" rx=\"1.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\"/>", "stack": "<rect x=\"3.5\" y=\"7.5\" width=\"12\" height=\"12\" rx=\"1.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\"/><rect x=\"8.5\" y=\"3.5\" width=\"12\" height=\"12\" rx=\"1.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" opacity=\".6\"/>", "roll": "<rect x=\"2.5\" y=\"6\" width=\"19\" height=\"12\" rx=\"1\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\"/><path d=\"M8.5 6v12M15.5 6v12M4.5 8h.01M4.5 16h.01M19.5 8h.01M19.5 16h.01\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\"/>"};
   var modes=document.createElement('div');modes.className='pvMode ff-modes';modes.setAttribute('role','group');
-  [['one',L.one],['stack',L.stack],['roll',L.roll]].forEach(function(m){var b=document.createElement('button');b.type='button';b.dataset.ff=m[0];b.textContent=m[1];
+  [['one',L.one],['stack',L.stack],['roll',L.roll]].forEach(function(m){var b=document.createElement('button');b.type='button';b.dataset.ff=m[0];b.innerHTML='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">'+FFI[m[0]]+'</svg>';b.setAttribute('aria-label',m[1]);b.title=m[1];
     b.onclick=function(){if(MODE==='stack'&&N&&m[0]!=='stack')finish();MODE=m[0];set('borne.ff.mode',MODE);paint();};modes.appendChild(b);});
   var flip=document.createElement('button');flip.type='button';flip.className='key ff-flip';flip.setAttribute('aria-label',L.flip);flip.title=L.flip;flip.textContent='⇄';
   flip.onclick=function(){window.__ffFacing=window.__ffFacing==='user'?'environment':'user';window.__ffMirror=window.__ffFacing==='user';set('borne.ff.facing2',window.__ffFacing);
