@@ -129,6 +129,12 @@ Huit coupes de 1,6 s, même traitement (−16 LUFS, fondus de 5 et 150 ms), tir�
 - Auvergne : `auvergne-court-complexe-1` (83,5 s), `auvergne-court-complexe-2` (198,9 s) : Court Complexe (Live Mix 186), https://archive.org/details/auvergne-court-complexe-live-mix-186-1
 © Korhogo, tous droits réservés ; entraînement d'IA interdit.
 
+## snd/pads : coupes pour Honey Buzzard et Croisière Noire (14 nov. 2026)
+Leurs sorties vivent sur Bandcamp ; ces coupes viennent de clips de Mauk Tenieb sur Internet Archive, choisis par thème (insectes pour Honey Buzzard ; pétrole et Afrique de l'Ouest pour Croisière Noire). Même traitement que plus haut.
+- Honey Buzzard : `scambug-1` (127,2 s), `scambug-2` (306,0 s) : ScamBug (Live Mix 117), https://archive.org/details/scam-bug-live-mix-117
+- Croisière Noire : `nix-1` (153,0 s) : Nix (A sűrű petróleumban lángoló szűzgyöngy ló lábai vannak), Live Mix 141, https://archive.org/details/nix-a-suru-petroleumban-langolo-szuzgyongy-lo-labai-vannak-live-mix-141-1 ; `african-alien-1` (238,5 s) : African-Alien (Live Mix 151), https://archive.org/details/mauk-tenieb-african-alien
+© Korhogo, tous droits réservés ; entraînement d'IA interdit.
+
 ## kave/a/tv/clip : clips pour la platine vidéo de Musik (13 nov. 2026)
 Cinq extraits de 12 s des clips de Mauk Tenieb et de ses alias (Internet Archive), 360 px de haut, H.264 à image clé toutes les 5 images (le scratch recule et avance aussitôt), AAC 96 kb/s à −16 LUFS.
 - `clip-interzone-is-internet` (120 s) : Interzone is Internet (Bad-to-the-bone Officer Take), https://archive.org/details/mauk-tenieb-interzone-is-internet-bad-to-the-bone-officer-take
