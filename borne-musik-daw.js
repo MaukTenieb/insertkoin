@@ -345,6 +345,14 @@ html #kg-root #bb-panel.mz-on.mz-on.mz-on.mz-on{display:flex!important;flex-dire
 @media (max-width:760px),(orientation:portrait){#mz .mzrow{min-width:0}#mz .mzs{flex:1 1 0!important;min-width:0}#mz .mzttrow{flex-wrap:wrap}#mz .mzttrow .mzttctl{flex:1 1 100%}#mz .mztt{height:auto!important;width:min(calc(100% - 44px),56vh)!important;max-width:none}#mz .mzbar{padding:6px 12px}}
 /* téléphone couché : barre du haut sur une seule rangée, platine à la hauteur de l'écran */
 @media (orientation:landscape) and (max-height:500px){#mz .mzbar{flex-wrap:nowrap;gap:3px;padding:4px 10px}#mz .mzbar .mzbt,#mz .mzbar .mzseg button{min-width:30px!important;height:32px;padding:0 4px}#mz .mzbar .mzsp{display:none}#mz #mz-tk .mzkn{width:34px}#mz #mz-tk .mzkn svg{width:30px;height:30px}#mz #mz-tk .mzkn small{display:none}#mz[data-v="tt"] .mztt{height:auto!important;width:auto!important;max-height:calc(100vh - 230px);max-width:100%}#mz .mzdeck{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}#mz .mzlibbox{grid-column:1/-1}}
+
+/* 15 nov. 2026, 23 h 04 (Mauk Tenieb) : plus de voyants verts à côté des personnages ; chaque ligne de pas prend la couleur de son personnage ; une piste coupée s'éteint */
+#mz .mzled{display:none!important}
+#mz .mzs{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 32%,transparent)!important}
+#mz .mzs.on{background:var(--c)!important;box-shadow:0 0 5px color-mix(in srgb,var(--c) 70%,transparent),inset 0 0 0 1px rgba(255,255,255,.28)!important}
+#mz .mzs.cur{box-shadow:inset 0 0 0 1px rgba(255,255,255,.75)!important}
+#mz .mzs.on.cur{background:color-mix(in srgb,var(--c) 55%,#fff)!important}
+#mz .mzrow.mute .mzs.on{background:color-mix(in srgb,var(--c) 22%,#000)!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 30%,transparent)!important}#mz .mzrow.mute .mzfc{opacity:.35;filter:grayscale(1)}
 `;
 /* 15 nov. 2026, 22 h 01 : molettes photographiées (bouton cannelé tiré du rack de Mauk Tenieb, 21 h 09), étiquettes gravées en pictogrammes ; le nom reste pour les lecteurs d'écran et l'infobulle */
 var KP=(function(){var S='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="',E='" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';return{
@@ -407,7 +415,7 @@ function rack(){if(!ROOT)return;var pg=$('#mz-pg',ROOT);if(pg)pg.style.display=n
   if(!R.__ev){R.__ev=1;var paint=null;
     R.addEventListener('pointerdown',function(e){S.touchT=performance.now();var t=e.target,row=t.closest('.mzrow');
       if(t.closest('.mzled')){var c=S.ch[+t.closest('.mzled').dataset.m];c.mute=!c.mute;if(AC&&AC.__mz)apply(AC.__mz,c);rack();return}
-      if(t.closest('.mznm,.mzfh')){S.sel=+t.closest('.mznm,.mzfh').dataset.n;var c2=S.ch[S.sel];rack();strips();if(c2.kind==='img'||c2.kind==='vid'){vshow(c2);if(c2.kind==='vid'){var vi=S.lib.filter(function(x){return x.id===c2.src})[0];if(vi)ttVid(vi)}}else if(c2.kind==='smp'&&c2.buf){TT.vid=null;audition(c2.buf);ttLoad({name:c2.name,buf:c2.buf})}else if(ac())hit(AC,c2,0,AC.currentTime+.01,S.pat);return}
+      if(t.closest('.mznm,.mzfh')){/* deux touches rapides sur un personnage le coupent ou le rétablissent (les voyants verts ont disparu) */var ni=+t.closest('.mznm,.mzfh').dataset.n,nw=performance.now();if(R.__lt&&R.__lt.i===ni&&nw-R.__lt.t<450){var cm=S.ch[ni];cm.mute=!cm.mute;if(AC&&AC.__mz)apply(AC.__mz,cm);R.__lt=null;rack();return}R.__lt={i:ni,t:nw};S.sel=ni;var c2=S.ch[S.sel];rack();strips();if(c2.kind==='img'||c2.kind==='vid'){vshow(c2);if(c2.kind==='vid'){var vi=S.lib.filter(function(x){return x.id===c2.src})[0];if(vi)ttVid(vi)}}else if(c2.kind==='smp'&&c2.buf){TT.vid=null;audition(c2.buf);ttLoad({name:c2.name,buf:c2.buf})}else if(ac())hit(AC,c2,0,AC.currentTime+.01,S.pat);return}
       if(t.classList.contains('mzs')&&row){e.preventDefault();var ci=+row.dataset.i,si=+t.dataset.s,ch=S.ch[ci];paint=ch.steps[S.pat][si]?0:1;ch.steps[S.pat][si]=paint;t.classList.toggle('on',!!paint);
         if(paint&&ac())hit(AC,ch,si,AC.currentTime+.01,S.pat);R.setPointerCapture(e.pointerId);R.__ci=ci}});
     R.addEventListener('pointermove',function(e){if(paint===null)return;var t=document.elementFromPoint(e.clientX,e.clientY);if(!t||!t.classList||!t.classList.contains('mzs'))return;var row=t.closest('.mzrow');if(!row||+row.dataset.i!==R.__ci)return;
