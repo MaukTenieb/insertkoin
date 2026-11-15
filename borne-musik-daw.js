@@ -37,7 +37,8 @@ var KIT={dogxim:['dogxim-entering-1','dogxim-entering-2'],c7h5n3o6:['c7h5n3o6-ar
 function mslug(n){var k=String(n||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]/gi,'').toLowerCase();for(var i=0;i<MASKS.length;i++)if(MASKS[i].replace(/_/g,'')===k)return MASKS[i];return ''}
 var MAXS=64,NP=4;
 /* 15 nov. 2026, 16 h 40 (Mauk Tenieb) : 15, 17, 19 ou 21 pas, tirés au hasard à chaque ouverture ; des mesures impaires, jamais carrées */var LENS=[15,17,19,21];
-var S={view:'grid',slots:[],ns:8,pick:null,n:LENS[Math.floor(Math.random()*4)],cst:0,pat:0,chain:false,bpm:96,swing:0,play:false,step:0,next:0,timer:0,sel:0,ch:[],lib:[],echoT:.375,echoF:.38,verb:.5,drive:0,master:.85,tt:null};
+/* 20 h 18 : la Console a autant d'emplacements que la grille a de pas — 15, 17, 19 ou 21, au même tirage */
+var S={view:'grid',slots:[],ns:0,pick:null,n:LENS[Math.floor(Math.random()*4)],pat:0,chain:false,bpm:96,swing:0,play:false,step:0,next:0,timer:0,sel:0,ch:[],lib:[],echoT:.375,echoF:.38,verb:.5,drive:0,master:.85,tt:null};
 var BUF={},AC=null,G=null;
 /* 13 nov. 2026 (critique Impeccable, contraste) : lettres de la bande Dymo noires sur bande claire, blanches sur bande sombre */
 function tink(h){var m=/^#?([0-9a-f]{6})$/i.exec(String(h||''));if(!m)return '#fff';var v=parseInt(m[1],16),f=function(x){x/=255;return x<=.03928?x/12.92:Math.pow((x+.055)/1.055,2.4)},L=.2126*f(v>>16&255)+.7152*f(v>>8&255)+.0722*f(v&255);return L>.22?'#15110b':'#fff'}
@@ -300,7 +301,7 @@ function mount(){var p=document.getElementById('bb-panel');if(!p)return false;if
   $('#mz-kave',ROOT).onclick=kave;
   var vw=$('#mz-view',ROOT),VL=FR?{grid:'Grille',stage:'Console',tt:'Platine'}:{grid:'Grid',stage:'Console',tt:'Turntable'};['grid','stage','tt'].forEach(function(k){var b=el('button',null,IC[k==='tt'?'disc':k]);b.type='button';b.dataset.v=k;b.setAttribute('aria-label',VL[k]);b.title=VL[k];b.onclick=function(){view(k)};vw.appendChild(b)});
   var pt=$('#mz-pat',ROOT);'ABCD'.split('').forEach(function(x,i){var b=el('button',null,x);b.type='button';b.onclick=function(){S.pat=i;paintPat();rack()};pt.appendChild(b)});
-  var ln=$('#mz-len',ROOT);LENS.forEach(function(n){var b=el('button',null,String(n));b.type='button';b.onclick=function(){S.n=n;if(S.step>=n)S.step=0;paintLen();rack()};ln.appendChild(b)});
+  var ln=$('#mz-len',ROOT);LENS.forEach(function(n){var b=el('button',null,String(n));b.type='button';b.onclick=function(){S.n=n;if(S.step>=n)S.step=0;paintLen();rack();if(STG.con)conSize(n)};ln.appendChild(b)});
   var pgb=$('#mz-pg',ROOT);[-1,1].forEach(function(d){var b=el('button',null,'<svg viewBox="0 0 24 24" width="18" height="18"><path d="'+(d<0?'M15 5 8 12l7 7':'M9 5l7 7-7 7')+'" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>');b.type='button';b.setAttribute('aria-label',d<0?'\u2190':'\u2192');b.onclick=function(){S.page=Math.max(0,Math.min(Math.ceil(S.n/8)-1,(S.page||0)+d));rack()};pgb.appendChild(b)});var pgl=el('span','mzpgl');pgb.insertBefore(pgl,pgb.lastChild);
   var tk=$('#mz-tk',ROOT);tk.style.display='flex';tk.style.gap='4px';
   tk.appendChild(knob(L.tempo,function(){return (S.bpm-60)/120},function(v){S.bpm=Math.round(60+v*120);$('#mz-bpm',ROOT).textContent=S.bpm},(96-60)/120));
@@ -412,8 +413,8 @@ function view(k){S.view=k;if(!ROOT)return;var st=$('#mz-stg',ROOT),R=$('#mz-rack
 /* le leitmotiv : la première coupe du Mask (KIT), chargée à la première pose ; un Mask déjà réglé sur une coupe garde la sienne */
 function leit(c){if(c.kind==='smp'&&c.buf)return;var it=kitOf(c)[0];if(!it)return;load(it).then(function(b){if(c.kind==='smp'&&c.buf)return;c.kind='smp';c.buf=b;c.src=it.id;if(ROOT)strips()}).catch(function(){})}
 function conSet(j,id){if(j<0||j>=S.ns)return;S.slots[j]=id||'';if(id){var c=chById(id);if(c){leit(c);if(!S.play&&ac())play(true)}}conPaint()}
-function conSize(n){if(n===S.ns)return;var o=S.slots,m=[];if(n>S.ns)for(var i=0;i<S.ns;i++)m[i*2]=o[i]||'';else for(var k=0;k<n;k++)m[k]=o[k*2]||'';for(var q=0;q<n;q++)m[q]=m[q]||'';S.slots=m;S.ns=n;conBuild()}
-function conStep(st,at,ms,sol){/* 15 nov. 2026 : la Console lit la grille à son rythme, la grille compte 15 à 21 pas */var per=16/S.ns,cs=S.cst++;if(cs%per)return;var j=(cs/per)%S.ns,c=chById(S.slots[j]);if(c&&!c.mute&&(!sol||c.solo))hit(AC,c,st,at,S.pat);
+function conSize(n){if(n===S.ns)return;var o=S.slots,m=[];for(var q=0;q<n;q++)m[q]=o[q]||'';S.slots=m;S.ns=n;conBuild()}
+function conStep(st,at,ms,sol){/* un emplacement par pas */if(st>=S.ns)return;var j=st,c=chById(S.slots[j]);if(c&&!c.mute&&(!sol||c.solo))hit(AC,c,st,at,S.pat);
   setTimeout(function(){if(!STG.con||!S.play)return;[].forEach.call(STG.con.querySelectorAll('.mzslot'),function(x,i){x.classList.toggle('hd',i===j)});var im=c&&STG.con.children[j]&&STG.con.children[j].querySelector('img,canvas');if(c&&c.mask)figHop(c.mask,0);
     if(im&&im.animate)im.animate([{transform:'translateY(0)'},{transform:'translateY(-7%)'},{transform:'translateY(0)'}],{duration:180,easing:'ease-out'})},ms)}
 /* 15 nov. 2026 (Mauk Tenieb : « non pas les noms, qui sont verbeux, mais les figurines 3D de Skoporhogo ») : les Masks de Musik sont les corps 3D de SkopoRhogo (skopo-figs.js, tiré de skoporhogo.html), rendus en pixels par un seul moteur three.js partagé ; chaque figurine garde sa stature, se balance au repos et saute quand sa piste joue */
@@ -455,20 +456,20 @@ function figCss(){if(document.getElementById('mz-fig-css'))return;var st=documen
   '#mz .mzrack .mzrow.sel .mznm.mzfg{outline:none!important}#mz .mzrack .mzrow.sel .mznm.mzfg::after{height:4px;background:var(--amb,#ffa726)}#mz .mzrack .mzrow.sel .mznm.mzfg canvas{filter:drop-shadow(0 0 2px var(--amb,#ffa726)) drop-shadow(0 2px 1px rgba(0,0,0,.7))}#mz .mzrack .mzrow.sel .mznm.mzfg{box-shadow:none!important}'+
   '#mz .mzrack .mzrow.mute .mznm.mzfg canvas{opacity:.35;filter:grayscale(1)}'+
   '#mz .mznm.mzfg:focus-visible{outline:2px solid var(--amb,#ffa726);outline-offset:1px}'+
+  '#mz .mzcon{display:flex!important;flex-wrap:wrap;justify-content:center;align-content:flex-end}#mz .mzcon>.mzslot{flex:0 0 calc(100% / var(--cols));height:var(--rowh)}'+
   '#mz canvas.mzfc{display:block}#mz .mzfig canvas.mzfc{height:calc(100% * var(--k));width:auto;aspect-ratio:3/5;pointer-events:none}'+
   '#mz .mzslot canvas.mzfc{position:absolute;left:50%;bottom:28%;transform:translateX(-50%);z-index:2;height:calc(var(--fh) * var(--k));width:auto;aspect-ratio:3/5;filter:drop-shadow(0 3px 2px rgba(0,0,0,.75))}';
   document.head.appendChild(st)}
 function figImg(c){figCss();figLoad().then(figRun);return '<canvas class="mzfc" data-mask="'+c.mask+'" style="--k:'+(STAT[c.mask]/1.98).toFixed(3)+'"></canvas>'}
 function stageInit(){var st=$('#mz-stg',ROOT);if(!st||st.__ev)return;st.__ev=1;STG.el=st;
-  for(var i=0;i<S.ns;i++)S.slots[i]=S.slots[i]||'';
+  S.ns=S.n;for(var i=0;i<S.ns;i++)S.slots[i]=S.slots[i]||'';
   st.innerHTML='<div class="mzres" id="mz-res"></div><div class="mzconw"><div class="mzcon" id="mz-con"></div></div>';
   STG.res=$('#mz-res',st);STG.con=$('#mz-con',st);
   /* 15 nov. 2026 (contrôle externe) : à la souris, la molette fait défiler le bac des figurines de gauche à droite */STG.res.addEventListener('wheel',function(e){if(Math.abs(e.deltaY)>Math.abs(e.deltaX)&&STG.res.scrollWidth>STG.res.clientWidth){e.preventDefault();STG.res.scrollLeft+=e.deltaY}},{passive:false});
   masks().forEach(function(c){var b=el('button','mzfig',figImg(c));b.type='button';b.setAttribute('aria-label',c.name);b.title=c.name;b.__c=c;STG.res.appendChild(b)});
-  /* 15 nov. 2026 (critique Impeccable, P1) : le sélecteur 8 ou 16 quitte le bac, où il cachait une figurine, et rejoint la barre de Musik, visible en vue Console seulement */var ns=el('div','mzseg mzns');ns.id='mz-ns';var bar=$('.mzbar',ROOT),bp=$('#mz-bpm',ROOT);bar.insertBefore(ns,bp);[8,16].forEach(function(n){var b=el('button',null,String(n));b.type='button';b.onclick=function(){conSize(n)};ns.appendChild(b)});
   conBuild();conEv(st);if(window.ResizeObserver)new ResizeObserver(function(){conLayout()}).observe(st)}
 function conBuild(){var C=STG.con;if(!C)return;C.innerHTML='';for(var i=0;i<S.ns;i++){var d=el('button','mzslot');d.type='button';d.dataset.j=i;C.appendChild(d)}
-  [].forEach.call($('#mz-ns',ROOT).children,function(b){b.classList.toggle('on',+b.textContent===S.ns)});conPaint();conLayout()}
+  conPaint();conLayout()}
 function conPaint(){var C=STG.con;if(!C)return;[].forEach.call(C.children,function(d,i){var c=chById(S.slots[i]);d.innerHTML='<i class="mzdi"></i><span class="mzhole"></span>'+(c?figImg(c):'');d.classList.toggle('full',!!c);d.setAttribute('aria-label',(i+1)+(c?' · '+c.name:''));d.title=c?c.name:''});
   [].forEach.call(STG.res.children,function(b){b.classList.toggle('pick',S.pick===b.__c.id);b.classList.toggle('in',S.slots.indexOf(b.__c.id)>=0)});STG.el.classList.toggle('arm',!!S.pick)}
 /* géométrie : tout part de la taille du plateau ; 16 emplacements passent sur deux rangées de 8 quand un emplacement tomberait sous 46 px ; la figurine enfoncée prend la hauteur que laisse sa rangée, à sa stature */
@@ -476,7 +477,7 @@ function stageFit(st){var mz=ROOT,pv=st.style.height;st.style.height='';var nat=
   var h=av>=120&&av<nat-1?av+'px':'';if(h!==pv||st.style.height!==h)st.style.height=h}
 function conLayout(){var st=STG.el;if(!st||st.hidden)return;stageFit(st);var W=st.clientWidth,H=st.clientHeight;if(!W||!H)return;
   /* 15 nov. 2026 (critique Impeccable, P1 : « bande noire morte » entre le bac et la console) : la rangée prend la hauteur de sa figurine, le reste revient au bac */
-  var hr=Math.round(H*.27),hc=H-hr-10,best=null;[4,8,16].forEach(function(cols){if(cols>S.ns)return;var rows=S.ns/cols,rowH=hc/rows,sw=(W-16)/cols,fh=Math.min(rowH*.8,sw/ASP*1.35);if(!best||fh>best.fh*1.06)best={cols:cols,rows:rows,rowH:rowH,fh:fh}});
+  var hr=Math.round(H*.27),hc=H-hr-10,best=null;[S.ns,Math.ceil(S.ns/2),Math.ceil(S.ns/3)].forEach(function(cols){var rows=Math.ceil(S.ns/cols),rowH=hc/rows,sw=(W-16)/cols,fh=Math.min(rowH*.8,sw/ASP*1.35);if(!best||fh>best.fh*1.06)best={cols:cols,rows:rows,rowH:rowH,fh:fh}});
   var rh2=Math.min(best.rowH,best.fh/.78);hr=Math.max(hr,Math.round(Math.min(H*.45,H-10-best.rows*rh2)));best.rowH=rh2;
   st.style.setProperty('--hr',hr+'px');st.style.setProperty('--cols',best.cols);st.style.setProperty('--rowh',best.rowH.toFixed(1)+'px');
   st.style.setProperty('--fh',best.fh.toFixed(1)+'px');st.style.setProperty('--rh',(hr*.92).toFixed(1)+'px')}
