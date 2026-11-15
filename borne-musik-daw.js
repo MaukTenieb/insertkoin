@@ -320,15 +320,31 @@ html #kg-root #bb-panel.mz-on.mz-on.mz-on.mz-on{display:flex!important;flex-dire
 #mz #mz-src svg{width:16px;height:16px}#mz #mz-src button{display:grid;place-items:center;min-width:30px}#mz #mz-view button{display:grid;place-items:center;min-width:38px}#mz #mz-view svg{width:18px;height:18px}
 @media (orientation:landscape) and (max-height:520px){#mz .mzmain{min-height:auto}#mz .mzmain>.mzstage,#mz .mzmain>.mzrack{height:70vh;align-self:start}}
 @media (max-width:760px),(orientation:portrait){#mz .mzstage{height:46vh}#mz .mzrow.fh .mznm{display:none}#mz .mzfh{width:40px;height:40px}}
+
+/* 15 nov. 2026, 22 h 40 (juge Impeccable C) : barre du haut et Console en tôle de rack comme les panneaux ; touches allumées par voyant et glyphe rétroéclairé, à la place des aplats moutarde ; étiquette de piste en ruban gaufré ; glissière de pitch à capuchon métal */
+#mz .mzbar,#mz .mzstage{background:url(${base()}kave/a/mix/screw.webp) left 5px top 5px/11px 11px no-repeat,url(${base()}kave/a/mix/screw.webp) right 5px top 5px/11px 11px no-repeat,url(${base()}kave/a/mix/screw.webp) left 5px bottom 5px/11px 11px no-repeat,url(${base()}kave/a/mix/screw.webp) right 5px bottom 5px/11px 11px no-repeat,linear-gradient(rgba(10,8,6,.42),rgba(10,8,6,.42)),url(${base()}kave/a/mix/plate.webp) center/cover,#141210;border-radius:3px;box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 -1px 0 rgba(0,0,0,.6),0 0 0 1px #000,0 3px 8px rgba(0,0,0,.6)}
+#mz .mzbar{padding:6px 22px}
+#mz .mzrack{border-color:#100f0d!important;border-radius:4px!important}
+#mz .mzseg button,#mz .mzfx button,#mz .mzbt{position:relative}
+#mz .mzbt.on,#mz .mzseg button.on,#mz .mzfx button.on{background:linear-gradient(#2c251e,#15110d)!important;color:#ffc061!important;text-shadow:0 0 6px rgba(255,160,40,.85);box-shadow:inset 0 0 0 1px #000,inset 0 0 12px rgba(255,150,40,.22)!important}
+#mz .mzbt.on>svg,#mz .mzseg button.on>svg,#mz .mzfx button.on>svg{filter:drop-shadow(0 0 4px rgba(255,160,40,.9))}
+#mz .mzbt.on::after,#mz .mzseg button.on::after,#mz .mzfx button.on::after{content:"";position:absolute;top:3px;right:3px;width:4px;height:4px;border-radius:50%;background:#ffd08a;box-shadow:0 0 5px 1px #ff9f1c;pointer-events:none}
+#mz #mz-play.on{background:linear-gradient(#d8443a,#a3241c)!important;color:#fff!important;text-shadow:none}#mz #mz-play.on::after{display:none}
+#mz .mzbox h4 b{display:inline-block;padding:2px 7px;background:linear-gradient(#1b1b1b,#0b0b0b);color:#e9e4d8!important;font:700 11px/1.2 "DM Mono",monospace;letter-spacing:.14em;text-transform:uppercase;border-radius:2px;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 1px 2px #000}
+#mz .mzpitch{-webkit-appearance:none;appearance:none;background:linear-gradient(90deg,transparent 9px,#0c0a08 9px,#0c0a08 13px,transparent 13px)}
+#mz .mzpitch::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:30px;border:0;background:url(${base()}kave/a/mix/cap-v.webp) center/100% 100% no-repeat;filter:drop-shadow(0 2px 2px rgba(0,0,0,.7))}
+#mz .mzpitch::-moz-range-thumb{width:22px;height:30px;border:0;border-radius:0;background:url(${base()}kave/a/mix/cap-v.webp) center/100% 100% no-repeat}
+#mz .mztt{filter:drop-shadow(0 4px 6px rgba(0,0,0,.75))}
+#mz .mzlib{-webkit-mask-image:linear-gradient(#000 calc(100% - 18px),transparent);mask-image:linear-gradient(#000 calc(100% - 18px),transparent)}
 `;
 /* 15 nov. 2026, 22 h 01 : molettes photographiées (bouton cannelé tiré du rack de Mauk Tenieb, 21 h 09), étiquettes gravées en pictogrammes ; le nom reste pour les lecteurs d'écran et l'infobulle */
 var KP=(function(){var S='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="',E='" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';return{
  VOL:S+'M4 9h4l5-4v14l-5-4H4zM16 9c1.5 1.7 1.5 4.3 0 6M19 6.5c3 3 3 8 0 11'+E,PAN:S+'M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4'+E,TUNE:S+'M9 18V5l10-2v13M9 18a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM19 16a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'+E,
- CUT:S+'M2 8h11c3 0 4 3 5 6l3 6'+E,RES:S+'M2 15h8c2 0 2.5-10 4-10s2 10 4 10h4'+E,DRIVE:S+'M2 12c1.5-6 3-6 4-6h4c1 0 2.5 12 4 12h4c1 0 2.5 0 4-6'+E,
+ CUT:S+'M2 8h11c3 0 4 3 5 6l3 6'+E,RES:S+'M2 15h8c2 0 2.5-10 4-10s2 10 4 10h4'+E,DRIVE:S+'M2 12l3-6h5l4 12h5l3-6'+E,
  ECHO:S+'M4 18V6M10 18V9M15 18v-6M19 18v-3'+E,VERB:S+'M5 19a7 7 0 0 1 0-14M9 16a4 4 0 0 1 0-8M13 13a1 1 0 0 1 0-2M15 4l5 4M15 20l5-4'+E,
  FX:S+'M12 2v5M12 17v5M2 12h5M17 12h5M5 5l3.5 3.5M15.5 15.5 19 19M19 5l-3.5 3.5M8.5 15.5 5 19'+E,TIME:S+'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7v5l3 2'+E,
- FDBK:S+'M17 3l3 3-3 3M20 6H9a5 5 0 0 0 0 10h1M7 21l-3-3 3-3M4 18h11a5 5 0 0 0 0-10h-1'+E,SIZE:S+'M3 3h18v18H3zM8 8h8v8H8z'+E,
- TEMPO:S+'M8 21h8l-3-17h-2zM12 14l6-8M7 21h10'+E,SWING:S+'M5 18V7M5 18a2 2 0 1 1-2-2M14 16V5M14 16a2 2 0 1 1-2-2M5 7l9-2'+E}})();
+ FDBK:S+'M17 3l3 3-3 3M20 6H9a5 5 0 0 0 0 10h1M7 21l-3-3 3-3M4 18h11a5 5 0 0 0 0-10h-1'+E,SIZE:S+'M9 9h6v6H9zM3 3l4 4M3 3h3M3 3v3M21 3l-4 4M21 3h-3M21 3v3M3 21l4-4M3 21h3M3 21v-3M21 21l-4-4M21 21h-3M21 21v-3'+E,
+ TEMPO:S+'M8 21h8l-3-17h-2zM12 14l6-8M7 21h10'+E,SWING:S+'M3 12h9M16 12h2'+E.replace('stroke-width="2"','stroke-width="4"')}})();
 function knob(lbl,get,set,def,col){var k=el('div','mzkn');k.innerHTML='<svg viewBox="0 0 40 40"></svg><small>'+(KP[lbl]||lbl)+'</small>';k.title=lbl;var sv=k.firstChild;
   function draw(){var v=get(),a=-135+v*270,ticks='';for(var i=0;i<=10;i++){var t=(-135+i*27)*Math.PI/180;ticks+='<line x1="'+(20+Math.sin(t)*17)+'" y1="'+(20-Math.cos(t)*17)+'" x2="'+(20+Math.sin(t)*19)+'" y2="'+(20-Math.cos(t)*19)+'" stroke="#8d8577" stroke-width="1"/>'}
     var r=a*Math.PI/180;sv.innerHTML=ticks+'<circle cx="20" cy="22" r="14.5" fill="#000" opacity=".55"/><image href="'+base()+'kave/a/mix/knob.webp" x="5" y="5" width="30" height="30"/>'+
@@ -421,7 +437,7 @@ function vdraw(){var cv=VIS.cv;if(!cv||!document.body.contains(cv))return;reques
   if(ch.verb>.02){g.filter='blur(14px) brightness(1.4)';g.globalCompositeOperation='screen';g.globalAlpha=a*ch.verb*.7;g.drawImage(m,x,y,w,h);g.globalCompositeOperation='source-over'}});
  g.filter='none';g.globalAlpha=1;if(!VIS.layers.length){g.fillStyle='rgba(120,255,150,.05)';for(var i=0;i<H;i+=3)g.fillRect(0,i,W,1);
    /* 15 nov. 2026, 22 h 01 : sans image, l'écran trace le son qui sort, en oscilloscope à phosphore vert */var G=AC&&AC.__mz;if(G&&G.an){var b=VIS.ob||(VIS.ob=new Float32Array(G.an.fftSize));G.an.getFloatTimeDomainData(b);var z=0;for(var q=1;q<b.length/2;q++)if(b[q-1]<=0&&b[q]>0){z=q;break}var n=b.length/2;
-    g.strokeStyle='rgba(140,255,160,.95)';g.lineWidth=Math.max(1.5,H/140);g.shadowColor='rgba(80,255,120,.8)';g.shadowBlur=H/30;g.beginPath();for(var j=0;j<n;j++){var x=j/(n-1)*W,y=H/2-Math.max(-1,Math.min(1,b[z+j]*1.6))*H*.42;j?g.lineTo(x,y):g.moveTo(x,y)}g.stroke();g.shadowBlur=0}}}
+    g.strokeStyle='rgba(140,255,160,.95)';g.lineWidth=Math.max(1.5,H/140);g.shadowColor='rgba(80,255,120,.8)';g.shadowBlur=H/30;g.beginPath();for(var j=0;j<n;j++){var x=j/(n-1)*W,y=H/2-Math.max(-1,Math.min(1,b[z+j]*1.6))*H*.42;j?g.lineTo(x,y):g.moveTo(x,y)}g.stroke();g.shadowBlur=0}else{g.strokeStyle='rgba(140,255,160,.45)';g.lineWidth=Math.max(1.2,H/180);g.shadowColor='rgba(80,255,120,.6)';g.shadowBlur=H/40;g.beginPath();g.moveTo(0,H/2);g.lineTo(W,H/2);g.stroke();g.shadowBlur=0}}}
 /* ---------- la platine : le disque tourne à 33 tours ; le saisir, c'est scratcher ---------- */
 function ttImg(u){var im=new Image();im.src=base()+u;return im}var TTI={deck:ttImg('a-tt-platine.webp'),disc:ttImg('a-tt-disque.webp'),arm:ttImg('a-tt-bras.webp')};
 var TT={rpm:33,pitch:0,ang:0,pos:0,buf:null,rev:null,name:'',hold:false,src:null,t0:0,last:0,lastA:0,motor:false};
