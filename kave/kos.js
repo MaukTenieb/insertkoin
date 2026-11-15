@@ -83,7 +83,10 @@ function openNode(n){
  if(n.kind==='sys')return n.run();
 }
 function runProg(n){var p=n.prog,body=h('div','prog');
- if(ON){body.innerHTML='<iframe src="'+p.url+'" allow="camera;microphone;fullscreen;autoplay" title="'+esc(p.name)+'"></iframe>'}
+ if(ON){/* 15 nov. 2026 (Mauk Tenieb : « il est incapable de foutre une image de chargement et d'attente ») : une image d'attente de la borne, tirée au hasard, tient la fenêtre jusqu'à ce que le programme réponde */
+  var at='../attente-'+('0'+(1+Math.floor(Math.random()*27))).slice(-2)+'.webp';body.style.background='#000 url('+at+') center/cover no-repeat';
+  body.innerHTML='<iframe src="'+p.url+'" allow="camera;microphone;fullscreen;autoplay" title="'+esc(p.name)+'" style="opacity:0;transition:opacity .6s ease"></iframe>';
+  var fr=body.firstChild,shown=false,show=function(){if(shown)return;shown=true;fr.style.opacity='1'};fr.addEventListener('load',function(){setTimeout(show,900)});setTimeout(show,20000)}
  else{var s=h('div','scr');s.style.backgroundImage='url('+p.thumb+')';s.title=p.url;s.onclick=function(){window.open(p.url,'_blank','noopener')};body.appendChild(s)}
  return win({key:'p:'+p.id,title:p.name,icon:p.icon,w:720,h:500,body:body,status:[p.exe,ON?'':p.url.replace('https://','')]})}
 

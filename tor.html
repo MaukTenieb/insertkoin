@@ -90,7 +90,7 @@ main::after{content:"";position:absolute;inset:16px;border-radius:14px/12px;poin
 (function(){
 'use strict';
 var LANG='fr';
-try{LANG=localStorage.getItem('tor.lang')||'en';if(LANG!=='fr')LANG='en';}catch(e){}
+try{LANG=localStorage.getItem('ik.lang')||localStorage.getItem('tor.lang')||'en';if(LANG!=='fr')LANG='en';}catch(e){}
 function L(fr,en){return LANG==='en'?en:fr;}
 function $(id){return document.getElementById(id);}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}

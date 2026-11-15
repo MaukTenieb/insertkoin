@@ -146,7 +146,7 @@ const TXT={
       leave:'se lève'}
 };
 let lang='en';
-try{ const l=localStorage.getItem('ik.lang')||localStorage.getItem('kf-room-lang'); if(l==='fr'||l==='en') lang=l; }catch(e){}
+try{ const l=localStorage.getItem('ik.lang'); if(l==='fr'||l==='en') lang=l; }catch(e){}
 
 // =========================================================
 //  RENDERER

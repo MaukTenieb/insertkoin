@@ -16,7 +16,7 @@
  viseur à repères dorés, touches de caoutchouc, rendus en vues numérotées sur une bande de film ; un seul accent, l'or de Korhogo.
 -->
 <script>/* la langue suit le site : ik.lang (Insert Koin) recopiée dans obturama.lang, clé que lit le site (photoLang) */
-try{var _l=localStorage.getItem('ik.lang');if(_l)localStorage.setItem('obturama.lang',JSON.stringify(_l==='fr'?'fr':'en'));}catch(e){}</script>
+try{var _l=localStorage.getItem('ik.lang');localStorage.setItem('obturama.lang',JSON.stringify(_l==='fr'?'fr':'en'));}catch(e){}/* 15 nov. 2026 : sans ik.lang, l'anglais, quel que soit l'ancien obturama.lang */</script>
 <script>/* l'écran commun d'Insert Koin (ik-ecran.js, à côté de la page sur le site) : chargé quand la page est servie ;
    ouverte depuis le disque (file:), la page garde sa propre disposition */
 if(location.protocol!=='file:')document.write('<script src="ik-tableaux.js"><\/script><script src="ik-ecran.js"><\/script>');</script>
