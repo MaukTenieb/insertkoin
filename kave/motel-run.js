@@ -159,14 +159,14 @@ window.MotelRun=function(host,want){
  /* caméra sur la trace du Mask, un pas derrière lui, tournée vers lui */
  function reseed(){var b=Math.min(CAMD,probe(ang+Math.PI,CAMD+0.3)-0.2);trail=[[px-Math.cos(ang)*b,py-Math.sin(ang)*b],[px,py]];st.cuts++}
  /* 15 nov. 2026, 19 h 06 (Mauk Tenieb : « je veux pas que ça saute aux angles ») : la caméra suit la trace du coureur à distance constante, mesurée le long du chemin parcouru ; elle prend chaque angle pas à pas, zéro saut, zéro coupure ; son regard va vers le coureur, sans à-coup */
- var cyaw=null,cw=0,cdt=0.016,WMAX=2.1,AMAX=9,KP=8;
+ var cyaw=null,cw=0,cdt=0.016,WMAX=1.75,AMAX=9,KP=8,EDGE=0.3,BOOST=6;
  function camera(){var L=trail[trail.length-1];if(!L||Math.hypot(px-L[0],py-L[1])>0.02)trail.push([px,py]);if(trail.length>800)trail.splice(0,trail.length-800);
   var need=CAMD,qx=px,qy=py,i=trail.length-1;
   while(i>0&&need>0){var A=trail[i-1],sl=Math.hypot(qx-A[0],qy-A[1]);if(sl>=need){qx+=(A[0]-qx)*need/sl;qy+=(A[1]-qy)*need/sl;need=0;break}need-=sl;qx=A[0];qy=A[1];i--}
   if(need>0){qx-=Math.cos(ang)*need*0;qy-=0}
   cx=qx;cy=qy;var rx=px-cx,ry=py-cy,rl=Math.hypot(rx,ry),ty=rl>0.05?Math.atan2(ry,rx):ang;
   /* 15 nov. 2026, 19 h 39 (Mauk Tenieb : « une caméra stable […] des braquages normaux ») : le regard suit le coureur par un ressort amorti, vitesse et accélération plafonnées : rotation douce et constante, zéro à-coup, même caméra en démo et en jeu */
-  if(cyaw===null){cyaw=ty;cw=0}var e=wrap(ty-cyaw),ww=(e<0?-1:1)*Math.min(WMAX,Math.sqrt(2*AMAX*0.8*Math.abs(e)),Math.abs(e)*KP),acc=Math.max(-AMAX*cdt,Math.min(AMAX*cdt,ww-cw));cw+=acc;cyaw=wrap(cyaw+cw*cdt);ca=cyaw;depth=Math.max(0.3,rl)}
+  if(cyaw===null){cyaw=ty;cw=0}var e=wrap(ty-cyaw),wm=WMAX+Math.max(0,Math.abs(e)-EDGE)*BOOST,ww=(e<0?-1:1)*Math.min(wm,Math.sqrt(2*AMAX*0.8*Math.abs(e)),Math.abs(e)*KP),acc=Math.max(-AMAX*cdt,Math.min(AMAX*cdt,ww-cw));cw+=acc;cyaw=wrap(cyaw+cw*cdt);ca=cyaw;depth=Math.max(0.3,rl)}
  function cast(){
   var dx=Math.cos(ca),dy=Math.sin(ca),plx=-dy*FOV,ply=dx*FOV,bob=reduce?0:Math.sin(gait*3.2)*1.2;
   /* sol et plafond */
