@@ -31,11 +31,11 @@ class MzFx extends AudioWorkletProcessor{
           y0=this.buf[0][back]*gate*env;y1=this.buf[1][back]*gate*env;break}
         case 'revs':{const sl=Math.min(N>>1,Math.max(64,Math.round(step*sr*(amt<.5?1:2)))),p=t%sl,env=Math.min(1,p/48)*Math.min(1,(sl-p)/48);
           y0=this.buf[0][(w-2*p+N)%N]*env;y1=this.buf[1][(w-2*p+N)%N]*env;break}
-        case 'ring':{const f=30*Math.pow(66,amt);this.ph+=f/sr;if(this.ph>1)this.ph-=1;const m=Math.sin(this.ph*6.2831853);y0=this.buf[0][w]*m;y1=this.buf[1][w]*m;break}
+        case 'ring':{const f=30*Math.pow(66,amt);this.ph+=f/sr;if(this.ph>1)this.ph-=1;const m=Math.sin(this.ph*6.2831853)*1.38;y0=this.buf[0][w]*m;y1=this.buf[1][w]*m;break}
         case 'grain':{/* nouveaux grains à une densité qui monte avec la dose ; chacun relit un éclat de la dernière seconde, parfois à l'envers ou transposé */
           if(this.rnd()<(4+amt*60)/sr){const g=this.gr.find(q=>!q.on);if(g){g.on=true;g.len=Math.round(sr*(.02+this.rnd()*.12));g.t=0;g.pos=(w-Math.round(this.rnd()*sr*.9)-g.len+N)%N;
             const r=this.rnd();g.rate=r<.2?-1:r<.35?2:r<.5?.5:1}}
-          for(const g of this.gr){if(!g.on)continue;const k=g.t/g.len,e=Math.sin(Math.PI*k),idx=(g.pos+Math.floor(g.t*g.rate)+N*4)%N;y0+=this.buf[0][idx]*e*.6;y1+=this.buf[1][idx]*e*.6;if(++g.t>=g.len)g.on=false}
+          for(const g of this.gr){if(!g.on)continue;const k=g.t/g.len,e=Math.sin(Math.PI*k),idx=(g.pos+Math.floor(g.t*g.rate)+N*4)%N;y0+=this.buf[0][idx]*e*.75;y1+=this.buf[1][idx]*e*.75;if(++g.t>=g.len)g.on=false}
           const dry=1-amt;y0+=this.buf[0][w]*dry;y1+=this.buf[1][w]*dry;break}
         case 'oct':{const m=(this.buf[0][w]+this.buf[1][w])*.5;this.lp+=(m-this.lp)*.08;const a=Math.abs(m);this.env+=(a-this.env)*(a>this.env?.02:.0006);
           if(this.prev<=0&&this.lp>0){this.ff=-this.ff;if(this.ff>0)this.ff2=-this.ff2}this.prev=this.lp;
@@ -48,7 +48,7 @@ class MzFx extends AudioWorkletProcessor{
           y0=this.buf[0][w]*(1-amt*.5)+v*(.25+amt*.5);y1=this.buf[1][w]*(1-amt*.5)+v*(.25+amt*.5);break}
         case 'metal':{const m=(this.buf[0][w]+this.buf[1][w])*.5,fb=.9+amt*.085;let sm=0,sd=0;
           for(let k=0;k<4;k++){const b=this.cb[k],n=this.cl[k],j=this.ci[k],o=b[j];this.cz[k]+=(o-this.cz[k])*.55;b[j]=m*.35+this.cz[k]*fb;this.ci[k]=(j+1)%n;sm+=o;sd+=k&1?-o:o}
-          sm=Math.tanh(sm*.9);sd=Math.tanh(sd*.9);y0=this.buf[0][w]*(1-amt*.6)+sm*amt*1.3;y1=this.buf[1][w]*(1-amt*.6)+sd*amt*1.3;break}
+          sm=Math.tanh(sm*.9);sd=Math.tanh(sd*.9);const mw=2.4*Math.sqrt(amt)*(1.15-.45*amt);y0=this.buf[0][w]*(1-amt*.6)+sm*mw;y1=this.buf[1][w]*(1-amt*.6)+sd*mw;break}
         default:y0=this.buf[0][w];y1=this.buf[1][w]}
       out[0][i]=y0;if(ch>1)out[1][i]=y1;
       this.w=(w+1)%N;this.n++}

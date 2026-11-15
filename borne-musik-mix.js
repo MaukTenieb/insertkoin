@@ -140,8 +140,9 @@ window.MusikMix={open:function(host,M){
   var buf=new Uint8Array(128);
   function frame(now){if(!alive)return;if(!document.body.contains(root)){close();return}requestAnimationFrame(frame);A.draw(now);B.draw(now);
     /* l'écran : l'image de A et celle de B, mêlées selon la tirette */
-    var W=sc.width,H=sc.height;sx.fillStyle='#000';sx.fillRect(0,0,W,H);
-    DK.forEach(function(D,i){var v=D.vid,a=xg(i);if(!v||v.readyState<2||a<.01)return;var r=Math.min(W/v.videoWidth,H/v.videoHeight),w=v.videoWidth*r,h=v.videoHeight*r;sx.globalAlpha=i?Math.min(1,a*a*1.4):1;sx.drawImage(v,(W-w)/2,(H-h)/2,w,h)});sx.globalAlpha=1;
+    var W=sc.width,H=sc.height,drew=0;sx.fillStyle='#000';sx.fillRect(0,0,W,H);
+    DK.forEach(function(D,i){var v=D.vid,a=xg(i);if(!v||v.readyState<2||a<.01)return;var r=Math.min(W/v.videoWidth,H/v.videoHeight),w=v.videoWidth*r,h=v.videoHeight*r;sx.globalAlpha=i?Math.min(1,a*a*1.4):1;sx.drawImage(v,(W-w)/2,(H-h)/2,w,h);drew=1});sx.globalAlpha=1;
+    /* sans image, le téléviseur trace le son des deux platines en phosphore vert, comme l'écran de Musik */if(!drew){sx.strokeStyle='rgba(140,255,160,.9)';sx.lineWidth=Math.max(1.5,H/120);sx.shadowColor='rgba(80,255,120,.8)';sx.shadowBlur=H/25;sx.beginPath();var an=DK.map(function(D){return D.an}).filter(Boolean),tb=new Uint8Array(256);for(var j=0;j<256;j++){var yv=0;an.forEach(function(q,k){if(j===0)q.getByteTimeDomainData(q.__b||(q.__b=new Uint8Array(256)));yv+=(q.__b[j]-128)/128});var X=j/255*W,Y=H/2-Math.max(-1,Math.min(1,yv*1.4))*H*.4;j?sx.lineTo(X,Y):sx.moveTo(X,Y)}sx.stroke();sx.shadowBlur=0}
     var pw=nv.clientWidth,ph=nv.clientHeight;if(pw&&(nv.width!==pw||nv.height!==ph)){nv.width=pw;nv.height=ph}var nx=nv.getContext('2d');nx.clearRect(0,0,nv.width,nv.height);
     DK.forEach(function(D,i){var m=0;if(D.an){D.an.getByteTimeDomainData(buf);for(var k=0;k<buf.length;k++)m=Math.max(m,Math.abs(buf[k]-128))}
       var tg=-.7+Math.min(1.4,m/90*1.4);nd[i]+=(tg-nd[i])*(tg>nd[i]?.35:.08);var q=VU[i],W=nv.width,H=nv.height;
