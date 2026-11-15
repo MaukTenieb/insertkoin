@@ -599,6 +599,10 @@
 
 /* the order keys: the deck's own keys (plastic, lit when pressed), no native select */
 .vhs-find-sort { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; }
+/* 15 nov. 2026 (RELAIS § 29, 4 : « peu verbeux ») : six clés à picto sur une seule rangée, le mot en infobulle */
+.vhs-find-sort:has(.vhs-sort-pic) { grid-template-columns: repeat(6, minmax(44px, 1fr)); }
+.vhs .vhs-sort-key.vhs-sort-pic { display: grid; place-items: center; padding: 0; }
+.vhs .vhs-sort-key[aria-pressed="true"] svg { filter: drop-shadow(0 0 4px rgba(127,227,196,.55)); }
 .vhs .vhs-sort-key {
   min-height: 44px; padding: 4px 6px; border: 0; border-radius: 2px;
   background: linear-gradient(180deg, #3a3835, #23211f);
