@@ -153,16 +153,18 @@ window.MotelRun=function(host,want){
   var vx=Math.cos(ang)*sp*dt,vy=Math.sin(ang)*sp*dt,sx=vx>0?RAD:-RAD,sy=vy>0?RAD:-RAD;
   if(open_(px+vx+sx,py-RAD)&&open_(px+vx+sx,py+RAD))px+=vx;
   if(open_(px-RAD,py+vy+sy)&&open_(px+RAD,py+vy+sy))py+=vy;
-  ang=wrap(ang);gait+=sp*dt*3.4;odo+=sp*dt;camera()}
+  ang=wrap(ang);gait+=sp*dt*3.4;odo+=sp*dt;cdt=dt;camera()}
  function sight(x,y){var n=Math.ceil(Math.hypot(px-x,py-y)/0.05);for(var i=1;i<n;i++){var t=i/n;if(!open_(x+(px-x)*t,y+(py-y)*t))return false}return true}
  /* caméra sur la trace du Mask, un pas derrière lui, tournée vers lui */
  function reseed(){var b=Math.min(CAMD,probe(ang+Math.PI,CAMD+0.3)-0.2);trail=[[px-Math.cos(ang)*b,py-Math.sin(ang)*b],[px,py]];st.cuts++}
- function camera(){var L=trail[trail.length-1];if(!L||Math.hypot(px-L[0],py-L[1])>0.03)trail.push([px,py]);if(trail.length>500)trail.shift();
-  var q=null;for(var i=trail.length-2;i>=0;i--){var A=trail[i];if(!sight(A[0],A[1])){q=trail[i+1];break}if(Math.hypot(A[0]-px,A[1]-py)>=CAMD){var B=trail[i+1],lo=0,hi=1;for(var k=0;k<10;k++){var mid=(lo+hi)/2,x=A[0]+(B[0]-A[0])*mid,y=A[1]+(B[1]-A[1])*mid;if(Math.hypot(x-px,y-py)>=CAMD)lo=mid;else hi=mid}q=[A[0]+(B[0]-A[0])*lo,A[1]+(B[1]-A[1])*lo];break}}
-  if(!q){q=trail[0];if(Math.hypot(q[0]-px,q[1]-py)<0.3){reseed();q=trail[0]}}
-  var hx=Math.cos(ang),hy=Math.sin(ang),rx=px-q[0],ry=py-q[1],rl=Math.hypot(rx,ry)||1;
-  if((rx*hx+ry*hy)/rl<-0.3){reseed();q=trail[0];rx=px-q[0];ry=py-q[1];rl=Math.hypot(rx,ry)||1}
-  cx=q[0];cy=q[1];ca=Math.atan2(ry,rx);depth=rl}
+ /* 15 nov. 2026, 19 h 06 (Mauk Tenieb : « je veux pas que ça saute aux angles ») : la caméra suit la trace du coureur à distance constante, mesurée le long du chemin parcouru ; elle prend chaque angle pas à pas, zéro saut, zéro coupure ; son regard va vers le coureur, sans à-coup */
+ var cyaw=null,cdt=0.016;
+ function camera(){var L=trail[trail.length-1];if(!L||Math.hypot(px-L[0],py-L[1])>0.02)trail.push([px,py]);if(trail.length>800)trail.splice(0,trail.length-800);
+  var need=CAMD,qx=px,qy=py,i=trail.length-1;
+  while(i>0&&need>0){var A=trail[i-1],sl=Math.hypot(qx-A[0],qy-A[1]);if(sl>=need){qx+=(A[0]-qx)*need/sl;qy+=(A[1]-qy)*need/sl;need=0;break}need-=sl;qx=A[0];qy=A[1];i--}
+  if(need>0){qx-=Math.cos(ang)*need*0;qy-=0}
+  cx=qx;cy=qy;var rx=px-cx,ry=py-cy,rl=Math.hypot(rx,ry),ty=rl>0.05?Math.atan2(ry,rx):ang;
+  if(cyaw===null)cyaw=ty;var dy=wrap(ty-cyaw);cyaw=wrap(cyaw+Math.max(-3.5*cdt,Math.min(3.5*cdt,dy*Math.min(1,cdt*6))));ca=cyaw;depth=Math.max(0.3,rl)}
  function cast(){
   var dx=Math.cos(ca),dy=Math.sin(ca),plx=-dy*FOV,ply=dx*FOV,bob=reduce?0:Math.sin(gait*3.2)*1.2;
   /* sol et plafond */
@@ -190,6 +192,6 @@ window.MotelRun=function(host,want){
  reseed();st.cuts=0;requestAnimationFrame(loop);
  var api={stop:function(){alive=false;removeEventListener('keydown',key_);removeEventListener('keyup',keyu_);removeEventListener('blur',blur_);cv.remove();face.remove()},mask:key,st:st,
   down:down_,up:up_,move:function(e){},
-  pos:function(){return {px:px,py:py,ang:ang,cx:cx,cy:cy,depth:depth,auto:auto}}};
+  pos:function(){return {px:px,py:py,ang:ang,cx:cx,cy:cy,ca:ca,depth:depth,auto:auto}}};
  window.MotelRun.cur=api;return api};
 })();
