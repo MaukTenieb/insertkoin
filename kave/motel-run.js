@@ -128,6 +128,7 @@ window.MotelRun=function(host,want){
  function open_(x,y){return !solid(Math.floor(x),Math.floor(y))}
  function wrap(a){while(a>Math.PI)a-=2*Math.PI;while(a<-Math.PI)a+=2*Math.PI;return a}
  function free(gx,gy,d){return !solid(gx+DX[d],gy+DY[d])}
+ function lane(gx,gy,d){return free(gx,gy,d)&&(d%2?colC(gx):rowC(gy))}
  /* distance au mur le long d'une direction */
  function probe(a,max){var dx=Math.cos(a)*0.04,dy=Math.sin(a)*0.04,x=px,y=py;for(var d=0;d<max;d+=0.04){if(!open_(x,y))return d;x+=dx;y+=dy}return max}
  /* distance du Mask au mur le plus proche */
@@ -140,13 +141,13 @@ window.MotelRun=function(host,want){
    var id=gx*100003+gy,cxm=gx+0.5,cym=gy+0.5;
    if(!auto){auto=true;var bd=dir,bs=-9;for(var d0=0;d0<4;d0++){if(!free(gx,gy,d0))continue;var sc=Math.cos(ang-d0*Math.PI/2);if(sc>bs){bs=sc;bd=d0}}dir=bd;cell=id;pendT=0}
    var along=(cxm-px)*DX[dir]+(cym-py)*DY[dir];
-   if(id!==cell){cell=id;pendT=0;var o2=[1,3].filter(function(t){return free(gx,gy,(dir+t)%4)});
+   if(id!==cell){cell=id;pendT=0;var o2=[1,3].filter(function(t){return lane(gx,gy,(dir+t)%4)});
     if(want&&o2.indexOf(want)>=0){pendT=want;want=0}
     else if(!free(gx,gy,dir))pendT=o2.length?o2[Math.floor(Math.random()*o2.length)]:2;/* mur une case devant : virage obligé */
     else if(!want&&idle>8&&o2.length&&odo-lastT>2.2&&Math.random()<0.4)pendT=o2[Math.floor(Math.random()*o2.length)]}
-   else if(want&&!pendT&&along>=0.3&&free(gx,gy,(dir+want)%4)){pendT=want;want=0}
+   else if(want&&!pendT&&along>=0.3&&lane(gx,gy,(dir+want)%4)){pendT=want;want=0}
    if(pendT&&along<0.3){dir=(dir+pendT)%4;pendT=0;lastT=odo}
-   var lat=(cxm-px)*(-DY[dir])+(cym-py)*DX[dir],wa=dir*Math.PI/2+Math.max(-0.6,Math.min(0.6,lat*2)),dd=wrap(wa-ang);
+   var lat=(cxm-px)*(-DY[dir])+(cym-py)*DX[dir],wa=dir*Math.PI/2+Math.max(-0.3,Math.min(0.3,lat*1.5)),dd=wrap(wa-ang);
    tr=Math.max(-5.5,Math.min(5.5,dd*10));ang+=Math.max(-Math.abs(dd),Math.min(Math.abs(dd),tr*dt));sp=speed*(Math.abs(dd)>0.6?0.6:1);
   turn+=(tr-turn)*Math.min(1,dt*12);
   /* glisse le long des murs */
@@ -158,13 +159,14 @@ window.MotelRun=function(host,want){
  /* caméra sur la trace du Mask, un pas derrière lui, tournée vers lui */
  function reseed(){var b=Math.min(CAMD,probe(ang+Math.PI,CAMD+0.3)-0.2);trail=[[px-Math.cos(ang)*b,py-Math.sin(ang)*b],[px,py]];st.cuts++}
  /* 15 nov. 2026, 19 h 06 (Mauk Tenieb : « je veux pas que ça saute aux angles ») : la caméra suit la trace du coureur à distance constante, mesurée le long du chemin parcouru ; elle prend chaque angle pas à pas, zéro saut, zéro coupure ; son regard va vers le coureur, sans à-coup */
- var cyaw=null,cdt=0.016;
+ var cyaw=null,cw=0,cdt=0.016,WMAX=2.1,AMAX=9,KP=8;
  function camera(){var L=trail[trail.length-1];if(!L||Math.hypot(px-L[0],py-L[1])>0.02)trail.push([px,py]);if(trail.length>800)trail.splice(0,trail.length-800);
   var need=CAMD,qx=px,qy=py,i=trail.length-1;
   while(i>0&&need>0){var A=trail[i-1],sl=Math.hypot(qx-A[0],qy-A[1]);if(sl>=need){qx+=(A[0]-qx)*need/sl;qy+=(A[1]-qy)*need/sl;need=0;break}need-=sl;qx=A[0];qy=A[1];i--}
   if(need>0){qx-=Math.cos(ang)*need*0;qy-=0}
   cx=qx;cy=qy;var rx=px-cx,ry=py-cy,rl=Math.hypot(rx,ry),ty=rl>0.05?Math.atan2(ry,rx):ang;
-  if(cyaw===null)cyaw=ty;var dy=wrap(ty-cyaw);cyaw=wrap(cyaw+Math.max(-3.5*cdt,Math.min(3.5*cdt,dy*Math.min(1,cdt*6))));ca=cyaw;depth=Math.max(0.3,rl)}
+  /* 15 nov. 2026, 19 h 39 (Mauk Tenieb : « une caméra stable […] des braquages normaux ») : le regard suit le coureur par un ressort amorti, vitesse et accélération plafonnées : rotation douce et constante, zéro à-coup, même caméra en démo et en jeu */
+  if(cyaw===null){cyaw=ty;cw=0}var e=wrap(ty-cyaw),ww=(e<0?-1:1)*Math.min(WMAX,Math.sqrt(2*AMAX*0.8*Math.abs(e)),Math.abs(e)*KP),acc=Math.max(-AMAX*cdt,Math.min(AMAX*cdt,ww-cw));cw+=acc;cyaw=wrap(cyaw+cw*cdt);ca=cyaw;depth=Math.max(0.3,rl)}
  function cast(){
   var dx=Math.cos(ca),dy=Math.sin(ca),plx=-dy*FOV,ply=dx*FOV,bob=reduce?0:Math.sin(gait*3.2)*1.2;
   /* sol et plafond */
