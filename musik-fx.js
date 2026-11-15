@@ -12,7 +12,7 @@
    Paramètres : amt (0 à 1), step (durée d'un pas, en s). */
 class MzFx extends AudioWorkletProcessor{
   static get parameterDescriptors(){return [{name:'amt',defaultValue:.5,minValue:0,maxValue:1,automationRate:'k-rate'},{name:'step',defaultValue:.156,minValue:.02,maxValue:2,automationRate:'k-rate'}]}
-  constructor(o){super();this.mode=(o&&o.processorOptions&&o.processorOptions.mode)||'crush';this.port.onmessage=e=>{if(e.data&&e.data.mode&&e.data.mode!==this.mode){this.mode=e.data.mode;this.d.fill(0);this.cb.forEach(b=>b.fill(0));this.buf.forEach(b=>b.fill(0));this.lp=this.lp2=this.hp=this.env=0}};
+  constructor(o){super();this.mode=(o&&o.processorOptions&&o.processorOptions.mode)||'crush';this.t0=0;this.port.onmessage=e=>{if(e.data&&e.data.t0!=null)this.t0=e.data.t0;if(e.data&&e.data.mode&&e.data.mode!==this.mode){this.mode=e.data.mode;this.d.fill(0);this.cb.forEach(b=>b.fill(0));this.buf.forEach(b=>b.fill(0));this.lp=this.lp2=this.hp=this.env=0}};
     const N=this.N=sampleRate*2|0;this.buf=[new Float32Array(this.N),new Float32Array(this.N)];this.w=0;this.n=0;this.hold=[0,0];this.ph=0;this.seed=1234567;
     this.d=new Float32Array(N);this.dw=0;this.ff=1;this.ff2=1;this.prev=0;this.env=0;this.lp=0;this.lp2=0;this.hp=0;this.sl=0;this.wph=0;this.fph=0;this.dr=0;
     this.cl=[163.1,271.3,389.7,547.9].map(f=>Math.round(sampleRate/f));this.cb=this.cl.map(n=>new Float32Array(n+2));this.ci=[0,0,0,0];this.cz=[0,0,0,0];
@@ -21,7 +21,7 @@ class MzFx extends AudioWorkletProcessor{
   process(inputs,outputs,P){const inp=inputs[0],out=outputs[0];if(!out||!out.length)return true;const L=out[0].length,ch=out.length,amt=P.amt[0],step=P.step[0],sr=sampleRate,N=this.N;if(this.mode==='kill')return false;if(this.mode==='off'){for(let c=0;c<ch;c++)out[c].fill(0);return true}
     for(let i=0;i<L;i++){
       for(let c=0;c<ch;c++){const x=inp&&inp[c]?inp[c][i]:(inp&&inp[0]?inp[0][i]:0);this.buf[c%2][this.w]=x}
-      const t=this.n,w=this.w;let y0=0,y1=0;
+      const t=Math.max(0,currentFrame+i-this.t0),w=this.w;let y0=0,y1=0;
       switch(this.mode){
         case 'crush':{const ds=1+Math.floor(amt*amt*40),bits=Math.max(2,16-amt*13),q=Math.pow(2,bits-1);
           if(t%ds===0)for(let c=0;c<2;c++)this.hold[c]=Math.round(this.buf[c][w]*q)/q;y0=this.hold[0];y1=this.hold[1];break}
