@@ -250,8 +250,8 @@ html #kg-root #bb-panel.mz-on.mz-on.mz-on.mz-on{display:flex!important;flex-dire
 #mz .mzslot.hd .mzdi{background:radial-gradient(circle at 35% 35%,#ffd1a8,#ff3b1f 55%,#8c1407);box-shadow:0 0 8px 2px rgba(255,70,30,.75)}
 #mz .mzslot.over .mzhole{box-shadow:inset 0 3px 4px #000,0 0 0 2px #ffa726}
 #mz .mzstage.arm .mzslot:not(.full) .mzhole{box-shadow:inset 0 3px 4px #000,0 0 0 1px rgba(255,167,38,.75)}
-#mz .mzns{position:absolute;right:6px;top:6px;z-index:3}
-#mz .mzns button{min-width:30px;min-height:26px;font-size:11px}
+#mz .mzns{display:flex}#mz:not([data-v="stage"]) #mz-ns{display:none}@media (orientation:landscape) and (max-height:520px){#mz[data-v="stage"] :is(#mz-len,#mz-pg,#mz-chain){display:none!important}#mz[data-v="stage"] .mzmain{grid-template-columns:minmax(0,1fr)}#mz[data-v="stage"] .mzmain>.mzside{display:none}}
+#mz .mzns button{min-width:40px}
 #mz .mzres .mzfig{margin-right:calc(var(--rh) * -.24)}
 .mzfgh{position:fixed;left:0;top:0;z-index:2147483000;pointer-events:none;object-fit:contain;object-position:50% 100%;filter:drop-shadow(0 8px 10px rgba(0,0,0,.8)) brightness(1.08)}
 /* 15 nov. 2026 (RELAIS § 29) : la vue Platine. Le vrai 33 tours prend la place de la grille, grand au doigt ; l'écran garde l'image scratchée à côté (au-dessus, en portrait) */
@@ -418,20 +418,22 @@ function conStep(st,at,ms,sol){var per=S.n/S.ns;if(st%per)return;var j=st/per,c=
 function figImg(c){return '<img alt="" draggable="false" src="'+base()+'kave/a/b-'+c.mask+'.webp" style="--k:'+(STAT[c.mask]/1.98).toFixed(3)+'">'}
 function stageInit(){var st=$('#mz-stg',ROOT);if(!st||st.__ev)return;st.__ev=1;STG.el=st;
   for(var i=0;i<S.ns;i++)S.slots[i]=S.slots[i]||'';
-  st.innerHTML='<div class="mzres" id="mz-res"></div><div class="mzconw"><div class="mzcon" id="mz-con"></div></div><div class="mzseg mzns" id="mz-ns"></div>';
+  st.innerHTML='<div class="mzres" id="mz-res"></div><div class="mzconw"><div class="mzcon" id="mz-con"></div></div>';
   STG.res=$('#mz-res',st);STG.con=$('#mz-con',st);
   masks().forEach(function(c){var b=el('button','mzfig',figImg(c));b.type='button';b.setAttribute('aria-label',c.name);b.title=c.name;b.__c=c;STG.res.appendChild(b)});
-  var ns=$('#mz-ns',st);[8,16].forEach(function(n){var b=el('button',null,String(n));b.type='button';b.onclick=function(){conSize(n)};ns.appendChild(b)});
+  /* 15 nov. 2026 (critique Impeccable, P1) : le sélecteur 8 ou 16 quitte le bac, où il cachait une figurine, et rejoint la barre de Musik, visible en vue Console seulement */var ns=el('div','mzseg mzns');ns.id='mz-ns';var bar=$('.mzbar',ROOT),bp=$('#mz-bpm',ROOT);bar.insertBefore(ns,bp);[8,16].forEach(function(n){var b=el('button',null,String(n));b.type='button';b.onclick=function(){conSize(n)};ns.appendChild(b)});
   conBuild();conEv(st);if(window.ResizeObserver)new ResizeObserver(function(){conLayout()}).observe(st)}
 function conBuild(){var C=STG.con;if(!C)return;C.innerHTML='';for(var i=0;i<S.ns;i++){var d=el('button','mzslot');d.type='button';d.dataset.j=i;C.appendChild(d)}
-  [].forEach.call($('#mz-ns',STG.el).children,function(b){b.classList.toggle('on',+b.textContent===S.ns)});conPaint();conLayout()}
+  [].forEach.call($('#mz-ns',ROOT).children,function(b){b.classList.toggle('on',+b.textContent===S.ns)});conPaint();conLayout()}
 function conPaint(){var C=STG.con;if(!C)return;[].forEach.call(C.children,function(d,i){var c=chById(S.slots[i]);d.innerHTML='<i class="mzdi"></i><span class="mzhole"></span>'+(c?figImg(c):'');d.classList.toggle('full',!!c);d.setAttribute('aria-label',(i+1)+(c?' · '+c.name:''));d.title=c?c.name:''});
   [].forEach.call(STG.res.children,function(b){b.classList.toggle('pick',S.pick===b.__c.id);b.classList.toggle('in',S.slots.indexOf(b.__c.id)>=0)});STG.el.classList.toggle('arm',!!S.pick)}
 /* géométrie : tout part de la taille du plateau ; 16 emplacements passent sur deux rangées de 8 quand un emplacement tomberait sous 46 px ; la figurine enfoncée prend la hauteur que laisse sa rangée, à sa stature */
 function stageFit(st){var mz=ROOT,pv=st.style.height;st.style.height='';var nat=st.getBoundingClientRect().height,m=mz.getBoundingClientRect(),r=st.getBoundingClientRect(),av=Math.floor(mz.clientHeight-(r.top-m.top+mz.scrollTop)-6);
-  var h=av>=170&&av<nat-1?av+'px':'';if(h!==pv||st.style.height!==h)st.style.height=h}
+  var h=av>=120&&av<nat-1?av+'px':'';if(h!==pv||st.style.height!==h)st.style.height=h}
 function conLayout(){var st=STG.el;if(!st||st.hidden)return;stageFit(st);var W=st.clientWidth,H=st.clientHeight;if(!W||!H)return;
-  var hr=Math.round(H*.27),hc=H-hr-10,best=null;[4,8,16].forEach(function(cols){if(cols>S.ns)return;var rows=S.ns/cols,rowH=hc/rows,sw=(W-16)/cols,fh=Math.min(rowH*.8,sw/ASP*1.35);if(!best||fh>best.fh*1.06)best={cols:cols,rowH:rowH,fh:fh}});
+  /* 15 nov. 2026 (critique Impeccable, P1 : « bande noire morte » entre le bac et la console) : la rangée prend la hauteur de sa figurine, le reste revient au bac */
+  var hr=Math.round(H*.27),hc=H-hr-10,best=null;[4,8,16].forEach(function(cols){if(cols>S.ns)return;var rows=S.ns/cols,rowH=hc/rows,sw=(W-16)/cols,fh=Math.min(rowH*.8,sw/ASP*1.35);if(!best||fh>best.fh*1.06)best={cols:cols,rows:rows,rowH:rowH,fh:fh}});
+  var rh2=Math.min(best.rowH,best.fh/.78);hr=Math.max(hr,Math.round(Math.min(H*.45,H-10-best.rows*rh2)));best.rowH=rh2;
   st.style.setProperty('--hr',hr+'px');st.style.setProperty('--cols',best.cols);st.style.setProperty('--rowh',best.rowH.toFixed(1)+'px');
   st.style.setProperty('--fh',best.fh.toFixed(1)+'px');st.style.setProperty('--rh',(hr*.92).toFixed(1)+'px')}
 /* le doigt : toucher, ou glisser une figurine du bac (ou d'un emplacement) vers un emplacement ; lâchée hors de la console, une figurine enfoncée revient au bac */
