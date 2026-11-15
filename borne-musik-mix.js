@@ -75,7 +75,7 @@ window.MusikMix={open:function(host,M){
     function rate(){return 1+D.pitch/100}
     D.len=function(){return D.buf?D.buf.duration:(D.vid&&D.vid.duration)||0};
     D.stop=function(){if(D.src){try{D.src.stop()}catch(e){}D.src=null}D.motor=false;bp.innerHTML=IC.play;bp.classList.remove('on')};
-    D.start=function(){D.last=performance.now();D.motor=true;bp.innerHTML=IC.pause;bp.classList.add('on');if(!c||!D.buf)return;var s=c.createBufferSource(),L=D.buf.duration;s.buffer=D.back?D.rev:D.buf;s.playbackRate.value=rate();s.connect(D.g);
+    D.start=function(){D.last=performance.now();D.motor=true;bp.innerHTML=IC.pause;bp.classList.add('on');if(!c||!D.buf)return;var s=c.createBufferSource(),L=D.buf.duration;s.buffer=D.back?D.rev:D.buf;/* une coupe de moins de trente secondes tourne en boucle, comme un sillon fermé ; un morceau ou une vidéo s'arrête au bout */s.loop=!D.vid&&L<30;s.playbackRate.value=rate();s.connect(D.g);
       var off=D.back?Math.max(0,Math.min(L-.01,L-D.pos)):Math.min(D.pos,L-.01);s.start(c.currentTime,off);D.src=s;s.onended=function(){if(D.src===s){D.src=null;if(!D.hold)D.stop()}}};
     D.grain=function(r,dur){if(!c||!D.buf)return;var fwd=r>=0,b=fwd?D.buf:D.rev,L=D.buf.duration,off=fwd?D.pos:L-D.pos;if(off<0||off>=L)return;var s=c.createBufferSource(),g=c.createGain(),t=c.currentTime,q=Math.max(.05,Math.min(4,Math.abs(r)));
       s.buffer=b;s.playbackRate.value=q;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.9,t+.004);g.gain.setValueAtTime(.9,t+dur);g.gain.linearRampToValueAtTime(0,t+dur+.012);s.connect(g);g.connect(D.g);s.start(t,off,Math.min(L-off,q*(dur+.02)))};
@@ -99,7 +99,7 @@ window.MusikMix={open:function(host,M){
     function rel(){if(!D.hold)return;D.hold=false;cv.style.cursor='';if(D.wasMotor)D.start()}
     cv.addEventListener('pointerup',rel);cv.addEventListener('pointercancel',rel);
     D.draw=function(now){var x=D.x,W=cv.width,k=W/1024;
-      if(D.motor&&!D.hold){var dt=Math.max(0,(now-D.last)/1000),rr=rate()*(D.back?-1:1),L=D.len();D.last=Math.max(now,D.last);D.ang+=dt*rr/REV*Math.PI*2;/* critique Impeccable P4 : en lecture avant, la vidéo mène l'horloge ; on ne la cale qu'au scratch */var vv=D.vid;if(vv&&!D.back&&vv.readyState>=2&&!vv.seeking&&!vv.paused)D.pos=vv.currentTime;else D.pos+=dt*rr;if(L&&((rr>0&&D.pos>=L)||(rr<0&&D.pos<=0))){D.pos=Math.max(0,Math.min(L,D.pos));D.stop()}}
+      if(D.motor&&!D.hold){var dt=Math.max(0,(now-D.last)/1000),rr=rate()*(D.back?-1:1),L=D.len();D.last=Math.max(now,D.last);D.ang+=dt*rr/REV*Math.PI*2;/* critique Impeccable P4 : en lecture avant, la vidéo mène l'horloge ; on ne la cale qu'au scratch */var vv=D.vid;if(vv&&!D.back&&vv.readyState>=2&&!vv.seeking&&!vv.paused)D.pos=vv.currentTime;else D.pos+=dt*rr;if(L&&((rr>0&&D.pos>=L)||(rr<0&&D.pos<=0))){if(!D.vid&&L<30)D.pos=((D.pos%L)+L)%L;else{D.pos=Math.max(0,Math.min(L,D.pos));D.stop()}}}
       D.sync();x.clearRect(0,0,W,W);if(TI.deck.complete&&TI.deck.naturalWidth)x.drawImage(TI.deck,0,0,W,W);else{x.fillStyle='#2b2620';x.fillRect(0,0,W,W)}
       x.save();x.translate(396.5*k,485.5*k);x.rotate(D.ang);var dr=255*k;if(TI.disc.complete&&TI.disc.naturalWidth)x.drawImage(TI.disc,-dr,-dr,dr*2,dr*2);
       if(D.buf||D.vid){x.fillStyle=D.vid?'rgba(143,227,212,.85)':'rgba(200,36,58,.85)';x.beginPath();x.arc(0,0,dr*.3,0,7);x.fill();x.fillStyle='#0e0d0c';x.beginPath();x.arc(0,0,6*k,0,7);x.fill()}x.restore();
@@ -134,8 +134,8 @@ window.MusikMix={open:function(host,M){
     /* titre trop long pour sa touche : il défile sur place (règle du 10 nov.) */requestAnimationFrame(function(){[].forEach.call(lib.querySelectorAll('span'),function(sp){var w=sp.scrollWidth-sp.clientWidth;if(w>3){sp.innerHTML='<i>'+sp.innerHTML+'</i>';sp.classList.add('roll');sp.style.setProperty('--dx',-(w+6)+'px');sp.style.setProperty('--tt',Math.max(4,w/14)+'s')}})})}
   libDraw();
   host.appendChild(root);
-  function close(){alive=false;DK.forEach(function(D){D.stop();if(D.vid){try{D.vid.pause()}catch(e){}}try{D.g&&D.g.disconnect()}catch(e){}});root.remove();removeEventListener('keydown',key)}
-  function key(e){if(e.key==='Escape'){e.preventDefault();close()}}addEventListener('keydown',key);bk.onclick=close;
+  function close(){alive=false;DK.forEach(function(D){D.stop();if(D.vid){try{D.vid.pause()}catch(e){}}try{D.g&&D.g.disconnect()}catch(e){}});root.remove();removeEventListener('keydown',key,true)}
+  /* Échap ferme le poste de mix seul, sans refermer Musik derrière (banc d'essai du 15 nov. 2026) */function key(e){if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();close()}}addEventListener('keydown',key,true);bk.onclick=close;
   var buf=new Uint8Array(128);
   function frame(now){if(!alive||!document.body.contains(root))return;requestAnimationFrame(frame);A.draw(now);B.draw(now);
     /* l'écran : l'image de A et celle de B, mêlées selon la tirette */

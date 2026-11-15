@@ -49,7 +49,9 @@ function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!=null
 function z64(){return new Uint8Array(MAXS)}
 
 /* ---------- les voix ---------- */
-function newCh(o){var c={id:'c'+Math.random().toString(36).slice(2,8),name:'',color:'#c9a84c',kind:'syn',voice:'kick',root:0,src:null,buf:null,
+/* 15 nov. 2026, 22 h 30 (banc d'essai) : une piste ajoutée prend aussi une figurine, le Mask le moins présent ; son socle garde la couleur de son son */
+function freeMask(){var n={};MASKS.forEach(function(m){n[m]=0});S.ch.forEach(function(c){if(c.mask in n)n[c.mask]++});return MASKS.slice().sort(function(a,b){return n[a]-n[b]})[0]}
+function newCh(o){if(!('mask' in o))o.mask=freeMask();var c={id:'c'+Math.random().toString(36).slice(2,8),name:'',color:'#c9a84c',kind:'syn',voice:'kick',root:0,src:null,buf:null,
   vol:.8,pan:0,tune:0,cut:1,res:0,drv:0,echo:0,verb:0,mute:false,steps:[],mel:[]};for(var k in o)c[k]=o[k];
   for(var p=0;p<NP;p++){if(!c.steps[p])c.steps[p]=z64();if(!c.mel[p])c.mel[p]=new Int8Array(MAXS)}return c}
 function seed(){
@@ -73,7 +75,8 @@ function dice(p){S.ch.forEach(function(c){var s=c.steps[p],m=c.mel[p],n=MAXS,v=c
     if(s[k]&&/sub|bass|bass2|tom|bell|pluck|pad|stab|lead/.test(v))m[k]=PENT[Math.floor(Math.random()*6)]}})}
 
 /* ---------- le son : une tranche par voix, deux bus d'effets, le maître ---------- */
-function curve(d){var n=1024,a=new Float32Array(n),k=d*60;for(var i=0;i<n;i++){var x=i*2/n-1;a[i]=k?(1+k)*x/(1+k*Math.abs(x)):x}return a}
+/* saturation compensée (15 nov. 2026, banc d'essai) : plus on pousse, plus le grain monte, le volume reste à peu près le même ; sans cela un kit montait de 38 dB et tout devenait un mur */
+function curve(d){var n=1024,a=new Float32Array(n),k=d*60,c=Math.pow(1+k,-.62);for(var i=0;i<n;i++){var x=i*2/n-1;a[i]=k?(1+k)*x/(1+k*Math.abs(x))*Math.max(c,.08)*(1+.6*Math.min(1,k/4)):x}return a}
 function ir(c,size){var len=Math.floor(c.sampleRate*(.6+size*3.2)),b=c.createBuffer(2,len,c.sampleRate);for(var ch=0;ch<2;ch++){var d=b.getChannelData(ch);for(var i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.4+ (1-size)*3)}return b}
 function graph(c){if(c.__mz)return c.__mz;var g={c:c,strip:{}};
   g.out=c.createGain();g.out.gain.value=S.master;g.comp=c.createDynamicsCompressor();g.comp.threshold.value=-14;g.comp.ratio.value=3;g.comp.attack.value=.005;g.comp.release.value=.2;
@@ -124,12 +127,12 @@ var FXI={'':'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" 
  fdbk:'<svg viewBox="0 0 24 24"><path d="M12 12a2 2 0 1 1 2 2 4 4 0 1 1-4-4 6 6 0 1 1 6 6 8 8 0 0 1-8-8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>',
  metal:'<svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 9l10 2M7 13l8 3M9 16l6-6" stroke="currentColor" stroke-width="1.3"/><circle cx="6.5" cy="7" r=".9" fill="currentColor"/><circle cx="17.5" cy="17" r=".9" fill="currentColor"/></svg>'};
 /* 15 nov. 2026, 21 h 38 (Mauk Tenieb : « indiquer tribute to. Ou rien : des lettres grecques ») : six kits d'effets tirés de ce que les artistes de power electronics disent utiliser ; chaque kit pose un effet par piste, en tournant dans sa liste, avec la saturation et l'écho du maître. Un second appui rend les réglages d'avant. */
-var KITS=[{l:'\u0391',t:'Whitehouse',fx:['ring','fdbk','crush'],a:.75,drv:.7,echo:.08,verb:0,m:{drive:.8,echoF:.3}},
- {l:'\u0392',t:'Sutcliffe J\u00fcgend',fx:['tape','gross','vowel'],a:.6,drv:.45,echo:.25,verb:.3,m:{drive:.4,echoF:.55}},
- {l:'\u0393',t:'Merzbow',fx:['metal','fdbk','crush','grain'],a:.85,drv:.9,echo:.05,verb:.1,m:{drive:1,echoF:.35}},
- {l:'\u0394',t:'Atrax Morgue',fx:['tape','crush','oct'],a:.55,drv:.5,echo:.2,verb:.15,m:{drive:.5,echoF:.5}},
- {l:'\u0395',t:'Prurient',fx:['fdbk','oct','metal'],a:.8,drv:.8,echo:.1,verb:.2,m:{drive:.75,echoF:.4}},
- {l:'\u0396',t:'Pharmakon',fx:['metal','vowel','tape','oct'],a:.65,drv:.6,echo:.15,verb:.35,m:{drive:.6,echoF:.45}}];
+var KITS=[{l:'\u0391',t:'Whitehouse',fx:['ring','fdbk','crush'],a:.75,drv:0.45,echo:.08,verb:0,m:{drive:.25,echoF:.3}},
+ {l:'\u0392',t:'Sutcliffe J\u00fcgend',fx:['tape','gross','vowel'],a:.6,drv:.3,echo:.25,verb:.3,m:{drive:.12,echoF:.55}},
+ {l:'\u0393',t:'Merzbow',fx:['metal','fdbk','crush','grain'],a:.85,drv:0.55,echo:.05,verb:.1,m:{drive:.3,echoF:.35}},
+ {l:'\u0394',t:'Atrax Morgue',fx:['tape','crush','oct'],a:.55,drv:0.35,echo:.2,verb:.15,m:{drive:.15,echoF:.5}},
+ {l:'\u0395',t:'Prurient',fx:['fdbk','oct','metal'],a:.8,drv:0.5,echo:.1,verb:.2,m:{drive:.22,echoF:.4}},
+ {l:'\u0396',t:'Pharmakon',fx:['metal','vowel','tape','oct'],a:.65,drv:0.4,echo:.15,verb:.35,m:{drive:.18,echoF:.45}}];
 function kitSet(i){var g=AC&&AC.__mz,K=['fx','fxa','drv','echo','verb'];
   if(S.kit===i||i<0){if(S.kitBak){S.ch.forEach(function(c){var b=S.kitBak.ch[c.id];if(b)K.forEach(function(k){c[k]=b[k]})});S.drive=S.kitBak.drive;S.echoF=S.kitBak.echoF}S.kit=-1;S.kitBak=null}
   else{if(!S.kitBak){var B={};S.ch.forEach(function(c){B[c.id]={};K.forEach(function(k){B[c.id][k]=c[k]})});S.kitBak={ch:B,drive:S.drive,echoF:S.echoF}}
@@ -140,7 +143,7 @@ function fxRow(c){var r=el('div','mzfx');FXL.forEach(function(k){var b=el('butto
 function apply(g,ch){var s=g.strip[ch.id];if(!s)return;var t=g.c.currentTime;
   s.f.frequency.setTargetAtTime(60*Math.pow(2,ch.cut*8.4),t,.02);s.f.Q.setTargetAtTime(.5+ch.res*22,t,.02);s.sh.curve=ch.drv>.01?curve(ch.drv):null;
   s.v.gain.setTargetAtTime(ch.mute?0:ch.vol*ch.vol*1.2,t,.02);if(s.p.pan)s.p.pan.setTargetAtTime(ch.pan,t,.02);s.e.gain.setTargetAtTime(ch.echo*.9,t,.02);s.r.gain.setTargetAtTime(ch.verb*1.1,t,.02)}
-function masterApply(g){var t=g.c.currentTime;g.out.gain.setTargetAtTime(S.master,t,.03);g.dly.delayTime.setTargetAtTime(S.echoT,t,.05);g.fb.gain.setTargetAtTime(S.echoF,t,.03);g.sat.curve=curve(S.drive*.5)}
+function masterApply(g){var t=g.c.currentTime;/* un kit pose saturation et effets sur toutes les pistes : le maître baisse d'autant, la garde finale sature sans faire un mur */g.out.gain.setTargetAtTime(S.master*(S.kit>=0?.6:1),t,.03);g.dly.delayTime.setTargetAtTime(S.echoT,t,.05);g.fb.gain.setTargetAtTime(S.echoF,t,.03);g.sat.curve=curve(S.drive*.5)}
 var verbT=0;function verbLater(){clearTimeout(verbT);verbT=setTimeout(function(){if(AC&&AC.__mz)AC.__mz.rev.buffer=ir(AC,S.verb)},250)}
 
 function hit(c,ch,step,time,p){if(ch.kind==='img'||ch.kind==='vid'){if(c===AC)setTimeout(function(){vshow(ch)},Math.max(0,(time-c.currentTime)*1000));return}var g=graph(c),s=strip(g,ch);
@@ -400,7 +403,7 @@ function rack(){if(!ROOT)return;var pg=$('#mz-pg',ROOT);if(pg)pg.style.display=n
     for(var s=s0;s<s1;s++)h+='<div class="mzs'+((s>>2)%2?' b':'')+(s%16===0&&s>s0?' g':'')+(c.steps[S.pat][s]?' on':'')+'" data-s="'+s+'"></div>';h+='</div></div>'});
   h+='<button type="button" class="mzadd" id="mz-add" aria-label="'+S.L.add+'" title="'+S.L.add+'">'+IC.add+'</button>';R.innerHTML=h;R.scrollTop=sc;R.scrollLeft=sl;if(S.ch.some(function(c){return c.mask})){figCss();figLoad().then(figRun)}/* 15 nov. 2026, 10 h 17 (Mauk Tenieb : « y'a que deux pistes ») : les 18 pistes tiennent dans la grille, hauteur de rangée calculée sur la place disponible (18 à 42 px), sans défilement à l'arrivée *//* 15 nov. 2026 : la place d'une rangée de plus en tête, pour la tête de la première figurine ; rangées de 11 px au moins sur ordinateur, 34 px au doigt, la figurine fait deux rangées de haut */var nr=S.ch.length+2,ih=R.clientHeight-18;if(ih>60)R.style.setProperty('--mzrh',Math.max(narrow()?34:11,Math.min(42,Math.floor(ih/nr)-2))+'px');var pl=$('.mzpgl',ROOT);if(pl)pl.textContent=(s0+1)+'-'+s1;
   if(!R.__ev){R.__ev=1;var paint=null;
-    R.addEventListener('pointerdown',function(e){var t=e.target,row=t.closest('.mzrow');
+    R.addEventListener('pointerdown',function(e){S.touchT=performance.now();var t=e.target,row=t.closest('.mzrow');
       if(t.closest('.mzled')){var c=S.ch[+t.closest('.mzled').dataset.m];c.mute=!c.mute;if(AC&&AC.__mz)apply(AC.__mz,c);rack();return}
       if(t.closest('.mznm,.mzfh')){S.sel=+t.closest('.mznm,.mzfh').dataset.n;var c2=S.ch[S.sel];rack();strips();if(c2.kind==='img'||c2.kind==='vid'){vshow(c2);if(c2.kind==='vid'){var vi=S.lib.filter(function(x){return x.id===c2.src})[0];if(vi)ttVid(vi)}}else if(c2.kind==='smp'&&c2.buf){TT.vid=null;audition(c2.buf);ttLoad({name:c2.name,buf:c2.buf})}else if(ac())hit(AC,c2,0,AC.currentTime+.01,S.pat);return}
       if(t.classList.contains('mzs')&&row){e.preventDefault();var ci=+row.dataset.i,si=+t.dataset.s,ch=S.ch[ci];paint=ch.steps[S.pat][si]?0:1;ch.steps[S.pat][si]=paint;t.classList.toggle('on',!!paint);
@@ -409,7 +412,7 @@ function rack(){if(!ROOT)return;var pg=$('#mz-pg',ROOT);if(pg)pg.style.display=n
       var ch=S.ch[R.__ci],si=+t.dataset.s;if(ch.steps[S.pat][si]!==paint){ch.steps[S.pat][si]=paint;t.classList.toggle('on',!!paint)}});
     var end=function(){paint=null};R.addEventListener('pointerup',end);R.addEventListener('pointercancel',end);
     R.addEventListener('contextmenu',function(e){if(e.target.classList.contains('mzs'))e.preventDefault()})}}
-function cursor(st,p){if(!ROOT)return;var R=$('#mz-rack',ROOT);if(p!=null&&p!==S.pat)return;if(st>=0&&narrow()&&S.play&&Math.floor(st/8)!==(S.page||0)){S.page=Math.floor(st/8);rack()}[].forEach.call(R.querySelectorAll('.mzs.cur'),function(x){x.classList.remove('cur')});if(st<0)return;[].forEach.call(R.querySelectorAll('.mzs[data-s="'+st+'"]'),function(x){x.classList.add('cur')})}
+function cursor(st,p){if(!ROOT)return;var R=$('#mz-rack',ROOT);if(p!=null&&p!==S.pat)return;/* la page suit la tête de lecture, sauf pendant les quatre secondes qui suivent un doigt posé sur la grille : la page éditée reste sous le doigt */if(st>=0&&narrow()&&S.play&&Math.floor(st/8)!==(S.page||0)&&performance.now()-(S.touchT||0)>4000){S.page=Math.floor(st/8);rack()}[].forEach.call(R.querySelectorAll('.mzs.cur'),function(x){x.classList.remove('cur')});if(st<0)return;[].forEach.call(R.querySelectorAll('.mzs[data-s="'+st+'"]'),function(x){x.classList.add('cur')})}
 function strips(){if(!ROOT)return;var c=S.ch[S.sel]||S.ch[0];if(!c)return;var B=$('#mz-strip',ROOT);B.style.setProperty('--c',c.color);B.innerHTML='<h4><b>'+String(c.name).replace(/</g,'&lt;')+'</b></h4>';if(c.mask)B.appendChild(srcSeg(c));var K=el('div','mzkns');
   var up=function(){if(AC&&AC.__mz)apply(AC.__mz,c)};
   [['VOL','vol',.8],['PAN','pan',.5,function(v){c.pan=v*2-1},function(){return (c.pan+1)/2}],['TUNE','tune',.5,function(v){c.tune=Math.round(v*24-12)},function(){return (c.tune+12)/24}],['CUT','cut',1],['RES','res',0],['DRIVE','drv',0],['ECHO','echo',0],['VERB','verb',0],['FX','fxa',.5,function(v){c.fxa=v;if(AC&&AC.__mz)fxAmt(AC.__mz,c)},function(){return c.fxa==null?.5:c.fxa}]].forEach(function(a){
@@ -458,7 +461,7 @@ function ttInit(){var cv=$('#mz-tt',ROOT);if(!cv||cv.__ev)return;cv.__ev=1;var c
   /* 13 nov. 2026 (Mauk Tenieb) : la platine lit aussi à l'envers ; tenue, elle sert de molette précise aux vidéos du montage (un tour = une seconde) */var RV=$('#mz-rev',ROOT);RV.setAttribute('aria-label',FR?'Lecture à l\'envers':'Reverse');RV.title=RV.getAttribute('aria-label');RV.onclick=function(){TT.back=!TT.back;RV.classList.toggle('on',TT.back);RV.setAttribute('aria-pressed',String(TT.back));if(TT.src||TT.motor){ttStop();TT.motorStart&&TT.motorStart()}};
   [].forEach.call($('#mz-rpm',ROOT).children,function(b){if(b===RV)return;b.onclick=function(){TT.rpm=+b.textContent;[].forEach.call(b.parentNode.children,function(x){x.classList.toggle('on',x===b)});if(TT.src)TT.src.playbackRate.value=ttRate()}});
   function draw(){if(!ROOT||!document.body.contains(cv))return;requestAnimationFrame(draw);var now=performance.now();
-    if(TT.motor&&!TT.hold){var dt=(now-TT.last)/1000,rr=ttRate()*(TT.back?-1:1),LL=ttLen();TT.last=now;TT.ang+=dt*rr/REV*Math.PI*2;TT.pos+=dt*rr;if(LL&&(TT.pos>=LL||TT.pos<=0)){TT.pos=Math.max(0,Math.min(LL,TT.pos));ttStop()}}
+    if(TT.motor&&!TT.hold){var dt=(now-TT.last)/1000,rr=ttRate()*(TT.back?-1:1),LL=ttLen();TT.last=now;TT.ang+=dt*rr/REV*Math.PI*2;TT.pos+=dt*rr;if(LL&&(TT.pos>=LL||TT.pos<=0)){if(!TT.vid&&LL<30)TT.pos=((TT.pos%LL)+LL)%LL;else{TT.pos=Math.max(0,Math.min(LL,TT.pos));ttStop()}}}
     ttSync();
     /* 13 nov. 2026 (Mauk Tenieb) : la vraie platine photographiée (a-tt-platine.webp), le disque (a-tt-disque.webp) qui tourne sur le plateau, le bras (a-tt-bras.webp) qui se pose au sillon pendant la lecture et suit la place dans le sample */
     var W=cv.width,k=W/1024;c2.clearRect(0,0,W,W);if(TTI.deck.complete&&TTI.deck.naturalWidth)c2.drawImage(TTI.deck,0,0,W,W);else{c2.fillStyle='#2b2620';c2.fillRect(0,0,W,W)}
@@ -471,7 +474,7 @@ function ttInit(){var cv=$('#mz-tt',ROOT);if(!cv||cv.__ev)return;cv.__ev=1;var c
   cv.addEventListener('pointerdown',function(e){e.preventDefault();cv.setPointerCapture(e.pointerId);ttStop();TT.hold=true;TT.lastA=ang(e);TT.last=performance.now();cv.style.cursor='grabbing'});
   cv.addEventListener('pointermove',function(e){if(!TT.hold)return;var a=ang(e),d=a-TT.lastA;if(d>Math.PI)d-=Math.PI*2;if(d<-Math.PI)d+=Math.PI*2;var now=performance.now(),dt=Math.max(.008,(now-TT.last)/1000);
     TT.lastA=a;TT.last=now;TT.ang+=d;var dp=d/(Math.PI*2)*REV;if(Math.abs(dp)>1e-4){ttGrain(dp/dt,dt);var LL=ttLen();TT.pos=Math.max(0,LL?Math.min(LL-.01,TT.pos+dp):0)}});
-  TT.motorStart=function(){var c=ac();TT.last=performance.now();if(!c||!TT.buf){TT.motor=!!TT.vid;return}var s=c.createBufferSource();s.buffer=TT.back?TT.rev:TT.buf;s.playbackRate.value=ttRate();s.connect(graph(c).out);var L=TT.buf.duration,off=TT.back?Math.max(0,Math.min(L-.01,L-TT.pos)):Math.min(TT.pos,L-.01);s.start(c.currentTime,off);TT.src=s;TT.motor=true;s.onended=function(){if(TT.src===s){TT.src=null;TT.motor=false}}};
+  TT.motorStart=function(){var c=ac();TT.last=performance.now();if(!c||!TT.buf){TT.motor=!!TT.vid;return}var s=c.createBufferSource();s.buffer=TT.back?TT.rev:TT.buf;/* coupe courte : sillon fermé, en boucle */s.loop=!TT.vid&&TT.buf.duration<30;s.playbackRate.value=ttRate();s.connect(graph(c).out);var L=TT.buf.duration,off=TT.back?Math.max(0,Math.min(L-.01,L-TT.pos)):Math.min(TT.pos,L-.01);s.start(c.currentTime,off);TT.src=s;TT.motor=true;s.onended=function(){if(TT.src===s){TT.src=null;TT.motor=false}}};
   var rel=function(){if(!TT.hold)return;TT.hold=false;cv.style.cursor='';TT.motorStart();};
   cv.addEventListener('pointerup',rel);cv.addEventListener('pointercancel',rel);cv.setAttribute('aria-label',FR?'Platine : saisir le disque pour scratcher':'Turntable: grab the record to scratch');
   /* 15 nov. 2026, 20 h 25 (Mauk Tenieb) : un double-clic sur le disque ouvre le poste de mix, deux platines son et vidéo (borne-musik-mix.js) */cv.addEventListener('dblclick',function(e){e.preventDefault();ttStop();TT.hold=false;openMix()});var mg=$('#mz-mixgo',ROOT);if(mg)mg.onclick=function(){ttStop();TT.hold=false;openMix()};
@@ -492,7 +495,9 @@ function ttVid(it){var u=it.file||base()+it.url,v=document.createElement('video'
 var STG={el:null,res:null,con:null},ASP=233/260;
 function masks(){return S.ch.filter(function(c){return c.mask})}
 function chById(id){for(var i=0;i<S.ch.length;i++)if(S.ch[i].id===id)return S.ch[i];return null}
-function view(k){S.view=k;if(!ROOT)return;var st=$('#mz-stg',ROOT),R=$('#mz-rack',ROOT);if(!st)return;ROOT.dataset.v=k;st.hidden=k!=='stage';R.style.display=k==='grid'?'':'none';
+/* le bac suit les pistes : une piste ajoutée y entre avec sa figurine (banc d'essai du 15 nov. 2026) */
+function resBuild(){if(!STG.res)return;var M=masks();if(STG.res.children.length===M.length&&[].every.call(STG.res.children,function(b,i){return b.__c===M[i]}))return;STG.res.innerHTML='';M.forEach(function(c){var b=el('button','mzfig',figImg(c));b.type='button';b.setAttribute('aria-label',c.name);b.title=c.name;b.__c=c;STG.res.appendChild(b)});if(STG.con)conPaint()}
+function view(k){if(k==='stage')resBuild();S.view=k;if(!ROOT)return;var st=$('#mz-stg',ROOT),R=$('#mz-rack',ROOT);if(!st)return;ROOT.dataset.v=k;st.hidden=k!=='stage';R.style.display=k==='grid'?'':'none';
   [].forEach.call($('#mz-view',ROOT).children,function(b){var on=b.dataset.v===k;b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on))});if(k==='stage')conLayout();else if(k==='grid')rack();
   /* la platine n'est jamais vide : le son de la voix choisie, sinon une coupe des albums */if(k==='tt'&&!TT.buf&&!TT.vid){var c=S.ch[S.sel],it=c&&c.kind==='smp'&&c.src?libItem(c.src):c&&c.mask?kitOf(c)[0]:null;it=it||S.lib.filter(function(x){return x.id.slice(0,2)==='a:'})[0];if(it&&ac())load(it).then(function(b){if(!TT.buf&&!TT.vid)ttLoad({name:it.name,buf:b})}).catch(function(){})}}
 /* le leitmotiv : la première coupe du Mask (KIT), chargée à la première pose ; un Mask déjà réglé sur une coupe garde la sienne */
@@ -559,7 +564,7 @@ function stageInit(){var st=$('#mz-stg',ROOT);if(!st||st.__ev)return;st.__ev=1;S
   st.innerHTML='<div class="mzres" id="mz-res"></div><div class="mzconw"><div class="mzcon" id="mz-con"></div></div>';
   STG.res=$('#mz-res',st);STG.con=$('#mz-con',st);
   /* 15 nov. 2026 (contrôle externe) : à la souris, la molette fait défiler le bac des figurines de gauche à droite */STG.res.addEventListener('wheel',function(e){if(Math.abs(e.deltaY)>Math.abs(e.deltaX)&&STG.res.scrollWidth>STG.res.clientWidth){e.preventDefault();STG.res.scrollLeft+=e.deltaY}},{passive:false});
-  masks().forEach(function(c){var b=el('button','mzfig',figImg(c));b.type='button';b.setAttribute('aria-label',c.name);b.title=c.name;b.__c=c;STG.res.appendChild(b)});
+  resBuild();
   conBuild();conEv(st);if(window.ResizeObserver)new ResizeObserver(function(){conLayout()}).observe(st)}
 function conBuild(){var C=STG.con;if(!C)return;C.innerHTML='';for(var i=0;i<S.ns;i++){var d=el('button','mzslot');d.type='button';d.dataset.j=i;C.appendChild(d)}
   conPaint();conLayout()}
@@ -622,7 +627,7 @@ function hook(){if(typeof window.beatboxOpen!=='function'){setTimeout(hook,600);
   window.beatboxClose=function(){play(false);ttStop();return close.apply(this,arguments)};
   var p=document.getElementById('bb-panel');if(p&&p.style.display!=='none'&&p.getClientRects().length){ac();mount()}}
 addEventListener('resize',function(){clearTimeout(window.__mzr);window.__mzr=setTimeout(function(){if(S.view==='stage')conLayout();else if(S.view!=='tt')rack()},200)});
-window.__mz={S:S,mount:mount,play:play,kave:kave,view:view,conSet:conSet,ttVid:ttVid,TT:TT};
+window.__mz={S:S,mount:mount,play:play,kave:kave,view:view,conSet:conSet,ttVid:ttVid,TT:TT,apply:apply,fxSet:fxSet,masterApply:masterApply,kitSet:kitSet};
 /* 15 nov. 2026 : Musik se monte aussi dans une fenêtre de KorhogOS (la borne y tourne dans un cadre) ; avant, le garde « window.top » laissait l'ancienne boîte à rythmes à l'écran */
 {hook();addEventListener('borne-diktat',function(){if(S.ch.length)libK()});addEventListener('borne-vid',function(){if(S.ch.length)libV()})}
 })();
