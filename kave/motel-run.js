@@ -114,7 +114,7 @@ window.MotelRun=function(host,want){
  face.style.cssText='position:absolute;left:2%;bottom:2.5%;height:20%;width:auto;pointer-events:none;image-rendering:auto';
  host.appendChild(face);
  var px=0.5,py=0.5,dir=0,ang=0,speed=reduce?1.0:3.8,last=performance.now(),gait=0,alive=true,turn=0,idle=9,pendT=0,cell=-1,auto=true,odo=0,lastT=-9;
- var DX=[1,0,-1,0],DY=[0,1,0,-1],held={},ptr=null,tq=0,TURN=3.1,RAD=0.34,trail=[],cx=0,cy=0,ca=0,depth=CAMD;
+ var DX=[1,0,-1,0],DY=[0,1,0,-1],held={},ptr=null,tq=0,TURN=1.0,RAD=0.34,adep=CAMD,trail=[],cx=0,cy=0,ca=0,depth=CAMD;
  var st={t:0,minClear:9,minFront:99,minDepth:99,contacts:0,cuts:0};
  var KM={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d',a:'l',q:'l',d:'r',w:'u',z:'u',s:'d'};
  function own(e){return !(e.target&&e.target.closest&&e.target.closest('input,textarea,.win'))}
@@ -124,7 +124,7 @@ window.MotelRun=function(host,want){
  addEventListener('keydown',key_);addEventListener('keyup',keyu_);addEventListener('blur',blur_);
  function down_(e){var r=cv.getBoundingClientRect();ptr={x:e.clientX,x0:e.clientX,t0:Date.now(),cx:r.left+r.width/2,w:r.width};idle=0}
  cv.addEventListener('pointerdown',function(e){down_(e);try{cv.setPointerCapture(e.pointerId)}catch(_){}});
- cv.addEventListener('pointermove',function(e){if(ptr){ang+=(e.clientX-ptr.x)*0.011;ptr.x=e.clientX;idle=0}});
+ cv.addEventListener('pointermove',function(e){if(ptr){ang+=(e.clientX-ptr.x)*0.0055;ptr.x=e.clientX;idle=0}});
  function up_(){if(ptr&&Date.now()-ptr.t0<300&&Math.abs(ptr.x-ptr.x0)<10)tq+=(ptr.x0<ptr.cx?-1:1)*Math.PI/2;ptr=null}cv.addEventListener('pointerup',up_);cv.addEventListener('pointercancel',up_);
  function open_(x,y){return !solid(Math.floor(x),Math.floor(y))}
  function wrap(a){while(a>Math.PI)a-=2*Math.PI;while(a<-Math.PI)a+=2*Math.PI;return a}
@@ -136,7 +136,7 @@ window.MotelRun=function(host,want){
   var qx=Math.max(gx+i,Math.min(px,gx+i+1)),qy=Math.max(gy+j,Math.min(py,gy+j+1));best=Math.min(best,Math.hypot(px-qx,py-qy))}return best}
  function step(dt){var man_=held.l||held.r||held.u||held.d||ptr||tq;if(man_)idle=0;else idle+=dt;var tr=0,sp=speed,gx=Math.floor(px),gy=Math.floor(py);
   if(idle<2.5){/* le joueur tient la course ; devant un mur, il freine et dévie */
-   auto=false;tr=((held.r?1:0)-(held.l?1:0))*TURN;if(ptr){var o=(ptr.x-ptr.cx)/(ptr.w/2);if(Math.abs(o)>0.25)tr+=Math.max(-1,Math.min(1,o))*TURN}
+   /* 15 nov. 2026, 3 h 38 (Mauk Tenieb : « ça braque trop et ça trépigne ») : braquage 57 °/s, glisser au doigt deux fois plus doux, foulée plus longue */auto=false;tr=((held.r?1:0)-(held.l?1:0))*TURN;if(ptr){var o=(ptr.x-ptr.cx)/(ptr.w/2);if(Math.abs(o)>0.25)tr+=Math.max(-1,Math.min(1,o))*TURN}
    if(tq){/* clic bref : un quart de tour du côté cliqué (11 nov., Mauk Tenieb) */var qa=Math.min(Math.abs(tq),TURN*1.3*dt),qs=tq>0?1:-1;tr+=qs*qa/dt;tq-=qs*qa;if(Math.abs(tq)<1e-3)tq=0}
    if(held.u)sp=speed*1.5;if(held.d)sp=speed*0.35;
    /* 15 nov. 2026, 3 h 34 (« ça braque trop ? ») : zéro braquage automatique devant le mur ; le joueur seul tourne, le mur fait glisser, comme dans Doom et Quake */
@@ -156,16 +156,29 @@ window.MotelRun=function(host,want){
   var vx=Math.cos(ang)*sp*dt,vy=Math.sin(ang)*sp*dt,ox=px,oy=py,okx=function(v){var sx=v>0?RAD:-RAD;return open_(px+v+sx,py-RAD)&&open_(px+v+sx,py+RAD)},oky=function(v){var sy=v>0?RAD:-RAD;return open_(px-RAD,py+v+sy)&&open_(px+RAD,py+v+sy)};
   var bx=!okx(vx),by=!oky(vy),m=sp*dt*0.75;if(bx&&!by&&Math.abs(vy)<m)vy=(vy<0?-1:1)*m;if(by&&!bx&&Math.abs(vx)<m)vx=(vx<0?-1:1)*m;
   if(!bx&&okx(vx))px+=vx;if(!by&&oky(vy))py+=vy;
-  var mv=Math.hypot(px-ox,py-oy);ang=wrap(ang);gait+=mv*3.4;odo+=mv;camera()}
+  var mv=Math.hypot(px-ox,py-oy);ang=wrap(ang);gait+=mv*2.6;odo+=mv;cdt=dt;camera()}
  function sight(x,y){var n=Math.ceil(Math.hypot(px-x,py-y)/0.05);for(var i=1;i<n;i++){var t=i/n;if(!open_(x+(px-x)*t,y+(py-y)*t))return false}return true}
- /* caméra sur la trace du Mask, un pas derrière lui, tournée vers lui */
- function reseed(){var b=Math.min(CAMD,probe(ang+Math.PI,CAMD+0.3)-0.2);trail=[[px-Math.cos(ang)*b,py-Math.sin(ang)*b],[px,py]];st.cuts++}
- function camera(){var L=trail[trail.length-1];if(!L||Math.hypot(px-L[0],py-L[1])>0.03)trail.push([px,py]);if(trail.length>500)trail.shift();
-  var q=null;for(var i=trail.length-2;i>=0;i--){var A=trail[i];if(!sight(A[0],A[1])){q=trail[i+1];break}if(Math.hypot(A[0]-px,A[1]-py)>=CAMD){var B=trail[i+1],lo=0,hi=1;for(var k=0;k<10;k++){var mid=(lo+hi)/2,x=A[0]+(B[0]-A[0])*mid,y=A[1]+(B[1]-A[1])*mid;if(Math.hypot(x-px,y-py)>=CAMD)lo=mid;else hi=mid}q=[A[0]+(B[0]-A[0])*lo,A[1]+(B[1]-A[1])*lo];break}}
-  if(!q){q=trail[0];if(Math.hypot(q[0]-px,q[1]-py)<0.3){reseed();q=trail[0]}}
-  var hx=Math.cos(ang),hy=Math.sin(ang),rx=px-q[0],ry=py-q[1],rl=Math.hypot(rx,ry)||1;
-  if((rx*hx+ry*hy)/rl<-0.3){reseed();q=trail[0];rx=px-q[0];ry=py-q[1];rl=Math.hypot(rx,ry)||1}
-  cx=q[0];cy=q[1];ca=Math.atan2(ry,rx);depth=rl}
+ /* 13 nov. 2026 (Mauk Tenieb, 15 h 37 : « La caméra re-merde » ; 6 h 09 et 13 h 35 : la scène « se refait » quand le Mask bute contre un mur) :
+    caméra de poursuite à la Quake (chase cam) : derrière le Mask sur son cap, un pas en arrière, tournée vers lui ; elle suit le cap par un ressort,
+    se rapproche à l'instant où un mur passe derrière elle et s'éloigne en douceur ; zéro coupure, zéro saut de plan. */
+ var cdt=0.016,cyaw=null;
+ function back(a){var d=probe(a,CAMD+0.3),s=0.12,l=Math.cos(a+Math.PI/2)*s,m=Math.sin(a+Math.PI/2)*s,x0=px,y0=py;
+  px=x0+l;py=y0+m;d=Math.min(d,probe(a,CAMD+0.3));px=x0-l;py=y0-m;d=Math.min(d,probe(a,CAMD+0.3));px=x0;py=y0;return Math.max(0.35,d-0.18)}
+ function reseed(){cyaw=ang;depth=Math.min(CAMD,back(ang+Math.PI));cx=px-Math.cos(ang)*depth;cy=py-Math.sin(ang)*depth;ca=ang}
+ /* 15 nov. 2026, 2 h 05 (Mauk Tenieb : « arrête de faire sauter la caméra ») : la caméra suit le Mask sur sa trace, à un pas derrière lui sur le chemin qu'il vient de parcourir ;
+    la trace passe par où le Mask a marché, la caméra reste donc hors des murs sans se rapprocher d'un coup ; elle regarde dans le cap du Mask, qu'elle suit par un ressort */
+ function camera(){if(cyaw===null)reseed();if(!trail.length)trail=[[cx,cy],[px,py]];
+  var L=trail[trail.length-1];if(Math.hypot(px-L[0],py-L[1])>0.03)trail.push([px,py]);if(trail.length>240)trail.splice(0,trail.length-240);
+  var need=CAMD,qx=px,qy=py,i=trail.length-1;
+  while(i>0&&need>0){var a2=trail[i-1],sl=Math.hypot(qx-a2[0],qy-a2[1]);if(sl>=need){qx+=(a2[0]-qx)*need/sl;qy+=(a2[1]-qy)*need/sl;need=0;break}need-=sl;qx=a2[0];qy=a2[1];i--}
+  /* pilote automatique (la démo) : la caméra d'avant, derrière le Mask sur son cap ; au passage d'un mode à l'autre, elle rejoint sa place à vitesse bornée, sans saut */
+  if(auto){cyaw=wrap(cyaw+wrap(ang-cyaw)*Math.min(1,cdt*(reduce?3:5)));var room=Math.min(CAMD,back(cyaw+Math.PI));adep+=(room-adep)*Math.min(1,cdt*(room<adep?14:3));adep=Math.min(adep,Math.max(0.3,probe(cyaw+Math.PI,CAMD+0.3)-0.06));
+   qx=px-Math.cos(cyaw)*adep;qy=py-Math.sin(cyaw)*adep;trail=[[qx,qy],[px,py]];if(Math.hypot(qx-cx,qy-cy)<0.06){cx=qx;cy=qy;depth=adep;ca=cyaw;return}}else adep=depth;
+  /* demi-tour : la trace passe devant le Mask ; la caméra rejoint alors le point derrière lui, à la vitesse bornée, et la trace repart de là */
+  var hx=px-qx,hy=py-qy,hl=Math.hypot(hx,hy);if(hl<0.25||(hx*Math.cos(ang)+hy*Math.sin(ang))/hl<0.2){var bd=Math.min(CAMD,back(ang+Math.PI));qx=px-Math.cos(ang)*bd;qy=py-Math.sin(ang)*bd;trail=[[qx,qy],[px,py]]}
+  var mx=qx-cx,my=qy-cy,ml=Math.hypot(mx,my),lim=Math.max(0.02,speed*cdt*1.6);if(ml>=3){cx=qx;cy=qy}else{if(ml>lim){mx*=lim/ml;my*=lim/ml}if(open_(cx+mx,cy+my)){cx+=mx;cy+=my}else{if(open_(cx+mx,cy))cx+=mx;if(open_(cx,cy+my))cy+=my}}
+  if(!auto)cyaw=wrap(cyaw+wrap(ang-cyaw)*Math.min(1,cdt*(reduce?3:5)));
+  depth=Math.hypot(px-cx,py-cy);ca=cyaw}
  function cast(){
   var dx=Math.cos(ca),dy=Math.sin(ca),plx=-dy*FOV,ply=dx*FOV,bob=reduce?0:Math.sin(gait*3.2)*1.2;
   /* sol et plafond */
@@ -192,7 +205,7 @@ window.MotelRun=function(host,want){
  function loop(t){if(!alive)return;/* 10 nov. (Mauk Tenieb, 21 h 11) : en fond d'écran, noir et blanc ; dès que le visiteur prend la course en main, le jeu passe en couleur */var nb=idle>=2.5;if(nb!==bw){bw=nb;cv.style.filter=bw?'grayscale(1) contrast(1.12) brightness(1.05)':'none'}var dt=Math.max(0,Math.min(0.05,(t-last)/1000));last=t;if(!document.hidden){st.t+=dt;step(dt);var cl=clear_();st.minClear=Math.min(st.minClear,cl);if(cl<0.3)st.contacts++;cast()}requestAnimationFrame(loop)}
  reseed();st.cuts=0;requestAnimationFrame(loop);
  var api={stop:function(){alive=false;removeEventListener('keydown',key_);removeEventListener('keyup',keyu_);removeEventListener('blur',blur_);cv.remove();face.remove()},mask:key,st:st,
-  down:down_,up:up_,move:function(e){if(ptr){ang+=(e.clientX-ptr.x)*0.011;ptr.x=e.clientX;idle=0}},
+  down:down_,up:up_,move:function(e){if(ptr){ang+=(e.clientX-ptr.x)*0.0055;ptr.x=e.clientX;idle=0}},
   pos:function(){return {px:px,py:py,ang:ang,cx:cx,cy:cy,depth:depth,auto:auto}}};
  window.MotelRun.cur=api;return api};
 })();
