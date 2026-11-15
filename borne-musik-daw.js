@@ -493,6 +493,13 @@ function figCss(){if(document.getElementById('mz-fig-css'))return;var st=documen
   '#mz .mzrack .mzrow.sel .mznm.mzfg{outline:none!important}#mz .mzrack .mzrow.sel .mznm.mzfg::after{height:4px;background:var(--amb,#ffa726)}#mz .mzrack .mzrow.sel .mznm.mzfg canvas{filter:drop-shadow(0 0 2px var(--amb,#ffa726)) drop-shadow(0 2px 1px rgba(0,0,0,.7))}#mz .mzrack .mzrow.sel .mznm.mzfg{box-shadow:none!important}'+
   '#mz .mzrack .mzrow.mute .mznm.mzfg canvas{opacity:.35;filter:grayscale(1)}'+
   '#mz .mznm.mzfg:focus-visible{outline:2px solid var(--amb,#ffa726);outline-offset:1px}'+
+  '/* 15 nov. 2026 : la Console en vrai banc de noyer à œillets de laiton (image Midjourney de Mauk Tenieb, 21 h 09) ; un emplacement = une case du banc photographié, répétée 15 à 21 fois ; la figurine se pose dans l’œillet, le voyant s’allume au pas joué */'+
+  '#mz .mzcon>.mzslot::before{left:0;right:0;bottom:0;height:calc(var(--sw,60px) * 1.878);background:url('+base()+'kave/a/mix/slot.webp) center bottom/100% 100% no-repeat;box-shadow:none;border-radius:0;filter:brightness(.78) saturate(.9)}#mz .mzcon>.mzslot::after{display:none}'+
+  '#mz .mzcon>.mzslot:first-child::before,#mz .mzcon>.mzslot.cs::before{box-shadow:inset 3px 0 0 #8c6a2c,inset 4px 0 0 #2a1a0c}#mz .mzcon>.mzslot:last-child::before,#mz .mzcon>.mzslot.ce::before{box-shadow:inset -3px 0 0 #8c6a2c,inset -4px 0 0 #2a1a0c}'+
+  '#mz .mzcon .mzhole{left:24%;right:24%;bottom:calc(var(--sw,60px) * 1.878 * .675 - var(--sw,60px) * .1);height:calc(var(--sw,60px) * .2);background:none;box-shadow:none}'+
+  '#mz .mzcon .mzslot.over .mzhole,#mz .mzstage.arm .mzcon .mzslot:not(.full) .mzhole{box-shadow:0 0 0 2px #ffa726,0 0 10px rgba(255,167,38,.6)}'+
+  '#mz .mzcon .mzdi{left:45%;bottom:calc(var(--sw,60px) * 1.878 * .272 - 4px);width:8px;height:8px;margin-left:-4px;background:none;box-shadow:none}#mz .mzcon .mzslot.hd .mzdi{background:radial-gradient(circle at 35% 35%,#ffe1c0,#ff3b1f 55%,#8c1407);box-shadow:0 0 10px 3px rgba(255,70,30,.85)}'+
+  '#mz .mzcon .mzslot canvas.mzfc{bottom:calc(var(--sw,60px) * 1.878 * .675 - 2px)}'+
   '#mz .mzcon{display:flex!important;flex-wrap:wrap;justify-content:center;align-content:flex-end}#mz .mzcon>.mzslot{flex:0 0 calc(100% / var(--cols));height:var(--rowh)}'+
   '#mz canvas.mzfc{display:block}#mz .mzfig canvas.mzfc{height:calc(100% * var(--k));width:auto;aspect-ratio:3/5;pointer-events:none}'+
   '#mz .mzslot canvas.mzfc{position:absolute;left:50%;bottom:28%;transform:translateX(-50%);z-index:2;height:calc(var(--fh) * var(--k));width:auto;aspect-ratio:3/5;filter:drop-shadow(0 3px 2px rgba(0,0,0,.75))}';
@@ -514,10 +521,10 @@ function stageFit(st){var mz=ROOT,pv=st.style.height;st.style.height='';var nat=
   var h=av>=120&&av<nat-1?av+'px':'';if(h!==pv||st.style.height!==h)st.style.height=h}
 function conLayout(){var st=STG.el;if(!st||st.hidden)return;stageFit(st);var W=st.clientWidth,H=st.clientHeight;if(!W||!H)return;
   /* 15 nov. 2026 (critique Impeccable, P1 : « bande noire morte » entre le bac et la console) : la rangée prend la hauteur de sa figurine, le reste revient au bac */
-  var hr=Math.round(H*.27),hc=H-hr-10,best=null;[S.ns,Math.ceil(S.ns/2),Math.ceil(S.ns/3)].forEach(function(cols){var rows=Math.ceil(S.ns/cols),rowH=hc/rows,sw=(W-16)/cols,fh=Math.min(rowH*.8,sw/ASP*1.35);if(!best||fh>best.fh*1.06)best={cols:cols,rows:rows,rowH:rowH,fh:fh}});
+  var hr=Math.round(H*.27),hc=H-hr-10,best=null;/* le banc : une seule rangée tant qu'une case garde 34 px de large */((W-16)/S.ns>=34?[S.ns]:[Math.ceil(S.ns/2),Math.ceil(S.ns/3)]).forEach(function(cols){var rows=Math.ceil(S.ns/cols),rowH=hc/rows,sw=(W-16)/cols,fh=Math.min(rowH*.8,sw/ASP*1.35);if(!best||fh>best.fh*1.06)best={cols:cols,rows:rows,rowH:rowH,fh:fh}});
   var rh2=Math.min(best.rowH,best.fh/.78);hr=Math.max(hr,Math.round(Math.min(H*.45,H-10-best.rows*rh2)));best.rowH=rh2;
   st.style.setProperty('--hr',hr+'px');st.style.setProperty('--cols',best.cols);st.style.setProperty('--rowh',best.rowH.toFixed(1)+'px');
-  st.style.setProperty('--fh',best.fh.toFixed(1)+'px');st.style.setProperty('--rh',(hr*.92).toFixed(1)+'px')}
+  st.style.setProperty('--fh',best.fh.toFixed(1)+'px');st.style.setProperty('--sw',((W-16)/best.cols).toFixed(1)+'px');st.style.setProperty('--rh',(hr*.92).toFixed(1)+'px')}
 /* le doigt : toucher, ou glisser une figurine du bac (ou d'un emplacement) vers un emplacement ; lâchée hors de la console, une figurine enfoncée revient au bac */
 function conEv(st){var G=null;
   function slotAt(x,y){var e=document.elementFromPoint(x,y);e=e&&e.closest&&e.closest('.mzslot');return e&&STG.con.contains(e)?+e.dataset.j:-1}
