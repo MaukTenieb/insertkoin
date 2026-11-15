@@ -139,7 +139,7 @@ window.MotelRun=function(host,want){
    auto=false;tr=((held.r?1:0)-(held.l?1:0))*TURN;if(ptr){var o=(ptr.x-ptr.cx)/(ptr.w/2);if(Math.abs(o)>0.25)tr+=Math.max(-1,Math.min(1,o))*TURN}
    if(tq){/* clic bref : un quart de tour du côté cliqué (11 nov., Mauk Tenieb) */var qa=Math.min(Math.abs(tq),TURN*1.3*dt),qs=tq>0?1:-1;tr+=qs*qa/dt;tq-=qs*qa;if(Math.abs(tq)<1e-3)tq=0}
    if(held.u)sp=speed*1.5;if(held.d)sp=speed*0.35;
-   var fw=probe(ang,1.6);if(fw<1.2){/* 15 nov. 2026 (Mauk Tenieb, 3 h 22 : « trépignent et font du sur-place ») : zéro freinage devant le mur, la déviation seule */var l=probe(ang-0.7,1.6),r=probe(ang+0.7,1.6),sg=r>=l?1:-1;if(tr*sg<0&&fw<0.9)tr=0;tr+=sg*TURN*1.5*(1-fw/1.2)}
+   /* 15 nov. 2026, 3 h 34 (« ça braque trop ? ») : zéro braquage automatique devant le mur ; le joueur seul tourne, le mur fait glisser, comme dans Doom et Quake */
    ang+=tr*dt;pendT=0}
   else{/* pilote automatique : couloir, centre, bifurcations au hasard, virage engagé dès l'entrée du carrefour */
    var id=gx*100003+gy,cxm=gx+0.5,cym=gy+0.5;
