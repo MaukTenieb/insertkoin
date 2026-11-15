@@ -118,14 +118,14 @@ window.MotelRun=function(host,want){
  var st={t:0,minClear:9,minFront:99,minDepth:99,contacts:0,cuts:0};
  var KM={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d',a:'l',q:'l',d:'r',w:'u',z:'u',s:'d'};
  function own(e){return !(e.target&&e.target.closest&&e.target.closest('input,textarea,.win'))}
- function key_(e){if(!alive||!own(e))return;var k=KM[e.key.length===1?e.key.toLowerCase():e.key];if(!k)return;held[k]=1;idle=0;if(e.key.indexOf('Arrow')===0)e.preventDefault()}
+ function key_(e){if(!alive||!own(e))return;var k=KM[e.key.length===1?e.key.toLowerCase():e.key];if(!k)return;if(!held[k]&&(k==='l'||k==='r'))tq=k==='r'?1:-1;held[k]=1;idle=0;if(e.key.indexOf('Arrow')===0)e.preventDefault()}
  function keyu_(e){var k=KM[e.key.length===1?e.key.toLowerCase():e.key];if(k)held[k]=0}
  function blur_(){held={};ptr=null}
  addEventListener('keydown',key_);addEventListener('keyup',keyu_);addEventListener('blur',blur_);
  function down_(e){var r=cv.getBoundingClientRect();ptr={x:e.clientX,x0:e.clientX,t0:Date.now(),cx:r.left+r.width/2,w:r.width};idle=0}
  cv.addEventListener('pointerdown',function(e){down_(e);try{cv.setPointerCapture(e.pointerId)}catch(_){}});
- cv.addEventListener('pointermove',function(e){if(ptr){ang+=(e.clientX-ptr.x)*0.0055;ptr.x=e.clientX;idle=0}});
- function up_(){if(ptr&&Date.now()-ptr.t0<300&&Math.abs(ptr.x-ptr.x0)<10)tq+=(ptr.x0<ptr.cx?-1:1)*Math.PI/2;ptr=null}cv.addEventListener('pointerup',up_);cv.addEventListener('pointercancel',up_);
+ 
+ function up_(){if(ptr&&Date.now()-ptr.t0<500)tq=ptr.x0<ptr.cx?-1:1;ptr=null}cv.addEventListener('pointerup',up_);cv.addEventListener('pointercancel',up_);
  function open_(x,y){return !solid(Math.floor(x),Math.floor(y))}
  function wrap(a){while(a>Math.PI)a-=2*Math.PI;while(a<-Math.PI)a+=2*Math.PI;return a}
  function free(gx,gy,d){return !solid(gx+DX[d],gy+DY[d])}
@@ -134,28 +134,32 @@ window.MotelRun=function(host,want){
  /* distance du Mask au mur le plus proche */
  function clear_(){var gx=Math.floor(px),gy=Math.floor(py),best=9;for(var j=-1;j<=1;j++)for(var i=-1;i<=1;i++){if(!solid(gx+i,gy+j))continue;
   var qx=Math.max(gx+i,Math.min(px,gx+i+1)),qy=Math.max(gy+j,Math.min(py,gy+j+1));best=Math.min(best,Math.hypot(px-qx,py-qy))}return best}
- function step(dt){var man_=held.l||held.r||held.u||held.d||ptr||tq;if(man_)idle=0;else idle+=dt;var tr=0,sp=speed,gx=Math.floor(px),gy=Math.floor(py);
-  if(idle<2.5){/* le joueur tient la course ; devant un mur, il freine et dévie */
-   /* 15 nov. 2026, 3 h 38 (Mauk Tenieb : « ça braque trop et ça trépigne ») : braquage 57 °/s, glisser au doigt deux fois plus doux, foulée plus longue */auto=false;tr=((held.r?1:0)-(held.l?1:0))*TURN;if(ptr){var o=(ptr.x-ptr.cx)/(ptr.w/2);if(Math.abs(o)>0.25)tr+=Math.max(-1,Math.min(1,o))*TURN}
-   if(tq){/* clic bref : un quart de tour du côté cliqué (11 nov., Mauk Tenieb) */var qa=Math.min(Math.abs(tq),TURN*1.3*dt),qs=tq>0?1:-1;tr+=qs*qa/dt;tq-=qs*qa;if(Math.abs(tq)<1e-3)tq=0}
-   if(held.u)sp=speed*1.5;if(held.d)sp=speed*0.35;
-   /* 15 nov. 2026, 3 h 34 (« ça braque trop ? ») : zéro braquage automatique devant le mur ; le joueur seul tourne, le mur fait glisser, comme dans Doom et Quake */
-   ang+=tr*dt;pendT=0}
-  else{/* pilote automatique : couloir, centre, bifurcations au hasard, virage engagé dès l'entrée du carrefour */
+ /* 15 nov. 2026, 3 h 48 (Mauk Tenieb : « jouable et agréable simplement : toujours même allure, commandes simples, braquages normaux, zéro blocage contre les murs, enchaîner immédiatement », « comme la démo en noir et blanc ») :
+    le joueur court sur les rails de la démo — centre de la travée, allure constante, virage engagé à l'entrée du carrefour ; gauche ou droite (touche ou clic du côté voulu) choisit le prochain virage de ce côté, pris tout de suite s'il s'ouvre là, sinon au prochain carrefour ; le Mask ne touche jamais un mur */
+ var want=0;
+ function step(dt){if(tq){want=tq>0?1:3;tq=0}var man_=!!want;if(man_)idle=0;else idle+=dt;var tr=0,sp=speed,gx=Math.floor(px),gy=Math.floor(py);
    var id=gx*100003+gy,cxm=gx+0.5,cym=gy+0.5;
    if(!auto){auto=true;var bd=dir,bs=-9;for(var d0=0;d0<4;d0++){if(!free(gx,gy,d0))continue;var sc=Math.cos(ang-d0*Math.PI/2);if(sc>bs){bs=sc;bd=d0}}dir=bd;cell=id;pendT=0}
+   var along=(cxm-px)*DX[dir]+(cym-py)*DY[dir];
    if(id!==cell){cell=id;pendT=0;var o2=[1,3].filter(function(t){return free(gx,gy,(dir+t)%4)});
-    if(!free(gx,gy,dir))pendT=o2.length?o2[Math.floor(Math.random()*o2.length)]:2;/* mur une case devant : virage obligé */
-    else if(o2.length&&odo-lastT>2.2&&Math.random()<0.4)pendT=o2[Math.floor(Math.random()*o2.length)]}
-   var along=(cxm-px)*DX[dir]+(cym-py)*DY[dir];if(pendT&&along<0.3){dir=(dir+pendT)%4;pendT=0;lastT=odo}
-   var lat=(cxm-px)*(-DY[dir])+(cym-py)*DX[dir],want=dir*Math.PI/2+Math.max(-0.6,Math.min(0.6,lat*2)),dd=wrap(want-ang);
-   tr=Math.max(-5.5,Math.min(5.5,dd*10));ang+=Math.max(-Math.abs(dd),Math.min(Math.abs(dd),tr*dt));sp=speed*(Math.abs(dd)>0.6?0.6:1)}
+    if(want&&o2.indexOf(want)>=0){pendT=want;want=0}
+    else if(!free(gx,gy,dir))pendT=o2.length?o2[Math.floor(Math.random()*o2.length)]:2;/* mur une case devant : virage obligé */
+    else if(idle>8&&o2.length&&odo-lastT>2.2&&Math.random()<0.4)pendT=o2[Math.floor(Math.random()*o2.length)]}
+   else if(want&&!pendT&&along>=0.3&&free(gx,gy,(dir+want)%4)){pendT=want;want=0}
+   if(pendT&&along<0.3){dir=(dir+pendT)%4;pendT=0;lastT=odo}
+   var lat=(cxm-px)*(-DY[dir])+(cym-py)*DX[dir],wa=dir*Math.PI/2+Math.max(-0.6,Math.min(0.6,lat*2)),dd=wrap(wa-ang);
+   tr=Math.max(-5.5,Math.min(5.5,dd*10));ang+=Math.max(-Math.abs(dd),Math.min(Math.abs(dd),tr*dt));
   turn+=(tr-turn)*Math.min(1,dt*12);
   /* glisse le long des murs */
   /* 15 nov. 2026 : au mur, à la Doom, la composante bloquée tombe et l'autre garde au moins 75 % de l'allure ; les jambes suivent le chemin parcouru, jamais de course sur place */
   var vx=Math.cos(ang)*sp*dt,vy=Math.sin(ang)*sp*dt,ox=px,oy=py,okx=function(v){var sx=v>0?RAD:-RAD;return open_(px+v+sx,py-RAD)&&open_(px+v+sx,py+RAD)},oky=function(v){var sy=v>0?RAD:-RAD;return open_(px-RAD,py+v+sy)&&open_(px+RAD,py+v+sy)};
-  var bx=!okx(vx),by=!oky(vy),m=sp*dt*0.75;if(bx&&!by&&Math.abs(vy)<m)vy=(vy<0?-1:1)*m;if(by&&!bx&&Math.abs(vx)<m)vx=(vx<0?-1:1)*m;
-  if(!bx&&okx(vx))px+=vx;if(!by&&oky(vy))py+=vy;
+  /* 15 nov. 2026, 3 h 45 (« zéro blocage contre les murs, le perso doit enchaîner immédiatement ») : au mur, il repart à pleine allure le long du mur, du côté le plus ouvert, et son cap s'y range en douceur */
+  var V=sp*dt,bx=!okx(vx),by=!oky(vy),al=null;
+  if(bx&&!by){vx=0;vy=(Math.abs(vy)<0.2*V?(probe(Math.PI/2,2)>=probe(-Math.PI/2,2)?1:-1):(vy<0?-1:1))*V;al=vy>0?Math.PI/2:-Math.PI/2}
+  else if(by&&!bx){vy=0;vx=(Math.abs(vx)<0.2*V?(probe(0,2)>=probe(Math.PI,2)?1:-1):(vx<0?-1:1))*V;al=vx>0?0:Math.PI}
+  else if(bx&&by){var cs=[[V,0,0],[-V,0,Math.PI],[0,V,Math.PI/2],[0,-V,-Math.PI/2]].filter(function(c){return c[0]?okx(c[0]):oky(c[1])}).sort(function(a,b){return Math.cos(b[2]-ang)-Math.cos(a[2]-ang)});if(cs.length){vx=cs[0][0];vy=cs[0][1];al=cs[0][2]}else{vx=vy=0}}
+  if(vx&&okx(vx))px+=vx;if(vy&&oky(vy))py+=vy;
+  if(al!=null&&!auto){var da=wrap(al-ang);ang+=Math.max(-2.5*dt,Math.min(2.5*dt,da))}
   var mv=Math.hypot(px-ox,py-oy);ang=wrap(ang);gait+=mv*2.6;odo+=mv;cdt=dt;camera()}
  function sight(x,y){var n=Math.ceil(Math.hypot(px-x,py-y)/0.05);for(var i=1;i<n;i++){var t=i/n;if(!open_(x+(px-x)*t,y+(py-y)*t))return false}return true}
  /* 13 nov. 2026 (Mauk Tenieb, 15 h 37 : « La caméra re-merde » ; 6 h 09 et 13 h 35 : la scène « se refait » quand le Mask bute contre un mur) :
@@ -202,10 +206,10 @@ window.MotelRun=function(host,want){
   for(var xs=Math.max(0,x0);xs<Math.min(W,x0+Math.round(w));xs++){if(zb[xs]<dz)continue;var si=Math.floor((xs+0.5-x0)/k);if(si>=0&&si<fr.width)c.drawImage(fr,si,0,1,fr.height,xs,y0_,1,hh)}c.filter='none';
   st.minFront=Math.min(st.minFront,zb[W>>1]);st.minDepth=Math.min(st.minDepth,dz)}
  function shade(col,s){var r=col&255,g=(col>>8)&255,b=(col>>16)&255;return (255<<24)|(((b*s)|0)<<16)|(((g*s)|0)<<8)|((r*s)|0)}
- function loop(t){if(!alive)return;/* 10 nov. (Mauk Tenieb, 21 h 11) : en fond d'écran, noir et blanc ; dès que le visiteur prend la course en main, le jeu passe en couleur */var nb=idle>=2.5;if(nb!==bw){bw=nb;cv.style.filter=bw?'grayscale(1) contrast(1.12) brightness(1.05)':'none'}var dt=Math.max(0,Math.min(0.05,(t-last)/1000));last=t;if(!document.hidden){st.t+=dt;step(dt);var cl=clear_();st.minClear=Math.min(st.minClear,cl);if(cl<0.3)st.contacts++;cast()}requestAnimationFrame(loop)}
+ function loop(t){if(!alive)return;/* 10 nov. (Mauk Tenieb, 21 h 11) : en fond d'écran, noir et blanc ; dès que le visiteur prend la course en main, le jeu passe en couleur */var nb=idle>=8;if(nb!==bw){bw=nb;cv.style.filter=bw?'grayscale(1) contrast(1.12) brightness(1.05)':'none'}var dt=Math.max(0,Math.min(0.05,(t-last)/1000));last=t;if(!document.hidden){st.t+=dt;step(dt);var cl=clear_();st.minClear=Math.min(st.minClear,cl);if(cl<0.3)st.contacts++;cast()}requestAnimationFrame(loop)}
  reseed();st.cuts=0;requestAnimationFrame(loop);
  var api={stop:function(){alive=false;removeEventListener('keydown',key_);removeEventListener('keyup',keyu_);removeEventListener('blur',blur_);cv.remove();face.remove()},mask:key,st:st,
-  down:down_,up:up_,move:function(e){if(ptr){ang+=(e.clientX-ptr.x)*0.0055;ptr.x=e.clientX;idle=0}},
+  down:down_,up:up_,move:function(e){},
   pos:function(){return {px:px,py:py,ang:ang,cx:cx,cy:cy,depth:depth,auto:auto}}};
  window.MotelRun.cur=api;return api};
 })();
