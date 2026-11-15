@@ -7,7 +7,7 @@
 if(window.MusikMix)return;
 var REV=1.8; /* un tour de disque = 1,8 s, comme la platine de Musik */
 function CSS_(B){return (
-'.mzmix{position:absolute;inset:0;z-index:60;display:grid;grid-template-columns:minmax(0,1fr) minmax(112px,.42fr) minmax(0,1fr);grid-template-rows:minmax(0,1.05fr) minmax(0,1fr) auto;grid-template-areas:"scr scr scr" "da mx db" "lib lib lib";gap:10px;padding:12px;'+
+'.mzmix{position:absolute;inset:0;z-index:60;display:grid;grid-template-columns:minmax(0,1fr) minmax(112px,.42fr) minmax(0,1fr);grid-template-rows:minmax(0,.78fr) minmax(0,1.3fr) auto;grid-template-areas:"scr scr scr" "da mx db" "lib lib lib";gap:10px;padding:12px;'+
  'background:#0b0908 url('+B+'kave/a/mix/table.webp) center/cover no-repeat;border-radius:8px;box-shadow:inset 0 0 0 1px #000;color:#efe3cf;font:500 12px/1.2 "Barlow Semi Condensed",Arial,sans-serif;animation:mzmixIn .32s cubic-bezier(.16,1,.3,1)}'+
 '@keyframes mzmixIn{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:none}}'+
 '.mzmix *{box-sizing:border-box}'+
@@ -27,7 +27,7 @@ function CSS_(B){return (
 '.mzmix button.on{background:linear-gradient(#ffb547,#e08a12);color:#1a0e00}'+
 '.mzmix button:focus-visible,.mzmix input:focus-visible{outline:2px solid #ffa726;outline-offset:2px}'+
 '.mzmix .mxlcd{flex:1;min-width:0;height:24px;border-radius:3px;background:#0b0f08;box-shadow:inset 0 0 0 1px #000;color:#9ad86a;font:400 14px/24px VT323,monospace;letter-spacing:.06em;white-space:nowrap;overflow:hidden;padding:0 6px;text-shadow:0 0 6px rgba(154,216,106,.55)}'+
-'.mzmix .mxlcd i{font-style:normal;display:inline-block}.mzmix .mxlcd.tp i{animation:mxtp var(--tt,6s) linear 1s infinite alternate}@keyframes mxtp{to{transform:translateX(var(--dx,0))}}'+
+'.mzmix .mxlcd i{font-style:normal;display:inline-block}.mzmix .mxlcd.roll i{animation:mxtp var(--tt,6s) linear 1s infinite alternate}@keyframes mxtp{to{transform:translateX(var(--dx,0))}}'+
 '.mzmix .mxmix{grid-area:mx;min-height:0;position:relative}'+
 /* la table de mixage photographiée (640 × 601) ; glissières, tirette et aiguilles posées sur ses repères */
 '.mzmix .mxpan{position:absolute;inset:0;margin:auto;height:100%;width:auto;max-width:100%;max-height:100%;aspect-ratio:640/601;background:url('+B+'kave/a/mix/mixer.webp) center/100% 100% no-repeat;filter:drop-shadow(0 8px 12px rgba(0,0,0,.7))}'+
@@ -40,7 +40,9 @@ function CSS_(B){return (
 '.mzmix .mxlib{grid-area:lib;display:flex;gap:6px;overflow-x:auto;overscroll-behavior:contain;padding:2px 2px 6px;scrollbar-color:#5a4a36 transparent}'+
 '#mz .mzmix .mxlib button{width:auto!important;max-width:170px;height:30px;padding:0 10px 0 8px!important;gap:6px;display:flex!important;align-items:center;background:linear-gradient(#efe3cf,#d8c9ad)!important;color:#1a1209!important;font:700 11px/1 "Barlow Semi Condensed",Arial,sans-serif!important;white-space:nowrap;overflow:hidden;opacity:1!important}#mz .mzmix .mxlib button svg{width:14px;height:14px;flex:none;color:#3a2a18}'+
 '.mzmix .mxlib button i{flex:none;width:6px;height:16px;border-radius:2px;background:var(--c)}'+
-'.mzmix .mxlib button span{overflow:hidden;min-width:0;white-space:nowrap}.mzmix .mxlib span i{font-style:normal;display:inline-block}.mzmix .mxlib span.tp i{animation:mxtp var(--tt,6s) linear 1s infinite alternate}'+
+'.mzmix .mxlib button span{overflow:hidden;min-width:0;white-space:nowrap}.mzmix .mxlib button span.roll{flex:0 0 118px}.mzmix .mxlib span i{font-style:normal;display:inline-block}.mzmix .mxlib span.roll i{animation:mxtp var(--tt,6s) linear 1s infinite alternate}'+
+'@media (orientation:landscape) and (max-height:500px){.mzmix{position:fixed;inset:0;z-index:9000;padding:6px;gap:6px;grid-template-columns:1fr minmax(96px,.55fr) 1fr;grid-template-rows:minmax(0,1fr) minmax(0,1fr) auto;grid-template-areas:"da scr db" "da mx db" "lib lib lib"}.mzmix .mxlib button{height:36px}.mzmix button{width:40px;height:36px}.mzmix .mxback{left:auto;top:auto;right:6px;bottom:6px}.mzmix .mxlib{padding-right:52px}}'+
+'@media (pointer:coarse){.mzmix .mxf::before{content:"";position:absolute;inset:-8px -14px}.mzmix .mxpitch::before{content:"";position:absolute;inset:-4px -10px}}'+
 '@media (max-width:760px),(orientation:portrait){.mzmix{position:fixed;z-index:9000;padding-bottom:max(8px,env(safe-area-inset-bottom));grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,.7fr) minmax(0,.9fr) minmax(0,.9fr) auto;grid-template-areas:"scr scr" "da db" "mx mx" "lib lib";gap:8px;padding:8px}'+
  '.mzmix button{width:44px;height:40px}.mzmix .mxrow{flex-wrap:wrap}.mzmix .mxlcd{order:-1;flex:1 1 100%}.mzmix .mxmix{grid-template-columns:auto 1fr 1fr;grid-template-areas:"bk fa fb" "x x x"}.mzmix .mxmix .mxback{grid-area:bk}.mzmix .mxmix>div:nth-of-type(1){grid-area:fa}.mzmix .mxmix>div:nth-of-type(2){grid-area:fb}.mzmix .mxx{grid-area:x}.mzmix .mxfad{width:100%}.mzmix .mxlib button{height:40px}}');}
 var IC={
@@ -78,13 +80,13 @@ window.MusikMix={open:function(host,M){
     D.grain=function(r,dur){if(!c||!D.buf)return;var fwd=r>=0,b=fwd?D.buf:D.rev,L=D.buf.duration,off=fwd?D.pos:L-D.pos;if(off<0||off>=L)return;var s=c.createBufferSource(),g=c.createGain(),t=c.currentTime,q=Math.max(.05,Math.min(4,Math.abs(r)));
       s.buffer=b;s.playbackRate.value=q;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.9,t+.004);g.gain.setValueAtTime(.9,t+dur);g.gain.linearRampToValueAtTime(0,t+dur+.012);s.connect(g);g.connect(D.g);s.start(t,off,Math.min(L-off,q*(dur+.02)))};
     D.sync=function(){var v=D.vid;if(!v||!v.duration||v.readyState<1)return;var w=Math.max(0,Math.min(v.duration-.04,D.pos));
-      try{if(D.motor&&!D.hold&&!D.back){v.playbackRate=Math.max(.0625,Math.min(4,rate()));if(v.paused){var p=v.play();if(p&&p.catch)p.catch(function(){})}if(Math.abs(v.currentTime-w)>.25&&!v.seeking)v.currentTime=w}
+      try{if(D.motor&&!D.hold&&!D.back){v.playbackRate=Math.max(.0625,Math.min(4,rate()));if(v.paused){var p=v.play();if(p&&p.catch)p.catch(function(){})}if(Math.abs(v.currentTime-w)>1.5&&!v.seeking)v.currentTime=w}
       else{if(!v.paused)v.pause();if(Math.abs(v.currentTime-w)>.03&&!v.seeking)v.currentTime=w}}catch(e){}};
-    D.setName=function(n){D.name=n;lcd.classList.remove('tp');lcd.innerHTML='<i></i>';lcd.firstChild.textContent=n||'—';requestAnimationFrame(function(){var w=lcd.firstChild.scrollWidth-lcd.clientWidth+12;if(w>4){lcd.classList.add('tp');lcd.style.setProperty('--dx',-w+'px');lcd.style.setProperty('--tt',Math.max(4,w/16)+'s')}})};
+    D.setName=function(n){D.name=n;lcd.classList.remove('roll');lcd.innerHTML='<i></i>';lcd.firstChild.textContent=n||'—';requestAnimationFrame(function(){var w=lcd.firstChild.scrollWidth-lcd.clientWidth+12;if(w>4){lcd.classList.add('roll');lcd.style.setProperty('--dx',-w+'px');lcd.style.setProperty('--tt',Math.max(4,w/16)+'s')}})};
     D.load=function(it){D.stop();D.pos=0;D.ang=0;if(D.vid){try{D.vid.pause();D.vid.removeAttribute('src');D.vid.load()}catch(e){}D.vid=null}D.buf=null;D.rev=null;D.setName(it.name);
-      function setBuf(b){if(!b||!c)return;D.buf=b;var r=c.createBuffer(b.numberOfChannels,b.length,b.sampleRate);for(var k=0;k<b.numberOfChannels;k++){var d=b.getChannelData(k),o=r.getChannelData(k);for(var i=0;i<d.length;i++)o[i]=d[d.length-1-i]}D.rev=r}
+      function setBuf(b){if(!b||!c)return;D.buf=b;var r=c.createBuffer(b.numberOfChannels,b.length,b.sampleRate);for(var k=0;k<b.numberOfChannels;k++){var d=b.getChannelData(k),o=r.getChannelData(k);for(var i=0;i<d.length;i++)o[i]=d[d.length-1-i]}D.rev=r;/* lecture lancée avant la fin du décodage : le son part dès qu'il arrive (relevé Impeccable B) */if(D.motor&&!D.src&&!D.hold)D.start()}
       if(it.kind==='vid'){var u=it.file||M.base()+it.url,v=document.createElement('video');v.muted=true;v.playsInline=true;v.preload='auto';if(!it.file)v.crossOrigin='anonymous';v.src=u;D.vid=v;
-        /* le son de la vidéo, décodé, se scratche avec l'image */if(c)fetch(u).then(function(r){return r.arrayBuffer()}).then(function(a){return new Promise(function(ok,ko){c.decodeAudioData(a,ok,ko)})}).then(function(b){if(D.vid===v)setBuf(b)}).catch(function(){})}
+        /* le son de la vidéo, décodé, se scratche avec l'image ; au-delà de dix minutes, l'image seule, pour ne pas charger des centaines de Mo en mémoire */v.addEventListener('loadedmetadata',function(){if(c&&D.vid===v&&v.duration<=600)fetch(u).then(function(r){return r.arrayBuffer()}).then(function(a){return new Promise(function(ok,ko){c.decodeAudioData(a,ok,ko)})}).then(function(b){if(D.vid===v)setBuf(b)}).catch(function(){})},{once:true})}
       else if(it.buf)setBuf(it.buf);else M.load(it).then(setBuf).catch(function(){})};
     bp.onclick=function(){if(D.motor)D.stop();else D.start();arm(side)};
     br.onclick=function(){D.back=!D.back;br.classList.toggle('on',D.back);br.setAttribute('aria-pressed',String(D.back));if(D.motor){D.stop();D.start()}};
@@ -97,7 +99,7 @@ window.MusikMix={open:function(host,M){
     function rel(){if(!D.hold)return;D.hold=false;cv.style.cursor='';if(D.wasMotor)D.start()}
     cv.addEventListener('pointerup',rel);cv.addEventListener('pointercancel',rel);
     D.draw=function(now){var x=D.x,W=cv.width,k=W/1024;
-      if(D.motor&&!D.hold){var dt=Math.max(0,(now-D.last)/1000),rr=rate()*(D.back?-1:1),L=D.len();D.last=Math.max(now,D.last);D.ang+=dt*rr/REV*Math.PI*2;D.pos+=dt*rr;if(L&&((rr>0&&D.pos>=L)||(rr<0&&D.pos<=0))){D.pos=Math.max(0,Math.min(L,D.pos));D.stop()}}
+      if(D.motor&&!D.hold){var dt=Math.max(0,(now-D.last)/1000),rr=rate()*(D.back?-1:1),L=D.len();D.last=Math.max(now,D.last);D.ang+=dt*rr/REV*Math.PI*2;/* critique Impeccable P4 : en lecture avant, la vidéo mène l'horloge ; on ne la cale qu'au scratch */var vv=D.vid;if(vv&&!D.back&&vv.readyState>=2&&!vv.seeking&&!vv.paused)D.pos=vv.currentTime;else D.pos+=dt*rr;if(L&&((rr>0&&D.pos>=L)||(rr<0&&D.pos<=0))){D.pos=Math.max(0,Math.min(L,D.pos));D.stop()}}
       D.sync();x.clearRect(0,0,W,W);if(TI.deck.complete&&TI.deck.naturalWidth)x.drawImage(TI.deck,0,0,W,W);else{x.fillStyle='#2b2620';x.fillRect(0,0,W,W)}
       x.save();x.translate(396.5*k,485.5*k);x.rotate(D.ang);var dr=255*k;if(TI.disc.complete&&TI.disc.naturalWidth)x.drawImage(TI.disc,-dr,-dr,dr*2,dr*2);
       if(D.buf||D.vid){x.fillStyle=D.vid?'rgba(143,227,212,.85)':'rgba(200,36,58,.85)';x.beginPath();x.arc(0,0,dr*.3,0,7);x.fill();x.fillStyle='#0e0d0c';x.beginPath();x.arc(0,0,6*k,0,7);x.fill()}x.restore();
@@ -129,7 +131,7 @@ window.MusikMix={open:function(host,M){
   var lib=el('div','mxlib');root.appendChild(lib);
   function libDraw(){lib.innerHTML='';M.lib().filter(function(it){return !it.kind||it.kind==='vid'}).forEach(function(it){var b=el('button',null,'<i></i>'+(it.kind==='vid'?IC.vid:IC.son)+'<span></span>');b.type='button';b.lastChild.textContent=it.name;b.title=it.name;b.style.setProperty('--c',it.col||'#ffa726');
     b.onclick=function(){DK[armed].load(it);arm(1-armed)};lib.appendChild(b)});
-    /* titre trop long pour sa touche : il défile sur place (règle du 10 nov.) */requestAnimationFrame(function(){[].forEach.call(lib.querySelectorAll('span'),function(sp){var w=sp.scrollWidth-sp.clientWidth;if(w>3){sp.innerHTML='<i>'+sp.innerHTML+'</i>';sp.classList.add('tp');sp.style.setProperty('--dx',-(w+6)+'px');sp.style.setProperty('--tt',Math.max(4,w/14)+'s')}})})}
+    /* titre trop long pour sa touche : il défile sur place (règle du 10 nov.) */requestAnimationFrame(function(){[].forEach.call(lib.querySelectorAll('span'),function(sp){var w=sp.scrollWidth-sp.clientWidth;if(w>3){sp.innerHTML='<i>'+sp.innerHTML+'</i>';sp.classList.add('roll');sp.style.setProperty('--dx',-(w+6)+'px');sp.style.setProperty('--tt',Math.max(4,w/14)+'s')}})})}
   libDraw();
   host.appendChild(root);
   function close(){alive=false;DK.forEach(function(D){D.stop();if(D.vid){try{D.vid.pause()}catch(e){}}try{D.g&&D.g.disconnect()}catch(e){}});root.remove();removeEventListener('keydown',key)}
