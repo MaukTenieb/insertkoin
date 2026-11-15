@@ -136,7 +136,7 @@ window.MotelRun=function(host,want){
   var qx=Math.max(gx+i,Math.min(px,gx+i+1)),qy=Math.max(gy+j,Math.min(py,gy+j+1));best=Math.min(best,Math.hypot(px-qx,py-qy))}return best}
  /* 15 nov. 2026, 3 h 48 (Mauk Tenieb : « jouable et agréable simplement : toujours même allure, commandes simples, braquages normaux, zéro blocage contre les murs, enchaîner immédiatement », « comme la démo en noir et blanc ») :
     le joueur court sur les rails de la démo — centre de la travée, allure constante, virage engagé à l'entrée du carrefour ; gauche ou droite (touche ou clic du côté voulu) choisit le prochain virage de ce côté, pris tout de suite s'il s'ouvre là, sinon au prochain carrefour ; le Mask ne touche jamais un mur */
- var want=0;
+ var want=0,LANE=0;/* 15 nov. 2026, 10 h 17 (Mauk Tenieb : « le coureur braque beaucoup trop et ne va pas assez au contact des murs ») : il court le long d'un mur, à touche-touche ; avant un virage il passe au mur extérieur, d'où un virage large et doux */
  function step(dt){if(tq){want=tq>0?1:3;tq=0}var man_=!!want;if(man_)idle=0;else idle+=dt;var tr=0,sp=speed,gx=Math.floor(px),gy=Math.floor(py);
    var id=gx*100003+gy,cxm=gx+0.5,cym=gy+0.5;
    if(!auto){auto=true;var bd=dir,bs=-9;for(var d0=0;d0<4;d0++){if(!free(gx,gy,d0))continue;var sc=Math.cos(ang-d0*Math.PI/2);if(sc>bs){bs=sc;bd=d0}}dir=bd;cell=id;pendT=0}
@@ -147,8 +147,8 @@ window.MotelRun=function(host,want){
     else if(idle>8&&o2.length&&odo-lastT>2.2&&Math.random()<0.4)pendT=o2[Math.floor(Math.random()*o2.length)]}
    else if(want&&!pendT&&along>=0.3&&free(gx,gy,(dir+want)%4)){pendT=want;want=0}
    if(pendT&&along<0.42){dir=(dir+pendT)%4;pendT=0;lastT=odo}
-   var lat=(cxm-px)*(-DY[dir])+(cym-py)*DX[dir],wa=dir*Math.PI/2+Math.max(-0.6,Math.min(0.6,lat*2)),dd=wrap(wa-ang);
-   tr=Math.max(-4,Math.min(4,dd*8));ang+=Math.max(-Math.abs(dd),Math.min(Math.abs(dd),tr*dt));
+   if(pendT===1)LANE=0.14;else if(pendT===3)LANE=-0.14;var lat=(cxm-px)*(-DY[dir])+(cym-py)*DX[dir],wa=dir*Math.PI/2+Math.max(-0.6,Math.min(0.6,(lat-LANE)*2)),dd=wrap(wa-ang);
+   tr=Math.max(-3,Math.min(3,dd*8));ang+=Math.max(-Math.abs(dd),Math.min(Math.abs(dd),tr*dt));
   turn+=(tr-turn)*Math.min(1,dt*12);
   /* glisse le long des murs */
   /* 15 nov. 2026 : au mur, à la Doom, la composante bloquée tombe et l'autre garde au moins 75 % de l'allure ; les jambes suivent le chemin parcouru, jamais de course sur place */
