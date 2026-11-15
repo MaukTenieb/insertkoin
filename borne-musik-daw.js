@@ -11,16 +11,29 @@ var ALB=[['20k368-1','Esiön'],['20k368-2','Esiön'],['cassette-zero1','Cassette
  ['mantrajazzininterzone-1','Ritual Jazz in Interzone'],['mantrajazzininterzone-2','Ritual Jazz in Interzone'],['der-golem-1','Der Golem'],['der-golem-2','Der Golem'],['furia-1-1','Furia'],['furia-1-2','Furia'],
  ['tribute-to-miles-davis-1','Tribute to Miles Davis'],['tribute-to-miles-davis-2','Tribute to Miles Davis'],['libri-carolini-1','Libri Carolini'],['libri-carolini-2','Libri Carolini'],['carthago-our-times-1','Carthago, Our Times'],['carthago-our-times-2','Carthago, Our Times'],
  ['dogxim-entering-1','Entering the Dogxim'],['dogxim-entering-2','Entering the Dogxim'],['c7h5n3o6-arts-all-about-1','Art\'s All About Dealing with Evil'],['c7h5n3o6-bayou-1','Anthropobots Fuck You in the Bayou'],['tsui-pen-jardin-1','El jard\u00edn de senderos que se bifurcan'],['tsui-pen-jardin-2','El jard\u00edn de senderos que se bifurcan'],['auvergne-court-complexe-1','Court Complexe'],['auvergne-court-complexe-2','Court Complexe'],
- ['scambug-1','ScamBug'],['scambug-2','ScamBug'],['nix-1','Nix'],['african-alien-1','African-Alien']];
+ ['scambug-1','ScamBug'],['scambug-2','ScamBug'],['nix-1','Nix'],['african-alien-1','African-Alien'],
+ ['mt-mauk-tenieb-ropes-tribute-to-1','Ropes (Tribute to Seb \'\u00c5ngstrom\' F. aka GDZ)'],['mt-mauk-tenieb-mugwump-1','Mugwump'],['mt-mauk-tenieb-antonin-artaud-j-1','Antonin Artaud (J\'ai appris hier - To Have Done with the Judgement of God)'],['mt-mauk-tenieb-le-monde-come-1','Le Monde C\u00f4me'],['mt-mauk-tenieb-tribute-to-sgm-t-1','Tribute to SGM & The Book of Knots'],['mt-mauk-tenieb-shia-34-live-mix-1','SHIA-34'],['mt-mauk-tenieb-free-wolf-in-da-1','Free Wolf in da Muthafuckin\' Sheepfold'],['mt-mauk-tenieb-az-melochondria-1','AZ !=! M\u00e8lochondria'],['mt-mauk-tenieb-arabic-illbient-1','Arabic Illbient'],['mt-mauk-tenieb-jean-misere-pari-1','Jean Mis\u00e8re (Paris Commune of Interzone)'],['mt-mauk-tenieb-christianophilia-1','Christianophilia v.2'],['mt-mauk-tenieb-vanquished-of-th-1','Vanquished of the History'],['mt-mauk-tenieb-s.-warfare-live-1','S. Warfare'],['mt-mauk-tenieb-teknosok-live-mi-1','Tekn\u0151s\u00f6k']];
 var BRN=[['bell-1','Bell'],['coin-1','Koin'],['clack-1','Clack'],['buzz-1','Buzz'],['relay-7','Relay'],['twang-2','Twang'],['knock-4','Knock'],['neon-2','Neon']];
 /* 13 nov. 2026 (Mauk Tenieb, RELAIS § 28, réponses « 1c, 2a et b, 3b, 4b ») : la Scène à la Loops Stage, les sons de chaque Mask, la platine vidéo.
    MASKS : les 18 Masks ; STAT : leur stature en mètres (toise du vidéoclub, kave/motel-run.js) ; KIT : les coupes de leurs sorties, par alias (snd/SOURCES.md). */
 var MASKS=['aube','auvergne','c7h5n3o6','cadaver_synod','croisiere_noire','dogxim','grand_colonel','hatra_loves','honey_buzzard','maiden_call','malika','naphta','plague_of_justinian','poisoned_well','silent_pact','truce','tsui_pen','unkle_maukie'];
 var STAT={aube:1.68,auvergne:1.78,c7h5n3o6:1.98,cadaver_synod:1.88,croisiere_noire:1.6,dogxim:1.55,grand_colonel:1.8,hatra_loves:1.8,honey_buzzard:1.98,maiden_call:1.65,malika:1.68,naphta:1.72,plague_of_justinian:1.92,poisoned_well:1.35,silent_pact:1.98,truce:1.75,tsui_pen:1.68,unkle_maukie:1.78};
-var KIT={unkle_maukie:['20k368-1','cassette-zero1','der-golem-1','libri-carolini-1','furia-1-1'],naphta:['mantrajazzininterzone-1','interzone-men-at-work-1','tribute-to-miles-davis-1','carthago-our-times-1','der-golem-2'],
- dogxim:['dogxim-entering-1','dogxim-entering-2'],c7h5n3o6:['c7h5n3o6-arts-all-about-1','c7h5n3o6-bayou-1'],tsui_pen:['tsui-pen-jardin-1','tsui-pen-jardin-2'],auvergne:['auvergne-court-complexe-1','auvergne-court-complexe-2'],
- /* 14 nov. 2026 : Honey Buzzard et Croisière Noire, sorties hors Internet Archive ; coupes de clips de Mauk Tenieb à leur thème (insectes ; pétrole et Afrique de l'Ouest) */
- honey_buzzard:['scambug-1','scambug-2'],croisiere_noire:['nix-1','african-alien-1']};
+/* 15 nov. 2026, 2 h 54 (Mauk Tenieb : « prends au hasard les morceaux sur Internet Archive du catalogue Korhogo […] s'il en manque : Mauk Tenieb pour combler ») : les alias présents sur Internet Archive gardent leurs sorties ; les autres Masks tirent deux coupes de Mauk Tenieb au hasard (tirage fixé) */
+var KIT={dogxim:['dogxim-entering-1','dogxim-entering-2'],c7h5n3o6:['c7h5n3o6-arts-all-about-1','c7h5n3o6-bayou-1'],tsui_pen:['tsui-pen-jardin-1','tsui-pen-jardin-2'],auvergne:['auvergne-court-complexe-1','auvergne-court-complexe-2'],
+ aube:['mt-mauk-tenieb-free-wolf-in-da-1','mantrajazzininterzone-2'],
+ cadaver_synod:['furia-1-1','furia-1-2'],
+ croisiere_noire:['cassette-zero2','interzone-men-at-work-2'],
+ grand_colonel:['mt-mauk-tenieb-arabic-illbient-1','mt-mauk-tenieb-teknosok-live-mi-1'],
+ hatra_loves:['mt-mauk-tenieb-antonin-artaud-j-1','mt-mauk-tenieb-christianophilia-1'],
+ honey_buzzard:['libri-carolini-2','der-golem-2'],
+ maiden_call:['interzone-men-at-work-1','mt-mauk-tenieb-jean-misere-pari-1'],
+ malika:['libri-carolini-1','mt-mauk-tenieb-az-melochondria-1'],
+ naphta:['carthago-our-times-1','mt-mauk-tenieb-tribute-to-sgm-t-1'],
+ plague_of_justinian:['mantrajazzininterzone-1','mt-mauk-tenieb-le-monde-come-1'],
+ poisoned_well:['20k368-2','scambug-1'],
+ silent_pact:['20k368-1','scambug-2'],
+ truce:['der-golem-1','african-alien-1'],
+ unkle_maukie:['mt-mauk-tenieb-shia-34-live-mix-1','mt-mauk-tenieb-mugwump-1']};
 function mslug(n){var k=String(n||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]/gi,'').toLowerCase();for(var i=0;i<MASKS.length;i++)if(MASKS[i].replace(/_/g,'')===k)return MASKS[i];return ''}
 var MAXS=64,NP=4;
 var S={view:'grid',stage:{},pend:[],n:16,pat:0,chain:false,bpm:96,swing:0,play:false,step:0,next:0,timer:0,sel:0,ch:[],lib:[],echoT:.375,echoF:.38,verb:.5,drive:0,master:.85,tt:null};
@@ -446,7 +459,8 @@ function hook(){if(typeof window.beatboxOpen!=='function'){setTimeout(hook,600);
   var p=document.getElementById('bb-panel');if(p&&p.style.display!=='none'&&p.getClientRects().length){ac();mount()}}
 addEventListener('resize',function(){clearTimeout(window.__mzr);window.__mzr=setTimeout(function(){if(S.view==='stage')stageLayout();else rack()},200)});
 window.__mz={S:S,mount:mount,play:play,kave:kave,view:view,pose:pose,ttVid:ttVid,TT:TT};
-if(window.top===window){hook();addEventListener('borne-diktat',function(){if(S.ch.length)libK()});addEventListener('borne-vid',function(){if(S.ch.length)libV()})}
+/* 15 nov. 2026 : Musik se monte aussi dans une fenêtre de KorhogOS (la borne y tourne dans un cadre) ; avant, le garde « window.top » laissait l'ancienne boîte à rythmes à l'écran */
+{hook();addEventListener('borne-diktat',function(){if(S.ch.length)libK()});addEventListener('borne-vid',function(){if(S.ch.length)libV()})}
 })();
 
 /* 13 nov. 2026 (critique Impeccable ; règle de Mauk Tenieb du 10 nov.) : un nom trop long pour sa bande Dymo défile sur place */

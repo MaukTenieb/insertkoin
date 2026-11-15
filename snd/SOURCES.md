@@ -135,6 +135,24 @@ Leurs sorties vivent sur Bandcamp ; ces coupes viennent de clips de Mauk Tenieb 
 - Croisière Noire : `nix-1` (153,0 s) : Nix (A sűrű petróleumban lángoló szűzgyöngy ló lábai vannak), Live Mix 141, https://archive.org/details/nix-a-suru-petroleumban-langolo-szuzgyongy-lo-labai-vannak-live-mix-141-1 ; `african-alien-1` (238,5 s) : African-Alien (Live Mix 151), https://archive.org/details/mauk-tenieb-african-alien
 © Korhogo, tous droits réservés ; entraînement d'IA interdit.
 
+## snd/pads : coupes de Mauk Tenieb tirées au hasard (15 nov. 2026)
+Quatorze coupes de 1,6 s, une par élément d'Internet Archive tiré au hasard dans le catalogue de Mauk Tenieb, repère tiré entre 25 et 70 % de la durée, même traitement que plus haut. Musik les donne, deux par deux et au hasard, aux Masks sans sortie propre sur Internet Archive.
+- `mt-mauk-tenieb-ropes-tribute-to-1` : Ropes (Tribute to Seb 'Ångstrom' F. aka GDZ) - Live Mix 153, https://archive.org/details/mauk-tenieb-ropes-tribute-to-seb-angstrom-f.-aka-gdz-live-mix-153-korhogo-rec-2023
+- `mt-mauk-tenieb-mugwump-1` : Mugwump, https://archive.org/details/mauk-tenieb-mugwump
+- `mt-mauk-tenieb-antonin-artaud-j-1` : Antonin Artaud (J'ai appris hier - To Have Done with the Judgement of God), https://archive.org/details/mauk-tenieb-antonin-artaud-jai-appris-hier
+- `mt-mauk-tenieb-le-monde-come-1` : Le Monde Côme, https://archive.org/details/mauk-tenieb-le-monde-come
+- `mt-mauk-tenieb-tribute-to-sgm-t-1` : Tribute to SGM & The Book of Knots (Live Mix 157), https://archive.org/details/mauk-tenieb-tribute-to-sgm-the-book-of-knots-live-mix-157
+- `mt-mauk-tenieb-shia-34-live-mix-1` : SHIA-34 (Live Mix 134), https://archive.org/details/mauk-tenieb-shia-34-live-mix-134-c-korhogo-rec-2023
+- `mt-mauk-tenieb-free-wolf-in-da-1` : Free Wolf in da Muthafuckin' Sheepfold (Live Mix 132), https://archive.org/details/mauk-tenieb-free-wolf-in-da-muthafuckin-sheepfold
+- `mt-mauk-tenieb-az-melochondria-1` : AZ !=! Mèlochondria, https://archive.org/details/mauk-tenieb-az-melochondria-korhogo-rec-2023
+- `mt-mauk-tenieb-arabic-illbient-1` : Arabic Illbient, https://archive.org/details/mauk-tenieb-arabic-illbient-korhogo-rec-2022
+- `mt-mauk-tenieb-jean-misere-pari-1` : Jean Misère (Paris Commune of Interzone), https://archive.org/details/mauk-tenieb-jean-misere-paris-commune-of-interzone-korhogo-rec-2023
+- `mt-mauk-tenieb-christianophilia-1` : Christianophilia v.2, https://archive.org/details/mauk-tenieb-christianophilia
+- `mt-mauk-tenieb-vanquished-of-th-1` : Vanquished of the History, https://archive.org/details/mauk-tenieb-vanquished-of-the-history
+- `mt-mauk-tenieb-s.-warfare-live-1` : S. Warfare (Live Mix 119), https://archive.org/details/mauk-tenieb-s.-warfare-live-mix-119
+- `mt-mauk-tenieb-teknosok-live-mi-1` : Teknősök (Live Mix 91), https://archive.org/details/mauk-tenieb-teknosok-live-mix-91
+© Korhogo, tous droits réservés ; entraînement d'IA interdit.
+
 ## kave/a/tv/clip : clips pour la platine vidéo de Musik (13 nov. 2026)
 Cinq extraits de 12 s des clips de Mauk Tenieb et de ses alias (Internet Archive), 360 px de haut, H.264 à image clé toutes les 5 images (le scratch recule et avance aussitôt), AAC 96 kb/s à −16 LUFS.
 - `clip-interzone-is-internet` (120 s) : Interzone is Internet (Bad-to-the-bone Officer Take), https://archive.org/details/mauk-tenieb-interzone-is-internet-bad-to-the-bone-officer-take
