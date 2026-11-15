@@ -39,7 +39,7 @@ function CSS_(B){return (
 '.mzmix .mxback{position:absolute;left:12px;top:12px;z-index:3}'+
 '.mzmix .mxlib{grid-area:lib;display:flex;gap:6px;overflow-x:auto;overscroll-behavior:contain;padding:2px 2px 6px;scrollbar-color:#5a4a36 transparent}'+
 '#mz .mzmix .mxlib button{width:auto!important;max-width:170px;height:30px;padding:0 10px 0 8px!important;gap:6px;display:flex!important;align-items:center;background:linear-gradient(#efe3cf,#d8c9ad)!important;color:#1a1209!important;font:700 11px/1 "Barlow Semi Condensed",Arial,sans-serif!important;white-space:nowrap;overflow:hidden;opacity:1!important}#mz .mzmix .mxlib button svg{width:14px;height:14px;flex:none;color:#3a2a18}'+
-'.mzmix .mxlib button i{flex:none;width:6px;height:16px;border-radius:2px;background:var(--c)}'+
+'.mzmix .mxlib button>i{flex:none;width:6px;height:16px;border-radius:2px;background:var(--c)}'+
 '.mzmix .mxlib button span{overflow:hidden;min-width:0;white-space:nowrap}.mzmix .mxlib button span.roll{flex:0 0 118px}.mzmix .mxlib span i{font-style:normal;display:inline-block}.mzmix .mxlib span.roll i{animation:mxtp var(--tt,6s) linear 1s infinite alternate}'+
 '@media (orientation:landscape) and (max-height:500px){.mzmix{position:fixed;inset:0;z-index:9000;padding:6px;gap:6px;grid-template-columns:1fr minmax(96px,.55fr) 1fr;grid-template-rows:minmax(0,1fr) minmax(0,1fr) auto;grid-template-areas:"da scr db" "da mx db" "lib lib lib"}.mzmix .mxlib button{height:36px}.mzmix button{width:40px;height:36px}.mzmix .mxback{left:auto;top:auto;right:6px;bottom:6px}.mzmix .mxlib{padding-right:52px}}'+
 '@media (pointer:coarse){.mzmix .mxf::before{content:"";position:absolute;inset:-8px -14px}.mzmix .mxpitch::before{content:"";position:absolute;inset:-4px -10px}}'+

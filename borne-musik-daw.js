@@ -336,6 +336,11 @@ html #kg-root #bb-panel.mz-on.mz-on.mz-on.mz-on{display:flex!important;flex-dire
 #mz .mzpitch::-moz-range-thumb{width:22px;height:30px;border:0;border-radius:0;background:url(${base()}kave/a/mix/cap-v.webp) center/100% 100% no-repeat}
 #mz .mztt{filter:drop-shadow(0 4px 6px rgba(0,0,0,.75))}
 #mz .mzlib{-webkit-mask-image:linear-gradient(#000 calc(100% - 18px),transparent);mask-image:linear-gradient(#000 calc(100% - 18px),transparent)}
+
+/* 15 nov. 2026, 22 h 17 (« regarde tout ce qui ne va pas ») : téléphone debout — les huit pas de la page tiennent dans la largeur ; la platine tient dans l'écran, ses touches passent dessous ; barre du haut resserrée */
+@media (max-width:760px),(orientation:portrait){#mz .mzrow{min-width:0}#mz .mzs{flex:1 1 0!important;min-width:0}#mz .mzttrow{flex-wrap:wrap}#mz .mzttrow .mzttctl{flex:1 1 100%}#mz .mztt{height:auto!important;width:min(calc(100% - 44px),56vh)!important;max-width:none}#mz .mzbar{padding:6px 12px}}
+/* téléphone couché : barre du haut sur une seule rangée, platine à la hauteur de l'écran */
+@media (orientation:landscape) and (max-height:500px){#mz .mzbar{flex-wrap:nowrap;gap:3px;padding:4px 10px}#mz .mzbar .mzbt,#mz .mzbar .mzseg button{min-width:30px!important;height:32px;padding:0 4px}#mz .mzbar .mzsp{display:none}#mz #mz-tk .mzkn{width:34px}#mz #mz-tk .mzkn svg{width:30px;height:30px}#mz #mz-tk .mzkn small{display:none}#mz[data-v="tt"] .mztt{height:auto!important;width:auto!important;max-height:calc(100vh - 230px);max-width:100%}#mz .mzdeck{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}#mz .mzlibbox{grid-column:1/-1}}
 `;
 /* 15 nov. 2026, 22 h 01 : molettes photographiées (bouton cannelé tiré du rack de Mauk Tenieb, 21 h 09), étiquettes gravées en pictogrammes ; le nom reste pour les lecteurs d'écran et l'infobulle */
 var KP=(function(){var S='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="',E='" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';return{
