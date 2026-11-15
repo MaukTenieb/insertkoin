@@ -114,7 +114,7 @@ window.MotelRun=function(host,want){
  face.style.cssText='position:absolute;left:2%;bottom:2.5%;height:20%;width:auto;pointer-events:none;image-rendering:auto';
  host.appendChild(face);
  var px=0.5,py=0.5,dir=0,ang=0,speed=reduce?1.0:3.8,last=performance.now(),gait=0,alive=true,turn=0,idle=9,pendT=0,cell=-1,auto=true,odo=0,lastT=-9;
- var DX=[1,0,-1,0],DY=[0,1,0,-1],held={},ptr=null,tq=0,TURN=1.55,RAD=0.34,hT=0,stuck=0,lane=-1,trail=[],cx=0,cy=0,ca=0,depth=CAMD;
+ var DX=[1,0,-1,0],DY=[0,1,0,-1],held={},ptr=null,tq=0,TURN=1.0,RAD=0.34,hT=0,adep=CAMD,stuck=0,lane=-1,trail=[],cx=0,cy=0,ca=0,depth=CAMD;
  var st={t:0,minClear:9,minFront:99,minDepth:99,contacts:0,cuts:0};
  var KM={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d',a:'l',q:'l',d:'r',w:'u',z:'u',s:'d'};
  function own(e){return !(e.target&&e.target.closest&&e.target.closest('input,textarea,.win'))}
@@ -135,6 +135,8 @@ window.MotelRun=function(host,want){
  function clear_(){var gx=Math.floor(px),gy=Math.floor(py),best=9;for(var j=-1;j<=1;j++)for(var i=-1;i<=1;i++){if(!solid(gx+i,gy+j))continue;
   var qx=Math.max(gx+i,Math.min(px,gx+i+1)),qy=Math.max(gy+j,Math.min(py,gy+j+1));best=Math.min(best,Math.hypot(px-qx,py-qy))}return best}
  function step(dt){var man_=held.l||held.r||held.u||held.d||ptr||tq;if(man_)idle=0;else idle+=dt;var tr=0,sp=speed,gx=Math.floor(px),gy=Math.floor(py);
+  /* 15 nov. 2026, 2 h 05 (Mauk Tenieb : « qu'il braque moins » ; au mur, « qu'il se comporte comme dans Quake et Doom et arrête de faire sauter la caméra ») :
+     braquage 57 °/s ; au contact d'un mur, il glisse le long du mur sans que son cap ni la caméra tournent d'eux-mêmes, comme dans Doom */
   if(idle<2.5){/* le joueur tient la course ; devant un mur, il freine et dévie */
    /* 12 nov. (Mauk Tenieb) : gauche et droite seulement, braquage divisé par deux (89 °/s, contre 123 °/s pour la marche de Doom), départ lent les 0,17 premières secondes comme Doom ; zéro freinage, zéro piétinement ; à un angle de mur, le Mask glisse vite vers la travée la plus proche */
    auto=false;var tg=(held.r?1:0)-(held.l?1:0);if(ptr){var o=(ptr.x-ptr.cx)/(ptr.w/2);if(Math.abs(o)>0.25)tg+=Math.max(-1,Math.min(1,o))}tg=Math.max(-1,Math.min(1,tg));
@@ -162,7 +164,6 @@ window.MotelRun=function(host,want){
   else if(by&&!bx){var cx2=Math.abs(vx)<0.15*V?(probe(0,2)>=probe(Math.PI,2)?1:-1)*0.75*V:(vx>0?1:-1)*Math.max(Math.abs(vx),0.75*V);if(okX(px+cx2))px+=cx2;slide=cx2>0?0:Math.PI}
   else if(bx&&by){var cands=[[0.75*V,0,0],[-0.75*V,0,Math.PI],[0,0.75*V,Math.PI/2],[0,-0.75*V,-Math.PI/2]].filter(function(c){return c[0]?okX(px+c[0]):okY(py+c[1])}).sort(function(a,b){return Math.cos(b[2]-ang)-Math.cos(a[2]-ang)});if(cands.length){px+=cands[0][0];py+=cands[0][1];slide=cands[0][2]}}
   else{px+=vx;py+=vy}
-  if(slide!=null&&!auto&&!tq&&!((held.l||held.r)||(ptr&&Math.abs((ptr.x-ptr.cx)/(ptr.w/2))>0.25))){var dd3=wrap(slide-ang),st3=Math.min(Math.abs(dd3),9*dt);ang+=dd3>0?st3:-st3}
   stuck=slide!=null?stuck+dt:0;
   ang=wrap(ang);gait+=sp*dt*3.4;odo+=sp*dt;cdt=dt;camera()}
  function sight(x,y){var n=Math.ceil(Math.hypot(px-x,py-y)/0.05);for(var i=1;i<n;i++){var t=i/n;if(!open_(x+(px-x)*t,y+(py-y)*t))return false}return true}
@@ -173,10 +174,20 @@ window.MotelRun=function(host,want){
  function back(a){var d=probe(a,CAMD+0.3),s=0.12,l=Math.cos(a+Math.PI/2)*s,m=Math.sin(a+Math.PI/2)*s,x0=px,y0=py;
   px=x0+l;py=y0+m;d=Math.min(d,probe(a,CAMD+0.3));px=x0-l;py=y0-m;d=Math.min(d,probe(a,CAMD+0.3));px=x0;py=y0;return Math.max(0.35,d-0.18)}
  function reseed(){cyaw=ang;depth=Math.min(CAMD,back(ang+Math.PI));cx=px-Math.cos(ang)*depth;cy=py-Math.sin(ang)*depth;ca=ang}
- function camera(){if(cyaw===null)reseed();
-  var k=Math.min(1,cdt*(reduce?3:5));cyaw=wrap(cyaw+wrap(ang-cyaw)*k);
-  var room=Math.min(CAMD,back(cyaw+Math.PI));depth+=(room-depth)*Math.min(1,cdt*(room<depth?14:3));depth=Math.min(depth,Math.max(0.3,probe(cyaw+Math.PI,CAMD+0.3)-0.06));
-  cx=px-Math.cos(cyaw)*depth;cy=py-Math.sin(cyaw)*depth;ca=cyaw}
+ /* 15 nov. 2026, 2 h 05 (Mauk Tenieb : « arrête de faire sauter la caméra ») : la caméra suit le Mask sur sa trace, à un pas derrière lui sur le chemin qu'il vient de parcourir ;
+    la trace passe par où le Mask a marché, la caméra reste donc hors des murs sans se rapprocher d'un coup ; elle regarde dans le cap du Mask, qu'elle suit par un ressort */
+ function camera(){if(cyaw===null)reseed();if(!trail.length)trail=[[cx,cy],[px,py]];
+  var L=trail[trail.length-1];if(Math.hypot(px-L[0],py-L[1])>0.03)trail.push([px,py]);if(trail.length>240)trail.splice(0,trail.length-240);
+  var need=CAMD,qx=px,qy=py,i=trail.length-1;
+  while(i>0&&need>0){var a2=trail[i-1],sl=Math.hypot(qx-a2[0],qy-a2[1]);if(sl>=need){qx+=(a2[0]-qx)*need/sl;qy+=(a2[1]-qy)*need/sl;need=0;break}need-=sl;qx=a2[0];qy=a2[1];i--}
+  /* pilote automatique (la démo) : la caméra d'avant, derrière le Mask sur son cap ; au passage d'un mode à l'autre, elle rejoint sa place à vitesse bornée, sans saut */
+  if(auto){cyaw=wrap(cyaw+wrap(ang-cyaw)*Math.min(1,cdt*(reduce?3:5)));var room=Math.min(CAMD,back(cyaw+Math.PI));adep+=(room-adep)*Math.min(1,cdt*(room<adep?14:3));adep=Math.min(adep,Math.max(0.3,probe(cyaw+Math.PI,CAMD+0.3)-0.06));
+   qx=px-Math.cos(cyaw)*adep;qy=py-Math.sin(cyaw)*adep;trail=[[qx,qy],[px,py]];if(Math.hypot(qx-cx,qy-cy)<0.06){cx=qx;cy=qy;depth=adep;ca=cyaw;return}}else adep=depth;
+  /* demi-tour : la trace passe devant le Mask ; la caméra rejoint alors le point derrière lui, à la vitesse bornée, et la trace repart de là */
+  var hx=px-qx,hy=py-qy,hl=Math.hypot(hx,hy);if(hl<0.25||(hx*Math.cos(ang)+hy*Math.sin(ang))/hl<0.2){var bd=Math.min(CAMD,back(ang+Math.PI));qx=px-Math.cos(ang)*bd;qy=py-Math.sin(ang)*bd;trail=[[qx,qy],[px,py]]}
+  var mx=qx-cx,my=qy-cy,ml=Math.hypot(mx,my),lim=Math.max(0.02,speed*cdt*1.6);if(ml>=3){cx=qx;cy=qy}else{if(ml>lim){mx*=lim/ml;my*=lim/ml}if(open_(cx+mx,cy+my)){cx+=mx;cy+=my}else{if(open_(cx+mx,cy))cx+=mx;if(open_(cx,cy+my))cy+=my}}
+  if(!auto)cyaw=wrap(cyaw+wrap(ang-cyaw)*Math.min(1,cdt*(reduce?3:5)));
+  depth=Math.hypot(px-cx,py-cy);ca=cyaw}
  function cast(){
   var dx=Math.cos(ca),dy=Math.sin(ca),plx=-dy*FOV,ply=dx*FOV,bob=reduce?0:Math.sin(gait*3.2)*1.2;
   /* sol et plafond */
@@ -204,6 +215,6 @@ window.MotelRun=function(host,want){
  reseed();requestAnimationFrame(loop);
  var api={stop:function(){alive=false;removeEventListener('keydown',key_);removeEventListener('keyup',keyu_);removeEventListener('blur',blur_);cv.remove();face.remove()},mask:key,st:st,
   down:down_,up:up_,move:function(e){if(ptr){ang+=(e.clientX-ptr.x)*0.0055;ptr.x=e.clientX;idle=0}},
-  pos:function(){return {px:px,py:py,ang:ang,cx:cx,cy:cy,depth:depth,auto:auto}}};
+  pos:function(){return {px:px,py:py,ang:ang,cx:cx,cy:cy,ca:ca,depth:depth,auto:auto}}};
  window.MotelRun.cur=api;return api};
 })();
