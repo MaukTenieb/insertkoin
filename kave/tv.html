@@ -132,6 +132,7 @@ body.rup:not(.ropen) #remote{filter:brightness(1.05) sepia(.1) drop-shadow(0 -4p
 #halo{position:absolute;left:24.8%;top:8.6%;width:53.416%;height:75.391%;z-index:6;pointer-events:none;background:radial-gradient(closest-side,var(--glow,rgba(60,90,220,.32)),transparent);mix-blend-mode:screen;opacity:.55;transition:background .8s,opacity .4s}
 .dark #halo{opacity:0}
 #dresser,#ctl .lbl,#ctl .grille,#kpw{display:none}
+/* 15 nov. 2026 (RELAIS § 29, 4 : magnétoscope « facile à faire venir ») : le magnétoscope posé sous la grille du haut-parleur ; le toucher passe la télé sur AV, le retoucher revient à la chaîne */#ctl #kav{left:62.87%;top:62.2%;width:3.3%!important;aspect-ratio:2!important;border-radius:2px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.8))}#ctl #kav svg{display:block;width:100%;height:100%}#ctl #kav:focus-visible{outline:2px solid #7fe3c4}
 #ctl{position:absolute;inset:0;width:auto!important;height:auto!important;display:block!important;z-index:7;pointer-events:none}
 #ctl button{position:absolute;pointer-events:auto;height:auto!important;background:transparent!important;box-shadow:none!important;border:0;padding:0;cursor:pointer;border-radius:30%;width:2.18%;aspect-ratio:1;transform:translate(-50%,-50%)}
 #ctl button::after{display:none}
@@ -212,7 +213,7 @@ body.av.cabf:not(.cabo) #vhs .vhs-shell{overflow:hidden;cursor:pointer}
    <div class="layer" id="snow"></div><div class="layer" id="glass"></div>
    <div id="osd"></div><div id="vol"></div>
   </div></div>
-  <div id="dresser"></div><div id="halo"></div><div id="lcd"></div><div id="ctl"><button class="knob" id="kch" style="--r:0deg" title="CH"></button><span class="lbl">CHANNEL</span><button class="knob" id="kvol" style="--r:-60deg" title="VOL"></button><span class="lbl">VOLUME</span><div class="grille"></div><button class="pw" id="kpw" title="POWER"></button></div>
+  <div id="dresser"></div><div id="halo"></div><div id="lcd"></div><div id="ctl"><button class="knob" id="kch" style="--r:0deg" title="CH"></button><span class="lbl">CHANNEL</span><button class="knob" id="kvol" style="--r:-60deg" title="VOL"></button><span class="lbl">VOLUME</span><div class="grille"></div><button class="pw" id="kpw" title="POWER"></button><button id="kav" type="button" title="VCR" aria-label="VCR"><svg viewBox="0 0 48 24" aria-hidden="true"><rect x="1" y="1" width="46" height="22" rx="2" fill="#15110d" stroke="#3a3128"/><rect x="7" y="7" width="34" height="5" rx="1" fill="#050403" stroke="#2a231c"/><circle cx="14" cy="17" r="2" fill="#7fe3c4"/><path d="M30 15l5 2.5-5 2.5z" fill="#c9b9a0"/></svg></button></div>
  </div>
  <div id="remote"><div id="rcrop"><div id="rimg">
   <div class="ir"><i id="ir"></i></div>
@@ -471,7 +472,7 @@ function showVol(){var v=$('#vol');v.innerHTML=mute?'MUTE':'VOLUME '+'|'.repeat(
 $$('#remote button').forEach(function(b){b.addEventListener('click',function(){key(b.dataset.k)})});
 $('#kch').onclick=function(){key('chup')};
 /* 10 nov. (Mauk Tenieb, 21 h 19) : un clic sur l'afficheur de chaîne passe à la chaîne suivante */
-$('#lcd').addEventListener('click',function(e){e.stopPropagation();if(av)avOff(1);else if(txt)zap(ch%CH.length+1);else key('chup')});$('#kvol').onclick=function(){key('volup')};$('#kpw').onclick=function(){key('power')};
+$('#lcd').addEventListener('click',function(e){e.stopPropagation();if(av)avOff(1);else if(txt)zap(ch%CH.length+1);else key('chup')});$('#kvol').onclick=function(){key('volup')};$('#kpw').onclick=function(){key('power')};$('#kav').onclick=function(){if(!power)key('power');if(av)avOff(ch);else avOn()};
 /* 10 nov., 17 h 41 (Mauk Tenieb : « les commandes passent par le clavier ») : chiffres, flèches, Entrée et Espace, t x m p, r g y c, e, Échap ; muet quand un champ de saisie a le focus */
 addEventListener('keydown',function(e){if(e.ctrlKey||e.metaKey||e.altKey)return;var t=e.target;if(t&&t.closest&&t.closest('input,textarea,select,[contenteditable]')){if(e.key==='Escape'){e.preventDefault();e.stopPropagation();t.blur()}return}
  var k=e.key,m=null;
