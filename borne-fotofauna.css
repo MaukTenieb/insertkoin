@@ -62,3 +62,10 @@ html header.top :is(#bShoot,#bOpen,#bMenu){min-width:44px!important;min-height:4
 .ff-row.more .ff-more{display:block}
 .ff-row:has(>.rail) .ff-more{right:-14px}
 html #laboBtn{min-width:44px!important}html header.top .logo{min-height:44px}
+/* 15 nov. 2026 (Mauk Tenieb, RELAIS § 29, 2 h 56 et 3 h 01 : « superbe, peu verbeux : que des pictogrammes ») : KamOrhogo sans texte explicatif ; les boutons à picto gardent leur nom en aria-label et en infobulle ; les fiches de la grille gardent l'image, le nom du rendu choisi passe en tête */
+.hint,#keysForm>p,#engSum,#puterSum,.lookBar .lf,.lookBar .ls,.lookBar .lh,#count,#pane-ai .tool>h3,#pane-lab .tool>h3{display:none!important}
+#grid .frame>b,#grid .frame>i{display:none!important}
+.kpt{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}
+#goImg .ic,#goVid .ic{width:24px;height:24px}
+.tool.kshut{display:none!important}
+.kkey{display:grid;place-items:center;min-width:44px;min-height:44px;margin:8px 0 0 auto}

@@ -120,3 +120,22 @@
   var G=document.getElementById('genres');
   if(G){var scan=function(){[].forEach.call(G.querySelectorAll('.rail'),arm);};new MutationObserver(scan).observe(G,{childList:true});scan();}
 })();
+/* 15 nov. 2026 (RELAIS § 29) : KamOrhogo en pictogrammes. Un bouton qui porte un picto perd son mot à l'écran ; le mot reste pour les lecteurs d'écran et en infobulle */
+(function(){
+  function pic(b){if(b.__kpt||!b.querySelector('svg'))return;var txt='';[].forEach.call(b.childNodes,function(n){if(n.nodeType===3&&n.textContent.trim()){txt+=n.textContent.trim()+' ';var s=document.createElement('span');s.className='kpt';s.textContent=n.textContent;b.replaceChild(s,n)}else if(n.nodeType===1&&n.tagName!=='svg'&&!n.querySelector('svg')&&n.textContent.trim()&&!n.classList.contains('kpt')){txt+=n.textContent.trim()+' ';n.classList.add('kpt')}});
+    txt=txt.trim();if(txt){if(!b.getAttribute('aria-label'))b.setAttribute('aria-label',txt);if(!b.title)b.title=txt}b.__kpt=1}
+  function scan(r){[].forEach.call((r||document).querySelectorAll('button'),pic)}
+  var q=0;new MutationObserver(function(){if(q)return;q=requestAnimationFrame(function(){q=0;scan()})}).observe(document.documentElement,{childList:true,subtree:true});
+  if(document.readyState==='loading')addEventListener('DOMContentLoaded',function(){scan()});else scan();
+})();
+/* 15 nov. 2026 (RELAIS § 29) : FaunAI en pictos — IMAGE et VIDÉO deviennent leurs pictos ; les clés des moteurs se replient derrière une clé */
+(function(){
+  var IMG='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m4.5 17 5-5.5 3.5 3.5 2.5-2.5 4 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+      VID='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m10 9 5 3-5 3z" fill="currentColor"/></svg>',
+      KEY='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 12h9M18 12v3M21 12v2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+  function go(){var a=document.getElementById('goImg'),b=document.getElementById('goVid'),k=document.getElementById('keysForm');if(!a||!b||!k)return setTimeout(go,400);
+    [[a,IMG],[b,VID]].forEach(function(x){var t=x[0].textContent.trim();if(t){x[0].setAttribute('aria-label',t);x[0].title=t}x[0].innerHTML=x[1];new MutationObserver(function(){if(!x[0].querySelector('svg')){var t2=x[0].textContent.trim();if(t2){x[0].setAttribute('aria-label',t2);x[0].title=t2}x[0].innerHTML=x[1]}}).observe(x[0],{childList:true})});
+    var tool=k.closest('.tool');if(!tool||tool.__key)return;tool.__key=1;tool.classList.add('kshut');var kb=document.createElement('button');kb.type='button';kb.className='key kkey';kb.innerHTML=KEY;kb.setAttribute('aria-label','API');kb.title='API';kb.setAttribute('aria-expanded','false');
+    kb.onclick=function(){var o=tool.classList.toggle('kshut');kb.setAttribute('aria-expanded',String(!o))};tool.parentNode.insertBefore(kb,tool)}
+  if(document.readyState==='loading')addEventListener('DOMContentLoaded',go);else go();
+})();
