@@ -418,7 +418,7 @@ function conStep(st,at,ms,sol){/* un emplacement par pas */if(st>=S.ns)return;va
   setTimeout(function(){if(!STG.con||!S.play)return;[].forEach.call(STG.con.querySelectorAll('.mzslot'),function(x,i){x.classList.toggle('hd',i===j)});var im=c&&STG.con.children[j]&&STG.con.children[j].querySelector('img,canvas');if(c&&c.mask)figHop(c.mask,0);
     if(im&&im.animate)im.animate([{transform:'translateY(0)'},{transform:'translateY(-7%)'},{transform:'translateY(0)'}],{duration:180,easing:'ease-out'})},ms)}
 /* 15 nov. 2026 (Mauk Tenieb : « non pas les noms, qui sont verbeux, mais les figurines 3D de Skoporhogo ») : les Masks de Musik sont les corps 3D de SkopoRhogo (skopo-figs.js, tiré de skoporhogo.html), rendus en pixels par un seul moteur three.js partagé ; chaque figurine garde sa stature, se balance au repos et saute quand sa piste joue */
-var FIG={st:0,p:null,R:null,sc:null,cam:null,m:{},hmax:1,hop:{},raf:0,last:0};
+var FIG={st:0,p:null,R:null,sc:null,cam:null,m:{},hmax:1,hop:{},raf:0,last:0,lastAll:0,w:0,h:0};
 function figLoad(){if(FIG.p)return FIG.p;FIG.p=new Promise(function(ok){function add(u,cb){var x=document.createElement('script');x.src=base()+u;x.onload=cb;x.onerror=function(){ok(false)};document.head.appendChild(x)}
   (window.THREE?function(c){c()}:function(c){add('three.min.js',c)})(function(){window.SkopoFigs?ok(true):add('skopo-figs.js',function(){ok(!!window.SkopoFigs)})})});return FIG.p}
 function figInit(){if(FIG.R)return true;var T=window.THREE;if(!T||!window.SkopoFigs)return false;
@@ -432,17 +432,18 @@ function figRun(){if(!FIG.raf)FIG.raf=requestAnimationFrame(figFrame)}
 function figFrame(now){FIG.raf=0;var L=ROOT?ROOT.querySelectorAll('canvas.mzfc'):[];if(!L.length)return;
   if(!figInit()){figLoad().then(function(ok){if(ok)figRun()});return}
   var busy=S.play||Object.keys(FIG.hop).some(function(k){return now-FIG.hop[k]<260});
-  if(now-FIG.last<(busy?33:80)){figRun();return}FIG.last=now;var T=window.THREE,t=now/1000,R=FIG.R;
-  [].forEach.call(L,function(cv,i){var k=cv.dataset.mask,o=FIG.m[k];if(!o)return;var w=Math.max(8,Math.round(cv.clientWidth)),h=Math.max(8,Math.round(cv.clientHeight));
-    if(!w||!h||!cv.offsetParent)return;if(cv.width!==w)cv.width=w;if(cv.height!==h)cv.height=h;
-    var hp=FIG.hop[k]?Math.max(0,1-(now-FIG.hop[k])/260):0,j=Math.sin(hp*Math.PI),f=o.figs[0];
+  if(now-FIG.last<(busy?33:90)){figRun();return}FIG.last=now;var T=window.THREE,t=now/1000,R=FIG.R;
+  /* économie : le balancement se redessine 11 fois par seconde, seules les figurines qui sautent suivent le tempo */var all=now-FIG.lastAll>=90;if(all)FIG.lastAll=now;
+  [].forEach.call(L,function(cv,i){var k=cv.dataset.mask,o=FIG.m[k];if(!o)return;var hp=FIG.hop[k]?Math.max(0,1-(now-FIG.hop[k])/260):0;if(!all&&!hp&&!cv.__hp)return;cv.__hp=hp>0;
+    if(!cv.offsetParent)return;var w=Math.max(8,Math.round(cv.clientWidth)),h=Math.max(8,Math.round(cv.clientHeight));if(cv.width!==w)cv.width=w;if(cv.height!==h)cv.height=h;
+    var j=Math.sin(hp*Math.PI),f=o.figs[0];
     o.g.rotation.y=-.42+Math.sin(t*.7+i*1.7)*.32;o.g.position.y=-o.y0+j*o.h*.12;
     if(f&&f.arms&&f.arms.length>1){f.arms[0].rotation.z=-j*1.9;f.arms[1].rotation.z=j*1.9;f.arms[0].rotation.x=f.arms[1].rotation.x=0}
     if(f&&f.legs)f.legs.forEach(function(l,n){l.rotation.x=j*(n?-.5:.5)});
     for(var q=0;q<o.figs.length;q++)if(o.figs[q].fx)try{o.figs[q].fx(t,{moving:hp>0})}catch(e){}
     /* stature : le plus grand des Masks remplit la hauteur, les autres gardent leur taille relative */var vh=FIG.hmax*1.1,vw=vh*w/h;
     FIG.cam.left=-vw/2;FIG.cam.right=vw/2;FIG.cam.top=vh*.97;FIG.cam.bottom=-vh*.03;FIG.cam.updateProjectionMatrix();
-    FIG.sc.add(o.g);R.setSize(w,h,false);R.render(FIG.sc,FIG.cam);FIG.sc.remove(o.g);
+    FIG.sc.add(o.g);if(FIG.w!==w||FIG.h!==h){R.setSize(w,h,false);FIG.w=w;FIG.h=h}R.render(FIG.sc,FIG.cam);FIG.sc.remove(o.g);
     var x=cv.getContext('2d');x.clearRect(0,0,w,h);x.drawImage(R.domElement,0,0)});
   figRun()}
 function figCss(){if(document.getElementById('mz-fig-css'))return;var st=document.createElement('style');st.id='mz-fig-css';st.textContent=
