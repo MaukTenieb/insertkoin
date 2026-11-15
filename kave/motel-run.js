@@ -113,20 +113,18 @@ window.MotelRun=function(host,want){
  var face=document.createElement('img');face.src='a/b-'+key+'.webp';face.alt='';face.className='mrun-buste';
  face.style.cssText='position:absolute;left:2%;bottom:2.5%;height:20%;width:auto;pointer-events:none;image-rendering:auto';
  host.appendChild(face);
- var px=0.5,py=0.5,dir=0,ang=0,speed=reduce?1.0:4.5,last=performance.now(),gait=0,alive=true,turn=0,idle=9,pendT=0,cell=-1,auto=true,odo=0,lastT=-9;
- var DX=[1,0,-1,0],DY=[0,1,0,-1],held={},ptr=null,tq=0,TURN=1.0,RAD=0.34,adep=CAMD,trail=[],cx=0,cy=0,ca=0,depth=CAMD;
+ var px=0.5,py=0.5,dir=0,ang=0,speed=reduce?1.0:3.8,last=performance.now(),gait=0,alive=true,turn=0,idle=9,pendT=0,cell=-1,auto=true,odo=0,lastT=-9;
+ var DX=[1,0,-1,0],DY=[0,1,0,-1],held={},ptr=null,tq=0,TURN=3.1,RAD=0.34,trail=[],cx=0,cy=0,ca=0,depth=CAMD;
  var st={t:0,minClear:9,minFront:99,minDepth:99,contacts:0,cuts:0};
  var KM={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d',a:'l',q:'l',d:'r',w:'u',z:'u',s:'d'};
  function own(e){return !(e.target&&e.target.closest&&e.target.closest('input,textarea,.win'))}
- function key_(e){if(!alive||!own(e))return;var k=KM[e.key.length===1?e.key.toLowerCase():e.key];if(!k)return;if(!held[k]&&(k==='l'||k==='r'))tq=k==='r'?1:-1;if(!held[k])held[k]=performance.now();idle=0;if(e.key.indexOf('Arrow')===0)e.preventDefault()}
+ function key_(e){if(!alive||!own(e))return;var k=KM[e.key.length===1?e.key.toLowerCase():e.key];if(!k)return;if(!held[k]&&(k==='l'||k==='r'))want=k==='r'?1:3;held[k]=1;idle=0;if(e.key.indexOf('Arrow')===0)e.preventDefault()}
  function keyu_(e){var k=KM[e.key.length===1?e.key.toLowerCase():e.key];if(k)held[k]=0}
  function blur_(){held={};ptr=null}
  addEventListener('keydown',key_);addEventListener('keyup',keyu_);addEventListener('blur',blur_);
  function down_(e){var r=cv.getBoundingClientRect();ptr={x:e.clientX,x0:e.clientX,t0:Date.now(),cx:r.left+r.width/2,w:r.width};idle=0}
  cv.addEventListener('pointerdown',function(e){down_(e);try{cv.setPointerCapture(e.pointerId)}catch(_){}});
- 
- function up_(){if(ptr&&Date.now()-ptr.t0<220&&!ptr.held)tq=ptr.x0<ptr.cx?-1:1;ptr=null}
- cv.addEventListener('pointermove',function(e){if(ptr)ptr.x=e.clientX});cv.addEventListener('pointerup',up_);cv.addEventListener('pointercancel',up_);
+  function up_(){if(ptr)want=ptr.x0<ptr.cx?3:1;ptr=null}cv.addEventListener('pointerup',up_);cv.addEventListener('pointercancel',up_);
  function open_(x,y){return !solid(Math.floor(x),Math.floor(y))}
  function wrap(a){while(a>Math.PI)a-=2*Math.PI;while(a<-Math.PI)a+=2*Math.PI;return a}
  function free(gx,gy,d){return !solid(gx+DX[d],gy+DY[d])}
@@ -135,65 +133,36 @@ window.MotelRun=function(host,want){
  /* distance du Mask au mur le plus proche */
  function clear_(){var gx=Math.floor(px),gy=Math.floor(py),best=9;for(var j=-1;j<=1;j++)for(var i=-1;i<=1;i++){if(!solid(gx+i,gy+j))continue;
   var qx=Math.max(gx+i,Math.min(px,gx+i+1)),qy=Math.max(gy+j,Math.min(py,gy+j+1));best=Math.min(best,Math.hypot(px-qx,py-qy))}return best}
- /* 15 nov. 2026, 3 h 48 (Mauk Tenieb : « jouable et agréable simplement : toujours même allure, commandes simples, braquages normaux, zéro blocage contre les murs, enchaîner immédiatement », « comme la démo en noir et blanc ») :
-    le joueur court sur les rails de la démo — centre de la travée, allure constante, virage engagé à l'entrée du carrefour ; gauche ou droite (touche ou clic du côté voulu) choisit le prochain virage de ce côté, pris tout de suite s'il s'ouvre là, sinon au prochain carrefour ; le Mask ne touche jamais un mur */
- var want=0,LANE=0;/* 15 nov. 2026, 10 h 17 (Mauk Tenieb : « le coureur braque beaucoup trop et ne va pas assez au contact des murs ») : il court le long d'un mur, à touche-touche ; avant un virage il passe au mur extérieur, d'où un virage large et doux */
- /* 15 nov. 2026, 11 h 04 (Mauk Tenieb : « un drive inn qui fasse le boulot : un bon jeu ») et 2 h 05 (« le mode démo se comporte bien, je veux que le mode jeu se comporte aussi bien à l'abord des murs ») :
-    touche ou doigt tenu d'un côté = virage libre à la Doom, à vitesse normale (1,8 rad/s, montée en 0,12 s), allure constante, glissement au mur ;
-    dès qu'on lâche, le Mask reprend aussitôt la course de la démo (zéro blocage, zéro cul-de-sac : les couloirs du motel sont des lignes infinies) ;
-    tape courte ou flèche tapée = prochain virage de ce côté, comme avant */
- var steer=0,STEER=1.0;/* 15 nov. 2026, 17 h 57 (Mauk Tenieb : « course continue et rapide, braquages modérés, beaucoup moins qu'un angle droit ; se prendre un mur, on s'en fout, la course se poursuit ») : virage plafonné à 1 rad/s partout, allure 4,5, le mur sert d'appui */
- function held_(){var now=performance.now(),h=(held.r&&now-held.r>=150?1:0)-(held.l&&now-held.l>=150?1:0);if(ptr){var dx=ptr.x-ptr.x0,el=Date.now()-ptr.t0;if(ptr.drag||Math.abs(dx)>ptr.w*0.04){ptr.held=1;ptr.drag=1;h=Math.max(-1,Math.min(1,dx/(ptr.w*0.18)))}else if(el>=220){ptr.held=1;h=ptr.x0<ptr.cx?-1:1}}return h}
- function step(dt){var hs=held_();steer=hs?steer+(hs-steer)*Math.min(1,dt/0.12):0;if(Math.abs(hs)>0.01){idle=0;auto=false;want=0;tq=0;pendT=0}
-  if(!auto&&Math.abs(hs)<=0.01)steer=0;
-  if(!auto&&steer!==0){var sp0=speed;ang=wrap(ang+steer*STEER*dt);turn+=(steer*STEER-turn)*Math.min(1,dt*12);var vx=Math.cos(ang)*sp0*dt,vy=Math.sin(ang)*sp0*dt,ox=px,oy=py;slide(vx,vy,sp0*dt,true);var mv=Math.hypot(px-ox,py-oy);gait+=mv*2.6;odo+=mv;cdt=dt;camera();return}
-  if(tq){want=tq>0?1:3;tq=0}var man_=!!want;if(man_)idle=0;else idle+=dt;var tr=0,sp=speed,gx=Math.floor(px),gy=Math.floor(py);
+ /* 15 nov. 2026, 19 h 02 (Mauk Tenieb : « tu refous la démo comme quand elle était bien » ; « les contrôles gauche, droite doivent laisser toute caméra absolument identique et juste faire braquer le coureur dans le dédale » ; « ça court, ça continue quand ça touche un mur » ; « le coureur va à gauche ou à droite selon commandes. Pas plus, pas moins ») :
+    la course est toujours celle de la démo du 12 nov., 21 h 17 (c4f76f2), caméra comprise ; gauche ou droite (touche, clic ou doigt du côté voulu) fait prendre au coureur le prochain couloir de ce côté, tout de suite s'il s'ouvre là, sinon au prochain carrefour */
+ var want=0;
+ function step(dt){idle+=dt;var tr=0,sp=speed,gx=Math.floor(px),gy=Math.floor(py);
    var id=gx*100003+gy,cxm=gx+0.5,cym=gy+0.5;
    if(!auto){auto=true;var bd=dir,bs=-9;for(var d0=0;d0<4;d0++){if(!free(gx,gy,d0))continue;var sc=Math.cos(ang-d0*Math.PI/2);if(sc>bs){bs=sc;bd=d0}}dir=bd;cell=id;pendT=0}
    var along=(cxm-px)*DX[dir]+(cym-py)*DY[dir];
    if(id!==cell){cell=id;pendT=0;var o2=[1,3].filter(function(t){return free(gx,gy,(dir+t)%4)});
     if(want&&o2.indexOf(want)>=0){pendT=want;want=0}
-    else if(!free(gx,gy,dir))pendT=o2.length?o2.slice().sort(function(a,b){return Math.cos(ang-((dir+b)%4)*Math.PI/2)-Math.cos(ang-((dir+a)%4)*Math.PI/2)})[0]:2;/* mur une case devant : virage obligé */
-    else if(idle>8&&o2.length&&odo-lastT>2.2&&Math.random()<0.4)pendT=o2[Math.floor(Math.random()*o2.length)]}
+    else if(!free(gx,gy,dir))pendT=o2.length?o2[Math.floor(Math.random()*o2.length)]:2;/* mur une case devant : virage obligé */
+    else if(!want&&idle>8&&o2.length&&odo-lastT>2.2&&Math.random()<0.4)pendT=o2[Math.floor(Math.random()*o2.length)]}
    else if(want&&!pendT&&along>=0.3&&free(gx,gy,(dir+want)%4)){pendT=want;want=0}
-   if(pendT&&along<0.42){dir=(dir+pendT)%4;pendT=0;lastT=odo}
-   if(pendT===1)LANE=0.14;else if(pendT===3)LANE=-0.14;var lat=(cxm-px)*(-DY[dir])+(cym-py)*DX[dir],wa=dir*Math.PI/2+Math.max(-0.6,Math.min(0.6,(lat-LANE)*2)),dd=wrap(wa-ang);
-   tr=Math.max(-1,Math.min(1,dd*8));ang+=Math.max(-Math.abs(dd),Math.min(Math.abs(dd),tr*dt));
+   if(pendT&&along<0.3){dir=(dir+pendT)%4;pendT=0;lastT=odo}
+   var lat=(cxm-px)*(-DY[dir])+(cym-py)*DX[dir],wa=dir*Math.PI/2+Math.max(-0.6,Math.min(0.6,lat*2)),dd=wrap(wa-ang);
+   tr=Math.max(-5.5,Math.min(5.5,dd*10));ang+=Math.max(-Math.abs(dd),Math.min(Math.abs(dd),tr*dt));sp=speed*(Math.abs(dd)>0.6?0.6:1);
   turn+=(tr-turn)*Math.min(1,dt*12);
   /* glisse le long des murs */
-  /* 15 nov. 2026 : au mur, à la Doom, la composante bloquée tombe et l'autre garde au moins 75 % de l'allure ; les jambes suivent le chemin parcouru, jamais de course sur place */
-  var vx=Math.cos(ang)*sp*dt,vy=Math.sin(ang)*sp*dt,ox=px,oy=py;var al=slide(vx,vy,sp*dt,false);
-  if(al!=null&&!auto){var da=wrap(al-ang);ang+=Math.max(-2.5*dt,Math.min(2.5*dt,da))}
-  var mv=Math.hypot(px-ox,py-oy);ang=wrap(ang);gait+=mv*2.6;odo+=mv;cdt=dt;camera()}
-
- function slide(vx,vy,V,man){var okx=function(v){var sx=v>0?RAD:-RAD;return open_(px+v+sx,py-RAD)&&open_(px+v+sx,py+RAD)},oky=function(v){var sy=v>0?RAD:-RAD;return open_(px-RAD,py+v+sy)&&open_(px+RAD,py+v+sy)};
-  var bx=!okx(vx),by=!oky(vy),al=null;
-  if(bx&&!by){vx=0;vy=(Math.abs(vy)<0.2*V?(probe(Math.PI/2,2)>=probe(-Math.PI/2,2)?1:-1):(vy<0?-1:1))*V;al=vy>0?Math.PI/2:-Math.PI/2}
-  else if(by&&!bx){vy=0;vx=(Math.abs(vx)<0.2*V?(probe(0,2)>=probe(Math.PI,2)?1:-1):(vx<0?-1:1))*V;al=vx>0?0:Math.PI}
-  else if(bx&&by){var cs=[[V,0,0],[-V,0,Math.PI],[0,V,Math.PI/2],[0,-V,-Math.PI/2]].filter(function(c){return c[0]?okx(c[0]):oky(c[1])}).sort(function(a,b){return Math.cos(b[2]-ang)-Math.cos(a[2]-ang)});if(cs.length){vx=cs[0][0];vy=cs[0][1];al=cs[0][2]}else{vx=vy=0}}
-  if(vx&&okx(vx))px+=vx;if(vy&&oky(vy))py+=vy;
-  if(man&&al!=null&&Math.abs(steer)<0.3){var da=wrap(al-ang);ang+=Math.max(-1.0*cdt,Math.min(1.0*cdt,da))}return al}
+  var vx=Math.cos(ang)*sp*dt,vy=Math.sin(ang)*sp*dt,sx=vx>0?RAD:-RAD,sy=vy>0?RAD:-RAD;
+  if(open_(px+vx+sx,py-RAD)&&open_(px+vx+sx,py+RAD))px+=vx;
+  if(open_(px-RAD,py+vy+sy)&&open_(px+RAD,py+vy+sy))py+=vy;
+  ang=wrap(ang);gait+=sp*dt*3.4;odo+=sp*dt;camera()}
  function sight(x,y){var n=Math.ceil(Math.hypot(px-x,py-y)/0.05);for(var i=1;i<n;i++){var t=i/n;if(!open_(x+(px-x)*t,y+(py-y)*t))return false}return true}
- /* 13 nov. 2026 (Mauk Tenieb, 15 h 37 : « La caméra re-merde » ; 6 h 09 et 13 h 35 : la scène « se refait » quand le Mask bute contre un mur) :
-    caméra de poursuite à la Quake (chase cam) : derrière le Mask sur son cap, un pas en arrière, tournée vers lui ; elle suit le cap par un ressort,
-    se rapproche à l'instant où un mur passe derrière elle et s'éloigne en douceur ; zéro coupure, zéro saut de plan. */
- var cdt=0.016,cyaw=null;
- function back(a){var d=probe(a,CAMD+0.3),s=0.12,l=Math.cos(a+Math.PI/2)*s,m=Math.sin(a+Math.PI/2)*s,x0=px,y0=py;
-  px=x0+l;py=y0+m;d=Math.min(d,probe(a,CAMD+0.3));px=x0-l;py=y0-m;d=Math.min(d,probe(a,CAMD+0.3));px=x0;py=y0;return Math.max(0.35,d-0.18)}
- function reseed(){cyaw=ang;depth=Math.min(CAMD,back(ang+Math.PI));cx=px-Math.cos(ang)*depth;cy=py-Math.sin(ang)*depth;ca=ang}
- /* 15 nov. 2026, 2 h 05 (Mauk Tenieb : « arrête de faire sauter la caméra ») : la caméra suit le Mask sur sa trace, à un pas derrière lui sur le chemin qu'il vient de parcourir ;
-    la trace passe par où le Mask a marché, la caméra reste donc hors des murs sans se rapprocher d'un coup ; elle regarde dans le cap du Mask, qu'elle suit par un ressort */
- /* 15 nov. 2026, 4 h 30 (Mauk Tenieb : « ça braque trop », « la caméra qui saute dans le dos du coureur », « zéro saut ») : une seule caméra, démo et jeu.
-    Sa place : sur la trace du Mask, un pas derrière lui sur le chemin qu'il vient de courir (donc toujours hors des murs) ; elle y glisse à vitesse bornée, zéro téléportation.
-    Son regard : vers le Mask, tourné à 115 °/s au plus, en ressort doux ; zéro rabat dans son dos. */
- function camera(){if(cyaw===null)reseed();if(!trail.length)trail=[[cx,cy],[px,py]];
-  var L=trail[trail.length-1];if(Math.hypot(px-L[0],py-L[1])>0.03)trail.push([px,py]);if(trail.length>400)trail.splice(0,trail.length-400);
-  var need=CAMD,qx=px,qy=py,i=trail.length-1;
-  while(i>0&&need>0){var a2=trail[i-1],sl=Math.hypot(qx-a2[0],qy-a2[1]);if(sl>=need){qx+=(a2[0]-qx)*need/sl;qy+=(a2[1]-qy)*need/sl;need=0;break}need-=sl;qx=a2[0];qy=a2[1];i--}
-  var mx=qx-cx,my=qy-cy,ml=Math.hypot(mx,my),lim=Math.max(0.02,speed*cdt*1.5);if(ml>lim){mx*=lim/ml;my*=lim/ml}
-  if(open_(cx+mx,cy+my)){cx+=mx;cy+=my}else{if(open_(cx+mx,cy))cx+=mx;if(open_(cx,cy+my))cy+=my}
-  var ty=Math.atan2(py-cy,px-cx);if(Math.hypot(px-cx,py-cy)<0.05)ty=ang;var dyw=wrap(ty-cyaw),stp=dyw*Math.min(1,cdt*4),LIM=2.0*cdt;cyaw=wrap(cyaw+Math.max(-LIM,Math.min(LIM,stp)));
-  depth=Math.max(0.3,Math.hypot(px-cx,py-cy));ca=cyaw}
+ /* caméra sur la trace du Mask, un pas derrière lui, tournée vers lui */
+ function reseed(){var b=Math.min(CAMD,probe(ang+Math.PI,CAMD+0.3)-0.2);trail=[[px-Math.cos(ang)*b,py-Math.sin(ang)*b],[px,py]];st.cuts++}
+ function camera(){var L=trail[trail.length-1];if(!L||Math.hypot(px-L[0],py-L[1])>0.03)trail.push([px,py]);if(trail.length>500)trail.shift();
+  var q=null;for(var i=trail.length-2;i>=0;i--){var A=trail[i];if(!sight(A[0],A[1])){q=trail[i+1];break}if(Math.hypot(A[0]-px,A[1]-py)>=CAMD){var B=trail[i+1],lo=0,hi=1;for(var k=0;k<10;k++){var mid=(lo+hi)/2,x=A[0]+(B[0]-A[0])*mid,y=A[1]+(B[1]-A[1])*mid;if(Math.hypot(x-px,y-py)>=CAMD)lo=mid;else hi=mid}q=[A[0]+(B[0]-A[0])*lo,A[1]+(B[1]-A[1])*lo];break}}
+  if(!q){q=trail[0];if(Math.hypot(q[0]-px,q[1]-py)<0.3){reseed();q=trail[0]}}
+  var hx=Math.cos(ang),hy=Math.sin(ang),rx=px-q[0],ry=py-q[1],rl=Math.hypot(rx,ry)||1;
+  if((rx*hx+ry*hy)/rl<-0.3){reseed();q=trail[0];rx=px-q[0];ry=py-q[1];rl=Math.hypot(rx,ry)||1}
+  cx=q[0];cy=q[1];ca=Math.atan2(ry,rx);depth=rl}
  function cast(){
   var dx=Math.cos(ca),dy=Math.sin(ca),plx=-dy*FOV,ply=dx*FOV,bob=reduce?0:Math.sin(gait*3.2)*1.2;
   /* sol et plafond */
@@ -217,10 +186,10 @@ window.MotelRun=function(host,want){
   for(var xs=Math.max(0,x0);xs<Math.min(W,x0+Math.round(w));xs++){if(zb[xs]<dz)continue;var si=Math.floor((xs+0.5-x0)/k);if(si>=0&&si<fr.width)c.drawImage(fr,si,0,1,fr.height,xs,y0_,1,hh)}c.filter='none';
   st.minFront=Math.min(st.minFront,zb[W>>1]);st.minDepth=Math.min(st.minDepth,dz)}
  function shade(col,s){var r=col&255,g=(col>>8)&255,b=(col>>16)&255;return (255<<24)|(((b*s)|0)<<16)|(((g*s)|0)<<8)|((r*s)|0)}
- function loop(t){if(!alive)return;/* 10 nov. (Mauk Tenieb, 21 h 11) : en fond d'écran, noir et blanc ; dès que le visiteur prend la course en main, le jeu passe en couleur */var nb=idle>=8;if(nb!==bw){bw=nb;cv.style.filter=bw?'grayscale(1) contrast(1.12) brightness(1.05)':'none'}var dt=Math.max(0,Math.min(0.05,(t-last)/1000));last=t;if(!document.hidden){st.t+=dt;step(dt);var cl=clear_();st.minClear=Math.min(st.minClear,cl);if(cl<0.3)st.contacts++;cast()}requestAnimationFrame(loop)}
+ function loop(t){if(!alive)return;/* 10 nov. (Mauk Tenieb, 21 h 11) : en fond d'écran, noir et blanc ; dès que le visiteur prend la course en main, le jeu passe en couleur */var nb=idle>=2.5;if(nb!==bw){bw=nb;cv.style.filter=bw?'grayscale(1) contrast(1.12) brightness(1.05)':'none'}var dt=Math.max(0,Math.min(0.05,(t-last)/1000));last=t;if(!document.hidden){st.t+=dt;step(dt);var cl=clear_();st.minClear=Math.min(st.minClear,cl);if(cl<0.3)st.contacts++;cast()}requestAnimationFrame(loop)}
  reseed();st.cuts=0;requestAnimationFrame(loop);
  var api={stop:function(){alive=false;removeEventListener('keydown',key_);removeEventListener('keyup',keyu_);removeEventListener('blur',blur_);cv.remove();face.remove()},mask:key,st:st,
-  down:down_,up:up_,move:function(e){if(ptr)ptr.x=e.clientX},
-  pos:function(){return {px:px,py:py,ang:ang,cx:cx,cy:cy,ca:ca,depth:depth,auto:auto}}};
+  down:down_,up:up_,move:function(e){},
+  pos:function(){return {px:px,py:py,ang:ang,cx:cx,cy:cy,depth:depth,auto:auto}}};
  window.MotelRun.cur=api;return api};
 })();
