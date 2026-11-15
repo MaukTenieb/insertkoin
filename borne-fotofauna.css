@@ -69,3 +69,19 @@ html #laboBtn{min-width:44px!important}html header.top .logo{min-height:44px}
 #goImg .ic,#goVid .ic{width:24px;height:24px}
 .tool.kshut{display:none!important}
 .kkey{display:grid;place-items:center;min-width:44px;min-height:44px;margin:8px 0 0 auto}
+/* 16 nov. 2026, lot 1 « carcasse » (Mauk Tenieb, 0 h 01 : « prendre en main le caméscope en entier ») :
+   téléphone couché — la colonne entière défile, les onglets restent en tête, la grille des rendus retrouve toute la hauteur ;
+   cibles de 44 px partout ; la pellicule passe au-dessus du compteur et de la date ; micro armé visible dans l'écran */
+@media (orientation:landscape) and (max-height:480px){
+  html.ike-on .ctrl{overflow-y:auto!important;overscroll-behavior:contain;scroll-snap-type:y proximity}
+  html.ike-on .ctrl .inspector{height:auto!important;flex:none!important;overflow:visible!important}
+  html.ike-on .ctrl #pane-looks,html.ike-on .ctrl .pane,html.ike-on .ctrl .browse{height:auto!important;max-height:none!important;flex:none!important;overflow:visible!important}
+  html.ike-on .ctrl .dock{position:sticky!important;top:0;z-index:12;background:var(--panel,#14110d);scroll-snap-align:start}
+}
+.sw button{height:44px!important}
+#q{min-height:44px}
+#bRand{min-width:44px!important;min-height:44px!important;justify-content:center}
+.gchip,.fam{min-width:44px}
+.fob{position:relative}.fob::after{content:"";position:absolute;inset:-4px -13px}
+.ff-strip{bottom:calc(8px + 2.6em)}
+#hMode .hMic{display:inline-block!important;width:1.05em;height:1.05em;margin-left:.6em;vertical-align:-.15em;color:#ff5a4a;filter:drop-shadow(0 0 3px rgba(255,80,60,.7))}

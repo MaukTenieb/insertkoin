@@ -12458,7 +12458,7 @@ function hudOff(){if(HUD.ac){try{HUD.ac.close()}catch{}}HUD.an=HUD.src=HUD.ac=nu
 let HUDC=null;
 (function hudLoop(){if(typeof kEff==="function"){const c=CAM?(CAM.scr?2:1):0;if(c!==HUDC||(!REC&&!SREC&&PVMODE!==(MK&&!CAM?"son":PIKVID))){HUDC=c;kEff()}}const h=$("hud"),cam=$("stageWrap").classList.contains("live"),live=cam||!!SREC||PVMODE==="son";h.hidden=!live;
  if(live){const recOn=!!REC||!!SREC,md=PVMODE==="video"?"VIDEO":PVMODE==="son"?(LANG==="fr"?"SON":"SOUND"):"PHOTO";
-  $("hMode").innerHTML=recOn?'<span class="rec"><i class="dot"></i>REC</span>':"STBY "+md;
+  $("hMode").innerHTML=(recOn?'<span class="rec"><i class="dot"></i>REC</span>':"STBY "+md)+(MK&&cam&&PVMODE==="video"?'<svg class="ic hMic" aria-hidden="true"><use href="#i-mic"/></svg>':"");
   const t0=REC&&REC.t0?REC.t0:SREC?SREC.t0:0,el=recOn?Math.max(0,((SREC?Date.now():performance.now())-t0)/1000):0;
   $("hTc").textContent=Math.floor(el/3600)+":"+String(Math.floor(el/60)%60).padStart(2,"0")+":"+String(Math.floor(el)%60).padStart(2,"0");
   const dt=hudRep(new Date());if($("hDate").textContent!==dt)$("hDate").textContent=dt;
@@ -12482,7 +12482,7 @@ document.querySelectorAll("#kObj button").forEach(b=>b.onclick=()=>{KMASK=b.data
 document.querySelectorAll("#kPv button").forEach(b=>b.onclick=()=>{if(REC||SREC)return;PIKVID=b.dataset.v;kEff()});
 /* le micro sur la commode : l'image du dictaphone tant qu'aucune prise du visiteur n'occupe l'écran */
 async function kMikPic(){if(S.own||CAM||VM)return;try{const u=window.__pfStart;window.__pfStart=MK?"kave/a/mikro.webp":ikMask();const im=await startImage();window.__pfStart=u;if(!S.own&&!CAM)await setSource(im,false);render()}catch{}}
-$("kMik").onclick=()=>{if(SREC){sonStop();return}if(REC)return;MK=!MK;kEff();kMikPic()};
+$("kMik").onclick=()=>{if(SREC){sonStop();return}if(REC)return;MK=!MK;if(MK&&CAM&&PIKVID==="photo")PIKVID="video";kEff();kMikPic()};
 $("kWand").onclick=()=>{showPane("ai");const p=$("prompt");if(p){p.focus();if(!matchMedia("(min-width:1000px)").matches)p.scrollIntoView({behavior:"smooth",block:"center"})}};
 $("kImp").onclick=()=>$("fOpen").click();
 /* la recette : la pile de rendus gardée dans l'appareil, reprise d'un appui sur l'étagère */
