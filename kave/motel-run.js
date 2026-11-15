@@ -118,13 +118,13 @@ window.MotelRun=function(host,want){
  var st={t:0,minClear:9,minFront:99,minDepth:99,contacts:0,cuts:0};
  var KM={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d',a:'l',q:'l',d:'r',w:'u',z:'u',s:'d'};
  function own(e){return !(e.target&&e.target.closest&&e.target.closest('input,textarea,.win'))}
- function key_(e){if(!alive||!own(e))return;var k=KM[e.key.length===1?e.key.toLowerCase():e.key];if(!k)return;if(!held[k]&&(k==='l'||k==='r'))want=k==='r'?1:3;held[k]=1;idle=0;if(e.key.indexOf('Arrow')===0)e.preventDefault()}
+ function key_(e){if(!alive||!own(e))return;var k=KM[e.key.length===1?e.key.toLowerCase():e.key];if(!k)return;if(!held[k]&&(k==='l'||k==='r')){nud+=(k==='r'?1:-1)*NUDGE;man=true}held[k]=1;idle=0;if(e.key.indexOf('Arrow')===0)e.preventDefault()}
  function keyu_(e){var k=KM[e.key.length===1?e.key.toLowerCase():e.key];if(k)held[k]=0}
  function blur_(){held={};ptr=null}
  addEventListener('keydown',key_);addEventListener('keyup',keyu_);addEventListener('blur',blur_);
- function down_(e){var r=cv.getBoundingClientRect();ptr={x:e.clientX,x0:e.clientX,t0:Date.now(),cx:r.left+r.width/2,w:r.width};idle=0}
+ function down_(e){var r=cv.getBoundingClientRect();ptr={x:e.clientX,x0:e.clientX,t0:Date.now(),cx:r.left+r.width/2,w:r.width};idle=0;man=true}
  cv.addEventListener('pointerdown',function(e){down_(e);try{cv.setPointerCapture(e.pointerId)}catch(_){}});
-  function up_(){if(ptr)want=ptr.x0<ptr.cx?3:1;ptr=null}cv.addEventListener('pointerup',up_);cv.addEventListener('pointercancel',up_);
+  function up_(){if(ptr&&Date.now()-ptr.t0<260){nud+=(ptr.x0<ptr.cx?-1:1)*NUDGE;man=true}ptr=null}cv.addEventListener('pointerup',up_);cv.addEventListener('pointercancel',up_);
  function open_(x,y){return !solid(Math.floor(x),Math.floor(y))}
  function wrap(a){while(a>Math.PI)a-=2*Math.PI;while(a<-Math.PI)a+=2*Math.PI;return a}
  function free(gx,gy,d){return !solid(gx+DX[d],gy+DY[d])}
@@ -133,26 +133,32 @@ window.MotelRun=function(host,want){
  /* distance du Mask au mur le plus proche */
  function clear_(){var gx=Math.floor(px),gy=Math.floor(py),best=9;for(var j=-1;j<=1;j++)for(var i=-1;i<=1;i++){if(!solid(gx+i,gy+j))continue;
   var qx=Math.max(gx+i,Math.min(px,gx+i+1)),qy=Math.max(gy+j,Math.min(py,gy+j+1));best=Math.min(best,Math.hypot(px-qx,py-qy))}return best}
- /* 15 nov. 2026, 19 h 02 (Mauk Tenieb : « tu refous la démo comme quand elle était bien » ; « les contrôles gauche, droite doivent laisser toute caméra absolument identique et juste faire braquer le coureur dans le dédale » ; « ça court, ça continue quand ça touche un mur » ; « le coureur va à gauche ou à droite selon commandes. Pas plus, pas moins ») :
-    la course est toujours celle de la démo du 12 nov., 21 h 17 (c4f76f2), caméra comprise ; gauche ou droite (touche, clic ou doigt du côté voulu) fait prendre au coureur le prochain couloir de ce côté, tout de suite s'il s'ouvre là, sinon au prochain carrefour */
- var want=0;
- function step(dt){idle+=dt;var tr=0,sp=speed,gx=Math.floor(px),gy=Math.floor(py);
+ /* 15 nov. 2026, 17 h 57 et 19 h 02 (Mauk Tenieb : « braquages modérés, beaucoup moins qu'un angle droit » ; « se prendre un mur, on s'en fout, la course se poursuit » ; « les contrôles gauche, droite doivent laisser toute caméra absolument identique et juste faire braquer le coureur » ; 20 h 17 : « 90°, c'est beaucoup trop ») :
+    sans commande, la course de la démo du 12 nov. (rails, carrefours) ; une touche ou une tape du côté voulu braque le coureur de 26° en un tiers de seconde, touche ou doigt tenus il tourne à 50°/s ; il court librement, longe les murs et s'en écarte de lui-même, sans jamais s'arrêter ; six secondes sans commande, il rejoint les rails de la démo ; caméra inchangée */
+ var NUDGE=0.45,NRATE=1.4,HOLD=0.88,nud=0,man=false;
+ function step(dt){idle+=dt;var tr=0,sp=speed,gx=Math.floor(px),gy=Math.floor(py);if(man&&idle>6)man=false;
+  if(man){auto=false;var rate=(held.r?HOLD:0)-(held.l?HOLD:0);if(ptr&&Date.now()-ptr.t0>=260)rate+=(ptr.x0<ptr.cx?-1:1)*HOLD;
+   var q=nud>0?Math.min(nud,NRATE*dt):Math.max(nud,-NRATE*dt);nud-=q;tr=q/Math.max(dt,1e-3)+rate;ang+=q+rate*dt;
+   /* devant un mur, il s'en écarte du côté le plus ouvert, à vitesse modérée, et poursuit sa course */var fw=probe(ang,1.0);if(fw<0.75){var pl=probe(ang-0.8,1.5),pr=probe(ang+0.8,1.5),av=(pr>=pl?1:-1)*Math.min(2.2,(0.75-fw)*4);ang+=av*dt;tr+=av}
+  }else{
    var id=gx*100003+gy,cxm=gx+0.5,cym=gy+0.5;
    if(!auto){auto=true;var bd=dir,bs=-9;for(var d0=0;d0<4;d0++){if(!free(gx,gy,d0))continue;var sc=Math.cos(ang-d0*Math.PI/2);if(sc>bs){bs=sc;bd=d0}}dir=bd;cell=id;pendT=0}
    var along=(cxm-px)*DX[dir]+(cym-py)*DY[dir];
    if(id!==cell){cell=id;pendT=0;var o2=[1,3].filter(function(t){return free(gx,gy,(dir+t)%4)});
-    if(want&&o2.indexOf(want)>=0){pendT=want;want=0}
-    else if(!free(gx,gy,dir))pendT=o2.length?o2[Math.floor(Math.random()*o2.length)]:2;/* mur une case devant : virage obligé */
-    else if(!want&&idle>8&&o2.length&&odo-lastT>2.2&&Math.random()<0.4)pendT=o2[Math.floor(Math.random()*o2.length)]}
-   else if(want&&!pendT&&along>=0.3&&free(gx,gy,(dir+want)%4)){pendT=want;want=0}
+    if(!free(gx,gy,dir))pendT=o2.length?o2[Math.floor(Math.random()*o2.length)]:2;/* mur une case devant : virage obligé */
+    else if(idle>8&&o2.length&&odo-lastT>2.2&&Math.random()<0.4)pendT=o2[Math.floor(Math.random()*o2.length)]}
    if(pendT&&along<0.3){dir=(dir+pendT)%4;pendT=0;lastT=odo}
    var lat=(cxm-px)*(-DY[dir])+(cym-py)*DX[dir],wa=dir*Math.PI/2+Math.max(-0.6,Math.min(0.6,lat*2)),dd=wrap(wa-ang);
-   tr=Math.max(-5.5,Math.min(5.5,dd*10));ang+=Math.max(-Math.abs(dd),Math.min(Math.abs(dd),tr*dt));sp=speed*(Math.abs(dd)>0.6?0.6:1);
+   tr=Math.max(-5.5,Math.min(5.5,dd*10));ang+=Math.max(-Math.abs(dd),Math.min(Math.abs(dd),tr*dt));sp=speed*(Math.abs(dd)>0.6?0.6:1);}
   turn+=(tr-turn)*Math.min(1,dt*12);
   /* glisse le long des murs */
-  var vx=Math.cos(ang)*sp*dt,vy=Math.sin(ang)*sp*dt,sx=vx>0?RAD:-RAD,sy=vy>0?RAD:-RAD;
+  var ox=px,oy=py,vx=Math.cos(ang)*sp*dt,vy=Math.sin(ang)*sp*dt,sx=vx>0?RAD:-RAD,sy=vy>0?RAD:-RAD;
   if(open_(px+vx+sx,py-RAD)&&open_(px+vx+sx,py+RAD))px+=vx;
   if(open_(px-RAD,py+vy+sy)&&open_(px+RAD,py+vy+sy))py+=vy;
+  /* contre un mur, l'allure ne baisse pas : la part bloquée passe le long du mur, du côté où il penche déjà */
+  if(man){var mv=Math.hypot(px-ox,py-oy),need_=sp*dt;if(mv<need_*0.85){var r_=need_-mv,gxs=vx>=0?1:-1,gys=vy>=0?1:-1;
+    if(Math.abs(px-ox)<1e-6&&open_(px-RAD,py+gys*r_+gys*RAD)&&open_(px+RAD,py+gys*r_+gys*RAD))py+=gys*r_;
+    else if(Math.abs(py-oy)<1e-6&&open_(px+gxs*r_+gxs*RAD,py-RAD)&&open_(px+gxs*r_+gxs*RAD,py+RAD))px+=gxs*r_}}
   ang=wrap(ang);gait+=sp*dt*3.4;odo+=sp*dt;cdt=dt;camera()}
  function sight(x,y){var n=Math.ceil(Math.hypot(px-x,py-y)/0.05);for(var i=1;i<n;i++){var t=i/n;if(!open_(x+(px-x)*t,y+(py-y)*t))return false}return true}
  /* caméra sur la trace du Mask, un pas derrière lui, tournée vers lui */
