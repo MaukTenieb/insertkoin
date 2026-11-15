@@ -139,7 +139,7 @@ window.MotelRun=function(host,want){
    auto=false;tr=((held.r?1:0)-(held.l?1:0))*TURN;if(ptr){var o=(ptr.x-ptr.cx)/(ptr.w/2);if(Math.abs(o)>0.25)tr+=Math.max(-1,Math.min(1,o))*TURN}
    if(tq){/* clic bref : un quart de tour du côté cliqué (11 nov., Mauk Tenieb) */var qa=Math.min(Math.abs(tq),TURN*1.3*dt),qs=tq>0?1:-1;tr+=qs*qa/dt;tq-=qs*qa;if(Math.abs(tq)<1e-3)tq=0}
    if(held.u)sp=speed*1.5;if(held.d)sp=speed*0.35;
-   var fw=probe(ang,1.6);if(fw<1.2){sp*=Math.max(0.1,(fw-0.35)/0.85);var l=probe(ang-0.7,1.6),r=probe(ang+0.7,1.6),sg=r>=l?1:-1;if(tr*sg<0&&fw<0.9)tr=0;tr+=sg*TURN*1.5*(1-fw/1.2)}
+   var fw=probe(ang,1.6);if(fw<1.2){/* 15 nov. 2026 (Mauk Tenieb, 3 h 22 : « trépignent et font du sur-place ») : zéro freinage devant le mur, la déviation seule */var l=probe(ang-0.7,1.6),r=probe(ang+0.7,1.6),sg=r>=l?1:-1;if(tr*sg<0&&fw<0.9)tr=0;tr+=sg*TURN*1.5*(1-fw/1.2)}
    ang+=tr*dt;pendT=0}
   else{/* pilote automatique : couloir, centre, bifurcations au hasard, virage engagé dès l'entrée du carrefour */
    var id=gx*100003+gy,cxm=gx+0.5,cym=gy+0.5;
@@ -152,10 +152,11 @@ window.MotelRun=function(host,want){
    tr=Math.max(-5.5,Math.min(5.5,dd*10));ang+=Math.max(-Math.abs(dd),Math.min(Math.abs(dd),tr*dt));sp=speed*(Math.abs(dd)>0.6?0.6:1)}
   turn+=(tr-turn)*Math.min(1,dt*12);
   /* glisse le long des murs */
-  var vx=Math.cos(ang)*sp*dt,vy=Math.sin(ang)*sp*dt,sx=vx>0?RAD:-RAD,sy=vy>0?RAD:-RAD;
-  if(open_(px+vx+sx,py-RAD)&&open_(px+vx+sx,py+RAD))px+=vx;
-  if(open_(px-RAD,py+vy+sy)&&open_(px+RAD,py+vy+sy))py+=vy;
-  ang=wrap(ang);gait+=sp*dt*3.4;odo+=sp*dt;camera()}
+  /* 15 nov. 2026 : au mur, à la Doom, la composante bloquée tombe et l'autre garde au moins 75 % de l'allure ; les jambes suivent le chemin parcouru, jamais de course sur place */
+  var vx=Math.cos(ang)*sp*dt,vy=Math.sin(ang)*sp*dt,ox=px,oy=py,okx=function(v){var sx=v>0?RAD:-RAD;return open_(px+v+sx,py-RAD)&&open_(px+v+sx,py+RAD)},oky=function(v){var sy=v>0?RAD:-RAD;return open_(px-RAD,py+v+sy)&&open_(px+RAD,py+v+sy)};
+  var bx=!okx(vx),by=!oky(vy),m=sp*dt*0.75;if(bx&&!by&&Math.abs(vy)<m)vy=(vy<0?-1:1)*m;if(by&&!bx&&Math.abs(vx)<m)vx=(vx<0?-1:1)*m;
+  if(!bx&&okx(vx))px+=vx;if(!by&&oky(vy))py+=vy;
+  var mv=Math.hypot(px-ox,py-oy);ang=wrap(ang);gait+=mv*3.4;odo+=mv;camera()}
  function sight(x,y){var n=Math.ceil(Math.hypot(px-x,py-y)/0.05);for(var i=1;i<n;i++){var t=i/n;if(!open_(x+(px-x)*t,y+(py-y)*t))return false}return true}
  /* caméra sur la trace du Mask, un pas derrière lui, tournée vers lui */
  function reseed(){var b=Math.min(CAMD,probe(ang+Math.PI,CAMD+0.3)-0.2);trail=[[px-Math.cos(ang)*b,py-Math.sin(ang)*b],[px,py]];st.cuts++}
