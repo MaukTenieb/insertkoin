@@ -1193,3 +1193,17 @@ html body .vhs-boot-name i{position:absolute;left:30.5%;top:37.5%;width:39%;heig
 html body .vhs-boot.is-inserting .vhs-boot-name{animation:vhs-tape-in .3s reverse both}
 html body .vhs-eject{z-index:7;animation:vhs-eject .7s cubic-bezier(.4,0,.6,1) both!important}
 @keyframes vhs-eject{0%{transform:translate(-50%,-50%) translateY(-60%) scale(.9);opacity:0}25%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-50%) translateY(150%) scale(1.25) rotate(3deg);opacity:1}}
+
+/* 16 nov. 2026 (Mauk Tenieb, « Travaille ») : le catalogue est la jaquette de la cassette, titres écrits au feutre sur papier réglé ;
+   le champ d'enregistrement montre un maillon dessiné à la place de l'adresse d'exemple */
+html body #vhs#vhs#vhs.vhs .vhs-tracklist{background:#ece4cf linear-gradient(90deg,transparent 30px,rgba(200,60,60,.35) 30px 31px,transparent 31px);
+  border-radius:2px;box-shadow:0 6px 14px rgba(0,0,0,.55),inset 0 0 30px rgba(120,90,40,.18);padding:6px 8px 10px 0;gap:0!important}
+html body #vhs#vhs#vhs.vhs .vhs-tracklist button{background:transparent!important;border:0!important;border-bottom:1px solid rgba(60,90,170,.28)!important;border-radius:0!important;
+  color:#1d2a6e!important;font:400 14px/1.25 "Permanent Marker","Marker Felt",cursive!important;letter-spacing:.02em!important;text-transform:none!important;
+  text-align:left;padding:10px 8px 8px 38px!important;min-height:44px;box-shadow:none!important}
+html body #vhs#vhs#vhs.vhs .vhs-tracklist button:hover{color:#0d1440!important;background:rgba(255,255,255,.25)!important}
+html body #vhs#vhs#vhs.vhs .vhs-tracklist button.is-active,html body #vhs#vhs#vhs.vhs .vhs-tracklist button[aria-current="true"]{color:#0d1440!important;
+  background:linear-gradient(transparent 22%,rgba(255,226,60,.62) 22% 82%,transparent 82%)!important}
+html body #vhs#vhs#vhs.vhs .vhs-rec-input{background:#0a0d08 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238f897d' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1'/%3E%3C/svg%3E") 10px center/18px no-repeat!important;padding-left:36px!important}
+html body #vhs#vhs#vhs.vhs .vhs-tracklist button *{font:inherit!important;color:inherit!important;letter-spacing:inherit!important;text-transform:none!important}
+html body #vhs#vhs#vhs.vhs .vhs-rec-input::placeholder{color:transparent}
