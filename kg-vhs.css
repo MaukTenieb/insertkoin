@@ -1180,3 +1180,7 @@
   html.borne #kg-root #vhs.vhs[data-ike-layout="wide"] .vhs-message{position:absolute;left:8px;right:8px;bottom:4px;min-height:0;margin:0;pointer-events:none}
   html.borne #kg-root #vhs.vhs[data-ike-layout="wide"] .vhs-message:empty{display:none}
 }
+
+/* 16 nov. 2026 (images de Mauk Tenieb, 2 h 46) : la cassette qui entre au chargement est sa photo de cassette VHS */
+html body .vhs-boot-tape{display:block!important;width:46%;aspect-ratio:520/350;height:auto;background:url(kave/a/vhs/cassette.webp) center/contain no-repeat}
+.vhs-boot-tape>*{display:none}
