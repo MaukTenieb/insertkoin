@@ -1099,7 +1099,10 @@
     const input = q(s, "[data-vhs-rec-input]");
     if (!input || !input.offsetParent) return;
     if (input.value.trim()) { const b = q(s, "[data-vhs-rec-btn]"); if (b) b.click(); return; }
-    try { input.scrollIntoView({ block: "center", behavior: "smooth" }); input.focus({ preventScroll: true }); } catch (_) { /* ignore */ }
+    try {
+      if (!pageTo(s, q(s, "[data-vhs-rec]"))) input.scrollIntoView({ block: "center", behavior: "smooth" });
+      input.focus({ preventScroll: true });
+    } catch (_) { /* ignore */ }
   }
   /* la trappe mène à l'étagère : la cassette en cours vient sous le doigt */
   function shelfBay(s) {
@@ -1107,9 +1110,26 @@
     if (!row || !row.offsetParent) return;
     const cur = row.querySelector(".vhs-tape.is-active") || row.querySelector(".vhs-tape");
     try {
-      row.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      if (!pageTo(s, q(s, "[data-vhs-shelf]"))) row.scrollIntoView({ block: "nearest", behavior: "smooth" });
       if (cur) row.scrollTo({ left: Math.max(0, cur.offsetLeft + cur.parentElement.offsetLeft - row.clientWidth / 2), behavior: "smooth" });
     } catch (_) { /* ignore */ }
+  }
+
+  /* 16 nov. 2026, 2 h 15 (Mauk Tenieb : « Règle ça » — en paysage étroit, l'étagère et la recherche sortaient
+     à moitié de l'emplacement) : là, le catalogue se lit page par page sous la façade (étagère ; recherche et
+     liste ; baie REC). La loupe tourne la page jusqu'à la recherche, ● REC jusqu'à la baie, la trappe jusqu'à l'étagère. */
+  function pageTo(s, el) {
+    const cat = q(s, "[data-vhs-catalogue]");
+    if (!cat || !el || !/y/.test(getComputedStyle(cat).scrollSnapType || "")) return false;
+    s.paged = true;
+    cat.scrollTo({ top: cat.scrollTop + el.getBoundingClientRect().top - cat.getBoundingClientRect().top, behavior: s.reducedMotion ? "auto" : "smooth" });
+    return true;
+  }
+  function findBay(s) {
+    const input = q(s, "[data-vhs-find-input]");
+    if (!input || !input.offsetParent) return;
+    if (!pageTo(s, q(s, "[data-vhs-find]"))) { try { input.scrollIntoView({ block: "center", behavior: "smooth" }); } catch (_) { /* ignore */ } }
+    if (window.matchMedia && window.matchMedia("(pointer: fine)").matches) { try { input.focus({ preventScroll: true }); } catch (_) { /* ignore */ } }
   }
 
   function onRootClick(s, event) {
@@ -1119,6 +1139,9 @@
 
     if (button.dataset.vhsAction) {
       handleAction(s, button.dataset.vhsAction);
+    } else if (button.dataset.vhsFindOpen !== undefined) {
+      VSND.key();
+      findBay(s);
     } else if (button.dataset.vhsSource) {
       setSource(s, button.dataset.vhsSource);
     } else if (button.dataset.vhsTrack !== undefined) {
@@ -1273,6 +1296,22 @@
       const language = new MutationObserver(() => { if (live(s)) applyI18n(s); });
       language.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
       s.cleanups.push(() => language.disconnect());
+    }
+
+    // 4. 16 nov. 2026, 2 h 15 (Mauk Tenieb : « Règle ça ») : en paysage étroit, le catalogue page par page
+    //    s'ouvre sur l'étagère tant que le visiteur ne l'a pas tourné (l'étagère paraît après le reste).
+    const cat = q(s, "[data-vhs-catalogue]");
+    if (cat && typeof ResizeObserver === "function") {
+      const toShelf = () => {
+        const shelf = q(s, "[data-vhs-shelf]");
+        if (live(s) && !s.paged && shelf && !shelf.hidden && /y/.test(getComputedStyle(cat).scrollSnapType || "")) cat.scrollTop = 0;
+      };
+      const ro = new ResizeObserver(toShelf);
+      ro.observe(cat);
+      const shelf = q(s, "[data-vhs-shelf]");
+      if (shelf) ro.observe(shelf);
+      s.cleanups.push(() => ro.disconnect());
+      ["pointerdown", "wheel", "focusin"].forEach((type) => on(s, cat, type, () => { s.paged = true; }, { passive: true }));
     }
 
     // 3. Screen size changes: ik-ecran.js watches the screen itself.
