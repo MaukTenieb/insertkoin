@@ -504,6 +504,10 @@
         "Mute / unmute": "Couper / remettre le son",
         "Play / pause": "Lecture / pause",
         "Eject": "Éject",
+        /* 16 nov. 2026 (Mauk Tenieb, images du magnétoscope) : les touches de la façade photographiée */
+        "Power": "Marche / arrêt",
+        "Next track": "Piste suivante",
+        "All cassettes": "Toutes les cassettes",
         "No local VHS files have been supplied.": "Aucun fichier VHS local n'a été fourni.",
         "Feed the cassette with tapes.": "Nourris la cassette de bandes.",
         "The player could not be loaded.": "Le lecteur n'a pas pu être chargé.",

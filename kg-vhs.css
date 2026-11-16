@@ -944,3 +944,155 @@
 /* 16 nov. 2026 : neige analogique dessinée (kg-vhs.js, snowCanvas) à la place de la grille régulière */
 .vhs-boot-snow{background:#050505!important;animation:none!important}
 .vhs-boot-snow canvas{position:absolute;inset:0;width:100%;height:100%;display:block;filter:contrast(1.08) blur(.35px)}
+
+/* ======================================================================
+   16 nov. 2026 (Mauk Tenieb, images du magnétoscope) — ordre du 15 nov. :
+   « superbe, facile à faire venir, re-dessiné, peu verbeux, magnifique et
+   bien fonctionnel. Avec les cassettes, avec les curations ».
+   La façade est la photo d'un magnétoscope de 1982 (kave/a/vhs/magnetoscope.webp,
+   1600 x 528) ; l'étagère est la photo d'une étagère de cassettes
+   (etagere-1.webp ou etagere-2.webp, 1600 x 396). Coordonnées en pixels des photos.
+   Échelle fixe sur tous les formats : façade 0,7 (touches de 45 px), étagère 0,56
+   (tranches de 44 px au moins) ; un écran plus étroit fait glisser la photo de côté.
+   ====================================================================== */
+.vhs-sr{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;padding:0!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important;border:0!important}
+
+/* la façade : une bande de la photo (y 138-364), qui glisse de côté si l'écran est étroit */
+.vhs .vhs-deck{display:block!important;position:relative;width:100%!important;max-width:none!important;margin:6px 0 8px!important;padding:0!important;gap:0!important;
+  background:#0b0908!important;box-shadow:0 10px 18px rgba(0,0,0,.55)!important;border-radius:0!important;
+  overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;scrollbar-width:none;overscroll-behavior-x:contain;container-type:inline-size}
+.vhs .vhs-deck::-webkit-scrollbar{display:none}
+.vhs .vhs-deck::after{display:none!important}
+.vhs-face{--fw:max(1120px,100cqw);position:relative;width:var(--fw);aspect-ratio:1600/528;
+  margin:calc(var(--fw) * -138 / 1600) 0 calc(var(--fw) * -164 / 1600);
+  background:url(kave/a/vhs/magnetoscope.webp) 0 0/100% 100% no-repeat;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.vhs-face-snap{position:absolute;top:50%;left:calc(var(--c) * 100% / 1600);width:1px;height:1px;scroll-snap-align:center;pointer-events:none}
+.vhs-face .vhs-fz{position:absolute!important;left:calc(var(--x0) * 100% / 1600);top:calc(var(--y0) * 100% / 528);
+  width:calc((var(--x1) - var(--x0)) * 100% / 1600)!important;height:calc((var(--y1) - var(--y0)) * 100% / 528)!important}
+.vhs-face .vhs-keys{display:contents}
+.vhs .vhs-face .vhs-key{min-height:0!important;margin:0!important;padding:0!important;border:0!important;border-radius:3px;background:transparent!important;
+  box-shadow:none!important;transform:none!important;color:transparent!important;font-size:0!important;text-shadow:none!important;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;transition:none;animation:none!important}
+.vhs .vhs-face .vhs-key:focus-visible{outline:2px solid #e8e0cc;outline-offset:-2px}
+.vhs .vhs-face .vhs-key:disabled{cursor:default}
+/* la touche photographiée : sa propre image, qui s'enfonce de 2 px avec son ombre */
+.vhs-face .vhs-cap{position:absolute;display:block;pointer-events:none;
+  left:calc((var(--c0) - var(--x0)) * 100% / (var(--x1) - var(--x0)));width:calc((var(--c1) - var(--c0)) * 100% / (var(--x1) - var(--x0)));
+  top:calc((var(--cy0,280) - var(--y0)) * 100% / (var(--y1) - var(--y0)));height:calc((var(--cy1,350) - var(--cy0,280)) * 100% / (var(--y1) - var(--y0)));
+  background:url(kave/a/vhs/magnetoscope.webp) calc(var(--c0) * var(--fw) / -1600) calc(var(--cy0,280) * var(--fw) / -1600)/var(--fw) auto no-repeat;
+  border-radius:2px;transition:transform .06s,box-shadow .06s,filter .06s}
+.vhs-face .vhs-key:active .vhs-cap,.vhs-face .vhs-key.is-down .vhs-cap{transform:translateY(2px);
+  box-shadow:0 -2px 0 #0d0c0b,inset 0 3px 4px rgba(0,0,0,.55);filter:brightness(.9)}
+/* ▶ d'un magnétoscope neuf : sa lueur monte et descend lentement (DA, lumière) */
+.vhs.is-fresh .vhs-face .vhs-key-play .vhs-cap{animation:vhsCapGlow 2.6s ease-in-out infinite}
+@keyframes vhsCapGlow{50%{filter:brightness(1.22) drop-shadow(0 0 5px rgba(255,240,200,.35))}}
+/* les molettes TRACKING (hasard) et FINE (piste suivante) tournent d'un cran à chaque appui */
+.vhs-face .vhs-knob{--cy0:180;--cy1:256}
+.vhs-face .vhs-knob[data-vhs-action="random"]{--c0:1248;--c1:1323}
+.vhs-face .vhs-knob[data-vhs-action="fine"]{--c0:1381;--c1:1456;--cy0:178;--cy1:253}
+.vhs-face .vhs-knob .vhs-cap{border-radius:50%;transform:rotate(var(--rot,0deg));transition:transform .25s cubic-bezier(.3,1.3,.5,1),filter .06s}
+.vhs-face .vhs-knob:active .vhs-cap{transform:rotate(var(--rot,0deg));box-shadow:none;filter:brightness(.88)}
+/* la prise casque coupe le son ; la fiche reste branchée tant que le son est coupé */
+.vhs-face .vhs-plug{position:absolute;left:50%;top:48%;width:34%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;opacity:0;pointer-events:none;
+  background:radial-gradient(circle at 40% 35%,#d9d6cf 0 18%,#6d6a64 30%,#1b1a18 55%,#0a0908 70%);box-shadow:0 2px 3px rgba(0,0,0,.7);transition:opacity .12s}
+.vhs-face .vhs-jack[aria-pressed="true"] .vhs-plug{opacity:1}
+/* le cœur de la Korhogo Kuration : un autocollant collé sur la façade, dessiné au feutre */
+.vhs .vhs-face .vhs-key.vhs-key-heart{color:#a8231f!important;font:400 26px/1 "Permanent Marker","Marker Felt",cursive!important;
+  display:flex;align-items:center;justify-content:center;background:#ebe2cc!important;background-clip:content-box!important;padding:9px!important;
+  border-radius:12px;transform:rotate(-5deg)!important;filter:drop-shadow(0 1px 1px rgba(0,0,0,.45))}
+.vhs .vhs-face .vhs-key.vhs-key-heart[aria-pressed="true"]{color:#c9302a!important}
+.vhs .vhs-face .vhs-key.vhs-key-heart:disabled{opacity:.6}
+.vhs .vhs-face .vhs-key.vhs-key-heart:active{transform:rotate(-5deg) translateY(2px)!important}
+/* la trappe : l'étiquette de la cassette chargée paraît dans la fenêtre */
+.vhs .vhs-face .vhs-slot{height:auto;border-radius:0;overflow:visible;background:none;box-shadow:none}
+.vhs .vhs-face .vhs-flap{display:none}
+.vhs .vhs-face .vhs-label{left:14%;width:72%;right:auto;top:24%;height:26%;padding:0 6px;border-radius:1px;
+  background:linear-gradient(#efe8d6,#e3d8bd);color:#1d2a6b;font:400 13px/1 "Permanent Marker","Marker Felt",cursive;letter-spacing:.02em;text-transform:none;
+  box-shadow:0 1px 2px rgba(0,0,0,.6);opacity:0;pointer-events:none}
+.vhs.is-loaded .vhs-face .vhs-label{opacity:.94}
+.vhs .vhs-face .vhs-trap{position:absolute;inset:0;width:100%;height:100%;min-height:0;padding:0;border:0;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.vhs .vhs-face .vhs-trap:focus-visible{outline:2px solid #e8e0cc;outline-offset:-4px}
+/* l'afficheur vert : compteur de bande en segments, picto d'état, la bande sous le doigt */
+.vhs .vhs-face .vhs-vfd{display:block;padding:0;border-radius:2px;background:none;box-shadow:none;text-shadow:none}
+.vhs .vhs-face .vhs-vfd-state,.vhs .vhs-face .vhs-vfd-counter,.vhs .vhs-face .vhs-vfd-status{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.vhs-face .vhs-seg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.vhs-face .vhs-seg .glass{fill:#030806}
+.vhs-face .vhs-seg .on{fill:#79ff96;filter:drop-shadow(0 0 2px rgba(120,255,150,.75))}
+.vhs-face .vhs-seg .off{fill:rgba(90,255,130,.07)}
+.vhs-face .vhs-seg .st{display:none;fill:#79ff96}
+.vhs[data-vhs-state="play"] .vhs-face .vhs-seg .st-play,
+.vhs[data-vhs-state="pause"] .vhs-face .vhs-seg .st-pause,
+.vhs[data-vhs-state="load"] .vhs-face .vhs-seg .st-load,
+.vhs:not([data-vhs-state="play"]):not([data-vhs-state="pause"]):not([data-vhs-state="load"]) .vhs-face .vhs-seg .st-stop{display:inline}
+.vhs[data-vhs-state="load"] .vhs-face .vhs-seg .st-load{animation:vhsSegBlink 1s steps(2,start) infinite}
+@keyframes vhsSegBlink{50%{opacity:0}}
+.vhs .vhs-face .vhs-transport{position:absolute;inset:0;margin:0}
+.vhs .vhs-face .vhs-seek{-webkit-appearance:none;appearance:none;position:absolute;inset:0;width:100%;height:100%;min-height:0!important;margin:0;padding:0;background:transparent;border:0;cursor:pointer}
+.vhs .vhs-face .vhs-seek::-webkit-slider-runnable-track{height:100%;background:linear-gradient(transparent calc(100% - 9px),rgba(120,255,150,.13) calc(100% - 9px) calc(100% - 7px),transparent calc(100% - 7px))}
+.vhs .vhs-face .vhs-seek::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:8px;height:100%;border:0;background:linear-gradient(transparent calc(100% - 11px),#79ff96 calc(100% - 11px) calc(100% - 5px),transparent calc(100% - 5px))}
+.vhs .vhs-face .vhs-seek::-moz-range-track{height:100%;background:linear-gradient(transparent calc(100% - 9px),rgba(120,255,150,.13) calc(100% - 9px) calc(100% - 7px),transparent calc(100% - 7px))}
+.vhs .vhs-face .vhs-seek::-moz-range-thumb{width:8px;height:100%;border:0;border-radius:0;background:linear-gradient(transparent calc(100% - 11px),#79ff96 calc(100% - 11px) calc(100% - 5px),transparent calc(100% - 5px))}
+.vhs .vhs-face .vhs-seek:focus-visible{outline:2px solid #e8e0cc;outline-offset:-2px}
+
+/* l'étagère : la photo tirée au hasard, une page de plus au-delà de ses tranches ; elle glisse de côté */
+.vhs .vhs-shelf{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:0 8px;border:0;background:none;padding:0;margin:0 0 8px}
+.vhs .vhs-shelf-row{grid-column:1/-1;grid-row:1;--sw:896px;display:flex!important;flex-wrap:nowrap;gap:0!important;max-height:none;padding:0!important;margin:0;
+  overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;scrollbar-width:none;overscroll-behavior-x:contain;background:#120c08;box-shadow:inset 0 8px 14px rgba(0,0,0,.55)}
+.vhs .vhs-shelf-row::-webkit-scrollbar{display:none}
+.vhs .vhs-shelf-head{grid-column:1;grid-row:2;margin:6px 0 0}
+.vhs .vhs-tapetools{grid-column:2;grid-row:2}
+.vhs .vhs-shelf-empty{grid-column:1/-1}
+.vhs .vhs-shelf-title{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.vhs .vhs-tape-all{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:0 10px;color:#d8cfb8}
+.vhs .vhs-tape-all.is-active{color:#79ff96;border-color:#79ff96}
+.vhs-shelf-page{position:relative;flex:0 0 var(--sw);height:calc(var(--sw) * 327 / 1600);background:0 calc(var(--sw) * -45 / 1600)/var(--sw) auto no-repeat}
+.vhs-shelf-e1,.vhs-shelf-e1 .vhs-spine{background-image:url(kave/a/vhs/etagere-1.webp)!important}
+.vhs-shelf-e2,.vhs-shelf-e2 .vhs-spine{background-image:url(kave/a/vhs/etagere-2.webp)!important}
+.vhs .vhs-shelf-row .vhs-spine{position:absolute!important;left:calc(var(--x0) * 100% / 1600);top:0;width:calc((var(--x1) - var(--x0)) * 100% / 1600)!important;height:100%!important;
+  min-height:0!important;max-width:none;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;outline:0;box-shadow:none!important;transform:none!important;
+  background-color:transparent!important;background-repeat:no-repeat!important;background-size:var(--sw) auto!important;
+  background-position:calc(var(--x0) * var(--sw) / -1600) calc(var(--sw) * -45 / 1600)!important;
+  color:#1d2a6b;font-family:"Permanent Marker","Marker Felt",cursive!important;letter-spacing:.02em;white-space:nowrap;overflow:visible;
+  scroll-snap-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .2s cubic-bezier(.3,1.2,.5,1),filter .2s;z-index:1}
+.vhs .vhs-shelf-row .vhs-spine::after,.vhs .vhs-shelf-row .vhs-spine::before{display:none!important;content:none!important}
+.vhs .vhs-shelf-row .vhs-spine.vhs-shelf-rubric{color:#a8231f;cursor:default;font-size:13px;letter-spacing:.06em}
+.vhs .vhs-shelf-row button.vhs-spine:hover{filter:brightness(1.12)}
+.vhs .vhs-shelf-row button.vhs-spine:focus-visible{outline:2px solid #e8e0cc;outline-offset:-2px}
+/* la cassette choisie sort de l'étagère vers le visiteur */
+.vhs .vhs-shelf-row button.vhs-spine.is-active{transform:translateY(-3px) scale(1.05)!important;filter:brightness(1.18) drop-shadow(0 8px 6px rgba(0,0,0,.7));z-index:2}
+.vhs .vhs-shelf-row button.vhs-spine:active{transform:translateY(1px)!important}
+.vhs-spine-label{position:absolute;display:flex;align-items:flex-start;justify-content:center;overflow:hidden;transform:rotate(180deg);pointer-events:none;
+  left:calc((var(--lx0) - var(--x0)) * 100% / (var(--x1) - var(--x0)));width:calc((var(--lx1) - var(--lx0)) * 100% / (var(--x1) - var(--x0)));
+  top:calc((var(--ly0) - 45) * 100% / 327);height:calc((var(--ly1) - var(--ly0)) * 100% / 327)}
+.vhs-spine-line{display:inline-block;writing-mode:vertical-rl;white-space:nowrap;line-height:1.05;padding:5px 0;font-size:13px;text-shadow:0 0 1px rgba(255,250,235,.35)}
+.vhs-spine-box .vhs-spine-line{font-size:16px}
+.vhs .vhs-spine .vhs-tape-name,.vhs .vhs-spine .vhs-tape-rep,.vhs .vhs-spine .vhs-tape-count{display:inline!important;position:static!important;padding:0!important;margin:0!important;
+  overflow:visible!important;white-space:nowrap!important;font:inherit!important;color:inherit!important;opacity:1}
+.vhs .vhs-spine .vhs-tape-rep::before,.vhs .vhs-spine .vhs-tape-count::before{content:"  ·  "}
+.vhs .vhs-spine .vhs-tape-rep,.vhs .vhs-spine .vhs-tape-count{opacity:.78}
+.vhs .vhs-spine.vhs-tape-k .vhs-tape-count{display:none!important}
+.vhs-spine-tp{animation:vhsSpineTp var(--tpt,4s) linear infinite alternate}
+@keyframes vhsSpineTp{0%,12%{transform:translateY(0)}88%,100%{transform:translateY(var(--tpy,0))}}
+@media (prefers-reduced-motion:reduce){.vhs-spine-tp{animation-duration:calc(var(--tpt,4s) * 2)}}
+
+/* les outils de la cassette : pictos (export, YouTube, aimant d'effacement) */
+.vhs .vhs-tapetools{margin:6px 0 0;padding:0;border:0;background:none;justify-content:flex-end}
+.vhs .vhs-tapetools-name{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.vhs .vhs-tapetools-actions{flex-wrap:wrap;justify-content:flex-end;gap:4px}
+.vhs .vhs-tapetools-link{min-width:44px;min-height:44px;justify-content:center;gap:3px;padding:0 6px;font-size:10px;letter-spacing:.06em;color:#d8cfb8;border:1px solid #3a332b;background:#14100c}
+.vhs .vhs-tapetools-link::before{content:"";width:12px;height:12px;flex:0 0 12px;background:currentColor;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M5 1h2v5h2L6 9.5 3 6h2zM1 10h10v1.5H1z'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M5 1h2v5h2L6 9.5 3 6h2zM1 10h10v1.5H1z'/%3E%3C/svg%3E") center/contain no-repeat}
+.vhs .vhs-tapetools-link[data-vhs-tapetools-yt]{font-size:0!important;color:#e04a3a}
+.vhs .vhs-tapetools-link[data-vhs-tapetools-yt]::before{width:22px;height:16px;flex-basis:22px;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 16'%3E%3Cpath fill-rule='evenodd' d='M3 0h16a3 3 0 013 3v10a3 3 0 01-3 3H3a3 3 0 01-3-3V3a3 3 0 013-3zm6 4.5v7l6-3.5z'/%3E%3C/svg%3E");
+          mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 16'%3E%3Cpath fill-rule='evenodd' d='M3 0h16a3 3 0 013 3v10a3 3 0 01-3 3H3a3 3 0 01-3-3V3a3 3 0 013-3zm6 4.5v7l6-3.5z'/%3E%3C/svg%3E")}
+.vhs .vhs-tapetools-eject{min-width:44px;min-height:44px;justify-content:center;font-size:0!important}
+.vhs .vhs-tapetools-eject::before{content:"";width:20px;height:20px;background:currentColor;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M3 2h4v8a3 3 0 006 0V2h4v8a7 7 0 01-14 0zM3 2v3h4V2zm10 0v3h4V2z'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M3 2h4v8a3 3 0 006 0V2h4v8a7 7 0 01-14 0zM3 2v3h4V2zm10 0v3h4V2z'/%3E%3C/svg%3E") center/contain no-repeat}
+/* REC : le point rouge seul ; CANCEL : une croix */
+.vhs .vhs-rec-btn{min-width:44px;justify-content:center}
+.vhs .vhs-rec-cancel{font-size:0!important;min-width:44px}
+.vhs .vhs-rec-cancel::before{content:"\2715";font-size:16px}

@@ -158,6 +158,8 @@
     const label = t(s.status);
     setText(s, "[data-vhs-status]", label);
     setText(s, "[data-vhs-osd-state]", label);
+    // 16 nov. 2026 (Mauk Tenieb, images du magnétoscope) : l'afficheur vert montre l'état en picto (lecture, pause, arrêt)
+    if (s.root) s.root.setAttribute("data-vhs-state", String(s.status || "Stop").toLowerCase());
   }
 
   function isPlaying(s) {
@@ -207,6 +209,39 @@
 
   function setCounter(s, seconds) {
     setText(s, "[data-vhs-osd-counter]", formatTime(seconds));
+    segDraw(s, seconds);
+  }
+
+  /* 16 nov. 2026 (Mauk Tenieb, images du magnétoscope) : le compteur de bande en chiffres à segments verts,
+     posé sur le « 12:00 » de l'afficheur photographié ; minutes et secondes, comme un compteur d'époque */
+  const SEG = { 0: "abcdef", 1: "bc", 2: "abged", 3: "abgcd", 4: "fgbc", 5: "afgcd", 6: "afgedc", 7: "abc", 8: "abcdefg", 9: "abcfgd" };
+  function segDigit(x, d) {
+    const on = SEG[d] || "", w = 26, h = 52, t = 5, y = 14;
+    const P = {
+      a: [x + 4, y, w - 8, t], g: [x + 4, y + h / 2 - t / 2, w - 8, t], d: [x + 4, y + h - t, w - 8, t],
+      f: [x, y + 3, t, h / 2 - 5], b: [x + w - t, y + 3, t, h / 2 - 5],
+      e: [x, y + h / 2 + 2, t, h / 2 - 5], c: [x + w - t, y + h / 2 + 2, t, h / 2 - 5]
+    };
+    return Object.keys(P).map((k) => {
+      const r = P[k];
+      return '<rect x="' + r[0] + '" y="' + r[1] + '" width="' + r[2] + '" height="' + r[3] + '" rx="1.6" transform="skewX(-6)" class="' + (on.indexOf(k) >= 0 ? "on" : "off") + '"/>';
+    }).join("");
+  }
+  function segDraw(s, seconds) {
+    const svg = q(s, "[data-vhs-seg]");
+    if (!svg) return;
+    const total = Math.max(0, Math.floor(Number.isFinite(seconds) ? seconds : 0));
+    const m = Math.min(99, Math.floor(total / 60)), sec = total % 60;
+    const key = m * 60 + sec;
+    if (svg.__k === key) return;
+    svg.__k = key;
+    const dg = [Math.floor(m / 10), m % 10, Math.floor(sec / 10), sec % 10];
+    svg.innerHTML = '<rect class="glass" x="14" y="7" width="190" height="66" rx="2"/>' +
+      '<path class="st st-play" d="M20 17l10 6-10 6z"/><path class="st st-pause" d="M20 17h3.5v12H20zM26 17h3.5v12H26z"/>' +
+      '<rect class="st st-stop" x="20" y="18" width="9" height="9" rx="1"/><circle class="st st-load" cx="25" cy="23" r="4"/>' +
+      segDigit(48, dg[0]) + segDigit(80, dg[1]) +
+      '<rect class="on" x="113" y="30" width="5" height="5" rx="1"/><rect class="on" x="111" y="50" width="5" height="5" rx="1"/>' +
+      segDigit(128, dg[2]) + segDigit(160, dg[3]);
   }
 
   function effectiveIntensity(s) {
@@ -328,6 +363,9 @@
     }
     setText(s, "[data-vhs-osd-track]", label);
     if (s.root) s.root.classList.toggle("is-loaded", label !== "\u2014");
+    // 16 nov. 2026 (Mauk Tenieb, images du magnétoscope) : nouvelle étiquette, nouveau calcul du téléprompteur
+    const lb = q(s, ".vhs-face .vhs-label");
+    if (lb) lb.classList.remove("ik-tp-on");
     if (s.ecran) s.ecran.set({ snow: label === "\u2014" || s.status === "Stop" });
     heartState(s);
 
@@ -335,8 +373,13 @@
       qa(s, selector).forEach((button, idx) => {
         button.classList.toggle("is-active", idx === active);
         button.setAttribute("aria-current", idx === active ? "true" : "false");
-        if (idx === active && button.scrollIntoView) {
-          try { button.scrollIntoView({ block: "nearest" }); } catch (_) { /* old browsers */ }
+        // 16 nov. 2026 (Mauk Tenieb, images du magnétoscope) : la piste en cours vient sous les yeux dans sa liste seulement ;
+        // le meuble reste en place (zéro saut : la façade et l'étagère gardent leur place à l'écran)
+        const list = idx === active && button.parentElement && button.parentElement.closest("ol");
+        if (list && list.scrollHeight > list.clientHeight + 2 && /auto|scroll/.test(getComputedStyle(list).overflowY)) {
+          const top = button.getBoundingClientRect().top - list.getBoundingClientRect().top + list.scrollTop, bot = top + button.offsetHeight;
+          if (top < list.scrollTop) list.scrollTop = top;
+          else if (bot > list.scrollTop + list.clientHeight) list.scrollTop = bot - list.clientHeight;
         }
       });
     };
@@ -1030,6 +1073,43 @@
     else if (action === "play") togglePlay(s);
     else if (action === "mute") toggleMute(s);
     else if (action === "eject") close();
+    // 16 nov. 2026 (Mauk Tenieb, images du magnétoscope) : les touches de la façade photographiée
+    else if (action === "power") close();
+    else if (action === "stop") stopTape(s);
+    else if (action === "pause") { if (isPlaying(s)) togglePlay(s); }
+    else if (action === "fine") step(s, 1);
+    else if (action === "rec") recBay(s);
+    else if (action === "shelf") shelfBay(s);
+  }
+
+  /* 16 nov. 2026 (Mauk Tenieb, images du magnétoscope) : ■ arrête la bande et la rembobine au début */
+  function stopTape(s) {
+    if (s.source === "youtube") {
+      if (s.player && s.playerReady) { try { s.player.pauseVideo(); s.player.seekTo(0, true); } catch (_) { /* ignore */ } }
+    } else if (s.video) {
+      try { s.video.pause(); s.video.currentTime = 0; } catch (_) { /* ignore */ }
+    }
+    setCounter(s, 0);
+    setSeek(s, 0);
+    setStatus(s, "Stop");
+    setTimeout(() => { if (live(s) && !isPlaying(s)) setStatus(s, "Stop"); }, 400);
+  }
+  /* ● REC mène à la baie d'enregistrement ; avec une adresse déjà tapée, il enregistre */
+  function recBay(s) {
+    const input = q(s, "[data-vhs-rec-input]");
+    if (!input || !input.offsetParent) return;
+    if (input.value.trim()) { const b = q(s, "[data-vhs-rec-btn]"); if (b) b.click(); return; }
+    try { input.scrollIntoView({ block: "center", behavior: "smooth" }); input.focus({ preventScroll: true }); } catch (_) { /* ignore */ }
+  }
+  /* la trappe mène à l'étagère : la cassette en cours vient sous le doigt */
+  function shelfBay(s) {
+    const row = q(s, "[data-vhs-shelf-row]");
+    if (!row || !row.offsetParent) return;
+    const cur = row.querySelector(".vhs-tape.is-active") || row.querySelector(".vhs-tape");
+    try {
+      row.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      if (cur) row.scrollTo({ left: Math.max(0, cur.offsetLeft + cur.parentElement.offsetLeft - row.clientWidth / 2), behavior: "smooth" });
+    } catch (_) { /* ignore */ }
   }
 
   function onRootClick(s, event) {
@@ -1364,9 +1444,47 @@
     // Cassette boot: random snow burst, then the tape slides in. The panels
     // underneath stay usable: the overlay only covers the screen area.
     startBoot(s, () => {});
+    faceInit(s);
 
     try { root.focus({ preventScroll: true }); } catch (_) { /* ignore */ }
     window.dispatchEvent(new CustomEvent("kg-vhs:open"));
+  }
+
+  /* 16 nov. 2026 (Mauk Tenieb, images du magnétoscope) : la façade photographiée s'ouvre sur ses touches ;
+     la molette de la souris la fait glisser de côté ; les molettes TRACKING et FINE tournent d'un cran à chaque appui */
+  function faceInit(s) {
+    const face = q(s, "[data-vhs-face]");
+    segDraw(s, 0);
+    if (s.root) s.root.setAttribute("data-vhs-state", String(s.status || "Stop").toLowerCase());
+    if (!face) return;
+    const home = () => {
+      const h = face.querySelector(".vhs-face-home");
+      if (!h || !face.clientWidth) return;
+      face.scrollLeft = Math.max(0, h.offsetLeft - face.clientWidth / 2);
+    };
+    home();
+    requestAnimationFrame(home);
+    setTimeout(home, 400);
+    if (window.ResizeObserver) {
+      const ro = new ResizeObserver(home);
+      ro.observe(face);
+      s.cleanups.push(() => ro.disconnect());
+    }
+    on(s, face, "wheel", (e) => {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      const max = face.scrollWidth - face.clientWidth;
+      if (max < 2) return;
+      const next = face.scrollLeft + e.deltaY;
+      if ((e.deltaY < 0 && face.scrollLeft <= 0) || (e.deltaY > 0 && face.scrollLeft >= max - 1)) return;
+      e.preventDefault();
+      face.scrollLeft = Math.max(0, Math.min(max, next));
+    }, { passive: false });
+    qa(s, ".vhs-knob").forEach((k) => {
+      on(s, k, "click", () => {
+        const r = (parseFloat(k.style.getPropertyValue("--rot")) || 0) + 30 + Math.round(Math.random() * 40);
+        k.style.setProperty("--rot", r + "deg");
+      });
+    });
   }
 
   function tryOpen() {
@@ -1527,6 +1645,7 @@
 })();
 
 /* téléprompteur (A46) : au survol, au focus ou en lecture, une ligne qui déborde défile sur place */
+/* 16 nov. 2026 (Mauk Tenieb, images du magnétoscope) : l'étiquette de la cassette dans la trappe défile aussi quand elle déborde */
 (function(){function over(el){return el&&el.scrollWidth>el.clientWidth+2&&getComputedStyle(el).whiteSpace.indexOf('nowrap')===0}
  function find(t){for(var el=t,i=0;el&&i<4;el=el.parentElement,i++){if(el.nodeType===1&&over(el))return el}return null}
  function on(el){if(!el)return;var dx=el.scrollWidth-el.clientWidth+10;el.style.setProperty('--tpx',(-dx)+'px');el.style.setProperty('--tpt',Math.max(3,dx/35)+'s');el.classList.add('ik-tp-on')}
@@ -1535,4 +1654,4 @@
  document.addEventListener('pointerout',function(e){var el=find(e.target);if(el&&!el.contains(e.relatedTarget))off(el)},true);
  document.addEventListener('focusin',function(e){if(e.target.closest&&e.target.closest('#vhs'))on(find(e.target))},true);
  document.addEventListener('focusout',function(e){off(find(e.target))},true);
- setInterval(function(){[].forEach.call(document.querySelectorAll('#vhs [aria-current="true"],#vhs .is-playing,#vhs .is-current'),function(el){var x=over(el)?el:el.querySelector&&[].filter.call(el.querySelectorAll('*'),over)[0];if(x&&!x.classList.contains('ik-tp-on'))on(x)})},1500)})();
+ setInterval(function(){[].forEach.call(document.querySelectorAll('#vhs [aria-current="true"],#vhs .is-playing,#vhs .is-current,#vhs .vhs-face .vhs-label'),function(el){var x=over(el)?el:el.querySelector&&[].filter.call(el.querySelectorAll('*'),over)[0];if(x&&!x.classList.contains('ik-tp-on'))on(x)})},1500)})();

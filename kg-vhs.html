@@ -35,31 +35,43 @@
   <!-- The controls slot: the deck and the catalogue. -->
   <div class="vhs-shell">
 
-    <div class="vhs-tv-foot">
-      <button type="button" class="vhs-tv-key" data-vhs-action="mute" data-vhs-i18n-aria="Mute / unmute" aria-label="Mute / unmute" aria-pressed="false">MUTE</button>
-    </div>
-
-    <!-- The deck: cassette slot, display, keys. -->
-    <div class="vhs-deck">
-      <div class="vhs-slot">
-        <div class="vhs-flap" aria-hidden="true"></div>
-        <div class="vhs-label" data-vhs-osd-track aria-live="polite">&mdash;</div>
-      </div>
-      <div class="vhs-vfd" role="status">
-        <span class="vhs-vfd-state" data-vhs-osd-state>Stop</span>
-        <span class="vhs-vfd-counter" data-vhs-osd-counter>00:00:00</span>
-        <span class="vhs-vfd-status" data-vhs-status hidden>Stop</span>
-        <div class="vhs-transport" data-vhs-transport>
-          <input type="range" class="vhs-seek" data-vhs-seek min="0" max="1000" step="1" value="0" data-vhs-i18n-aria="Position" aria-label="Position">
+    <!-- 16 nov. 2026 (Mauk Tenieb, images du magnétoscope) : la façade est la photo d'un magnétoscope de 1982
+         (kave/a/vhs/magnetoscope.webp) ; ses touches, ses molettes et sa prise casque deviennent les commandes,
+         l'afficheur vert montre le compteur de la bande, la trappe montre l'étiquette de la cassette.
+         La façade garde son échelle (touches de 44 px au moins) et défile de côté quand l'écran est étroit. -->
+    <div class="vhs-deck" data-vhs-face>
+      <div class="vhs-face">
+        <span class="vhs-face-snap" style="--c:413" aria-hidden="true"></span>
+        <span class="vhs-face-snap vhs-face-home" style="--c:941" aria-hidden="true"></span>
+        <span class="vhs-face-snap" style="--c:1300" aria-hidden="true"></span>
+        <div class="vhs-slot vhs-fz" style="--x0:172;--y0:152;--x1:655;--y1:350">
+          <div class="vhs-flap" aria-hidden="true"></div>
+          <div class="vhs-label" data-vhs-osd-track aria-live="polite">&mdash;</div>
+          <button type="button" class="vhs-trap" data-vhs-action="shelf" data-vhs-i18n-aria="CASSETTES" aria-label="CASSETTES"></button>
         </div>
-      </div>
-      <div class="vhs-keys" data-vhs-controls>
-        <button type="button" class="vhs-key vhs-key-eject" data-vhs-action="eject" data-vhs-i18n-aria="Eject" aria-label="Eject">&#x23CF;</button>
-        <button type="button" class="vhs-key" data-vhs-action="prev" data-vhs-i18n-aria="Rewind 5 seconds" aria-label="Rewind 5 seconds">&#x25C0;&#x25C0;</button>
-        <button type="button" class="vhs-key vhs-key-play" data-vhs-action="play" data-vhs-i18n-aria="Play / pause" aria-label="Play / pause"><span data-vhs-play-label>&#x25B6;</span></button>
-        <button type="button" class="vhs-key" data-vhs-action="next" data-vhs-i18n-aria="Forward 5 seconds" aria-label="Forward 5 seconds">&#x25B6;&#x25B6;</button>
-        <button type="button" class="vhs-key vhs-key-small" data-vhs-action="random" data-vhs-i18n-aria="Random" aria-label="Random">&#x292E;</button>
-        <button type="button" class="vhs-key vhs-key-small vhs-key-heart" data-vhs-action="heart" data-vhs-i18n-aria="Keep in Korhogo Kuration" aria-label="Keep in Korhogo Kuration" aria-pressed="false">&#x2661;</button>
+        <div class="vhs-vfd vhs-fz" role="status" style="--x0:872;--y0:156;--x1:1086;--y1:236">
+          <span class="vhs-vfd-state" data-vhs-osd-state>Stop</span>
+          <span class="vhs-vfd-counter" data-vhs-osd-counter>00:00:00</span>
+          <span class="vhs-vfd-status" data-vhs-status hidden>Stop</span>
+          <svg class="vhs-seg" data-vhs-seg viewBox="0 0 214 80" aria-hidden="true"></svg>
+          <div class="vhs-transport" data-vhs-transport>
+            <input type="range" class="vhs-seek" data-vhs-seek min="0" max="1000" step="1" value="0" data-vhs-i18n-aria="Position" aria-label="Position">
+          </div>
+        </div>
+        <div class="vhs-keys" data-vhs-controls>
+          <button type="button" class="vhs-key vhs-fz" data-vhs-action="power" style="--x0:672;--y0:248;--x1:740;--y1:354;--c0:678;--c1:734" data-vhs-i18n-aria="Power" aria-label="Power"><i class="vhs-cap" aria-hidden="true"></i></button>
+          <button type="button" class="vhs-key vhs-key-eject vhs-fz" data-vhs-action="eject" style="--x0:740;--y0:248;--x1:812;--y1:354;--c0:746;--c1:802" data-vhs-i18n-aria="Eject" aria-label="Eject"><i class="vhs-cap" aria-hidden="true"></i></button>
+          <button type="button" class="vhs-key vhs-fz" data-vhs-action="prev" style="--x0:815;--y0:248;--x1:885;--y1:354;--c0:822;--c1:881" data-vhs-i18n-aria="Rewind 5 seconds" aria-label="Rewind 5 seconds"><i class="vhs-cap" aria-hidden="true"></i></button>
+          <button type="button" class="vhs-key vhs-key-play vhs-fz" data-vhs-action="play" style="--x0:885;--y0:248;--x1:949;--y1:354;--c0:889;--c1:946" data-vhs-i18n-aria="Play / pause" aria-label="Play / pause"><i class="vhs-cap" aria-hidden="true"></i><span class="vhs-sr" data-vhs-play-label>&#x25B6;</span></button>
+          <button type="button" class="vhs-key vhs-fz" data-vhs-action="next" style="--x0:949;--y0:248;--x1:1015;--y1:354;--c0:953;--c1:1011" data-vhs-i18n-aria="Forward 5 seconds" aria-label="Forward 5 seconds"><i class="vhs-cap" aria-hidden="true"></i></button>
+          <button type="button" class="vhs-key vhs-fz" data-vhs-action="stop" style="--x0:1015;--y0:248;--x1:1080;--y1:354;--c0:1019;--c1:1076" data-vhs-i18n-aria="Stop" aria-label="Stop"><i class="vhs-cap" aria-hidden="true"></i></button>
+          <button type="button" class="vhs-key vhs-fz" data-vhs-action="pause" style="--x0:1080;--y0:248;--x1:1145;--y1:354;--c0:1084;--c1:1141" data-vhs-i18n-aria="Pause" aria-label="Pause"><i class="vhs-cap" aria-hidden="true"></i></button>
+          <button type="button" class="vhs-key vhs-key-rec vhs-fz" data-vhs-action="rec" style="--x0:1145;--y0:248;--x1:1212;--y1:354;--c0:1149;--c1:1205" data-vhs-i18n-aria="REC" aria-label="REC"><i class="vhs-cap" aria-hidden="true"></i></button>
+          <button type="button" class="vhs-key vhs-key-small vhs-knob vhs-fz" data-vhs-action="random" style="--x0:1244;--y0:146;--x1:1326;--y1:258" data-vhs-i18n-aria="Random" aria-label="Random"><i class="vhs-cap" aria-hidden="true"></i></button>
+          <button type="button" class="vhs-key vhs-key-small vhs-knob vhs-fz" data-vhs-action="fine" style="--x0:1377;--y0:146;--x1:1459;--y1:258" data-vhs-i18n-aria="Next track" aria-label="Next track"><i class="vhs-cap" aria-hidden="true"></i></button>
+          <button type="button" class="vhs-key vhs-key-small vhs-key-heart vhs-fz" data-vhs-action="heart" style="--x0:1108;--y0:166;--x1:1184;--y1:242" data-vhs-i18n-aria="Keep in Korhogo Kuration" aria-label="Keep in Korhogo Kuration" aria-pressed="false">&#x2661;</button>
+          <button type="button" class="vhs-key vhs-jack vhs-fz" data-vhs-action="mute" style="--x0:1380;--y0:286;--x1:1448;--y1:354" data-vhs-i18n-aria="Mute / unmute" aria-label="Mute / unmute" aria-pressed="false"><i class="vhs-plug" aria-hidden="true"></i></button>
+        </div>
       </div>
     </div>
 
@@ -76,8 +88,10 @@
           <span class="vhs-shelf-title" data-vhs-i18n="CASSETTES">CASSETTES</span>
           <span class="vhs-shelf-actions">
             <button type="button" class="vhs-ttx-btn" data-vhs-ttx-btn data-vhs-i18n="TEXT">TEXT</button>
-            <button type="button" class="vhs-tape vhs-tape-all" data-vhs-tape-all>
-              <span class="vhs-tape-name" data-vhs-i18n="all">all</span>
+            <!-- 16 nov. 2026 (Mauk Tenieb, images du magnétoscope) : « toutes les cassettes » en picto, une pile de cassettes -->
+            <button type="button" class="vhs-tape vhs-tape-all" data-vhs-tape-all data-vhs-i18n-aria="All cassettes" aria-label="All cassettes">
+              <svg class="vhs-pic" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="14" width="18" height="6" rx="1"/><rect x="4" y="8" width="16" height="6" rx="1"/><rect x="5" y="2.5" width="14" height="5.5" rx="1"/><path d="M8 17h8M9 11h6"/></svg>
+              <span class="vhs-tape-name vhs-sr" data-vhs-i18n="all">all</span>
             </button>
           </span>
         </div>
@@ -127,7 +141,7 @@
                spellcheck="false" autocomplete="off">
         <button type="button" class="vhs-rec-btn" data-vhs-rec-btn>
           <span class="vhs-rec-dot" aria-hidden="true">&#x25CF;</span>
-          <span data-vhs-i18n="REC">REC</span>
+          <span class="vhs-sr" data-vhs-i18n="REC">REC</span>
         </button>
         <button type="button" class="vhs-rec-cancel" data-vhs-rec-cancel hidden
                 data-vhs-i18n="CANCEL">CANCEL</button>

@@ -155,6 +155,8 @@
       row.appendChild(b);
     });
 
+    layoutShelf(row);
+
     if (allBtn) {
       allBtn.onclick = function () {
         L.selectAll();
@@ -168,6 +170,83 @@
         allBtn.classList.add("is-active");
       };
     }
+  }
+
+  /* ------------------------------------------------------------------ *
+   *  16 nov. 2026 (Mauk Tenieb, images du magnétoscope) : l'étagère est une photo
+   *  (kave/a/vhs/etagere-1.webp ou etagere-2.webp, tirée au hasard à chaque visite) ;
+   *  chaque cassette et chaque rubrique prend une tranche de la photo, son titre écrit
+   *  au feutre sur l'étiquette vierge, de bas en haut comme sur une vraie tranche ;
+   *  au-delà des tranches d'une photo, l'étagère continue sur une page de plus.
+   *  Tranches en pixels de la photo (1600 x 396) : zone de toucher x0-x1, étiquette lx0-lx1, ly0-ly1.
+   *  Sur etagere-2, deux tranches trop serrées restent vierges : chaque toucher garde 44 px.
+   * ------------------------------------------------------------------ */
+  var SHELF_SLOTS = {
+    1: [[140,252,176,222,112,292],[252,357,287,326,112,292],[357,460,389,428,112,292],[460,563,493,532,112,292],
+        [563,665,595,636,112,292],[665,766,696,735,112,292],[766,870,798,837,112,292],[870,978,904,943,114,274],
+        [978,1087,1015,1053,118,284],[1087,1193,1122,1161,112,292],[1193,1300,1227,1265,114,296],[1300,1490,1338,1462,64,326]],
+    2: [[66,181,106,140,108,298],[181,270,224,257,108,298],[330,412,350,384,108,298],[412,514,442,475,110,298],
+        [514,635,552,589,108,298],[635,762,684,718,108,298],[762,886,808,841,106,294],[886,985,932,966,104,294],
+        [1040,1144,1056,1120,60,340],[1144,1241,1185,1218,121,296],[1241,1322,1265,1297,127,290],[1322,1420,1347,1380,107,292]]
+  };
+  var shelfImg = Math.random() < 0.5 ? 1 : 2;
+  function layoutShelf(row) {
+    var doc = global.document;
+    var items = Array.prototype.slice.call(row.children);
+    if (!items.length) return;
+    var slots = SHELF_SLOTS[shelfImg];
+    row.textContent = "";
+    row.setAttribute("data-shelf-img", String(shelfImg));
+    var page = null;
+    items.forEach(function (el, i) {
+      var k = i % slots.length;
+      if (k === 0) {
+        page = doc.createElement("div");
+        page.className = "vhs-shelf-page vhs-shelf-e" + shelfImg;
+        row.appendChild(page);
+      }
+      var z = slots[k];
+      el.classList.add("vhs-spine");
+      el.style.setProperty("--x0", z[0]);
+      el.style.setProperty("--x1", z[1]);
+      el.style.setProperty("--lx0", z[2]);
+      el.style.setProperty("--lx1", z[3]);
+      el.style.setProperty("--ly0", z[4]);
+      el.style.setProperty("--ly1", z[5]);
+      if (z[3] - z[2] > 60) el.classList.add("vhs-spine-box");
+      // the label: title and date on one written line, inside the blank label of the photo
+      var lab = doc.createElement("span");
+      lab.className = "vhs-spine-label";
+      var line = doc.createElement("span");
+      line.className = "vhs-spine-line";
+      if (el.classList.contains("vhs-shelf-rubric")) {
+        line.textContent = el.textContent;
+        el.textContent = "";
+      } else {
+        Array.prototype.slice.call(el.childNodes).forEach(function (c) { line.appendChild(c); });
+      }
+      lab.appendChild(line);
+      el.appendChild(lab);
+      page.appendChild(el);
+    });
+    // a title longer than its label scrolls in place (teleprompter, A46), never cut
+    global.requestAnimationFrame(function () { spineScroll(row); });
+    global.setTimeout(function () { spineScroll(row); }, 900);
+    if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(function () { spineScroll(row); });
+  }
+  function spineScroll(row) {
+    Array.prototype.forEach.call(row.querySelectorAll(".vhs-spine-line"), function (line) {
+      var box = line.parentElement;
+      if (!box || !box.clientHeight) return;
+      var d = line.scrollHeight - box.clientHeight;
+      if (d > 2) {
+        line.style.setProperty("--tpy", (-d - 6) + "px");
+        line.style.setProperty("--tpt", Math.max(3, (d + 6) / 22) + "s");
+        line.classList.add("vhs-spine-tp");
+      } else {
+        line.classList.remove("vhs-spine-tp");
+      }
+    });
   }
 
   /* ------------------------------------------------------------------ *
