@@ -1116,6 +1116,40 @@
     }
   }
 
+  /* 16 nov. 2026 (Mauk Tenieb : « la neige à l'écran pour la lecture d'une cassette est dégueulasse ») :
+     vraie neige analogique, grain aléatoire à chaque image, bande de synchro qui roule, éclairs de luminance ; s'arrête avec la séquence */
+  function snowCanvas(boot) {
+    const host = boot.querySelector(".vhs-boot-snow");
+    if (!host || host.querySelector("canvas")) return;
+    const cv = document.createElement("canvas");
+    const W = 220, H = 166;
+    cv.width = W; cv.height = H;
+    host.appendChild(cv);
+    const g = cv.getContext("2d", { alpha: false });
+    const img = g.createImageData(W, H), d = img.data;
+    let band = Math.random() * H, last = 0;
+    const tick = (t) => {
+      if (!cv.isConnected) return;
+      if (t - last > 33) {
+        last = t;
+        band = (band + 3 + Math.random() * 4) % (H + 30);
+        const flash = Math.random() < 0.06 ? 40 : 0;
+        for (let y = 0; y < H; y++) {
+          const db = Math.abs(y - band) < 9 ? 55 : 0;
+          const tear = Math.random() < 0.015 ? (Math.random() * 60) | 0 : 0;
+          for (let x = 0; x < W; x++) {
+            const v = Math.min(255, (Math.random() * Math.random() * 360 + db + flash + (x < tear ? 80 : 0)) | 0);
+            const i = (y * W + x) << 2;
+            d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255;
+          }
+        }
+        g.putImageData(img, 0, 0);
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
   function startBoot(s, onDone) {
     if (s.reducedMotion || !s.root) { onDone(); return; }
     const boot = s.root.querySelector("[data-vhs-boot]");
@@ -1128,6 +1162,7 @@
     const snowMs = 350 + Math.floor(Math.random() * 850);
     boot.dataset.snow = String(snowMs);
     boot.style.setProperty("--snow-ms", snowMs + "ms");
+    snowCanvas(boot);
 
     const skip = (event) => {
       if (bootState && !bootState.done) endBoot(s, 120);
