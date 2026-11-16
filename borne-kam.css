@@ -5,7 +5,8 @@
 @font-face{font-family:"Permanent Marker";font-style:normal;font-display:swap;font-weight:400;src:url(font-permanent-marker-latin-400-normal.woff2) format("woff2")}
 
 /* fond : le couvre-lit du motel, assombri comme une chambre la nuit */
-html body,html body .app{background:linear-gradient(rgba(16,9,3,.66),rgba(8,5,2,.8)),url(kave/a/kam/bed.webp) 0 0/384px #120b05!important}
+/* 16 nov. 2026, 5 h 11 (Mauk Tenieb : « une couverture de lit Midjourney ») : le couvre-lit se voit en entier, motif et couleurs ; une ombre légère sur les bords seulement */
+html body,html body .app{background:radial-gradient(ellipse 80% 75% at 50% 45%,rgba(0,0,0,0) 55%,rgba(8,4,1,.42)),url(kave/a/kam/bed.webp) 0 0/512px #3a2208!important}
 
 /* écran : l'écran commun garde sa taille et sa place ; le cadre du moniteur dépliable l'entoure par-dessus la marge */
 html body .ike-frame{background:none!important;box-shadow:none!important;border-width:0!important;border-style:solid!important;border-color:transparent!important;
@@ -195,3 +196,13 @@ html body #laboBody .tool:nth-child(2) .chip:nth-child(3){--pk:url("data:image/s
 html body #laboBody .tool:nth-child(3) .chip:nth-child(1){--pk:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 15V3M7.5 7.5 12 3l4.5 4.5M4 13v7h16v-7'/%3E%3C/svg%3E")}
 html body #laboBody .tool:nth-child(3) .chip:nth-child(2){--pk:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v12M7.5 10.5 12 15l4.5-4.5M4 13v7h16v-7'/%3E%3C/svg%3E")}
 html body #prompt{background:#0a0d08 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238f897d' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20l4-1 11-11-3-3L5 16zM14 6l3 3'/%3E%3C/svg%3E") 12px center/20px no-repeat!important;padding-left:42px!important;color:#ffb84d!important;border:0!important;box-shadow:inset 0 2px 5px #000,0 0 0 3px #111,0 0 0 4px #333!important;font:500 13px/1 var(--num,'DM Mono',monospace)}
+
+/* 16 nov. 2026, 5 h 07 (Mauk Tenieb : « Où est le camescope entier avec le couvre-lit ? ») : à tous les formats, le caméscope entier repose sur le couvre-lit ;
+   téléphone et fenêtre étroite : marge de couvre-lit autour de l'appareil, coins arrondis ; charnière du moniteur (image de Mauk Tenieb) entre l'écran et le flanc */
+html body #app.app[data-ike-layout=narrow]{inset:clamp(10px,3.2vw,22px) clamp(10px,3.2vw,22px) clamp(14px,4vw,26px)!important;border-radius:8px;box-shadow:0 18px 40px rgba(0,0,0,.8)}
+html body #app.app:not([data-ike-layout=narrow]){inset:clamp(8px,1.4vw,18px)!important;background:none!important}
+html body #app.app[data-ike-layout=narrow] .ctrl{border-radius:6px!important}
+html body #app.app .ike-frame{z-index:3}
+html body #app.app .ike-frame::before{content:"";position:absolute;pointer-events:none;z-index:4;filter:drop-shadow(0 3px 3px rgba(0,0,0,.7))}
+html body #app.app[data-ike-layout=narrow] .ike-frame::before{left:50%;bottom:-27px;width:118px;height:38px;transform:translateX(-50%);background:url(kave/a/kam/hinge-h.webp) center/100% 100% no-repeat}
+html body #app.app:not([data-ike-layout=narrow]) .ike-frame::before{right:-21px;top:50%;width:30px;height:94px;transform:translateY(-50%);background:url(kave/a/kam/hinge-v.webp) center/100% 100% no-repeat}
