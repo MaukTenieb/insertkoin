@@ -1072,7 +1072,7 @@
     else if (action === "heart") toggleHeart(s);
     else if (action === "play") togglePlay(s);
     else if (action === "mute") toggleMute(s);
-    else if (action === "eject") close();
+    else if (action === "eject") ejectTape(s);
     // 16 nov. 2026 (Mauk Tenieb, images du magnétoscope) : les touches de la façade photographiée
     else if (action === "power") close();
     else if (action === "stop") stopTape(s);
@@ -1548,6 +1548,21 @@
     };
     retryRaf = requestAnimationFrame(tick);
     return false;
+  }
+
+  /* 16 nov. 2026 (Mauk Tenieb, « Evidemment. Continue. ») : EJECT fait sortir la cassette photographiée, titre au feutre, avant de refermer */
+  let ejecting = false;
+  function ejectTape(s) {
+    const screen = s.root && q(s, "[data-vhs-screen]");
+    if (ejecting) return;
+    if (!screen || s.reducedMotion) { close(); return; }
+    ejecting = true;
+    const l = s.root.querySelector(".vhs-face .vhs-label");
+    const t = ((l && l.textContent) || "").replace(/^\s*\d+\s*\/\s*\d+\s*[\u2014\u2013-]\s*/, "").trim();
+    const n = document.createElement("div"); n.className = "vhs-boot-name vhs-eject"; n.setAttribute("aria-hidden", "true");
+    const i = document.createElement("i"); i.textContent = t; n.appendChild(i); screen.appendChild(n);
+    if (window.KGVHSFitName) window.KGVHSFitName(n);
+    setTimeout(() => { ejecting = false; n.remove(); close(); }, 700);
   }
 
   function close() {

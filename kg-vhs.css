@@ -1191,3 +1191,5 @@ html body .vhs-boot-name{position:absolute;left:50%;top:50%;width:46%;aspect-rat
 html body .vhs-boot-name i{position:absolute;left:30.5%;top:37.5%;width:39%;height:37%;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;
   font:400 12px/1.1 "Permanent Marker","Marker Felt",cursive;font-style:normal;color:#1d2a6e;transform:rotate(-2deg);overflow-wrap:anywhere;hyphens:none}
 html body .vhs-boot.is-inserting .vhs-boot-name{animation:vhs-tape-in .3s reverse both}
+html body .vhs-eject{z-index:7;animation:vhs-eject .7s cubic-bezier(.4,0,.6,1) both!important}
+@keyframes vhs-eject{0%{transform:translate(-50%,-50%) translateY(-60%) scale(.9);opacity:0}25%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-50%) translateY(150%) scale(1.25) rotate(3deg);opacity:1}}
