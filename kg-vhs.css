@@ -1182,5 +1182,12 @@
 }
 
 /* 16 nov. 2026 (images de Mauk Tenieb, 2 h 46) : la cassette qui entre au chargement est sa photo de cassette VHS */
-html body .vhs-boot-tape{display:block!important;width:46%;aspect-ratio:520/350;height:auto;background:url(kave/a/vhs/cassette.webp) center/contain no-repeat}
+html body .vhs-boot-tape{display:block!important;width:46%;aspect-ratio:459/300;height:auto;background:url(kave/a/vhs/cassette.webp) center/contain no-repeat}
 .vhs-boot-tape>*{display:none}
+html body .vhs-boot:has(.vhs-boot-name) .vhs-boot-tape{visibility:hidden}
+html body .vhs-boot-name{position:absolute;left:50%;top:50%;width:46%;aspect-ratio:459/300;transform:translate(-50%,-50%);pointer-events:none;
+  background:url(kave/a/vhs/cassette.webp) center/contain no-repeat;filter:drop-shadow(0 6px 18px rgba(0,0,0,.8));
+  animation:vhs-tape-in .55s cubic-bezier(.2,.9,.25,1) both;animation-delay:var(--snow-ms,.6s)}
+html body .vhs-boot-name i{position:absolute;left:30.5%;top:37.5%;width:39%;height:37%;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;
+  font:400 12px/1.1 "Permanent Marker","Marker Felt",cursive;font-style:normal;color:#1d2a6e;transform:rotate(-2deg);overflow-wrap:anywhere;hyphens:none}
+html body .vhs-boot.is-inserting .vhs-boot-name{animation:vhs-tape-in .3s reverse both}

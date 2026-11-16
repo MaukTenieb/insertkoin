@@ -1694,3 +1694,12 @@
  document.addEventListener('focusin',function(e){if(e.target.closest&&e.target.closest('#vhs'))on(find(e.target))},true);
  document.addEventListener('focusout',function(e){off(find(e.target))},true);
  setInterval(function(){[].forEach.call(document.querySelectorAll('#vhs [aria-current="true"],#vhs .is-playing,#vhs .is-current,#vhs .vhs-face .vhs-label'),function(el){var x=over(el)?el:el.querySelector&&[].filter.call(el.querySelectorAll('*'),over)[0];if(x&&!x.classList.contains('ik-tp-on'))on(x)})},1500)})();
+/* 16 nov. 2026 (Mauk Tenieb, « Sois proactif ») : la cassette qui entre porte au feutre, sur son étiquette, le titre de la cassette chargée */
+addEventListener('kg-vhs:open',function(){setTimeout(function(){
+  var b=document.querySelector('#vhs [data-vhs-boot]'),l=document.querySelector('#vhs .vhs-face .vhs-label');if(!b||b.querySelector('.vhs-boot-name'))return;
+  var t=((l&&l.textContent)||'').replace(/^\s*\d+\s*\/\s*\d+\s*[—–-]\s*/,'').trim();if(!t)return;
+  var n=document.createElement('div');n.className='vhs-boot-name';n.setAttribute('aria-hidden','true');var i=document.createElement('i');i.textContent=t;n.appendChild(i);b.appendChild(n);fitName(n);},0);});
+/* le titre tient entier sur l'étiquette : la taille du feutre se règle au titre, sur deux ou trois lignes, plancher 7 px */
+function fitName(n){var i=n&&n.querySelector('i');if(!i)return;var f=Math.max(7,Math.round(n.clientHeight*.13));i.style.fontSize=f+'px';
+  while(f>7&&(i.scrollHeight>i.clientHeight+1||i.scrollWidth>i.clientWidth+1)){f-=.5;i.style.fontSize=f+'px';}}
+window.KGVHSFitName=fitName;
