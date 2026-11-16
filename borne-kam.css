@@ -182,3 +182,16 @@ html body .kam-tp>i{display:inline-block;font-style:normal;padding-left:100%;ani
 
 /* titre du rendu trop long : il défile sur place */
 html body .lookBar .ln.kam-tp{overflow:hidden;white-space:nowrap}
+
+/* labo : touches en pictogrammes (le nom reste lu par les lecteurs d'écran et en infobulle) ; ordre des outils : calques, images en plus, recette */
+html body #laboBody .tool>h3,html body #laboBody .hint{display:none!important}
+html body #laboBody .row{display:flex;flex-wrap:wrap;gap:8px}
+html body #laboBody .chip{font-size:0!important;letter-spacing:0;position:relative;min-width:52px;min-height:46px;padding:0!important}
+html body #laboBody .chip::before{content:'';position:absolute;inset:0;margin:auto;width:22px;height:22px;background:currentColor;-webkit-mask:var(--pk) center/contain no-repeat;mask:var(--pk) center/contain no-repeat}
+html body #laboBody ol.layers{margin:6px 0 4px;padding:8px 10px 8px 28px;background:#0a0d08;border-radius:3px;box-shadow:inset 0 2px 5px #000,0 0 0 3px #111,0 0 0 4px #333;color:#ffb84d;font:500 12px/1.6 var(--num,'DM Mono',monospace);letter-spacing:.06em;text-shadow:0 0 4px rgba(255,160,50,.5)}
+html body #laboBody .tool:nth-child(2) .chip:nth-child(1){--pk:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 4h12v12H8zM4 8v12h12'/%3E%3C/svg%3E")}
+html body #laboBody .tool:nth-child(2) .chip:nth-child(2){--pk:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z'/%3E%3C/svg%3E")}
+html body #laboBody .tool:nth-child(2) .chip:nth-child(3){--pk:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l8 4.5v9L12 21l-8-4.5v-9zM12 12l8-4.5M12 12v9M12 12 4 7.5'/%3E%3C/svg%3E")}
+html body #laboBody .tool:nth-child(3) .chip:nth-child(1){--pk:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 15V3M7.5 7.5 12 3l4.5 4.5M4 13v7h16v-7'/%3E%3C/svg%3E")}
+html body #laboBody .tool:nth-child(3) .chip:nth-child(2){--pk:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v12M7.5 10.5 12 15l4.5-4.5M4 13v7h16v-7'/%3E%3C/svg%3E")}
+html body #prompt{background:#0a0d08 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238f897d' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20l4-1 11-11-3-3L5 16zM14 6l3 3'/%3E%3C/svg%3E") 12px center/20px no-repeat!important;padding-left:42px!important;color:#ffb84d!important;border:0!important;box-shadow:inset 0 2px 5px #000,0 0 0 3px #111,0 0 0 4px #333!important;font:500 13px/1 var(--num,'DM Mono',monospace)}
