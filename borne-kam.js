@@ -42,7 +42,7 @@
 
   /* boutons rotatifs : chaque curseur du dictaphone et des rendus devient un bouton qu'on tourne (glisser, molette, flèches) ; double appui = retour au neutre */
   var KN=[];
-  function fmt(inp){var v=+inp.value;if(inp.id==='sonP')return (v>0?'+':'')+v;if(inp.id==='sonS')return '×'+(Math.pow(2,v/4)).toFixed(2).replace(/\.?0+$/,'');return '';}
+  function fmt(inp){var v=+inp.value;if(inp.id==='sonP')return (v>0?'+':'')+v;if(inp.id==='sonS')return '×'+(Math.pow(2,v/4)).toFixed(2).replace(/\.?0+$/,'');var f=(+inp.max>+inp.min)?((v-(+inp.min||0))/((+inp.max)-(+inp.min||0))):0;return Math.round(f*100)+'';}
   function knob(inp){
     if(inp.dataset.kam)return;inp.dataset.kam='1';
     var mn=+inp.min||0,mx=inp.max===''?100:+inp.max,st=inp.step==='any'?0:(+inp.step||1),def=+inp.defaultValue||0;
@@ -65,7 +65,8 @@
     KN.push({k:k,inp:inp,show:show});show();
     var lb=k.parentNode.querySelector(':scope>span');if(lb&&!lb.querySelector('i'))requestAnimationFrame(function(){if(lb.scrollWidth>lb.clientWidth+1){var t=lb.textContent,i=document.createElement('i');i.textContent=t;lb.textContent='';lb.appendChild(i);lb.classList.add('kam-tp');i.style.animationDuration=Math.max(4,t.length*.32)+'s';}});
   }
-  function knobs(){[].forEach.call(document.querySelectorAll('#sonPanel input[type=range],#ctl input[type=range]'),knob);}
+  function tpTitle(){var n=$('#lbName');if(!n||n.querySelector('i'))return;n.classList.remove('kam-tp');n.style.whiteSpace='nowrap';n.style.overflow='hidden';if(n.scrollWidth>n.clientWidth+1){var t=n.textContent,i=document.createElement('i');i.textContent=t;n.textContent='';n.appendChild(i);n.classList.add('kam-tp');i.style.animationDuration=Math.max(4,t.length*.32)+'s';}}
+  function knobs(){tpTitle();[].forEach.call(document.querySelectorAll('#sonPanel input[type=range],#ctl input[type=range]'),knob);}
   setInterval(function(){for(var i=KN.length-1;i>=0;i--){var o=KN[i];if(!o.inp.isConnected){o.k.remove();KN.splice(i,1);continue;}if(o.k._v!==o.inp.value)o.show();}},150);
   var kq=0;new MutationObserver(function(){if(kq)return;kq=requestAnimationFrame(function(){kq=0;knobs();});}).observe(document.body,{childList:true,subtree:true});
   function go(){dial();rec();quiet();loupe();knobs();}
