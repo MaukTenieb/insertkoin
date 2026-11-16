@@ -1,0 +1,110 @@
+/* KamOrhogo, lot 2 « matière » (16 nov. 2026) : le caméscope prend les images de Mauk Tenieb.
+   Couvre-lit du motel en fond, cadre d'écran dépliable, flanc noir granité, touches en caoutchouc,
+   interrupteurs à glissière, objectif et cache, molette des prises, bouton REC, cassette Hi8 à la sauvegarde.
+   Images : kave/a/kam/. Comportement : borne-kam.js. */
+@font-face{font-family:"Permanent Marker";font-style:normal;font-display:swap;font-weight:400;src:url(font-permanent-marker-latin-400-normal.woff2) format("woff2")}
+
+/* fond : le couvre-lit du motel, assombri comme une chambre la nuit */
+html body,html body .app{background:linear-gradient(rgba(16,9,3,.66),rgba(8,5,2,.8)),url(kave/a/kam/bed.webp) 0 0/384px #120b05!important}
+
+/* écran : l'écran commun garde sa taille et sa place ; le cadre du moniteur dépliable l'entoure par-dessus la marge */
+html body .ike-frame{background:none!important;box-shadow:none!important;border-width:0!important;border-style:solid!important;border-color:transparent!important;
+  border-image:url(kave/a/kam/lcd.webp) 64 128 71 84 / 13px 15px 14px 15px / 9px 11px 10px 11px stretch!important;
+  filter:drop-shadow(0 10px 18px rgba(0,0,0,.75))}
+
+/* flanc du caméscope : plastique noir granité, liseré argent en tête, vis et grip en pied */
+html body #ctrl{background:none!important;border-width:0!important;border-style:solid!important;border-color:transparent!important;
+  border-image:url(kave/a/kam/panel.webp) 40 50 120 50 fill / 10px 12px 30px 12px stretch!important;
+  box-shadow:0 14px 30px rgba(0,0,0,.7);padding-bottom:30px;background-color:#0c0c0d!important;border-radius:6px}
+html body header.top{background:none!important;box-shadow:none!important;border:0!important;color:#d9d3c6}
+
+/* touches en caoutchouc : l'image de la touche, le pictogramme sérigraphié par-dessus */
+html body :is(.key,.chip,.gchip,.fam,.dock button,.pvMode button):not(.kam-rec,.kam-dial){
+  background:none!important;border-width:0!important;border-style:solid!important;border-color:transparent!important;box-shadow:none!important;
+  border-image:url(kave/a/kam/btn.webp) 66 76 66 76 fill / 11px 12px 11px 12px stretch!important;
+  color:#d6d0c3!important;text-shadow:none;transition:filter .12s,transform .08s}
+html body :is(.key,.chip,.gchip,.fam,.dock button):hover{filter:brightness(1.18);color:#fff!important}
+html body :is(.key,.chip,.gchip,.fam,.dock button,.pvMode button):active{transform:translateY(1px);filter:brightness(.72)}
+html body :is(.key,.chip,.gchip,.fam,.dock button)[aria-pressed=true],html body .dock button[aria-selected=true]{
+  filter:brightness(.8);color:#ffb84d!important}
+html body :is(.key,.chip,.gchip,.fam,.dock button)[aria-pressed=true] .ic,html body .dock button[aria-selected=true] .ic{
+  filter:drop-shadow(0 0 3px rgba(255,170,60,.75))}
+html body .dock{background:none!important;border:0!important;gap:8px;padding:10px 12px 6px!important}
+html body .dock button::after{display:none!important}
+html body .key.prim{color:#d6d0c3!important}
+
+/* interrupteurs à glissière : la fente et le curseur strié ; les deux pictogrammes au-dessus, de part et d'autre */
+html body #kb .sw{background:none!important;box-shadow:none!important;padding:0!important;margin-top:4px;min-width:104px;height:58px;border-radius:0}
+html body #kb .sw::after{content:"";position:absolute;left:0;right:0;bottom:0;height:28px;z-index:0;pointer-events:none;
+  border-width:0;border-style:solid;border-color:transparent;border-image:url(kave/a/kam/sw-slot.webp) 24 46 24 46 fill / 8px 13px stretch}
+html body #kb .sw::before{top:auto!important;bottom:5px!important;left:9px!important;width:calc(50% - 9px)!important;height:18px!important;z-index:1;
+  border-radius:3px!important;background:url(kave/a/kam/sw-knob.webp) center/100% 100% no-repeat!important;box-shadow:0 2px 3px rgba(0,0,0,.75)!important}
+html body #kb .sw button{z-index:2;height:58px!important;align-content:start;padding-top:2px!important;color:#8f897d!important}
+html body #kb .sw button .ic{width:20px;height:20px}
+html body #kb .sw button[aria-pressed=true]{color:#ffb84d!important}
+html body #kb .sw button[aria-pressed=true]::after{top:auto!important;bottom:34px!important;width:5px!important;height:5px!important;margin-left:-2.5px!important;display:none}
+/* une seule position (capture d'écran absente au téléphone) : une touche simple */
+html body #kb .sw:has(button[hidden])::before,html body #kb .sw:has(button[hidden])::after{display:none}
+html body #kb .sw:has(button[hidden]){min-width:0;height:auto}
+html body #kb .sw:has(button[hidden]) button:not([hidden]){height:48px!important;width:52px;align-content:center;padding:0!important;
+  border-width:0;border-style:solid;border-color:transparent;border-image:url(kave/a/kam/btn.webp) 66 76 66 76 fill / 11px 12px 11px 12px stretch}
+
+/* objectif ou cache : un appui pose le cache, un autre l'ôte */
+html body #kb #kObj{min-width:58px!important;width:58px;height:58px;justify-self:center;border-radius:50%;filter:drop-shadow(0 3px 4px rgba(0,0,0,.7))}
+html body #kb #kObj::after{inset:0;height:auto;border-image:none;background:url(kave/a/kam/lens.webp) center/contain no-repeat;border-radius:50%}
+html body #kb #kObj::before{inset:-3px!important;width:auto!important;height:auto!important;border-radius:50%!important;box-shadow:none!important;
+  background:url(kave/a/kam/cap.webp) center/contain no-repeat!important;opacity:0;transform:translate(-40%,-55%) rotate(-50deg) scale(.9)!important;
+  transition:transform .32s cubic-bezier(.3,1.3,.5,1),opacity .2s}
+html body #kb #kObj:has([data-o=mask][aria-pressed=true])::before{opacity:1;transform:none!important}
+html body #kb #kObj button{position:absolute!important;inset:0;width:100%!important;height:100%!important;padding:0!important;border-radius:50%}
+html body #kb #kObj button .ic{display:none}
+html body #kb #kObj button[aria-pressed=true]{pointer-events:none}
+html body #kb #kObj button[aria-pressed=true]::after{display:none}
+
+/* molette des prises (une, superposer, pellicule) : trois crans, pictogrammes autour */
+html body .pvMode.ff-modes{position:relative;display:block!important;width:150px;height:100px;flex:none;background:none!important;box-shadow:none!important;border:0!important;padding:0!important}
+html body .pvMode.ff-modes button:not(.kam-dial){position:absolute;width:44px!important;height:44px!important;min-height:0!important;padding:0!important;display:grid;place-items:center;
+  border-image:none!important;background:none!important;color:#8f897d!important}
+html body .pvMode.ff-modes button:not(.kam-dial)[aria-pressed=true]{color:#ffb84d!important;filter:drop-shadow(0 0 3px rgba(255,170,60,.7))}
+html body .pvMode.ff-modes button:nth-of-type(1){left:0;top:46px}
+html body .pvMode.ff-modes button:nth-of-type(2){left:53px;top:0}
+html body .pvMode.ff-modes button:nth-of-type(3){right:0;top:46px}
+html body .pvMode .kam-dial{position:absolute;left:47px;top:38px;width:56px;height:56px;padding:0;border:0;border-radius:50%;cursor:pointer;
+  background:url(kave/a/kam/dial.webp) center/contain no-repeat;filter:drop-shadow(0 3px 4px rgba(0,0,0,.8));
+  transition:transform .28s cubic-bezier(.3,1.5,.5,1)}
+.kam-dial[data-c="0"]{transform:rotate(-90deg)}.kam-dial[data-c="2"]{transform:rotate(90deg)}
+
+/* bouton REC : le déclencheur, à côté de la molette ; rouge vif pendant l'enregistrement */
+html body #ctrl #shutterRow:not([hidden]){display:flex!important;align-items:center!important;flex-wrap:nowrap!important;justify-content:center!important;gap:22px!important}
+html body #ctrl #shutterRow .ff-flip{flex:none!important;width:52px!important;height:48px}
+.kam-rec{flex:none;width:64px;height:64px;padding:0;border:0;border-radius:50%;cursor:pointer;background:url(kave/a/kam/rec.webp) center/contain no-repeat;
+  filter:drop-shadow(0 3px 4px rgba(0,0,0,.8));transition:transform .08s,filter .15s}
+.kam-rec:active{transform:scale(.94);filter:brightness(.8) drop-shadow(0 1px 2px rgba(0,0,0,.8))}
+.kam-rec.on{animation:kamrec 1s steps(2) infinite}
+/* mode son : la rangée se réduit au seul REC */
+html.kam-son body #ctrl #shutterRow{display:flex!important;justify-content:center!important}
+html.kam-son body #ctrl #shutterRow>:not(.kam-rec){display:none!important}
+@keyframes kamrec{50%{filter:brightness(1.6) drop-shadow(0 0 10px rgba(255,40,20,.9))}}
+
+/* le compartiment des rendus : l'intérieur de la trappe latérale, gris foncé, en creux */
+html body #inspector{margin:4px 10px 0;border-radius:6px;background:linear-gradient(rgba(58,58,62,.6),rgba(26,26,29,.8)),url(kave/a/kam/tex.webp) 0 0/192px!important;
+  box-shadow:inset 0 3px 9px rgba(0,0,0,.85),inset 0 0 0 1px #000!important}
+html body #q{background:#0d0d0f url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='10' cy='10' r='6' fill='none' stroke='%238f897d' stroke-width='2'/%3E%3Cpath d='m15 15 5.5 5.5' stroke='%238f897d' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") 12px center/20px no-repeat!important;
+  padding-left:42px!important;border:0!important;box-shadow:inset 0 2px 4px rgba(0,0,0,.9)!important;color:#e9e3d6}
+
+/* sauvegarde : une cassette Hi8 sort du bas de l'écran, le nom du fichier écrit sur l'étiquette */
+.kam-hi8{position:absolute;left:50%;bottom:0;z-index:9;width:min(46%,210px);aspect-ratio:420/292;pointer-events:none;
+  background:url(kave/a/kam/hi8.webp) center/contain no-repeat;filter:drop-shadow(0 8px 10px rgba(0,0,0,.7));
+  transform:translate(-50%,110%) rotate(-3deg);animation:kamhi8 2.6s cubic-bezier(.25,.9,.3,1) forwards}
+.kam-hi8 b{position:absolute;left:20%;right:20%;top:20%;height:15%;overflow:hidden;white-space:nowrap;
+  font:400 clamp(11px,2vw,15px)/1.4 'Permanent Marker','Comic Sans MS',cursive;color:#1d1a6e}
+.kam-hi8 b i{display:inline-block;font-style:normal;padding-left:100%;animation:kamtp 4s linear .4s infinite}
+@keyframes kamhi8{0%{transform:translate(-50%,110%) rotate(-3deg)}22%,72%{transform:translate(-50%,-12%) rotate(-3deg)}100%{transform:translate(-50%,130%) rotate(4deg)}}
+@keyframes kamtp{to{transform:translateX(-100%)}}
+@media (prefers-reduced-motion:reduce){.kam-hi8{animation-duration:.01s}.kam-rec.on{animation:none;filter:brightness(1.5)}}
+
+/* téléphone : molette et REC tiennent sur une rangée, la touche ⇄ à droite */
+@media (max-width:520px){
+  html body .shutterRow{justify-content:space-between!important;padding-inline:10px}
+  html body #kb .sw{min-width:0}
+}
