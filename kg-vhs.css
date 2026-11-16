@@ -1096,3 +1096,36 @@
 .vhs .vhs-rec-btn{min-width:44px;justify-content:center}
 .vhs .vhs-rec-cancel{font-size:0!important;min-width:44px}
 .vhs .vhs-rec-cancel::before{content:"\2715";font-size:16px}
+
+/* ======================================================================
+   16 nov. 2026, 2 h (Mauk Tenieb : « Règle ça » — dans la borne, la façade
+   s'ouvrait coupée, POWER en « WER » et REC à moitié) : la façade entière
+   (panneau x 86-1514, socle noir compris y 120-425 de la photo) prend toute la
+   largeur de son emplacement, sur tous les formats, borne et chambre ; zéro
+   glissé de côté. Quand une touche passe sous 44 px, sa zone de toucher
+   s'élargit sans se voir (::after) jusqu'aux zones voisines, sans chevauchement.
+   ====================================================================== */
+.vhs .vhs-deck{overflow:hidden;overflow:clip;scroll-snap-type:none}
+.vhs-face{--fw:min(calc(100cqw * 1600 / 1428),1600px);
+  margin:calc(var(--fw) * -120 / 1600) 0 calc(var(--fw) * -103 / 1600) calc((100cqw - var(--fw) * 1428 / 1600) / 2 - var(--fw) * 86 / 1600)}
+.vhs-face .vhs-face-snap{scroll-snap-align:none}
+/* zones de toucher invisibles, en pixels de la photo (--hx0 --hx1 --hy0 --hy1) */
+.vhs .vhs-face .vhs-key{overflow:visible;min-width:0!important;min-height:0!important}/* la borne impose 44 px à toute .vhs-key (borne-cabinet.css) : sur la façade, la zone ::after s'en charge */
+/* la borne centre sur chaque touche un ::after de 44 px (borne-arcade.css) : à cette échelle il déborderait sur la touche voisine ; la zone de la photo le remplace */
+.vhs .vhs-deck .vhs-face .vhs-key::after{content:"";position:absolute;transform:none;
+  left:calc((var(--hx0) - var(--x0)) * 100% / (var(--x1) - var(--x0)));width:calc((var(--hx1) - var(--hx0)) * 100% / (var(--x1) - var(--x0)));
+  top:calc((var(--hy0) - var(--y0)) * 100% / (var(--y1) - var(--y0)));height:calc((var(--hy1) - var(--hy0)) * 100% / (var(--y1) - var(--y0)))}
+.vhs-face .vhs-key{--hx0:var(--x0);--hx1:var(--x1);--hy0:237;--hy1:425}
+.vhs-face .vhs-key[data-vhs-action="power"]{--hx0:660;--hx1:740;--hy0:120}
+.vhs-face .vhs-key[data-vhs-action="eject"]{--hx0:740;--hx1:815;--hy0:120}
+.vhs-face .vhs-key[data-vhs-action="rec"]{--hx1:1222}
+.vhs-face .vhs-key[data-vhs-action="heart"]{--hx0:1092;--hx1:1222;--hy0:120;--hy1:237}
+.vhs-face .vhs-key[data-vhs-action="random"]{--hx0:1222;--hx1:1352;--hy0:120;--hy1:425}
+.vhs-face .vhs-key[data-vhs-action="fine"]{--hx0:1352;--hx1:1514;--hy0:120;--hy1:272}
+.vhs-face .vhs-key[data-vhs-action="mute"]{--hx0:1352;--hx1:1514;--hy0:272;--hy1:425}
+/* la trappe jusqu'au bord gauche du panneau et au socle ; la bande du compteur jusqu'au haut du panneau */
+.vhs .vhs-face .vhs-trap{inset:calc(-32 * 100% / 198) calc(-5 * 100% / 483) calc(-75 * 100% / 198) calc(-86 * 100% / 483);width:auto;height:auto}
+.vhs .vhs-face .vhs-transport{inset:calc(-36 * 100% / 80) calc(-6 * 100% / 214) 0 calc(-12 * 100% / 214)}
+/* le cœur au feutre et l'étiquette de la trappe suivent l'échelle de la photo ; l'étiquette garde 12 px au moins */
+.vhs .vhs-face .vhs-key.vhs-key-heart{font-size:calc(var(--fw) * 26 / 1120)!important;padding:calc(var(--fw) * 9 / 1120)!important;border-radius:calc(var(--fw) * 12 / 1120)}
+.vhs .vhs-face .vhs-label{font-size:max(12px,calc(var(--fw) * 13 / 1120));line-height:1;height:auto;min-height:26%;padding:1px 4px}
