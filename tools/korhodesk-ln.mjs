@@ -1,7 +1,7 @@
 // KorhoDesk · routine Lightning : lit les paiements reçus (NWC réception seule, secret KORHODESK_NWC)
 // et suspend une clé par paiement réglé. Euros = millisats modulo 1000 ; code de chambre = empreinte de paiement.
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { readFileSync, appendFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { finalizeEvent } from 'nostr-tools/pure';
 import * as nip04 from 'nostr-tools/nip04';
@@ -41,6 +41,9 @@ for (const t of paid) {
   if (reg.keys.some(k => k.tag === tag)) continue;
   const date = new Date((t.settled_at || t.created_at) * 1e3).toISOString().slice(0, 10);
   execFileSync('node', ['tools/korhodesk-issue.mjs', tag, String(eur), date, 'ln'], { stdio: 'inherit' });
+  const k = JSON.parse(readFileSync('kave/korhodesk/registry.json', 'utf8')).keys.find(x => x.tag === tag);
+  const at = new Date((t.settled_at || t.created_at) * 1e3).toLocaleString('fr-FR', { timeZone: 'Europe/Paris', dateStyle: 'short', timeStyle: 'short' });
+  appendFileSync('caisse.md', `⚡ ${eur} € · ${Math.floor(t.amount / 1000).toLocaleString('fr-FR')} sats · ${at} · clé ${k.n} · ${k.tier} · ${tag} · jusqu'au ${k.until}\n`);
   n++;
 }
 console.log(`${paid.length} paiements réglés lus · ${n} clés suspendues`);

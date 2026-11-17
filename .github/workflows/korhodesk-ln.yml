@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+  issues: write
 concurrency:
   group: korhodesk-registre
   cancel-in-progress: false
@@ -40,3 +41,8 @@ jobs:
           git commit -m "KorhoDesk : clés Lightning"
           git pull --rebase
           git push
+      - name: E-mail (commentaire dans « KorhoDesk · caisse », issue 4)
+        if: hashFiles('caisse.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue comment 4 --body-file caisse.md
