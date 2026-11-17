@@ -30,6 +30,18 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 .row{width:100%;display:flex;justify-content:space-between;align-items:baseline;white-space:nowrap;font-size:6.6cqw;line-height:1.15}
 .row:nth-child(2n){transform:rotate(-.25deg)}.row:nth-child(3n){transform:translateX(.08em)}
 .row:hover,.row:focus-visible{color:#fff;text-shadow:0 0 .4em rgba(255,255,255,.6);outline:none}
+#rows .lt.on{display:flex;align-items:flex-end;gap:.04em}
+#rows .g{display:block;background-image:url(img/lettres.webp);background-repeat:no-repeat;filter:drop-shadow(0 .06em .04em rgba(0,0,0,.8))}
+#rows .g.ap{align-self:flex-start}
+#rows .sp{display:block;width:.32em}
+#rows .row{font-size:7.4cqw;align-items:flex-end;padding:.08em 0}
+#stage.night::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:radial-gradient(ellipse at var(--dx) var(--dy),rgba(255,30,20,.55),transparent 26%),radial-gradient(circle at var(--lx) var(--ly),transparent 0,rgba(6,8,14,.55) 38%,rgba(2,3,8,.82) 75%);mix-blend-mode:multiply}
+#stage.night #neon,#stage.night #board,#stage.night #rack,#stage.night #bell,#stage.night #racknav{z-index:2}
+#stage.night #board.lit{filter:brightness(.8)}
+#stage.night #rack img,#stage.night #bell img{filter:brightness(.62) drop-shadow(0 .8cqmin 1.2cqmin rgba(0,0,0,.65))}
+#stage.night #neon img{filter:brightness(1.25)}
+#stage.night #glow{z-index:2;opacity:1;mix-blend-mode:screen;animation:none;background:radial-gradient(circle,rgba(255,190,110,.28),transparent 55%)}
 #clear{font:2.7cqw/1.35 "Helvetica Neue",Arial,sans-serif;color:#bcae94;text-align:center;letter-spacing:.02em;white-space:normal;text-shadow:none}
 /* tableau à clés */
 .tag{position:absolute;width:3.6%;aspect-ratio:180/619;translate:-50% -6%;background:url(img/key.webp) center top/100% 100% no-repeat;border:0;
@@ -138,8 +150,8 @@ const today=()=>new Date().toISOString().slice(0,10);
 function myCodes(){try{return JSON.parse(localStorage.getItem('kd.codes')||'[]')}catch(e){return[]}}
 // positions en % de la scène : [gauche, haut, largeur]
 const LAYOUT={
-  land:{lamp:[81,47],bg:'img/room-land.webp',ar:'1376/768',neon:[3,9,24],board:[2,22,26],rack:[47,14,23],bell:[49,60.4,6],nav:[47,49]},
-  port:{lamp:[78,46],bg:'img/room-port.webp',ar:'768/1376',neon:[21,7,58],board:[22,17.5,56],rack:[25,41.6,42],bell:[76,60.2,12],nav:[25,61.5]}
+  land:{door:[36,48],lamp:[81,47],bg:'img/room-land.webp',ar:'1376/768',neon:[3,9,24],board:[2,22,26],rack:[47,14,23],bell:[49,60.4,6],nav:[47,49]},
+  port:{door:[15,45],lamp:[78,46],bg:'img/room-port.webp',ar:'768/1376',neon:[21,7,58],board:[22,17.5,56],rack:[25,41.6,42],bell:[76,60.2,12],nav:[25,61.5]}
 };
 // crochets du tableau (px de rack.webp 852×692)
 const HX=[62,136,208,282,355,428,500,572,646,718,791],HY=[58,128,200,271,345,414,483,549,612];
@@ -159,6 +171,7 @@ function layout(){
   st.style.width=w+'px';st.style.top=(ah/2)+'px';
   st.style.setProperty('--ar',L.ar);st.style.backgroundImage=`url(${L.bg})`;$('#blur').style.backgroundImage=`url(${L.bg})`;
   for(const id of ['neon','board','rack','bell']){const [x,y,w]=L[id],e=$('#'+id);e.style.left=x+'%';e.style.top=y+'%';e.style.width=w+'%'}
+  const hr=new Date().getHours();st.classList.toggle('night',hr>=21||hr<6);st.style.setProperty('--dx',L.door[0]+'%');st.style.setProperty('--dy',L.door[1]+'%');st.style.setProperty('--lx',L.lamp[0]+'%');st.style.setProperty('--ly',L.lamp[1]+'%');
   const g=$('#glow');g.style.left=L.lamp[0]+'%';g.style.top=L.lamp[1]+'%';LAMP=L.lamp;const cv=$('#dust');cv.width=st.clientWidth;cv.height=st.clientHeight;
   const n=$('#racknav');n.style.left=L.nav[0]+'%';n.style.top=L.nav[1]+'%';
 }
@@ -167,7 +180,8 @@ addEventListener('resize',layout);
 function paint(){
   const t=T[lang];document.documentElement.lang=lang;
   document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t[e.dataset.t]);
-  $('#rows').innerHTML=TIERS.map(([d,n])=>`<button class="row" data-d="${d}" data-n="${n}"><span>${n}</span><span>${d} €</span></button>`).join('');
+  $('#rows').innerHTML=TIERS.map(([d,n])=>`<button class="row" data-d="${d}" data-n="${n}" aria-label="${n} ${d} €"><span class="lt" data-s="${n}">${n}</span><span class="lt" data-s="${d} €">${d} €</span></button>`).join('');
+  glyphs();
   $('#rows').querySelectorAll('.row').forEach(r=>r.addEventListener('click',()=>{ding();slip(+r.dataset.d,r.dataset.n)}));
   $('#clear').textContent=t.clear;
 }
@@ -195,6 +209,12 @@ async function lightning(d,tag){
 }
 $('#nclose').onclick=()=>$('#slip').classList.remove('on');
 $('#slip').onclick=e=>{if(e.target.id==='slip')$('#nclose').onclick()};
+let GL=null;fetch('img/lettres.json').then(r=>r.json()).then(j=>{GL=j;glyphs()}).catch(()=>{});
+function glyphs(){if(!GL)return;const CAP=135,SW=3219;document.querySelectorAll('.lt').forEach(el=>{let h='';
+ for(const c of el.dataset.s){if(c===' '){h+='<i class="sp"></i>';continue}const U=c.toUpperCase(),g=GL[U];if(!g){h+=c;continue}
+  const k=(c!==U?.72:1),u=k/CAP,r=((Math.sin(c.charCodeAt(0)*91+h.length)*1.6)).toFixed(2);
+  h+=`<i class="g${U==="'"?' ap':''}" style="width:${(g[2]*u).toFixed(3)}em;height:${(g[3]*u).toFixed(3)}em;background-size:${(SW*u).toFixed(3)}em auto;background-position:${(-g[0]*u).toFixed(3)}em 0;rotate:${r}deg"></i>`}
+ el.innerHTML=h;el.classList.add('on')})}
 let ac;const A=()=>ac||(ac=new(window.AudioContext||window.webkitAudioContext)());
 function ding(){try{const a=A(),t=a.currentTime;[[2093,.22,1.9],[5440,.08,1.2],[8820,.04,.6]].forEach(([f,v,d])=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(a.destination);o.start(t);o.stop(t+d)})}catch(e){}}
 function click(){try{const a=A(),b=a.createBuffer(1,a.sampleRate*.03,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/120);const s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start()}catch(e){}}
