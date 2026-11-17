@@ -1,0 +1,36 @@
+name: KorhoDesk
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  registre:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Registre des Postulants (protocole Kalabass)
+        env:
+          SPONSORS_TOKEN: ${{ secrets.SPONSORS_TOKEN }}
+          KORHOGOO_KEY: ${{ secrets.KORHOGOO_KEY }}
+          KORHOGOO_SALT: ${{ secrets.KORHOGOO_SALT }}
+        run: node tools/korhodesk-registry.mjs
+      - name: Horodatage OpenTimestamps
+        run: |
+          if [ -f kave/korhodesk/root.txt ] && ! git diff --quiet -- kave/korhodesk/root.txt 2>/dev/null; then
+            pip install --quiet opentimestamps-client
+            ots stamp kave/korhodesk/root.txt
+            mkdir -p kave/korhodesk/ots
+            mv kave/korhodesk/root.txt.ots "kave/korhodesk/ots/$(cut -c1-16 kave/korhodesk/root.txt).ots"
+          fi
+      - name: Écriture
+        run: |
+          git config user.name "Mauk Tenieb"
+          git config user.email "MaukTenieb@users.noreply.github.com"
+          git add kave/korhodesk
+          git diff --cached --quiet || git commit -m "KorhoDesk : registre"
+          git push
