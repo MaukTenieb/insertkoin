@@ -102,7 +102,7 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 #ntier{font-size:6cqw;letter-spacing:.08em}
 #ntag{font:700 13cqw/1 "Courier New",monospace;letter-spacing:.12em;color:#1d1710;border:.5cqw dashed #8a7a5a;padding:2cqh 4cqw}
 #nhint{font-size:3.8cqw;color:#6a5a40}
-#nqr{display:none;width:46cqw;aspect-ratio:1;background:#efe6cf;padding:2cqw}#nqr.on{display:block}#nqr svg{width:100%;height:100%;display:block}
+#nqr{position:relative;display:none;width:46cqw;aspect-ratio:1;background:#efe6cf;padding:2cqw}#nqr.on{display:block}#nqr svg{width:100%;height:100%;display:block;transition:opacity .6s}#nqr.paid svg{opacity:.12}#nqr.paid::after{content:'\2713';position:absolute;inset:0;display:grid;place-items:center;font:900 30cqw/1 serif;color:#8b1d12;transform:rotate(-12deg);animation:slam .35s cubic-bezier(.2,1.6,.4,1)}@keyframes slam{from{transform:rotate(-12deg) scale(2.4);opacity:0}}
 #nln{font-size:7cqw;line-height:1;border:.5cqw solid #2a2217;padding:.6cqh 2.4cqw}
 #ncode{font-size:3cqw;color:#8a7a5a;word-break:break-all}
 .acts2{display:flex;gap:9cqw;align-items:center;font-size:6cqw}
@@ -215,15 +215,31 @@ async function slip(d,n){
   $('#slip').classList.add('on');setTimeout(()=>snd('drop',.5),700);
 }
 async function eurBtc(){for(const [u,f] of [['https://api.coinbase.com/v2/prices/BTC-EUR/spot',j=>+j.data.amount],['https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=eur',j=>+j.bitcoin.eur],['https://www.bitstamp.net/api/v2/ticker/btceur/',j=>+j.last]]){try{const v=f(await (await fetch(u)).json());if(v>0)return v}catch(e){}}throw new Error('prix')}
-async function lightning(d,tag){
-  const t=T[lang],q=$('#nqr');q.classList.add('on');q.innerHTML='';click();
+// Lightning sans serveur : les euros voyagent dans les millisats (montant = sats ronds × 1000 + euros),
+// le code de chambre naît de l'empreinte de paiement, que seuls le payeur et la routine GitHub connaissent.
+function bolt11Hash(pr){const C='qpzry9x8gf2tvdw0s3jn54khce6mua7l',s=pr.toLowerCase(),w=[...s.slice(s.lastIndexOf('1')+1,-6)].map(c=>C.indexOf(c));
+  for(let i=7;i+3<=w.length;){const ty=w[i],n=w[i+1]*32+w[i+2],dt=w.slice(i+3,i+3+n);i+=3+n;
+    if(ty===1&&n===52){const o=[];let b=0,v=0;for(const x of dt){v=(v<<5)|x;b+=5;if(b>=8){o.push((v>>>(b-8))&255);b-=8}}return new Uint8Array(o.slice(0,32))}}return null}
+const lnCode=h=>MASKS[h[0]%18]+'-'+b32(h.slice(1,13)).match(/.{1,5}/g).join('-');
+let LNP=0;
+async function lightning(d){
+  const t=T[lang],q=$('#nqr'),run=++LNP;q.classList.remove('paid');q.classList.add('on');q.innerHTML='';click();
   try{const [user,host]=LN.split('@');const lp=await (await fetch(`https://${host}/.well-known/lnurlp/${user}`)).json();
-    const msat=Math.max(lp.minSendable,Math.round(d/await eurBtc()*1e11));
-    const inv=await (await fetch(`${lp.callback}${lp.callback.includes('?')?'&':'?'}amount=${msat}&comment=${encodeURIComponent('KORHODESK '+tag)}`)).json();
+    const msat=Math.max(lp.minSendable,Math.floor(d/await eurBtc()*1e8)*1000)+d;
+    const inv=await (await fetch(`${lp.callback}${lp.callback.includes('?')?'&':'?'}amount=${msat}&comment=${encodeURIComponent('KORHODESK '+d+'EUR')}`)).json();
+    const h=bolt11Hash(inv.pr);if(!h)throw new Error('bolt11');
+    const code=lnCode(h),tag=await tagOf(code),c=myCodes();
+    if(!c.some(x=>x.tag===tag)){c.push({code,tag,ln:1});try{localStorage.setItem('kd.codes',JSON.stringify(c))}catch(e){}}
+    $('#ntag').textContent=tag;$('#ncode').textContent=t.keep+' '+code;
     const qr=qrcode(0,'L');qr.addData(inv.pr.toUpperCase(),'Alphanumeric');qr.make();
     q.innerHTML=qr.createSvgTag({cellSize:4,margin:0,scalable:true});q.href='lightning:'+inv.pr;
     $('#nhint').textContent=t.lnhint+' · '+Math.round(msat/1000).toLocaleString()+' sats';
     $('#ncopy').onclick=()=>{try{navigator.clipboard.writeText(inv.pr)}catch(e){};click()};
+    const t0=Date.now();
+    while(run===LNP&&Date.now()-t0<72e5){await new Promise(r=>setTimeout(r,3e4));
+      try{const j=await (await fetch('registry.json',{cache:'no-store'})).json();
+        if(j.keys.some(k=>k.tag===tag)){reg=j;MINE.add(tag);drawRack();q.classList.add('paid');q.removeAttribute('href');
+          if($('#slip').classList.contains('on')){snd('coin',.6);setTimeout(()=>snd('bell',.4),500)}$('#nhint').textContent='✓ 🔑 '+tag;break}}catch(e){}}
   }catch(e){q.classList.remove('on')}
 }
 $('#nclose').onclick=()=>$('#slip').classList.remove('on');
