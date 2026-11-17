@@ -1,0 +1,44 @@
+name: KorhoDesk · clé
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Étiquette (8 signes)
+        required: true
+      eur:
+        description: Montant en euros
+        required: true
+      date:
+        description: Date du paiement (AAAA-MM-JJ)
+        required: true
+      rail:
+        description: paypal ou ln
+        default: paypal
+permissions:
+  contents: write
+jobs:
+  cle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Émission ou renouvellement
+        env:
+          KORHOGOO_KEY: ${{ secrets.KORHOGOO_KEY }}
+        run: node tools/korhodesk-issue.mjs "${{ inputs.tag }}" "${{ inputs.eur }}" "${{ inputs.date }}" "${{ inputs.rail }}"
+      - name: Horodatage OpenTimestamps (blockchain Bitcoin)
+        run: |
+          pip install --quiet opentimestamps-client
+          R=$(cut -c1-16 kave/korhodesk/root.txt)
+          mkdir -p kave/korhodesk/ots
+          cp kave/korhodesk/root.txt "kave/korhodesk/ots/$R.txt"
+          ots stamp "kave/korhodesk/ots/$R.txt"
+      - name: Écriture
+        run: |
+          git config user.name "Mauk Tenieb"
+          git config user.email "MaukTenieb@users.noreply.github.com"
+          git add kave/korhodesk
+          git commit -m "KorhoDesk : clé ${{ inputs.tag }}"
+          git push
