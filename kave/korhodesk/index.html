@@ -19,6 +19,13 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 .o img{filter:drop-shadow(0 .8cqmin 1.2cqmin rgba(0,0,0,.65));width:100%;height:auto;display:block;pointer-events:none;user-select:none}
 #neon img{filter:none;mix-blend-mode:screen;animation:buzz 8s infinite}
 @keyframes buzz{0%,90%,100%{opacity:1}91%{opacity:.4}92%{opacity:1}94%{opacity:.7}95%{opacity:1}}
+#neon img{transition:opacity .08s}
+#neon{container-type:inline-size}
+#stage #neon.alt img{filter:brightness(.22) saturate(.2)!important}
+#nword{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;
+  font:300 var(--fs,9cqw)/1 "Helvetica Neue",Arial,sans-serif;letter-spacing:.14em;color:#ffd9d2;white-space:nowrap;
+  -webkit-text-stroke:.012em #ff3b2b;text-shadow:0 0 .04em #ff6a55,0 0 .12em #ff2a1a,0 0 .35em rgba(255,40,25,.85),0 0 .8em rgba(255,30,20,.5)}
+#neon.alt #nword{opacity:1;animation:buzz 2.5s infinite}
 #neonglow{position:absolute;inset:-30%;background:radial-gradient(ellipse,rgba(255,60,40,.22),transparent 65%);mix-blend-mode:screen;pointer-events:none}
 /* tableau des tarifs */
 #board img{border-radius:3.6%/4.6%}
@@ -99,7 +106,7 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 <body>
 <div id="blur"></div>
 <main id="stage">
-  <div class="o" id="neon"><div id="neonglow"></div><img src="img/neon.webp" alt="VACANCY"></div>
+  <div class="o" id="neon"><div id="neonglow"></div><img src="img/neon.webp" alt="VACANCY"><b id="nword"></b></div>
   <section class="o" id="board" aria-label="Rates">
     <img src="img/board.webp" alt="">
     <div id="felt" class="L">
@@ -186,7 +193,7 @@ function paint(){
   document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t[e.dataset.t]);
   $('#rows').innerHTML=TIERS.map(([d,n])=>`<button class="row" data-d="${d}" data-n="${n}" aria-label="${n} ${d} €"><span class="lt" data-s="${n}">${n}</span><span class="lt" data-s="${d} €">${d} €</span></button>`).join('');
   glyphs();
-  $('#rows').querySelectorAll('.row').forEach(r=>r.addEventListener('click',()=>{ding();slip(+r.dataset.d,r.dataset.n)}));
+  $('#rows').querySelectorAll('.row').forEach(r=>r.addEventListener('click',()=>{snd('bell',.5);slip(+r.dataset.d,r.dataset.n)}));
   $('#clear').textContent=t.clear;
 }
 
@@ -197,7 +204,7 @@ async function slip(d,n){
   $('#npay').href=PAYPAL+d+'EUR';$('#ncopy').onclick=()=>{try{navigator.clipboard.writeText(me.tag)}catch(e){};click()};
   $('#nqr').classList.remove('on');$('#nqr').innerHTML='';
   $('#nln').hidden=!LN;$('#nln').onclick=()=>lightning(d,me.tag);
-  $('#slip').classList.add('on');
+  $('#slip').classList.add('on');setTimeout(()=>snd('drop',.5),700);
 }
 async function eurBtc(){for(const [u,f] of [['https://api.coinbase.com/v2/prices/BTC-EUR/spot',j=>+j.data.amount],['https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=eur',j=>+j.bitcoin.eur],['https://www.bitstamp.net/api/v2/ticker/btceur/',j=>+j.last]]){try{const v=f(await (await fetch(u)).json());if(v>0)return v}catch(e){}}throw new Error('prix')}
 async function lightning(d,tag){
@@ -219,10 +226,48 @@ function glyphs(){if(!GL)return;const CAP=135,SW=3219;document.querySelectorAll(
   const k=(c!==U?.72:1),u=k/CAP,r=((Math.sin(c.charCodeAt(0)*91+h.length)*1.6)).toFixed(2);
   h+=`<i class="g${U==="'"?' ap':''}" style="width:${(g[2]*u).toFixed(3)}em;height:${(g[3]*u).toFixed(3)}em;background-size:${(SW*u).toFixed(3)}em auto;background-position:${(-g[0]*u).toFixed(3)}em 0;rotate:${r}deg"></i>`}
  el.innerHTML=h;el.classList.add('on')})}
+const WORDS=['NO VACANCY','SEKTOR INN','KAVE','KALABASS','NOIR INSEKT'];
+function snd(n,v=.5){try{const a=new Audio('../../snd/'+n+'-'+(1+Math.floor(Math.random()*({bell:4,neon:3,drop:4,thump:2,coin:3}[n]||1)))+'.mp3');a.volume=v;a.play().catch(()=>{})}catch(e){}}
+(function sign(){setTimeout(()=>{const ne=$('#neon'),w=WORDS[Math.floor(Math.random()*WORDS.length)];
+  $('#nword').textContent=w;$('#nword').style.setProperty('--fs',Math.min(15,118/w.length)+'cqw');ne.classList.add('alt');if(ac)snd('neon',.18);
+  setTimeout(()=>{ne.classList.remove('alt');if(ac)snd('neon',.12);sign()},1500+Math.random()*2500)},8000+Math.random()*12000)})();
+let PARTY=null;
+function party(){if(PARTY)return;if(Math.random()<.5)return tv();try{const a=A(),out=a.createGain(),lp=a.createBiquadFilter();lp.type='lowpass';lp.frequency.value=320;lp.Q.value=.7;out.gain.value=0;out.connect(a.destination);lp.connect(out);
+ out.gain.linearRampToValueAtTime(.16,a.currentTime+6);PARTY={a,out};
+ const nb=a.createBuffer(1,a.sampleRate*4,a.sampleRate),d=nb.getChannelData(0);let l=0;for(let i=0;i<d.length;i++){l=(l+.02*(Math.random()*2-1))/1.02;d[i]=l*3.5}
+ const crowd=a.createBufferSource();crowd.buffer=nb;crowd.loop=true;const bp=a.createBiquadFilter();bp.type='bandpass';bp.frequency.value=420;bp.Q.value=.6;const cg=a.createGain();cg.gain.value=.5;crowd.connect(bp).connect(cg).connect(lp);crowd.start();
+ setInterval(()=>{cg.gain.setTargetAtTime(.25+Math.random()*.55,a.currentTime,1.5)},2500);
+ const BPM=118,beat=60/BPM,bass=[55,55,65.4,49];let n=0,t0=a.currentTime+.2;
+ (function sched(){while(t0<a.currentTime+1){const k=a.createOscillator(),kg=a.createGain();k.frequency.setValueAtTime(110,t0);k.frequency.exponentialRampToValueAtTime(42,t0+.12);kg.gain.setValueAtTime(.9,t0);kg.gain.exponentialRampToValueAtTime(.001,t0+.3);k.connect(kg).connect(lp);k.start(t0);k.stop(t0+.32);
+   if(n%2){const b=a.createOscillator(),bg=a.createGain();b.type='sawtooth';b.frequency.value=bass[Math.floor(n/8)%4];bg.gain.setValueAtTime(.18,t0);bg.gain.exponentialRampToValueAtTime(.001,t0+beat*.9);b.connect(bg).connect(lp);b.start(t0);b.stop(t0+beat)}
+   n++;t0+=beat}setTimeout(sched,300)})();
+ (function laugh(){setTimeout(()=>{const t=a.currentTime,src=a.createBufferSource();src.buffer=nb;const f=a.createBiquadFilter();f.type='bandpass';f.frequency.value=600+Math.random()*300;f.Q.value=4;const g=a.createGain(),L=.6+Math.random()*.8;g.gain.setValueAtTime(0,t);
+   for(let i=0;i<L*7;i++)g.gain.setValueAtTime(i%2?.05:.9,t+i/7);g.gain.setValueAtTime(0,t+L);src.connect(f).connect(g).connect(lp);src.start(t,Math.random()*3,L+.1);laugh()},6000+Math.random()*14000)})();
+ document.addEventListener('visibilitychange',()=>{document.hidden?a.suspend():a.resume()});
+}catch(e){}}
+// télé allumée dans la chambre d'à côté : voix, rires enregistrés, indicatifs, à travers la cloison
+function tv(){try{const a=A(),out=a.createGain(),lp=a.createBiquadFilter();lp.type='lowpass';lp.frequency.value=520;lp.Q.value=.5;out.gain.value=0;out.connect(a.destination);lp.connect(out);
+ out.gain.linearRampToValueAtTime(.2,a.currentTime+5);PARTY={a,out};
+ const nb=a.createBuffer(1,a.sampleRate*3,a.sampleRate),d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+ const src=a.createBufferSource();src.buffer=nb;src.loop=true;const f1=a.createBiquadFilter(),f2=a.createBiquadFilter();f1.type=f2.type='bandpass';f1.Q.value=6;f2.Q.value=8;
+ const g1=a.createGain(),g2=a.createGain(),env=a.createGain();env.gain.value=0;src.connect(f1).connect(g1).connect(env);src.connect(f2).connect(g2).connect(env);g1.gain.value=1;g2.gain.value=.6;env.connect(lp);src.start();
+ const hum=a.createOscillator(),hg=a.createGain();hum.frequency.value=15625/128;hg.gain.value=.012;hum.connect(hg).connect(lp);hum.start();
+ let voice=Math.random()<.5?1:1.35;
+ (function talk(){const t=a.currentTime;let x=t;const n=6+Math.floor(Math.random()*14);
+  for(let i=0;i<n;i++){const L=.08+Math.random()*.18;f1.frequency.setTargetAtTime((380+Math.random()*500)*voice,x,.03);f2.frequency.setTargetAtTime((1100+Math.random()*900)*voice,x,.03);
+   env.gain.setTargetAtTime(.5+Math.random()*.5,x,.02);env.gain.setTargetAtTime(.05,x+L,.03);x+=L+.04+Math.random()*.08}
+  if(Math.random()<.35)voice=voice===1?1.35:1;
+  const pause=x-t+.3+Math.random()*1.4;
+  if(Math.random()<.15){const lt=t+pause,ls=a.createBufferSource();ls.buffer=nb;const lf=a.createBiquadFilter();lf.type='bandpass';lf.frequency.value=700;lf.Q.value=1;const lg=a.createGain(),D=1.2+Math.random()*1.5;lg.gain.setValueAtTime(0,lt);lg.gain.linearRampToValueAtTime(.7,lt+.2);lg.gain.linearRampToValueAtTime(0,lt+D);ls.connect(lf).connect(lg).connect(lp);ls.start(lt,0,D+.1)}
+  if(Math.random()<.06){[392,523,659,784].forEach((fq,i)=>{const o=a.createOscillator(),og=a.createGain(),st=t+pause+i*.18;o.type='triangle';o.frequency.value=fq;og.gain.setValueAtTime(.25,st);og.gain.exponentialRampToValueAtTime(.001,st+.35);o.connect(og).connect(lp);o.start(st);o.stop(st+.4)})}
+  setTimeout(talk,(pause+(Math.random()<.15?1.6:0))*1000)})();
+ document.addEventListener('visibilitychange',()=>{document.hidden?a.suspend():a.resume()});
+}catch(e){}}
+addEventListener('pointerdown',()=>{A();party()},{once:true});
 let ac;const A=()=>ac||(ac=new(window.AudioContext||window.webkitAudioContext)());
 function ding(){try{const a=A(),t=a.currentTime;[[2093,.22,1.9],[5440,.08,1.2],[8820,.04,.6]].forEach(([f,v,d])=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(a.destination);o.start(t);o.stop(t+d)})}catch(e){}}
 function click(){try{const a=A(),b=a.createBuffer(1,a.sampleRate*.03,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/120);const s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start()}catch(e){}}
-$('#bell').onclick=()=>{ding();const b=$('#bell');b.classList.remove('ring');void b.offsetWidth;b.classList.add('ring');$('#board').classList.add('lit')};
+$('#bell').onclick=()=>{snd('bell',.7);A();party();const b=$('#bell');b.classList.remove('ring');void b.offsetWidth;b.classList.add('ring');$('#board').classList.add('lit')};
 function jingle(){try{const a=A(),t=a.currentTime;for(let i=0;i<3;i++){const o=a.createOscillator(),g=a.createGain(),f=3200+Math.random()*2400;o.frequency.value=f;g.gain.setValueAtTime(.05,t+i*.05);g.gain.exponentialRampToValueAtTime(.0001,t+i*.05+.25);o.connect(g).connect(a.destination);o.start(t+i*.05);o.stop(t+i*.05+.3)}}catch(e){}}
 
 let MINE=new Set();
@@ -246,7 +291,7 @@ async function openKey(n){
   
   $('#dl').innerHTML=`<dt>${t.n}</dt><dd>№ ${n}${MINE.has(k.tag)?' ★':''}</dd><dt>${t.tier}</dt><dd>${k.tier}</dd><dt>${t.eur}</dt><dd>${k.eur} €</dd><dt>${t.since}</dt><dd>${k.since}</dd><dt>${t.until}</dt><dd>${k.until}</dd><dt>${t.st}</dt><dd>${k.until>=today()?t.live:t.past}</dd><dt>TAG</dt><dd>${k.tag}</dd>`;
   $('#ln').href='#k'+n;$('#stamp').textContent='';$('#stamp').className='';$('#key').classList.add('on');click();
-  const ok=await verify(k);$('#stamp').textContent=ok?t.ok:t.bad;$('#stamp').className=ok?'ok':'bad';$('#dl-png').onclick=()=>png(k,ok);
+  const ok=await verify(k);$('#stamp').textContent=ok?t.ok:t.bad;if(ok)snd('thump',.6);$('#stamp').className=ok?'ok':'bad';$('#dl-png').onclick=()=>png(k,ok);
 }
 function png(k,ok){
   const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=682*2;c.height=993*2;const x=c.getContext('2d');x.drawImage(img,0,0,c.width,c.height);
