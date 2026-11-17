@@ -26,6 +26,14 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
   font:300 var(--fs,9cqw)/1 "Helvetica Neue",Arial,sans-serif;letter-spacing:.14em;color:#ffd9d2;white-space:nowrap;
   -webkit-text-stroke:.012em #ff3b2b;text-shadow:0 0 .04em #ff6a55,0 0 .12em #ff2a1a,0 0 .35em rgba(255,40,25,.85),0 0 .8em rgba(255,30,20,.5)}
 #neon.alt #nword{opacity:1;animation:buzz 2.5s infinite}
+.cp{position:absolute;top:12.53%;height:69.17%;width:12.23%;opacity:0;pointer-events:none}
+.cp::before{content:"";position:absolute;inset:0;background:url(img/neon.webp) no-repeat;background-size:817.65% auto;filter:brightness(.2) saturate(.9)}
+#c1::before{background-position:39.72% 40.65%}#c2::before{background-position:85.43% 40.65%}
+#c1{left:34.865%}#c2{left:74.99%}
+.cp b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;
+  font:200 20cqw/1 "Helvetica Neue",Arial,sans-serif;color:#ffd9d2;-webkit-text-stroke:.012em #ff3b2b;text-shadow:0 0 .04em #ff6a55,0 0 .12em #ff2a1a,0 0 .35em rgba(255,40,25,.85)}
+.cp.k b{opacity:1}
+#neon.alt .cp{display:none}
 #neonglow{position:absolute;inset:-30%;background:radial-gradient(ellipse,rgba(255,60,40,.22),transparent 65%);mix-blend-mode:screen;pointer-events:none}
 /* tableau des tarifs */
 #board img{border-radius:3.6%/4.6%}
@@ -106,7 +114,7 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 <body>
 <div id="blur"></div>
 <main id="stage">
-  <div class="o" id="neon"><div id="neonglow"></div><img src="img/neon.webp" alt="VACANCY"><b id="nword"></b></div>
+  <div class="o" id="neon"><div id="neonglow"></div><img src="img/neon.webp" alt="VACANCY"><b id="nword"></b><i class="cp" id="c1"><b>K</b></i><i class="cp" id="c2"><b>K</b></i></div>
   <section class="o" id="board" aria-label="Rates">
     <img src="img/board.webp" alt="">
     <div id="felt" class="L">
@@ -226,7 +234,12 @@ function glyphs(){if(!GL)return;const CAP=135,SW=3219;document.querySelectorAll(
   const k=(c!==U?.72:1),u=k/CAP,r=((Math.sin(c.charCodeAt(0)*91+h.length)*1.6)).toFixed(2);
   h+=`<i class="g${U==="'"?' ap':''}" style="width:${(g[2]*u).toFixed(3)}em;height:${(g[3]*u).toFixed(3)}em;background-size:${(SW*u).toFixed(3)}em auto;background-position:${(-g[0]*u).toFixed(3)}em 0;rotate:${r}deg"></i>`}
  el.innerHTML=h;el.classList.add('on')})}
-const WORDS=['NO VACANCY','SEKTOR INN','KAVE','KALABASS','NOIR INSEKT'];
+(function crackle(){const c1=$('#c1'),c2=$('#c2');
+ function burst(el,n){let i=0;(function f(){if(i++>n){el.style.opacity=0;return}el.style.opacity=Math.random()<.5?1:Math.random()*.6;setTimeout(f,30+Math.random()*90)})()}
+ function K(el){el.style.opacity=1;el.classList.add('k');if(ac)snd('neon',.08);setTimeout(()=>{el.classList.remove('k');burst(el,3)},140+Math.random()*420)}
+ (function loop(){const el=Math.random()<.8?c1:c2;if(!$('#neon').classList.contains('alt')){Math.random()<.55?K(el):burst(el,4+Math.floor(Math.random()*8))}
+  setTimeout(loop,1500+Math.random()*4500)})()})();
+const WORDS=['NO VACANCY','SEKTOR INN','KAVE','NOIR INSEKT'];
 function snd(n,v=.5){try{const a=new Audio('../../snd/'+n+'-'+(1+Math.floor(Math.random()*({bell:4,neon:3,drop:4,thump:2,coin:3}[n]||1)))+'.mp3');a.volume=v;a.play().catch(()=>{})}catch(e){}}
 (function sign(){setTimeout(()=>{const ne=$('#neon'),w=WORDS[Math.floor(Math.random()*WORDS.length)];
   $('#nword').textContent=w;$('#nword').style.setProperty('--fs',Math.min(15,118/w.length)+'cqw');ne.classList.add('alt');if(ac)snd('neon',.18);
