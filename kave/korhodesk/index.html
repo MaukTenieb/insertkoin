@@ -67,6 +67,8 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 #ntier{font-size:6cqw;letter-spacing:.08em}
 #ntag{font:700 13cqw/1 "Courier New",monospace;letter-spacing:.12em;color:#1d1710;border:.5cqw dashed #8a7a5a;padding:2cqh 4cqw}
 #nhint{font-size:3.8cqw;color:#6a5a40}
+#nqr{display:none;width:46cqw;aspect-ratio:1;background:#efe6cf;padding:2cqw}#nqr.on{display:block}#nqr svg{width:100%;height:100%;display:block}
+#nln{font-size:7cqw;line-height:1;border:.5cqw solid #2a2217;padding:.6cqh 2.4cqw}
 #ncode{font-size:3cqw;color:#8a7a5a;word-break:break-all}
 .acts2{display:flex;gap:9cqw;align-items:center;font-size:6cqw}
 #npay{font-weight:700;border:.5cqw solid #2a2217;padding:1cqh 3cqw;color:#2a2217}
@@ -96,9 +98,11 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
     <p id="ntag"></p>
     <p id="nhint"></p>
     <p id="ncode"></p>
+    <a id="nqr" target="_blank" rel="noopener"></a>
     <div class="acts2">
       <button id="ncopy" title="copy">⧉</button>
       <a id="npay" target="_blank" rel="noopener">PayPal ↗</a>
+      <button id="nln" title="Lightning">⚡</button>
       <button id="nclose" title="close">✕</button>
     </div>
   </article>
@@ -118,7 +122,7 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 </div>
 
 <script>
-const PAYPAL='https://www.paypal.me/mauktenieb/',LN='';
+const PAYPAL='https://www.paypal.me/mauktenieb/',LN='korhogo@rizful.com';
 const MASKS=['Unkle Maukie','dogXim','C7H5N3O6','Naphta','Ts\'ui Pen','Honey Buzzard','Hatra Loves','Croisiere Noire','Aube','Silent Pact','Maiden Call','Plague of Justinian','Poisoned Well','Cadaver Synod','Truce','Auvergne','Grand Colonel','Malika'];
 const TIERS=[[1,'kalabass'],[5,'[K]alabass'],[10,'KALABASS'],[50,'[k]ALABASS'],[99,"[K]ALEB'S ASS"]];
 const B32='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';const b32=u=>{let b=0,v=0,o='';for(const x of u){v=(v<<8)|x;b+=8;while(b>=5){o+=B32[(v>>>(b-5))&31];b-=5}}return o};
@@ -133,9 +137,9 @@ const LAYOUT={
 // crochets du tableau (px de rack.webp 852×692)
 const HX=[62,136,208,282,355,428,500,572,646,718,791],HY=[58,128,200,271,345,414,483,549,612];
 const T={
- en:{clear:'Euros · PayPal · 100 % to Korhogo · 31 nights per key',hint:'Paste in the PayPal note',keep:'Your room code, kept in this browser:',until:'Until',eur:'Paid',
+ en:{clear:'Euros · PayPal · Lightning · 100 % to Korhogo · 31 nights per key',hint:'Paste in the PayPal note',lnhint:'Scan with a Lightning wallet · tag included',keep:'Your room code, kept in this browser:',until:'Until',eur:'Paid',
   n:'Key',tier:'Kalabass',since:'Since',who:'Postulant',rh:'Rhythm',m:'monthly',o:'once',anon:'—',ok:'SIGNED',bad:'UNSIGNED',st:'Status',live:'active',past:'archived'},
- fr:{clear:'Euros · PayPal · 100 % pour Korhogo · 31 nuits par clé',hint:'À coller dans la note PayPal',keep:'Votre code de chambre, gardé dans ce navigateur :',until:'Jusqu’au',eur:'Versé',
+ fr:{clear:'Euros · PayPal · Lightning · 100 % pour Korhogo · 31 nuits par clé',hint:'À coller dans la note PayPal',lnhint:'À scanner avec un portefeuille Lightning · étiquette incluse',keep:'Votre code de chambre, gardé dans ce navigateur :',until:'Jusqu’au',eur:'Versé',
   n:'Clé',tier:'Kalabass',since:'Depuis',who:'Postulant',rh:'Rythme',m:'mensuel',o:'une fois',anon:'—',ok:'SIGNÉE',bad:'NON SIGNÉE',st:'État',live:'active',past:'archivée'}
 };
 let lang=(()=>{try{return localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e){return 'en'}})();
@@ -165,7 +169,21 @@ async function slip(d,n){
   if(!me){const r=crypto.getRandomValues(new Uint8Array(13));const code=MASKS[r[0]%18]+'-'+b32(r.slice(1)).match(/.{1,5}/g).join('-');me={code,tag:await tagOf(code)};c.push(me);try{localStorage.setItem('kd.codes',JSON.stringify(c))}catch(e){}}
   $('#ntier').textContent=n+' · '+d+' €';$('#ntag').textContent=me.tag;$('#nhint').textContent=t.hint;$('#ncode').textContent=t.keep+' '+me.code;
   $('#npay').href=PAYPAL+d+'EUR';$('#ncopy').onclick=()=>{try{navigator.clipboard.writeText(me.tag)}catch(e){};click()};
+  $('#nqr').classList.remove('on');$('#nqr').innerHTML='';
+  $('#nln').hidden=!LN;$('#nln').onclick=()=>lightning(d,me.tag);
   $('#slip').classList.add('on');
+}
+async function eurBtc(){for(const [u,f] of [['https://api.coinbase.com/v2/prices/BTC-EUR/spot',j=>+j.data.amount],['https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=eur',j=>+j.bitcoin.eur],['https://www.bitstamp.net/api/v2/ticker/btceur/',j=>+j.last]]){try{const v=f(await (await fetch(u)).json());if(v>0)return v}catch(e){}}throw new Error('prix')}
+async function lightning(d,tag){
+  const t=T[lang],q=$('#nqr');q.classList.add('on');q.innerHTML='';click();
+  try{const [user,host]=LN.split('@');const lp=await (await fetch(`https://${host}/.well-known/lnurlp/${user}`)).json();
+    const msat=Math.max(lp.minSendable,Math.round(d/await eurBtc()*1e11));
+    const inv=await (await fetch(`${lp.callback}${lp.callback.includes('?')?'&':'?'}amount=${msat}&comment=${encodeURIComponent('KORHODESK '+tag)}`)).json();
+    const qr=qrcode(0,'L');qr.addData(inv.pr.toUpperCase(),'Alphanumeric');qr.make();
+    q.innerHTML=qr.createSvgTag({cellSize:4,margin:0,scalable:true});q.href='lightning:'+inv.pr;
+    $('#nhint').textContent=t.lnhint+' · '+Math.round(msat/1000).toLocaleString()+' sats';
+    $('#ncopy').onclick=()=>{try{navigator.clipboard.writeText(inv.pr)}catch(e){};click()};
+  }catch(e){q.classList.remove('on')}
 }
 $('#nclose').onclick=()=>$('#slip').classList.remove('on');
 $('#slip').onclick=e=>{if(e.target.id==='slip')$('#nclose').onclick()};
@@ -214,6 +232,7 @@ function route(){const m=location.hash.match(/^#k(\d+)$/);if(m){const n=+m[1],k=
 paint();layout();setTimeout(layout,300);
 fetch('registry.json',{cache:'no-store'}).then(r=>r.ok?r.json():reg).then(async j=>{reg=j;for(const c of myCodes())MINE.add(c.tag);drawRack();route()}).catch(()=>drawRack());
 </script>
+<script src="qr.js"></script>
 <script src="../panneau.js"></script>
 </body>
 </html>
