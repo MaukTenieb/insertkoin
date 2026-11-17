@@ -3,6 +3,11 @@ on:
   schedule:
     - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
+    inputs:
+      essai:
+        description: Envoyer un e-mail d'essai
+        type: boolean
+        default: false
 permissions:
   contents: write
   issues: write
@@ -24,6 +29,7 @@ jobs:
         run: |
           npm install --no-save --silent nostr-tools@2
           node tools/korhodesk-ln.mjs
+          if [ "${{ inputs.essai }}" = "true" ]; then echo "Essai : la caisse KorhoDesk écrit bien jusqu'à ta boîte." >> caisse.md; fi
       - name: Horodatage OpenTimestamps (blockchain Bitcoin)
         run: |
           git diff --quiet kave/korhodesk/registry.json && exit 0
