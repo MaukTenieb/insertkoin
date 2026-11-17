@@ -14,6 +14,9 @@ on:
       rail:
         description: paypal ou ln
         default: paypal
+      nom:
+        description: Nom du soutien (Kalabass dès 5 €), facultatif
+        default: ''
 permissions:
   contents: write
 concurrency:
@@ -30,7 +33,12 @@ jobs:
       - name: Émission ou renouvellement
         env:
           KORHOGOO_KEY: ${{ secrets.KORHOGOO_KEY }}
-        run: node tools/korhodesk-issue.mjs "${{ inputs.tag }}" "${{ inputs.eur }}" "${{ inputs.date }}" "${{ inputs.rail }}"
+          TAG: ${{ inputs.tag }}
+          EUR: ${{ inputs.eur }}
+          DATE: ${{ inputs.date }}
+          RAIL: ${{ inputs.rail }}
+          NOM: ${{ inputs.nom }}
+        run: node tools/korhodesk-issue.mjs "$TAG" "$EUR" "$DATE" "$RAIL" "$NOM"
       - name: Horodatage OpenTimestamps (blockchain Bitcoin)
         run: |
           pip install --quiet opentimestamps-client

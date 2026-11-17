@@ -77,7 +77,7 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 #lang{position:absolute;right:1.6%;bottom:2.4%;font:700 2.2cqmin/1 "Courier New",monospace;color:#c9a24a;opacity:.8}
 #racknav{position:absolute;display:flex;gap:2cqmin;font:700 2cqmin/1 "Courier New",monospace;color:#c9a24a}
 /* fiche */
-#key{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(6,4,3,.84);backdrop-filter:blur(3px);container-type:size}
+#key{position:fixed;inset:0 0 var(--ikbar,52px) 0;display:none;align-items:center;justify-content:center;background:rgba(6,4,3,.84);backdrop-filter:blur(3px);container-type:size}
 #key.on{display:flex}
 #card{position:relative;height:min(92cqh,92cqw*993/682);aspect-ratio:682/993;background:url(img/card.webp) center/100% 100% no-repeat;
   color:#2a2217;font-family:"Courier New",monospace;filter:drop-shadow(0 2cqmin 3cqmin rgba(0,0,0,.8));animation:drop .5s cubic-bezier(.3,1.4,.5,1);container-type:size}
@@ -87,12 +87,19 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 #coin span{display:none}
 @keyframes spin{0%,100%{transform:perspective(600px) rotateY(-36deg)}50%{transform:perspective(600px) rotateY(36deg)}}
 #dl{position:absolute;left:8%;right:28%;top:41.2%;display:grid;grid-template-columns:auto 1fr;column-gap:4cqw;font-size:3.1cqh;line-height:5.32cqh}
-#dl dt{color:#7a6a50}#dl dd{overflow:hidden;white-space:nowrap}
+#dl dt{color:#7a6a50}#dl dd{overflow:hidden;white-space:nowrap}#dl dd span{display:inline-block}#dl dd span.pr{animation:prompt var(--pd,6s) ease-in-out infinite alternate}@keyframes prompt{0%,15%{transform:none}85%,100%{transform:translateX(var(--px))}}
+@container (max-height:460px) and (min-aspect-ratio:1/1){#note{height:94cqh;width:min(86cqw,620px);aspect-ratio:auto;background-size:cover;gap:1.2cqh;padding:9cqh 5cqw 4cqh}#ndrop{width:5%}#ncode{display:none}#ntier{font-size:16px}#nkp{font-size:13px;margin:0}#nname{font-size:16px;width:60%}#ntag{font-size:30px;padding:1.4cqh 3cqw}#nhint{font-size:12px}.acts2{font-size:18px;gap:28px}#nln{font-size:18px}#slip.qr #ntag{display:none}#nqr{width:auto;height:46cqh;padding:1cqh}}
 #stamp{position:absolute;right:7%;top:30%;rotate:-12deg;border:.6cqw solid currentColor;padding:.6cqw 1.6cqw;font-weight:700;font-size:4.4cqw;letter-spacing:.1em;opacity:.85;mix-blend-mode:multiply}
 #stamp.ok{color:#a8221a;animation:slam .35s cubic-bezier(.2,1.6,.4,1)}
 @keyframes slam{0%{transform:scale(2.6);opacity:0}60%{transform:scale(.92);opacity:.95}100%{transform:scale(1)}}#stamp.bad{color:#555}
 .acts{position:absolute;left:0;right:0;bottom:6%;display:flex;justify-content:center;gap:12cqw;font-size:6cqw}
-#slip{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(6,4,3,.84);backdrop-filter:blur(3px);container-type:size;z-index:5}
+#letter{position:fixed;inset:0 0 var(--ikbar,52px) 0;display:none;align-items:center;justify-content:center;background:rgba(6,4,3,.86);backdrop-filter:blur(3px);container-type:size;z-index:6}
+#letter.on{display:flex}
+#paper{width:min(92cqw,64cqh);max-height:90cqh;overflow-y:auto;background:#ece2c8 url(img/card.webp) center/cover;color:#2a2217;font:clamp(13px,2.3cqh,17px)/1.5 "Courier New",monospace;padding:3.5em 2.4em 2.6em;filter:drop-shadow(0 2cqmin 3cqmin rgba(0,0,0,.8));animation:drop .45s cubic-bezier(.3,1.4,.5,1);overscroll-behavior:contain;scrollbar-width:thin}
+#paper p{margin:0 0 .8em}#paper a{color:#7a1a10;word-break:break-all}#paper .aka{line-height:1.35}
+#paper button{font:inherit;color:#7a1a10;background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}
+#kps{display:grid;grid-template-columns:auto 1fr;gap:.35em 1em;margin:0}#kps dt{font-weight:700;white-space:nowrap}#kps dd{margin:0}
+#slip{position:fixed;inset:0 0 var(--ikbar,52px) 0;display:none;align-items:center;justify-content:center;background:rgba(6,4,3,.84);backdrop-filter:blur(3px);container-type:size;z-index:5}
 #slip.on{display:flex}
 #note{position:relative;height:min(88cqh,86cqw*993/682);aspect-ratio:682/993;background:url(img/card.webp) center/100% 100% no-repeat;color:#2a2217;font-family:"Courier New",monospace;
   container-type:size;filter:drop-shadow(0 2cqmin 3cqmin rgba(0,0,0,.8));animation:drop .45s cubic-bezier(.3,1.4,.5,1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3cqh;text-align:center;padding:18cqh 9cqw 10cqh}
@@ -100,8 +107,11 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 #slip.on #ndrop{animation:kdrop .9s cubic-bezier(.3,1.25,.5,1) .15s both}
 @keyframes kdrop{0%{transform:translateY(-80cqh) rotate(-40deg)}70%{transform:translateY(1cqh) rotate(8deg)}85%{transform:translateY(-2cqh) rotate(-3deg)}100%{transform:none}}
 #ntier{font-size:6cqw;letter-spacing:.08em}
+#nkp{font-size:4.4cqw;font-style:italic;color:#4a3c28;max-width:80cqw;margin-top:-2cqh}
+#nname{font:700 5cqw 'Courier New',monospace;text-align:center;width:62cqw;background:transparent;border:0;border-bottom:.4cqw solid #8a7a5a;color:#1d1710;padding:.4cqh 0;outline:0}#nname::placeholder{color:#a8987a;font-weight:400}#nname[hidden]{display:none}
+#slip.qr #ncode,#slip.qr #nkp{display:none}
 #ntag{font:700 13cqw/1 "Courier New",monospace;letter-spacing:.12em;color:#1d1710;border:.5cqw dashed #8a7a5a;padding:2cqh 4cqw}
-#nhint{font-size:3.8cqw;color:#6a5a40}
+#nhint{font-size:4.2cqw;color:#6a5a40}
 #nqr{position:relative;display:none;width:46cqw;aspect-ratio:1;background:#efe6cf;padding:2cqw}#nqr.on{display:block}#nqr svg{width:100%;height:100%;display:block;transition:opacity .6s}#nqr.paid svg{opacity:.12}#nqr.paid::after{content:'\2713';position:absolute;inset:0;display:grid;place-items:center;font:900 30cqw/1 serif;color:#8b1d12;transform:rotate(-12deg);animation:slam .35s cubic-bezier(.2,1.6,.4,1)}@keyframes slam{from{transform:rotate(-12deg) scale(2.4);opacity:0}}
 #nln{font-size:7cqw;line-height:1;border:.5cqw solid #2a2217;padding:.6cqh 2.4cqw}
 #ncode{font-size:3cqw;color:#8a7a5a;word-break:break-all}
@@ -133,6 +143,8 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
   <article id="note">
     <i id="ndrop"></i>
     <p id="ntier"></p>
+    <p id="nkp"></p>
+    <input id="nname" maxlength="32" autocomplete="nickname" spellcheck="false" placeholder="Your NAME">
     <p id="ntag"></p>
     <p id="nhint"></p>
     <p id="ncode"></p>
@@ -143,6 +155,32 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
       <button id="nln" title="Lightning">⚡</button>
       <button id="nclose" title="close">✕</button>
     </div>
+  </article>
+</div>
+
+<div id="letter" role="dialog" aria-modal="true">
+  <article id="paper">
+<p>There's a Transmedia World where odd Masks emerge and surpass their so-called creator.</p>
+<p>Mh — da Pre-Korhogo Lore, <a href="https://www.flickr.com/people/mauktenieb" target="_blank" rel="noopener">https://www.flickr.com/people/mauktenieb</a></p>
+<p>Korhogo Lore! <a href="https://korhogo.substack.com/p/mighty-fauna-sips-your-gas" target="_blank" rel="noopener">https://korhogo.substack.com/p/mighty-fauna-sips-your-gas</a></p>
+<p>Art: where to start? <a href="https://mauktenieb.github.io/katabase" target="_blank" rel="noopener">https://mauktenieb.github.io/katabase</a></p>
+<p>Code shit, <a href="https://github.com/mauktenieb" target="_blank" rel="noopener">https://github.com/mauktenieb</a></p>
+<p>Kome!</p>
+<p>Hm. Why this platform?</p>
+<p>Ah, a konvenient one. (Yes.)</p>
+<p>You can bekome official Postulants (pre-Krews) and help nurture music, videos, a Lore journal, games — and so forth. The thing is, yours truly wants to go... fucking further (and proliferate beyond imagination; not his loser agenda, but the Fauna's, ok?) To spend more time and resources developing this massive Lore th... Nah: trying to survive actually.</p>
+<p>Across moutains of interkonnected stratae...</p>
+<p>For your greatest joy?</p>
+<p>Come on. You contribute...</p>
+<p>... and get your NAME in a Hall of Fame — whether on YouTube, Instagram, or both? You also get exclusive answers to your questions, cool shit, exclusive kontent, etc.</p>
+<p>Lovin' love,</p>
+<p>Mau-krap —</p>
+<p>aka</p>
+<p class="aka">dogXim<br>Ts'ui Pên<br>Auvergne<br>Silent Pact<br>C7H5N3O6<br>Hátra Lövés<br>Maiden Call<br>Poisoned Well<br>Grand Colonel<br>Croisière Noire<br>Cadaver Synod<br>Truce/↑héé↑è↑e<br>Malika/Quintina<br>Naphta-Kerema<br>Aube/Rosy Fingers<br>Plague of Justinian<br>Honey Buzzard/Marumero/Limulus/Chrême</p>
+<p>(<button id="lclose">Klose this page</button> or...)</p>
+<p>__</p>
+<p>Kounterparties:</p>
+<dl id="kps"></dl>
   </article>
 </div>
 
@@ -161,8 +199,9 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 
 <script>
 const PAYPAL='https://www.paypal.me/mauktenieb/',LN='korhogo@rizful.com';
-const MASKS=['Unkle Maukie','dogXim','C7H5N3O6','Naphta','Ts\'ui Pen','Honey Buzzard','Hatra Loves','Croisiere Noire','Aube','Silent Pact','Maiden Call','Plague of Justinian','Poisoned Well','Cadaver Synod','Truce','Auvergne','Grand Colonel','Malika'];
+const MASKS=['Unkle Maukie','dogXim','C7H5N3O6','Naphta','Ts\'ui Pên','Honey Buzzard','Hátra Lövés','Croisière Noire','Aube','Silent Pact','Maiden Call','Plague of Justinian','Poisoned Well','Cadaver Synod','Truce','Auvergne','Grand Colonel','Malika'];
 const TIERS=[[1,'kalabass'],[5,'[K]alabass'],[10,'KALABASS'],[50,'[k]ALABASS'],[99,"[K]ALEB'S ASS"]];
+const KP={1:'A warm salute',5:'A warm salute + Your NAME',10:'A warm salute + Your NAME + Some Kontent',50:'Your NAME + Some Kontent + Some Surprises (yes)',99:"Oooh, le Grand Jeu. (Everythin'.) Let your Unkle KOOK."};
 const B32='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';const b32=u=>{let b=0,v=0,o='';for(const x of u){v=(v<<8)|x;b+=8;while(b>=5){o+=B32[(v>>>(b-5))&31];b-=5}}return o};
 async function tagOf(code){return b32(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(code)))).slice(0,8)}
 const today=()=>new Date().toISOString().slice(0,10);
@@ -208,10 +247,12 @@ function paint(){
 async function slip(d,n){
   const t=T[lang];let c=myCodes();let me=c[c.length-1];
   if(!me){const r=crypto.getRandomValues(new Uint8Array(13));const code=MASKS[r[0]%18]+'-'+b32(r.slice(1)).match(/.{1,5}/g).join('-');me={code,tag:await tagOf(code)};c.push(me);try{localStorage.setItem('kd.codes',JSON.stringify(c))}catch(e){}}
-  $('#ntier').textContent=n+' · '+d+' €';$('#ntag').textContent=me.tag;$('#nhint').textContent=t.hint;$('#ncode').textContent=t.keep+' '+me.code;
-  $('#npay').href=PAYPAL+d+'EUR';$('#ncopy').onclick=()=>{try{navigator.clipboard.writeText(me.tag)}catch(e){};click()};
+  $('#ntier').textContent=n+' · '+d+' €';$('#nkp').textContent=KP[d];$('#slip').classList.remove('qr');
+  const nm=$('#nname');nm.hidden=d<5;try{nm.value=localStorage.getItem('kd.name')||''}catch(e){};nm.oninput=()=>{nm.value=nm.value.replace(/[^\p{L}\p{N} ._'’-]/gu,'');try{localStorage.setItem('kd.name',nm.value)}catch(e){}};
+  const note=()=>me.tag+(d>=5&&nm.value.trim()?' '+nm.value.trim():'');$('#ntag').textContent=me.tag;$('#nhint').textContent=t.hint;$('#ncode').textContent=t.keep+' '+me.code;
+  $('#npay').href=PAYPAL+d+'EUR';$('#ncopy').onclick=()=>{try{navigator.clipboard.writeText(note())}catch(e){};click()};
   $('#nqr').classList.remove('on');$('#nqr').innerHTML='';
-  $('#nln').hidden=!LN;$('#nln').onclick=()=>lightning(d,me.tag);
+  $('#nln').hidden=!LN;$('#nln').onclick=()=>lightning(d,d>=5?nm.value.trim():'');
   $('#slip').classList.add('on');setTimeout(()=>snd('drop',.5),700);
 }
 async function eurBtc(){for(const [u,f] of [['https://api.coinbase.com/v2/prices/BTC-EUR/spot',j=>+j.data.amount],['https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=eur',j=>+j.bitcoin.eur],['https://www.bitstamp.net/api/v2/ticker/btceur/',j=>+j.last]]){try{const v=f(await (await fetch(u)).json());if(v>0)return v}catch(e){}}throw new Error('prix')}
@@ -222,11 +263,11 @@ function bolt11Hash(pr){const C='qpzry9x8gf2tvdw0s3jn54khce6mua7l',s=pr.toLowerC
     if(ty===1&&n===52){const o=[];let b=0,v=0;for(const x of dt){v=(v<<5)|x;b+=5;if(b>=8){o.push((v>>>(b-8))&255);b-=8}}return new Uint8Array(o.slice(0,32))}}return null}
 const lnCode=h=>MASKS[h[0]%18]+'-'+b32(h.slice(1,13)).match(/.{1,5}/g).join('-');
 let LNP=0;
-async function lightning(d){
-  const t=T[lang],q=$('#nqr'),run=++LNP;q.classList.remove('paid');q.classList.add('on');q.innerHTML='';click();
+async function lightning(d,name=''){
+  const t=T[lang],q=$('#nqr'),run=++LNP;q.classList.remove('paid');q.classList.add('on');$('#slip').classList.add('qr');q.innerHTML='';click();
   try{const [user,host]=LN.split('@');const lp=await (await fetch(`https://${host}/.well-known/lnurlp/${user}`)).json();
     const msat=Math.max(lp.minSendable,Math.floor(d/await eurBtc()*1e8)*1000)+d;
-    const inv=await (await fetch(`${lp.callback}${lp.callback.includes('?')?'&':'?'}amount=${msat}&comment=${encodeURIComponent('KORHODESK '+d+'EUR')}`)).json();
+    const inv=await (await fetch(`${lp.callback}${lp.callback.includes('?')?'&':'?'}amount=${msat}&comment=${encodeURIComponent(('KORHODESK '+d+'EUR '+name).trim())}`)).json();
     const h=bolt11Hash(inv.pr);if(!h)throw new Error('bolt11');
     const code=lnCode(h),tag=await tagOf(code),c=myCodes();
     if(!c.some(x=>x.tag===tag)){c.push({code,tag,ln:1});try{localStorage.setItem('kd.codes',JSON.stringify(c))}catch(e){}}
@@ -242,7 +283,10 @@ async function lightning(d){
           if($('#slip').classList.contains('on')){snd('coin',.6);setTimeout(()=>snd('bell',.4),500)}$('#nhint').textContent='✓ 🔑 '+tag;break}}catch(e){}}
   }catch(e){q.classList.remove('on')}
 }
-$('#nclose').onclick=()=>$('#slip').classList.remove('on');
+$('#kps').innerHTML=TIERS.map(([d,n])=>`<dt>${d} € - ${n}</dt><dd>${KP[d]}</dd>`).join('');
+$('#lclose').onclick=()=>$('#letter').classList.remove('on');$('#letter').onclick=e=>{if(e.target.id==='letter')$('#lclose').onclick()};
+addEventListener('keydown',e=>{if(e.key==='Escape'){$('#letter').classList.remove('on')}});
+$('#nclose').onclick=()=>{$('#slip').classList.remove('on');LNP++};
 $('#slip').onclick=e=>{if(e.target.id==='slip')$('#nclose').onclick()};
 let GL=null;fetch('img/lettres.json').then(r=>r.json()).then(j=>{GL=j;glyphs()}).catch(()=>{});
 function glyphs(){if(!GL)return;const CAP=135,SW=3219;document.querySelectorAll('.lt').forEach(el=>{let h='';
@@ -298,7 +342,7 @@ addEventListener('pointerdown',()=>{A();party()},{once:true});
 var ac;const A=()=>ac||(ac=new(window.AudioContext||window.webkitAudioContext)());
 function ding(){try{const a=A(),t=a.currentTime;[[2093,.22,1.9],[5440,.08,1.2],[8820,.04,.6]].forEach(([f,v,d])=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(a.destination);o.start(t);o.stop(t+d)})}catch(e){}}
 function click(){try{const a=A(),b=a.createBuffer(1,a.sampleRate*.03,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/120);const s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start()}catch(e){}}
-$('#bell').onclick=()=>{snd('bell',.7);A();party();const b=$('#bell');b.classList.remove('ring');void b.offsetWidth;b.classList.add('ring');$('#board').classList.add('lit')};
+$('#bell').onclick=()=>{$('#letter').classList.add('on');$('#paper').scrollTop=0;snd('bell',.7);A();party();const b=$('#bell');b.classList.remove('ring');void b.offsetWidth;b.classList.add('ring');$('#board').classList.add('lit')};
 function jingle(){try{const a=A(),t=a.currentTime;for(let i=0;i<3;i++){const o=a.createOscillator(),g=a.createGain(),f=3200+Math.random()*2400;o.frequency.value=f;g.gain.setValueAtTime(.05,t+i*.05);g.gain.exponentialRampToValueAtTime(.0001,t+i*.05+.25);o.connect(g).connect(a.destination);o.start(t+i*.05);o.stop(t+i*.05+.3)}}catch(e){}}
 
 let MINE=new Set();
@@ -320,8 +364,9 @@ async function verify(k){try{const key=await crypto.subtle.importKey('raw',b64(r
 async function openKey(n){
   const k=reg.keys.find(x=>x.n===n);if(!k)return;const t=T[lang];
   
-  $('#dl').innerHTML=`<dt>${t.n}</dt><dd>№ ${n}${MINE.has(k.tag)?' ★':''}</dd><dt>${t.tier}</dt><dd>${k.tier}</dd><dt>${t.eur}</dt><dd>${k.eur} €</dd><dt>${t.since}</dt><dd>${k.since}</dd><dt>${t.until}</dt><dd>${k.until}</dd><dt>${t.st}</dt><dd>${k.until>=today()?t.live:t.past}</dd><dt>TAG</dt><dd>${k.tag}</dd>`;
+  $('#dl').innerHTML=`<dt>${t.n}</dt><dd>№ ${n}${MINE.has(k.tag)?' ★':''}</dd>${k.name?`<dt>NAME</dt><dd>${k.name.replace(/[<>&"]/g,'')}</dd>`:''}<dt>${t.tier}</dt><dd>${k.tier}</dd><dt>${t.eur}</dt><dd>${k.eur} €</dd><dt>${t.since}</dt><dd>${k.since}</dd><dt>${t.until}</dt><dd>${k.until}</dd><dt>${t.st}</dt><dd>${k.until>=today()?t.live:t.past}</dd><dt>TAG</dt><dd>${k.tag}</dd>`;
   $('#ln').href='#k'+n;$('#stamp').textContent='';$('#stamp').className='';$('#key').classList.add('on');click();
+  $('#dl').querySelectorAll('dd').forEach(d=>{d.innerHTML=`<span>${d.innerHTML}</span>`;const sp=d.firstChild,o=sp.scrollWidth-d.clientWidth;if(o>1){sp.style.setProperty('--px',-o-4+'px');sp.style.setProperty('--pd',(2+o/25)+'s');sp.classList.add('pr')}});
   const ok=await verify(k);$('#stamp').textContent=ok?t.ok:t.bad;if(ok)snd('thump',.6);$('#stamp').className=ok?'ok':'bad';$('#dl-png').onclick=()=>png(k,ok);
 }
 function png(k,ok){
@@ -329,7 +374,7 @@ function png(k,ok){
     const g=x.createRadialGradient(620,240,20,682,300,205);g.addColorStop(0,'#fff1bd');g.addColorStop(.45,'#c9a24a');g.addColorStop(1,'#6e5216');
     x.fillStyle=g;x.beginPath();x.arc(682,250,205,0,7);x.fill();x.fillStyle='#3f2c0b';x.font='bold 130px Courier New';x.textAlign='center';x.textBaseline='middle';x.fillText(String(k.n).padStart(2,'0'),682,258);
     x.textAlign='left';x.textBaseline='alphabetic';x.font='44px Courier New';x.fillStyle='#2a2217';
-    ['KEY № '+k.n,'KALABASS  '+k.tier,'PAID      '+k.eur+' EUR','SINCE     '+k.since,'UNTIL     '+k.until,'TAG       '+k.tag,'',location.origin+location.pathname+'#k'+k.n].forEach((s,i)=>x.fillText(s,110,850+i*105.6));
+    ['KEY № '+k.n,...(k.name?['NAME      '+k.name]:[]),'KALABASS  '+k.tier,'PAID      '+k.eur+' EUR','SINCE     '+k.since,'UNTIL     '+k.until,'TAG       '+k.tag,'',location.origin+location.pathname+'#k'+k.n].forEach((s,i)=>x.fillText(s,110,850+i*105.6));
     if(ok){x.save();x.translate(1080,640);x.rotate(-.2);x.strokeStyle=x.fillStyle='#a8221a';x.lineWidth=7;x.strokeRect(-150,-50,300,100);x.font='bold 54px Courier New';x.textAlign='center';x.fillText('SIGNED',0,18);x.restore()}
     const a=document.createElement('a');a.download=`korhogo-key-${k.n}.png`;a.href=c.toDataURL('image/png');a.click()};img.src='img/card.webp';
 }

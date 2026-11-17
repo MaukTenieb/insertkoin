@@ -6,7 +6,7 @@ import { execFileSync } from 'node:child_process';
 import { finalizeEvent } from 'nostr-tools/pure';
 import * as nip04 from 'nostr-tools/nip04';
 
-const MASKS = ['Unkle Maukie', 'dogXim', 'C7H5N3O6', 'Naphta', "Ts'ui Pen", 'Honey Buzzard', 'Hatra Loves', 'Croisiere Noire', 'Aube', 'Silent Pact', 'Maiden Call', 'Plague of Justinian', 'Poisoned Well', 'Cadaver Synod', 'Truce', 'Auvergne', 'Grand Colonel', 'Malika'];
+const MASKS = ['Unkle Maukie', 'dogXim', 'C7H5N3O6', 'Naphta', "Ts'ui Pên", 'Honey Buzzard', 'Hátra Lövés', 'Croisière Noire', 'Aube', 'Silent Pact', 'Maiden Call', 'Plague of Justinian', 'Poisoned Well', 'Cadaver Synod', 'Truce', 'Auvergne', 'Grand Colonel', 'Malika'];
 const B32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 const b32 = u => { let b = 0, v = 0, o = ''; for (const x of u) { v = (v << 8) | x; b += 8; while (b >= 5) { o += B32[(v >>> (b - 5)) & 31]; b -= 5; } } return o; };
 const tagOf = code => b32(createHash('sha256').update(code).digest()).slice(0, 8);
