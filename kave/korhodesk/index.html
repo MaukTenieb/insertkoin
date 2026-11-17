@@ -27,9 +27,6 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 #felt{position:absolute;left:5.9%;right:5.7%;top:7.3%;bottom:9.4%;display:flex;flex-direction:column;justify-content:space-between;padding:4% 5%}
 .L{font-family:"Arial Narrow","Helvetica Neue Condensed",Arial,sans-serif;font-weight:700;color:#f3efe6;letter-spacing:.06em;
   text-shadow:0 .08em 0 rgba(0,0,0,.85),0 0 .05em rgba(255,255,255,.4)}
-.freq{display:flex;justify-content:center;gap:12%}
-.freq button{white-space:nowrap;font-size:6.2cqw;opacity:.42;padding-bottom:.15em;border-bottom:.12em solid transparent}
-.freq button[aria-pressed=true]{opacity:1;border-color:#f3efe6}
 .row{width:100%;display:flex;justify-content:space-between;align-items:baseline;white-space:nowrap;font-size:6.6cqw;line-height:1.15}
 .row:nth-child(2n){transform:rotate(-.25deg)}.row:nth-child(3n){transform:translateX(.08em)}
 .row:hover,.row:focus-visible{color:#fff;text-shadow:0 0 .4em rgba(255,255,255,.6);outline:none}
@@ -63,6 +60,17 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 #stamp{position:absolute;right:7%;top:30%;rotate:-12deg;border:.6cqw solid currentColor;padding:.6cqw 1.6cqw;font-weight:700;font-size:4.4cqw;letter-spacing:.1em;opacity:.85;mix-blend-mode:multiply}
 #stamp.ok{color:#a8221a}#stamp.bad{color:#555}
 .acts{position:absolute;left:0;right:0;bottom:6%;display:flex;justify-content:center;gap:12cqw;font-size:6cqw}
+#slip{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(6,4,3,.84);backdrop-filter:blur(3px);container-type:size;z-index:5}
+#slip.on{display:flex}
+#note{position:relative;height:min(88cqh,86cqw*993/682);aspect-ratio:682/993;background:url(img/card.webp) center/100% 100% no-repeat;color:#2a2217;font-family:"Courier New",monospace;
+  container-type:size;filter:drop-shadow(0 2cqmin 3cqmin rgba(0,0,0,.8));animation:drop .45s cubic-bezier(.3,1.4,.5,1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3cqh;text-align:center;padding:18cqh 9cqw 10cqh}
+#ntier{font-size:6cqw;letter-spacing:.08em}
+#ntag{font:700 13cqw/1 "Courier New",monospace;letter-spacing:.12em;color:#1d1710;border:.5cqw dashed #8a7a5a;padding:2cqh 4cqw}
+#nhint{font-size:3.8cqw;color:#6a5a40}
+#ncode{font-size:3cqw;color:#8a7a5a;word-break:break-all}
+.acts2{display:flex;gap:9cqw;align-items:center;font-size:6cqw}
+#npay{font-weight:700;border:.5cqw solid #2a2217;padding:1cqh 3cqw;color:#2a2217}
+.tag.mine{box-shadow:0 0 1.4cqmin .5cqmin rgba(255,214,120,.9),0 .3cqmin .6cqmin rgba(0,0,0,.75)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
@@ -73,10 +81,6 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
   <section class="o" id="board" aria-label="Rates">
     <img src="img/board.webp" alt="">
     <div id="felt" class="L">
-      <div class="freq" role="group">
-        <button data-f="recurring" aria-pressed="true">↻ <span data-t="month"></span></button>
-        <button data-f="one-time" aria-pressed="false">● <span data-t="once"></span></button>
-      </div>
       <div id="rows"></div>
       <p id="clear"></p>
     </div>
@@ -85,6 +89,20 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
   <nav id="racknav" hidden></nav>
   <button class="o" id="bell" aria-label="Ring"><img src="img/bell.webp" alt=""></button>
 </main>
+
+<div id="slip" role="dialog" aria-modal="true">
+  <article id="note">
+    <p id="ntier"></p>
+    <p id="ntag"></p>
+    <p id="nhint"></p>
+    <p id="ncode"></p>
+    <div class="acts2">
+      <button id="ncopy" title="copy">⧉</button>
+      <a id="npay" target="_blank" rel="noopener">PayPal ↗</a>
+      <button id="nclose" title="close">✕</button>
+    </div>
+  </article>
+</div>
 
 <div id="key" role="dialog" aria-modal="true">
   <article id="card">
@@ -100,8 +118,13 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 </div>
 
 <script>
-const SPONSOR='https://github.com/sponsors/MaukTenieb',OPEN=false; // OPEN=true dès l'ouverture du profil GitHub Sponsors
+const PAYPAL='https://www.paypal.me/mauktenieb/',LN='';
+const MASKS=['Unkle Maukie','dogXim','C7H5N3O6','Naphta','Ts\'ui Pen','Honey Buzzard','Hatra Loves','Croisiere Noire','Aube','Silent Pact','Maiden Call','Plague of Justinian','Poisoned Well','Cadaver Synod','Truce','Auvergne','Grand Colonel','Malika'];
 const TIERS=[[1,'kalabass'],[5,'[K]alabass'],[10,'KALABASS'],[50,'[k]ALABASS'],[99,"[K]ALEB'S ASS"]];
+const B32='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';const b32=u=>{let b=0,v=0,o='';for(const x of u){v=(v<<8)|x;b+=8;while(b>=5){o+=B32[(v>>>(b-5))&31];b-=5}}return o};
+async function tagOf(code){return b32(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(code)))).slice(0,8)}
+const today=()=>new Date().toISOString().slice(0,10);
+function myCodes(){try{return JSON.parse(localStorage.getItem('kd.codes')||'[]')}catch(e){return[]}}
 // positions en % de la scène : [gauche, haut, largeur]
 const LAYOUT={
   land:{bg:'img/room-land.webp',ar:'1376/768',neon:[3,9,24],board:[2,22,26],rack:[47,14,23],bell:[49,60.4,6],nav:[47,49]},
@@ -110,13 +133,13 @@ const LAYOUT={
 // crochets du tableau (px de rack.webp 852×692)
 const HX=[62,136,208,282,355,428,500,572,646,718,791],HY=[58,128,200,271,345,414,483,549,612];
 const T={
- en:{month:'MONTHLY',once:'ONCE',clear:f=>f==='recurring'?'US dollars · GitHub Sponsors · 100 % to Korhogo · stop anytime in your GitHub settings':'US dollars · GitHub Sponsors · paid once · 100 % to Korhogo',
+ en:{clear:'Euros · PayPal · 100 % to Korhogo · 31 nights per key',hint:'Paste in the PayPal note',keep:'Your room code, kept in this browser:',until:'Until',eur:'Paid',
   n:'Key',tier:'Kalabass',since:'Since',who:'Postulant',rh:'Rhythm',m:'monthly',o:'once',anon:'—',ok:'SIGNED',bad:'UNSIGNED',st:'Status',live:'active',past:'archived'},
- fr:{month:'MENSUEL',once:'UNE FOIS',clear:f=>f==='recurring'?'Dollars US · GitHub Sponsors · 100 % pour Korhogo · arrêt à tout moment dans vos réglages GitHub':'Dollars US · GitHub Sponsors · une fois · 100 % pour Korhogo',
+ fr:{clear:'Euros · PayPal · 100 % pour Korhogo · 31 nuits par clé',hint:'À coller dans la note PayPal',keep:'Votre code de chambre, gardé dans ce navigateur :',until:'Jusqu’au',eur:'Versé',
   n:'Clé',tier:'Kalabass',since:'Depuis',who:'Postulant',rh:'Rythme',m:'mensuel',o:'une fois',anon:'—',ok:'SIGNÉE',bad:'NON SIGNÉE',st:'État',live:'active',past:'archivée'}
 };
 let lang=(()=>{try{return localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e){return 'en'}})();
-let freq='recurring',reg={keys:[],rack:99,pub:''},rack=1;
+let reg={keys:[],rack:99,pub:''},rack=1;
 const $=s=>document.querySelector(s);
 
 function layout(){
@@ -132,22 +155,31 @@ addEventListener('resize',layout);
 function paint(){
   const t=T[lang];document.documentElement.lang=lang;
   document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t[e.dataset.t]);
-  $('#rows').innerHTML=TIERS.map(([d,n])=>OPEN?`<a class="row" href="${SPONSOR}?frequency=${freq}" target="_blank" rel="noopener"><span>${n}</span><span>$${d}</span></a>`:`<button class="row"><span>${n}</span><span>$${d}</span></button>`).join('');
-  $('#rows').querySelectorAll('.row').forEach(r=>r.addEventListener('click',ding));
-  $('#clear').textContent=t.clear(freq);
+  $('#rows').innerHTML=TIERS.map(([d,n])=>`<button class="row" data-d="${d}" data-n="${n}"><span>${n}</span><span>${d} €</span></button>`).join('');
+  $('#rows').querySelectorAll('.row').forEach(r=>r.addEventListener('click',()=>{ding();slip(+r.dataset.d,r.dataset.n)}));
+  $('#clear').textContent=t.clear;
 }
-document.querySelectorAll('.freq button').forEach(b=>b.onclick=()=>{freq=b.dataset.f;document.querySelectorAll('.freq button').forEach(x=>x.setAttribute('aria-pressed',x===b));paint();click()});
 
+async function slip(d,n){
+  const t=T[lang];let c=myCodes();let me=c[c.length-1];
+  if(!me){const r=crypto.getRandomValues(new Uint8Array(13));const code=MASKS[r[0]%18]+'-'+b32(r.slice(1)).match(/.{1,5}/g).join('-');me={code,tag:await tagOf(code)};c.push(me);try{localStorage.setItem('kd.codes',JSON.stringify(c))}catch(e){}}
+  $('#ntier').textContent=n+' · '+d+' €';$('#ntag').textContent=me.tag;$('#nhint').textContent=t.hint;$('#ncode').textContent=t.keep+' '+me.code;
+  $('#npay').href=PAYPAL+d+'EUR';$('#ncopy').onclick=()=>{try{navigator.clipboard.writeText(me.tag)}catch(e){};click()};
+  $('#slip').classList.add('on');
+}
+$('#nclose').onclick=()=>$('#slip').classList.remove('on');
+$('#slip').onclick=e=>{if(e.target.id==='slip')$('#nclose').onclick()};
 let ac;const A=()=>ac||(ac=new(window.AudioContext||window.webkitAudioContext)());
 function ding(){try{const a=A(),t=a.currentTime;[[2093,.22,1.9],[5440,.08,1.2],[8820,.04,.6]].forEach(([f,v,d])=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(a.destination);o.start(t);o.stop(t+d)})}catch(e){}}
 function click(){try{const a=A(),b=a.createBuffer(1,a.sampleRate*.03,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/120);const s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start()}catch(e){}}
 $('#bell').onclick=()=>{ding();$('#board').classList.add('lit')};
 
+let MINE=new Set();
 function drawRack(){
   const per=reg.rack||99,racks=Math.max(1,Math.ceil(Math.max(...reg.keys.map(k=>k.n),0)/per));
   const box=$('#rack');box.querySelectorAll('.tag').forEach(e=>e.remove());
   reg.keys.filter(k=>k.rack===rack).forEach(k=>{const i=(k.n-1)%per,b=document.createElement('button');
-    b.className='tag'+(k.active?'':' off');b.textContent=k.n;b.title=k.name||'';b.style.setProperty('--d',(k.n*1.7)%6);
+    b.className='tag'+(k.until>=today()?'':' off')+(MINE.has(k.tag)?' mine':'');b.textContent=k.n;b.title=k.name||'';b.style.setProperty('--d',(k.n*1.7)%6);
     b.style.left=HX[i%11]/852*100+'%';b.style.top=(HY[Math.floor(i/11)]+16)/692*100+'%';
     b.onclick=()=>{location.hash='k'+k.n};box.appendChild(b)});
   const nav=$('#racknav');nav.hidden=racks<2;
@@ -161,7 +193,7 @@ async function verify(k){try{const key=await crypto.subtle.importKey('raw',b64(r
 async function openKey(n){
   const k=reg.keys.find(x=>x.n===n);if(!k)return;const t=T[lang];
   $('#coin').textContent=String(n).padStart(2,'0');
-  $('#dl').innerHTML=`<dt>${t.n}</dt><dd>№ ${n}</dd><dt>${t.tier}</dt><dd>${k.tier}</dd><dt>${t.who}</dt><dd>${k.name||t.anon}</dd><dt>${t.rh}</dt><dd>${k.rhythm==='monthly'?t.m:t.o}</dd><dt>${t.since}</dt><dd>${k.since}</dd><dt>${t.st}</dt><dd>${k.active?t.live:t.past}</dd><dt>ID</dt><dd>${k.id.slice(0,12)}</dd>`;
+  $('#dl').innerHTML=`<dt>${t.n}</dt><dd>№ ${n}${MINE.has(k.tag)?' ★':''}</dd><dt>${t.tier}</dt><dd>${k.tier}</dd><dt>${t.eur}</dt><dd>${k.eur} €</dd><dt>${t.since}</dt><dd>${k.since}</dd><dt>${t.until}</dt><dd>${k.until}</dd><dt>${t.st}</dt><dd>${k.until>=today()?t.live:t.past}</dd><dt>TAG</dt><dd>${k.tag}</dd>`;
   $('#ln').href='#k'+n;$('#stamp').textContent='';$('#stamp').className='';$('#key').classList.add('on');click();
   const ok=await verify(k);$('#stamp').textContent=ok?t.ok:t.bad;$('#stamp').className=ok?'ok':'bad';$('#dl-png').onclick=()=>png(k,ok);
 }
@@ -170,7 +202,7 @@ function png(k,ok){
     const g=x.createRadialGradient(620,240,20,682,300,205);g.addColorStop(0,'#fff1bd');g.addColorStop(.45,'#c9a24a');g.addColorStop(1,'#6e5216');
     x.fillStyle=g;x.beginPath();x.arc(682,250,205,0,7);x.fill();x.fillStyle='#3f2c0b';x.font='bold 130px Courier New';x.textAlign='center';x.textBaseline='middle';x.fillText(String(k.n).padStart(2,'0'),682,258);
     x.textAlign='left';x.textBaseline='alphabetic';x.font='44px Courier New';x.fillStyle='#2a2217';
-    ['KEY № '+k.n,'KALABASS  '+k.tier,'POSTULANT '+(k.name||'—'),'RHYTHM    '+k.rhythm,'SINCE     '+k.since,'ID        '+k.id.slice(0,16),'',location.origin+location.pathname+'#k'+k.n].forEach((s,i)=>x.fillText(s,110,850+i*105.6));
+    ['KEY № '+k.n,'KALABASS  '+k.tier,'PAID      '+k.eur+' EUR','SINCE     '+k.since,'UNTIL     '+k.until,'TAG       '+k.tag,'',location.origin+location.pathname+'#k'+k.n].forEach((s,i)=>x.fillText(s,110,850+i*105.6));
     if(ok){x.save();x.translate(1080,640);x.rotate(-.2);x.strokeStyle=x.fillStyle='#a8221a';x.lineWidth=7;x.strokeRect(-150,-50,300,100);x.font='bold 54px Courier New';x.textAlign='center';x.fillText('SIGNED',0,18);x.restore()}
     const a=document.createElement('a');a.download=`korhogo-key-${k.n}.png`;a.href=c.toDataURL('image/png');a.click()};img.src='img/card.webp';
 }
@@ -180,7 +212,7 @@ addEventListener('hashchange',route);
 function route(){const m=location.hash.match(/^#k(\d+)$/);if(m){const n=+m[1],k=reg.keys.find(x=>x.n===n);if(k&&k.rack!==rack){rack=k.rack;drawRack()}openKey(n)}else $('#key').classList.remove('on')}
 
 paint();layout();setTimeout(layout,300);
-fetch('registry.json',{cache:'no-store'}).then(r=>r.ok?r.json():reg).then(j=>{reg=j;drawRack();route()}).catch(()=>drawRack());
+fetch('registry.json',{cache:'no-store'}).then(r=>r.ok?r.json():reg).then(async j=>{reg=j;for(const c of myCodes())MINE.add(c.tag);drawRack();route()}).catch(()=>drawRack());
 </script>
 <script src="../panneau.js"></script>
 </body>
