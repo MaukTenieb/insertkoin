@@ -109,8 +109,10 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 #stamp{position:absolute;right:7%;top:30%;rotate:-12deg;border:.6cqw solid currentColor;padding:.6cqw 1.6cqw;font:700 4.4cqw/1.2 Arimo,sans-serif;letter-spacing:.14em;opacity:.88;mix-blend-mode:multiply}
 #stamp.ok{color:#c9302a;animation:slam .35s cubic-bezier(.2,1.6,.4,1)}#stamp.bad{color:#555}
 /* lettre */
-#paper{position:relative;flex:none;width:min(calc(100cqw - 6vmin - 3vmin - 112px),max(68cqh,520px),640px);max-height:calc(100cqh - 6vmin);overflow-y:auto;background:#ece2c8 url(img/card.webp) center/cover;color:#2a2217;font:400 clamp(16px,2.6cqh,20px)/1.5 Garamond,serif;padding:3em 2.2em 2.4em;filter:drop-shadow(0 2cqmin 3cqmin rgba(0,0,0,.8));animation:drop .45s cubic-bezier(.2,.8,.3,1);overscroll-behavior:contain;scrollbar-width:thin}
-@media (max-aspect-ratio:1/1){#paper{width:calc(100cqw - 6vmin);max-height:calc(100cqh - 6vmin - 60px)}}
+#paper{position:relative;flex:none;aspect-ratio:824/1230;height:min(calc(100cqh - 6vmin),calc((100cqw - 9vmin - 112px)*1230/824));background:url(img/lettre.webp) center/100% 100% no-repeat;color:#2a2217;filter:drop-shadow(0 2cqmin 3cqmin rgba(0,0,0,.8));animation:drop .45s cubic-bezier(.2,.8,.3,1);container-type:inline-size}
+#ptxt{position:absolute;inset:9% 9% 5% 10%;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#b8a582 transparent;font:400 clamp(15px,3.5cqw,19px)/1.5 Garamond,serif;padding-right:.4em}
+@media (max-aspect-ratio:1/1){#paper{height:min(calc(100cqh - 6vmin - 60px),calc((100cqw - 6vmin)*1230/824))}}
+@container (max-height:480px) and (min-aspect-ratio:1/1){#paper{aspect-ratio:auto;height:calc(100cqh - 6vmin);width:min(calc(100cqw - 9vmin - 112px),640px)}#ptxt{inset:12% 6% 5% 6%}}
 #paper p{margin:0 0 .7em}#paper a{color:#8b1d12;overflow-wrap:anywhere}#paper .aka{font-style:italic;line-height:1.3}
 #paper #lclose{font:inherit;color:#8b1d12;background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}
 #kps{display:flex;flex-direction:column;gap:.2em;margin:0}#kps button{display:grid;grid-template-columns:9.5em 1fr;gap:1em;text-align:left;font:inherit;color:inherit;background:none;border:0;border-bottom:1px dashed rgba(42,34,23,.25);padding:.45em 0;min-height:44px;cursor:pointer}#kps b{font:700 .78em/1.9 Arimo,sans-serif;letter-spacing:.06em;white-space:nowrap}#kps i{font-style:italic}@media (hover:hover){#kps button:hover{color:#8b1d12}}@media (max-width:480px){#kps button{grid-template-columns:1fr;gap:0}}
@@ -172,7 +174,7 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 </div>
 
 <div id="letter" class="ov" role="dialog" aria-modal="true" aria-label="Letter">
-  <article id="paper">
+  <article id="paper"><div id="ptxt">
 <p>There's a Transmedia World where odd Masks emerge and surpass their so-called creator.</p>
 <p>Mh — da Pre-Korhogo Lore, <a href="https://www.flickr.com/people/mauktenieb" target="_blank" rel="noopener">https://www.flickr.com/people/mauktenieb</a></p>
 <p>Korhogo Lore! <a href="https://korhogo.substack.com/p/mighty-fauna-sips-your-gas" target="_blank" rel="noopener">https://korhogo.substack.com/p/mighty-fauna-sips-your-gas</a></p>
@@ -194,7 +196,7 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 <p>__</p>
 <p>Kounterparties:</p>
 <div id="kps"></div>
-  </article>
+  </div></article>
   <div class="acts">
     <button id="lx" class="btn no pic" type="button" aria-label="Close">✕</button>
   </div>
@@ -368,7 +370,7 @@ addEventListener('pointerdown',()=>{A();party()},{once:true});
 var ac;const A=()=>ac||(ac=new(window.AudioContext||window.webkitAudioContext)());
 function ding(){try{const a=A(),t=a.currentTime;[[2093,.22,1.9],[5440,.08,1.2],[8820,.04,.6]].forEach(([f,v,d])=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(a.destination);o.start(t);o.stop(t+d)})}catch(e){}}
 function click(){try{const a=A(),b=a.createBuffer(1,a.sampleRate*.03,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/120);const s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start()}catch(e){}}
-$('#bell').onclick=()=>{$('#letter').classList.add('on');$('#paper').scrollTop=0;snd('bell',.7);A();party();const b=$('#bell');b.classList.remove('ring');void b.offsetWidth;b.classList.add('ring');$('#board').classList.add('lit')};
+$('#bell').onclick=()=>{$('#letter').classList.add('on');$('#ptxt').scrollTop=0;snd('bell',.7);A();party();const b=$('#bell');b.classList.remove('ring');void b.offsetWidth;b.classList.add('ring');$('#board').classList.add('lit')};
 function jingle(){try{const a=A(),t=a.currentTime;for(let i=0;i<3;i++){const o=a.createOscillator(),g=a.createGain(),f=3200+Math.random()*2400;o.frequency.value=f;g.gain.setValueAtTime(.05,t+i*.05);g.gain.exponentialRampToValueAtTime(.0001,t+i*.05+.25);o.connect(g).connect(a.destination);o.start(t+i*.05);o.stop(t+i*.05+.3)}}catch(e){}}
 
 let MINE=new Set();
