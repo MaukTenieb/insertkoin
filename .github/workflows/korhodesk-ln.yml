@@ -51,4 +51,6 @@ jobs:
         if: hashFiles('caisse.md') != ''
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh issue comment 4 --body-file caisse.md
+        run: |
+          sed -i '1s/^/@MaukTenieb /' caisse.md
+          gh issue comment 4 --body-file caisse.md
