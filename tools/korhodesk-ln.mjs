@@ -6,7 +6,7 @@ import { execFileSync } from 'node:child_process';
 import { finalizeEvent } from 'nostr-tools/pure';
 import * as nip04 from 'nostr-tools/nip04';
 
-const MASKS = ['Unkle Maukie', 'dogXim', 'C7H5N3O6', 'Naphta', "Ts'ui Pên", 'Honey Buzzard', 'Hátra Lövés', 'Croisière Noire', 'Aube', 'Silent Pact', 'Maiden Call', 'Plague of Justinian', 'Poisoned Well', 'Cadaver Synod', 'Truce', 'Auvergne', 'Grand Colonel', 'Malika'];
+const MASKS = JSON.parse(readFileSync('kave/korhodesk/index.html', 'utf8').match(/const MASKS=(\[.*?\]);/)[1].replace(/'((?:\\'|[^'])*)'/g, (_, x) => JSON.stringify(x.replace(/\\'/g, "'"))));
 const B32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 const b32 = u => { let b = 0, v = 0, o = ''; for (const x of u) { v = (v << 8) | x; b += 8; while (b >= 5) { o += B32[(v >>> (b - 5)) & 31]; b -= 5; } } return o; };
 const tagOf = code => b32(createHash('sha256').update(code).digest()).slice(0, 8);
@@ -32,13 +32,24 @@ async function nwc(method, params) {
 const since = Math.floor(Date.now() / 1e3) - 14 * 86400;
 const { transactions = [] } = await nwc('list_transactions', { from: since, type: 'incoming', limit: 200 });
 const paid = transactions.filter(t => (t.settled_at || t.state === 'settled') && t.payment_hash).sort((a, b) => (a.settled_at || 0) - (b.settled_at || 0));
+// cours BTC-EUR : les euros annoncés dans les millisats doivent correspondre aux sats payés (85 % au moins)
+let eurBtc = 0;
+for (const [u, f] of [['https://api.coinbase.com/v2/prices/BTC-EUR/spot', j => +j.data.amount], ['https://www.bitstamp.net/api/v2/ticker/btceur/', j => +j.last], ['https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=eur', j => +j.bitcoin.eur]]) {
+  try { eurBtc = f(await (await fetch(u)).json()); if (eurBtc > 0) break; } catch (e) {}
+}
+if (!(eurBtc > 0)) throw new Error('cours BTC-EUR introuvable');
 let n = 0;
 for (const t of paid) {
   const eur = t.amount % 1000;
   if (eur < 1) continue; // paiement direct hors KorhoDesk : zéro clé
+  const sats = Math.floor(t.amount / 1000), due = eur / eurBtc * 1e8;
   const tag = tagOf(lnCode(Buffer.from(t.payment_hash, 'hex')));
   const reg = JSON.parse(readFileSync('kave/korhodesk/registry.json', 'utf8'));
   if (reg.keys.some(k => k.tag === tag)) continue;
+  if (sats < due * 0.85) {
+    if ((t.settled_at || 0) > Date.now() / 1e3 - 20 * 60) appendFileSync('caisse.md', `⚠ ${sats.toLocaleString('fr-FR')} sats pour ${eur} € annoncés (${Math.round(due).toLocaleString('fr-FR')} attendus) · ${tag} · zéro clé\n`);
+    continue;
+  }
   const date = new Date((t.settled_at || t.created_at) * 1e3).toISOString().slice(0, 10);
   execFileSync('node', ['tools/korhodesk-issue.mjs', tag, String(eur), date, 'ln'], { stdio: 'inherit' });
   const k = JSON.parse(readFileSync('kave/korhodesk/registry.json', 'utf8')).keys.find(x => x.tag === tag);

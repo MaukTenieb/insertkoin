@@ -224,9 +224,9 @@ const LAYOUT={
 // crochets du tableau (px de rack.webp 852×692)
 const HX=[62,136,208,282,355,428,500,572,646,718,791],HY=[58,128,200,271,345,414,483,549,612];
 const T={
- en:{clear:'Euros · PayPal · Lightning · 100 % to Korhogo · 31 nights per key',hint:'Paste in the PayPal note',lnhint:'Scan with a Lightning wallet · tag included',keep:'Your room code, kept in this browser:',until:'Until',eur:'Paid',
+ en:{clear:'Euros · PayPal · Lightning · 100 % to Korhogo · 31 nights per key',hint:'Paste in the PayPal note',lnhint:'⚡',keep:'Your room code, kept in this browser:',until:'Until',eur:'Paid',
   n:'Key',tier:'Kalabass',since:'Since',who:'Postulant',rh:'Rhythm',m:'monthly',o:'once',anon:'—',ok:'SIGNED',bad:'UNSIGNED',st:'Status',live:'active',past:'archived'},
- fr:{clear:'Euros · PayPal · Lightning · 100 % pour Korhogo · 31 nuits par clé',hint:'À coller dans la note PayPal',lnhint:'À scanner avec un portefeuille Lightning · étiquette incluse',keep:'Votre code de chambre, gardé dans ce navigateur :',until:'Jusqu’au',eur:'Versé',
+ fr:{clear:'Euros · PayPal · Lightning · 100 % pour Korhogo · 31 nuits par clé',hint:'À coller dans la note PayPal',lnhint:'⚡',keep:'Votre code de chambre, gardé dans ce navigateur :',until:'Jusqu’au',eur:'Versé',
   n:'Clé',tier:'Kalabass',since:'Depuis',who:'Postulant',rh:'Rythme',m:'mensuel',o:'une fois',anon:'—',ok:'SIGNÉE',bad:'NON SIGNÉE',st:'État',live:'active',past:'archivée'}
 };
 let lang=(()=>{try{return localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e){return 'en'}})();
@@ -255,7 +255,7 @@ function paint(){
 }
 
 async function slip(d,n){
-  const t=T[lang];let c=myCodes();let me=c[c.length-1];
+  const t=T[lang];let c=myCodes();let me=c.filter(x=>!x.ln).pop();
   if(!me){const r=crypto.getRandomValues(new Uint8Array(13));const code=MASKS[r[0]%18]+'-'+b32(r.slice(1)).match(/.{1,5}/g).join('-');me={code,tag:await tagOf(code)};c.push(me);try{localStorage.setItem('kd.codes',JSON.stringify(c))}catch(e){}}
   $('#ntier').textContent=n+' · '+d+' €';$('#nkp').textContent=KP[d];$('#slip').classList.remove('qr');
   const nm=$('#nname');nm.hidden=d<5;try{nm.value=localStorage.getItem('kd.name')||''}catch(e){};nm.oninput=()=>{nm.value=nm.value.replace(/[^\p{L}\p{N} ._'’-]/gu,'');try{localStorage.setItem('kd.name',nm.value)}catch(e){}};
@@ -382,12 +382,15 @@ async function openKey(n){
   const ok=await verify(k);$('#stamp').textContent=ok?t.ok:t.bad;if(ok)snd('thump',.6);$('#stamp').className=ok?'ok':'bad';$('#dl-png').onclick=()=>png(k,ok);
 }
 function png(k,ok){
-  const img=new Image();img.onload=()=>{const c=document.createElement('canvas');c.width=682*2;c.height=993*2;const x=c.getContext('2d');x.drawImage(img,0,0,c.width,c.height);
+  const img=new Image();img.onload=async()=>{try{await document.fonts.load('700 44px Arimo');await document.fonts.load('400 44px Arimo')}catch(e){}
+    const c=document.createElement('canvas');c.width=682*2;c.height=993*2;const x=c.getContext('2d');x.drawImage(img,0,0,c.width,c.height);
     const g=x.createRadialGradient(620,240,20,682,300,205);g.addColorStop(0,'#fff1bd');g.addColorStop(.45,'#c9a24a');g.addColorStop(1,'#6e5216');
-    x.fillStyle=g;x.beginPath();x.arc(682,250,205,0,7);x.fill();x.fillStyle='#3f2c0b';x.font='bold 130px Courier New';x.textAlign='center';x.textBaseline='middle';x.fillText(String(k.n).padStart(2,'0'),682,258);
-    x.textAlign='left';x.textBaseline='alphabetic';x.font='44px Courier New';x.fillStyle='#2a2217';
-    ['KEY № '+k.n,...(k.name?['NAME      '+k.name]:[]),'KALABASS  '+k.tier,'PAID      '+k.eur+' EUR','SINCE     '+k.since,'UNTIL     '+k.until,'TAG       '+k.tag,'',location.origin+location.pathname+'#k'+k.n].forEach((s,i)=>x.fillText(s,110,850+i*105.6));
-    if(ok){x.save();x.translate(1080,640);x.rotate(-.2);x.strokeStyle=x.fillStyle='#a8221a';x.lineWidth=7;x.strokeRect(-150,-50,300,100);x.font='bold 54px Courier New';x.textAlign='center';x.fillText('SIGNED',0,18);x.restore()}
+    x.fillStyle=g;x.beginPath();x.arc(682,250,205,0,7);x.fill();x.fillStyle='#3f2c0b';x.font='700 130px Arimo,sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText(String(k.n).padStart(2,'0'),682,258);
+    x.textAlign='left';x.textBaseline='alphabetic';
+    const rows=[['KEY','№ '+k.n],...(k.name?[['NAME',k.name]]:[]),['KALABASS',k.tier],['PAID',k.eur+' €'],['SINCE',k.since],['UNTIL',k.until],['TAG',k.tag]];
+    rows.forEach(([a,b],i)=>{const y=850+i*96;x.font='400 34px Arimo,sans-serif';x.fillStyle='#7a6a50';x.fillText(a,110,y);x.font='700 44px Arimo,sans-serif';x.fillStyle='#2a2217';x.fillText(b,420,y,520)});
+    x.font='400 28px Arimo,sans-serif';x.fillStyle='#7a6a50';x.fillText(location.origin+location.pathname+'#k'+k.n,110,850+rows.length*96+40,1140);
+    if(ok){x.save();x.translate(1080,640);x.rotate(-.2);x.strokeStyle=x.fillStyle='#c9302a';x.lineWidth=7;x.strokeRect(-160,-50,320,100);x.font='700 54px Arimo,sans-serif';x.textAlign='center';x.fillText(T[lang].ok,0,18);x.restore()}
     const a=document.createElement('a');a.download=`korhogo-key-${k.n}.png`;a.href=c.toDataURL('image/png');a.click()};img.src='img/card.webp';
 }
 $('#close').onclick=()=>{history.replaceState(null,'',location.pathname);$('#key').classList.remove('on')};
