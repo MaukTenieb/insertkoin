@@ -114,7 +114,7 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 <body>
 <div id="blur"></div>
 <main id="stage">
-  <div class="o" id="neon"><div id="neonglow"></div><img src="img/neon.webp" alt="VACANCY"><b id="nword"></b><i class="cp" id="c1"><b>K</b></i><i class="cp" id="c2"><b>K</b></i></div>
+  <div class="o" id="neon"><div id="neonglow"></div><img src="img/neon.webp" alt="VACANCY"><b id="nword"></b><i class="cp" id="c1"><b>K</b></i><i class="cp" id="c2"></i></div>
   <section class="o" id="board" aria-label="Rates">
     <img src="img/board.webp" alt="">
     <div id="felt" class="L">
@@ -237,13 +237,15 @@ function glyphs(){if(!GL)return;const CAP=135,SW=3219;document.querySelectorAll(
 (function crackle(){const c1=$('#c1'),c2=$('#c2');
  function burst(el,n){let i=0;(function f(){if(i++>n){el.style.opacity=0;return}el.style.opacity=Math.random()<.5?1:Math.random()*.6;setTimeout(f,30+Math.random()*90)})()}
  function K(el){el.style.opacity=1;el.classList.add('k');if(ac)snd('neon',.08);setTimeout(()=>{el.classList.remove('k');burst(el,3)},140+Math.random()*420)}
- (function loop(){const el=Math.random()<.8?c1:c2;if(!$('#neon').classList.contains('alt')){Math.random()<.55?K(el):burst(el,4+Math.floor(Math.random()*8))}
+ (function loop(){if(!$('#neon').classList.contains('alt')){Math.random()<.55?K(c1):burst(Math.random()<.85?c1:c2,4+Math.floor(Math.random()*8))}
   setTimeout(loop,1500+Math.random()*4500)})()})();
-const WORDS=['NO VACANCY','SEKTOR INN','KAVE','NOIR INSEKT'];
+const WORDS=['NO VACANCY','SEKTOR INN','KAVE'];
 function snd(n,v=.5){try{const a=new Audio('../../snd/'+n+'-'+(1+Math.floor(Math.random()*({bell:4,neon:3,drop:4,thump:2,coin:3}[n]||1)))+'.mp3');a.volume=v;a.play().catch(()=>{})}catch(e){}}
 (function sign(){setTimeout(()=>{const ne=$('#neon'),w=WORDS[Math.floor(Math.random()*WORDS.length)];
   $('#nword').textContent=w;$('#nword').style.setProperty('--fs',Math.min(15,118/w.length)+'cqw');ne.classList.add('alt');if(ac)snd('neon',.18);
-  setTimeout(()=>{ne.classList.remove('alt');if(ac)snd('neon',.12);sign()},1500+Math.random()*2500)},8000+Math.random()*12000)})();
+  const D=1500+Math.random()*2500;
+  if(w==='SEKTOR INN'){const nw=$('#nword');for(let i=0,t=300+Math.random()*500;i<1+Math.floor(Math.random()*3)&&t<D-300;i++,t+=400+Math.random()*700){setTimeout(()=>{nw.textContent='NOIR INSEKT';nw.style.setProperty('--fs',Math.min(15,118/11)+'cqw');if(ac)snd('neon',.1);setTimeout(()=>{nw.textContent='SEKTOR INN';nw.style.setProperty('--fs',Math.min(15,118/10)+'cqw')},90+Math.random()*260)},t)}}
+  setTimeout(()=>{ne.classList.remove('alt');if(ac)snd('neon',.12);sign()},D)},8000+Math.random()*12000)})();
 let PARTY=null;
 function party(){if(PARTY)return;if(Math.random()<.5)return tv();try{const a=A(),out=a.createGain(),lp=a.createBiquadFilter();lp.type='lowpass';lp.frequency.value=320;lp.Q.value=.7;out.gain.value=0;out.connect(a.destination);lp.connect(out);
  out.gain.linearRampToValueAtTime(.16,a.currentTime+6);PARTY={a,out};
@@ -277,7 +279,7 @@ function tv(){try{const a=A(),out=a.createGain(),lp=a.createBiquadFilter();lp.ty
  document.addEventListener('visibilitychange',()=>{document.hidden?a.suspend():a.resume()});
 }catch(e){}}
 addEventListener('pointerdown',()=>{A();party()},{once:true});
-let ac;const A=()=>ac||(ac=new(window.AudioContext||window.webkitAudioContext)());
+var ac;const A=()=>ac||(ac=new(window.AudioContext||window.webkitAudioContext)());
 function ding(){try{const a=A(),t=a.currentTime;[[2093,.22,1.9],[5440,.08,1.2],[8820,.04,.6]].forEach(([f,v,d])=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(a.destination);o.start(t);o.stop(t+d)})}catch(e){}}
 function click(){try{const a=A(),b=a.createBuffer(1,a.sampleRate*.03,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/120);const s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start()}catch(e){}}
 $('#bell').onclick=()=>{snd('bell',.7);A();party();const b=$('#bell');b.classList.remove('ring');void b.offsetWidth;b.classList.add('ring');$('#board').classList.add('lit')};
