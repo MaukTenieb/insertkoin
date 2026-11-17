@@ -55,6 +55,10 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 @keyframes breathe{0%,100%{opacity:.75}38%{opacity:1}41%{opacity:.82}44%{opacity:1}}
 #bell{cursor:pointer}
 #bell:active{translate:0 .3cqmin}
+#bell.ring img{animation:ring .5s ease-out}
+@keyframes ring{0%{rotate:0}15%{rotate:-4deg}30%{rotate:3deg}45%{rotate:-2deg}60%{rotate:1deg}100%{rotate:0}}
+#rows .row:hover .g{animation:wob .4s ease-out}
+@keyframes wob{40%{transform:translateY(-.04em) rotate(2deg)}}
 #lang{position:absolute;right:1.6%;bottom:2.4%;font:700 2.2cqmin/1 "Courier New",monospace;color:#c9a24a;opacity:.8}
 #racknav{position:absolute;display:flex;gap:2cqmin;font:700 2cqmin/1 "Courier New",monospace;color:#c9a24a}
 /* fiche */
@@ -218,7 +222,8 @@ function glyphs(){if(!GL)return;const CAP=135,SW=3219;document.querySelectorAll(
 let ac;const A=()=>ac||(ac=new(window.AudioContext||window.webkitAudioContext)());
 function ding(){try{const a=A(),t=a.currentTime;[[2093,.22,1.9],[5440,.08,1.2],[8820,.04,.6]].forEach(([f,v,d])=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(a.destination);o.start(t);o.stop(t+d)})}catch(e){}}
 function click(){try{const a=A(),b=a.createBuffer(1,a.sampleRate*.03,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/120);const s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start()}catch(e){}}
-$('#bell').onclick=()=>{ding();$('#board').classList.add('lit')};
+$('#bell').onclick=()=>{ding();const b=$('#bell');b.classList.remove('ring');void b.offsetWidth;b.classList.add('ring');$('#board').classList.add('lit')};
+function jingle(){try{const a=A(),t=a.currentTime;for(let i=0;i<3;i++){const o=a.createOscillator(),g=a.createGain(),f=3200+Math.random()*2400;o.frequency.value=f;g.gain.setValueAtTime(.05,t+i*.05);g.gain.exponentialRampToValueAtTime(.0001,t+i*.05+.25);o.connect(g).connect(a.destination);o.start(t+i*.05);o.stop(t+i*.05+.3)}}catch(e){}}
 
 let MINE=new Set();
 function drawRack(){
@@ -227,7 +232,7 @@ function drawRack(){
   reg.keys.filter(k=>k.rack===rack).forEach(k=>{const i=(k.n-1)%per,b=document.createElement('button');
     b.className='tag'+(k.until>=today()?'':' off')+(MINE.has(k.tag)?' mine':'');b.innerHTML='<span>'+k.n+'</span>';b.title=k.name||'';b.style.setProperty('--d',(k.n*1.7)%6);
     b.style.left=HX[i%11]/852*100+'%';b.style.top=(HY[Math.floor(i/11)]-6)/692*100+'%';
-    b.onclick=()=>{location.hash='k'+k.n};box.appendChild(b)});
+    b.onclick=()=>{jingle();location.hash='k'+k.n};b.onmouseenter=()=>jingle();box.appendChild(b)});
   const nav=$('#racknav');nav.hidden=racks<2;
   nav.innerHTML=racks<2?'':`<button id="pv">◂</button><span>${rack}/${racks}</span><button id="nx">▸</button>`;
   if(racks>1){$('#pv').onclick=()=>{if(rack>1){rack--;drawRack()}};$('#nx').onclick=()=>{if(rack<racks){rack++;drawRack()}}}
