@@ -32,14 +32,15 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 .row:hover,.row:focus-visible{color:#fff;text-shadow:0 0 .4em rgba(255,255,255,.6);outline:none}
 #clear{font:2.7cqw/1.35 "Helvetica Neue",Arial,sans-serif;color:#bcae94;text-align:center;letter-spacing:.02em;white-space:normal;text-shadow:none}
 /* tableau à clés */
-.tag{position:absolute;width:5.4%;aspect-ratio:1;translate:-50% 0;border-radius:50%;
-  background:radial-gradient(circle at 32% 28%,#fff1bd,#c9a24a 42%,#6e5216 100%);
-  box-shadow:0 .3cqmin .6cqmin rgba(0,0,0,.75),inset 0 0 0 .25cqmin rgba(80,55,10,.6);
-  font:700 1.3cqmin/1 "Courier New",monospace;color:#3f2c0b;display:flex;align-items:center;justify-content:center;
-  transform-origin:50% -35%;animation:sway 6s ease-in-out infinite;animation-delay:calc(var(--d)*-1s)}
-.tag::before{content:"";position:absolute;top:-38%;left:50%;width:22%;height:42%;translate:-50% 0;border:.25cqmin solid #a8862f;border-radius:50% 50% 40% 40%}
-.tag.off{filter:grayscale(.85) brightness(.55)}
+.tag{position:absolute;width:3.6%;aspect-ratio:180/619;translate:-50% -6%;background:url(img/key.webp) center top/100% 100% no-repeat;border:0;
+  filter:drop-shadow(0 .4cqmin .5cqmin rgba(0,0,0,.7));transform-origin:50% 3%;animation:sway 6s ease-in-out infinite;animation-delay:calc(var(--d)*-1s);cursor:pointer}
+.tag span{position:absolute;left:0;right:0;top:41%;text-align:center;font:700 1.15cqmin/1 "Courier New",monospace;color:#e9c46a;text-shadow:0 1px 0 #3a0a0a}
+.tag:hover{filter:drop-shadow(0 0 .8cqmin rgba(255,200,120,.7)) brightness(1.15)}
+.tag.off{filter:grayscale(.9) brightness(.5) drop-shadow(0 .4cqmin .5cqmin rgba(0,0,0,.7))}
 @keyframes sway{0%,100%{rotate:-2deg}50%{rotate:2deg}}
+#dust{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;mix-blend-mode:screen}
+#glow{position:absolute;width:40%;aspect-ratio:1;translate:-50% -50%;pointer-events:none;mix-blend-mode:soft-light;background:radial-gradient(circle,rgba(255,200,120,.55),transparent 62%);animation:breathe 7s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.75}38%{opacity:1}41%{opacity:.82}44%{opacity:1}}
 #bell{cursor:pointer}
 #bell:active{translate:0 .3cqmin}
 #lang{position:absolute;right:1.6%;bottom:2.4%;font:700 2.2cqmin/1 "Courier New",monospace;color:#c9a24a;opacity:.8}
@@ -51,19 +52,22 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
   color:#2a2217;font-family:"Courier New",monospace;filter:drop-shadow(0 2cqmin 3cqmin rgba(0,0,0,.8));animation:drop .5s cubic-bezier(.3,1.4,.5,1);container-type:size}
 @keyframes drop{from{transform:translateY(-30vh) rotate(-7deg);opacity:0}}
 #coin{position:absolute;left:50%;top:2.5%;width:30%;aspect-ratio:1;translate:-50% 0;border-radius:50%;
-  background:radial-gradient(circle at 32% 28%,#fff1bd,#c9a24a 42%,#6e5216 100%);
-  box-shadow:inset 0 0 0 .9cqw rgba(80,55,10,.55),0 1.4cqw 2.6cqw rgba(0,0,0,.45);
-  display:flex;align-items:center;justify-content:center;font:700 9cqw/1 "Courier New",monospace;color:#3f2c0b;animation:spin 3.2s ease-in-out infinite}
+  background:url(img/koin.webp) center/100% 100% no-repeat;filter:drop-shadow(0 1.4cqw 1.6cqw rgba(0,0,0,.45));animation:spin 3.2s ease-in-out infinite}
+#coin span{display:none}
 @keyframes spin{0%,100%{transform:perspective(600px) rotateY(-36deg)}50%{transform:perspective(600px) rotateY(36deg)}}
 #dl{position:absolute;left:8%;right:28%;top:41.2%;display:grid;grid-template-columns:auto 1fr;column-gap:4cqw;font-size:3.1cqh;line-height:5.32cqh}
 #dl dt{color:#7a6a50}#dl dd{overflow:hidden;white-space:nowrap}
 #stamp{position:absolute;right:7%;top:30%;rotate:-12deg;border:.6cqw solid currentColor;padding:.6cqw 1.6cqw;font-weight:700;font-size:4.4cqw;letter-spacing:.1em;opacity:.85;mix-blend-mode:multiply}
-#stamp.ok{color:#a8221a}#stamp.bad{color:#555}
+#stamp.ok{color:#a8221a;animation:slam .35s cubic-bezier(.2,1.6,.4,1)}
+@keyframes slam{0%{transform:scale(2.6);opacity:0}60%{transform:scale(.92);opacity:.95}100%{transform:scale(1)}}#stamp.bad{color:#555}
 .acts{position:absolute;left:0;right:0;bottom:6%;display:flex;justify-content:center;gap:12cqw;font-size:6cqw}
 #slip{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(6,4,3,.84);backdrop-filter:blur(3px);container-type:size;z-index:5}
 #slip.on{display:flex}
 #note{position:relative;height:min(88cqh,86cqw*993/682);aspect-ratio:682/993;background:url(img/card.webp) center/100% 100% no-repeat;color:#2a2217;font-family:"Courier New",monospace;
   container-type:size;filter:drop-shadow(0 2cqmin 3cqmin rgba(0,0,0,.8));animation:drop .45s cubic-bezier(.3,1.4,.5,1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3cqh;text-align:center;padding:18cqh 9cqw 10cqh}
+#ndrop{position:absolute;right:7%;top:3%;width:10%;aspect-ratio:180/619;background:url(img/key.webp) center/100% 100% no-repeat;filter:drop-shadow(0 .8cqw 1cqw rgba(0,0,0,.5));rotate:14deg}
+#slip.on #ndrop{animation:kdrop .9s cubic-bezier(.3,1.25,.5,1) .15s both}
+@keyframes kdrop{0%{transform:translateY(-80cqh) rotate(-40deg)}70%{transform:translateY(1cqh) rotate(8deg)}85%{transform:translateY(-2cqh) rotate(-3deg)}100%{transform:none}}
 #ntier{font-size:6cqw;letter-spacing:.08em}
 #ntag{font:700 13cqw/1 "Courier New",monospace;letter-spacing:.12em;color:#1d1710;border:.5cqw dashed #8a7a5a;padding:2cqh 4cqw}
 #nhint{font-size:3.8cqw;color:#6a5a40}
@@ -72,7 +76,7 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 #ncode{font-size:3cqw;color:#8a7a5a;word-break:break-all}
 .acts2{display:flex;gap:9cqw;align-items:center;font-size:6cqw}
 #npay{font-weight:700;border:.5cqw solid #2a2217;padding:1cqh 3cqw;color:#2a2217}
-.tag.mine{box-shadow:0 0 1.4cqmin .5cqmin rgba(255,214,120,.9),0 .3cqmin .6cqmin rgba(0,0,0,.75)}
+.tag.mine{filter:drop-shadow(0 0 1cqmin rgba(255,214,120,.95))}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
@@ -89,11 +93,14 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
   </section>
   <section class="o" id="rack" aria-label="Hall of Fame"><img src="img/rack.webp" alt=""></section>
   <nav id="racknav" hidden></nav>
+  <canvas id="dust"></canvas>
+  <div id="glow"></div>
   <button class="o" id="bell" aria-label="Ring"><img src="img/bell.webp" alt=""></button>
 </main>
 
 <div id="slip" role="dialog" aria-modal="true">
   <article id="note">
+    <i id="ndrop"></i>
     <p id="ntier"></p>
     <p id="ntag"></p>
     <p id="nhint"></p>
@@ -131,8 +138,8 @@ const today=()=>new Date().toISOString().slice(0,10);
 function myCodes(){try{return JSON.parse(localStorage.getItem('kd.codes')||'[]')}catch(e){return[]}}
 // positions en % de la scène : [gauche, haut, largeur]
 const LAYOUT={
-  land:{bg:'img/room-land.webp',ar:'1376/768',neon:[3,9,24],board:[2,22,26],rack:[47,14,23],bell:[49,60.4,6],nav:[47,49]},
-  port:{bg:'img/room-port.webp',ar:'768/1376',neon:[21,7,58],board:[22,17.5,56],rack:[25,41.6,42],bell:[76,60.2,12],nav:[25,61.5]}
+  land:{lamp:[81,47],bg:'img/room-land.webp',ar:'1376/768',neon:[3,9,24],board:[2,22,26],rack:[47,14,23],bell:[49,60.4,6],nav:[47,49]},
+  port:{lamp:[78,46],bg:'img/room-port.webp',ar:'768/1376',neon:[21,7,58],board:[22,17.5,56],rack:[25,41.6,42],bell:[76,60.2,12],nav:[25,61.5]}
 };
 // crochets du tableau (px de rack.webp 852×692)
 const HX=[62,136,208,282,355,428,500,572,646,718,791],HY=[58,128,200,271,345,414,483,549,612];
@@ -152,6 +159,7 @@ function layout(){
   st.style.width=w+'px';st.style.top=(ah/2)+'px';
   st.style.setProperty('--ar',L.ar);st.style.backgroundImage=`url(${L.bg})`;$('#blur').style.backgroundImage=`url(${L.bg})`;
   for(const id of ['neon','board','rack','bell']){const [x,y,w]=L[id],e=$('#'+id);e.style.left=x+'%';e.style.top=y+'%';e.style.width=w+'%'}
+  const g=$('#glow');g.style.left=L.lamp[0]+'%';g.style.top=L.lamp[1]+'%';LAMP=L.lamp;const cv=$('#dust');cv.width=st.clientWidth;cv.height=st.clientHeight;
   const n=$('#racknav');n.style.left=L.nav[0]+'%';n.style.top=L.nav[1]+'%';
 }
 addEventListener('resize',layout);
@@ -197,8 +205,8 @@ function drawRack(){
   const per=reg.rack||99,racks=Math.max(1,Math.ceil(Math.max(...reg.keys.map(k=>k.n),0)/per));
   const box=$('#rack');box.querySelectorAll('.tag').forEach(e=>e.remove());
   reg.keys.filter(k=>k.rack===rack).forEach(k=>{const i=(k.n-1)%per,b=document.createElement('button');
-    b.className='tag'+(k.until>=today()?'':' off')+(MINE.has(k.tag)?' mine':'');b.textContent=k.n;b.title=k.name||'';b.style.setProperty('--d',(k.n*1.7)%6);
-    b.style.left=HX[i%11]/852*100+'%';b.style.top=(HY[Math.floor(i/11)]+16)/692*100+'%';
+    b.className='tag'+(k.until>=today()?'':' off')+(MINE.has(k.tag)?' mine':'');b.innerHTML='<span>'+k.n+'</span>';b.title=k.name||'';b.style.setProperty('--d',(k.n*1.7)%6);
+    b.style.left=HX[i%11]/852*100+'%';b.style.top=(HY[Math.floor(i/11)]-6)/692*100+'%';
     b.onclick=()=>{location.hash='k'+k.n};box.appendChild(b)});
   const nav=$('#racknav');nav.hidden=racks<2;
   nav.innerHTML=racks<2?'':`<button id="pv">◂</button><span>${rack}/${racks}</span><button id="nx">▸</button>`;
@@ -210,7 +218,7 @@ const canon=o=>JSON.stringify(o,Object.keys(o).sort());
 async function verify(k){try{const key=await crypto.subtle.importKey('raw',b64(reg.pub),{name:'Ed25519'},false,['verify']);const{sig,...rest}=k;return await crypto.subtle.verify('Ed25519',key,b64(sig),new TextEncoder().encode(canon(rest)))}catch(e){return null}}
 async function openKey(n){
   const k=reg.keys.find(x=>x.n===n);if(!k)return;const t=T[lang];
-  $('#coin').textContent=String(n).padStart(2,'0');
+  
   $('#dl').innerHTML=`<dt>${t.n}</dt><dd>№ ${n}${MINE.has(k.tag)?' ★':''}</dd><dt>${t.tier}</dt><dd>${k.tier}</dd><dt>${t.eur}</dt><dd>${k.eur} €</dd><dt>${t.since}</dt><dd>${k.since}</dd><dt>${t.until}</dt><dd>${k.until}</dd><dt>${t.st}</dt><dd>${k.until>=today()?t.live:t.past}</dd><dt>TAG</dt><dd>${k.tag}</dd>`;
   $('#ln').href='#k'+n;$('#stamp').textContent='';$('#stamp').className='';$('#key').classList.add('on');click();
   const ok=await verify(k);$('#stamp').textContent=ok?t.ok:t.bad;$('#stamp').className=ok?'ok':'bad';$('#dl-png').onclick=()=>png(k,ok);
@@ -229,6 +237,14 @@ $('#key').onclick=e=>{if(e.target.id==='key')$('#close').onclick()};
 addEventListener('hashchange',route);
 function route(){const m=location.hash.match(/^#k(\d+)$/);if(m){const n=+m[1],k=reg.keys.find(x=>x.n===n);if(k&&k.rack!==rack){rack=k.rack;drawRack()}openKey(n)}else $('#key').classList.remove('on')}
 
+let LAMP=[80,47];
+(function dust(){const cv=$('#dust'),x=cv.getContext('2d'),P=[];if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+ for(let i=0;i<70;i++)P.push({x:Math.random(),y:Math.random(),r:Math.random()*1.4+.3,vx:(Math.random()-.5)*.00012,vy:(Math.random()-.4)*.00010,a:Math.random()*.5+.15});
+ (function f(){const w=cv.width,h=cv.height;x.clearRect(0,0,w,h);const lx=LAMP[0]/100*w,ly=LAMP[1]/100*h,R=Math.max(w,h)*.32;
+  for(const p of P){p.x+=p.vx;p.y+=p.vy;p.vx+=(Math.random()-.5)*.000004;if(p.x<0||p.x>1||p.y<0||p.y>1){p.x=Math.random();p.y=Math.random()}
+   const px=p.x*w,py=p.y*h,d=Math.hypot(px-lx,py-ly),k=Math.max(0,1-d/R);if(k<=0)continue;
+   x.fillStyle=`rgba(255,226,170,${p.a*k})`;x.beginPath();x.arc(px,py,p.r*(w/1000+.6),0,7);x.fill()}
+  requestAnimationFrame(f)})()})();
 paint();layout();setTimeout(layout,300);
 fetch('registry.json',{cache:'no-store'}).then(r=>r.ok?r.json():reg).then(async j=>{reg=j;for(const c of myCodes())MINE.add(c.tag);drawRack();route()}).catch(()=>drawRack());
 </script>
