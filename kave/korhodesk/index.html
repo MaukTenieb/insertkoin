@@ -240,9 +240,9 @@ const LAYOUT={
 const HX=[62,136,208,282,355,428,500,572,646,718,791],HY=[58,128,200,271,345,414,483,549,612];
 const T={
  en:{clear:'',hint:'Paste in the PayPal note',lnhint:'⚡',keep:'Your room code, kept in this browser:',until:'Until',eur:'Paid',
-  n:'Key',nm:'Name',tg:'Tag',paid:'PAID',tier:'Kalabass',since:'Since',who:'Postulant',rh:'Rhythm',m:'monthly',o:'once',anon:'—',ok:'SIGNED',bad:'UNSIGNED',st:'Status',live:'Postulant (pre-Krew)',ans:'Answer',q:'Your question',qk:'Your question · where to send your kontent',past:'archived'},
+  n:'Key',nm:'Name',tg:'Tag',paid:'PAID',tier:'Kalabass',since:'Since',who:'Postulant',rh:'Rhythm',m:'monthly',o:'once',anon:'—',ok:'SIGNED',bad:'UNSIGNED',st:'Status',live:'Postulant (pre-Krew)',ans:'Answer',q:'Your question · where to reach you',past:'archived'},
  fr:{clear:'',hint:'À coller dans la note PayPal',lnhint:'⚡',keep:'Votre code de chambre, gardé dans ce navigateur :',until:'Jusqu’au',eur:'Versé',
-  n:'Clé',nm:'Nom',tg:'Étiquette',paid:'VERSÉ',tier:'Kalabass',since:'Depuis',who:'Postulant',rh:'Rythme',m:'mensuel',o:'une fois',anon:'—',ok:'SIGNÉE',bad:'NON SIGNÉE',st:'État',live:'Postulant (pre-Krew)',ans:'Réponse',q:'Your question',qk:'Your question · where to send your kontent',past:'archivée'}
+  n:'Clé',nm:'Nom',tg:'Étiquette',paid:'VERSÉ',tier:'Kalabass',since:'Depuis',who:'Postulant',rh:'Rythme',m:'mensuel',o:'une fois',anon:'—',ok:'SIGNÉE',bad:'NON SIGNÉE',st:'État',live:'Postulant (pre-Krew)',ans:'Réponse',q:'Your question · where to reach you',past:'archivée'}
 };
 let lang=(()=>{try{return localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e){return 'en'}})();
 let reg={keys:[],rack:99,pub:''},rack=1;
@@ -279,7 +279,7 @@ async function slip(d,n){
   if(!me){const r=crypto.getRandomValues(new Uint8Array(13));const code=MASKS[r[0]%18]+'-'+b32(r.slice(1)).match(/.{1,5}/g).join('-');me={code,tag:await tagOf(code)};c.push(me);try{localStorage.setItem('kd.codes',JSON.stringify(c))}catch(e){}}
   $('#ntier').textContent=n+' · '+d+' €';$('#nkp').textContent=KP[d];$('#slip').classList.remove('qr');
   const nm=$('#nname');nm.hidden=d<5;try{nm.value=localStorage.getItem('kd.name')||''}catch(e){};const fit=()=>nm.style.setProperty('--nf',Math.min(1,16/Math.max(16,nm.value.length)));fit();nm.oninput=()=>{nm.value=nm.value.replace(/[^\p{L}\p{N} ._'’-]/gu,'');fit();try{localStorage.setItem('kd.name',nm.value)}catch(e){}};
-  const nq=$('#nq');nq.placeholder=d>=10?t.qk:t.q;try{nq.value=localStorage.getItem('kd.q')||''}catch(e){};nq.oninput=()=>{try{localStorage.setItem('kd.q',nq.value)}catch(e){}};
+  const nq=$('#nq');nq.placeholder=t.q;try{nq.value=localStorage.getItem('kd.q')||''}catch(e){};nq.oninput=()=>{try{localStorage.setItem('kd.q',nq.value)}catch(e){}};
   const note=()=>[me.tag,d>=5?nm.value.trim():'',nq.value.trim()?'— '+nq.value.trim():''].filter(Boolean).join(' ');$('#ntag').textContent=me.tag;$('#nhint').textContent=t.hint;$('#ncode').textContent=t.keep+' '+me.code;
   $('#npay').href=PAYPAL+d+'EUR';$('#npay').onclick=()=>{cp(note());ok($('#ncopy'))};$('#ncopy').onclick=()=>{cp(note());click();ok($('#ncopy'))};
   $('#nqr').classList.remove('on');$('#nqr').innerHTML='';
@@ -414,7 +414,7 @@ async function openKey(n){
   const k=reg.keys.find(x=>x.n===n);if(!k)return;const t=T[lang];
   
   $('#dl').innerHTML=`<dt>${t.n}</dt><dd>№ ${n}${MINE.has(k.tag)?' ★':''}</dd>${k.name?`<dt>${t.nm}</dt><dd>${k.name.replace(/[<>&"]/g,'')}</dd>`:''}<dt>${t.tier}</dt><dd>${k.tier}</dd><dt>${t.eur}</dt><dd>${k.eur} €</dd><dt>${t.since}</dt><dd>${k.since}</dd><dt>${t.until}</dt><dd>${k.until}</dd><dt>${t.st}</dt><dd>${k.until>=today()?t.live:t.past}</dd><dt>${t.tg}</dt><dd>${k.tag}</dd>${k.answer?`<dt>${t.ans}</dt><dd>${k.answer.replace(/[<>&"]/g,'')}</dd>`:''}`;
-  $('#salute').textContent=/^(kalabass|\[K\]alabass|KALABASS|\[K\]ALEB'S ASS)$/.test(k.tier)?"Lovin' love, Mau-krap —":'';
+  $('#salute').textContent="Lovin' love, Mau-krap —";
   $('#ln').removeAttribute('href');$('#ln').onclick=async()=>{const u=location.origin+location.pathname+'#k'+n;try{if(navigator.share){await navigator.share({url:u});return}}catch(e){return}await cp(u);ok($('#ln'))};$('#stamp').textContent='';$('#stamp').className='';$('#key').classList.add('on');click();
   $('#dl').querySelectorAll('dd').forEach(d=>{d.innerHTML=`<span>${d.innerHTML}</span>`;const sp=d.firstChild,o=sp.scrollWidth-d.clientWidth;if(o>1){sp.style.setProperty('--px',-o-4+'px');sp.style.setProperty('--pd',(2+o/25)+'s');sp.classList.add('pr')}});
   const ok=await verify(k);$('#stamp').textContent=ok?t.ok:t.bad;if(ok)snd('thump',.6);$('#stamp').className=ok?'ok':'bad';$('#dl-png').onclick=()=>png(k,ok);
@@ -443,7 +443,7 @@ function png(k,ok){
     const t=T[lang],U=v=>v.toUpperCase(),rows=[[U(t.n),'№ '+k.n],...(k.name?[[U(t.nm),k.name]]:[]),['KALABASS',k.tier],[t.paid,k.eur+' €'],[U(t.since),k.since],[U(t.until),k.until],[U(t.tg),k.tag],...(k.answer?[[U(t.ans),k.answer]]:[])];
     rows.forEach(([a,b],i)=>{const y=850+i*96;x.font='400 34px Arimo,sans-serif';x.fillStyle='#7a6a50';x.fillText(a,110,y);x.font='700 44px Arimo,sans-serif';x.fillStyle='#2a2217';x.fillText(b,420,y,520)});
     x.font='400 28px Arimo,sans-serif';x.fillStyle='#7a6a50';x.fillText(location.origin+location.pathname+'#k'+k.n,110,850+rows.length*96+40,1140);
-    if(/^(kalabass|\[K\]alabass|KALABASS|\[K\]ALEB'S ASS)$/.test(k.tier)){x.font='italic 44px Garamond,serif';x.fillStyle='#5e4f36';x.textAlign='center';x.fillText("Lovin' love, Mau-krap —",682,1920);x.textAlign='left'}
+    x.font='italic 44px Garamond,serif';x.fillStyle='#5e4f36';x.textAlign='center';x.fillText("Lovin' love, Mau-krap —",682,1920);x.textAlign='left';
     if(ok){x.save();x.translate(1080,640);x.rotate(-.2);x.strokeStyle=x.fillStyle='#c9302a';x.lineWidth=7;x.strokeRect(-160,-50,320,100);x.font='700 54px Arimo,sans-serif';x.textAlign='center';x.fillText(T[lang].ok,0,18);x.restore()}
     const a=document.createElement('a');a.download=`korhogo-key-${k.n}.png`;a.href=c.toDataURL('image/png');a.click()};img.src='img/card.webp';
 }
