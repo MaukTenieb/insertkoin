@@ -60,7 +60,7 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 #stage.night #rack img,#stage.night #bell img{filter:brightness(.62) drop-shadow(0 .8cqmin 1.2cqmin rgba(0,0,0,.65))}
 #stage.night #neon img{filter:brightness(1.25)}
 #stage.night #glow{z-index:2;opacity:1;mix-blend-mode:screen;animation:none;background:radial-gradient(circle,rgba(255,190,110,.28),transparent 55%)}
-#clear{font:max(12px,3.4cqw)/1.3 Arimo,sans-serif;text-transform:uppercase;color:#bcae94;text-align:center;letter-spacing:.02em;white-space:normal;text-shadow:none}
+#clear{font:3.6cqw/1.2 Arimo,sans-serif;white-space:nowrap!important;text-transform:uppercase;color:#bcae94;text-align:center;letter-spacing:.02em;white-space:normal;text-shadow:none}
 /* tableau à clés */
 .tag{position:absolute;width:3.6%;aspect-ratio:180/619;translate:-50% -6%;background:url(img/key.webp) center top/100% 100% no-repeat;border:0;
   filter:drop-shadow(0 .4cqmin .5cqmin rgba(0,0,0,.7));transform-origin:50% 3%;animation:sway 6s ease-in-out infinite;animation-delay:calc(var(--d)*-1s);cursor:pointer}
@@ -97,6 +97,7 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 @media (hover:hover) and (pointer:fine){.btn:hover{filter:brightness(1.15)}}
 .paper{position:relative;flex:none;aspect-ratio:682/993;height:min(calc(100cqh - 6vmin),calc((100cqw - 6vmin - 3vmin - 112px)*993/682));background:url(img/card.webp) center/100% 100% no-repeat;color:#2a2217;font-family:Arimo,sans-serif;filter:drop-shadow(0 2cqmin 3cqmin rgba(0,0,0,.8));container-type:size}
 @media (max-aspect-ratio:1/1){.ov{flex-direction:column}.paper{height:min(calc(100cqh - 6vmin - 60px),calc((100cqw - 6vmin)*993/682))}.acts{flex-direction:row;width:min(100%,calc((100cqh - 6vmin - 60px)*682/993));justify-content:stretch}.acts .btn{flex:1;min-width:0;padding:0 8px}}
+@container (max-height:300px){.acts{gap:6px}.acts .btn{min-height:40px}}
 @keyframes drop{from{transform:translateY(-30vh) rotate(-7deg);opacity:0}}
 @keyframes slam{0%{transform:scale(2.6);opacity:0}60%{transform:scale(.92);opacity:.95}100%{transform:scale(1)}}
 @keyframes slamq{from{transform:rotate(-12deg) scale(2.4);opacity:0}}
@@ -234,9 +235,9 @@ const LAYOUT={
 // crochets du tableau (px de rack.webp 852×692)
 const HX=[62,136,208,282,355,428,500,572,646,718,791],HY=[58,128,200,271,345,414,483,549,612];
 const T={
- en:{clear:'€ · PayPal · ⚡ · 🔑 = 31\u00a0☾',hint:'Paste in the PayPal note',lnhint:'⚡',keep:'Your room code, kept in this browser:',until:'Until',eur:'Paid',
+ en:{clear:'€ · ⚡ · 🔑 31\u00a0☾',hint:'Paste in the PayPal note',lnhint:'⚡',keep:'Your room code, kept in this browser:',until:'Until',eur:'Paid',
   n:'Key',nm:'Name',tg:'Tag',paid:'PAID',tier:'Kalabass',since:'Since',who:'Postulant',rh:'Rhythm',m:'monthly',o:'once',anon:'—',ok:'SIGNED',bad:'UNSIGNED',st:'Status',live:'active',past:'archived'},
- fr:{clear:'€ · PayPal · ⚡ · 🔑 = 31\u00a0☾',hint:'À coller dans la note PayPal',lnhint:'⚡',keep:'Votre code de chambre, gardé dans ce navigateur :',until:'Jusqu’au',eur:'Versé',
+ fr:{clear:'€ · ⚡ · 🔑 31\u00a0☾',hint:'À coller dans la note PayPal',lnhint:'⚡',keep:'Votre code de chambre, gardé dans ce navigateur :',until:'Jusqu’au',eur:'Versé',
   n:'Clé',nm:'Nom',tg:'Étiquette',paid:'VERSÉ',tier:'Kalabass',since:'Depuis',who:'Postulant',rh:'Rythme',m:'mensuel',o:'une fois',anon:'—',ok:'SIGNÉE',bad:'NON SIGNÉE',st:'État',live:'active',past:'archivée'}
 };
 let lang=(()=>{try{return localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e){return 'en'}})();
