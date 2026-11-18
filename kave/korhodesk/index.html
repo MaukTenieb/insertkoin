@@ -59,7 +59,7 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 #stage.night #rack img,#stage.night #bell img{filter:brightness(.62) drop-shadow(0 .8cqmin 1.2cqmin rgba(0,0,0,.65))}
 #stage.night #neon img{filter:brightness(1.25)}
 #stage.night #glow{z-index:2;opacity:1;mix-blend-mode:screen;animation:none;background:radial-gradient(circle,rgba(255,190,110,.28),transparent 55%)}
-#clear{font:3.6cqw/1.2 Arimo,sans-serif;white-space:nowrap!important;text-transform:uppercase;color:#bcae94;text-align:center;letter-spacing:.02em;white-space:normal;text-shadow:none}
+#clear:empty{display:none}#clear{font:3.6cqw/1.2 Arimo,sans-serif;white-space:nowrap!important;text-transform:uppercase;color:#bcae94;text-align:center;letter-spacing:.02em;white-space:normal;text-shadow:none}
 /* tableau à clés */
 .tag{position:absolute;width:3.6%;aspect-ratio:180/619;translate:-50% -6%;background:url(img/key.webp) center top/100% 100% no-repeat;border:0;
   filter:drop-shadow(0 .4cqmin .5cqmin rgba(0,0,0,.7));transform-origin:50% 3%;animation:sway 6s ease-in-out infinite;animation-delay:calc(var(--d)*-1s);cursor:pointer}
@@ -234,9 +234,9 @@ const LAYOUT={
 // crochets du tableau (px de rack.webp 852×692)
 const HX=[62,136,208,282,355,428,500,572,646,718,791],HY=[58,128,200,271,345,414,483,549,612];
 const T={
- en:{clear:'€ · ⚡ · 🔑 31\u00a0☾',hint:'Paste in the PayPal note',lnhint:'⚡',keep:'Your room code, kept in this browser:',until:'Until',eur:'Paid',
+ en:{clear:'',hint:'Paste in the PayPal note',lnhint:'⚡',keep:'Your room code, kept in this browser:',until:'Until',eur:'Paid',
   n:'Key',nm:'Name',tg:'Tag',paid:'PAID',tier:'Kalabass',since:'Since',who:'Postulant',rh:'Rhythm',m:'monthly',o:'once',anon:'—',ok:'SIGNED',bad:'UNSIGNED',st:'Status',live:'active',past:'archived'},
- fr:{clear:'€ · ⚡ · 🔑 31\u00a0☾',hint:'À coller dans la note PayPal',lnhint:'⚡',keep:'Votre code de chambre, gardé dans ce navigateur :',until:'Jusqu’au',eur:'Versé',
+ fr:{clear:'',hint:'À coller dans la note PayPal',lnhint:'⚡',keep:'Votre code de chambre, gardé dans ce navigateur :',until:'Jusqu’au',eur:'Versé',
   n:'Clé',nm:'Nom',tg:'Étiquette',paid:'VERSÉ',tier:'Kalabass',since:'Depuis',who:'Postulant',rh:'Rythme',m:'mensuel',o:'une fois',anon:'—',ok:'SIGNÉE',bad:'NON SIGNÉE',st:'État',live:'active',past:'archivée'}
 };
 let lang=(()=>{try{return localStorage.getItem('ik.lang')==='fr'?'fr':'en'}catch(e){return 'en'}})();
@@ -272,7 +272,7 @@ function paint(){
 async function slip(d,n){
   const t=T[lang];let c=myCodes();let me=c.filter(x=>!x.ln).pop();
   if(!me){const r=crypto.getRandomValues(new Uint8Array(13));const code=MASKS[r[0]%18]+'-'+b32(r.slice(1)).match(/.{1,5}/g).join('-');me={code,tag:await tagOf(code)};c.push(me);try{localStorage.setItem('kd.codes',JSON.stringify(c))}catch(e){}}
-  $('#ntier').textContent=n+' · '+d+' € · 31\u00a0☾';$('#nkp').textContent=KP[d];$('#slip').classList.remove('qr');
+  $('#ntier').textContent=n+' · '+d+' €';$('#nkp').textContent=KP[d];$('#slip').classList.remove('qr');
   const nm=$('#nname');nm.hidden=d<5;try{nm.value=localStorage.getItem('kd.name')||''}catch(e){};const fit=()=>nm.style.setProperty('--nf',Math.min(1,16/Math.max(16,nm.value.length)));fit();nm.oninput=()=>{nm.value=nm.value.replace(/[^\p{L}\p{N} ._'’-]/gu,'');fit();try{localStorage.setItem('kd.name',nm.value)}catch(e){}};
   const note=()=>me.tag+(d>=5&&nm.value.trim()?' '+nm.value.trim():'');$('#ntag').textContent=me.tag;$('#nhint').textContent=t.hint;$('#ncode').textContent=t.keep+' '+me.code;
   $('#npay').href=PAYPAL+d+'EUR';$('#npay').onclick=()=>{cp(note());ok($('#ncopy'))};$('#ncopy').onclick=()=>{cp(note());click();ok($('#ncopy'))};
