@@ -229,7 +229,7 @@ function myCodes(){try{return JSON.parse(localStorage.getItem('kd.codes')||'[]')
 // positions en % de la scène : [gauche, haut, largeur]
 const LAYOUT={
   land:{door:[36,48],lamp:[81,47],bg:'img/room-land.webp',nbg:'img/room-land-nuit.webp',ar:'1376/768',neon:[3,9,24],board:[2,22,26],rack:[47,14,23],bell:[49,60.4,6],nav:[47,49]},
-  port:{door:[15,45],lamp:[78,46],bg:'img/room-port.webp',nbg:'img/room-port-nuit.webp',ar:'768/1376',neon:[21,7,58],board:[22,17.5,56],rack:[25,41.6,42],bell:[76,60.2,12],nav:[25,61.5]}
+  port:{door:[15,45],lamp:[78,46],bg:'img/room-port.webp',nbg:'img/room-port-nuit.webp',ncode:.4,ar:'768/1376',neon:[21,7,58],board:[22,17.5,56],rack:[25,41.6,42],bell:[76,60.2,12],nav:[25,61.5]}
 };
 // crochets du tableau (px de rack.webp 852×692)
 const HX=[62,136,208,282,355,428,500,572,646,718,791],HY=[58,128,200,271,345,414,483,549,612];
@@ -246,7 +246,7 @@ const $=s=>document.querySelector(s);
 // heure du visiteur (fuseau de son appareil) : jour 7 h – 18 h, crépuscule 18 h – 21 h, nuit 21 h – 5 h, aube 5 h – 7 h
 function nightness(){const d=new Date(),h=d.getHours()+d.getMinutes()/60;return h>=21||h<5?1:h>=18?(h-18)/3:h<7?(7-h)/2:0}
 function dusk(L){const st=$('#stage'),n=nightness();st.style.setProperty('--n',n.toFixed(3));st.classList.toggle('night',n>=.5);
-  const nb=$('#nightbg');nb.style.backgroundImage=L&&L.nbg?`url(${L.nbg})`:'none';st.style.setProperty('--code',L&&L.nbg?.85:1);requestAnimationFrame(()=>requestAnimationFrame(()=>st.classList.add('tr')))}
+  const nb=$('#nightbg');nb.style.backgroundImage=L&&L.nbg?`url(${L.nbg})`:'none';st.style.setProperty('--code',L&&L.nbg?(L.ncode??.85):1);requestAnimationFrame(()=>requestAnimationFrame(()=>st.classList.add('tr')))}
 setInterval(()=>dusk(innerWidth>=innerHeight-((document.getElementById('ikbar')||{}).offsetHeight||52)?LAYOUT.land:LAYOUT.port),6e4);
 function layout(){
   const bar=document.getElementById('ikbar'),bh=bar?bar.offsetHeight||52:0,ah=innerHeight-bh;
