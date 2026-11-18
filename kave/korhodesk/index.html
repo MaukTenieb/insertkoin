@@ -29,11 +29,10 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
   -webkit-text-stroke:.012em #ff3b2b;text-shadow:0 0 .04em #ff6a55,0 0 .12em #ff2a1a,0 0 .35em rgba(255,40,25,.85),0 0 .8em rgba(255,30,20,.5)}
 #neon.alt #nword{opacity:1;animation:buzz 2.5s infinite}
 .cp{position:absolute;top:12.53%;height:69.17%;width:12.23%;opacity:0;pointer-events:none}
-.cp::before{content:"";position:absolute;inset:0;background:url(img/neon.webp) no-repeat;background-size:817.65% auto;filter:brightness(.2) saturate(.9)}
-#c1::before{background-position:39.72% 40.65%}#c2::before{background-position:85.43% 40.65%}
+.cp::before{content:"";position:absolute;inset:0;background:center/100% 100% no-repeat}
+#c1::before{background-image:url(img/neon-c1-off.webp)}#c2::before{background-image:url(img/neon-c2-off.webp)}
 #c1{left:34.865%}#c2{left:74.99%}
-.cp b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;
-  font:400 20cqw/1 Arimo,sans-serif;color:#ffd9d2;-webkit-text-stroke:.012em #ff3b2b;text-shadow:0 0 .04em #ff6a55,0 0 .12em #ff2a1a,0 0 .35em rgba(255,40,25,.85)}
+.cp b{position:absolute;inset:0;opacity:0;pointer-events:none}.cp b svg{width:100%;height:100%;display:block;overflow:visible}
 .cp.k b{opacity:1}
 #neon.alt .cp{display:none}
 #neonglow{position:absolute;inset:-30%;background:radial-gradient(ellipse,rgba(255,60,40,.22),transparent 65%);mix-blend-mode:screen;pointer-events:none}
@@ -141,7 +140,7 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 <div id="blur"></div>
 <main id="stage">
   <div id="nightbg"></div>
-  <div class="o" id="neon"><div id="neonglow"></div><img src="img/neon.webp" alt="VACANCY"><b id="nword"></b><i class="cp" id="c1"><b>K</b></i><i class="cp" id="c2"></i></div>
+  <div class="o" id="neon"><div id="neonglow"></div><img src="img/neon.webp" alt="VACANCY"><b id="nword"></b><i class="cp" id="c1"><b><svg viewBox="0 0 221 276" preserveAspectRatio="none" aria-hidden="true"><defs><filter id="kglow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9"/></filter><linearGradient id="kt" x1="0" x2="1"><stop offset="0" stop-color="#ff3a26"/><stop offset=".5" stop-color="#ff7a62"/><stop offset="1" stop-color="#ff3a26"/></linearGradient></defs><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M70 40V238M74 150L168 44M108 118L172 238" stroke="#ff2a1a" stroke-width="44" opacity=".55" filter="url(#kglow)"/><path d="M70 40V238M74 150L168 44M108 118L172 238" stroke="#d8261a" stroke-width="22"/><path d="M70 40V238M74 150L168 44M108 118L172 238" stroke="#ff8a72" stroke-width="15"/><path d="M70 40V238M74 150L168 44M108 118L172 238" stroke="#ffe2d6" stroke-width="6"/></g></svg></b></i><i class="cp" id="c2"></i></div>
   <section class="o" id="board" aria-label="Rates">
     <img src="img/board.webp" alt="">
     <div id="felt" class="L">
@@ -332,7 +331,9 @@ function glyphs(){if(!GL)return;const CAP=135,SW=3219;document.querySelectorAll(
  el.innerHTML=h;el.classList.add('on')})}
 (function crackle(){const c1=$('#c1'),c2=$('#c2');
  function burst(el,n){let i=0;(function f(){if(i++>n){el.style.opacity=0;return}el.style.opacity=Math.random()<.5?1:Math.random()*.6;setTimeout(f,30+Math.random()*90)})()}
- function K(el){el.style.opacity=1;el.classList.add('k');if(ac)snd('neon',.08);setTimeout(()=>{el.classList.remove('k');burst(el,3)},140+Math.random()*420)}
+ // le C s'éteint, le tube du K s'amorce (deux ou trois battements), tient, puis le C revient en crépitant
+ function K(el){const b=el.querySelector('b');if(!b)return burst(el,4);el.style.opacity=1;if(ac)snd('neon',.08);
+  const seq=[1,0,.6,0,1],dt=[40,70,30,90];let i=0;(function f(){b.style.opacity=seq[i];if(i<dt.length){setTimeout(f,dt[i++])}else setTimeout(()=>{b.style.opacity=0;burst(el,3)},320+Math.random()*680)})()}
  (function loop(){if(!$('#neon').classList.contains('alt')){Math.random()<.55?K(c1):burst(Math.random()<.85?c1:c2,4+Math.floor(Math.random()*8))}
   setTimeout(loop,1500+Math.random()*4500)})()})();
 const WORDS=['NO VACANCY','SEKTOR INN','KAVE'];
