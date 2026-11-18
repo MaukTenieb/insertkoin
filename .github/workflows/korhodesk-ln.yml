@@ -30,6 +30,12 @@ jobs:
           npm install --no-save --silent nostr-tools@2
           node tools/korhodesk-ln.mjs
           if [ "${{ inputs.essai }}" = "true" ]; then echo "Essai : la caisse KorhoDesk écrit bien jusqu'à ta boîte." >> caisse.md; fi
+      - name: Relève des horodatages (attestation Bitcoin, quelques heures après l'envoi)
+        run: |
+          ls kave/korhodesk/ots/*.ots >/dev/null 2>&1 || exit 0
+          pip install --quiet opentimestamps-client
+          for f in kave/korhodesk/ots/*.ots; do ots upgrade "$f" >/dev/null 2>&1 || true; done
+          rm -f kave/korhodesk/ots/*.bak
       - name: Horodatage OpenTimestamps (blockchain Bitcoin)
         run: |
           git diff --quiet kave/korhodesk/registry.json && exit 0
@@ -40,11 +46,12 @@ jobs:
           ots stamp "kave/korhodesk/ots/$R.txt"
       - name: Écriture
         run: |
-          git diff --quiet kave/korhodesk/registry.json && exit 0
+          git add -A kave/korhodesk
+          git diff --cached --quiet && exit 0
           git config user.name "Mauk Tenieb"
           git config user.email "MaukTenieb@users.noreply.github.com"
           git add kave/korhodesk
-          git commit -m "KorhoDesk : clés Lightning"
+          git commit -m "KorhoDesk : clés Lightning et horodatages"
           git pull --rebase
           git push
       - name: E-mail (commentaire dans « KorhoDesk · caisse », issue 4)
