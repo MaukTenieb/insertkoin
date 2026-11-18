@@ -32,8 +32,13 @@ var FIX='#ikbar [data-k="0"]{box-sizing:border-box!important;width:100%!importan
 '#ikbar .b-stick>i::before{position:absolute!important;inset:0!important;width:auto!important;height:auto!important;transform:none!important;background-position:50% 50%!important;background-size:contain!important}#ikbar .b-stick>i{position:relative!important}'+
 '#ikbar .koins{flex:0 0 auto!important;display:flex!important;align-items:center!important;gap:6px!important;margin-right:auto!important}#ikbar .koins .b-kicon{position:static!important;transform:none!important;margin:0!important}';
 /* 13 nov. 2026 (Mauk Tenieb, choix b) : mêmes fonctions partout, matière propre à chaque lieu ; ambre réservé à ce qui émet (le compteur de Koins) ; zéro halo sans décalage, zéro pastille ronde générique */
-var LIEU=/kos\.html/.test(location.pathname)?'kos':/tv\.html/.test(location.pathname)?'tv':/videoclub\.html/.test(location.pathname)?'vk':'';
+var LIEU=/kos\.html/.test(location.pathname)?'kos':/tv\.html/.test(location.pathname)?'tv':/videoclub\.html/.test(location.pathname)?'vk':/korhodesk\//.test(location.pathname)?'kd':'';
 var MAT={
+ /* 18 nov. 2026 : la Réception (KorhoDesk) — chant du comptoir en noyer, touches en bakélite cerclées de laiton, comme la lampe et la sonnette */
+ kd:'html body #ikbar>*:first-child{background:repeating-linear-gradient(90deg,rgba(0,0,0,.10) 0 1px,transparent 1px 9px),linear-gradient(#3a2416,#22150d)!important;border:0!important;border-top:2px solid #b08a4a!important;box-shadow:inset 0 1px 0 rgba(255,214,150,.18),inset 0 -2px 0 rgba(0,0,0,.5)!important}'+
+  'html body #ikbar :is(.b-px,.b-imm):is(.b-px,.b-imm){width:34px!important;height:34px!important;min-width:34px!important;min-height:34px!important;max-height:34px!important;padding:0!important;align-self:center!important;border-radius:50%!important;background:radial-gradient(circle at 40% 35%,#2b2622,#0f0d0c 70%)!important;color:#ead9b4!important;border:0!important;box-shadow:0 0 0 2px #b08a4a,0 0 0 3px #5a4220,0 2px 3px rgba(0,0,0,.7)!important;filter:none!important}'+
+  'html body #ikbar :is(.b-px,.b-imm):active{transform:translateY(1px)!important;box-shadow:0 0 0 2px #8a6a34,0 0 0 3px #5a4220,inset 0 1px 2px rgba(0,0,0,.8)!important}'+
+  'html body #ikbar :is(.b-px,.b-imm) :is(svg,i,span){filter:none!important;color:#ead9b4!important;text-shadow:none!important}',
  kos:'html body #ikbar>*:first-child{background:#aeb4c4!important;border:0!important;border-bottom:2px solid #5d6273!important;box-shadow:inset 0 2px 0 #e4e8f2,inset 0 -2px 0 #7b8090!important}'+
   'html body #ikbar :is(.b-px,.b-imm){width:30px!important;height:30px!important;border-radius:0!important;background:#aeb4c4!important;color:#1c1e26!important;border:0!important;box-shadow:inset 2px 2px 0 #eef1f8,inset -2px -2px 0 #5d6273!important;filter:none!important}'+
   'html body #ikbar :is(.b-px,.b-imm):active{box-shadow:inset -2px -2px 0 #eef1f8,inset 2px 2px 0 #5d6273!important}'+
@@ -80,7 +85,7 @@ KAP.addEventListener('click',function(){var md=navigator.mediaDevices;if(!(md&&m
  md.getDisplayMedia({video:{displaySurface:'browser'},audio:false,preferCurrentTab:true,selfBrowserSurface:'include',surfaceSwitching:'exclude'}).then(function(s){var v=document.createElement('video');v.srcObject=s;v.muted=true;v.playsInline=true;return v.play().then(function(){return new Promise(function(r){setTimeout(r,250)})}).then(function(){var c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);s.getTracks().forEach(function(t){t.stop()});try{sessionStorage.setItem('ik.kap',c.toDataURL('image/jpeg',.9))}catch(e){}location.href=HALL+'?kap=skreen'})}).catch(function(){kapDom()})});
 IMM.addEventListener('click',function(){var d=document.documentElement;try{if(document.fullscreenElement)document.exitFullscreen();else d.requestFullscreen()}catch(e){}});
 /* Baku Boom : retour au menu du lieu, comme à la borne */
-BOOM.addEventListener('click',function(){if(window.__ikBoom){window.__ikBoom();return}});
+BOOM.addEventListener('click',function(){if(window.__ikBoom){window.__ikBoom();return}location.replace(location.pathname+location.search)});/* 18 nov. 2026 : un lieu sans retour propre revient à son état de départ, comme le wiki */
 LG.addEventListener('click',function(){try{localStorage.setItem('ik.lang',lang==='fr'?'en':'fr')}catch(e){}location.reload()});
 /* le lecteur du Motel Sound */
 var want={panel:false,tv:false},user=false,pl=null,ready=false,ids=null,vol=100,muted=false,title='',ORD=null,pend=null;

@@ -315,6 +315,8 @@ $('#kps').innerHTML=TIERS.map(([d,n])=>`<button type="button" data-d="${d}" data
 $('#kps').querySelectorAll('button').forEach(b=>b.onclick=()=>{$('#letter').classList.remove('on');snd('bell',.5);slip(+b.dataset.d,b.dataset.n)});
 $('#lclose').onclick=()=>$('#letter').classList.remove('on');$('#letter').onclick=e=>{if(e.target.id==='letter')$('#lclose').onclick()};
 $('#lx').onclick=()=>$('#lclose').onclick();
+/* Baku Boom (barre commune) : la Réception revient à son état de départ, comme dans chaque lieu */
+window.__ikBoom=function(){LNP++;['#slip','#key','#letter'].forEach(x=>$(x).classList.remove('on'));if($('#rack').classList.contains('zoom'))zoomRack(false);if(location.hash)history.replaceState(null,'',location.pathname);$('#nln').classList.remove('poll');click()};
 let OPENER=null;addEventListener('focusin',e=>{if(!e.target.closest('.ov'))OPENER=e.target});
 addEventListener('keydown',e=>{if(e.key==='Tab'){const o=[...document.querySelectorAll('.ov.on')].pop();if(o){const f=[...o.querySelectorAll('button:not([hidden]),a.btn,input:not([hidden]),#paper a')].filter(x=>x.offsetParent);if(f.length&&!o.contains(document.activeElement)){e.preventDefault();f[0].focus()}else if(f.length&&e.shiftKey&&document.activeElement===f[0]){e.preventDefault();f[f.length-1].focus()}else if(f.length&&!e.shiftKey&&document.activeElement===f[f.length-1]){e.preventDefault();f[0].focus()}}return}
   if(e.key==='Escape'&&$('#rack').classList.contains('zoom')&&!document.querySelector('.ov.on')){zoomRack(false);return}
