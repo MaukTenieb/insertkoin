@@ -17,6 +17,9 @@ on:
       nom:
         description: Nom du soutien (Kalabass dès 5 €), facultatif
         default: ''
+      reponse:
+        description: Réponse à sa question (inscrite sur sa clé), facultatif ; euros = 0 pour répondre sans paiement
+        default: ''
 permissions:
   contents: write
 concurrency:
@@ -38,7 +41,8 @@ jobs:
           DATE: ${{ inputs.date }}
           RAIL: ${{ inputs.rail }}
           NOM: ${{ inputs.nom }}
-        run: node tools/korhodesk-issue.mjs "$TAG" "$EUR" "$DATE" "$RAIL" "$NOM"
+          REP: ${{ inputs.reponse }}
+        run: node tools/korhodesk-issue.mjs "$TAG" "$EUR" "$DATE" "$RAIL" "$NOM" "$REP"
       - name: Horodatage OpenTimestamps (blockchain Bitcoin)
         run: |
           pip install --quiet opentimestamps-client
