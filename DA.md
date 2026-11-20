@@ -111,11 +111,11 @@ Décision de Mauk Tenieb, 30 oct. 2026 : l'expérience du visiteur est, par mome
 - Lieux de la clarté absolue : les commandes (manette, touches, Baku Boom, Échap), la fente et le compte des Koins, le prix d'une partie, le retour à l'accueil, l'écran de jeu. Un geste y produit toujours le même effet ; chaque commande garde son nom, sa place et son sens.
 - Mesure : la confusion brouille un signal que le visiteur a déjà reçu ; le signal premier revient toujours (INSERT KOIN reste le nom le plus vu de l'enseigne, sept dixièmes du temps environ).
 
-## Les trois appareils : Kamescope, StudioRhogo, Musik
+## Les trois appareils : StudioRhogo, Kamera, Musik
 
-Décision du 20 nov. 2026 (Mauk Tenieb : « une commune direction artistique »). Le Kamescope prend, Musik joue, StudioRhogo monte, mixe et livre. Les trois forment un seul parc de matériel : celui d'un studio de quartier et d'un reporter de 1980 à 1985, rangé dans la Video Kave. Chaque appareil garde son boîtier ; les touches, les voyants, les afficheurs et les lettres suivent une seule règle.
+Décision du 20 nov. 2026 (Mauk Tenieb : « une commune direction artistique »). Kamera prend (Photofauna compris), Musik joue, StudioRhogo monte, mixe et livre. Les trois forment un seul parc de matériel : celui d'un studio de quartier et d'un reporter de 1980 à 1985, rangé dans la Video Kave. Chaque appareil garde son boîtier ; les touches, les voyants, les afficheurs et les lettres suivent une seule règle.
 
-| Élément | Règle commune | Kamescope | StudioRhogo | Musik |
+| Élément | Règle commune | Kamera | StudioRhogo | Musik |
 |---|---|---|---|---|
 | Boîtier | une matière photographiée, d'un seul fabricant, vis et rivets visibles | caméscope en simili-cuir noir, couvre-lit de la chambre derrière | tôle de rack, jonc, noyer des têtes de piste | tôle de rack rivetée, banc de noyer à œillets |
 | Touche au repos | bakélite sombre, biseau clair en haut, ombre portée en bas | idem | idem | idem |
