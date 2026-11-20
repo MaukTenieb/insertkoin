@@ -59,13 +59,13 @@
   var KATA=['c4','bb','hang','mm','fi'],DICE='⚀⚁⚂⚃⚄⚅';
   var MINIS=[['c4','KONNECT4','borne-mini-c4.jpg','#f48fb1',0],['hang','AKASZTÓFA','borne-mini-hang.jpg','#f48fb1',2],['mm','MASKERMIND','borne-mini-mm.jpg','#f48fb1',3],['erratic','ERRATIK','thumb-erratic.jpg','#42a5f5',5]];
   function kata(g){var d=document.querySelector('.cab.dice b');if(d)d.dataset.d=DICE[KATA.indexOf(g)];IK().go&&IK().go('katabatik');}
-  function play(g){if(g==='diktat'){IK().openCalque&&IK().openCalque('fotofauna.html?son=1','KamOrhogo');return;}if(g==='erratic')IK().go&&IK().go('erratic');else kata(g);}
+  function play(g){if(g==='diktat'){IK().openCalque&&IK().openCalque('fotofauna.html?son=1','Kamera');return;}if(g==='erratic')IK().go&&IK().go('erratic');else kata(g);}
   function ktile(g,title,th,nc,face){var c=el('div','cab b-kata');c.style.cssText='--th:url('+th+');--nc:'+nc;
     c.innerHTML='<button type="button" class="hit" data-kata="'+g+'"><b></b>'+(face!=null?'<i class="b-face">'+DICE[face]+'</i>':'')+'</button>';c.querySelector('b').textContent=title;
     c.querySelector('button').addEventListener('click',function(){play(g);});return c;}
   var GROUPS={korhogame:{t:'KorhoGame',th:'thumb-puck.jpg',nc:'#ffa726',items:[['puck','KORONG!','thumb-puck.jpg','#ffa726'],['chess','FAUNA CHESS','thumb-chess.jpg','#ab47bc'],
       ['faunarratics','FAUNARRATIK','thumb-faunarratics.jpg','#4fc3f7']],extra:[['fi','FAUNINVADERS','borne-big-fi.jpg','#c9a84c',3],]},
-    fauneye:{t:'FaunEye',th:'borne-fauneye.jpg',nc:'#e2c27a',items:[['fauneye','BAKUBOOK','borne-fauneye.jpg','#e2c27a'],['vhs','VHS','thumb-vhs.jpg','#b9d84a'],['photo','KAMORHOGO','thumb-photo.jpg?v=1113','#ff5a5a']],extra:[['bb','MUSIK','borne-big-bb.jpg','#ff7043',2]]},
+    fauneye:{t:'FaunEye',th:'borne-fauneye.jpg',nc:'#e2c27a',items:[['fauneye','BAKUBOOK','borne-fauneye.jpg','#e2c27a'],['vhs','VHS','thumb-vhs.jpg','#b9d84a'],['photo','KAMERA','thumb-photo.jpg?v=1113','#ff5a5a']],extra:[['bb','MUSIK','borne-big-bb.jpg','#ff7043',2],['studio','STUDIORHOGO','borne-big-studio.jpg','#e2c27a',2]]},
     surf:{t:'SurFauna',th:'thumb-repo.jpg',nc:'#7fe0ff',items:[['repo','REPORHOGO','thumb-repo.jpg','#b9d84a'],['tor','FAUNATOR','thumb-repo.jpg','#9e9e9e']]}};
   /* la graphie des noms (KorhoGame, FaunEye, SurFauna) dans une gravure tout en capitales : les minuscules en petites capitales */
   function caps(b,t){b.textContent='';b.setAttribute('aria-label',t);t.replace(/([A-Z0-9!]+)|([a-z]+)/g,function(m,U,l){var e=document.createElement(l?'small':'span');e.textContent=m;e.className=l?'b-sc':'';b.appendChild(e);return m;});}
@@ -155,7 +155,7 @@
   /* ---------- l'habit suit le programme ; les appareils transforment le meuble ---------- */
   var HABIT={terminal:'minitel',kal:'minitel',vhs:'vhs',photo:'photo',kapture:'photo',fauneye:'fauneye',puck:'korong',room:'korong'};
   var DEVICE={terminal:1,kal:1,vhs:1,photo:1,kapture:1};
-  var LABEL={minitel:'3615',vhs:'VHS',photo:'KAMORHOGO',fauneye:'FaunEye',korong:'KORONG!',arcade:'',repos:''};
+  var LABEL={minitel:'3615',vhs:'VHS',photo:'KAMERA',fauneye:'FaunEye',korong:'KORONG!',arcade:'',repos:''};
   var morphT=0;
   function relayout(){try{window.dispatchEvent(new Event('resize'));}catch(e){}try{var f=$('cf');if(f&&f.contentWindow)f.contentWindow.dispatchEvent(new Event('resize'));}catch(e){}}
   /* la caméra : en lançant un jeu, on s'approche de l'écran ; en revenant à l'accueil, on recule (borne-arcade.js, __borneCam) */
@@ -185,6 +185,8 @@
     if(!CAMGO&&C&&C.ok()&&root.dataset.habit==='repos'&&!root.dataset.prog&&k!=='visit'){try{var L=window.KG;if(L&&L.preload&&L.games.indexOf(k)>=0)L.preload(k);}catch(e){}C.zoomIn(function(){CAMGO=1;try{IK().go(k);}finally{CAMGO=0;}});return true;}
     setBig(bigOf(k));CUR=k==='katabatik'?(function(){var d=document.querySelector('.cab.dice b'),f=d?DICE.indexOf(d.dataset.d):0;return KATA[f]||'c4';})():k;paintDots();
     if(k==='fauneye'){IK().ac&&IK().ac();dress('fauneye');mark(k);IK().openCalque('borne-fauneye.html','FaunEye');return true;}
+    /* 20 nov. 2026 : StudioRhogo, cinquième appareil de FaunEye, s'ouvre dans l'écran de la borne comme Musik */
+    if(k==='studio'){dress('arcade');mark(k);IK().openCalque('/studio/','StudioRhogo');return true;}
     if(k==='skopo'){dress('arcade');mark(k);IK().openCalque('skoporhogo-borne.html','SkopoRhogo');return true;}
     if(k==='visit'){full('/katabase/','BURROWS');return true;}
     dress(HABIT[k]||'arcade',!!DEVICE[k]);mark(k);
@@ -198,18 +200,18 @@
 
   /* ---------- d'un programme à l'autre : un glissé depuis le bord de l'écran, ou Page préc. / Page suiv. ; des points sous l'écran, comme les chaînes d'un téléviseur ----------
      L'ordre suit le panneau. À zéro Koin, un jeu payant se saute : le glissé va au programme suivant. */
-  var ORDER=['puck','fi','faunarratics','chess','c4','hang','mm','erratic','fauneye','vhs','photo','bb','diktat','terminal','repo','tor'];
-  var GRP=[['puck','fi','faunarratics','chess','c4','hang','mm','erratic'],['fauneye','vhs','photo','bb','diktat'],['terminal'],['repo','tor']];
-  var NAME={chess:'FAUNA CHESS',fi:'FAUNINVADERS',diktat:'KAMORHOGO',puck:'KORONG!',faunarratics:'FAUNARRATIK',bb:'MUSIK',c4:'KONNECT4',hang:'AKASZTÓFA',mm:'MASKERMIND',erratic:'ERRATIK',
-    fauneye:'BAKUBOOK',vhs:'VHS',photo:'KAMORHOGO',terminal:'3615',repo:'REPORHOGO',tor:'FAUNATOR'};
+  var ORDER=['puck','fi','faunarratics','chess','c4','hang','mm','erratic','fauneye','vhs','photo','bb','studio','terminal','repo','tor'];
+  var GRP=[['puck','fi','faunarratics','chess','c4','hang','mm','erratic'],['fauneye','vhs','photo','bb','studio'],['terminal'],['repo','tor']];
+  var NAME={chess:'FAUNA CHESS',fi:'FAUNINVADERS',diktat:'KAMERA',studio:'STUDIORHOGO',puck:'KORONG!',faunarratics:'FAUNARRATIK',bb:'MUSIK',c4:'KONNECT4',hang:'AKASZTÓFA',mm:'MASKERMIND',erratic:'ERRATIK',
+    fauneye:'BAKUBOOK',vhs:'VHS',photo:'KAMERA',terminal:'3615',repo:'REPORHOGO',tor:'FAUNATOR'};
   var CUR=null,SWAP=false;
-  function launch(g){if(g==='diktat'){IK().openCalque&&IK().openCalque('fotofauna.html?son=1','KamOrhogo');return;}if(KATA.indexOf(g)>=0)kata(g);else IK().go&&IK().go(g);}
+  function launch(g){if(g==='diktat'){IK().openCalque&&IK().openCalque('fotofauna.html?son=1','Kamera');return;}if(KATA.indexOf(g)>=0)kata(g);else IK().go&&IK().go(g);}
   /* 8 nov. — adresse par programme : ?p=<programme> ouvre ce programme (lien des habillages KorhogOS, DVD, télé du motel, vidéoclub) */
   window.__borneLaunch=launch;
 /* 8 nov. : ?kap=1 (barre des lieux du motel) ouvre Kapture une fois la borne prête */
 (function(){if(!/[?&]kap=skreen/.test(location.search))return;var u;try{u=sessionStorage.getItem('ik.kap');sessionStorage.removeItem('ik.kap')}catch(e){}if(!u)return;var n=0,t=setInterval(function(){if((window.ikToFotoFauna&&document.documentElement.classList.contains('borne-ready'))||++n>60){clearInterval(t);if(window.ikToFotoFauna)fetch(u).then(function(r){return r.blob()}).then(function(b){window.ikToFotoFauna(b,'skreen')});}},250);})();
 (function(){if(!/[?&]kap=1/.test(location.search))return;var n=0,t=setInterval(function(){var k=document.getElementById('kapture');if((k&&document.documentElement.classList.contains('borne-ready'))||++n>60){clearInterval(t);if(k)k.click();}},250);})();
-  (function(){var m=/[?&]p=([a-z0-9]+)/.exec(location.search);if(!m)return;var k=m[1]==='musik'?'bb':m[1];if(ORDER.indexOf(k)<0&&['katabatik','skopo'].indexOf(k)<0)return;
+  (function(){var m=/[?&]p=([a-z0-9]+)/.exec(location.search);if(!m)return;var k=m[1]==='musik'?'bb':m[1];if(ORDER.indexOf(k)<0&&['katabatik','skopo','diktat'].indexOf(k)<0)return;
     var n=0,t=setInterval(function(){n++;var ok=IK()&&IK().go;if(ok||n>40){clearInterval(t);if(ok)launch(k);}},150);})();
   var dots=el('div','b-dots');dots.setAttribute('role','tablist');scr.appendChild(dots);
   function paintDots(){dots.innerHTML='';var G=null;GRP.forEach(function(g){if(g.indexOf(CUR)>=0)G=g;});if(!G||G.length<2){dots.hidden=true;return;}dots.hidden=false;

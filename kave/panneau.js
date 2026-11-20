@@ -60,7 +60,7 @@ var kn=q('.kn');try{kn.textContent=localStorage.getItem('ik.koins')||'0'}catch(e
 var SON=q('.b-px-son'),PL=q('.b-px-pl'),KAP=q('.b-px-kap'),IMM=q('.b-imm'),BOOM=q('.b-boom');
 /* 10 nov. 2026 (Mauk Tenieb, 20 h 22, choix b) : la barre existante reçoit diktaTfaune, en icône, à côté de Kapture ; PL devient une icône de liste. Forme et place inchangées. */
 var SVGL='<svg viewBox="0 0 24 24" aria-hidden="true" data-k="21">';
-var DIK=KAP.cloneNode(false);DIK.className='b-px b-px-dik';DIK.setAttribute('aria-label','KamOrhogo');DIK.title='KamOrhogo';
+var DIK=KAP.cloneNode(false);DIK.className='b-px b-px-dik';DIK.setAttribute('aria-label','Kamera');DIK.title='Kamera';
 DIK.innerHTML=SVGL+'<rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"></rect><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>';
 KAP.parentNode.insertBefore(DIK,KAP.nextSibling);
 /* 10 nov. 2026 (Mauk Tenieb, 20 h 27 : « La manette qui permet de changer d'environnement, c'est bien ») : la manette de la barre mène à la pièce suivante du motel */
