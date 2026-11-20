@@ -132,7 +132,7 @@ Décision du 20 nov. 2026 (Mauk Tenieb : « une commune direction artistique »)
 
 ### La suite FaunEye
 
-Décision du 20 nov. 2026, 23 h 20 (Mauk Tenieb) : FaunEye range, dans cet ordre, TVCR (la télé et le magnétoscope, un seul appareil), Kapture (caméra avant, caméra arrière, capture d'écran), Kamera (Photofauna compris), Musik, StudioRhogo, BakuBook. La touche FaunEye ouvre TVCR ; les points sous l'écran et la manette passent d'un appareil au suivant ; le bureau de KorhogOS les liste dans le même ordre. Musik, StudioRhogo et Kapture s'ouvrent dans la borne, jamais dans une fenêtre de l'OS.
+Décision du 20 nov. 2026, 23 h 20 (Mauk Tenieb) : FaunEye range, dans cet ordre, TVCR (la télé et le magnétoscope, un seul appareil), Kapture (caméra avant, caméra arrière, capture d'écran), Kamera (Photofauna compris), Musik, StudioRhogo, BakuBook, MiniTale (23 h 24 ; MiniTale garde aussi sa propre touche, le Video Kave son propre accès). La touche FaunEye ouvre TVCR ; les points sous l'écran et la manette passent d'un appareil au suivant ; le bureau de KorhogOS les liste dans le même ordre. Musik, StudioRhogo et Kapture s'ouvrent dans la borne, jamais dans une fenêtre de l'OS.
 
 | Emplacement | Règle commune | Mesure du 20 nov. 2026 |
 |---|---|---|

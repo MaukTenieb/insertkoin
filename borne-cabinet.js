@@ -201,7 +201,7 @@
   /* ---------- d'un programme à l'autre : un glissé depuis le bord de l'écran, ou Page préc. / Page suiv. ; des points sous l'écran, comme les chaînes d'un téléviseur ----------
      L'ordre suit le panneau. À zéro Koin, un jeu payant se saute : le glissé va au programme suivant. */
   var ORDER=['puck','fi','faunarratics','chess','c4','hang','mm','erratic','vhs','kapture','photo','bb','studio','fauneye','terminal','repo','tor'];
-  var GRP=[['puck','fi','faunarratics','chess','c4','hang','mm','erratic'],['vhs','kapture','photo','bb','studio','fauneye'],['terminal'],['repo','tor']];
+  var GRP=[['puck','fi','faunarratics','chess','c4','hang','mm','erratic'],['vhs','kapture','photo','bb','studio','fauneye','terminal'],['repo','tor']];
   var NAME={chess:'FAUNA CHESS',fi:'FAUNINVADERS',diktat:'KAMERA',studio:'STUDIORHOGO',puck:'KORONG!',faunarratics:'FAUNARRATIK',bb:'MUSIK',c4:'KONNECT4',hang:'AKASZTÓFA',mm:'MASKERMIND',erratic:'ERRATIK',
     fauneye:'BAKUBOOK',vhs:'TVCR',kapture:'KAPTURE',photo:'KAMERA',terminal:'3615',repo:'REPORHOGO',tor:'FAUNATOR'};
   var CUR=null,SWAP=false;
@@ -234,7 +234,7 @@
   setInterval(function(){if(root.hasAttribute('data-prog')&&!dots.hidden&&!document.hidden)dotFit();},400);
   var label=el('div','b-chan');glass.appendChild(label);
   /* un seul niveau : la touche lance le premier programme de son groupe ; la manette ou un glissé zappe dans le groupe */
-  var FIRST={korhogame:'puck',fauneye:'vhs',surf:'repo'};/* 20 nov. 2026 (Mauk Tenieb) : la suite FaunEye — TVCR, Kapture, Kamera, Musik, StudioRhogo, BakuBook */
+  var FIRST={korhogame:'puck',fauneye:'vhs',surf:'repo'};/* 20 nov. 2026 (Mauk Tenieb) : la suite FaunEye — TVCR, Kapture, Kamera, Musik, StudioRhogo, BakuBook, MiniTale (qui garde aussi sa touche 3615) */
   window.__borneGroup=function(g){var f=FIRST[g];if(!f)return unfold(g);CUR=f;label.textContent=NAME[f];label.classList.remove('on');void label.offsetWidth;label.classList.add('on');launch(f);setTimeout(paintDots,700);};
   window.__borneZap=function(d){swap(d);};window.__borneCur=function(){return CUR;};
   function swap(dir,target,tries){if(!CUR||SWAP&&!tries)return;tries=tries||0;if(tries>=ORDER.length)return;
