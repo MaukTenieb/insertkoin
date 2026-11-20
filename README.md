@@ -10,6 +10,43 @@ By Mauk Tenieb & Korhogo. Build guide: [method](https://github.com/MaukTenieb/me
 
 ---
 
+## The Kaves
+
+Insert Koin is a network of Kaves: places of the Korhogo world, the world of the Korhogo Fauna, aka Hordalék or the Masks. A Kave holds artefacts, suites of machines and other Kaves. Most Kaves carry several names; a visit draws one, and each name has its own address, which opens the Kave under that name.
+
+- [KorhogOS](https://mauktenieb.github.io/insertkoin/korhogos/): the desktop of the motel; the site opens here.
+  - dRive inn: an endless run through the motel, the wallpaper of the desktop.
+  - The icons of the three suites: KorhoGame, FaunEye, SurFauna.
+- [Arkade](https://mauktenieb.github.io/insertkoin/arkade/) / [Arkane](https://mauktenieb.github.io/insertkoin/arkane/) / Insert Koin: the arcade cabinet.
+  - Koins: the coin slot and its currency, the Koin.
+  - [Kapture](https://mauktenieb.github.io/insertkoin/kapture/): front camera, back camera, screen capture.
+  - [KorhoGame](https://mauktenieb.github.io/insertkoin/korhogame/): the suite of games.
+    - Korong!: air-puck against the 18 Masks of the Korhogo Fauna.
+    - Fauna Chess: fairy chess against the Korhogo Fauna.
+    - Faunarratik: a tale built from the sheets of the Masks.
+    - FaunInvaders: the 18 Masks march and drop bombs.
+    - Erratik: the memory game.
+    - Katabatik: a die picks a mini-game: Konnect4, Akasztófa, MaskerMind.
+    - [SkopoRhogo](https://mauktenieb.github.io/insertkoin/skoporhogo/): the Korhogo Fauna live in an isometric motel room.
+  - [FaunEye](https://mauktenieb.github.io/insertkoin/fauneye/): the suite of machines.
+    - TVCR, the television of the room.
+    - [Kamera](https://mauktenieb.github.io/insertkoin/kamera/) / [Kamescope](https://mauktenieb.github.io/insertkoin/kamescope/) / [VCR](https://mauktenieb.github.io/insertkoin/vcr/) / [KamOrhogo](https://mauktenieb.github.io/insertkoin/kamorhogo/): the camera and sound recorder, with 1,998 looks from 2010s photo apps.
+    - [Musik](https://mauktenieb.github.io/insertkoin/musik/): a sequencer of 15 to 21 steps, the Masks as figurines on a walnut bench, a turntable for sound and video.
+    - [StudioRhogo](https://mauktenieb.github.io/studio/): a 32-track studio that syncs a film to the music.
+    - [BakuBook](https://mauktenieb.github.io/insertkoin/bakubook/): a reader: alchemy classics, Internet Archive, Gutenberg, Wikisource, the Korhogo Diary.
+  - [SurFauna](https://mauktenieb.github.io/insertkoin/surfauna/): the suite of search tools.
+    - [Reporhogo](https://mauktenieb.github.io/insertkoin/reporhogo/): searches 41 code forges.
+    - [FaunaTor](https://mauktenieb.github.io/insertkoin/faunator/): web and .onion pages through Tor clients that run in the page.
+  - [MiniTale](https://mauktenieb.github.io/3615/): the Minitel of the Korhogo Fauna: messages, Koins, Kurations, the Hall of Kave.
+- The room, unnamed:
+  - [TVHS](https://mauktenieb.github.io/insertkoin/tvhs/) / [KombinaTV](https://mauktenieb.github.io/insertkoin/kombinatv/) / [Korhogo TV](https://mauktenieb.github.io/insertkoin/korhogotv/) / [TVCR](https://mauktenieb.github.io/insertkoin/tvcr/): the television: 99 channels, motel webcams, water towers, a VCR.
+  - DVD: the DVD player.
+- [VideoKave](https://mauktenieb.github.io/insertkoin/videokave/) / [VideoKlub](https://mauktenieb.github.io/insertkoin/videoklub/): the video club: tapes of the Korhogo Fauna and of the curators, the counter, the screen at the back.
+- [Kalabass](https://mauktenieb.github.io/insertkoin/kalabass/) / [Komptoir](https://mauktenieb.github.io/insertkoin/komptoir/) / [Desk](https://mauktenieb.github.io/insertkoin/desk/) / [KorhoDesk](https://mauktenieb.github.io/insertkoin/korhodesk/): the reception: a numbered key, anchored in Bitcoin.
+- [FauxRhogo](https://mauktenieb.github.io/insertkoin/fauxrhogo/) / [KalabWiki](https://mauktenieb.github.io/insertkoin/kalabwiki/) / [Weaky](https://mauktenieb.github.io/insertkoin/weaky/) / [WigWiki](https://mauktenieb.github.io/insertkoin/wigwiki/) / [Kerema](https://mauktenieb.github.io/insertkoin/kerema/): the wiki, one article.
+- BakuBoom: the Branobel dynamite on every bar.
+- [Katabase](https://mauktenieb.github.io/katabase/) / Burrows: the presentation of Mauk Tenieb and the Korhogo world: the Korhogo Fauna, aka Hordalék or the Masks, their albums and clips.
+
 ## The arcade
 
 The home screen is the motel painting, then the cabinets. Every visit draws its own arrangement: Reporhogo, Bio, Burrows, Faunarratik and Erratik stand either as big cabinets or as small chips under them, and the rows always come out full.
