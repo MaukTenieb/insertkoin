@@ -643,10 +643,15 @@ function setSrc(c,it){if(!it){c.want=null;c.kind='syn';c.buf=null;c.src=null;rac
   c.want=it.id;var go=function(b){if(c.want!==it.id||S.ch.indexOf(c)<0)return;c.kind='smp';c.buf=b;c.src=it.id;rack();strips();ttLoad(it);audition(b)};if(it.buf)go(it.buf);else load(it).then(go).catch(function(){})}
 
 /* ---------- KAVE : le motif (ou l'enchaînement A B C D) en WAV stéréo ---------- */
+/* 20 nov. 2026 (Mauk Tenieb : « Kamescope, StudioRhogo, Musik ») : chaque rendu KAVE se range aussi dans le stockage commun du site (base « borne-musik », magasin « kave », les 8 plus récents) ; StudioRhogo le reprend avec son tempo, son nombre de pas et ses motifs */
+function kaveKeep(blob,name,pats){try{var r=indexedDB.open('borne-musik',1);r.onupgradeneeded=function(){r.result.createObjectStore('kave',{keyPath:'id'})};
+  r.onsuccess=function(){try{var d=r.result,tx=d.transaction('kave','readwrite'),os=tx.objectStore('kave'),t=Date.now();os.put({id:'mk'+t,t:t,name:String(name||'musik').replace(/\.[a-z0-9]+$/i,''),kind:/^video/.test(blob.type)?'vid':'wav',mime:blob.type,blob:blob,bpm:S.bpm,n:S.n,pats:pats.map(function(p){return 'ABCD'[p]}),swing:S.swing});
+    var q=os.getAll();q.onsuccess=function(){(q.result||[]).sort(function(a,b){return b.t-a.t}).slice(8).forEach(function(x){os.delete(x.id)})};
+    tx.oncomplete=function(){try{new BroadcastChannel('borne-musik').postMessage('kave')}catch(e){}}}catch(e){}}}catch(e){}}
 function kaveVid(pats){var c=ac();if(!c||!VIS.cv||!window.MediaRecorder)return;var g=graph(c),dst=c.createMediaStreamDestination();g.lim.connect(dst);
  var st=VIS.cv.captureStream(30);dst.stream.getAudioTracks().forEach(function(t){st.addTrack(t)});var mt=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm','video/mp4'].filter(function(x){return MediaRecorder.isTypeSupported(x)})[0]||'';
  var rec=new MediaRecorder(st,mt?{mimeType:mt,videoBitsPerSecond:4e6}:{}),ch=[];rec.ondataavailable=function(e){if(e.data&&e.data.size)ch.push(e.data)};
- rec.onstop=function(){try{g.lim.disconnect(dst)}catch(e){}var ty=(rec.mimeType||'video/webm').split(';')[0],u=URL.createObjectURL(new Blob(ch,{type:ty})),x=el('a');x.href=u;x.download=window.ikName?ikName('musik',ty.indexOf('mp4')>0?'mp4':'webm'):'musik.webm';document.body.appendChild(x);x.click();setTimeout(function(){x.remove();URL.revokeObjectURL(u)},4000);$('#mz-kave',ROOT).classList.remove('on')};
+ rec.onstop=function(){try{g.lim.disconnect(dst)}catch(e){}var ty=(rec.mimeType||'video/webm').split(';')[0],bl=new Blob(ch,{type:ty}),u=URL.createObjectURL(bl),x=el('a');x.href=u;x.download=window.ikName?ikName('musik',ty.indexOf('mp4')>0?'mp4':'webm'):'musik.webm';kaveKeep(bl,x.download,pats);document.body.appendChild(x);x.click();setTimeout(function(){x.remove();URL.revokeObjectURL(u)},4000);$('#mz-kave',ROOT).classList.remove('on')};
  var keep=S.chain;S.chain=pats.length>1;S.pat=pats[0];paintPat();rack();play(false);$('#mz-kave',ROOT).classList.add('on');rec.start(250);play(true);
  setTimeout(function(){play(false);S.chain=keep;setTimeout(function(){rec.stop()},400)},pats.length*S.n*stepDur()*1000+300)}
 function kave(){var pats=S.chain?[0,1,2,3]:[S.pat];if(S.ch.some(function(ch){return (ch.kind==='img'||ch.kind==='vid')&&pats.some(function(p){return ch.steps[p].slice(0,S.n).some(Boolean)})}))return kaveVid(pats);var d=stepDur(),SR=44100,len=pats.length*S.n*d+3,c=new(window.OfflineAudioContext||window.webkitOfflineAudioContext)(2,Math.ceil(SR*len),SR);
@@ -657,7 +662,7 @@ function kave(){var pats=S.chain?[0,1,2,3]:[S.pat];if(S.ch.some(function(ch){ret
   return c.startRendering()}).then(function(r){var n=r.length,L=r.getChannelData(0),R=r.getChannelData(1),v=new DataView(new ArrayBuffer(44+n*4)),w=function(o,s){for(var i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
     w(0,'RIFF');v.setUint32(4,36+n*4,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,2,true);v.setUint32(24,SR,true);v.setUint32(28,SR*4,true);v.setUint16(32,4,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,n*4,true);
     for(var i=0,o=44;i<n;i++,o+=4){var a=Math.max(-1,Math.min(1,L[i])),b=Math.max(-1,Math.min(1,R[i]));v.setInt16(o,a<0?a*32768:a*32767,true);v.setInt16(o+2,b<0?b*32768:b*32767,true)}
-    var u=URL.createObjectURL(new Blob([v],{type:'audio/wav'})),x=el('a');x.href=u;x.download=window.ikName?ikName('musik','wav'):'musik.wav';document.body.appendChild(x);x.click();setTimeout(function(){x.remove();URL.revokeObjectURL(u)},4000)}).catch(function(){})}
+    var bl=new Blob([v],{type:'audio/wav'}),u=URL.createObjectURL(bl),x=el('a');x.href=u;x.download=window.ikName?ikName('musik','wav'):'musik.wav';kaveKeep(bl,x.download,pats);document.body.appendChild(x);x.click();setTimeout(function(){x.remove();URL.revokeObjectURL(u)},4000)}).catch(function(){})}
 
 /* ---------- branchement : Musik s'ouvre sur la station ---------- */
 function hook(){if(typeof window.beatboxOpen!=='function'){setTimeout(hook,600);return}if(window.beatboxOpen.__mz)return;
