@@ -44,8 +44,9 @@ class MzFx extends AudioWorkletProcessor{
           const dt=Math.min(1.5,step*3)*sr*(1+.0035*Math.sin(this.wph*6.2831853)+.0007*Math.sin(this.fph*6.2831853)+this.sl),r=this.dw-dt,i0=Math.floor(r),f=r-i0,a0=this.d[(i0+N*2)%N],a1=this.d[(i0+1+N*2)%N],dl=a0+(a1-a0)*f;
           this.lp+=(dl-this.lp)*.3;this.d[this.dw]=Math.tanh((m+this.lp*(.35+amt*.6))*1.3)*.8;this.dw=(this.dw+1)%N;const wet=this.lp*(.55+amt*.45);y0=this.buf[0][w]*.85+wet;y1=this.buf[1][w]*.85+wet*.9;break}
         case 'fdbk':{const m=(this.buf[0][w]+this.buf[1][w])*.5;this.wph+=.07/sr;const dt=sr*(.0061+.0042*Math.sin(this.wph*6.2831853)),r=this.dw-dt,i0=Math.floor(r),f=r-i0,dl=this.d[(i0+N*2)%N]*(1-f)+this.d[(i0+1+N*2)%N]*f;
-          this.lp+=(dl-this.lp)*.22;this.hp+=(this.lp-this.hp)*.004;const bp=this.lp-this.hp,v=Math.tanh(m*1.5+bp*(.3+amt*.75)*1.3);this.d[this.dw]=v;this.dw=(this.dw+1)%N;
-          y0=this.buf[0][w]*(1-amt*.5)+v*(.25+amt*.5);y1=this.buf[1][w]*(1-amt*.5)+v*(.25+amt*.5);break}
+          this.lp+=(dl-this.lp)*.22;this.hp+=(this.lp-this.hp)*.004;const bp=this.lp-this.hp,v=Math.tanh(m*1.5+bp*(.3+amt*.975)*1.3);this.d[this.dw]=v;this.dw=(this.dw+1)%N;
+          /* accrochage à 0,5, niveau de sortie borné à −6 dBFS (studio, analyse du 20 nov. 2026, E-39) */
+          y0=this.buf[0][w]*(1-amt*.5)+v*(.25+amt*.25);y1=this.buf[1][w]*(1-amt*.5)+v*(.25+amt*.25);break}
         case 'metal':{const m=(this.buf[0][w]+this.buf[1][w])*.5,fb=.9+amt*.085;let sm=0,sd=0;
           for(let k=0;k<4;k++){const b=this.cb[k],n=this.cl[k],j=this.ci[k],o=b[j];this.cz[k]+=(o-this.cz[k])*.55;b[j]=m*.35+this.cz[k]*fb;this.ci[k]=(j+1)%n;sm+=o;sd+=k&1?-o:o}
           sm=Math.tanh(sm*.9);sd=Math.tanh(sd*.9);const mw=2.4*Math.sqrt(amt)*(1.15-.45*amt);y0=this.buf[0][w]*(1-amt*.6)+sm*mw;y1=this.buf[1][w]*(1-amt*.6)+sd*mw;break}
