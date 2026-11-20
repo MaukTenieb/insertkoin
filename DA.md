@@ -56,6 +56,8 @@ Chaque groupe de programmes garde son encre d'identité (`--nc`) : KorhoGame amb
 | Press Start 2P | l'écran : écrans-titres, crédits, scores, HUD, INSERT KOIN |
 | DM Mono | le texte courant à l'écran et les bandeaux d'affichage (titre du morceau) |
 
+Depuis la passe anti-IA du 13 nov. 2026 (fonts.css), le nom « DM Mono » sert la sérigraphie Barlow Semi Condensed (dessin DIN) et le nom « Bebas Neue » sert le lettrage d'affiche League Gothic. Les faces réellement dessinées sont donc : Bungee, League Gothic, Press Start 2P, Barlow Semi Condensed.
+
 Ces quatre familles forment tout le lettrage. Décision du 30 oct., 19 h 25 : des capitales partout, très lisibles ; les touches du panneau en Bebas Neue capitales espacées, 3615 en afficheur Press Start 2P ; titres, comptes et scores des jeux en Press Start 2P. Le texte à l'écran mesure 12 px au moins, hors gravure d'objet.
 
 ## Écran
@@ -108,6 +110,27 @@ Décision de Mauk Tenieb, 30 oct. 2026 : l'expérience du visiteur est, par mome
 - Lieux de la confusion : l'enseigne (INSERT KOIN domine ; INTERSEKTION, NOIR INSEKT, SEKTOR INN la brouillent au hasard, souvent, une à quatre secondes), le titre de l'onglet, BIO, BIOGRAPHIK, BIOTENIEB, les fautes voulues (Kam BAK et FRONT, KORONG!, Kompete!), le pendu hongrois, le Kerema, les paroles des psychopompes, les parasites de l'écran commun, les tirages au hasard (skin, images d'attente, chambres de Korong!).
 - Lieux de la clarté absolue : les commandes (manette, touches, Baku Boom, Échap), la fente et le compte des Koins, le prix d'une partie, le retour à l'accueil, l'écran de jeu. Un geste y produit toujours le même effet ; chaque commande garde son nom, sa place et son sens.
 - Mesure : la confusion brouille un signal que le visiteur a déjà reçu ; le signal premier revient toujours (INSERT KOIN reste le nom le plus vu de l'enseigne, sept dixièmes du temps environ).
+
+## Les trois appareils : Kamescope, StudioRhogo, Musik
+
+Décision du 20 nov. 2026 (Mauk Tenieb : « une commune direction artistique »). Le Kamescope prend, Musik joue, StudioRhogo monte, mixe et livre. Les trois forment un seul parc de matériel : celui d'un studio de quartier et d'un reporter de 1980 à 1985, rangé dans la Video Kave. Chaque appareil garde son boîtier ; les touches, les voyants, les afficheurs et les lettres suivent une seule règle.
+
+| Élément | Règle commune | Kamescope | StudioRhogo | Musik |
+|---|---|---|---|---|
+| Boîtier | une matière photographiée, d'un seul fabricant, vis et rivets visibles | caméscope en simili-cuir noir, couvre-lit de la chambre derrière | tôle de rack, jonc, noyer des têtes de piste | tôle de rack rivetée, banc de noyer à œillets |
+| Touche au repos | bakélite sombre, biseau clair en haut, ombre portée en bas | idem | idem | idem |
+| Touche allumée | fond sombre, légende et glyphe rétroéclairés ambre #ffc061, voyant de 4 px #ffd08a en haut à droite ; zéro aplat clair | idem | idem | idem |
+| Lecture, enregistrement | rouge #c9302a à #d8443a, glyphe blanc | REC rouge vif | lecture et REC rouges | lecture rouge |
+| Afficheur numérique | cristaux liquides à phosphore vert #9ad86a sur #0b1208, Press Start 2P | incrustations de l'écran en Press Start 2P blanc | tempo | tempo, pas |
+| Compteur | rouleaux mécaniques blancs sur noir | compteur de bande | mesure:temps:double croche | — |
+| Mesure du son | galvanomètre crème à aiguille, ou diodes | vumètre du micro | VU, crête | oscilloscope à phosphore vert |
+| Nom d'une voix | ruban Dymo gaufré, lettres claires sur ruban sombre (lettres sombres sur ruban clair) | étiquette de la cassette Hi8 | tête de piste | rangée, bande de la bibliothèque |
+| Molette | bouton cannelé photographié, seul le repère gravé tourne | idem | idem | idem |
+| Lettres | Barlow Semi Condensed pour la sérigraphie, League Gothic pour les plaques, Press Start 2P pour les afficheurs | idem | idem | idem |
+| Pictogrammes | trait de 1,8 px, bouts ronds, un pictogramme par fonction, le même dans les trois appareils | idem | idem | idem |
+| Couleur d'une voix | la couleur du Mask, sur le socle, la rangée, le liseré | — | liseré de piste | ligne de pas |
+
+Contrôle mesuré sur les trois appareils, quatre formats : zéro touche allumée en aplat clair (luminance au-dessus de 0,45), mêmes faces de lettres, cibles de 44 px au doigt, textes de 11 px au moins.
 
 ## Contrôle
 
