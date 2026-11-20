@@ -1197,3 +1197,12 @@ html body .vhs-eject{z-index:7;animation:vhs-eject .7s cubic-bezier(.4,0,.6,1) b
 /* 16 nov. 2026 (Mauk Tenieb, « Travaille ») : le champ d'enregistrement montre un maillon dessiné à la place de l'adresse d'exemple ; la liste en papier réglé est retirée (« c'est devenu dégueulasse. Reviens en arrière », 4 h 10) */
 html body #vhs#vhs#vhs.vhs .vhs-rec-input{background:#0a0d08 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238f897d' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1'/%3E%3C/svg%3E") 10px center/18px no-repeat!important;padding-left:36px!important}
 html body #vhs#vhs#vhs.vhs .vhs-rec-input::placeholder{color:transparent}
+
+/* direction artistique commune StudioRhogo · Kamera · Musik · TV · magnétoscope (DA.md, « Les trois appareils », 20 nov. 2026) :
+   le choix en cours s'allume en ambre, comme dans Musik et StudioRhogo ; l'afficheur fluorescent du magnétoscope garde son vert d'appareil */
+.vhs .vhs-sort-key[aria-pressed="true"]{position:relative;color:#ffc061!important;text-shadow:0 0 6px rgba(255,160,40,.85)!important;background:linear-gradient(#2c251e,#15110d)!important;box-shadow:inset 0 0 0 1px #000,inset 0 0 12px rgba(255,150,40,.22)!important}
+.vhs .vhs-sort-key[aria-pressed="true"]::after{content:"";position:absolute;top:3px;right:3px;width:4px;height:4px;border-radius:50%;background:#ffd08a;box-shadow:0 0 5px 1px #ff9f1c;pointer-events:none}
+.vhs .vhs-sort-key[aria-pressed="true"] svg{filter:drop-shadow(0 0 4px rgba(255,160,40,.9))}
+.vhs-tracklist button[aria-current="true"],.vhs-local-list button[aria-current="true"]{color:#ffc061!important;border-left-color:#ffa726!important}
+.vhs-tape.is-active .vhs-tape-count{color:#ffc061}
+.vhs-tape.vhs-tape-k.is-active{outline-color:#ffa726}

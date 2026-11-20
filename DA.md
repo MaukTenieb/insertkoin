@@ -130,6 +130,20 @@ Décision du 20 nov. 2026 (Mauk Tenieb : « une commune direction artistique »)
 | Pictogrammes | trait de 1,8 px, bouts ronds, un pictogramme par fonction, le même dans les trois appareils | idem | idem | idem |
 | Couleur d'une voix | la couleur du Mask, sur le socle, la rangée, le liseré | — | liseré de piste | ligne de pas |
 
+### La suite FaunEye
+
+Décision du 20 nov. 2026, 23 h 20 (Mauk Tenieb) : FaunEye range, dans cet ordre, TVCR (la télé et le magnétoscope, un seul appareil), Kapture (caméra avant, caméra arrière, capture d'écran), Kamera (Photofauna compris), Musik, StudioRhogo, BakuBook. La touche FaunEye ouvre TVCR ; les points sous l'écran et la manette passent d'un appareil au suivant ; le bureau de KorhogOS les liste dans le même ordre. Musik, StudioRhogo et Kapture s'ouvrent dans la borne, jamais dans une fenêtre de l'OS.
+
+| Emplacement | Règle commune | Mesure du 20 nov. 2026 |
+|---|---|---|
+| Image | à gauche, la plus grande surface ; au téléphone debout, en haut sur toute la largeur | TVCR, Kamera, Kapture, Musik (grille), StudioRhogo (pistes) : conformes |
+| Appareil et ses commandes | à droite ; au téléphone, sous l'image, sous le pouce | TVCR (platine, étagère), Kamera (boîtier), Kapture (BAK, déclencheur), Musik (écran, platine) : conformes ; StudioRhogo garde le transport en haut, comme toute table de montage |
+| Lecture, REC | sur l'appareil, en rouge quand il tourne | conformes |
+| Bibliothèque, étagère | à droite sous l'appareil, ou en bas | TVCR, StudioRhogo à droite ; Musik, Kamera en bas |
+| Langue | une seule clé pour tout le site (ik.lang) | Kamera, Musik, TVCR, StudioRhogo (depuis le 20 nov.) |
+| Barre universelle | en bas de la borne, mêmes pictogrammes partout | conforme |
+| Écran étroit (380 px et moins) | aucune commande hors cadre ; les commandes rares passent dans ⋯ | StudioRhogo dans la borne au téléphone : horloge entière, pied en pictogrammes |
+
 Contrôle mesuré sur les trois appareils, quatre formats : zéro touche allumée en aplat clair (luminance au-dessus de 0,45), mêmes faces de lettres, cibles de 44 px au doigt, textes de 11 px au moins.
 
 ## Contrôle

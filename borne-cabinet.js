@@ -65,7 +65,7 @@
     c.querySelector('button').addEventListener('click',function(){play(g);});return c;}
   var GROUPS={korhogame:{t:'KorhoGame',th:'thumb-puck.jpg',nc:'#ffa726',items:[['puck','KORONG!','thumb-puck.jpg','#ffa726'],['chess','FAUNA CHESS','thumb-chess.jpg','#ab47bc'],
       ['faunarratics','FAUNARRATIK','thumb-faunarratics.jpg','#4fc3f7']],extra:[['fi','FAUNINVADERS','borne-big-fi.jpg','#c9a84c',3],]},
-    fauneye:{t:'FaunEye',th:'borne-fauneye.jpg',nc:'#e2c27a',items:[['fauneye','BAKUBOOK','borne-fauneye.jpg','#e2c27a'],['vhs','VHS','thumb-vhs.jpg','#b9d84a'],['photo','KAMERA','thumb-photo.jpg?v=1113','#ff5a5a']],extra:[['bb','MUSIK','borne-big-bb.jpg','#ff7043',2],['studio','STUDIORHOGO','borne-big-studio.jpg','#e2c27a',2]]},
+    fauneye:{t:'FaunEye',th:'borne-fauneye.jpg',nc:'#e2c27a',items:[['vhs','TVCR','thumb-vhs.jpg','#b9d84a'],['kapture','KAPTURE','camera-c.webp','#4fc3f7'],['photo','KAMERA','thumb-photo.jpg?v=1113','#ff5a5a'],['fauneye','BAKUBOOK','borne-fauneye.jpg','#e2c27a']],extra:[['bb','MUSIK','borne-big-bb.jpg','#ff7043',2],['studio','STUDIORHOGO','borne-big-studio.jpg','#e2c27a',2]]},
     surf:{t:'SurFauna',th:'thumb-repo.jpg',nc:'#7fe0ff',items:[['repo','REPORHOGO','thumb-repo.jpg','#b9d84a'],['tor','FAUNATOR','thumb-repo.jpg','#9e9e9e']]}};
   /* la graphie des noms (KorhoGame, FaunEye, SurFauna) dans une gravure tout en capitales : les minuscules en petites capitales */
   function caps(b,t){b.textContent='';b.setAttribute('aria-label',t);t.replace(/([A-Z0-9!]+)|([a-z]+)/g,function(m,U,l){var e=document.createElement(l?'small':'span');e.textContent=m;e.className=l?'b-sc':'';b.appendChild(e);return m;});}
@@ -155,7 +155,7 @@
   /* ---------- l'habit suit le programme ; les appareils transforment le meuble ---------- */
   var HABIT={terminal:'minitel',kal:'minitel',vhs:'vhs',photo:'photo',kapture:'photo',fauneye:'fauneye',puck:'korong',room:'korong'};
   var DEVICE={terminal:1,kal:1,vhs:1,photo:1,kapture:1};
-  var LABEL={minitel:'3615',vhs:'VHS',photo:'KAMERA',fauneye:'FaunEye',korong:'KORONG!',arcade:'',repos:''};
+  var LABEL={minitel:'3615',vhs:'TVCR',photo:'KAMERA',fauneye:'FaunEye',korong:'KORONG!',arcade:'',repos:''};
   var morphT=0;
   function relayout(){try{window.dispatchEvent(new Event('resize'));}catch(e){}try{var f=$('cf');if(f&&f.contentWindow)f.contentWindow.dispatchEvent(new Event('resize'));}catch(e){}}
   /* la caméra : en lançant un jeu, on s'approche de l'écran ; en revenant à l'accueil, on recule (borne-arcade.js, __borneCam) */
@@ -200,10 +200,10 @@
 
   /* ---------- d'un programme à l'autre : un glissé depuis le bord de l'écran, ou Page préc. / Page suiv. ; des points sous l'écran, comme les chaînes d'un téléviseur ----------
      L'ordre suit le panneau. À zéro Koin, un jeu payant se saute : le glissé va au programme suivant. */
-  var ORDER=['puck','fi','faunarratics','chess','c4','hang','mm','erratic','fauneye','vhs','photo','bb','studio','terminal','repo','tor'];
-  var GRP=[['puck','fi','faunarratics','chess','c4','hang','mm','erratic'],['fauneye','vhs','photo','bb','studio'],['terminal'],['repo','tor']];
+  var ORDER=['puck','fi','faunarratics','chess','c4','hang','mm','erratic','vhs','kapture','photo','bb','studio','fauneye','terminal','repo','tor'];
+  var GRP=[['puck','fi','faunarratics','chess','c4','hang','mm','erratic'],['vhs','kapture','photo','bb','studio','fauneye'],['terminal'],['repo','tor']];
   var NAME={chess:'FAUNA CHESS',fi:'FAUNINVADERS',diktat:'KAMERA',studio:'STUDIORHOGO',puck:'KORONG!',faunarratics:'FAUNARRATIK',bb:'MUSIK',c4:'KONNECT4',hang:'AKASZTÓFA',mm:'MASKERMIND',erratic:'ERRATIK',
-    fauneye:'BAKUBOOK',vhs:'VHS',photo:'KAMERA',terminal:'3615',repo:'REPORHOGO',tor:'FAUNATOR'};
+    fauneye:'BAKUBOOK',vhs:'TVCR',kapture:'KAPTURE',photo:'KAMERA',terminal:'3615',repo:'REPORHOGO',tor:'FAUNATOR'};
   var CUR=null,SWAP=false;
   function launch(g){if(g==='diktat'){IK().openCalque&&IK().openCalque('fotofauna.html?son=1','Kamera');return;}if(KATA.indexOf(g)>=0)kata(g);else IK().go&&IK().go(g);}
   /* 8 nov. — adresse par programme : ?p=<programme> ouvre ce programme (lien des habillages KorhogOS, DVD, télé du motel, vidéoclub) */
@@ -234,7 +234,7 @@
   setInterval(function(){if(root.hasAttribute('data-prog')&&!dots.hidden&&!document.hidden)dotFit();},400);
   var label=el('div','b-chan');glass.appendChild(label);
   /* un seul niveau : la touche lance le premier programme de son groupe ; la manette ou un glissé zappe dans le groupe */
-  var FIRST={korhogame:'puck',fauneye:'fauneye',surf:'repo'};
+  var FIRST={korhogame:'puck',fauneye:'vhs',surf:'repo'};/* 20 nov. 2026 (Mauk Tenieb) : la suite FaunEye — TVCR, Kapture, Kamera, Musik, StudioRhogo, BakuBook */
   window.__borneGroup=function(g){var f=FIRST[g];if(!f)return unfold(g);CUR=f;label.textContent=NAME[f];label.classList.remove('on');void label.offsetWidth;label.classList.add('on');launch(f);setTimeout(paintDots,700);};
   window.__borneZap=function(d){swap(d);};window.__borneCur=function(){return CUR;};
   function swap(dir,target,tries){if(!CUR||SWAP&&!tries)return;tries=tries||0;if(tries>=ORDER.length)return;
