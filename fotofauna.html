@@ -106,6 +106,7 @@ html body header.top #bLang{margin-left:auto}
 .sw button[aria-pressed=true]{background:var(--acc);color:var(--acc-ink)}
 .sw button[hidden]{display:none}
 .kt{display:grid;place-items:center;width:48px;height:48px;padding:0}.kt .ic{width:22px;height:22px}
+#kBand[aria-pressed=true]{background:#2a1d0c;color:#ffc061;box-shadow:0 0 10px rgba(255,192,97,.45)}
 #kMik[aria-pressed=true]{background:#c8243a;color:#fff;box-shadow:0 0 12px rgba(200,36,58,.6)}
 #actions .key svg{display:block!important;width:22px;height:22px}
 .stage.masked #view,.stage.masked .ff-ghost{opacity:0}
@@ -138,7 +139,8 @@ html body header.top #bLang{margin-left:auto}
 .strip.pyr .frame:nth-child(-n+3) :is(img,.ph){aspect-ratio:4/3}
 @media (max-width:760px){
  html body header.top{row-gap:10px}
- .kb{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 8px}
+ .kb{display:grid!important;grid-template-columns:repeat(12,minmax(0,1fr));gap:10px 8px}
+ .kb>*{grid-column:span 4}.kb>.kt{grid-column:span 3}/* 21 nov. 2026 : quatre touches par rangée (micro, FaunAI, dossier, bande-son) */
  .kb .sw{display:flex}.kb .sw button{flex:1;width:auto}
  .kb .kt{width:100%}
 }
@@ -353,7 +355,7 @@ html.ike-on .app[data-ike-layout=narrow] .ctrl{border-radius:0}
  <button class="key" id="bShoot" type="button"><svg class="ic" aria-hidden="true"><use href="#i-camera"/></svg><span data-i="shoot"></span></button>
  <button class="key" id="bOpen" type="button"><svg class="ic" aria-hidden="true"><use href="#i-open"/></svg><span data-i="open"></span></button>
  <div class="kmk" id="kmk"></div>
- <div class="kb" id="kb"><div class="sw" role="group" id="kSrc"><button type="button" data-k="scr" data-al="kScr"><svg class="ic" aria-hidden="true"><use href="#i-scr"/></svg></button><button type="button" data-k="cam" data-al="kCam"><svg class="ic" aria-hidden="true"><use href="#i-kam"/></svg></button></div><div class="sw" role="group" id="kObj"><button type="button" data-o="open" data-al="kOpen"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg></button><button type="button" data-o="mask" data-al="kMask"><svg class="ic" aria-hidden="true"><use href="#i-blind"/></svg></button></div><div class="sw" role="group" id="kPv"><button type="button" data-v="photo" data-al="kPik"><svg class="ic" aria-hidden="true"><use href="#i-pik"/></svg></button><button type="button" data-v="video" data-al="kVid"><svg class="ic" aria-hidden="true"><use href="#i-vid"/></svg></button></div><button class="key kt" id="kMik" type="button" aria-pressed="false" data-al="kMik"><svg class="ic" aria-hidden="true"><use href="#i-mic"/></svg></button><button class="key kt" id="kWand" type="button" data-al="kWand"><svg class="ic" aria-hidden="true"><use href="#i-wand"/></svg></button><button class="key kt" id="kImp" type="button" data-al="open"><svg class="ic" aria-hidden="true"><use href="#i-open"/></svg></button></div>
+ <div class="kb" id="kb"><div class="sw" role="group" id="kSrc"><button type="button" data-k="scr" data-al="kScr"><svg class="ic" aria-hidden="true"><use href="#i-scr"/></svg></button><button type="button" data-k="cam" data-al="kCam"><svg class="ic" aria-hidden="true"><use href="#i-kam"/></svg></button></div><div class="sw" role="group" id="kObj"><button type="button" data-o="open" data-al="kOpen"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg></button><button type="button" data-o="mask" data-al="kMask"><svg class="ic" aria-hidden="true"><use href="#i-blind"/></svg></button></div><div class="sw" role="group" id="kPv"><button type="button" data-v="photo" data-al="kPik"><svg class="ic" aria-hidden="true"><use href="#i-pik"/></svg></button><button type="button" data-v="video" data-al="kVid"><svg class="ic" aria-hidden="true"><use href="#i-vid"/></svg></button></div><button class="key kt" id="kMik" type="button" aria-pressed="false" data-al="kMik"><svg class="ic" aria-hidden="true"><use href="#i-mic"/></svg></button><button class="key kt" id="kWand" type="button" data-al="kWand"><svg class="ic" aria-hidden="true"><use href="#i-wand"/></svg></button><button class="key kt" id="kImp" type="button" data-al="open"><svg class="ic" aria-hidden="true"><use href="#i-open"/></svg></button><button class="key kt" id="kBand" type="button" aria-pressed="false" data-al="kBand"><svg class="ic" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3.4" fill="currentColor" opacity=".85"/><path d="M6.4 9.2a6.2 6.2 0 0 1 3.4-3.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
  <button class="key lang" id="bLang" type="button"><b data-l="en">EN</b><b data-l="fr">FR</b></button>
  <button class="key" id="bMenu" type="button" data-al="labo"><svg class="ic" aria-hidden="true"><use href="#i-more"/></svg></button>
 </header>
@@ -12060,7 +12062,7 @@ Object.assign(W.en,{keepL:"Keep",dice:"Roll",layers:"Layers",noLayer:"Original i
  frameN:"Frame {i} / {n}…",recording:"Recording: {s} s",gifDone:"GIF: {k} KB",vidDone:"Video: {k} KB",noRec:"This browser cannot record video (MediaRecorder).",rawSaved:"Raw photo saved: "});
 /* libellés repris de la page en ligne */
 Object.assign(W.fr,{open:"Ouvrir",save:"Enregistrer"});Object.assign(W.en,{open:"Open",save:"Save"});
-Object.assign(W.fr,{kScr:"Écran",kCam:"Caméra",kOpen:"Viseur ouvert",kMask:"Objectif masqué",kPik:"Photo",kVid:"Vidéo",kMik:"Micro",kWand:"FaunAI"});Object.assign(W.en,{kScr:"Screen",kCam:"Camera",kOpen:"Open viewfinder",kMask:"Masked lens",kPik:"Photo",kVid:"Video",kMik:"Mic",kWand:"FaunAI"});
+Object.assign(W.fr,{kScr:"Écran",kCam:"Caméra",kOpen:"Viseur ouvert",kMask:"Objectif masqué",kPik:"Photo",kVid:"Vidéo",kMik:"Micro",kWand:"FaunAI",kBand:"Bande-son StudioRhogo"});Object.assign(W.en,{kScr:"Screen",kCam:"Camera",kOpen:"Open viewfinder",kMask:"Masked lens",kPik:"Photo",kVid:"Video",kBand:"StudioRhogo soundtrack",kMik:"Mic",kWand:"FaunAI"});
 Object.assign(W.fr,{keepL:"Empiler",recKeep:"Garder la recette",recKept:"Recette gardée",recEmpty:"Pile vide"});Object.assign(W.en,{keepL:"Stack",recKeep:"Keep the recipe",recKept:"Recipe kept",recEmpty:"Empty stack"});
 
 /* ---------- arbre des procédés ---------- */
@@ -12484,6 +12486,12 @@ document.querySelectorAll("#kObj button").forEach(b=>b.onclick=()=>{KMASK=b.data
 document.querySelectorAll("#kPv button").forEach(b=>b.onclick=()=>{if(REC||SREC)return;PIKVID=b.dataset.v;kEff()});
 /* le micro sur la commode : l'image du dictaphone tant qu'aucune prise du visiteur n'occupe l'écran */
 async function kMikPic(){if(S.own||CAM||VM)return;try{const u=window.__pfStart;window.__pfStart=MK?"kave/a/mikro.webp":ikMask();const im=await startImage();window.__pfStart=u;if(!S.own&&!CAM)await setSource(im,false);render()}catch{}}
+/* 21 nov. 2026 : bande-son StudioRhogo — chaque appui passe au mix suivant de l'étagère commune (borne-musik/kave), puis revient au silence */
+const BAND={L:[],i:-1,buf:null};
+function bandAll(){return new Promise(ok=>{try{const r=indexedDB.open("borne-musik",1);r.onupgradeneeded=()=>r.result.createObjectStore("kave",{keyPath:"id"});r.onsuccess=()=>{try{const q=r.result.transaction("kave").objectStore("kave").getAll();q.onsuccess=()=>ok((q.result||[]).filter(x=>x.src==="studio").sort((a,b)=>b.t-a.t));q.onerror=()=>ok([])}catch(e){ok([])}};r.onerror=()=>ok([])}catch(e){ok([])}})}
+$("kBand").onclick=async()=>{if(REC)return;BAND.L=await bandAll();if(!BAND.L.length){BAND.i=-1;BAND.buf=null;setStatus("∅");$("kBand").setAttribute("aria-pressed","false");return}
+ BAND.i=BAND.i+1>=BAND.L.length?-1:BAND.i+1;BAND.buf=null;const x=BAND.L[BAND.i];$("kBand").setAttribute("aria-pressed",String(!!x));
+ if(!x){setStatus("");return}try{BAND.buf=await sonAC().decodeAudioData(await x.blob.arrayBuffer());if(CAM&&PIKVID==="photo"){PIKVID="video";kEff()}setStatus("\u25CE "+x.name)}catch(e){BAND.i=-1;setStatus("✕","err")}};
 $("kMik").onclick=()=>{if(SREC){sonStop();return}if(REC)return;MK=!MK;if(MK&&CAM&&PIKVID==="photo")PIKVID="video";kEff();kMikPic()};
 $("kWand").onclick=()=>{showPane("ai");const p=$("prompt");if(p){p.focus();if(!matchMedia("(min-width:1000px)").matches)p.scrollIntoView({behavior:"smooth",block:"center"})}};
 $("kImp").onclick=()=>$("fOpen").click();
@@ -12543,11 +12551,13 @@ function sonPanel(){if($("sonPanel")){$("sonPanel").hidden=false;$("sonP").value
 /* filmer : le viseur (effets compris) passe dans un canvas de taille fixe, enregistré avec le micro */
 function recStart(){if(!CAM||REC)return;if(!canRec()){setStatus(t("noRec"),"err");return}const v=$("view");if(v.width<16){return}
  const w=v.width&~1,h=v.height&~1,rc=document.createElement("canvas");rc.width=w;rc.height=h;const g=rc.getContext("2d");g.drawImage(v,0,0,w,h);
- const st=rc.captureStream(VFPS);(MIC&&MK?MIC.getAudioTracks().filter(x=>x.readyState==="live"):[]).forEach(x=>st.addTrack(x));
+ const st=rc.captureStream(VFPS),mics=(MIC&&MK?MIC.getAudioTracks().filter(x=>x.readyState==="live"):[]);let bs=null;
+ /* 21 nov. 2026 : un mix de StudioRhogo sert de bande-son ; micro et bande-son passent dans une seule piste audio */
+ if(BAND.buf){try{const a=sonAC(),d=a.createMediaStreamDestination();bs=a.createBufferSource();bs.buffer=BAND.buf;bs.connect(d);bs.connect(a.destination);if(mics.length)a.createMediaStreamSource(new MediaStream(mics)).connect(d);bs.start();d.stream.getAudioTracks().forEach(x=>st.addTrack(x))}catch(e){bs=null;mics.forEach(x=>st.addTrack(x))}}else mics.forEach(x=>st.addTrack(x));
  const mt=pickMime(),rec=new MediaRecorder(st,mt?{mimeType:mt,videoBitsPerSecond:2500000}:{}),chunks=[];rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
- REC={rec,chunks,rc,g,mt,t0:performance.now()};rec.start(500);
+ REC={rec,chunks,rc,g,mt,bs,t0:performance.now()};rec.start(500);
  $("shutter").classList.add("rec");$("shutter").setAttribute("aria-label",t("recStop"));document.querySelectorAll("#pvMode button").forEach(b=>b.disabled=true);setLabel();ecranSync();vtick(true)}
-async function recStop(discard){const R=REC;if(!R)return;REC=null;const done=new Promise(r=>R.rec.onstop=r);try{R.rec.stop()}catch{}await done;
+async function recStop(discard){const R=REC;if(!R)return;REC=null;if(R.bs)try{R.bs.stop()}catch{}const done=new Promise(r=>R.rec.onstop=r);try{R.rec.stop()}catch{}await done;
  const dur=(performance.now()-R.t0)/1000;$("shutter").classList.remove("rec");document.querySelectorAll("#pvMode button").forEach(b=>b.disabled=false);setPvMode(PVMODE);setLabel();ecranSync();
  if(discard)return;const type=(R.rec.mimeType||R.mt||"video/webm").split(";")[0],blob=new Blob(R.chunks,{type});
  /* 13 nov. 2026 : la vidéo tournée part aussi vers la platine de Musik (borne-musik.js, __borneVid) */kamToMusik(blob,type,"Kamera "+new Date().toTimeString().slice(0,5));
