@@ -1611,7 +1611,7 @@ function fxDraw(c,r,x,y,fw,fh,f){const t=G.t,L=(FXF[r.id]&&FXF[r.id][f|0])||FX[r
 /* some Masks stand lower, so their hind legs go behind the table */
 /* the Masks sit at the far end of the table: scaled to the room (dogXim, a teenager, smaller than the adults) */
 /* 13 nov. 2026 (Mauk Tenieb : « vérifie la taille des Masks, les uns par rapport aux autres ») : tailles d'après l'âge et la stature du tableau THE FAUNA — Poisoned Well enfant de 8-10 ans, dogXim adolescent de 12-14 ans, Maiden Call, Aube, Malika et Naphta femmes, Honey Buzzard très grand, C7H5N3O6 et Silent Pact grands (entre Croisière Noire et Honey Buzzard), Croisière Noire massif, grossi à 1,02 et descendu derrière la table (SINK 20) ; Ts'ui Pên et Aube, larges (ailes, armure), resserrés à 0,74 ; Truce et Hátra Lövés (tête plus grosse que les autres adultes) à 0,78 ; les autres, adultes, à 0,84 */
-const SINK={croisiere_noire:20},BIG={croisiere_noire:1.02,dogxim:.72,poisoned_well:.6,maiden_call:.8,aube:.74,malika:.8,naphta:.8,tsui_pen:.74,truce:.78,hatra_loves:.78,c7h5n3o6:.96,silent_pact:.96,honey_buzzard:1},SIZE=1.25;
+const SINK={croisiere_noire:20},BIG={croisiere_noire:1.02,dogxim:.72,poisoned_well:.6,maiden_call:.8,aube:.74,malika:.8,naphta:.8,tsui_pen:.74,truce:.78,hatra_loves:.78,c7h5n3o6:.96,silent_pact:.96,honey_buzzard:.98,auvergne:.88,cadaver_synod:.92,plague_of_justinian:.94,grand_colonel:.9,unkle_maukie:.86},SIZE=.88;/* 21 nov. 2026 (Mauk Tenieb : « personnages coupés en haut ») : les cinq Masks sans taille gardaient l'ancien 1,25 et sortaient du cadre de 31 px ; tailles d'après THE FAUNA (Auvergne homme en gilet, Cadaver Synod catcheur large, Plague of Justinian homme-orage grand, Grand Colonel officier, Unkle Maukie shérif de 60-65 ans), tête à 0,98 au plus pour rester dans le cadre */
 function portrait(c,ox){const r=G.r;if(!r.sheet)return;const e=G.e,f=faceNow(),fw=r.fw,fh=r.fh,t=G.t;
   const stoic=r.sig==='silent';let sink=0;if(!stoic){if(G.hitT>0)sink+=2;if(e.down>0)sink+=8;}
   const lag=e.player_score-e.opponent_score;if(!stoic)sink+=Math.max(0,Math.min(8,lag));
@@ -1620,7 +1620,7 @@ function portrait(c,ox){const r=G.r;if(!r.sheet)return;const e=G.e,f=faceNow(),f
   const x=Math.round(W/2-fw/2+ox),y=Math.round(BASE-fh+sink-Math.min(12,Math.max(0,118-fh))+(SINK[r.id]||0));
   c.save();c.beginPath();c.rect(0,0,W,CLIP);c.clip();
   {const breath=1+.009*Math.sin(t*1.7),sc=(BIG[r.id]||SIZE)*(stoic?1:(e.mode==='hit'?1.05:1)*(G.hitT>0?.96:1)*(G.face===4&&G.faceT>0?1.03:1)),rot=stoic?0:.006*Math.sin(t*.7)+(G.face===6?-.03:0)+(G.face===7&&G.faceT>0?.04*Math.sin(t*30):0)+(lag>=5?.05:0);
-   c.translate(W/2,BASE);c.rotate(rot);c.scale(sc,sc*breath);c.translate(-W/2,-BASE);}
+   const cap=(BASE-1)/Math.max(1,BASE-y),sx=Math.min(sc,cap/breath);/* 21 nov. 2026 : la tête reste dans le cadre, même au coup et à la respiration */c.translate(W/2,BASE);c.rotate(rot);c.scale(sx,sx*breath);c.translate(-W/2,-BASE);}
   c.globalAlpha=.35;c.drawImage(r.shadow,f*fw*r.k,0,fw*r.k,fh*r.k,x+7,y-3,fw,fh);c.globalAlpha=1;
   /* bioluminescence, behind the figure: now and then the silhouette glows in the character's colour (always, faintly, for Poisoned Well) */
   const bl=(FX[r.id]||[]).some(q=>q.k==='aura')?.35+.25*Math.sin(t*2):Math.max(0,Math.sin((t%9)/9*TAU*1)-.7)*2.2;
