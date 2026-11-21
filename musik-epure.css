@@ -19,8 +19,8 @@
 #mz.mz-epure .mzs.on{filter:saturate(.78);background-image:linear-gradient(rgba(255,255,255,.24),rgba(255,255,255,0) 45%,rgba(0,0,0,.2))!important;border-radius:3px}
 #mz.mz-epure .mzs{border-radius:3px}
 /* jugement externe : figurines à la hauteur de leur rangée (même échelle pour toutes, tailles relatives gardées), plus de chevauchement */
-#mz.mz-epure .mzfg canvas{height:calc(var(--mzrh,42px) * 1.02)!important;width:calc(var(--mzrh,42px) * 1.39)!important;bottom:1px!important}
-#mz.mz-epure .mzfg{width:calc(var(--mzrh,42px) * 1.45)!important}
+#mz.mz-epure .mzfg canvas{height:calc(var(--mzrh,42px) * 1.12)!important;width:calc(var(--mzrh,42px) * 1.52)!important;bottom:0!important}
+#mz.mz-epure .mzfg{width:calc(var(--mzrh,42px) * 1.58)!important}
 /* jugement externe : l'écran vidéo, noir à l'arrêt, se réduit ; la platine prend la hauteur */
 #mz.mz-epure .mzside .mzscrbox{flex:0 0 26%!important;min-height:0!important}
 #mz.mz-epure .mzside .mzttbox{flex:1 1 auto!important}

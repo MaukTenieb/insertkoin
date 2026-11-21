@@ -51,7 +51,7 @@ html.kam-epure:not(.kam-tiroir) #pane-looks .strip>.frame[aria-pressed=true]{out
 .kam-osd .bar{display:inline-block;vertical-align:middle;width:9em;height:.6em;margin-left:.6em;border:1px solid #f4f1e6;background:linear-gradient(90deg,#f4f1e6 var(--a,100%),transparent 0)}
 
 /* ---- planche contact : double toucher sur l'image ---- */
-html.kam-planche #pane-looks .strip{position:fixed!important;z-index:60!important;overflow-y:auto!important;padding:8px!important;background:#080604!important;
+html.kam-planche #pane-looks .strip{position:fixed!important;z-index:2147483000!important;overflow-y:auto!important;padding:8px!important;background:#080604!important;
   grid-template-columns:repeat(auto-fill,minmax(110px,1fr))!important;gap:6px!important;border-radius:4px;box-shadow:0 0 0 1px #000,0 12px 40px rgba(0,0,0,.8)}
 html.kam-planche #pane-looks .strip>.frame>b,html.kam-planche #pane-looks .strip>.frame>i{display:none!important}
 html.kam-planche #pane-looks .strip>.frame{padding:0!important}
