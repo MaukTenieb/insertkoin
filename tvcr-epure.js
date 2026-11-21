@@ -23,6 +23,8 @@
       new MutationObserver(lab).observe(D.documentElement,{attributes:true,attributeFilter:['lang']});
       m.onclick=function(){var on=r.classList.toggle('tv-tiroir');m.setAttribute('aria-pressed',String(on));};
       act.appendChild(m);
+      /* régression corrigée (22 nov.) : la touche REC du magnétoscope ouvre le tiroir et donne la main à la barre d'enregistrement d'une chaîne YouTube */
+      var rk=q(r,'[data-vhs-action="rec"]');if(rk)rk.addEventListener('click',function(){r.classList.add('tv-tiroir');m.setAttribute('aria-pressed','true');},true);
       var lo=q(r,'[data-vhs-find-open]');if(lo)lo.addEventListener('click',function(){r.classList.add('tv-tiroir');m.setAttribute('aria-pressed','true');},true);}
     /* jugement externe : un morceau sans titre (« ... » dans les données) prend un titre de repli */
     var tl=q(r,'[data-vhs-tracklist]');

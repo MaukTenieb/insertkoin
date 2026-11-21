@@ -120,6 +120,16 @@
   var lastVer=null;setInterval(function(){try{if(typeof S==='undefined'||typeof drawGrid!=='function')return;var v=S.ver+'|'+(S.tiny&&S.tiny.width);
     if(lastVer!==null&&v!==lastVer)drawGrid();lastVer=v;}catch(_){}},600);
 
+  /* ---- flèches au bord de l'image : on voit qu'on peut passer d'un rendu à l'autre (le glissé reste) ---- */
+  function fleches(){var st=$('stage');if(!st||st.querySelector('.kam-fl'))return;
+    [['p',-1,'M15 5l-7 7 7 7'],['n',1,'M9 5l7 7-7 7']].forEach(function(a){var b=D.createElement('button');b.type='button';b.className='kam-fl kam-fl-'+a[0];
+      b.setAttribute('aria-label',a[1]<0?(fr()?'Rendu précédent':'Previous look'):(fr()?'Rendu suivant':'Next look'));
+      b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+a[2]+'" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      b.addEventListener('pointerdown',function(e){e.stopPropagation();});
+      b.onclick=function(e){e.stopPropagation();if(!live())step(a[1]);};st.appendChild(b);});
+    /* à l'ouverture, l'afficheur montre une fois le rang du rendu, flèches comprises */
+    setTimeout(function(){try{show(false);}catch(_){}},1600);}
+
   /* ---- mise en route ---- */
-  var n=0;(function boot(){if(ok()&&bande()&&gestes()){H.classList.add('kam-epure');return;}if(++n<200)setTimeout(boot,50);})();
+  var n=0;(function boot(){if(ok()&&bande()&&gestes()){fleches();H.classList.add('kam-epure');return;}if(++n<200)setTimeout(boot,50);})();
 })();
