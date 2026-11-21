@@ -30,7 +30,7 @@ Insert Koin is a network of Kaves: places of the Korhogo world, the world of the
     - [SkopoRhogo](https://mauktenieb.github.io/insertkoin/skoporhogo/): the Korhogo Fauna live in an isometric motel room.
   - [FaunEye](https://mauktenieb.github.io/insertkoin/fauneye/): the suite of machines.
     - TVCR, the television of the room.
-    - [Kamera](https://mauktenieb.github.io/insertkoin/kamera/) / [Kamescope](https://mauktenieb.github.io/insertkoin/kamescope/) / [VCR](https://mauktenieb.github.io/insertkoin/vcr/) / [KamOrhogo](https://mauktenieb.github.io/insertkoin/kamorhogo/): the camera and sound recorder, with 1,998 looks from 2010s photo apps.
+    - [Kamera](https://mauktenieb.github.io/insertkoin/kamera/) / [Kamescope](https://mauktenieb.github.io/insertkoin/kamescope/) / [Kamcorder](https://mauktenieb.github.io/insertkoin/kamcorder/) / [VCR](https://mauktenieb.github.io/insertkoin/vcr/) / [KamOrhogo](https://mauktenieb.github.io/insertkoin/kamorhogo/): the camera and sound recorder, with 1,998 looks from 2010s photo apps.
     - [Musik](https://mauktenieb.github.io/insertkoin/musik/): a sequencer of 15 to 21 steps, the Masks as figurines on a walnut bench, a turntable for sound and video.
     - [StudioRhogo](https://mauktenieb.github.io/studio/): a 32-track studio that syncs a film to the music.
     - [BakuBook](https://mauktenieb.github.io/insertkoin/bakubook/): a reader: alchemy classics, Internet Archive, Gutenberg, Wikisource, the Korhogo Diary.
@@ -45,7 +45,7 @@ Insert Koin is a network of Kaves: places of the Korhogo world, the world of the
 - [Kalabass](https://mauktenieb.github.io/insertkoin/kalabass/) / [Komptoir](https://mauktenieb.github.io/insertkoin/komptoir/) / [Desk](https://mauktenieb.github.io/insertkoin/desk/) / [KorhoDesk](https://mauktenieb.github.io/insertkoin/korhodesk/): the reception: a numbered key, anchored in Bitcoin, and a MiniTale terminal for mail checking.
 - [FauxRhogo](https://mauktenieb.github.io/insertkoin/fauxrhogo/) / [KalabWiki](https://mauktenieb.github.io/insertkoin/kalabwiki/) / [Weaky](https://mauktenieb.github.io/insertkoin/weaky/) / [WigWiki](https://mauktenieb.github.io/insertkoin/wigwiki/) / [Kerema](https://mauktenieb.github.io/insertkoin/kerema/): the wiki, one article.
 - BakuBoom: the Branobel dynamite on every bar.
-- [Katabase](https://mauktenieb.github.io/katabase/) / Burrows: the presentation of Mauk Tenieb and the Korhogo world: the Korhogo Fauna, aka Hordalék or the Masks, their albums and clips.
+- [Katabase](https://mauktenieb.github.io/katabase/) / [Burrows](https://mauktenieb.github.io/burrows/): the presentation of Mauk Tenieb and the Korhogo world: the Korhogo Fauna, aka Hordalék or the Masks, their albums and clips.
 
 ## The arcade
 
@@ -206,18 +206,20 @@ The notes follow the house prose rules of the method repo ([prose/RULES.md](http
 <!-- network:start -->
 ## Work
 
-- [Katabase](https://mauktenieb.github.io/katabase/): the Burrows, with the albums and clips of the Korhogo Fauna.
+- [Katabase](https://mauktenieb.github.io/katabase/) / [Burrows](https://mauktenieb.github.io/burrows/): the presentation of Mauk Tenieb and the Korhogo world: the Korhogo Fauna, aka Hordalék or the Masks, their albums and clips.
 - [Insert Koin](https://mauktenieb.github.io/insertkoin/): an arcade cabinet in the browser and the Kaves of the motel (KorhogOS, the TV, the Video Kave, the DVD player).
   - Korong!: air-puck against the eighteen Masks; each Mask plays by its stats and a signature move.
   - Fauna Chess: fairy chess against the Fauna.
   - Faunarratik: a tale built from the sheets of the Masks. Still alpha test.
   - FaunInvaders: the eighteen Masks march and drop bombs, each Mask in its own way.
-  - [PhotoFauna](https://mauktenieb.github.io/insertkoin/fotofauna.html): a photo editor with 2K effekts from 44 photo apps. Still beta test.
-- [3615](https://mauktenieb.github.io/3615/): the MiniTale, a Minitel in the browser, with 3615 KORHOGO, the Kaves, KALABASS and the Hall of Kave.
+  - [Kamera](https://mauktenieb.github.io/insertkoin/kamera/): the camera and sound recorder, with 1,998 looks from 2010s photo apps.
+  - [Musik](https://mauktenieb.github.io/insertkoin/musik/): a sequencer of 15 to 21 steps, the Masks as figurines on a walnut bench, a turntable for sound and video.
+  - [StudioRhogo](https://mauktenieb.github.io/studio/): a 32-track studio that syncs a film to the music.
+- [MiniTale](https://mauktenieb.github.io/3615/): the Minitel of the Korhogo Fauna: messages, Koins, Kurations, the Hall of Kave.
 
 ## C7H5N3O6's Workshop
 
-The tools of the work: [method](https://github.com/MaukTenieb/method) (how Insert Koin and its repos get built, prose rules), [curators](https://github.com/MaukTenieb/curators), [Detour](https://github.com/MaukTenieb/detour), [RepoRhogo](https://github.com/MaukTenieb/reporhogo), [KorhoTube](https://github.com/MaukTenieb/korhotube), [KorhoName](https://github.com/MaukTenieb/Korhoname), [FaunaTor](https://github.com/MaukTenieb/faunator), [TorView](https://github.com/MaukTenieb/torview).
+The tools of the work: [method](https://github.com/MaukTenieb/method) (how Insert Koin and its repos get built, prose rules), [curators](https://github.com/MaukTenieb/curators), [StudioRhogo](https://github.com/MaukTenieb/studio), [Detour](https://github.com/MaukTenieb/detour), [RepoRhogo](https://github.com/MaukTenieb/reporhogo), [KorhoTube](https://github.com/MaukTenieb/korhotube), [KorhoName](https://github.com/MaukTenieb/Korhoname), [FaunaTor](https://github.com/MaukTenieb/faunator), [TorView](https://github.com/MaukTenieb/torview).
 <!-- network:end -->
 
 ---

@@ -7,7 +7,7 @@
   var K={
     arkade:   {names:['Arkade','Arkane','Insert Koin'], url:'?hall=1'},
     tv:       {names:['TVHS','KombinaTV','Korhogo TV','TVCR'], url:'kave/tv.html'},
-    kamera:   {names:['Kamera','Kamescope','VCR','KamOrhogo'], url:'?p=photo'},
+    kamera:   {names:['Kamera','Kamescope','Kamcorder','VCR','KamOrhogo'], url:'?p=photo'},
     videoklub:{names:['VideoKave','VideoKlub'], url:'kave/videoclub.html'},
     desk:     {names:['Kalabass','Komptoir','Desk','KorhoDesk'], url:'kave/korhodesk/'},
     wiki:     {names:['FauxRhogo','KalabWiki','Weaky','WigWiki','Kerema'], url:'kave/wiki.html'},

@@ -17,7 +17,7 @@
 
 - Arkade, Arkane, Insert Koin: the arcade cabinet. https://mauktenieb.github.io/insertkoin/arkade/ · https://mauktenieb.github.io/insertkoin/arkane/
 - TVHS, KombinaTV, Korhogo TV, TVCR: the television of the room, 99 channels and a VCR. https://mauktenieb.github.io/insertkoin/tvhs/ · https://mauktenieb.github.io/insertkoin/kombinatv/ · https://mauktenieb.github.io/insertkoin/korhogotv/ · https://mauktenieb.github.io/insertkoin/tvcr/
-- Kamera, Kamescope, VCR, KamOrhogo: the camera of the FaunEye suite. https://mauktenieb.github.io/insertkoin/kamera/ · https://mauktenieb.github.io/insertkoin/kamescope/ · https://mauktenieb.github.io/insertkoin/vcr/ · https://mauktenieb.github.io/insertkoin/kamorhogo/
+- Kamera, Kamescope, Kamcorder, VCR, KamOrhogo: the camera of the FaunEye suite. https://mauktenieb.github.io/insertkoin/kamera/ · https://mauktenieb.github.io/insertkoin/kamescope/ · https://mauktenieb.github.io/insertkoin/kamcorder/ · https://mauktenieb.github.io/insertkoin/vcr/ · https://mauktenieb.github.io/insertkoin/kamorhogo/
 - VideoKave, VideoKlub: the video club. https://mauktenieb.github.io/insertkoin/videokave/ · https://mauktenieb.github.io/insertkoin/videoklub/
 - Kalabass, Komptoir, Desk, KorhoDesk: the reception of the motel: a numbered key, anchored in Bitcoin, and a MiniTale terminal for mail checking. https://mauktenieb.github.io/insertkoin/kalabass/ · https://mauktenieb.github.io/insertkoin/komptoir/ · https://mauktenieb.github.io/insertkoin/desk/ · https://mauktenieb.github.io/insertkoin/korhodesk/
 - FauxRhogo, KalabWiki, Weaky, WigWiki, Kerema: the wiki. https://mauktenieb.github.io/insertkoin/fauxrhogo/
