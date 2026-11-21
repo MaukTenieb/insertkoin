@@ -50,7 +50,7 @@ var WKN=['KalabWiki','Weaky','WigWiki','Kerema','FauxRhogo'][Math.floor(Math.ran
 var ROOT=dir('K:',[
  dir('KorhoGame',group('KorhoGame').concat([dir('Katabatik',group('Katabatik'))])),
  dir('FaunEye',group('FaunEye')),
- dir('3615',group('3615')),
+ dir('MiniTale',group('3615')),
  dir('SurFauna',group('SurFauna')),
  dir('SkopoRhogo',group('SkopoRhogo')),
  FAUNA,
@@ -148,7 +148,7 @@ function faunaItems(){return FAUNA.children.map(function(n){return[n.name,functi
 
 /* Démarrer (Standard) */
 function startMenu(){var items=[
- [t('programs'),sub(function(){return GROUPS.map(function(g){return g==='3615'||g==='SkopoRhogo'?[g==='3615'?'3615':'SkopoRhogo',function(){runProg(prog(D.P.filter(function(p){return p.group===g})[0]))},g==='3615'?'minitel':'skopo']:[g,sub(function(){return progItems(g)}),'programs']}).concat(['-',[S.lang==='fr'?'La Fauna':'The Fauna',sub(faunaItems),'fauna'],[t('explorer'),function(){explorer(ROOT)},'explorer'],[S.lang==='fr'?'Commandes MS-DOS':'MS-DOS Prompt',terminal,'term'],[t('notepad'),function(){notepad(t('notepad'),'')},'txt']])}),'programs',{big:1}],
+ [t('programs'),sub(function(){return GROUPS.map(function(g){return g==='3615'||g==='SkopoRhogo'?[g==='3615'?'MiniTale':'SkopoRhogo',function(){runProg(prog(D.P.filter(function(p){return p.group===g})[0]))},g==='3615'?'minitel':'skopo']:[g,sub(function(){return progItems(g)}),'programs']}).concat(['-',[S.lang==='fr'?'La Fauna':'The Fauna',sub(faunaItems),'fauna'],[t('explorer'),function(){explorer(ROOT)},'explorer'],[S.lang==='fr'?'Commandes MS-DOS':'MS-DOS Prompt',terminal,'term'],[t('notepad'),function(){notepad(t('notepad'),'')},'txt']])}),'programs',{big:1}],
  [t('documents'),sub(docItems),'folderOpen',{big:1}],
  [t('settings'),sub(function(){return[[t('control'),control,'control']]}),'control',{big:1}],
  [t('find'),sub(function(){return[[t('find')+'...',findDlg,'find']]}),'find',{big:1}],
@@ -160,7 +160,7 @@ function startMenu(){var items=[
 
 /* barre de menus (Platine) */
 function platMenus(){var mb=$('#menubar');mb.innerHTML='';
- var defs=[[ic('koin',16),function(){return[[t('about'),about],'-'].concat(GROUPS.map(function(g){return g==='3615'||g==='SkopoRhogo'?[g,function(){runProg(prog(D.P.filter(function(p){return p.group===g})[0]))},g==='3615'?'minitel':'skopo']:[g,sub(function(){return progItems(g)}),'folder']})).concat([[S.lang==='fr'?'La Fauna':'The Fauna',sub(faunaItems),'fauna'],[t('control'),control,'control']])}],
+ var defs=[[ic('koin',16),function(){return[[t('about'),about],'-'].concat(GROUPS.map(function(g){return g==='3615'||g==='SkopoRhogo'?[g==='3615'?'MiniTale':g,function(){runProg(prog(D.P.filter(function(p){return p.group===g})[0]))},g==='3615'?'minitel':'skopo']:[g,sub(function(){return progItems(g)}),'folder']})).concat([[S.lang==='fr'?'La Fauna':'The Fauna',sub(faunaItems),'fauna'],[t('control'),control,'control']])}],
   [t('file'),function(){var s=selNode();return[[t('newwin'),function(){explorer(ROOT)},null,{k:'⌘N'}],[t('open'),s?function(){openNode(s)}:null,null,{k:'⌘O'}],'-',[t('getinfo'),s?function(){props(s)}:null,null,{k:'⌘I'}],'-',[t('close'),frontWin()?function(){closeWin(frontWin())}:null,null,{k:'⌘W'}],'-',[t('find')+'...',findDlg,null,{k:'⌘F'}]]}],
   [t('edit'),function(){var fr=S.lang==='fr';return[[fr?'Couper':'Cut',null],[fr?'Copier':'Copy',null],[fr?'Coller':'Paste',null]]}],
   [S.lang==='fr'?'Présentation':'View',function(){return[[t('byicon'),function(){setView('icons')}],[t('bylist'),function(){setView('details')}]]}],
@@ -174,13 +174,13 @@ function platMenus(){var mb=$('#menubar');mb.innerHTML='';
 function framPanel(){var p=$('#panel');p.innerHTML='';
  var mbtn=h('button','pb menu',ic('koin',24));mbtn.title=t('apps');mbtn.onclick=function(e){e.stopPropagation();popMenu(framMenu(),mbtn,'below')};p.appendChild(mbtn);
  p.appendChild(h('div','sep'));
- [['explorer',function(){explorer(ROOT)},t('filemgr')],['term',terminal,t('terminal')],['minitel',function(){runProg(prog(D.P.filter(function(x){return x.id==='3615'})[0]))},'3615']].forEach(function(q){var b=h('button','pb',ic(q[0],24));b.title=q[2];b.onclick=q[1];p.appendChild(b)});
+ [['explorer',function(){explorer(ROOT)},t('filemgr')],['term',terminal,t('terminal')],['minitel',function(){runProg(prog(D.P.filter(function(x){return x.id==='3615'})[0]))},'MiniTale']].forEach(function(q){var b=h('button','pb',ic(q[0],24));b.title=q[2];b.onclick=q[1];p.appendChild(b)});
  p.appendChild(h('div','sep'));var tk=h('div');tk.id='ptasks';p.appendChild(tk);
  var tr=trayEl('fram');tr.id='ptray';p.appendChild(tr);renderTasks();tick()}
 function framMenu(){return[
  [t('games'),sub(function(){return progItems('KorhoGame')}),'die'],
  [t('media'),sub(function(){return progItems('FaunEye').concat([['SkopoRhogo',function(){runProg(prog(D.P.filter(function(p){return p.id==='skopo'})[0]))},'skopo']])}),'vhs'],
- [t('internet'),sub(function(){return progItems('SurFauna').concat([['3615',function(){runProg(prog(D.P.filter(function(p){return p.id==='3615'})[0]))},'minitel']])}),'url'],
+ [t('internet'),sub(function(){return progItems('SurFauna').concat([['MiniTale',function(){runProg(prog(D.P.filter(function(p){return p.id==='3615'})[0]))},'minitel']])}),'url'],
  [S.lang==='fr'?'La Fauna':'The Fauna',sub(faunaItems),'fauna'],
  [t('acc'),sub(function(){return[[t('filemgr'),function(){explorer(ROOT)},'explorer'],[t('terminal'),terminal,'term'],[t('notepad'),function(){notepad(t('notepad'),'')},'txt'],[t('find'),findDlg,'find']]}),'programs'],
  [t('help'),help,'help'],
@@ -188,7 +188,7 @@ function framMenu(){return[
  [t('run'),runDlg,'run'],[t('shutdown'),shutdownDlg,'shutdown']]}
 
 /* tableau de bord (Motif) */
-var WSN=['KorhoGame','FaunEye','SurFauna','3615'];
+var WSN=['KorhoGame','FaunEye','SurFauna','MiniTale'];/* 21 nov. 2026, 2 h 32 : MiniTale, un seul nom ; adresses minitale et 3615 */
 function motifPanel(){var f=$('#fp');f.innerHTML='';
  function ctl(icon,label,act,tabFn){var c=h('div','ctl');var tab=h('div','tab',tabFn?'▲':'');c.appendChild(tab);var b=h('button','body',ic(icon,32)+'<small>'+esc(label)+'</small>');b.onclick=act;c.appendChild(b);
   if(tabFn){tab.style.cursor='pointer';tab.onclick=function(e){e.stopPropagation();var sp=$('#subp');var was=sp.classList.contains('open')&&sp._for===c;closeMenus();if(was)return;sp.innerHTML='<div class="hd"><span>'+esc(label)+'</span><span>▼</span></div>';tabFn().forEach(function(it){var x=h('button',null,ic(it[2],32)+'<span>'+esc(it[0])+'</span>');x.onclick=function(){closeMenus();it[1]()};sp.appendChild(x)});sp._for=c;sp.classList.add('open');var r=c.getBoundingClientRect();sp.style.left=r.left+'px';sp.style.top=(r.top-sp.offsetHeight)+'px'}}
@@ -377,7 +377,7 @@ function bakuBoom(){var d=$('#desk');d.animate([{transform:'translate(-6px,2px)'
 /* ---------- bureau ---------- */
 function lieux(){var fr=S.lang==='fr',N=function(id,d){return window.kaveName?kaveName(id):d};/* 21 nov. 2026 : noms tirés au hasard (kaves.js) */return[[{name:'Arkade',kind:'lieu',url:'../?hall=1',icon:'borne'},'borne',1,1],[{name:N('tv','TV'),kind:'lieu',url:'tv.html',icon:'tele'},'tele',1,1],[{name:N('videoklub','Video Kave'),kind:'lieu',url:'videoclub.html',icon:'vhs'},'vhs',1,1],[{name:N('desk','KorhoDesk'),kind:'lieu',url:'korhodesk/',icon:'bell'},'bell',1,1]]}
 function deskItems(){var drive=Object.assign({},ROOT);drive.real=ROOT;
- return lieux().concat([[ROOT,'drive'],[findNode('KorhoGame')],[findNode('FaunEye')],[findNode('SurFauna')],[prog(D.P.filter(function(p){return p.id==='3615'})[0]),null,1],[prog(D.P.filter(function(p){return p.id==='skopo'})[0]),null,1],[prog(D.P.filter(function(p){return p.id==='musik'})[0]),null,1],[FAUNA],[findNode('Lore'),null],[url('Burrows','https://mauktenieb.github.io/burrows/','rabbit'),null,1],[url('GitHub','https://github.com/MaukTenieb','plaque'),null,1],[findNode('Mauk Tenieb'),'plaque']])}
+ return lieux().concat([[ROOT,'drive'],[findNode('KorhoGame')],[findNode('FaunEye')],[findNode('SurFauna')],[prog(D.P.filter(function(p){return p.id==='3615'})[0]),null,1],[prog(D.P.filter(function(p){return p.id==='skopo'})[0]),null,1],[FAUNA],[findNode('Lore'),null],[url('Burrows','https://mauktenieb.github.io/burrows/','rabbit'),null,1],[url('GitHub','https://github.com/MaukTenieb','plaque'),null,1],[findNode('Mauk Tenieb'),'plaque']])}
 function renderDesk(){var host=$('#icons');host.innerHTML='';
  var items=deskItems(),dh=$('#desk').clientHeight,dw=$('#desk').clientWidth,phone=dw<=640,Z=phone?1:Math.max(1,Math.min(1.5,Math.min(innerWidth,innerHeight)/700)),cellH=(S.theme==='plat'?68:74)*Z,perCol=Math.max(1,Math.floor((dh-8)/cellH));document.documentElement.style.setProperty('--zi',Z);document.documentElement.style.setProperty('--zd',innerWidth<700?1:Math.max(1.25,Math.min(1.7,innerWidth/1100,innerHeight*1.35/720)));
  items.forEach(function(a,i){var n=a[0];if(!n)return;var icon=a[1]||n.icon,lnk=a[2]||n.kind==='url';var big=!!a[3];var el=h('div','di'+(big?' big':''),'<div class="ig'+(lnk&&!big?' lnk':'')+'">'+ic(icon,big?48:32)+'</div><div class="lb">'+esc(n.name)+'</div>');el.style.setProperty('--m',icURI(icon));
