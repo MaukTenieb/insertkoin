@@ -15,3 +15,6 @@
 
 /* jugement externe du 21 nov. : au téléphone debout, l'écran vidéo et la platine (devenus minuscules sous la grille) passent au tiroir */
 @media (max-width:700px) and (orientation:portrait){#mz.mz-epure:not(.mz-tiroir) .mzside{display:none!important}}
+/* jugement externe du 21 nov. : pas allumés en touches de caoutchouc rétroéclairées (même matière que les touches de Kamera), teinte des figurines adoucie */
+#mz.mz-epure .mzs.on{filter:saturate(.78);background-image:linear-gradient(rgba(255,255,255,.24),rgba(255,255,255,0) 45%,rgba(0,0,0,.2))!important;border-radius:3px}
+#mz.mz-epure .mzs{border-radius:3px}
