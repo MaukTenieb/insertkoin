@@ -115,7 +115,7 @@ function fxAmt(g,ch){var s=g.strip[ch.id];if(!s||!s.fxN)return;var a=ch.fxa==nul
   else{N.fb.gain.setTargetAtTime(N.k==='flange'?a*.88:a*.7,t,.05);N.wet.gain.setTargetAtTime(.75,t,.05);N.dr.gain.setTargetAtTime(.75,t,.05);if(N.k==='flange')N.dp.gain.setTargetAtTime(.0005+a*.0035,t,.05)}}
 var FXI={'':'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7 17 17 7" stroke="currentColor" stroke-width="1.8"/></svg>',
  gross:'<svg viewBox="0 0 24 24"><path d="M3 18V8h3v10M8 18v-6h3v6M13 18V5h3v13M18 18v-8h3v8" fill="currentColor"/></svg>',
- crush:'<svg viewBox="0 0 24 24"><path d="M3 16h4v-4h4V8h4v4h4v4h2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="miter"/></svg>',
+ crush:'<svg viewBox="0 0 24 24"><path d="M3 16h4v-4h4V8h4v4h4v4h2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="miter"/></svg>',
  grain:'<svg viewBox="0 0 24 24"><circle cx="5" cy="7" r="1.8" fill="currentColor"/><circle cx="11" cy="13" r="2.4" fill="currentColor"/><circle cx="18" cy="6" r="1.4" fill="currentColor"/><circle cx="16" cy="17" r="2" fill="currentColor"/><circle cx="7" cy="18" r="1.2" fill="currentColor"/></svg>',
  revs:'<svg viewBox="0 0 24 24"><path d="M20 7H8l3-3M20 7v0M4 17h12l-3 3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
  ring:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
