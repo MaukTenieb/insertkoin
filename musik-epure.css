@@ -21,3 +21,6 @@
 /* jugement externe : figurines à la hauteur de leur rangée (même échelle pour toutes, tailles relatives gardées), plus de chevauchement */
 #mz.mz-epure .mzfg canvas{height:calc(var(--mzrh,42px) * 1.02)!important;width:calc(var(--mzrh,42px) * 1.39)!important;bottom:1px!important}
 #mz.mz-epure .mzfg{width:calc(var(--mzrh,42px) * 1.45)!important}
+/* jugement externe : l'écran vidéo, noir à l'arrêt, se réduit ; la platine prend la hauteur */
+#mz.mz-epure .mzside .mzscrbox{flex:0 0 26%!important;min-height:0!important}
+#mz.mz-epure .mzside .mzttbox{flex:1 1 auto!important}
