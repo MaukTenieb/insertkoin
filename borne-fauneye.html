@@ -385,5 +385,6 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
 })();
 </script>
 <script>/* 21 nov. 2026 : fondu des onglets retiré en bout de course ; l'onglet choisi glisse au centre */(function(){var t=document.querySelector('.tabs');if(!t)return;function f(){t.classList.toggle('end',t.scrollLeft+t.clientWidth>=t.scrollWidth-2);}t.addEventListener('scroll',f,{passive:true});addEventListener('resize',f);setTimeout(f,300);t.addEventListener('click',function(e){var b=e.target.closest('button');if(b&&b.scrollIntoView)b.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});});})();</script>
+<script src="bakubook-epure.js"></script>
 </body>
 </html>
