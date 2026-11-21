@@ -13,3 +13,6 @@
 #mz.mz-epure .mz-more{display:inline-flex;align-items:center;justify-content:center;margin-left:auto}
 #mz.mz-epure .mz-more svg{width:20px;height:20px}
 #mz.mz-epure.mz-tiroir .mz-more{color:#ffa726}
+
+/* jugement externe du 21 nov. : au téléphone debout, l'écran vidéo et la platine (devenus minuscules sous la grille) passent au tiroir */
+@media (max-width:700px) and (orientation:portrait){#mz.mz-epure:not(.mz-tiroir) .mzside{display:none!important}}

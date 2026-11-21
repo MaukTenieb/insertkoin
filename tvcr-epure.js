@@ -17,7 +17,7 @@
     if(r.dataset.tvEpure)return;r.dataset.tvEpure='1';r.classList.add('tv-epure');
     /* tiroir */
     var act=q(r,'.vhs-shelf-actions');
-    if(act){var m=D.createElement('button');m.type='button';m.className='tv-more';m.setAttribute('aria-pressed','false');
+    if(act){var m=D.createElement('button');m.type='button';m.className='vhs-tape vhs-tape-all tv-more';m.setAttribute('aria-pressed','false');
       m.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="1.7" fill="currentColor"/><circle cx="12" cy="12" r="1.7" fill="currentColor"/><circle cx="18" cy="12" r="1.7" fill="currentColor"/></svg>';
       var lab=function(){var l=fr()?'Tiroir':'Drawer';m.setAttribute('aria-label',l);m.title=l;};lab();
       new MutationObserver(lab).observe(D.documentElement,{attributes:true,attributeFilter:['lang']});

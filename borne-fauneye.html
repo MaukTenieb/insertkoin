@@ -384,7 +384,7 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
   if(next&&next.id){var st=STOCK.filter(function(k){return k.id===next.id;})[0];iaOpen(next.id,st||null);}else{/* 13 nov. 2026 (Mauk Tenieb) : un livre du stock tiré au hasard à chaque ouverture, rangé sur l'étagère seulement si le visiteur le choisit */var k=STOCK[Math.floor(Math.random()*STOCK.length)];iaOpen(k.id,Object.assign({},k,{auto:1}));}
 })();
 </script>
-<script>/* 21 nov. 2026 : fondu des onglets retiré en bout de course ; l'onglet choisi glisse au centre */(function(){var t=document.querySelector('.tabs');if(!t)return;function f(){t.classList.toggle('end',t.scrollLeft+t.clientWidth>=t.scrollWidth-2);}t.addEventListener('scroll',f,{passive:true});addEventListener('resize',f);setTimeout(f,300);t.addEventListener('click',function(e){var b=e.target.closest('button');if(b&&b.scrollIntoView)b.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});});})();</script>
+<script>/* 21 nov. 2026 : fondu des onglets retiré en bout de course ; l'onglet choisi glisse au centre */(function(){var t=document.querySelector('.tabs');if(!t)return;function f(){t.classList.toggle('end',t.scrollLeft+t.clientWidth>=t.scrollWidth-2);}t.addEventListener('scroll',f,{passive:true});addEventListener('resize',f);setTimeout(f,300);t.addEventListener('click',function(e){var b=e.target.closest('button');if(b)t.scrollTo({left:b.offsetLeft-(t.clientWidth-b.offsetWidth)/2,behavior:'smooth'});/* 21 nov. 2026 : défilement de la seule rangée d'onglets ; scrollIntoView décalait aussi la borne autour du cadre */});})();</script>
 <script src="bakubook-epure.js"></script>
 </body>
 </html>

@@ -70,3 +70,8 @@ html.kam-planche #pane-looks .strip>.frame{height:auto!important;min-height:0!im
 /* tiroir ouvert : la bande d'origine revient, la touche ⋯ seule reste pour refermer */
 html.kam-epure.kam-tiroir .kam-bande button:not([data-kb=more]){display:none}
 html.kam-epure.kam-tiroir .kam-bande [data-kb=more]{grid-column:5}
+
+/* jugement externe du 21 nov. : afficheur lisible sur toute image, molette annoncée au bord, planche sans cases vides */
+.kam-osd{left:0;right:0;bottom:0;max-width:none;padding:.5em 4%;background:linear-gradient(transparent,rgba(0,0,0,.72) 40%)}
+html.kam-epure:not(.kam-tiroir) #pane-looks #fams{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent)}
+html.kam-planche #pane-looks .strip>.frame:not(:has(img)){display:none!important}
