@@ -48,13 +48,13 @@ var FAUNA=dir(S.lang==='fr'?'La Fauna':'The Fauna',D.F.map(function(f){return no
 /* 11 nov. 2026 (Mauk Tenieb, 14 h 19) : à la racine de K:, un raccourci vers le wiki du motel, sous un nom tiré au hasard à chaque ouverture de l'OS ; le wiki reprend ce nom */
 var WKN=['KalabWiki','Weaky','WigWiki','Kerema','FauxRhogo'][Math.floor(Math.random()*5)];var WIKI=node({name:WKN,kind:'lieu',icon:'scroll',url:'wiki.html?n='+WKN,size:4096,date:COMMIT});
 var ROOT=dir('K:',[
- dir('KorhoGame',group('KorhoGame').concat([dir('Katabatik',group('Katabatik'))]),'korhogame'),
- dir('FaunEye',group('FaunEye'),'fauneye'),
+ dir('KorhoGame',group('KorhoGame').concat([dir('Katabatik',group('Katabatik'))])),
+ dir('FaunEye',group('FaunEye')),
  dir('3615',group('3615')),
- dir('SurFauna',group('SurFauna'),'surfauna'),
+ dir('SurFauna',group('SurFauna')),
  dir('SkopoRhogo',group('SkopoRhogo')),
  FAUNA,
- dir('Lore',[url('Lore','https://mauktenieb.substack.com','scroll'),url('Journal','https://korhogo.substack.com','scroll'),url('Mighty Fauna Sips Your Gas','https://korhogo.substack.com/p/mighty-fauna-sips-your-gas','scroll')],'flore'),
+ dir('Lore',[url('Lore','https://mauktenieb.substack.com','scroll'),url('Journal','https://korhogo.substack.com','scroll'),url('Mighty Fauna Sips Your Gas','https://korhogo.substack.com/p/mighty-fauna-sips-your-gas','scroll')]),
  dir('Mauk Tenieb',[url('Bio','https://github.com/MaukTenieb','plaque'),url('Burrows','https://mauktenieb.github.io/katabase','rabbit'),url('Bandcamp','https://mauktenieb.bandcamp.com','vinyl'),url('Threadless','https://korhogo.threadless.com','tshirt'),url('Instagram','https://www.instagram.com/mauktenieb','polaroid'),url('YouTube','https://www.youtube.com/@mauktenieb','vhs'),url('ORCID','https://orcid.org/0009-0007-9096-8267'),url('MusicBrainz','https://musicbrainz.org/artist/701a6795-f583-4567-b8f4-0d05f961d63f','catalog')]),
  WIKI,
  txt('README.md',D.README),txt('LICENSE',D.LICENSE),txt('Palmarès.txt',palmText())
@@ -377,7 +377,7 @@ function bakuBoom(){var d=$('#desk');d.animate([{transform:'translate(-6px,2px)'
 /* ---------- bureau ---------- */
 function lieux(){var fr=S.lang==='fr',N=function(id,d){return window.kaveName?kaveName(id):d};/* 21 nov. 2026 : noms tirés au hasard (kaves.js) */return[[{name:'Arkade',kind:'lieu',url:'../?hall=1',icon:'borne'},'borne',1,1],[{name:N('tv','TV'),kind:'lieu',url:'tv.html',icon:'tele'},'tele',1,1],[{name:N('videoklub','Video Kave'),kind:'lieu',url:'videoclub.html',icon:'vhs'},'vhs',1,1],[{name:N('desk','KorhoDesk'),kind:'lieu',url:'korhodesk/',icon:'bell'},'bell',1,1]]}
 function deskItems(){var drive=Object.assign({},ROOT);drive.real=ROOT;
- return lieux().concat([[ROOT,'drive'],[findNode('KorhoGame')],[findNode('FaunEye')],[findNode('SurFauna')],[prog(D.P.filter(function(p){return p.id==='3615'})[0]),null,1],[prog(D.P.filter(function(p){return p.id==='skopo'})[0]),null,1],[prog(D.P.filter(function(p){return p.id==='musik'})[0]),null,1],[FAUNA],[findNode('Lore'),null],[url('GitHub','https://github.com/MaukTenieb','plaque'),null,1],[findNode('Mauk Tenieb'),'fmauk']])}
+ return lieux().concat([[ROOT,'drive'],[findNode('KorhoGame')],[findNode('FaunEye')],[findNode('SurFauna')],[prog(D.P.filter(function(p){return p.id==='3615'})[0]),null,1],[prog(D.P.filter(function(p){return p.id==='skopo'})[0]),null,1],[prog(D.P.filter(function(p){return p.id==='musik'})[0]),null,1],[FAUNA],[findNode('Lore'),null],[url('GitHub','https://github.com/MaukTenieb','plaque'),null,1],[findNode('Mauk Tenieb'),'plaque']])}
 function renderDesk(){var host=$('#icons');host.innerHTML='';
  var items=deskItems(),dh=$('#desk').clientHeight,dw=$('#desk').clientWidth,phone=dw<=640,Z=phone?1:Math.max(1,Math.min(1.5,Math.min(innerWidth,innerHeight)/700)),cellH=(S.theme==='plat'?68:74)*Z,perCol=Math.max(1,Math.floor((dh-8)/cellH));document.documentElement.style.setProperty('--zi',Z);document.documentElement.style.setProperty('--zd',innerWidth<700?1:Math.max(1.25,Math.min(1.7,innerWidth/1100,innerHeight*1.35/720)));
  items.forEach(function(a,i){var n=a[0];if(!n)return;var icon=a[1]||n.icon,lnk=a[2]||n.kind==='url';var big=!!a[3];var el=h('div','di'+(big?' big':''),'<div class="ig'+(lnk&&!big?' lnk':'')+'">'+ic(icon,big?48:32)+'</div><div class="lb">'+esc(n.name)+'</div>');el.style.setProperty('--m',icURI(icon));
