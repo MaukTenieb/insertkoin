@@ -109,3 +109,5 @@ html.kam-epure .kam-pl.vide{display:none}
 html.kam-planche .kam-pl,.stageWrap.live .kam-pl{display:none!important}
 html.kam-epure .kam-osd{display:none!important}
 html.kam-epure .kam-pl input:disabled{opacity:.3;cursor:default}
+html.kam-epure .kam-pl-n>span{display:inline-block}html.kam-epure .kam-pl-n.tp>span{animation:kamtp 9s ease-in-out infinite alternate}@keyframes kamtp{0%,15%{transform:translateX(0)}85%,100%{transform:translateX(var(--ov))}}
+@media (prefers-reduced-motion:reduce){html.kam-epure .kam-pl-n.tp>span{animation:none}}

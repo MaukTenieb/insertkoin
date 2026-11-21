@@ -140,7 +140,7 @@
     rg.addEventListener('input',function(){fill();if(S.cur)setAmt(+rg.value/100);});
     st.appendChild(pl);
     function sync(){var L=visibleCards().filter(swipable),k=curKey(),i=-1;for(var j=0;j<L.length;j++)if(L[j].k===k){i=j;break;}
-      var n=(($('lbName')||{}).textContent||'').toUpperCase();nm.textContent=(S.cur&&i>=0?(i+1)+'/'+L.length+'  ':'')+n;
+      var n=(($('lbName')||{}).textContent||'').toUpperCase();var fm=(($('lbFam')||{}).textContent||'').toUpperCase();nm.textContent=(fm&&S.cur?fm+' · ':'')+(S.cur&&i>=0?(i+1)+'/'+L.length+'  ':'')+n;/* test réel : la famille du rendu se lit aussi */var tl=nm.firstChild&&nm.firstChild.nodeType===1?nm.firstChild:null;if(!tl||tl.textContent!==nm.textContent){var tx=nm.textContent;nm.textContent='';tl=D.createElement('span');tl.textContent=tx;nm.appendChild(tl);}var ov=tl.scrollWidth-nm.clientWidth;nm.classList.toggle('tp',ov>4);nm.style.setProperty('--ov',(-ov-8)+'px');/* trop long pour sa case : défilement sur place */
       var cadre=!!(S.cur&&S.lastView&&S.prev&&(S.lastView.width!==S.prev.width||S.lastView.height!==S.prev.height));rg.disabled=!S.cur||cadre;rg.title=cadre?'—':rg.getAttribute('aria-label');/* test réel : un rendu qui ajoute un cadre (Polaroid…) change la taille de l'image, l'intensité ne s'y applique pas : la réglette s'éteint */var a=S.cur&&S.cur.amt!=null?S.cur.amt:1;if(D.activeElement!==rg)rg.value=Math.round(a*100);fill();}
     var lb=$('lbName');if(lb)new MutationObserver(sync).observe(lb,{childList:true,characterData:true,subtree:true});
     setInterval(sync,700);sync();}
