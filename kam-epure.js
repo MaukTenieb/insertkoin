@@ -100,8 +100,10 @@
       var r=fr_.getBoundingClientRect();H.classList.add('kam-planche');pOpen=performance.now();
       g.style.setProperty('left',r.left+'px','important');g.style.setProperty('top',r.top+'px','important');
       g.style.setProperty('width',r.width+'px','important');g.style.setProperty('height',r.height+'px','important');
+      var nn=g.querySelectorAll('.frame').length||1,cols=Math.max(3,Math.min(10,Math.ceil(Math.sqrt(nn*r.width/(r.height*4/3)))));
+      g.style.setProperty('grid-template-columns','repeat('+cols+',minmax(0,1fr))','important');/* la planche remplit l'écran : colonnes calculées sur le nombre de rendus */
       var cur=g.querySelector('[aria-pressed=true]');if(cur)cur.scrollIntoView({block:'center'});tick(700);}
-    else{H.classList.remove('kam-planche');['left','top','width','height'].forEach(function(k){g.style.removeProperty(k);});}
+    else{H.classList.remove('kam-planche');['left','top','width','height','grid-template-columns'].forEach(function(k){g.style.removeProperty(k);});}
   }
   D.addEventListener('click',function(e){if(!H.classList.contains('kam-planche')||performance.now()-pOpen<450)return;
     if(e.target.closest('#grid .frame')){setTimeout(function(){planche(false);show(false);},0);}

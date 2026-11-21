@@ -31,6 +31,14 @@
       var upd=function(){var x=(st.textContent||'').trim(),k=x.toLowerCase();var lbl=ETn[k]||x.toUpperCase();et.textContent=lbl;
         clearTimeout(et._t);et.style.opacity='1';if(k==='play')et._t=setTimeout(function(){et.style.opacity='0';},2200);};
       et.style.transition='opacity .4s';new MutationObserver(upd).observe(st,{childList:true,characterData:true,subtree:true});upd();}
+    /* façade du téléviseur : l'écran noir de la photo (x 251-879, y 147-611 sur 1312 x 816) se cale sur l'écran commun */
+    var facade=function(){var frm=q(r,':scope>.ike-frame'),scn=q(r,'.vhs-screen');if(!frm||!scn||!window.ResizeObserver||r.dataset.tvFac)return!!r.dataset.tvFac;r.dataset.tvFac='1';
+      var fit=function(){var a=frm.getBoundingClientRect(),b=scn.getBoundingClientRect();if(!b.width)return;
+        var k=b.width/628,ox=b.left-a.left,oy=b.top-a.top;
+        frm.style.setProperty('--tv-w',(1312*k)+'px');frm.style.setProperty('--tv-h',(816*k)+'px');
+        frm.style.setProperty('--tv-x',(ox-251*k)+'px');frm.style.setProperty('--tv-y',(oy-147*k-(464*k-b.height)/2)+'px');r.classList.add('tv-facade');};
+      new ResizeObserver(fit).observe(scn);new ResizeObserver(fit).observe(frm);fit();return true;};
+    (function tf(n){if(!facade()&&n<200)setTimeout(function(){tf(n+1);},100);})(0);
     /* gestes sur l'écran */
     var sc=q(r,'.vhs-screen');if(!sc)return;
     var g=D.createElement('div');g.className='tv-geste';g.setAttribute('aria-hidden','true');sc.appendChild(g);
