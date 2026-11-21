@@ -38,11 +38,14 @@
    du poste, calés sur l'écran ; tailles et place de l'écran inchangées (écran commun) */
 #vhs.tv-facade>.ike-frame{background:url(kave/a/vhs/tv-facade.webp) no-repeat!important;background-size:var(--tv-w) var(--tv-h)!important;
   background-position:var(--tv-x) var(--tv-y)!important;border-color:transparent!important;box-shadow:0 10px 28px rgba(0,0,0,.7)!important}
-#vhs.tv-facade>.vhs-screen{border-radius:5.5% / 7%!important;overflow:hidden}
+#vhs.tv-facade>.vhs-screen{border-radius:0!important;overflow:hidden;-webkit-mask:url(kave/a/vhs/tv-verre.png) 0 0/100% 100% no-repeat;mask:url(kave/a/vhs/tv-verre.png) 0 0/100% 100% no-repeat}
+/* le verre bombé : ombre au bord du tube, reflet de la pièce en haut à gauche */
+#vhs.tv-facade>.vhs-screen::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:30;
+  background:radial-gradient(120% 95% at 30% 18%,rgba(255,245,225,.10),rgba(255,245,225,0) 38%),radial-gradient(ellipse at 50% 50%,rgba(0,0,0,0) 62%,rgba(0,0,0,.55) 100%);
+  box-shadow:inset 0 0 18px 6px rgba(0,0,0,.6)}
 /* jugement externe : au téléphone debout, l'étagère se resserre pour laisser voir quatre morceaux */
 @media (max-width:700px) and (orientation:portrait){
   #vhs.tv-epure .vhs-shelf-row{height:84px!important;min-height:0!important}
-  #vhs.tv-epure .vhs-shelf-row>*{height:100%!important;max-height:84px}
   #vhs.tv-epure [data-vhs-tracklist] button{min-height:26px!important;line-height:1.6;padding-top:2px!important;padding-bottom:2px!important}}
 #vhs.tv-epure [data-vhs-tracklist]>li{min-height:0!important;height:auto!important;margin:0!important;padding:0!important;border:0!important}
 #vhs.tv-epure [data-vhs-tracklist]{grid-auto-rows:min-content!important;align-content:start!important}
@@ -83,3 +86,9 @@ html #kg-root #vhs.tv-epure :is(.tv-more,.vhs-tape-all),#vhs.tv-epure :is(.tv-mo
   #vhs.tv-epure .vhs-shell:has(.vhs-deck:hover){overflow:visible!important}
   #vhs.tv-epure .vhs-deck{transition:transform .18s ease-out;transform-origin:100% 0;position:relative}
   #vhs.tv-epure .vhs-deck:hover{transform:scale(1.7);z-index:40;box-shadow:0 18px 40px rgba(0,0,0,.75)}}
+/* 22 nov. : le téléviseur lit à travers son verre ; la bande de tête VHS restait collée au bas du tube */
+#vhs.tv-facade .ike-head{display:none!important}
+#vhs.tv-facade>.ike-frame{box-shadow:0 10px 28px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,214,160,.28),inset 0 -2px 3px rgba(0,0,0,.55),inset 1px 0 0 rgba(255,214,160,.12),inset -1px 0 0 rgba(0,0,0,.4)!important;border-radius:9px!important}
+#vhs.tv-epure .tv-cap{position:absolute;left:50%;top:62%;transform:translate(-50%,-50%);width:62%;max-width:16px;aspect-ratio:1;color:#121009!important;opacity:1!important;pointer-events:none;filter:drop-shadow(0 1px 0 rgba(255,255,255,.45))}
+#vhs.tv-epure .tv-cap svg{display:block;width:100%;height:100%}
+#vhs.tv-epure [data-vhs-action="pause"] .tv-cap svg,#vhs.tv-epure [data-vhs-action="power"] .tv-cap svg{fill:none}

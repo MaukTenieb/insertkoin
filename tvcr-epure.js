@@ -38,6 +38,12 @@
     [['random','<path d="M4 7h3l10 10h3M4 17h3l3-3M14 10l3-3h3M18 5l2 2-2 2M18 15l2 2-2 2"/>'],['fine','<path d="M5 6l8 6-8 6zM15 6v12M19 6v12"/>']].forEach(function(x){
       var k=q(r,'[data-vhs-action="'+x[0]+'"]');if(!k||k.querySelector('.tv-pk'))return;var e=D.createElement('span');e.className='tv-pk';e.setAttribute('aria-hidden','true');
       e.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+x[1]+'</svg>';k.appendChild(e);});
+    /* 22 nov. : les noms imprimés au-dessus des touches font 3 px ; chaque capuchon reçoit le picto de sa fonction */
+    [['power','<path d="M12 3v8M7 6.5a7 7 0 1 0 10 0"/>'],['eject','<path d="M5 14l7-8 7 8zM5 18h14"/>'],['prev','<path d="M11 6l-7 6 7 6zM20 6l-7 6 7 6z"/>'],
+     ['play','<path d="M7 5l12 7-12 7z"/>'],['next','<path d="M4 6l7 6-7 6zM13 6l7 6-7 6z"/>'],['stop','<path d="M6 6h12v12H6z"/>'],['pause','<path d="M8 5v14M16 5v14"/>'],
+     ['rec','<circle cx="12" cy="12" r="6" fill="#c62a1f" stroke="#c62a1f"/>']].forEach(function(x){
+      var k=q(r,'.vhs-face [data-vhs-action="'+x[0]+'"]');if(!k||k.querySelector('.tv-cap'))return;var e=D.createElement('span');e.className='tv-cap';e.setAttribute('aria-hidden','true');
+      e.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">'+x[1]+'</svg>';k.appendChild(e);});
     /* état du magnétoscope incrusté à l'écran (OSD d'époque) */
     var scr=q(r,'.vhs-screen'),st=q(r,'[data-vhs-osd-state]');
     if(scr&&st){var et=D.createElement('div');et.className='tv-etat';et.setAttribute('aria-hidden','true');scr.appendChild(et);
@@ -48,9 +54,10 @@
     /* façade du téléviseur : l'écran noir de la photo (x 251-879, y 147-611 sur 1312 x 816) se cale sur l'écran commun */
     var facade=function(){var frm=q(r,':scope>.ike-frame'),scn=q(r,'.vhs-screen');if(!frm||!scn||!window.ResizeObserver||r.dataset.tvFac)return!!r.dataset.tvFac;r.dataset.tvFac='1';
       var fit=function(){var a=frm.getBoundingClientRect(),b=scn.getBoundingClientRect();if(!b.width)return;
-        var k=b.width/628,ox=b.left-a.left,oy=b.top-a.top;
-        frm.style.setProperty('--tv-w',(1312*k)+'px');frm.style.setProperty('--tv-h',(816*k)+'px');
-        frm.style.setProperty('--tv-x',(ox-251*k)+'px');frm.style.setProperty('--tv-y',(oy-147*k-(464*k-b.height)/2)+'px');r.classList.add('tv-facade');};
+        /* verre du tube sur la photo : x 251-881, y 140-619 ; l'écran prend exactement la place du verre */
+        var kx=b.width/631,ky=b.height/480,ox=b.left-a.left,oy=b.top-a.top;
+        frm.style.setProperty('--tv-w',(1312*kx)+'px');frm.style.setProperty('--tv-h',(816*ky)+'px');
+        frm.style.setProperty('--tv-x',(ox-251*kx)+'px');frm.style.setProperty('--tv-y',(oy-140*ky)+'px');r.classList.add('tv-facade');};
       new ResizeObserver(fit).observe(scn);new ResizeObserver(fit).observe(frm);fit();return true;};
     (function tf(n){if(!facade()&&n<200)setTimeout(function(){tf(n+1);},100);})(0);
     /* jugement externe : la liste descend jusqu'au bas du cadre de l'écran (paysage) */
@@ -58,6 +65,15 @@
     if(lst&&window.ResizeObserver){var fitL=function(){var frm=q(r,':scope>.ike-frame');if(!frm||innerWidth<700||innerWidth<innerHeight){lst.style.removeProperty('height');lst.style.removeProperty('max-height');return;}
         var h=Math.round(frm.getBoundingClientRect().bottom-lst.getBoundingClientRect().top);if(h>80){lst.style.setProperty('height',h+'px','important');lst.style.setProperty('max-height',h+'px','important');}};
       new ResizeObserver(fitL).observe(r);setTimeout(fitL,600);setTimeout(fitL,2500);}
+    /* étagère : la photo des cassettes suit la hauteur réelle de sa rangée (cassettes entières, étiquettes lisibles) */
+    var row=q(r,'.vhs-shelf-row');
+    if(row&&window.ResizeObserver){var fitS=function(){var h=row.clientHeight;if(h<30)return;var sw=h*1600/327;
+        row.style.setProperty('--sw',sw+'px','important');[].forEach.call(row.querySelectorAll('.vhs-shelf-page'),function(pg){pg.style.setProperty('--sw',sw+'px','important');});
+        if(!row._tvS){row._tvS=1;var f=row.querySelector('.vhs-spine');if(f)row.scrollLeft=Math.max(0,f.offsetLeft-8);}
+        [].forEach.call(row.querySelectorAll('.vhs-spine-line'),function(l){var bx=l.parentElement;if(!bx||!bx.clientHeight)return;l.classList.remove('vhs-spine-tp');var d=l.scrollHeight-bx.clientHeight;
+          if(d>2){l.style.setProperty('--tpy',(-d-6)+'px');l.style.setProperty('--tpt',Math.max(3,(d+6)/22)+'s');l.classList.add('vhs-spine-tp');}});};
+      new ResizeObserver(fitS).observe(row);new MutationObserver(function(){row._tvS=0;setTimeout(fitS,50);}).observe(row,{childList:true});
+      setTimeout(fitS,300);setTimeout(fitS,1500);if(D.fonts&&D.fonts.ready)D.fonts.ready.then(fitS);}
     /* gestes sur l'écran */
     var sc=q(r,'.vhs-screen');if(!sc)return;
     var g=D.createElement('div');g.className='tv-geste';g.setAttribute('aria-hidden','true');sc.appendChild(g);
