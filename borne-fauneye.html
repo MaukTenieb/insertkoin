@@ -80,6 +80,7 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
 @media (max-width:640px){.view{flex-direction:column;padding:8px}.side{flex:none;flex-direction:row;flex-wrap:wrap;gap:4px 10px;align-items:baseline}.side .src{margin:0;width:100%}.tabs .eye span{display:none}}
 @media (max-width:640px){.tabs button:has(svg.pk){flex:1 1 0;min-width:0;padding:8px 4px}.tabs{-webkit-mask-image:none;mask-image:none}}
 .stage>img.bk-face{margin-left:2px}.stage:has(.bk-face)>img{max-width:calc(50% - 2px)}.stage.zoomed>.bk-face{display:none}
+#shelf>.lu{transform:translateY(-5px);box-shadow:0 0 0 2px #e2c27a,0 6px 10px rgba(0,0,0,.35)!important}#shelf>*{transition:transform .2s}
 .src a{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor;font-variant:small-caps;letter-spacing:.04em}
 </style>
 </head>
@@ -152,7 +153,7 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
   function side(au,ti,ed,src,href){$('au').textContent=au||'';$('ti').textContent=ti||'';$('ed').textContent=ed||'';
     $('src').innerHTML=src?(T.src+(href?'<a href="'+esc(href)+'" target="_blank" rel="noopener">'+esc(src)+'</a>':esc(src))):'';}
   function clear(){[].slice.call(stage.children).forEach(function(c){if(c!==wait&&c!==lens)c.remove();});wait.textContent='';$('mode').hidden=true;cur=null;tools();}
-  function num(){$('num').textContent=cur&&cur.n?(cur.i+1)+(stage.querySelector('.bk-face')?'-'+(cur.i+2):'')+' / '+cur.n:cur&&cur.art?Math.round(100*cur.art.scrollTop/Math.max(1,cur.art.scrollHeight-cur.art.clientHeight))+' %':'';var sl=$('sl');sl.hidden=!(cur&&cur.n>1);if(cur&&cur.n){sl.max=cur.n;sl.value=cur.i+1;}markThumb();}
+  function num(){try{[].forEach.call($('shelf').children,function(b){var on=!!(cur&&cur.key&&b.dataset.id&&String(cur.key).indexOf(b.dataset.id)>=0);b.classList.toggle('lu',on);if(on&&!b._vu){b._vu=1;var sh=$('shelf');sh.scrollTo({left:b.offsetLeft-(sh.clientWidth-b.offsetWidth)/2});}else if(!on)b._vu=0;});}catch(_){}$('num').textContent=cur&&cur.n?(cur.i+1)+(stage.querySelector('.bk-face')?'-'+(cur.i+2):'')+' / '+cur.n:cur&&cur.art?Math.round(100*cur.art.scrollTop/Math.max(1,cur.art.scrollHeight-cur.art.clientHeight))+' %':'';var sl=$('sl');sl.hidden=!(cur&&cur.n>1);if(cur&&cur.n){sl.max=cur.n;sl.value=cur.i+1;}markThumb();}
   function node(){var c=stage.firstElementChild;while(c&&(c===wait||c===lens))c=c.nextElementSibling;return c&&(c.tagName==='IMG'||c.tagName==='CANVAS')?c:null;}
 
   /* le zoom des pages : pincement à deux doigts, molette (pincement du pavé tactile), double appui ; glisser déplace la page agrandie */
@@ -188,12 +189,12 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
   function openFrame(url,o){clear();var f=document.createElement('iframe');f.src=url;f.title=o.ti||'';f.setAttribute('allowfullscreen','');stage.insertBefore(f,wait);cur={n:0,i:0};side(o.au,o.ti,o.ed,o.srcName,o.href);num();tools();}
   /* 21 nov. 2026 (jugement externe) : à l'horizontale, la page suivante s'ouvre en vis-à-vis ; la double page avance de deux */
   function wide2(){return stage.clientWidth>=640&&stage.clientWidth>stage.clientHeight*1.15&&innerWidth>innerHeight&&cur&&cur.page&&cur.n>1;}
-  function facing(n,i){if(!wide2()||n.tagName!=='IMG'||i+1>=cur.n)return;
+  function facing(n,i){if(wide2()&&n.tagName==='IMG'&&i>0&&i%2===0){setTimeout(function(){go(i-1);},0);return;}if(!wide2()||n.tagName!=='IMG'||i+1>=cur.n||i%2===0)return;
     Promise.resolve(cur.page(i+1,false)).then(function(m){if(!cur||cur.i!==i||!m||m.tagName!=='IMG')return;m.classList.add('bk-face');m.draggable=false;
       if(n.parentNode===stage)stage.insertBefore(m,n.nextSibling);num();}).catch(function(){});}
   function go(n){if(!cur||!cur.page)return;n=Math.max(0,Math.min(cur.n-1,n));if(n!==cur.i){cur.i=n;showPage();}}
   function step(d){if(!cur)return;if(cur.rend){d>0?cur.rend.next():cur.rend.prev();return;}
-    if(cur.art){cur.art.scrollBy({top:d*cur.art.clientHeight*.9,behavior:'smooth'});return;}go(cur.i+d*(stage.querySelector('.bk-face')?2:1));}
+    if(cur.art){cur.art.scrollBy({top:d*cur.art.clientHeight*.9,behavior:'smooth'});return;}if(wide2()){var t=cur.i+d*(cur.i%2?2:1);if(d<0&&cur.i===1)t=0;else if(d<0&&cur.i%2===0)t=cur.i-1;go(t);return;}go(cur.i+d);}
   $('prev').onclick=function(){step(-1);};/* 21 nov. 2026 (jugement externe, « puissant ») : toucher le folio ouvre la saisie d'une page ; Entrée y va, Échap referme */
   (function(){var N=$('num');if(!N)return;N.style.cursor='text';N.setAttribute('role','button');N.tabIndex=0;
     function open(){if(!cur||!cur.n||N.querySelector('input'))return;var f=document.createElement('input');f.type='number';f.min=1;f.max=cur.n;f.value=cur.i+1;f.inputMode='numeric';
@@ -314,7 +315,7 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
     {id:'bub_gb_1JucGqXnWb4C',n:888,start:0,au:'Recueil',ti:'Musaeum hermeticum',ed:'Francfort, Hermann von Sand, 1678',c:'#5a3a1a'},
     {id:'cu31924012366088',n:232,start:0,au:'Trad. Arthur Edward Waite',ti:'The Turba Philosophorum',ed:'Londres, George Redway, 1896',c:'#1f2f44'}];
   STOCK.forEach(function(k){var s=document.createElement('button');s.type='button';s.style.background=k.c;s.innerHTML=esc(k.ti)+'<small>'+esc(k.ed.replace(/^.*, /,''))+'</small>';
-    s.onclick=function(){iaOpen(k.id,k);};$('shelf').appendChild(s);});
+    s.dataset.id=k.id;s.onclick=function(){iaOpen(k.id,k);};$('shelf').appendChild(s);});
 
   /* recherches */
   function hits(pane,list){var h=pane.querySelector('.hits');h.innerHTML='';if(!list.length){h.innerHTML='<p class="note">'+T.none+'</p>';return;}

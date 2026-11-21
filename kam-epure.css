@@ -81,3 +81,6 @@ html.kam-epure:not(.kam-tiroir) #pane-looks #fams{overflow:visible;flex-wrap:wra
 html.kam-epure:not(.kam-tiroir) #pane-looks #fams>*{flex:0 0 calc((100% - 24px)/7)!important;min-width:0!important;min-height:40px;padding-left:0!important;padding-right:0!important}
 
 html.kam-planche #pane-looks .strip>.frame{aspect-ratio:auto!important;height:100%!important}
+
+/* jugement externe : vignettes entières (l'horodatage des rendus reste lisible) */
+html.kam-epure:not(.kam-tiroir) #pane-looks .strip>.frame img,html.kam-planche #pane-looks .strip>.frame img{object-fit:contain!important;background:#000}
