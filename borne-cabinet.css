@@ -1422,3 +1422,6 @@ html.borne .b-dot.pic{color:#6b6156;display:inline-flex;align-items:center;justi
 html.borne .b-dot.pic svg{width:20px;height:20px;display:block}
 html.borne .b-dot.pic:hover{color:#a89a82}
 html.borne .b-dot.pic.on{color:#ffe08a;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--pal-titre,#ffe08a) 70%,transparent))}
+html.borne .b-dot.pic.got{animation:bDotGot 1.8s ease-out}
+@keyframes bDotGot{0%{color:#ffe08a;filter:drop-shadow(0 0 9px #ffb347)}60%{color:#ffd27a;filter:drop-shadow(0 0 6px #ffb347)}100%{}}
+@media (prefers-reduced-motion:reduce){html.borne .b-dot.pic.got{animation:none;color:#ffe08a}}

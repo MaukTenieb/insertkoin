@@ -13,6 +13,9 @@ html,body{margin:0;height:100%}
 body{display:flex;flex-direction:column;background:var(--paper);background-image:radial-gradient(rgba(120,90,40,.06) 1px,transparent 1.4px);background-size:5px 5px;color:var(--ink);font-family:'IM Fell English',Georgia,serif}
 button,input,select{font:inherit}
 .tabs{flex:none;display:flex;gap:4px;padding:6px 8px 0;background:linear-gradient(180deg,#1c120a,#2b1c10);overflow-x:auto}
+/* 21 nov. 2026 (analyse FaunEye, point 6) : les onglets qui dépassent s'annoncent — fondu au bord, défilement aimanté, l'onglet choisi vient au centre */
+.tabs{scroll-snap-type:x proximity;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}.tabs::-webkit-scrollbar{display:none}.tabs.end{-webkit-mask-image:none;mask-image:none}.tabs button{scroll-snap-align:center}
+#mode svg{width:20px;height:20px;display:block}
 .tabs button{flex:none;min-height:44px;border:0;border-radius:6px 6px 0 0;padding:8px 12px;cursor:pointer;background:#4a2f1c;color:#e9d9b4;font-family:'IM Fell English SC',serif;font-size:15px}
 .tabs button[aria-selected=true]{background:var(--paper);color:var(--ink)}
 .tabs .eye{margin-right:auto;padding:8px 10px 8px 4px;color:var(--brass1);font:20px 'IM Fell English SC',serif;letter-spacing:.06em;display:flex;align-items:center;gap:8px}
@@ -165,7 +168,7 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
       if(n.tagName==='IMG'){n.onload=function(){wait.textContent='';};n.onerror=function(){wait.textContent=T.err;};}else wait.textContent='';
       num();keep();if(cur.pre&&i+1<cur.n)cur.pre(i+1);}).catch(function(){wait.textContent=T.err;});}
   function openPages(o){clear();cur=o;cur.i=saved[o.key]!=null?Math.min(saved[o.key],o.n-1):(o.start||0);side(o.au,o.ti,o.ed,o.srcName,o.href);stage.classList.add('pages');tools();showPage();
-    if(o.text){$('mode').hidden=false;$('mode').textContent=T.txt;$('mode').onclick=function(){openText(o.text(),o);};}}
+    if(o.text){$('mode').hidden=false;$('mode').innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 6h14M5 10h14M5 14h14M5 18h9"/></svg>';$('mode').setAttribute('aria-label',T.txt);$('mode').title=T.txt;$('mode').onclick=function(){openText(o.text(),o);};}}
   // every book page passes here: parsed inert, then stripped of what runs code (scripts, frames, handlers, javascript: links)
   function clean(html){var d=new DOMParser().parseFromString('<body>'+html,'text/html');
     [].forEach.call(d.querySelectorAll('script,iframe,frame,frameset,object,embed,applet,link,meta,base,form,noscript,template'),function(x){x.remove();});
@@ -381,5 +384,6 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
   if(next&&next.id){var st=STOCK.filter(function(k){return k.id===next.id;})[0];iaOpen(next.id,st||null);}else{/* 13 nov. 2026 (Mauk Tenieb) : un livre du stock tiré au hasard à chaque ouverture, rangé sur l'étagère seulement si le visiteur le choisit */var k=STOCK[Math.floor(Math.random()*STOCK.length)];iaOpen(k.id,Object.assign({},k,{auto:1}));}
 })();
 </script>
+<script>/* 21 nov. 2026 : fondu des onglets retiré en bout de course ; l'onglet choisi glisse au centre */(function(){var t=document.querySelector('.tabs');if(!t)return;function f(){t.classList.toggle('end',t.scrollLeft+t.clientWidth>=t.scrollWidth-2);}t.addEventListener('scroll',f,{passive:true});addEventListener('resize',f);setTimeout(f,300);t.addEventListener('click',function(e){var b=e.target.closest('button');if(b&&b.scrollIntoView)b.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});});})();</script>
 </body>
 </html>
