@@ -78,6 +78,7 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
 .drop{display:block;border:2px dashed #b9a77f;border-radius:6px;padding:10px 16px;text-align:center;color:var(--dim);font-size:34px;line-height:1;cursor:pointer}
 .drop.over{background:#f6f0e2;border-color:var(--brass2)}
 @media (max-width:640px){.view{flex-direction:column;padding:8px}.side{flex:none;flex-direction:row;flex-wrap:wrap;gap:4px 10px;align-items:baseline}.side .src{margin:0;width:100%}.tabs .eye span{display:none}}
+.src a{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor;font-variant:small-caps;letter-spacing:.04em}
 </style>
 </head>
 <body>
@@ -186,7 +187,15 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
   function go(n){if(!cur||!cur.page)return;n=Math.max(0,Math.min(cur.n-1,n));if(n!==cur.i){cur.i=n;showPage();}}
   function step(d){if(!cur)return;if(cur.rend){d>0?cur.rend.next():cur.rend.prev();return;}
     if(cur.art){cur.art.scrollBy({top:d*cur.art.clientHeight*.9,behavior:'smooth'});return;}go(cur.i+d);}
-  $('prev').onclick=function(){step(-1);};$('next').onclick=function(){step(1);};
+  $('prev').onclick=function(){step(-1);};/* 21 nov. 2026 (jugement externe, « puissant ») : toucher le folio ouvre la saisie d'une page ; Entrée y va, Échap referme */
+  (function(){var N=$('num');if(!N)return;N.style.cursor='text';N.setAttribute('role','button');N.tabIndex=0;
+    function open(){if(!cur||!cur.n||N.querySelector('input'))return;var f=document.createElement('input');f.type='number';f.min=1;f.max=cur.n;f.value=cur.i+1;f.inputMode='numeric';
+      f.setAttribute('aria-label',(document.documentElement.lang==='fr'?'Aller à la page':'Go to page'));
+      f.style.cssText='width:4.5em;font:inherit;text-align:center;background:#f6f0e2;color:#2b1c10;border:1px solid #b08d4a;border-radius:3px;padding:1px 2px';
+      var fin=0,done=function(ok){if(fin)return;fin=1;var v=parseInt(f.value,10);f.onblur=null;if(f.parentNode)f.parentNode.removeChild(f);if(ok&&v)go(v-1);num();};
+      f.addEventListener('keydown',function(e){e.stopPropagation();if(e.key==='Enter'){e.preventDefault();done(true);}else if(e.key==='Escape'){done(false);}});f.addEventListener('change',function(){done(true);});f.onblur=function(){done(true);};
+      N.textContent='';N.appendChild(f);f.focus();try{f.select();}catch(_){}}
+    N.addEventListener('click',open);N.addEventListener('keydown',function(e){if(e.key==='Enter')open();});})();$('next').onclick=function(){step(1);};
   $('sl').oninput=function(){if(cur&&cur.n)$('num').textContent=this.value+' / '+cur.n;};$('sl').onchange=function(){go(this.value-1);};
   addEventListener('keydown',function(e){if(/INPUT|SELECT/.test(e.target.tagName)&&e.target.id!=='sl')return;
     if(e.key==='ArrowLeft'||e.key==='PageUp')step(-1);else if(e.key==='ArrowRight'||e.key==='PageDown')step(1);

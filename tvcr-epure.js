@@ -24,6 +24,13 @@
       m.onclick=function(){var on=r.classList.toggle('tv-tiroir');m.setAttribute('aria-pressed',String(on));};
       act.appendChild(m);
       var lo=q(r,'[data-vhs-find-open]');if(lo)lo.addEventListener('click',function(){r.classList.add('tv-tiroir');m.setAttribute('aria-pressed','true');},true);}
+    /* état du magnétoscope incrusté à l'écran (OSD d'époque) */
+    var scr=q(r,'.vhs-screen'),st=q(r,'[data-vhs-osd-state]');
+    if(scr&&st){var et=D.createElement('div');et.className='tv-etat';et.setAttribute('aria-hidden','true');scr.appendChild(et);
+      var ETn={play:'▶ PLAY',pause:'❚❚ PAUSE',stop:'■ STOP',rec:'● REC',ff:'▶▶',rew:'◀◀'};
+      var upd=function(){var x=(st.textContent||'').trim(),k=x.toLowerCase();var lbl=ETn[k]||x.toUpperCase();et.textContent=lbl;
+        clearTimeout(et._t);et.style.opacity='1';if(k==='play')et._t=setTimeout(function(){et.style.opacity='0';},2200);};
+      et.style.transition='opacity .4s';new MutationObserver(upd).observe(st,{childList:true,characterData:true,subtree:true});upd();}
     /* gestes sur l'écran */
     var sc=q(r,'.vhs-screen');if(!sc)return;
     var g=D.createElement('div');g.className='tv-geste';g.setAttribute('aria-hidden','true');sc.appendChild(g);
