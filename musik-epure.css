@@ -1,9 +1,8 @@
 /* Musik, épure (21 nov. 2026, Mauk Tenieb : « l'ergonomie, la simplicité, la beauté internes des programmes »).
-   Surface : lecture, vue Grille / Console, dé, tempo, et la grille avec la platine. Tiroir (⋯) : motifs A-D, chaîne,
+   Surface : lecture, vue Grille / Console, dé, tempo, et la grille avec la platine. Les motifs A-D restent en surface (jeu en direct, jugement externe du 21 nov.). Tiroir (⋯) : chaîne,
    longueur, effacer, réinitialiser, fichiers, tranche de piste, maître, bibliothèque. Logique : musik-epure.js. */
 #mz.mz-epure:not(.mz-tiroir) #mz-clr,
 #mz.mz-epure:not(.mz-tiroir) #mz-rst,
-#mz.mz-epure:not(.mz-tiroir) #mz-pat,
 #mz.mz-epure:not(.mz-tiroir) #mz-chain,
 #mz.mz-epure:not(.mz-tiroir) #mz-len,
 #mz.mz-epure:not(.mz-tiroir) #mz-file,
