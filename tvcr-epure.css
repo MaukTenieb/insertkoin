@@ -39,3 +39,8 @@
 #vhs.tv-facade>.ike-frame{background:url(kave/a/vhs/tv-facade.webp) no-repeat!important;background-size:var(--tv-w) var(--tv-h)!important;
   background-position:var(--tv-x) var(--tv-y)!important;border-color:transparent!important;box-shadow:0 10px 28px rgba(0,0,0,.7)!important}
 #vhs.tv-facade>.vhs-screen{border-radius:5.5% / 7%!important;overflow:hidden}
+/* jugement externe : au téléphone debout, l'étagère se resserre pour laisser voir quatre morceaux */
+@media (max-width:700px) and (orientation:portrait){
+  #vhs.tv-epure .vhs-shelf-row{height:84px!important;min-height:0!important}
+  #vhs.tv-epure .vhs-shelf-row>*{height:100%!important;max-height:84px}
+  #vhs.tv-epure [data-vhs-tracklist] button{min-height:26px!important;line-height:1.6;padding-top:2px!important;padding-bottom:2px!important}}

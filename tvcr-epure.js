@@ -24,6 +24,11 @@
       m.onclick=function(){var on=r.classList.toggle('tv-tiroir');m.setAttribute('aria-pressed',String(on));};
       act.appendChild(m);
       var lo=q(r,'[data-vhs-find-open]');if(lo)lo.addEventListener('click',function(){r.classList.add('tv-tiroir');m.setAttribute('aria-pressed','true');},true);}
+    /* jugement externe : un morceau sans titre (« ... » dans les données) prend un titre de repli */
+    var tl=q(r,'[data-vhs-tracklist]');
+    if(tl){var fix=function(){[].forEach.call(tl.querySelectorAll('button'),function(b){var t=(b.textContent||'').trim(),m=/^(\d+)\.\s*(\.{2,}|…|—|-)?\s*$/.exec(t);
+        if(m){var nn=('0'+m[1]).slice(-2);b.textContent=m[1]+'. '+(fr()?'PISTE ':'TRACK ')+nn;}});};
+      new MutationObserver(fix).observe(tl,{childList:true,subtree:true,characterData:true});fix();}
     /* état du magnétoscope incrusté à l'écran (OSD d'époque) */
     var scr=q(r,'.vhs-screen'),st=q(r,'[data-vhs-osd-state]');
     if(scr&&st){var et=D.createElement('div');et.className='tv-etat';et.setAttribute('aria-hidden','true');scr.appendChild(et);
