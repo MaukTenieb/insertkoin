@@ -126,6 +126,13 @@ I.bell=function(){var o='',w=[[13,6],[11,10],[9,14],[8,16],[7,18],[6,20],[6,20]]
  return R_(14,6,4,1,K)+R_(13,7,6,2,Go)+R_(15,9,2,3,Fd)+o+R_(5,19,22,2,K)+R_(6,19,20,1,Go)+R_(6,20,20,1,Fd)+R_(4,21,24,5,K)+R_(5,22,22,3,'#222')+R_(5,22,22,1,'#3a3a3a')+R_(5,25,22,1,'#2f5a2a')};
 I48.bell=function(){var o='',w=[[10,8],[11,14],[12,18],[13,22],[14,24],[15,26],[16,28],[17,30],[18,30],[19,32],[20,32]];w.forEach(function(a){var y=a[0]+6,x=24-a[1]/2;o+=R_(x,y,a[1],1,K)+R_(x+1,y,a[1]-2,1,y<20?'#ececec':'#b0b0b0')+R_(x+2,y,Math.max(1,a[1]/5),1,W)+R_(x+a[1]-5,y,3,1,'#7a7a7a')});
  return R_(19,6,10,1,K)+R_(18,7,12,3,Go)+R_(19,7,4,1,Fy)+R_(22,10,4,6,Fd)+R_(23,10,1,6,Go)+o+R_(7,27,34,4,K)+R_(8,27,32,1,Fy)+R_(8,28,32,2,Fd)+R_(6,31,36,9,K)+R_(7,32,34,6,'#1e1e1e')+R_(7,32,34,1,'#3c3c3c')+R_(7,38,34,1,'#2f5a2a')};
+
+/* 21 nov. 2026 : les suites, Kaves qui contiennent des Kaves, gardent le dossier et portent leur emblème */
+I.fauneye=function(){return I.folder()+P('6,18 11,14 21,14 26,18 21,22 11,22',K)+P('8,18 12,15 20,15 24,18 20,21 12,21',W)+R_(14,15,4,6,c)+R_(13,16,6,4,c)+R_(14,16,2,1,'#7fe0ff')+R_(15,17,2,2,K)+R_(14,16,1,1,W)};
+I.korhogame=function(){return I.folder()+R_(9,22,15,4,K)+R_(10,23,13,2,'#303030')+R_(10,23,13,1,'#5a5a5a')+R_(15,15,2,8,K)+R_(13,11,6,5,K)+R_(14,12,4,3,R)+R_(14,12,2,1,'#ff9080')+R_(20,20,4,2,K)+R_(21,20,2,1,Am)};
+I.surfauna=function(){return I.folder()+R_(12,12,8,12,K)+R_(10,14,12,8,K)+R_(11,13,10,10,K)+R_(12,13,8,10,'#4fc3f7')+R_(11,14,10,8,'#4fc3f7')+R_(11,18,10,1,c)+R_(15,13,2,10,c)+R_(12,15,8,1,c)+R_(12,21,8,1,c)+R_(12,14,2,2,W)};
+I.flore=function(){return I.folder()+R_(9,13,14,12,K)+R_(10,14,12,10,Be)+R_(8,12,16,3,K)+R_(9,13,14,1,be)+R_(8,23,16,3,K)+R_(9,24,14,1,be)+R_(12,16,8,1,br)+R_(12,18,6,1,br)+R_(12,20,7,1,br)};
+I.fmauk=function(){return I.folder()+R_(7,14,18,10,K)+R_(8,15,16,8,Go)+R_(8,15,16,1,Fy)+R_(10,17,12,1,br)+R_(10,19,9,1,br)+R_(10,21,11,1,br)+R_(9,16,1,1,D)+R_(22,16,1,1,D)+R_(9,21,1,1,D)+R_(22,21,1,1,D)};
 function svg48(body,s){return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="'+(s||48)+'" height="'+(s||48)+'" shape-rendering="crispEdges">'+body+'</svg>'}
 window.KICON=function(name,size){if(size>=40&&I48[name])return svg48(I48[name](),size);var f=I[name]||I.txt;return svg(f(),size)};
 window.KICON_NAMES=Object.keys(I);
