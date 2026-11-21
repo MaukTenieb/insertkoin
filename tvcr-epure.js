@@ -81,6 +81,10 @@
           if(d>2){l.style.setProperty('--tpy',(-d-6)+'px');l.style.setProperty('--tpt',Math.max(3,(d+6)/22)+'s');l.classList.add('vhs-spine-tp');}});};
       new ResizeObserver(fitS).observe(row);new MutationObserver(function(){row._tvS=0;setTimeout(fitS,50);}).observe(row,{childList:true});
       setTimeout(fitS,300);setTimeout(fitS,1500);if(D.fonts&&D.fonts.ready)D.fonts.ready.then(fitS);}
+    /* test réel du 22 nov. : une recherche sans résultat laissait la liste vide sans un signe */
+    var fi0=q(r,'[data-vhs-find-input]'),tl0=q(r,'[data-vhs-tracklist]');
+    if(fi0&&tl0){var vide=function(){var n=[].filter.call(tl0.querySelectorAll('button'),function(b){return b.offsetParent!==null;}).length;tl0.classList.toggle('tv-vide',!!fi0.value.trim()&&!n);};
+      fi0.addEventListener('input',function(){setTimeout(vide,80);});new MutationObserver(function(){setTimeout(vide,80);}).observe(tl0,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden','style','class']});}
     /* gestes sur l'écran */
     var sc=q(r,'.vhs-screen');if(!sc)return;
     var g=D.createElement('div');g.className='tv-geste';g.setAttribute('aria-hidden','true');sc.appendChild(g);

@@ -92,3 +92,4 @@ html #kg-root #vhs.tv-epure :is(.tv-more,.vhs-tape-all),#vhs.tv-epure :is(.tv-mo
 @media (max-width:700px) and (orientation:portrait),(max-height:520px) and (orientation:landscape){
   #vhs.tv-epure:not(.tv-tiroir) .vhs-rec{display:none!important}}
 #vhs.tv-epure :is(.vhs-find-input,.vhs-rec-input)::placeholder{color:#9a917a!important;opacity:1!important}
+#vhs.tv-epure [data-vhs-tracklist].tv-vide::before{content:"∅";display:block;padding:14px 0;text-align:center;font-size:28px;color:#79ff96;opacity:.7}
