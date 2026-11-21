@@ -336,7 +336,7 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
   var SEARCH={
     ia:function(q,f,pane){return fetch('https://archive.org/advancedsearch.php?q='+encodeURIComponent('('+q+') AND mediatype:texts')+'&fl[]=identifier&fl[]=title&fl[]=creator&fl[]=year&rows=36&output=json')
       .then(function(r){return r.json();}).then(function(j){hits(pane,(j.response.docs||[]).map(function(d){return{ti:[].concat(d.title)[0],au:[].concat(d.creator||'')[0],ed:d.year||'',img:'https://archive.org/services/img/'+d.identifier,open:function(){iaOpen(d.identifier);}};}));});},
-    gut:function(q,f,pane){return fetch('https://gutendex.com/books/?search='+encodeURIComponent(q)).then(function(r){return r.json();}).then(function(j){
+    gut:function(q,f,pane){return Promise.race([fetch('https://gutendex.com/books/?search='+encodeURIComponent(q)),new Promise(function(_,ko){setTimeout(ko,9000);})]).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){
       hits(pane,(j.results||[]).map(function(b){var F=b.formats||{},html=F['text/html']||F['text/html; charset=utf-8'],txt=F['text/plain; charset=utf-8']||F['text/plain; charset=us-ascii']||F['text/plain'];
         var o={key:'gut:'+b.id,ti:b.title,au:(b.authors[0]||{}).name,ed:(b.languages||[]).join(', '),srcName:'Project Gutenberg',href:'https://www.gutenberg.org/ebooks/'+b.id};
         return{ti:b.title,au:o.au,ed:o.ed,img:F['image/jpeg'],open:function(){wait.textContent=T.load;var u=html||txt;
@@ -349,7 +349,7 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
           [].forEach.call(d.querySelectorAll('a[href^="/wiki/"]'),function(a){a.href='https://'+l+'.wikisource.org'+a.getAttribute('href');a.target='_blank';});
           openArticle(d.body.innerHTML,{key:'ws:'+l+':'+s.title,ti:s.title,ed:l+'.wikisource.org',srcName:'Wikisource (CC BY-SA)',href:'https://'+l+'.wikisource.org/wiki/'+encodeURIComponent(s.title)});}).catch(function(){wait.textContent=T.err;});}};}));});}};
   [].forEach.call(document.querySelectorAll('form[data-s]'),function(f){f.onsubmit=function(e){e.preventDefault();var q=f.q.value.trim();if(!q)return;var pane=f.parentNode;
-    pane.querySelector('.hits').innerHTML='<p class="note">'+T.load+'</p>';SEARCH[f.dataset.s](q,f,pane).catch(function(){fail(pane);});};});
+    pane.querySelector('.hits').innerHTML='<p class="note">'+T.load+'</p>';SEARCH[f.dataset.s](q,f,pane).catch(function(){/* 22 nov. 2026 : Gutendex hors d'usage → la collection Gutenberg d'Internet Archive prend le relais */if(f.dataset.s==='gut')return SEARCH.ia(q+') AND (collection:gutenberg',f,pane).catch(function(){fail(pane);});fail(pane);});};});
 
   /* Korhogo Diary : le lore sur Substack (https://korhogo.substack.com). Chaque Movement s'ouvre sur sa page, abonnement compris ;
      la liste vient de Substack au fil de la lecture, et la liste écrite ici prend le relais si Substack refuse la lecture. */
