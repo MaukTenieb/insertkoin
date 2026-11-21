@@ -77,3 +77,4 @@ html #kg-root #vhs.tv-epure :is(.tv-more,.vhs-tape-all),#vhs.tv-epure :is(.tv-mo
 #vhs.tv-epure .vhs-key.vhs-fz{overflow:visible}
 #vhs.tv-epure .vhs-key.vhs-fz::after{content:"";position:absolute;left:0;right:0;top:-14px;bottom:-14px}
 #vhs.tv-epure .vhs-key.vhs-fz:hover{filter:brightness(1.18)}
+#vhs.tv-epure .tv-pk{position:absolute;left:50%;top:2%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;width:96%;height:17%;min-height:9px;background:#d9d7d0;border-radius:1px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.25);color:#1b1a18;pointer-events:none}#vhs.tv-epure .tv-pk svg{height:100%;width:auto;max-height:12px}

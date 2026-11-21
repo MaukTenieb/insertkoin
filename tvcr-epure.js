@@ -34,6 +34,10 @@
     /* test réel : changer de cassette efface la recherche en cours (sinon la liste paraît vide) */
     var row=q(r,'[data-vhs-shelf-row]');
     if(row)row.addEventListener('click',function(e){if(!e.target.closest('.vhs-tape'))return;var fi=q(r,'[data-vhs-find-input]');if(fi&&fi.value){fi.value='';fi.dispatchEvent(new Event('input',{bubbles:true}));}},true);
+    /* troisième test réel : les mots imprimés sur la photo (TRACKING, FINE) trompent ; une plaquette à picto recouvre chacun et dit la vraie fonction */
+    [['random','<path d="M4 7h3l10 10h3M4 17h3l3-3M14 10l3-3h3M18 5l2 2-2 2M18 15l2 2-2 2"/>'],['fine','<path d="M5 6l8 6-8 6zM15 6v12M19 6v12"/>']].forEach(function(x){
+      var k=q(r,'[data-vhs-action="'+x[0]+'"]');if(!k||k.querySelector('.tv-pk'))return;var e=D.createElement('span');e.className='tv-pk';e.setAttribute('aria-hidden','true');
+      e.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+x[1]+'</svg>';k.appendChild(e);});
     /* état du magnétoscope incrusté à l'écran (OSD d'époque) */
     var scr=q(r,'.vhs-screen'),st=q(r,'[data-vhs-osd-state]');
     if(scr&&st){var et=D.createElement('div');et.className='tv-etat';et.setAttribute('aria-hidden','true');scr.appendChild(et);
