@@ -116,6 +116,10 @@
     else if(e.key==='ArrowDown'&&S.cur){setAmt((S.cur.amt!=null?S.cur.amt:1)-.05);e.preventDefault();}});
   addEventListener('resize',function(){if(H.classList.contains('kam-planche'))planche(true);});
 
+  /* ---- vignettes toujours tirées de l'image en cours (jugement externe : elles montraient l'image de démarrage) ---- */
+  var lastVer=null;setInterval(function(){try{if(typeof S==='undefined'||typeof drawGrid!=='function')return;var v=S.ver+'|'+(S.tiny&&S.tiny.width);
+    if(lastVer!==null&&v!==lastVer)drawGrid();lastVer=v;}catch(_){}},600);
+
   /* ---- mise en route ---- */
   var n=0;(function boot(){if(ok()&&bande()&&gestes()){H.classList.add('kam-epure');return;}if(++n<200)setTimeout(boot,50);})();
 })();
