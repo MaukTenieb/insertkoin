@@ -1,0 +1,72 @@
+/* Kamera, épure (21 nov. 2026, Mauk Tenieb : « l'ergonomie, la simplicité, la beauté internes des programmes »).
+   Surface : cinq touches, la molette des familles, la bande des rendus. Tout le reste dans le tiroir (touche ⋯).
+   Rien n'est retiré : le tiroir rouvre le panneau complet. Logique : kam-epure.js. */
+
+/* ---- surface : ce qui se cache tant que le tiroir reste fermé ---- */
+html.kam-epure:not(.kam-tiroir) header.top .kb,
+html.kam-epure:not(.kam-tiroir) header.top #bMenu,
+html.kam-epure:not(.kam-tiroir) #actions,
+html.kam-epure:not(.kam-tiroir) #dock,
+html.kam-epure:not(.kam-tiroir) #pane-looks .search,
+html.kam-epure:not(.kam-tiroir) #pane-looks #bRand,
+html.kam-epure:not(.kam-tiroir) #pane-looks #genres,
+html.kam-epure:not(.kam-tiroir) #pane-looks #count,
+html.kam-epure:not(.kam-tiroir) #pane-looks #recShelf,
+html.kam-epure:not(.kam-tiroir) #pane-looks #guide,
+html.kam-epure:not(.kam-tiroir) #pane-looks .strip>.frame>b,
+html.kam-epure:not(.kam-tiroir) #pane-looks .strip>.frame>i{display:none!important}
+/* tiroir fermé : le panneau des rendus reste au premier plan, même si le Labo ou FaunAI était ouvert */
+html.kam-epure:not(.kam-tiroir) #pane-lab,
+html.kam-epure:not(.kam-tiroir) #pane-ai{display:none!important}
+html.kam-epure:not(.kam-tiroir) #pane-looks{display:block!important}
+
+/* ---- la bande : cinq touches sous le pouce ---- */
+.kam-bande{display:none}
+html.kam-epure .kam-bande{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:10px 10px 8px;flex:none}
+.kam-bande button{position:relative;display:flex;align-items:center;justify-content:center;min-height:46px;padding:0;border:0;border-radius:7px;cursor:pointer;color:#e9e2cf;
+  background:linear-gradient(#3b3935,#24221f);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -2px 0 rgba(0,0,0,.45),0 2px 3px rgba(0,0,0,.6);transition:transform .06s,box-shadow .06s,color .12s}
+.kam-bande button svg{width:24px;height:24px}
+.kam-bande button:active,.kam-bande button.kp{transform:translateY(1px);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 -1px 0 rgba(0,0,0,.4),0 1px 1px rgba(0,0,0,.6)}
+.kam-bande button[aria-pressed=true]{color:#ffa726}
+.kam-bande button[aria-pressed=true]::after{content:"";position:absolute;top:6px;right:7px;width:5px;height:5px;border-radius:50%;background:#ffa726;box-shadow:0 0 6px #ffa726}
+.kam-bande button.kam-sv{color:#ffe3a0}
+.kam-bande button:disabled{opacity:.35;cursor:default}
+.kam-bande button:focus-visible{outline:2px solid #ffa726;outline-offset:2px}
+
+/* ---- la molette des familles : une rangée, pictogrammes seuls, défilement au doigt ---- */
+html.kam-epure:not(.kam-tiroir) #pane-looks #fams{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity}
+html.kam-epure:not(.kam-tiroir) #pane-looks #fams::-webkit-scrollbar{display:none}
+html.kam-epure:not(.kam-tiroir) #pane-looks #fams>*{scroll-snap-align:center;flex:none}
+
+/* ---- la bande des rendus : des images, sans mots ---- */
+html.kam-epure:not(.kam-tiroir) #pane-looks .strip{grid-template-columns:repeat(auto-fill,minmax(84px,1fr))!important;gap:6px!important}
+html.kam-epure:not(.kam-tiroir) #pane-looks .strip>.frame{padding:0!important;min-height:0!important}
+html.kam-epure:not(.kam-tiroir) #pane-looks .strip>.frame[aria-pressed=true]{outline:2px solid #ffa726;outline-offset:-2px}
+
+/* ---- l'afficheur à l'écran : nom du rendu, rang, intensité ---- */
+.kam-osd{position:absolute;left:4%;bottom:5%;z-index:7;pointer-events:none;font:400 clamp(8px,1.35vw,13px)/1.5 "Press Start 2P",monospace;color:#f4f1e6;letter-spacing:.05em;
+  text-shadow:1px 1px 0 #000,0 0 6px rgba(0,0,0,.7);opacity:0;transition:opacity .35s;max-width:92%;white-space:nowrap;overflow:hidden}
+.kam-osd.on{opacity:1;transition:opacity .05s}
+.kam-osd .n{color:#ffa726}
+.kam-osd .bar{display:inline-block;vertical-align:middle;width:9em;height:.6em;margin-left:.6em;border:1px solid #f4f1e6;background:linear-gradient(90deg,#f4f1e6 var(--a,100%),transparent 0)}
+
+/* ---- planche contact : double toucher sur l'image ---- */
+html.kam-planche #pane-looks .strip{position:fixed!important;z-index:60!important;overflow-y:auto!important;padding:8px!important;background:rgba(8,6,4,.94)!important;
+  grid-template-columns:repeat(auto-fill,minmax(110px,1fr))!important;gap:6px!important;border-radius:4px;box-shadow:0 0 0 1px #000,0 12px 40px rgba(0,0,0,.8)}
+html.kam-planche #pane-looks .strip>.frame>b,html.kam-planche #pane-looks .strip>.frame>i{display:none!important}
+html.kam-planche #pane-looks .strip>.frame{padding:0!important}
+
+@media (prefers-reduced-motion:reduce){.kam-osd,.kam-bande button{transition:none}}
+
+/* la famille d'accueil (pyramide) suit la même bande de vignettes égales */
+html.kam-epure:not(.kam-tiroir) #pane-looks .strip>.frame,html.kam-planche #pane-looks .strip>.frame{grid-column:auto!important;grid-row:auto!important;aspect-ratio:4/3;overflow:hidden}
+html.kam-epure:not(.kam-tiroir) #pane-looks .strip>.frame img,html.kam-epure:not(.kam-tiroir) #pane-looks .strip>.frame .ph,
+html.kam-planche #pane-looks .strip>.frame img{width:100%!important;height:100%!important;object-fit:cover;display:block}
+html.kam-epure:not(.kam-tiroir) #pane-looks .strip>.frame::before,html.kam-epure:not(.kam-tiroir) #pane-looks .strip>.frame::after{display:none!important}
+
+/* planche : lignes à la hauteur des vignettes */
+html.kam-planche #pane-looks .strip{grid-auto-rows:min-content!important;align-content:start!important;align-items:start!important}
+html.kam-planche #pane-looks .strip>.frame{height:auto!important;min-height:0!important;background:#000!important}
+/* tiroir ouvert : la bande d'origine revient, la touche ⋯ seule reste pour refermer */
+html.kam-epure.kam-tiroir .kam-bande button:not([data-kb=more]){display:none}
+html.kam-epure.kam-tiroir .kam-bande [data-kb=more]{grid-column:5}
