@@ -69,4 +69,8 @@
   var mo=new MutationObserver(scan);
   function scan(){var r=D.getElementById('vhs');if(r&&q(r,'.vhs-screen')&&q(r,'.vhs-shelf-actions')){setup(r);mo.disconnect();}}
   mo.observe(D.documentElement,{childList:true,subtree:true});scan();
+
+  /* infobulles (test réel, 22 nov.) : chaque picto de ce programme montre son nom au survol, tiré de son aria-label */
+  (function(){function tt(root){if(!root)return;[].forEach.call(root.querySelectorAll('button[aria-label]:not([title]),[role=button][aria-label]:not([title])'),function(b){b.title=b.getAttribute('aria-label');});}
+    var R='#vhs';var go=function(){var r=typeof R==='string'?document.querySelector(R):R;if(r)tt(r);};go();setInterval(go,1500);})();
 })();

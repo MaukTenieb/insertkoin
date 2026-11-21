@@ -72,3 +72,8 @@ html #kg-root #vhs.tv-epure :is(.tv-more,.vhs-tape-all),#vhs.tv-epure :is(.tv-mo
 #vhs.tv-epure .vhs-find-input{flex:1 1 auto;min-width:0}
 #vhs.tv-epure .vhs-rec-input{flex:1 1 auto;min-width:0}
 #vhs.tv-epure .vhs-rec{flex-wrap:nowrap!important}#vhs.tv-epure .vhs-rec-progress:empty{display:none!important}#vhs.tv-epure .vhs-rec-progress{flex:0 0 100%}#vhs.tv-epure .vhs-rec:has(.vhs-rec-progress:not(:empty)){flex-wrap:wrap!important}
+
+/* test réel : les touches du magnétoscope (photo) gardent leur dessin, mais leur zone de toucher s'étend en hauteur */
+#vhs.tv-epure .vhs-key.vhs-fz{overflow:visible}
+#vhs.tv-epure .vhs-key.vhs-fz::after{content:"";position:absolute;left:0;right:0;top:-14px;bottom:-14px}
+#vhs.tv-epure .vhs-key.vhs-fz:hover{filter:brightness(1.18)}
