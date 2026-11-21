@@ -76,7 +76,7 @@
   function gestes(){
     var st=$('stage');if(!st||st.dataset.kamG)return!!st;st.dataset.kamG='1';
     var p=null,lastTap=0;
-    st.addEventListener('pointerdown',function(e){if(e.target.closest('button')||live())return;
+    st.addEventListener('pointerdown',function(e){if(e.target.closest('button,.kam-pl')||live())return;/* test réel : la réglette d'intensité garde son glissé */
       p={x:e.clientX,y:e.clientY,id:e.pointerId,mode:'',a0:S.cur&&S.cur.amt!=null?S.cur.amt:1,h:st.getBoundingClientRect().height||300,steps:0};},true);
     st.addEventListener('pointermove',function(e){if(!p||e.pointerId!==p.id)return;var dx=e.clientX-p.x,dy=e.clientY-p.y;
       if(!p.mode){if(Math.abs(dx)>18&&Math.abs(dx)>Math.abs(dy)*1.3)p.mode='h';else if(Math.abs(dy)>14&&Math.abs(dy)>Math.abs(dx)*1.3&&S.cur)p.mode='v';
@@ -136,11 +136,12 @@
     pl.innerHTML='<span class="kam-pl-n"></span><input type="range" min="5" max="100" step="5" value="100">';
     var nm=pl.firstChild,rg=pl.lastChild;rg.setAttribute('aria-label',fr()?'Intensité':'Strength');rg.title=rg.getAttribute('aria-label');
     ['pointerdown','click','dblclick'].forEach(function(t){pl.addEventListener(t,function(e){e.stopPropagation();});});
-    rg.addEventListener('input',function(){if(S.cur)setAmt(+rg.value/100);});
+    function fill(){rg.style.setProperty('--p',((+rg.value-5)/95*100)+'%');}
+    rg.addEventListener('input',function(){fill();if(S.cur)setAmt(+rg.value/100);});
     st.appendChild(pl);
     function sync(){var L=visibleCards().filter(swipable),k=curKey(),i=-1;for(var j=0;j<L.length;j++)if(L[j].k===k){i=j;break;}
       var n=(($('lbName')||{}).textContent||'').toUpperCase();nm.textContent=(S.cur&&i>=0?(i+1)+'/'+L.length+'  ':'')+n;
-      rg.disabled=!S.cur;var a=S.cur&&S.cur.amt!=null?S.cur.amt:1;if(D.activeElement!==rg)rg.value=Math.round(a*100);}
+      var cadre=!!(S.cur&&S.lastView&&S.prev&&(S.lastView.width!==S.prev.width||S.lastView.height!==S.prev.height));rg.disabled=!S.cur||cadre;rg.title=cadre?'—':rg.getAttribute('aria-label');/* test réel : un rendu qui ajoute un cadre (Polaroid…) change la taille de l'image, l'intensité ne s'y applique pas : la réglette s'éteint */var a=S.cur&&S.cur.amt!=null?S.cur.amt:1;if(D.activeElement!==rg)rg.value=Math.round(a*100);fill();}
     var lb=$('lbName');if(lb)new MutationObserver(sync).observe(lb,{childList:true,characterData:true,subtree:true});
     setInterval(sync,700);sync();}
 

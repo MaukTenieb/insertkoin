@@ -15,6 +15,8 @@
     var ml=function(){var l=D.documentElement.lang==='fr'?'Mixage':'Mix';mx.setAttribute('aria-label',l);mx.title=l;};ml();
     mx.onclick=function(){var on=m.classList.toggle('mz-mix');mx.setAttribute('aria-pressed',String(on));try{dispatchEvent(new Event('resize'));}catch(_){}};
     bar.insertBefore(mx,b);
+    /* test réel : le clic droit sur une figurine coupe ou rend sa piste (même effet que le double-clic) */
+    m.addEventListener('contextmenu',function(e){var f=e.target.closest('.mzfg');if(!f)return;e.preventDefault();e.stopPropagation();for(var i=0;i<2;i++)f.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,cancelable:true,clientX:e.clientX,clientY:e.clientY,pointerType:'mouse',button:0}));},true);
     /* test réel : l'afficheur 96 règle le tempo (il renvoie ses gestes à la molette du tempo) */
     var lcd=D.getElementById('mz-bpm');
     function tk(){var t=D.getElementById('mz-tk');return t&&t.querySelector('.mzkn');}
