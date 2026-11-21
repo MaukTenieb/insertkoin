@@ -334,7 +334,7 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
       b.onclick=x.open;h.appendChild(b);});}
   function fail(pane){pane.querySelector('.hits').innerHTML='<p class="note">'+T.err+'</p>';}
   var SEARCH={
-    ia:function(q,f,pane){return fetch('https://archive.org/advancedsearch.php?q='+encodeURIComponent('('+q+') AND mediatype:texts')+'&fl[]=identifier&fl[]=title&fl[]=creator&fl[]=year&rows=36&output=json')
+    ia:function(q,f,pane){return fetch('https://archive.org/advancedsearch.php?q='+encodeURIComponent('('+q+') AND mediatype:texts AND (year:[1 TO 1929] OR collection:gutenberg OR licenseurl:*publicdomain*) AND NOT collection:(inlibrary OR printdisabled OR lendinglibrary)')+'&sort[]=downloads+desc'+'&fl[]=identifier&fl[]=title&fl[]=creator&fl[]=year&rows=36&output=json')
       .then(function(r){return r.json();}).then(function(j){hits(pane,(j.response.docs||[]).map(function(d){return{ti:[].concat(d.title)[0],au:[].concat(d.creator||'')[0],ed:d.year||'',img:'https://archive.org/services/img/'+d.identifier,open:function(){iaOpen(d.identifier);}};}));});},
     gut:function(q,f,pane){return Promise.race([fetch('https://gutendex.com/books/?search='+encodeURIComponent(q)),new Promise(function(_,ko){setTimeout(ko,9000);})]).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){
       hits(pane,(j.results||[]).map(function(b){var F=b.formats||{},html=F['text/html']||F['text/html; charset=utf-8'],txt=F['text/plain; charset=utf-8']||F['text/plain; charset=us-ascii']||F['text/plain'];
@@ -413,5 +413,10 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
 </script>
 <script>/* 21 nov. 2026 : fondu des onglets retiré en bout de course ; l'onglet choisi glisse au centre */(function(){var t=document.querySelector('.tabs');if(!t)return;function f(){t.classList.toggle('end',t.scrollLeft+t.clientWidth>=t.scrollWidth-2);}t.addEventListener('scroll',f,{passive:true});addEventListener('resize',f);setTimeout(f,300);t.addEventListener('click',function(e){var b=e.target.closest('button');if(b)t.scrollTo({left:b.offsetLeft-(t.clientWidth-b.offsetWidth)/2,behavior:'smooth'});/* 21 nov. 2026 : défilement de la seule rangée d'onglets ; scrollIntoView décalait aussi la borne autour du cadre */});})();</script>
 <script src="bakubook-epure.js"></script>
+<style>/* 22 nov. 2026 (test réel) : sur un écran bas, la lecture prend la hauteur ; la rangée de livres revient au toucher d'un onglet */
+@media (max-height:380px){body.lit .pane.on{display:none}body:not(.lit) .pane.on{max-height:70%}}</style>
+<script>(function(){var st=document.querySelector('.stage');if(!st)return;var B=document.body;
+  new MutationObserver(function(){if(st.querySelector('img,canvas'))B.classList.add('lit');}).observe(st,{childList:true,subtree:true});
+  [].forEach.call(document.querySelectorAll('.tabs [data-p]'),function(b){b.addEventListener('click',function(){B.classList.remove('lit');});});})();</script>
 </body>
 </html>

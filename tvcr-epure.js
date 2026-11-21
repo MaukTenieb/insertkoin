@@ -62,9 +62,16 @@
     (function tf(n){if(!facade()&&n<200)setTimeout(function(){tf(n+1);},100);})(0);
     /* jugement externe : la liste descend jusqu'au bas du cadre de l'écran (paysage) */
     var lst=q(r,'[data-vhs-tracklist]');
-    if(lst&&window.ResizeObserver){var fitL=function(){var frm=q(r,':scope>.ike-frame');if(!frm||innerWidth<700||innerWidth<innerHeight){lst.style.removeProperty('height');lst.style.removeProperty('max-height');return;}
-        var h=Math.round(frm.getBoundingClientRect().bottom-lst.getBoundingClientRect().top);if(h>80){lst.style.setProperty('height',h+'px','important');lst.style.setProperty('max-height',h+'px','important');}};
-      new ResizeObserver(fitL).observe(r);setTimeout(fitL,600);setTimeout(fitL,2500);}
+    if(lst&&window.ResizeObserver){var fitL=function(){var frm=q(r,':scope>.ike-frame'),cat=q(r,'.vhs-catalogue'),sh=q(r,'.vhs-shell'),h;
+        /* téléphone couché : la liste remplit la deuxième page du catalogue, sous la recherche */
+        if(cat&&innerHeight<=520&&innerWidth>innerHeight){var fd=q(r,'.vhs-find');h=Math.round(cat.clientHeight-(fd?fd.offsetHeight+10:0));
+          if(h>60){lst.style.setProperty('height',h+'px','important');lst.style.setProperty('max-height',h+'px','important');lst.style.setProperty('flex','0 0 auto','important');lst.style.setProperty('min-height',h+'px','important');}return;}
+        /* téléphone debout : la liste descend jusqu'au bas de la colonne visible */
+        if(sh&&innerWidth<700&&innerWidth<innerHeight){h=Math.round(sh.getBoundingClientRect().bottom-lst.getBoundingClientRect().top+sh.scrollTop-4);
+          if(h>60){lst.style.setProperty('height',h+'px','important');lst.style.setProperty('max-height',h+'px','important');}return;}
+        if(!frm||innerWidth<700||innerWidth<innerHeight){lst.style.removeProperty('height');lst.style.removeProperty('max-height');return;}
+        h=Math.round(frm.getBoundingClientRect().bottom-lst.getBoundingClientRect().top);if(h>80){lst.style.setProperty('height',h+'px','important');lst.style.setProperty('max-height',h+'px','important');}};
+      new ResizeObserver(fitL).observe(r);setTimeout(fitL,600);setTimeout(fitL,2500);new MutationObserver(function(){setTimeout(fitL,60);}).observe(r,{attributes:true,attributeFilter:['class']});}
     /* étagère : la photo des cassettes suit la hauteur réelle de sa rangée (cassettes entières, étiquettes lisibles) */
     var row=q(r,'.vhs-shelf-row');
     if(row&&window.ResizeObserver){var fitS=function(){var h=row.clientHeight;if(h<30)return;var sw=h*1600/327;

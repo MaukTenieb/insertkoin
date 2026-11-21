@@ -81,14 +81,14 @@ html #kg-root #vhs.tv-epure :is(.tv-more,.vhs-tape-all),#vhs.tv-epure :is(.tv-mo
 #vhs.tv-epure .vhs-key.vhs-fz::after{content:"";position:absolute;left:0;right:0;top:-14px;bottom:-14px}
 #vhs.tv-epure .vhs-key.vhs-fz:hover{filter:brightness(1.18)}
 #vhs.tv-epure .tv-pk{position:absolute;left:50%;top:2%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;width:96%;height:17%;min-height:9px;background:#d9d7d0;border-radius:1px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.25);color:#1b1a18;pointer-events:none}#vhs.tv-epure .tv-pk svg{height:100%;width:auto;max-height:12px}
-/* 22 nov. : à la souris, le magnétoscope grossit au survol (loupe), ses touches deviennent lisibles et visables ; au doigt, rien ne change */
-@media (pointer:fine) and (min-width:700px){
-  #vhs.tv-epure .vhs-shell:has(.vhs-deck:hover){overflow:visible!important}
-  #vhs.tv-epure .vhs-deck{transition:transform .18s ease-out;transform-origin:100% 0;position:relative}
-  #vhs.tv-epure .vhs-deck:hover{transform:scale(1.7);z-index:40;box-shadow:0 18px 40px rgba(0,0,0,.75)}}
+/* 22 nov. : loupe au survol retirée (test réel : les touches bougeaient sous le curseur) ; les capuchons portent leurs pictos */
 /* 22 nov. : le téléviseur lit à travers son verre ; la bande de tête VHS restait collée au bas du tube */
 #vhs.tv-facade .ike-head{display:none!important}
 #vhs.tv-facade>.ike-frame{box-shadow:0 10px 28px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,214,160,.28),inset 0 -2px 3px rgba(0,0,0,.55),inset 1px 0 0 rgba(255,214,160,.12),inset -1px 0 0 rgba(0,0,0,.4)!important;border-radius:9px!important}
 #vhs.tv-epure .tv-cap{position:absolute;left:50%;top:62%;transform:translate(-50%,-50%);width:62%;max-width:16px;aspect-ratio:1;color:#121009!important;opacity:1!important;pointer-events:none;filter:drop-shadow(0 1px 0 rgba(255,255,255,.45))}
 #vhs.tv-epure .tv-cap svg{display:block;width:100%;height:100%}
 #vhs.tv-epure [data-vhs-action="pause"] .tv-cap svg,#vhs.tv-epure [data-vhs-action="power"] .tv-cap svg{fill:none}
+/* test réel du 22 nov. : au téléphone, la baie d'enregistrement passe au tiroir (la touche REC l'ouvre) ; la liste prend la place */
+@media (max-width:700px) and (orientation:portrait),(max-height:520px) and (orientation:landscape){
+  #vhs.tv-epure:not(.tv-tiroir) .vhs-rec{display:none!important}}
+#vhs.tv-epure :is(.vhs-find-input,.vhs-rec-input)::placeholder{color:#9a917a!important;opacity:1!important}
