@@ -77,5 +77,7 @@ html.kam-epure:not(.kam-tiroir) #pane-looks #fams{-webkit-mask-image:linear-grad
 html.kam-planche #pane-looks .strip>.frame:not(:has(img)){display:none!important}
 
 /* jugement externe : toutes les familles tiennent dans la largeur, sans coupe */
-html.kam-epure:not(.kam-tiroir) #pane-looks #fams{overflow:hidden;-webkit-mask-image:none;mask-image:none;gap:4px!important}
-html.kam-epure:not(.kam-tiroir) #pane-looks #fams>*{flex:1 1 0!important;min-width:0!important;padding-left:0!important;padding-right:0!important}
+html.kam-epure:not(.kam-tiroir) #pane-looks #fams{overflow:visible;flex-wrap:wrap!important;-webkit-mask-image:none;mask-image:none;gap:4px!important}
+html.kam-epure:not(.kam-tiroir) #pane-looks #fams>*{flex:1 0 calc(100%/7 - 4px)!important;min-width:40px!important;min-height:40px;padding-left:0!important;padding-right:0!important}
+
+html.kam-planche #pane-looks .strip>.frame{aspect-ratio:auto!important;height:100%!important}

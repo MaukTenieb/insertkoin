@@ -93,17 +93,18 @@
   }
 
   /* ---- planche contact ---- */
-  var pOpen=0;
+  var pOpen=0,pTimer=0;
   function planche(on){
     var g=$('grid'),fr_=D.querySelector('.ike-frame')||$('stage');if(!g||!fr_)return;
     if(on){if(H.classList.contains('kam-tiroir'))H.classList.remove('kam-tiroir');
-      var r=fr_.getBoundingClientRect();H.classList.add('kam-planche');pOpen=performance.now();
+      var r=fr_.getBoundingClientRect();H.classList.add('kam-planche');pOpen=performance.now();clearInterval(pTimer);var n0=-1;pTimer=setInterval(function(){if(!H.classList.contains('kam-planche')){clearInterval(pTimer);return;}var n1=g.querySelectorAll('.frame img').length;if(n1!==n0){n0=n1;lay();}},400);
       g.style.setProperty('left',r.left+'px','important');g.style.setProperty('top',r.top+'px','important');
       g.style.setProperty('width',r.width+'px','important');g.style.setProperty('height',r.height+'px','important');
-      var nn=g.querySelectorAll('.frame').length||1,cols=Math.max(3,Math.min(10,Math.ceil(Math.sqrt(nn*r.width/(r.height*4/3)))));
-      g.style.setProperty('grid-template-columns','repeat('+cols+',minmax(0,1fr))','important');/* la planche remplit l'écran : colonnes calculées sur le nombre de rendus */
+      function lay(){var nn=g.querySelectorAll('.frame img').length||g.querySelectorAll('.frame').length||1,cols=Math.max(3,Math.min(10,Math.ceil(Math.sqrt(nn*r.width/(r.height*4/3)))));
+      g.style.setProperty('grid-template-columns','repeat('+cols+',minmax(0,1fr))','important');var rows=Math.ceil(nn/cols);g.style.setProperty('grid-auto-rows',Math.max(48,Math.floor((r.height-16-6*(rows-1))/rows))+'px','important');/* la planche remplit l'écran : colonnes calculées sur le nombre de rendus */
+      }lay();
       var cur=g.querySelector('[aria-pressed=true]');if(cur)cur.scrollIntoView({block:'center'});tick(700);}
-    else{H.classList.remove('kam-planche');['left','top','width','height','grid-template-columns'].forEach(function(k){g.style.removeProperty(k);});}
+    else{H.classList.remove('kam-planche');['left','top','width','height','grid-template-columns','grid-auto-rows'].forEach(function(k){g.style.removeProperty(k);});}
   }
   D.addEventListener('click',function(e){if(!H.classList.contains('kam-planche')||performance.now()-pOpen<450)return;
     if(e.target.closest('#grid .frame')){setTimeout(function(){planche(false);show(false);},0);}
