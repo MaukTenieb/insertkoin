@@ -17,7 +17,7 @@
     g.gain.setValueAtTime(.035,t);g.gain.exponentialRampToValueAtTime(.0001,t+.03);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+.035);}catch(e){}}
 
   /* ---- la bande ---- */
-  var ICON={cam:'i-camera',undo:'i-undo',keep:'i-check',save:'i-save',more:'i-more'};
+  var ICON={cam:'i-kam',undo:'i-undo',keep:'i-check',save:'i-save',more:'i-more'};
   var LAB={cam:['Camera','Caméra'],undo:['Undo','Annuler'],keep:['Keep','Valider'],save:['Save','Enregistrer'],more:['Drawer','Tiroir']};
   function key(k,cls){var b=D.createElement('button');b.type='button';b.dataset.kb=k;b.className='key'+(cls?' '+cls:'');/* matière : touche en caoutchouc du caméscope (borne-kam.css) */
     b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#'+ICON[k]+'"/></svg>';return b;}
