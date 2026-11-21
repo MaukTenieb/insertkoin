@@ -1415,3 +1415,10 @@ html.borne #m-board .card.kcur,html.borne #chess-board .sq.kcur{box-shadow:none!
 html.borne :is(#chess,#mem,#mm-panel,#hang-panel,#bb-panel,#konklave-panel) button:active{box-shadow:inset 0 2px 3px rgba(0,0,0,.45)!important}
 html.borne .b-dot.on::after{box-shadow:none!important}
 html.borne .b-bezelfoot #koins.b-credit{background:linear-gradient(170deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.015) 38%,transparent 40%),#070605!important}
+
+/* 21 nov. 2026 : points de suite à pictogramme — éteint en laiton sombre, allumé en ambre de l'enseigne ; la cible garde 34 × 44 px */
+html.borne .b-dot.pic::after{display:none}
+html.borne .b-dot.pic{color:#6b6156;display:inline-flex;align-items:center;justify-content:center;transition:color .2s,filter .2s}
+html.borne .b-dot.pic svg{width:20px;height:20px;display:block}
+html.borne .b-dot.pic:hover{color:#a89a82}
+html.borne .b-dot.pic.on{color:#ffe08a;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--pal-titre,#ffe08a) 70%,transparent))}
