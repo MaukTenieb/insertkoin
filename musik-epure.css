@@ -29,3 +29,6 @@
   #mz.mz-epure:not(.mz-tiroir){display:flex!important;flex-direction:column!important;height:100%!important}
   #mz.mz-epure:not(.mz-tiroir) .mzmain{flex:1 1 auto!important;min-height:0!important;grid-template-rows:minmax(0,1fr)!important}
   #mz.mz-epure:not(.mz-tiroir) .mzrack{height:100%!important;max-height:none!important;-webkit-mask-image:linear-gradient(#000 calc(100% - 22px),transparent);mask-image:linear-gradient(#000 calc(100% - 22px),transparent)}}
+/* jugement externe : pictos des potards lisibles (16 px, crème) */
+#mz.mz-epure .mzbar small svg{width:18px!important;height:18px!important;color:#e9e2cf!important;opacity:.9}
+#mz.mz-epure .mzbar small{width:auto!important;height:auto!important}

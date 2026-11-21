@@ -48,3 +48,7 @@
 #vhs.tv-epure [data-vhs-tracklist]{grid-auto-rows:min-content!important;align-content:start!important}
 /* à la souris, rangées de l'afficheur resserrées (dix titres visibles) ; au doigt, la cible garde ses 44 px */
 @media (pointer:fine){html.b-charte #kg-root #vhs.tv-epure [data-vhs-tracklist] button,html #kg-root #vhs.tv-epure [data-vhs-tracklist] button{min-height:26px!important;font-size:12px!important}}
+
+/* jugement externe : les deux touches sous l'étagère en touches de console photographiées (même matière que StudioRhogo) */
+html #kg-root #vhs.tv-epure :is(.tv-more,.vhs-tape-all),#vhs.tv-epure :is(.tv-more,.vhs-tape-all){background:url(kave/a/vhs/touche.webp) center/100% 100% no-repeat!important;border:0!important;border-radius:3px!important;color:#e9e2cf!important;box-shadow:0 2px 3px rgba(0,0,0,.7)!important}
+#vhs.tv-epure .tv-more:active,#vhs.tv-epure .vhs-tape-all:active{transform:translateY(1px)}

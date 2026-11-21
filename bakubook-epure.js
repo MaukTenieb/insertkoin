@@ -17,5 +17,16 @@
   var st=document.createElement('style');st.textContent='.tabs button:has(svg.pk){display:flex;align-items:center;justify-content:center;min-width:48px;padding:8px 13px}.tabs button svg.pk{display:block}';
   document.head.appendChild(st);
   var n=0;(function t(){if(!go()&&++n<100)setTimeout(t,50);})();
+
+  /* jugement externe : les touches dorées de la barre de lecture passent au même trait que les onglets */
+  var B={tpages:'<rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/>',
+    loupe:'<circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/><path d="M8 10.5h5M10.5 8v5"/>',
+    prev:'<path d="M16 5L8 12l8 7z" fill="currentColor"/>',next:'<path d="M8 5l8 7-8 7z" fill="currentColor"/>'};
+  function brass(){Object.keys(B).forEach(function(id){var b=document.getElementById(id);if(!b||b.querySelector('svg.pk'))return;
+      b.innerHTML='<svg class="pk" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" '+S+'>'+B[id]+'</svg>';});
+    [].forEach.call(document.querySelectorAll('form .brass[type=submit]'),function(b){if(b.querySelector('svg'))return;b.setAttribute('aria-label',b.getAttribute('aria-label')||'⌕');
+      b.innerHTML='<svg class="pk" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" '+S+'><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></svg>';});}
+  brass();setTimeout(brass,500);
+  st.textContent+='.brass svg.pk{display:block;margin:auto}';
   var tb=document.querySelector('.tabs');if(tb)new MutationObserver(function(){go();}).observe(tb,{childList:true,subtree:true,characterData:true});
 })();
