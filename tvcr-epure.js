@@ -31,6 +31,9 @@
     if(tl){var fix=function(){[].forEach.call(tl.querySelectorAll('button'),function(b){var t=(b.textContent||'').trim(),m=/^(\d+)\.\s*(\.{2,}|…|—|-)?\s*$/.exec(t);
         if(m){var nn=('0'+m[1]).slice(-2);b.textContent=m[1]+'. '+(fr()?'PISTE ':'TRACK ')+nn;}});};
       new MutationObserver(fix).observe(tl,{childList:true,subtree:true,characterData:true});fix();}
+    /* test réel : changer de cassette efface la recherche en cours (sinon la liste paraît vide) */
+    var row=q(r,'[data-vhs-shelf-row]');
+    if(row)row.addEventListener('click',function(e){if(!e.target.closest('.vhs-tape'))return;var fi=q(r,'[data-vhs-find-input]');if(fi&&fi.value){fi.value='';fi.dispatchEvent(new Event('input',{bubbles:true}));}},true);
     /* état du magnétoscope incrusté à l'écran (OSD d'époque) */
     var scr=q(r,'.vhs-screen'),st=q(r,'[data-vhs-osd-state]');
     if(scr&&st){var et=D.createElement('div');et.className='tv-etat';et.setAttribute('aria-hidden','true');scr.appendChild(et);

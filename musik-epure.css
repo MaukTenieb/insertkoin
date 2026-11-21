@@ -5,8 +5,13 @@
 #mz.mz-epure:not(.mz-tiroir) #mz-rst,
 #mz.mz-epure:not(.mz-tiroir) #mz-chain,
 #mz.mz-epure:not(.mz-tiroir) #mz-len,
-#mz.mz-epure:not(.mz-tiroir) #mz-file,
-#mz.mz-epure:not(.mz-tiroir) .mzdeck{display:none!important}
+#mz.mz-epure:not(.mz-tiroir) #mz-file{display:none!important}
+/* test réel du 21 nov. : la tranche de piste (volume, effets) revient sous la grille ; maître et bibliothèque restent au tiroir */
+#mz.mz-epure:not(.mz-tiroir):not(.mz-mix) .mzdeck{display:none!important}
+#mz.mz-epure.mz-mix:not(.mz-tiroir) #mz-mst,#mz.mz-epure.mz-mix:not(.mz-tiroir) .mzlibbox{display:none!important}
+#mz.mz-epure.mz-mix:not(.mz-tiroir) .mzdeck{grid-template-columns:minmax(0,1fr)!important}
+#mz .mz-mixb{display:none}#mz.mz-epure .mz-mixb{display:inline-flex;align-items:center;justify-content:center}#mz.mz-epure .mz-mixb svg{width:20px;height:20px}#mz.mz-epure.mz-mix .mz-mixb{color:#ffa726}
+@media (max-width:700px) and (orientation:portrait){#mz.mz-epure:not(.mz-tiroir) .mzdeck{display:none!important}}
 #mz.mz-epure:not(.mz-tiroir) .mzmain{flex:1 1 auto;min-height:0;height:auto!important;max-height:none!important}
 #mz .mz-more{display:none}
 #mz.mz-epure .mz-more{display:inline-flex;align-items:center;justify-content:center;margin-left:auto}
@@ -32,3 +37,6 @@
 /* jugement externe : pictos des potards lisibles (16 px, crème) */
 #mz.mz-epure .mzbar small svg{width:18px!important;height:18px!important;color:#e9e2cf!important;opacity:.9}
 #mz.mz-epure .mzbar small{width:auto!important;height:auto!important}
+
+/* le tempo se règle aussi sur l'afficheur 96 (molette ou glissé vertical) */
+#mz.mz-epure #mz-bpm{cursor:ns-resize;touch-action:none}

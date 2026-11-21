@@ -98,3 +98,14 @@ html.kam-epure .kam-fl svg{width:26px;height:26px;filter:drop-shadow(0 1px 1px #
 html.kam-epure .kam-fl-p{left:6px}html.kam-epure .kam-fl-n{right:6px}
 html.kam-epure .kam-fl:hover,html.kam-epure .kam-fl:focus-visible{opacity:1;background:rgba(0,0,0,.6);color:#ffa726;outline:none}
 html.kam-planche .kam-fl,.stageWrap.live .kam-fl{display:none!important}
+
+/* bandeau permanent (test réel, 22 nov.) : nom du rendu à gauche, intensité à droite, sur fond sombre en bas de l'image */
+.kam-pl{display:none}
+html.kam-epure .kam-pl{display:flex;align-items:center;gap:12px;position:absolute;left:0;right:0;bottom:0;z-index:7;padding:8px 12px 9px;
+  background:linear-gradient(transparent,rgba(0,0,0,.78) 35%);font:400 clamp(8px,1.2vw,12px)/1.3 "Press Start 2P",monospace;color:#f4f1e6;letter-spacing:.05em;text-shadow:1px 1px 0 #000}
+html.kam-epure .kam-pl .kam-pl-n{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;color:#ffe3a0}
+html.kam-epure .kam-pl input{flex:0 0 clamp(110px,26%,220px);accent-color:#ffa726;height:28px;cursor:pointer}
+html.kam-epure .kam-pl.vide{display:none}
+html.kam-planche .kam-pl,.stageWrap.live .kam-pl{display:none!important}
+html.kam-epure .kam-osd{display:none!important}
+html.kam-epure .kam-pl input:disabled{opacity:.3;cursor:default}

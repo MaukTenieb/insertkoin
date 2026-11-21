@@ -27,6 +27,10 @@
     [].forEach.call(document.querySelectorAll('form .brass[type=submit]'),function(b){if(b.querySelector('svg'))return;b.setAttribute('aria-label',b.getAttribute('aria-label')||'⌕');
       b.innerHTML='<svg class="pk" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" '+S+'><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/></svg>';});}
   brass();setTimeout(brass,500);
+  /* test réel : chaque barre de recherche annonce sa source ; la loupe allumée se voit */
+  function ph(){[['ia','Internet Archive'],['gut','Project Gutenberg'],['ws','Wikisource'],['kd','Korhogo Diary']].forEach(function(x){var i=document.querySelector('#p-'+x[0]+' input[type=search]');if(i&&!i.placeholder)i.placeholder=x[1]+' ⌕';});}
+  ph();setTimeout(ph,800);
+  st.textContent+='#loupe[aria-pressed=true]{box-shadow:0 0 0 2px #fff3c4,0 0 14px rgba(255,214,120,.9)!important;filter:brightness(1.15)}';
   st.textContent+='.brass svg.pk{display:block;margin:auto}';
   var tb=document.querySelector('.tabs');if(tb)new MutationObserver(function(){go();}).observe(tb,{childList:true,subtree:true,characterData:true});
 })();

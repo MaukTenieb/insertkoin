@@ -2,8 +2,8 @@
    Surface : la façade du magnétoscope, l'étagère des cassettes, la liste des morceaux.
    Tiroir (touche ⋯ de l'étagère, ou la loupe) : recherche, tri, enregistrement d'une chaîne, télétexte, outils de cassette.
    Sur l'écran : glisser à l'horizontale change de morceau, toucher lance ou arrête. Logique : tvcr-epure.js. */
-#vhs.tv-epure:not(.tv-tiroir) .vhs-find,
-#vhs.tv-epure:not(.tv-tiroir) .vhs-rec,
+#vhs.tv-epure:not(.tv-tiroir) .vhs-find-sort,
+#vhs.tv-epure:not(.tv-tiroir) .vhs-find-count,
 #vhs.tv-epure:not(.tv-tiroir) .vhs-ttx-btn,
 #vhs.tv-epure:not(.tv-tiroir) .vhs-tapetools,
 #vhs.tv-epure:not(.tv-tiroir) .vhs-source-tabs{display:none!important}
@@ -66,3 +66,9 @@ html #kg-root #vhs.tv-epure :is(.tv-more,.vhs-tape-all),#vhs.tv-epure :is(.tv-mo
   #vhs.tv-epure [data-vhs-tracklist]{flex:1 1 auto!important;height:auto!important;min-height:0!important}
   html.borne #kg-root #vhs.tv-epure .vhs-shell,#vhs.tv-epure .vhs-shell{display:flex!important;flex-direction:column!important}
   #vhs.tv-epure .vhs-shell>.vhs-catalogue{flex:1 1 auto!important}}
+
+/* test réel du 21 nov. : la recherche et la baie d'enregistrement d'une chaîne restent visibles ; les tris restent au tiroir */
+#vhs.tv-epure .vhs-find,#vhs.tv-epure .vhs-rec{display:flex!important;align-items:center;gap:6px;margin:4px 0!important}
+#vhs.tv-epure .vhs-find-input{flex:1 1 auto;min-width:0}
+#vhs.tv-epure .vhs-rec-input{flex:1 1 auto;min-width:0}
+#vhs.tv-epure .vhs-rec{flex-wrap:nowrap!important}#vhs.tv-epure .vhs-rec-progress:empty{display:none!important}#vhs.tv-epure .vhs-rec-progress{flex:0 0 100%}#vhs.tv-epure .vhs-rec:has(.vhs-rec-progress:not(:empty)){flex-wrap:wrap!important}

@@ -130,6 +130,20 @@
     /* à l'ouverture, l'afficheur montre une fois le rang du rendu, flèches comprises */
     setTimeout(function(){try{show(false);}catch(_){}},1600);}
 
+  /* ---- test réel : bandeau permanent sous l'image, le nom du rendu et sa réglette d'intensité ---- */
+  function plaque(){var st=$('stage');if(!st||st.querySelector('.kam-pl'))return;
+    var pl=D.createElement('div');pl.className='kam-pl';
+    pl.innerHTML='<span class="kam-pl-n"></span><input type="range" min="5" max="100" step="5" value="100">';
+    var nm=pl.firstChild,rg=pl.lastChild;rg.setAttribute('aria-label',fr()?'Intensité':'Strength');rg.title=rg.getAttribute('aria-label');
+    ['pointerdown','click','dblclick'].forEach(function(t){pl.addEventListener(t,function(e){e.stopPropagation();});});
+    rg.addEventListener('input',function(){if(S.cur)setAmt(+rg.value/100);});
+    st.appendChild(pl);
+    function sync(){var L=visibleCards().filter(swipable),k=curKey(),i=-1;for(var j=0;j<L.length;j++)if(L[j].k===k){i=j;break;}
+      var n=(($('lbName')||{}).textContent||'').toUpperCase();nm.textContent=(S.cur&&i>=0?(i+1)+'/'+L.length+'  ':'')+n;
+      rg.disabled=!S.cur;var a=S.cur&&S.cur.amt!=null?S.cur.amt:1;if(D.activeElement!==rg)rg.value=Math.round(a*100);}
+    var lb=$('lbName');if(lb)new MutationObserver(sync).observe(lb,{childList:true,characterData:true,subtree:true});
+    setInterval(sync,700);sync();}
+
   /* ---- mise en route ---- */
-  var n=0;(function boot(){if(ok()&&bande()&&gestes()){fleches();H.classList.add('kam-epure');return;}if(++n<200)setTimeout(boot,50);})();
+  var n=0;(function boot(){if(ok()&&bande()&&gestes()){fleches();plaque();H.classList.add('kam-epure');return;}if(++n<200)setTimeout(boot,50);})();
 })();
