@@ -25,7 +25,7 @@
   -webkit-mask-image:linear-gradient(#000 calc(100% - 18px),transparent);mask-image:linear-gradient(#000 calc(100% - 18px),transparent)}
 #vhs.tv-epure [data-vhs-tracklist] button{background:transparent!important;border:0!important;border-left:0!important;border-radius:2px;
   font-family:"Press Start 2P",monospace!important;font-size:11px!important;letter-spacing:.04em;line-height:1.9;
-  color:#9fe6d0!important;text-shadow:0 0 4px rgba(120,230,200,.5);opacity:.78;padding:3px 8px 3px 18px!important;position:relative;min-height:30px!important;height:auto!important}
+  color:#9fe6d0!important;text-shadow:0 0 4px rgba(120,230,200,.5);opacity:.78;padding:3px 8px 3px 18px!important;position:relative;min-height:26px!important;height:auto!important;margin:0!important;line-height:1.5!important;padding-top:3px!important;padding-bottom:3px!important}
 #vhs.tv-epure [data-vhs-tracklist] button:hover{opacity:.9}
 #vhs.tv-epure [data-vhs-tracklist] button[aria-current="true"]{opacity:1;color:#c8fff0!important;text-shadow:0 0 6px rgba(140,255,225,.8)}
 #vhs.tv-epure [data-vhs-tracklist] button[aria-current="true"]::before{content:"▶";position:absolute;left:5px;top:50%;transform:translateY(-50%);font-size:7px}
@@ -44,3 +44,7 @@
   #vhs.tv-epure .vhs-shelf-row{height:84px!important;min-height:0!important}
   #vhs.tv-epure .vhs-shelf-row>*{height:100%!important;max-height:84px}
   #vhs.tv-epure [data-vhs-tracklist] button{min-height:26px!important;line-height:1.6;padding-top:2px!important;padding-bottom:2px!important}}
+#vhs.tv-epure [data-vhs-tracklist]>li{min-height:0!important;height:auto!important;margin:0!important;padding:0!important;border:0!important}
+#vhs.tv-epure [data-vhs-tracklist]{grid-auto-rows:min-content!important;align-content:start!important}
+/* à la souris, rangées de l'afficheur resserrées (dix titres visibles) ; au doigt, la cible garde ses 44 px */
+@media (pointer:fine){html.b-charte #kg-root #vhs.tv-epure [data-vhs-tracklist] button,html #kg-root #vhs.tv-epure [data-vhs-tracklist] button{min-height:26px!important;font-size:12px!important}}

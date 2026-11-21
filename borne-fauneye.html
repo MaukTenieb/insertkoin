@@ -187,7 +187,7 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
     .catch(function(){wait.textContent=T.err;});}
   function openFrame(url,o){clear();var f=document.createElement('iframe');f.src=url;f.title=o.ti||'';f.setAttribute('allowfullscreen','');stage.insertBefore(f,wait);cur={n:0,i:0};side(o.au,o.ti,o.ed,o.srcName,o.href);num();tools();}
   /* 21 nov. 2026 (jugement externe) : à l'horizontale, la page suivante s'ouvre en vis-à-vis ; la double page avance de deux */
-  function wide2(){return stage.clientWidth>stage.clientHeight*1.15&&cur&&cur.page&&cur.n>1;}
+  function wide2(){return stage.clientWidth>=640&&stage.clientWidth>stage.clientHeight*1.15&&innerWidth>innerHeight&&cur&&cur.page&&cur.n>1;}
   function facing(n,i){if(!wide2()||n.tagName!=='IMG'||i+1>=cur.n)return;
     Promise.resolve(cur.page(i+1,false)).then(function(m){if(!cur||cur.i!==i||!m||m.tagName!=='IMG')return;m.classList.add('bk-face');m.draggable=false;
       if(n.parentNode===stage)stage.insertBefore(m,n.nextSibling);num();}).catch(function(){});}
