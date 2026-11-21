@@ -199,7 +199,7 @@ body[data-th=nuit] .side .au{color:#c9a46a}body[data-th=nuit] .side a{color:#e0b
     if(!cur||!cur.page||!im.length||innerWidth<700){stage.style.flex='';if(v)v.style.justifyContent='';return;}
     var side=v.querySelector('.side'),cs=getComputedStyle(v),avail=v.clientWidth-(side?side.offsetWidth:0)-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-48,H=stage.clientHeight,a=0;
     im.forEach(function(x){a+=x.naturalWidth/x.naturalHeight;});var w=Math.min(avail,H*a)+6;stage.style.flex='0 0 '+Math.round(w)+'px';v.style.justifyContent='center';v.style.gap='48px';}
-  addEventListener('resize',fitStage);
+  addEventListener('resize',fitStage);if(window.ResizeObserver)new ResizeObserver(function(){fitStage();}).observe(stage.parentElement);setInterval(function(){if(cur&&cur.page)fitStage();},1500);/* relecture : recalcul quand la scène change de taille ou que la page arrive en pleine définition */
   stage.addEventListener('load',function(){fitStage();},true);
   function go(n){if(!cur||!cur.page)return;n=Math.max(0,Math.min(cur.n-1,n));if(n!==cur.i){cur.i=n;showPage();}}
   function step(d){if(!cur)return;if(cur.rend){d>0?cur.rend.next():cur.rend.prev();return;}

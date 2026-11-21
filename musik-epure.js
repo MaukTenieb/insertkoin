@@ -11,6 +11,6 @@
     var f=D.getElementById('mz-file');bar.insertBefore(b,f||null);
   }
   var mo=new MutationObserver(scan);
-  function scan(){var m=D.getElementById('mz');if(m&&m.querySelector('.mzbar'))setup(m);}
+  function scan(){var m=D.getElementById('mz');if(m&&m.querySelector('.mzbar')){setup(m);mo.disconnect();}}/* relecture : l'observateur s'arrête une fois Musik habillé (il coûtait un appel à chaque changement du site) */
   mo.observe(D.documentElement,{childList:true,subtree:true});scan();
 })();

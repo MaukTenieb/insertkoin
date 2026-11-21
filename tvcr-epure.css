@@ -53,8 +53,8 @@
 html #kg-root #vhs.tv-epure :is(.tv-more,.vhs-tape-all),#vhs.tv-epure :is(.tv-more,.vhs-tape-all){background:url(kave/a/vhs/touche.webp) center/100% 100% no-repeat!important;border:0!important;border-radius:3px!important;color:#e9e2cf!important;box-shadow:0 2px 3px rgba(0,0,0,.7)!important}
 #vhs.tv-epure .tv-more:active,#vhs.tv-epure .vhs-tape-all:active{transform:translateY(1px)}
 
-/* jugement externe : les deux touches montent sur le montant droit de l'étagère, la bande vide disparaît (tous formats) */
-@media all{
+/* jugement externe : les deux touches montent sur le montant droit de l'étagère, la bande vide disparaît ; au téléphone couché, la mise en page d'origine a déjà son montant (relecture du 21 nov. : ne pas la toucher) */
+@media (min-height:521px),(orientation:portrait){
   html #kg-root #vhs.tv-epure .vhs-shelf,#vhs.tv-epure .vhs-shelf{display:grid!important;grid-template-columns:minmax(0,1fr) 44px!important;grid-template-rows:auto!important;column-gap:6px!important;align-items:start!important}
   html #kg-root #vhs.tv-epure .vhs-shelf-row,#vhs.tv-epure .vhs-shelf-row{grid-column:1!important;grid-row:1!important;margin:0!important;padding-right:0!important}
   html #kg-root #vhs.tv-epure .vhs-shelf-head,#vhs.tv-epure .vhs-shelf-head{grid-column:2!important;grid-row:1!important;position:static!important;height:auto!important;min-height:0!important;padding:0!important;margin:0!important;background:none!important;border:0!important;display:block!important}

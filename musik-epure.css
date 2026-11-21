@@ -22,8 +22,8 @@
 #mz.mz-epure .mzfg canvas{height:calc(var(--mzrh,42px) * 1.12)!important;width:calc(var(--mzrh,42px) * 1.52)!important;bottom:0!important}
 #mz.mz-epure .mzfg{width:calc(var(--mzrh,42px) * 1.58)!important}
 /* jugement externe : l'écran vidéo, noir à l'arrêt, se réduit ; la platine prend la hauteur */
-#mz.mz-epure .mzside .mzscrbox{flex:0 0 26%!important;min-height:0!important}
-#mz.mz-epure .mzside .mzttbox{flex:1 1 auto!important}
+@media (orientation:landscape){#mz.mz-epure .mzside .mzscrbox{flex:0 0 26%!important;min-height:0!important}
+#mz.mz-epure .mzside .mzttbox{flex:1 1 auto!important}}
 /* jugement externe : au téléphone debout, la grille descend jusqu'au bas du châssis */
 @media (max-width:700px) and (orientation:portrait){
   #mz.mz-epure:not(.mz-tiroir){display:flex!important;flex-direction:column!important;height:100%!important}
