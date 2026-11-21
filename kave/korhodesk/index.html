@@ -54,7 +54,11 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 #nightbg{position:absolute;inset:0;background:center/100% 100% no-repeat;opacity:var(--n,0);pointer-events:none}#stage.tr #nightbg,#stage.tr::after{transition:opacity 60s linear}
 #stage::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;opacity:calc(var(--n,0) * var(--code,1));
   background:radial-gradient(ellipse at var(--dx) var(--dy),rgba(255,30,20,.55),transparent 26%),radial-gradient(circle at var(--lx) var(--ly),transparent 0,rgba(6,8,14,.55) 38%,rgba(2,3,8,.82) 75%);mix-blend-mode:multiply}
-#stage #neon,#stage #board,#stage #rack,#stage #bell,#stage #racknav{z-index:2}
+#stage #neon,#stage #board,#stage #rack,#stage #bell,#stage #tvk,#stage #racknav{z-index:2}
+/* 21 nov. 2026 (Mauk Tenieb) : le téléviseur du VideoKlub posé sur le comptoir ; un clic ouvre le MiniTale. Échelle : 1,9 fois le téléphone du bureau ; pied sur le plateau ; ombre de contact ; l'écran garde sa lueur */
+#tvk{cursor:pointer;background:none;border:0;padding:0}#tvk img{display:block;width:100%;filter:drop-shadow(0 .5cqmin .7cqmin rgba(0,0,0,.7)) drop-shadow(-.6cqmin .2cqmin 1.2cqmin rgba(0,0,0,.35));transition:filter .4s}
+#tvk:hover img,#tvk:focus-visible img{filter:drop-shadow(0 .5cqmin .7cqmin rgba(0,0,0,.7)) drop-shadow(0 0 1.4cqmin rgba(140,220,170,.35))}#tvk:active{translate:0 .2cqmin}
+#stage.night #tvk img{filter:brightness(.78) drop-shadow(0 .8cqmin 1.2cqmin rgba(0,0,0,.65))}
 #stage.night #board.lit{filter:brightness(.8)}
 #stage.night #rack img,#stage.night #bell img{filter:brightness(.62) drop-shadow(0 .8cqmin 1.2cqmin rgba(0,0,0,.65))}
 #stage.night #neon img{filter:brightness(1.25)}
@@ -158,6 +162,7 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
   <canvas id="dust"></canvas>
   <div id="glow"></div>
   <button class="o" id="bell" aria-label="Ring"><img src="img/bell.webp" alt=""></button>
+  <button class="o" id="tvk" aria-label="MiniTale"><img src="img/tv-vk.webp" alt=""></button>
 </main>
 
 <div id="slip" class="ov" role="dialog" aria-modal="true" aria-labelledby="ntier">
@@ -234,8 +239,8 @@ const today=()=>new Date().toISOString().slice(0,10);
 function myCodes(){try{return JSON.parse(localStorage.getItem('kd.codes')||'[]')}catch(e){return[]}}
 // positions en % de la scène : [gauche, haut, largeur]
 const LAYOUT={
-  land:{door:[36,48],lamp:[81,47],bg:'img/room-land.webp',nbg:'img/room-land-nuit.webp',ar:'1376/768',neon:[3,9,24],board:[2,22,26],rack:[47,14,23],bell:[49,60.4,6],nav:[47,49]},
-  port:{door:[15,45],lamp:[78,46],bg:'img/room-port.webp',nbg:'img/room-port-nuit.webp',ncode:.4,ar:'768/1376',neon:[21,7,58],board:[22,17.5,56],rack:[25,41.6,42],bell:[76,60.2,12],nav:[25,61.5]}
+  land:{door:[36,48],lamp:[81,47],bg:'img/room-land.webp',nbg:'img/room-land-nuit.webp',ar:'1376/768',neon:[3,9,24],board:[2,22,26],rack:[47,14,23],bell:[49,60.4,6],nav:[47,49],tvk:[57,53.1,12.1]},
+  port:{door:[15,45],lamp:[78,46],bg:'img/room-port.webp',nbg:'img/room-port-nuit.webp',ncode:.4,ar:'768/1376',neon:[21,7,58],board:[22,17.5,56],rack:[25,41.6,42],bell:[76,60.2,12],nav:[25,61.5],tvk:[2.5,54.8,21.4]}
 };
 // crochets du tableau (px de rack.webp 852×692)
 const HX=[62,136,208,282,355,428,500,572,646,718,791],HY=[58,128,200,271,345,414,483,549,612];
@@ -259,11 +264,12 @@ function layout(){
   const L=innerWidth>=ah?LAYOUT.land:LAYOUT.port,st=$('#stage'),[aw,ahh]=L.ar.split('/').map(Number),r=aw/ahh,w=Math.min(innerWidth,ah*r);
   st.style.width=w+'px';st.style.top=(ah/2)+'px';
   st.style.setProperty('--ar',L.ar);st.style.backgroundImage=`url(${L.bg})`;$('#blur').style.backgroundImage=`url(${L.bg})`;
-  for(const id of ['neon','board','rack','bell']){const [x,y,w]=L[id],e=$('#'+id);e.style.left=x+'%';e.style.top=y+'%';e.style.width=w+'%'}
+  for(const id of ['neon','board','rack','bell','tvk']){const [x,y,w]=L[id],e=$('#'+id);e.style.left=x+'%';e.style.top=y+'%';e.style.width=w+'%'}
   dusk(L);st.style.setProperty('--dx',L.door[0]+'%');st.style.setProperty('--dy',L.door[1]+'%');st.style.setProperty('--lx',L.lamp[0]+'%');st.style.setProperty('--ly',L.lamp[1]+'%');
   const g=$('#glow');g.style.left=L.lamp[0]+'%';g.style.top=L.lamp[1]+'%';LAMP=L.lamp;const cv=$('#dust');cv.width=st.clientWidth;cv.height=st.clientHeight;
   const n=$('#racknav');n.style.left=L.nav[0]+'%';n.style.top=L.nav[1]+'%';
 }
+$('#tvk').addEventListener('click',()=>{location.href='https://mauktenieb.github.io/3615/'});
 addEventListener('resize',layout);
 
 function paint(){
