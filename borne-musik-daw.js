@@ -485,9 +485,9 @@ function vdraw(){var cv=VIS.cv;if(!cv||!document.body.contains(cv))return;if(!RO
    /* 15 nov. 2026, 22 h 01 : sans image, l'écran trace le son qui sort, en oscilloscope à phosphore vert */var G=AC&&AC.__mz;if(G&&G.an){var b=VIS.ob||(VIS.ob=new Float32Array(G.an.fftSize));G.an.getFloatTimeDomainData(b);var z=0;for(var q=1;q<b.length/2;q++)if(b[q-1]<=0&&b[q]>0){z=q;break}var n=b.length/2;
     g.strokeStyle='rgba(140,255,160,.95)';g.lineWidth=Math.max(1.5,H/140);g.shadowColor='rgba(80,255,120,.8)';g.shadowBlur=H/30;g.beginPath();for(var j=0;j<n;j++){var x=j/(n-1)*W,y=H/2-Math.max(-1,Math.min(1,b[z+j]*1.6))*H*.42;j?g.lineTo(x,y):g.moveTo(x,y)}g.stroke();g.shadowBlur=0}else{g.strokeStyle='rgba(140,255,160,.45)';g.lineWidth=Math.max(1.2,H/180);g.shadowColor='rgba(80,255,120,.6)';g.shadowBlur=H/40;g.beginPath();g.moveTo(0,H/2);g.lineTo(W,H/2);g.stroke();g.shadowBlur=0}}}
 /* ---------- la platine : le disque tourne à 33 tours ; le saisir, c'est scratcher ---------- */
-function ttImg(u){var im=new Image();im.src=base()+u;return im}var TTI={deck:ttImg('a-tt-platine.webp'),disc:ttImg('a-tt-disque.webp'),arm:ttImg('a-tt-bras.webp')};
+function ttImg(u){var im=new Image();im.src=base()+u;return im}var TTI={deck:ttImg('a-tt-platine.webp'),disc:ttImg('a-tt-disque.webp'),arm:ttImg('a-tt-bras.webp'),ace:ttImg('a-tt-acetate.webp')};
 var TT={rpm:33,pitch:0,ang:0,pos:0,buf:null,rev:null,name:'',hold:false,src:null,t0:0,last:0,lastA:0,motor:false};
-function ttLoad(it){if(!it||!it.buf)return;if(!it.vid){TT.vid=null;TT.vit=null;if(ROOT)ROOT.classList.remove('vid')}TT.buf=it.buf;TT.name=it.name;var c=ac();if(!c)return;var b=it.buf,r=c.createBuffer(b.numberOfChannels,b.length,b.sampleRate);for(var k=0;k<b.numberOfChannels;k++){var d=b.getChannelData(k),o=r.getChannelData(k);for(var i=0;i<d.length;i++)o[i]=d[d.length-1-i]}TT.rev=r;if(!it.vid)TT.pos=0;
+function ttLoad(it){if(!it||!it.buf)return;if(!it.vid){TT.vid=null;TT.vit=null;if(ROOT)ROOT.classList.remove('vid')}TT.buf=it.buf;TT.name=it.name;TT.ace=/^sr:/.test(it.id||'');var c=ac();if(!c)return;var b=it.buf,r=c.createBuffer(b.numberOfChannels,b.length,b.sampleRate);for(var k=0;k<b.numberOfChannels;k++){var d=b.getChannelData(k),o=r.getChannelData(k);for(var i=0;i<d.length;i++)o[i]=d[d.length-1-i]}TT.rev=r;if(!it.vid)TT.pos=0;
   var h=$('#mz-tth',ROOT);if(h)h.textContent=it.name.toUpperCase()}
 function ttStop(){if(TT.src){try{TT.src.stop()}catch(e){}TT.src=null}TT.motor=false}
 function ttGrain(rate,dur){var c=ac();if(!c||!TT.buf)return;var fwd=rate>=0,b=fwd?TT.buf:TT.rev,len=TT.buf.duration,off=fwd?TT.pos:len-TT.pos;if(off<0||off>=len)return;
@@ -503,8 +503,8 @@ function ttInit(){var cv=$('#mz-tt',ROOT);if(!cv||cv.__ev)return;cv.__ev=1;var c
     ttSync();
     /* 13 nov. 2026 (Mauk Tenieb) : la vraie platine photographiée (a-tt-platine.webp), le disque (a-tt-disque.webp) qui tourne sur le plateau, le bras (a-tt-bras.webp) qui se pose au sillon pendant la lecture et suit la place dans le sample */
     var W=cv.width,k=W/1024;c2.clearRect(0,0,W,W);if(TTI.deck.complete&&TTI.deck.naturalWidth)c2.drawImage(TTI.deck,0,0,W,W);else{c2.fillStyle='#2b2620';c2.fillRect(0,0,W,W)}
-    c2.save();c2.translate(396.5*k,485.5*k);c2.rotate(TT.ang);var dr=255*k;if(TTI.disc.complete&&TTI.disc.naturalWidth)c2.drawImage(TTI.disc,-dr,-dr,dr*2,dr*2);
-    if(TT.buf||TT.vid){c2.fillStyle=TT.vid?'rgba(143,227,212,.85)':'rgba(200,36,58,.85)';c2.beginPath();c2.arc(0,0,dr*.3,0,7);c2.fill();c2.fillStyle='#0e0d0c';c2.beginPath();c2.arc(0,0,3*k*2,0,7);c2.fill()}c2.restore();
+    c2.save();c2.translate(396.5*k,485.5*k);c2.rotate(TT.ang);var dr=255*k,ace=TT.ace&&!TT.vid&&TTI.ace.complete&&TTI.ace.naturalWidth;/* 21 nov. 2026 : un mix de StudioRhogo tourne en acétate, étiquette blanche */if(ace)c2.drawImage(TTI.ace,-dr,-dr,dr*2,dr*2);else if(TTI.disc.complete&&TTI.disc.naturalWidth)c2.drawImage(TTI.disc,-dr,-dr,dr*2,dr*2);
+    if((TT.buf||TT.vid)&&!ace){c2.fillStyle=TT.vid?'rgba(143,227,212,.85)':'rgba(200,36,58,.85)';c2.beginPath();c2.arc(0,0,dr*.3,0,7);c2.fill();c2.fillStyle='#0e0d0c';c2.beginPath();c2.arc(0,0,3*k*2,0,7);c2.fill()}c2.restore();
     var on=(TT.buf||TT.vid)&&(TT.hold||TT.motor),pr=ttLen()?Math.max(0,Math.min(1,TT.pos/ttLen())):0,tg=on?(26+14*pr)*Math.PI/180:0;TT.arm=(TT.arm||0)+(tg-(TT.arm||0))*.12;
     if(TTI.arm.complete&&TTI.arm.naturalWidth){c2.save();c2.translate(785*k,330*k);c2.rotate(TT.arm);c2.drawImage(TTI.arm,(687-785)*k,(348-330)*k,TTI.arm.naturalWidth*k,TTI.arm.naturalHeight*k);c2.restore()}}
   draw();
