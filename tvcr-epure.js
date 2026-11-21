@@ -1,0 +1,42 @@
+/* TVCR, épure (21 nov. 2026). Habillage : tvcr-epure.css. Chaque geste appelle une touche d'origine du magnétoscope. */
+(function(){
+  'use strict';
+  var D=document;
+  function fr(){return D.documentElement.lang==='fr';}
+  function q(r,s){return r.querySelector(s);}
+  function tracks(r){return [].slice.call(r.querySelectorAll('[data-vhs-tracklist] button'));}
+  function cur(r){var t=tracks(r);for(var i=0;i<t.length;i++)if(t[i].getAttribute('aria-current')==='true')return i;return -1;}
+  var osdT=0;
+  function osd(r,txt){var sc=q(r,'.vhs-screen');if(!sc)return;var o=q(sc,'.tv-osd');if(!o){o=D.createElement('div');o.className='tv-osd';o.setAttribute('aria-hidden','true');sc.appendChild(o);}
+    o.innerHTML=txt;o.classList.add('on');clearTimeout(osdT);osdT=setTimeout(function(){o.classList.remove('on');},1400);}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function zap(r,dir){var t=tracks(r);if(!t.length)return;var i=cur(r),n=i<0?0:(i+dir+t.length)%t.length;t[n].click();
+    var nm=(t[n].textContent||'').replace(/\s+/g,' ').trim().replace(/^\d+[.)]\s*/,'');osd(r,'<b>'+(n+1)+'/'+t.length+'</b> '+esc(nm.toUpperCase()));}
+  function action(r,a){var b=q(r,'[data-vhs-action="'+a+'"]');if(b)b.click();}
+  function setup(r){
+    if(r.dataset.tvEpure)return;r.dataset.tvEpure='1';r.classList.add('tv-epure');
+    /* tiroir */
+    var act=q(r,'.vhs-shelf-actions');
+    if(act){var m=D.createElement('button');m.type='button';m.className='tv-more';m.setAttribute('aria-pressed','false');
+      m.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="1.7" fill="currentColor"/><circle cx="12" cy="12" r="1.7" fill="currentColor"/><circle cx="18" cy="12" r="1.7" fill="currentColor"/></svg>';
+      var lab=function(){var l=fr()?'Tiroir':'Drawer';m.setAttribute('aria-label',l);m.title=l;};lab();
+      new MutationObserver(lab).observe(D.documentElement,{attributes:true,attributeFilter:['lang']});
+      m.onclick=function(){var on=r.classList.toggle('tv-tiroir');m.setAttribute('aria-pressed',String(on));};
+      act.appendChild(m);
+      var lo=q(r,'[data-vhs-find-open]');if(lo)lo.addEventListener('click',function(){r.classList.add('tv-tiroir');m.setAttribute('aria-pressed','true');},true);}
+    /* gestes sur l'écran */
+    var sc=q(r,'.vhs-screen');if(!sc)return;
+    var g=D.createElement('div');g.className='tv-geste';g.setAttribute('aria-hidden','true');sc.appendChild(g);
+    var p=null;
+    g.addEventListener('pointerdown',function(e){p={x:e.clientX,y:e.clientY,id:e.pointerId,t:performance.now(),moved:false};try{g.setPointerCapture(e.pointerId);}catch(_){}});
+    g.addEventListener('pointermove',function(e){if(!p||e.pointerId!==p.id)return;if(Math.abs(e.clientX-p.x)>14||Math.abs(e.clientY-p.y)>14)p.moved=true;});
+    function end(e){if(!p||e.pointerId!==p.id)return;var dx=e.clientX-p.x,dy=e.clientY-p.y,dt=performance.now()-p.t;var was=p;p=null;
+      if(e.type==='pointercancel')return;
+      if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3){zap(r,dx<0?1:-1);return;}
+      if(!was.moved&&dt<500){action(r,'play');}}
+    g.addEventListener('pointerup',end);g.addEventListener('pointercancel',end);
+  }
+  var mo=new MutationObserver(scan);
+  function scan(){var r=D.getElementById('vhs');if(r&&q(r,'.vhs-screen')&&q(r,'.vhs-shelf-actions')){setup(r);mo.disconnect();}}
+  mo.observe(D.documentElement,{childList:true,subtree:true});scan();
+})();

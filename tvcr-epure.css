@@ -1,0 +1,21 @@
+/* TVCR, épure (21 nov. 2026, Mauk Tenieb : « l'ergonomie, la simplicité, la beauté internes des programmes »).
+   Surface : la façade du magnétoscope, l'étagère des cassettes, la liste des morceaux.
+   Tiroir (touche ⋯ de l'étagère, ou la loupe) : recherche, tri, enregistrement d'une chaîne, télétexte, outils de cassette.
+   Sur l'écran : glisser à l'horizontale change de morceau, toucher lance ou arrête. Logique : tvcr-epure.js. */
+#vhs.tv-epure:not(.tv-tiroir) .vhs-find,
+#vhs.tv-epure:not(.tv-tiroir) .vhs-rec,
+#vhs.tv-epure:not(.tv-tiroir) .vhs-ttx-btn,
+#vhs.tv-epure:not(.tv-tiroir) .vhs-tapetools,
+#vhs.tv-epure:not(.tv-tiroir) .vhs-source-tabs{display:none!important}
+#vhs .tv-more{display:none}
+#vhs.tv-epure .tv-more{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:0;border:0;border-radius:6px;cursor:pointer;
+  color:#e9e2cf;background:linear-gradient(#3b3935,#24221f);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -2px 0 rgba(0,0,0,.45),0 2px 3px rgba(0,0,0,.6)}
+#vhs.tv-epure .tv-more svg{width:22px;height:22px}
+#vhs.tv-epure.tv-tiroir .tv-more{color:#ffa726}
+#vhs.tv-epure .tv-more:active{transform:translateY(1px)}
+#vhs.tv-epure .tv-more:focus-visible{outline:2px solid #ffa726;outline-offset:2px}
+#vhs .tv-geste{position:absolute;inset:0;z-index:20;touch-action:pan-y;cursor:pointer;background:transparent}
+#vhs .tv-osd{position:absolute;left:4%;bottom:6%;z-index:21;pointer-events:none;font:400 clamp(8px,1.35vw,13px)/1.5 "Press Start 2P",monospace;color:#f4f1e6;
+  letter-spacing:.05em;text-shadow:1px 1px 0 #000,0 0 6px rgba(0,0,0,.7);opacity:0;transition:opacity .35s;max-width:92%;white-space:nowrap;overflow:hidden}
+#vhs .tv-osd.on{opacity:1;transition:opacity .05s}
+#vhs .tv-osd b{color:#ffa726;font-weight:400}
