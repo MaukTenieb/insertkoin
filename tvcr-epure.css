@@ -59,3 +59,9 @@ html #kg-root #vhs.tv-epure :is(.tv-more,.vhs-tape-all),#vhs.tv-epure :is(.tv-mo
   #vhs.tv-epure .vhs-shelf-actions{display:flex;flex-direction:column;gap:6px}
   #vhs.tv-epure .vhs-shelf-title{display:none!important}
   #vhs.tv-epure .vhs-shelf-row{padding-right:56px!important}}
+
+/* jugement externe : la liste descend jusqu'au bas de l'écran */
+@media (min-width:700px){#vhs.tv-epure .vhs-catalogue{display:flex!important;flex-direction:column!important;min-height:0}
+  #vhs.tv-epure [data-vhs-tracklist]{flex:1 1 auto!important;height:auto!important;min-height:0!important}
+  html.borne #kg-root #vhs.tv-epure .vhs-shell,#vhs.tv-epure .vhs-shell{display:flex!important;flex-direction:column!important}
+  #vhs.tv-epure .vhs-shell>.vhs-catalogue{flex:1 1 auto!important}}

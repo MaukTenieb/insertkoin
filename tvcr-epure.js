@@ -44,6 +44,11 @@
         frm.style.setProperty('--tv-x',(ox-251*k)+'px');frm.style.setProperty('--tv-y',(oy-147*k-(464*k-b.height)/2)+'px');r.classList.add('tv-facade');};
       new ResizeObserver(fit).observe(scn);new ResizeObserver(fit).observe(frm);fit();return true;};
     (function tf(n){if(!facade()&&n<200)setTimeout(function(){tf(n+1);},100);})(0);
+    /* jugement externe : la liste descend jusqu'au bas du cadre de l'écran (paysage) */
+    var lst=q(r,'[data-vhs-tracklist]');
+    if(lst&&window.ResizeObserver){var fitL=function(){var frm=q(r,':scope>.ike-frame');if(!frm||innerWidth<700||innerWidth<innerHeight){lst.style.removeProperty('height');lst.style.removeProperty('max-height');return;}
+        var h=Math.round(frm.getBoundingClientRect().bottom-lst.getBoundingClientRect().top);if(h>80){lst.style.setProperty('height',h+'px','important');lst.style.setProperty('max-height',h+'px','important');}};
+      new ResizeObserver(fitL).observe(r);setTimeout(fitL,600);setTimeout(fitL,2500);}
     /* gestes sur l'écran */
     var sc=q(r,'.vhs-screen');if(!sc)return;
     var g=D.createElement('div');g.className='tv-geste';g.setAttribute('aria-hidden','true');sc.appendChild(g);
