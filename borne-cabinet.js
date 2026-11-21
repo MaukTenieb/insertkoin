@@ -90,7 +90,7 @@
           [].forEach.call(subG.querySelectorAll('[data-kata]'),function(b){b.closest('.cab').classList.toggle('lit',b.dataset.kata===g);});
           setTimeout(function(){rolling=false;play(g);},650);}},70);};
     var sk=cabOf('skopo');if(sk)sk.remove();
-    var mt=tile('terminal','3615','thumb-3615.jpg','#66bb6a');
+    var mt=tile('terminal','MINITALE','thumb-3615.jpg','#66bb6a');
     [].slice.call(cabs.children).forEach(function(c){if(c.classList.contains('cab'))store.appendChild(c);});
     [group('korhogame'),group('fauneye'),stick,mt,group('surf')].forEach(function(c){cabs.appendChild(c);});
   }
