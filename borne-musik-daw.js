@@ -185,7 +185,7 @@ function libV(){if(window.__borneVid)window.__borneVid.all().then(function(L){S.
 /* 21 nov. 2026 : les mix exportés par StudioRhogo (étagère « borne-musik/kave », src « studio ») arrivent dans la bibliothèque, ambre */
 function libS(){try{var r=indexedDB.open('borne-musik',1);r.onupgradeneeded=function(){r.result.createObjectStore('kave',{keyPath:'id'})};r.onsuccess=function(){try{var q=r.result.transaction('kave').objectStore('kave').getAll();q.onsuccess=function(){var L=(q.result||[]).filter(function(x){return x.src==='studio'}).sort(function(a,b){return b.t-a.t}).slice(0,4),c=ac();
   S.lib=S.lib.filter(function(x){return x.id.slice(0,3)!=='sr:'||L.some(function(y){return 'sr:'+y.id===x.id})});
-  L.reverse().forEach(function(x){if(S.lib.some(function(y){return y.id==='sr:'+x.id}))return;var it={id:'sr:'+x.id,name:x.name.slice(0,24),col:'#ffc061'};S.lib.unshift(it);
+  L.reverse().forEach(function(x){if(S.lib.some(function(y){return y.id==='sr:'+x.id}))return;var it={id:'sr:'+x.id,name:x.name.slice(0,24),col:'#ffc061',bpm:x.bpm};S.lib.unshift(it);
    if(c)x.blob.arrayBuffer().then(function(b){return new Promise(function(ok,ko){c.decodeAudioData(b,ok,ko)})}).then(function(b){it.buf=b}).catch(function(){})});libDraw()}}catch(e){}}}catch(e){}}
 try{new BroadcastChannel('borne-musik').onmessage=function(e){if(e.data==='studio'&&S.ch.length)libS()}}catch(e){}
 function libK(){libV();libS();if(window.__borneDiktat)window.__borneDiktat.all().then(function(L){S.lib=S.lib.filter(function(x){return x.id.slice(0,2)!=='k:'});L.slice(0,5).reverse().forEach(function(c){var it={id:'k:'+c.id,name:c.name,col:'#ff3b2f',clip:c};it.buf=clipBuf(c);S.lib.unshift(it);
@@ -398,7 +398,7 @@ function knob(lbl,get,set,def,col){var k=el('div','mzkn');k.innerHTML='<svg view
 var ROOT=null;
 function mount(){var p=document.getElementById('bb-panel');if(!p)return false;if(ROOT&&p.contains(ROOT))return true;
   if(!document.getElementById('mz-css')){var st=el('style');st.id='mz-css';st.textContent=CSS;document.head.appendChild(st)}
-  if(!S.ch.length){seed();buildLib();defSrc()}
+  if(!S.ch.length){if(mzRestore()){buildLib();mzRebind()}else{seed();buildLib();defSrc()}mzAutosave()}
   ROOT=el('div');ROOT.id='mz';ROOT.innerHTML='<svg width="0" height="0" style="position:absolute"><defs><radialGradient id="mzk" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#5a5148"/><stop offset=".6" stop-color="#2a241f"/><stop offset="1" stop-color="#0d0b09"/></radialGradient></defs></svg>'+
    '<div class="mzbar"><button class="mzbt" id="mz-play" type="button"></button><div class="mzseg" id="mz-view"></div><button class="mzbt" id="mz-dice" type="button"></button><button class="mzbt" id="mz-clr" type="button"></button><button class="mzbt" id="mz-rst" type="button"></button>'+
    '<div class="mzseg" id="mz-pat"></div><button class="mzbt" id="mz-chain" type="button"></button><div class="mzseg" id="mz-len"></div><div class="mzseg" id="mz-pg"></div><span class="mzlcd" id="mz-bpm"></span><span id="mz-tk"></span><span class="mzsp"></span>'+
@@ -487,7 +487,7 @@ function vdraw(){var cv=VIS.cv;if(!cv||!document.body.contains(cv))return;if(!RO
 /* ---------- la platine : le disque tourne à 33 tours ; le saisir, c'est scratcher ---------- */
 function ttImg(u){var im=new Image();im.src=base()+u;return im}var TTI={deck:ttImg('a-tt-platine.webp'),disc:ttImg('a-tt-disque.webp'),arm:ttImg('a-tt-bras.webp'),ace:ttImg('a-tt-acetate.webp')};
 var TT={rpm:33,pitch:0,ang:0,pos:0,buf:null,rev:null,name:'',hold:false,src:null,t0:0,last:0,lastA:0,motor:false};
-function ttLoad(it){if(!it||!it.buf)return;if(!it.vid){TT.vid=null;TT.vit=null;if(ROOT)ROOT.classList.remove('vid')}TT.buf=it.buf;TT.name=it.name;TT.ace=/^sr:/.test(it.id||'');var c=ac();if(!c)return;var b=it.buf,r=c.createBuffer(b.numberOfChannels,b.length,b.sampleRate);for(var k=0;k<b.numberOfChannels;k++){var d=b.getChannelData(k),o=r.getChannelData(k);for(var i=0;i<d.length;i++)o[i]=d[d.length-1-i]}TT.rev=r;if(!it.vid)TT.pos=0;
+function ttLoad(it){if(!it||!it.buf)return;if(!it.vid){TT.vid=null;TT.vit=null;if(ROOT)ROOT.classList.remove('vid')}TT.buf=it.buf;TT.name=it.name;TT.ace=/^sr:/.test(it.id||'');/* 21 nov. 2026 : le séquenceur prend le tempo du mix de StudioRhogo posé sur la platine, pour jouer en mesure par-dessus */if(TT.ace&&it.bpm>=60&&it.bpm<=180&&ROOT){S.bpm=Math.round(it.bpm);if(AC&&AC.__mz)S.ch.forEach(function(ch){if(ch.fx)fxAmt(AC.__mz,ch)});var bd=$('#mz-bpm',ROOT);if(bd)bd.textContent=S.bpm;[].forEach.call(ROOT.querySelectorAll('#mz-tk .mzkn'),function(k){k.__draw&&k.__draw()})}var c=ac();if(!c)return;var b=it.buf,r=c.createBuffer(b.numberOfChannels,b.length,b.sampleRate);for(var k=0;k<b.numberOfChannels;k++){var d=b.getChannelData(k),o=r.getChannelData(k);for(var i=0;i<d.length;i++)o[i]=d[d.length-1-i]}TT.rev=r;if(!it.vid)TT.pos=0;
   var h=$('#mz-tth',ROOT);if(h)h.textContent=it.name.toUpperCase()}
 function ttStop(){if(TT.src){try{TT.src.stop()}catch(e){}TT.src=null}TT.motor=false}
 function ttGrain(rate,dur){var c=ac();if(!c||!TT.buf)return;var fwd=rate>=0,b=fwd?TT.buf:TT.rev,len=TT.buf.duration,off=fwd?TT.pos:len-TT.pos;if(off<0||off>=len)return;
@@ -634,9 +634,26 @@ function conEv(st){var G=null;
 /* ---------- les sons d'un Mask (RELAIS § 28, 2a et b) : son synthé, puis les coupes des sorties de son alias ; un Mask sans sortie propre prend deux sons de la borne et le dernier son de KamOrhogo ---------- */
 function libItem(id){return S.lib.filter(function(x){return x.id===id})[0]}
 /* 15 nov. 2026, 22 h 52 (Mauk Tenieb : les personnages « jouent des sons autres que ceux des samples par défaut ») : chaque Mask joue d'office le premier sample de son kit ; le synthé reste au choix dans la tranche */
+/* 21 nov. 2026 (Mauk Tenieb : « que tout persiste ») : comme GarageBand, FL Studio Mobile ou Koala sur téléphone, Musik s'enregistre seul, sans bouton,
+   et rouvre la session telle qu'on l'a laissée : voix, motifs A-D, mélodies, réglages, tempo, swing, longueur, enchaînement, Console. Les sons de la
+   bibliothèque se rechargent par leur identifiant ; un son importé d'un fichier reste le temps de la visite, sa voix et ses pas restent. */
+var MZK='ik.musik.session',mzLast='';
+var MZF=['id','name','color','kind','voice','root','src','vol','pan','tune','cut','res','drv','echo','verb','mute','solo','mask'];
+function mzJSON(){return JSON.stringify({v:1,bpm:S.bpm,swing:S.swing,n:S.n,pat:S.pat,chain:S.chain,sel:S.sel,echoT:S.echoT,echoF:S.echoF,verb:S.verb,drive:S.drive,master:S.master,kit:S.kit,
+  ch:S.ch.map(function(c){var o={};MZF.forEach(function(k){if(k in c)o[k]=c[k]});o.steps=c.steps.map(function(a){return Array.prototype.slice.call(a)});o.mel=c.mel.map(function(a){return Array.prototype.slice.call(a)});return o})})}
+function mzSave(){try{var j=mzJSON();if(j!==mzLast){localStorage.setItem(MZK,j);mzLast=j}}catch(e){}}
+function mzAutosave(){if(mzAutosave.on)return;mzAutosave.on=1;setInterval(mzSave,1500);addEventListener('pagehide',mzSave);document.addEventListener('visibilitychange',function(){if(document.hidden)mzSave()})}
+function mzRestore(){try{var d=JSON.parse(localStorage.getItem(MZK)||'null');if(!d||d.v!==1||!d.ch||!d.ch.length)return false;
+  ['bpm','swing','n','pat','chain','sel','echoT','echoF','verb','drive','master','kit'].forEach(function(k){if(k in d)S[k]=d[k]});
+  S.ch=d.ch.map(function(o){var st=o.steps,me=o.mel;delete o.steps;delete o.mel;var c=newCh(o);
+    (st||[]).forEach(function(a,p){if(c.steps[p])for(var i=0;i<a.length&&i<c.steps[p].length;i++)c.steps[p][i]=a[i]});
+    (me||[]).forEach(function(a,p){if(c.mel[p])for(var i=0;i<a.length&&i<c.mel[p].length;i++)c.mel[p][i]=a[i]});return c});
+  if(S.sel>=S.ch.length)S.sel=0;mzLast=localStorage.getItem(MZK);return true}catch(e){return false}}
+function mzRebind(){S.ch.forEach(function(c){if(c.kind!=='smp'||!c.src)return;var it=S.lib.filter(function(x){return x.id===c.src})[0];
+  if(!it){var k=kitOf(c)[0];if(k&&c.mask){it=k;c.src=k.id}}if(!it)return;load(it).then(function(b){if(c.src===it.id&&S.ch.indexOf(c)>=0)c.buf=b}).catch(function(){})})}
 function defSrc(){S.ch.forEach(function(c){if(!c.mask||c.kind!=='syn')return;var it=kitOf(c)[0];if(!it)return;c.kind='smp';c.src=it.id;c.vol=.7;load(it).then(function(b){if(c.src===it.id&&S.ch.indexOf(c)>=0)c.buf=b}).catch(function(){})})}
 /* remise à zéro : pistes, sons par défaut, motifs, kits, Console, tempo et maître d'origine */
-function resetAll(){play(false);ttStop();var g=AC&&AC.__mz;if(g)Object.keys(g.strip).forEach(function(id){var st=g.strip[id];try{if(st.fxN)st.fxN.stop();if(st.wln){st.wln.disconnect();st.wln.port.postMessage({mode:'kill'})}st.v.disconnect();st.p.disconnect()}catch(e){}delete g.strip[id]});
+function resetAll(){try{localStorage.removeItem(MZK);mzLast=''}catch(e){}play(false);ttStop();var g=AC&&AC.__mz;if(g)Object.keys(g.strip).forEach(function(id){var st=g.strip[id];try{if(st.fxN)st.fxN.stop();if(st.wln){st.wln.disconnect();st.wln.port.postMessage({mode:'kill'})}st.v.disconnect();st.p.disconnect()}catch(e){}delete g.strip[id]});
   S.kit=-1;S.kitBak=null;S.ch=[];S.pat=0;S.chain=false;S.bpm=96;S.swing=0;S.sel=0;S.page=0;S.echoT=.375;S.echoF=.38;S.verb=.5;S.drive=0;S.master=.85;S.pick=null;S.slots=S.slots.map(function(){return ''});
   seed();try{libK()}catch(e){}defSrc();if(g){masterApply(g);verbLater()}if(!ROOT)return;var M=$('#mz-mst',ROOT);if(M){M.__k=0;M.innerHTML=''}var tk=$('#mz-tk',ROOT);if(tk)[].forEach.call(tk.querySelectorAll('.mzkn'),function(k){k.__draw&&k.__draw()});
   $('#mz-bpm',ROOT).textContent=S.bpm;$('#mz-chain',ROOT).classList.remove('on');paintPat();paintLen();rack();strips();resBuild();if(STG.con)conPaint()}
