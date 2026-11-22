@@ -53,11 +53,13 @@ var svg='<svg viewBox="0 0 34 82" width="34" height="82" aria-hidden="true">'+
 '<circle cx="17" cy="33" r="2.3" fill="#2a2420"/>'+
 '<text x="17" y="55.5" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="5.6" letter-spacing=".6" fill="#efe3cf">KORHOGO</text></svg>';
 /* 22 nov. : quatre motifs sur le porte-clé (dessin d'origine, signes a, b, c de Mauk Tenieb), un tirage à chaque écran.
-   Hasard pur, sans remise, par cycles de quatre : 25 %, 33,33 %, 50 %, 100 %, puis le sac se remplit à nouveau (4, 3, 2, 1, 4, 3…) */
+   Hasard pur, sans remise, par cycles de quatre : 25 %, 33,33 %, 50 %, 100 % ; chaque cycle suivant s'ouvre sans le dernier motif montré :
+   33,33 %, 33,33 %, 50 %, 100 % ; un même signe jamais deux écrans de suite */
 var MOT=['','-a','-b','-c'];
 function tirer(){var s=null;try{s=JSON.parse(localStorage.getItem('ik.cle')||'null')}catch(e){}
- if(!s||!s.sac||!s.sac.length)s={sac:[0,1,2,3]};
- var n=s.sac.splice(Math.floor(Math.random()*s.sac.length),1)[0];
+ if(!s||!s.sac||!s.sac.length)s={sac:[0,1,2,3],d:s&&s.d!=null?s.d:-1};
+ var ok=s.sac.filter(function(i){return i!==s.d}),n=ok[Math.floor(Math.random()*ok.length)];
+ s.sac.splice(s.sac.indexOf(n),1);s.d=n;
  try{localStorage.setItem('ik.cle',JSON.stringify(s))}catch(e){}return n}
 var IMG=P+'a/porte-cle'+MOT[tirer()]+'.webp';
 var w=document.createElement('div');w.id='mk';
