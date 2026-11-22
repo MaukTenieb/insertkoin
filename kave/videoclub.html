@@ -61,8 +61,8 @@ button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-sel
 .box .sleeve .k,.box .sleeve .n{display:none}
 .rail{position:absolute;inset:0;pointer-events:none}
 /* boîtier en main : face et dos ; Nope et Get it! sous le pouce */
-#case{position:fixed;left:0;right:0;top:0;bottom:var(--ikbar,52px);z-index:40;background:rgba(5,4,3,.93);display:none;align-items:center;justify-content:center;gap:3vmin;padding:3vmin 3vmin;overscroll-behavior:contain}
-#case.on{display:flex}
+#case{position:fixed;left:0;right:0;top:0;bottom:var(--ikbar,52px);z-index:40;background:transparent;display:none;align-items:center;justify-content:center;gap:3vmin;padding:3vmin 3vmin;overscroll-behavior:contain}
+#case.on{display:flex}/* 22 nov. (Mauk Tenieb : « ce voile assombrisseur et soudain ») : zéro aplat noir derrière la cassette en main ; le rayon reste visible, la cassette arrive en fondu */#case.on>*{animation:caseIn .28s cubic-bezier(.2,.7,.2,1) both}@keyframes caseIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
 #case .face{height:min(100%,640px);aspect-ratio:5/7;position:relative;flex:none;transform-origin:0 0}
 #case .back{height:min(100%,640px);width:min(46vw,560px);background:#0a0a0a;padding:clamp(14px,3.2vmin,30px) clamp(14px,3.4vmin,32px) 0;display:flex;flex-direction:column;gap:clamp(8px,1.6vmin,14px);font:400 clamp(14px,1.9vmin,16px)/1.45 Arimo,sans-serif;color:#e8e6e1;overflow:auto;flex:none;overscroll-behavior:contain}
 #case .back h2{margin:0;font:400 clamp(20px,4.2vmin,34px)/1.05 Garamond,serif;letter-spacing:.12em;text-transform:uppercase;color:#fff;text-align:center}
