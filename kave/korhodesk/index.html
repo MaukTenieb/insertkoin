@@ -156,8 +156,8 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 #stage.night #postit{filter:brightness(.72)}
 #postit.zoom{position:fixed;z-index:41;left:50%!important;top:calc((100dvh - var(--ikbar,52px))/2)!important;width:min(78vw,60dvh)!important;translate:-50% -50%;rotate:-2deg;box-shadow:0 2vmin 5vmin rgba(0,0,0,.7)}
 </style>
-<style>#pi-wait{position:fixed;inset:0;z-index:99;display:grid;place-items:center;background:#0b0908 var(--ph) center/contain no-repeat;opacity:0;transition:opacity .3s}
-#pi-wait.on{opacity:1}#pi-wait.photo .pi-big{display:none}
+<style>#pi-wait{position:fixed;inset:0;z-index:99;display:grid;place-items:center;background:#0b0908;opacity:0;transition:opacity .3s}
+#pi-wait.on{opacity:1}
 #pi-wait .pi-big{position:relative;width:min(70vw,58dvh);aspect-ratio:1;padding:0;border:0;container-type:inline-size;rotate:-2deg;background:linear-gradient(170deg,#fff3a3 0%,#f9e37a 62%,#efd463 100%);box-shadow:0 2vmin 5vmin rgba(0,0,0,.7)}
 #pi-wait .pi-big .pi-in{position:absolute;inset:7% 8% 6% 9%;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;font-family:"Permanent Marker","Marker Felt",cursive;color:#23306e}
 #pi-wait .pi-big .pi-env{width:34cqw;height:auto;margin:0 0 1cqw 2cqw;fill:none;stroke:#23306e;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;rotate:-4deg}
@@ -294,9 +294,8 @@ function layout(){
   const g=$('#glow');g.style.left=L.lamp[0]+'%';g.style.top=L.lamp[1]+'%';LAMP=L.lamp;const cv=$('#dust');cv.width=st.clientWidth;cv.height=st.clientHeight;
   const n=$('#racknav');n.style.left=L.nav[0]+'%';n.style.top=L.nav[1]+'%';
 }
-/* 22 nov. 2026 (Mauk Tenieb) : écran d'attente obligatoire avant le MiniTale : le Post-it en grand (photo Midjourney à venir : img/postit-attente.webp), fine barre de progression */
+/* 22 nov. 2026 (Mauk Tenieb) : écran d'attente obligatoire avant le MiniTale : le Post-it dessiné en grand (2 h 35 : « gardons-le »), fine barre de progression */
 $('#tvk').addEventListener('click',()=>{if(document.getElementById('pi-wait'))return;const w=document.createElement('div');w.id='pi-wait';
-  const ph=new Image();ph.src='img/postit-attente.webp';ph.onload=()=>w.classList.add('photo');w.style.setProperty('--ph','url(img/postit-attente.webp)');
   const pi=$('#postit').cloneNode(true);pi.removeAttribute('id');pi.className='pi-big';pi.removeAttribute('style');w.appendChild(pi);const bar=document.createElement('i');w.appendChild(bar);document.body.appendChild(w);
   requestAnimationFrame(()=>w.classList.add('on'));setTimeout(()=>{location.href='https://mauktenieb.github.io/3615/'},3500)});
 {const p=$('#postit');p.addEventListener('click',e=>{e.stopPropagation();const z=!p.classList.contains('zoom');p.classList.toggle('zoom',z);if(!z)layout()});document.addEventListener('click',e=>{if(p.classList.contains('zoom')&&!p.contains(e.target)){p.classList.remove('zoom');layout()}});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&p.classList.contains('zoom')){p.classList.remove('zoom');layout()}})}
