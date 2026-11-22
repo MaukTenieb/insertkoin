@@ -1,0 +1,10 @@
+/* 22 nov. 2026 (Mauk Tenieb) : électroluminescence discrète — une lueur au survol, une lueur tenue quand le mode du bouton est actif.
+   Par drop-shadow : la lueur s'ajoute aux ombres et aux matières des touches, sans les remplacer. Couleur propre à chaque programme. */
+:root{--gl:255,206,120}
+#vhs{--gl:121,255,150}
+#mz{--gl:255,184,92}
+.gl-ok :is(button,[role=button],[role=tab]){transition:filter .22s ease-out}
+@media (hover:hover) and (pointer:fine){
+  .gl-ok :is(button,[role=button],[role=tab]):not(:disabled):not(.mzs):not(.vhs-spine):not(.frame):not(.hit):hover{filter:brightness(1.06) drop-shadow(0 0 3px rgba(var(--gl),.55)) drop-shadow(0 0 9px rgba(var(--gl),.22))}}
+.gl-ok :is(button,[role=button],[role=tab]):not(.mzs):not(.vhs-spine):not(.frame):is([aria-pressed=true],[aria-selected=true],.on,.is-active){filter:drop-shadow(0 0 2px rgba(var(--gl),.7)) drop-shadow(0 0 7px rgba(var(--gl),.3))}
+@media (prefers-reduced-motion:reduce){.gl-ok :is(button,[role=button],[role=tab]){transition:none}}
