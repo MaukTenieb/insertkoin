@@ -94,6 +94,14 @@
         e.preventDefault();e.stopPropagation();},true);
       dk.addEventListener('click',function(e){if(performance.now()-zAt<350){e.preventDefault();e.stopPropagation();}},true);
       D.addEventListener('pointerdown',function(e){if(dk.classList.contains('tv-zoom')&&!dk.contains(e.target)){clearTimeout(zT);unz();}},true);}
+    /* 22 nov. : à la souris, loupe ancrée au point d'entrée du curseur : la touche visée reste sous le curseur, ses voisines s'écartent */
+    if(dk&&window.matchMedia&&matchMedia('(pointer:fine)').matches){var hT=0;
+      dk.addEventListener('pointerenter',function(e){if(e.pointerType!=='mouse')return;clearTimeout(hT);if(!dk.classList.contains('tv-loupe'))dk._b0=dk.getBoundingClientRect();var b=dk._b0;
+        dk.style.transformOrigin=Math.round(e.clientX-b.left)+'px '+Math.round(e.clientY-b.top)+'px';dk.classList.add('tv-loupe');r.classList.add('tv-zoomed');});
+      var raf=0;dk.addEventListener('pointermove',function(e){if(e.pointerType!=='mouse'||!dk.classList.contains('tv-loupe'))return;var cx=e.clientX,cy=e.clientY;cancelAnimationFrame(raf);raf=requestAnimationFrame(function(){
+        /* l'ancre suit le curseur, en coordonnées de la façade non agrandie : le point visé ne bouge jamais */
+        var b=dk._b0||dk.getBoundingClientRect();var ux=cx-b.left,uy=cy-b.top;dk.style.transformOrigin=Math.round(ux)+'px '+Math.round(uy)+'px';});});
+      dk.addEventListener('pointerleave',function(e){if(e.pointerType!=='mouse')return;hT=setTimeout(function(){dk.classList.remove('tv-loupe');r.classList.remove('tv-zoomed');},250);});}
     /* gestes sur l'écran */
     var sc=q(r,'.vhs-screen');if(!sc)return;
     var g=D.createElement('div');g.className='tv-geste';g.setAttribute('aria-hidden','true');sc.appendChild(g);

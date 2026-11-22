@@ -96,3 +96,4 @@ html #kg-root #vhs.tv-epure :is(.tv-more,.vhs-tape-all),#vhs.tv-epure :is(.tv-mo
 #vhs.tv-epure .vhs-deck{transition:transform .16s ease-out}
 #vhs.tv-epure .vhs-deck.tv-zoom{transform:scale(2.6);z-index:60;box-shadow:0 14px 40px rgba(0,0,0,.8)}
 #vhs.tv-zoomed :is(.vhs-shell,.vhs-catalogue){overflow:visible!important}
+#vhs.tv-epure .vhs-deck.tv-loupe{transform:scale(2.2);z-index:60;box-shadow:0 14px 40px rgba(0,0,0,.8)}
