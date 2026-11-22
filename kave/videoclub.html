@@ -142,14 +142,15 @@ var cv=$('#hall'),gl=null,P=null,U={},TEX=null,img=new Image(),ready=false;
 var S={D:0,v:0,push:0,foc:[.5,.49],hl:[0,0,0],hlT:[0,0,0],lum:1,tm:0,intro:-1};
 var CREEP=RM?0:.022;
 var VS='attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
-var FS='precision highp float;uniform sampler2D T;uniform vec2 R,Vp,Fo,Fv;uniform float Uu,Lk,Kd,Kk,Z,Pu,Lu,Tm,Ia,E1,F1;uniform vec3 Hl;uniform vec4 M1,M0;'+
+var FS='precision highp float;uniform sampler2D T,T2;uniform vec2 R,Vp,Fo,Fv;uniform float Uu,Lk,Kd,Kk,Z,Pu,Lu,Tm,Ia,E1,F1;uniform vec3 Hl;uniform vec4 M1,M0;'+
 'vec2 fin(vec2 s){return Fo+(s-Fo)*(1.-.6*Pu);}'+
 'float ins(vec2 s){vec2 m=min(s,1.-s);return smoothstep(0.,.012,m.x)*smoothstep(0.,.012,m.y);}'+
 'float in2(vec2 s){vec2 m=min(s,1.-s);return smoothstep(0.,.2,m.x)*smoothstep(0.,.26,s.y)*smoothstep(0.,.09,1.-s.y);}'+
 'float bx(vec2 p,vec4 r,vec2 f){return smoothstep(r.x,r.x+f.x,p.x)*smoothstep(r.z,r.z-f.x,p.x)*smoothstep(r.y,r.y+f.y,p.y)*smoothstep(r.w,r.w-f.y,p.y);}'+
+'vec3 bl(vec2 t){return max(texture2D(T2,clamp(t,.0,1.)).rgb,vec3(.03));}'+
 'void main(){vec2 q=(gl_FragCoord.xy-.5*R)/R.y;q.y=-q.y;float a=R.x/R.y,r2=dot(q,q)/(a*a*.25+.25),c=max(1.,a/Ia);'+
-' float f=Z*(1.+Kk*r2);vec2 p0=fin(.5+q*f/(c*vec2(Ia,1.))),ab=(p0-.5)*.004*r2;float s=exp(Uu*Lk),w=1.;vec3 col=vec3(0.);'+
-' for(int k=0;k<6;k++){vec2 t=Vp+(p0-Vp)/s,d=ab/s;vec3 x=vec3(texture2D(T,t+d).r,texture2D(T,t).g,texture2D(T,t-d).b);'+
+' float f=Z*(1.+Kk*r2);vec2 p0=fin(.5+q*f/(c*vec2(Ia,1.))),ab=(p0-.5)*.004*r2;float s=exp(Uu*Lk),w=1.;vec3 col=vec3(0.);vec3 ref=mix(bl(Vp+(p0-Vp)/s),bl(Vp+(p0-Vp)/(s*Kd)),smoothstep(0.,1.,Uu));'+
+' for(int k=0;k<6;k++){vec2 t=Vp+(p0-Vp)/s,d=ab/s;vec3 x=vec3(texture2D(T,t+d).r,texture2D(T,t).g,texture2D(T,t-d).b);x*=clamp(ref/bl(t),.7,1.4);'+
 '  float l=1.-smoothstep(.40,.45,t.x),r=smoothstep(.55,.60,t.x);vec2 le=(t-vec2(.5,.497))/vec2(.06,.14);float lp=exp(-dot(le,le)*1.6);'+
 '  x*=1.+(l*Hl.x+r*Hl.y)*.35;x+=vec3(1.,.78,.5)*lp*(.09+.45*Hl.z);float e=k==0?ins(t):1.;'+
 '  float m=0.;if(k<5){vec2 tn=Vp+(p0-Vp)/(s*Kd);m=k==0?bx(tn,M1,Fv*F1)*mix(in2(tn),ins(tn),smoothstep(.75,1.,Uu)):bx(tn,M0,Fv);}col+=w*(1.-m)*x*e;w*=m;s*=Kd;}'+
@@ -162,14 +163,14 @@ function glInit(){try{gl=cv.getContext('webgl',{alpha:false,antialias:false,pres
  try{P=gl.createProgram();gl.attachShader(P,sh(gl.VERTEX_SHADER,VS));gl.attachShader(P,sh(gl.FRAGMENT_SHADER,FS));gl.linkProgram(P);if(!gl.getProgramParameter(P,gl.LINK_STATUS))throw new Error('link')}catch(e){gl=null;return false}
  gl.useProgram(P);var b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
  var l=gl.getAttribLocation(P,'p');gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,2,gl.FLOAT,false,0,0);
- 'T R Vp Fo Fv Uu Lk Kd Kk Z Pu Lu Tm Ia E1 F1 Hl M1 M0'.split(' ').forEach(function(k){U[k]=gl.getUniformLocation(P,k)});return true}
+ 'T T2 R Vp Fo Fv Uu Lk Kd Kk Z Pu Lu Tm Ia E1 F1 Hl M1 M0'.split(' ').forEach(function(k){U[k]=gl.getUniformLocation(P,k)});return true}
 function size(){if(!gl)return;var w=innerWidth,hh=innerHeight,d=Math.min(devicePixelRatio||1,1.5,Math.sqrt(2.4e6/(w*hh)));cv.width=Math.round(w*d);cv.height=Math.round(hh*d);gl.viewport(0,0,cv.width,cv.height);draw()}
 function frac(x){return x-Math.floor(x)}
 function ss(x){x=Math.max(0,Math.min(1,x));return x*x*(3-2*x)}
 /* la boucle : le fond de l'allée (niveau 1) s'ouvre jusqu'à l'écran entier pendant que la vue avance de 1/KD ; à la fin, le niveau 1 devient le niveau 0 */
 function geo(){var u=frac(S.D),e=ss(u);return{u:u,e:e,s:Math.pow(1/KD,u),M1:R0.map(function(x,j){return x+([0,0,1,1][j]-x)*e}),F1:1-Math.pow(e,8)}}
 function draw(){if(!gl||!ready)return;var G=geo();
- gl.uniform1i(U.T,0);gl.uniform2f(U.R,cv.width,cv.height);gl.uniform2f(U.Vp,V[0],V[1]);gl.uniform2f(U.Fo,S.foc[0],S.foc[1]);gl.uniform2f(U.Fv,FV[0],FV[1]);gl.uniform1f(U.Uu,G.u);gl.uniform1f(U.Lk,-Math.log(KD));gl.uniform1f(U.Kd,KD);gl.uniform1f(U.Kk,K);gl.uniform1f(U.Z,Z0);gl.uniform1f(U.E1,G.e);gl.uniform1f(U.F1,G.F1);gl.uniform4f(U.M1,G.M1[0],G.M1[1],G.M1[2],G.M1[3]);gl.uniform4f(U.M0,R0[0],R0[1],R0[2],R0[3]);
+ gl.uniform1i(U.T,0);gl.uniform1i(U.T2,1);gl.uniform2f(U.R,cv.width,cv.height);gl.uniform2f(U.Vp,V[0],V[1]);gl.uniform2f(U.Fo,S.foc[0],S.foc[1]);gl.uniform2f(U.Fv,FV[0],FV[1]);gl.uniform1f(U.Uu,G.u);gl.uniform1f(U.Lk,-Math.log(KD));gl.uniform1f(U.Kd,KD);gl.uniform1f(U.Kk,K);gl.uniform1f(U.Z,Z0);gl.uniform1f(U.E1,G.e);gl.uniform1f(U.F1,G.F1);gl.uniform4f(U.M1,G.M1[0],G.M1[1],G.M1[2],G.M1[3]);gl.uniform4f(U.M0,R0[0],R0[1],R0[2],R0[3]);
  gl.uniform1f(U.Pu,S.push);gl.uniform1f(U.Lu,S.lum);gl.uniform1f(U.Tm,S.tm);gl.uniform1f(U.Ia,IA);gl.uniform3f(U.Hl,S.hl[0],S.hl[1],S.hl[2]);gl.drawArrays(gl.TRIANGLE_STRIP,0,4)}
 /* le même calcul en JS : du point touché à la photo */
 function toPhoto(px,py){var W=innerWidth,H=innerHeight,a=W/H,qx=(px-W/2)/H,qy=(py-H/2)/H;
@@ -205,7 +206,8 @@ function frame(now){raf=0;var dt=Math.min(.05,(now-last)/1000);last=now;
 document.addEventListener('visibilitychange',function(){if(!document.hidden)kick()});
 function startHall(){if(gl){gl.activeTexture(gl.TEXTURE0);TEX=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,TEX);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);
   gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,img);['TEXTURE_WRAP_S','TEXTURE_WRAP_T'].forEach(function(k){gl.texParameteri(gl.TEXTURE_2D,gl[k],gl.CLAMP_TO_EDGE)});
-  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);ready=true;size()}
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);var bc=document.createElement('canvas');bc.width=48;bc.height=27;var bx2=bc.getContext('2d');bx2.imageSmoothingQuality='high';bx2.drawImage(img,0,0,48,27);gl.activeTexture(gl.TEXTURE1);var TB=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,TB);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,bc);['TEXTURE_WRAP_S','TEXTURE_WRAP_T'].forEach(function(k){gl.texParameteri(gl.TEXTURE_2D,gl[k],gl.CLAMP_TO_EDGE)});gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.activeTexture(gl.TEXTURE0);/* 22 nov. (Mauk Tenieb : « cette ligne de nuances séparatrice ») : chaque niveau emboîté prend la nuance d'ensemble du niveau qui l'entoure, d'après cette photo floue ; zéro ligne de nuance au raccord */
+ ready=true;size()}
  if(!RM)S.intro=performance.now();else S.lum=1;kick()}
 if(!glInit()){cv.style.display='none';var fl=$('#hallflat');fl.style.display='block';fl.src='a/vc/vc-01-salle.webp?v=1114'}
 img.onload=startHall;img.src='a/vc/vc-01-salle.webp?v=1114';
