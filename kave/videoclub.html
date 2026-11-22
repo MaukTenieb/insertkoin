@@ -142,6 +142,7 @@ var cv=$('#hall'),gl=null,P=null,U={},TEX=null,img=new Image(),ready=false;
 var S={D:0,v:0,push:0,foc:[.5,.49],hl:[0,0,0],hlT:[0,0,0],lum:1,tm:0,intro:-1};
 var CREEP=RM?0:.022;
 var VS='attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+/* 22 nov. (Mauk Tenieb : « une droite inclinée qui balaie l'écran du haut droit au bas gauche ») : le grain se tirait par sin() sur des nombres qui grossissent avec le temps ; sur les téléphones, la précision lâchait et une zone grise figée avançait derrière une droite ; grain tiré désormais sur des nombres bornés, sans sin() */
 var FS='precision highp float;uniform sampler2D T,T2;uniform vec2 R,Vp,Fo,Fv;uniform float Uu,Lk,Kd,Kk,Z,Pu,Lu,Tm,Ia,E1,F1;uniform vec3 Hl;uniform vec4 M1,M0;'+
 'vec2 fin(vec2 s){return Fo+(s-Fo)*(1.-.6*Pu);}'+
 'float ins(vec2 s){vec2 m=min(s,1.-s);return smoothstep(0.,.012,m.x)*smoothstep(0.,.012,m.y);}'+
@@ -155,7 +156,7 @@ var FS='precision highp float;uniform sampler2D T,T2;uniform vec2 R,Vp,Fo,Fv;uni
 '  x*=1.+(l*Hl.x+r*Hl.y)*.35;x+=vec3(1.,.78,.5)*lp*(.09+.45*Hl.z);float e=k==0?ins(t):1.;'+
 '  float m=0.;if(k<5){vec2 tn=Vp+(p0-Vp)/(s*Kd);m=k==0?bx(tn,M1,Fv*F1)*mix(in2(tn),ins(tn),smoothstep(.75,1.,Uu)):bx(tn,M0,Fv);}col+=w*(1.-m)*x*e;w*=m;s*=Kd;}'+
 ' col*=clamp(1.-.62*pow(r2,1.5),0.,1.)*Lu;float y=dot(col,vec3(.299,.587,.114));col=mix(vec3(y),col,.88)*.96+.018;'+
-' float n=fract(sin(dot(gl_FragCoord.xy+floor(Tm*24.)*vec2(17.,31.),vec2(12.9898,78.233)))*43758.5453);col+=(n-.5)*.075;'+
+' vec2 g=mod(floor(gl_FragCoord.xy)+mod(floor(Tm*24.),97.)*vec2(17.,31.),1024.);vec3 h=fract(vec3(g.xyx)*.1031);h+=dot(h,h.yzx+33.33);float n=fract((h.x+h.y)*h.z);col+=(n-.5)*.075;'+
 ' gl_FragColor=vec4(col,1.);}';
 function glInit(){try{gl=cv.getContext('webgl',{alpha:false,antialias:false,preserveDrawingBuffer:true})||cv.getContext('experimental-webgl')}catch(e){gl=null}
  if(!gl)return false;
