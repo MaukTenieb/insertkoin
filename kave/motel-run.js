@@ -113,7 +113,7 @@ window.MotelRun=function(host,want){
  var face=document.createElement('img');face.src='a/b-'+key+'.webp';face.alt='';face.className='mrun-buste';
  face.style.cssText='position:absolute;left:2%;bottom:2.5%;height:20%;width:auto;pointer-events:none;image-rendering:auto';
  host.appendChild(face);
- var px=0.5,py=0.5,dir=0,ang=0,speed=reduce?1.0:3.8,last=performance.now(),gait=0,alive=true,turn=0,idle=9,pendT=0,cell=-1,auto=true,odo=0,lastT=-9;
+ var px=0.5,py=0.5,dir=0,ang=0,speed=reduce?1.0:3.1/* 22 nov. 2026 (Mauk Tenieb) : un peu plus lent (3,8 auparavant) */,last=performance.now(),gait=0,alive=true,turn=0,idle=9,pendT=0,cell=-1,auto=true,odo=0,lastT=-9;
  var DX=[1,0,-1,0],DY=[0,1,0,-1],held={},ptr=null,tq=0,TURN=3.1,RAD=0.34,trail=[],cx=0,cy=0,ca=0,depth=CAMD;
  var st={t:0,minClear:9,minFront:99,minDepth:99,contacts:0,cuts:0};
  var KM={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d',a:'l',q:'l',d:'r',w:'u',z:'u',s:'d'};
@@ -136,7 +136,7 @@ window.MotelRun=function(host,want){
  /* 15 nov. 2026, 17 h 57 et 19 h 02 (Mauk Tenieb : « braquages modérés, beaucoup moins qu'un angle droit » ; « se prendre un mur, on s'en fout, la course se poursuit » ; « les contrôles gauche, droite doivent laisser toute caméra absolument identique et juste faire braquer le coureur » ; 20 h 17 : « 90°, c'est beaucoup trop ») :
     sans commande, la course de la démo du 12 nov. (rails, carrefours) ; une touche ou une tape du côté voulu braque le coureur de 26° en un tiers de seconde, touche ou doigt tenus il tourne à 50°/s ; il court librement, longe les murs et s'en écarte de lui-même, sans jamais s'arrêter ; six secondes sans commande, il rejoint les rails de la démo ; caméra inchangée */
  var NUDGE=0.45,NRATE=1.4,HOLD=0.88,nud=0,man=false;
- function step(dt){idle+=dt;var tr=0,sp=speed,gx=Math.floor(px),gy=Math.floor(py);if(man&&idle>6)man=false;
+ function step(dt){/* 22 nov. 2026 (Mauk Tenieb : « la démo me reprend la main trop vite ») : une touche tenue ou un doigt posé gardent la main ; la démo revient après 25 s sans commande (6 s auparavant) */if(held.l||held.r||held.u||held.d||ptr)idle=0;idle+=dt;var tr=0,sp=speed,gx=Math.floor(px),gy=Math.floor(py);if(man&&idle>25)man=false;
   if(man){auto=false;var rate=(held.r?HOLD:0)-(held.l?HOLD:0);if(ptr&&Date.now()-ptr.t0>=260)rate+=(ptr.x0<ptr.cx?-1:1)*HOLD;
    var q=nud>0?Math.min(nud,NRATE*dt):Math.max(nud,-NRATE*dt);nud-=q;tr=q/Math.max(dt,1e-3)+rate;ang+=q+rate*dt;
    /* devant un mur, il s'en écarte du côté le plus ouvert, à vitesse modérée, et poursuit sa course */var fw=probe(ang,1.0);if(fw<0.75){var pl=probe(ang-0.8,1.5),pr=probe(ang+0.8,1.5),av=(pr>=pl?1:-1)*Math.min(2.2,(0.75-fw)*4);ang+=av*dt;tr+=av}
@@ -194,7 +194,7 @@ window.MotelRun=function(host,want){
   for(var xs=Math.max(0,x0);xs<Math.min(W,x0+Math.round(w));xs++){if(zb[xs]<dz)continue;var si=Math.floor((xs+0.5-x0)/k);if(si>=0&&si<fr.width)c.drawImage(fr,si,0,1,fr.height,xs,y0_,1,hh)}c.filter='none';
   st.minFront=Math.min(st.minFront,zb[W>>1]);st.minDepth=Math.min(st.minDepth,dz)}
  function shade(col,s){var r=col&255,g=(col>>8)&255,b=(col>>16)&255;return (255<<24)|(((b*s)|0)<<16)|(((g*s)|0)<<8)|((r*s)|0)}
- function loop(t){if(!alive)return;/* 10 nov. (Mauk Tenieb, 21 h 11) : en fond d'écran, noir et blanc ; dès que le visiteur prend la course en main, le jeu passe en couleur */var nb=idle>=2.5;if(nb!==bw){bw=nb;cv.style.filter=bw?'grayscale(1) contrast(1.12) brightness(1.05)':'none'}var dt=Math.max(0,Math.min(0.05,(t-last)/1000));last=t;if(!document.hidden){st.t+=dt;step(dt);var cl=clear_();st.minClear=Math.min(st.minClear,cl);if(cl<0.3)st.contacts++;cast()}requestAnimationFrame(loop)}
+ function loop(t){if(!alive)return;/* 10 nov. (Mauk Tenieb, 21 h 11) : en fond d'écran, noir et blanc ; dès que le visiteur prend la course en main, le jeu passe en couleur */var nb=!man&&idle>=2.5;if(nb!==bw){bw=nb;cv.style.filter=bw?'grayscale(1) contrast(1.12) brightness(1.05)':'none'}var dt=Math.max(0,Math.min(0.05,(t-last)/1000));last=t;if(!document.hidden){st.t+=dt;step(dt);var cl=clear_();st.minClear=Math.min(st.minClear,cl);if(cl<0.3)st.contacts++;cast()}requestAnimationFrame(loop)}
  reseed();st.cuts=0;requestAnimationFrame(loop);
  var api={stop:function(){alive=false;removeEventListener('keydown',key_);removeEventListener('keyup',keyu_);removeEventListener('blur',blur_);cv.remove();face.remove()},mask:key,st:st,
   down:down_,up:up_,move:function(e){},
