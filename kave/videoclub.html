@@ -35,7 +35,7 @@ button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-sel
 .scene>img.bg{position:absolute;inset:0;width:100%;height:100%;display:block}
 .hot{position:absolute;cursor:pointer;outline:0}
 /* le téléphone à cadran du comptoir commande le Motel Sound (Mauk Tenieb, 10 nov., 19 h 25) ; lueur au survol, lueur tenue quand il est décroché, sans étiquette */
-#hPhone{border-radius:50%;left:calc(57.3% - max(2.8%,22px));top:calc(58.9% - max(4.2%,22px));width:max(5.6%,44px);height:max(8.4%,44px)}
+#hPhone{border-radius:50%;left:calc(80.3% - max(5.1%,24px));top:calc(79.7% - max(5.7%,24px));width:max(10.2%,48px);height:max(11.4%,48px)}
 #hPhone::after{content:'';position:absolute;inset:-35%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,214,150,.30),rgba(255,180,90,.10) 55%,transparent);opacity:0;transition:opacity .35s;pointer-events:none}
 #hPhone.ringing{animation:phring .12s linear infinite}@keyframes phring{25%{transform:translate(-1px,1px) rotate(-3deg)}75%{transform:translate(1px,-1px) rotate(3deg)}}#hPhone.ringing::after{opacity:1}
 #tv .osd.ker{right:7%;padding:.3em .45em;background:rgba(4,10,4,.78);white-space:normal;line-height:1.15;font-family:'VT323','DM Mono',monospace;color:#b8ffb0;text-shadow:0 0 1px #000;letter-spacing:.02em;text-transform:none}
@@ -83,7 +83,7 @@ button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-sel
 @media (max-aspect-ratio:1/1){#case{flex-direction:column;justify-content:flex-start;overflow:auto;padding:16px 0 0;gap:14px}#case .face{height:auto;width:min(78vw,44vh)}#case .back{height:auto;width:min(92vw,560px);overflow:visible}#case .acts{justify-content:stretch}#case .acts .btn{flex:1}}
 /* comptoir : la cassette louée passe dans le magnétoscope, l'image sur le téléviseur */
 /* 10 nov. (21 h 37) : cadre calé au pixel sur le verre de la photo ; verre bombé, sans excès : coins plus ronds, bords assombris, reflet courbe */
-#tv{position:absolute;left:46.84%;top:46.03%;width:6.17%;height:8.14%;border-radius:4%/5%;background:transparent center/cover;box-shadow:inset 0 0 9px 4px rgba(0,0,0,.6);cursor:pointer;overflow:hidden;filter:saturate(1.2) contrast(1.08) blur(.4px);outline:0}
+#tv{position:absolute;left:66.42%;top:45.57%;width:15.33%;height:21.35%;border-radius:4%/5%;background:transparent center/cover;box-shadow:inset 0 0 9px 4px rgba(0,0,0,.6);cursor:pointer;overflow:hidden;filter:saturate(1.2) contrast(1.08) blur(.4px);outline:0}
 #tv::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(ellipse 120% 90% at 32% 18%,rgba(255,255,255,.12),rgba(255,255,255,0) 45%),radial-gradient(ellipse at 50% 50%,transparent 48%,rgba(0,0,0,.62))}
 #tv:focus-visible{box-shadow:inset 0 0 6px 2px rgba(0,0,0,.55),0 0 18px 5px rgba(255,190,110,.5)}
 #tv .osd{position:absolute;left:7%;top:7%;font:max(12px,calc(var(--sh)*.022))/1 VT323,monospace;color:#fff;text-shadow:1px 1px 0 #000,0 0 3px rgba(255,255,255,.4);white-space:nowrap}
@@ -102,7 +102,7 @@ button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-sel
 <div id="salle" tabindex="-1" aria-label="Video Kave"></div>
 <div id="wrap">
  <div class="scene" id="rayon"><img class="bg" data-src="a/vc/vc-02-rayon.webp?v=1122" alt=""><div id="boxes"></div><div class="rail" id="rails"></div></div>
- <div class="scene" id="comptoir"><img class="bg" data-src="a/vc/vc-03-comptoir.webp?v=1122" alt=""><div id="tv" role="button" tabindex="0" aria-label="VCR"><div class="osd"></div></div><div class="hot" id="hPhone" role="button" tabindex="0" aria-label="Motel Sound"></div></div>
+ <div class="scene" id="comptoir"><img class="bg" data-src="a/vc/vc-03-comptoir.webp?v=1122b" alt=""><div id="tv" role="button" tabindex="0" aria-label="VCR"><div class="osd"></div></div><div class="hot" id="hPhone" role="button" tabindex="0" aria-label="Motel Sound"></div></div>
 </div>
 <div id="case" role="dialog" aria-modal="true"><div class="face"></div><div class="back"></div></div>
 <div id="grain" aria-hidden="true"></div>
@@ -129,7 +129,7 @@ function eout(x){return 1-Math.pow(1-x,4)}
 var PAN=false,BH=17.2;
 /* 13 nov. 2026 (Mauk Tenieb : « attention aux marges des grandes images ») : la photo couvre l'écran quand la coupe reste sous 12 % ; sinon elle tient entière sur fond noir, le couloir ne transparaît plus dans les marges */
 function fit(){var W=innerWidth,Hh=innerHeight-barH(),sw=Math.min(W,Hh*IA),cov=Math.max(W,Hh*IA),full=cov/sw<=1.12;if(full)sw=cov;PAN=false;root.classList.toggle('vfull',full);
- if(sw<700&&innerHeight>innerWidth){PAN=true;sw=Hh*IA}/* téléphone debout : la photo prend toute la hauteur et défile du doigt */
+ if(innerHeight>innerWidth&&sw<Hh*IA){PAN=true;sw=Hh*IA}/* téléphone debout : la photo prend toute la hauteur et défile du doigt */
  var sh=sw/IA;root.style.setProperty('--sw',sw+'px');root.style.setProperty('--sh',sh+'px');
  $('#wrap').classList.toggle('pan',PAN);
  rayon();center();size()}
@@ -304,7 +304,7 @@ PH.rt=setTimeout(ring,25000+Math.random()*35000);window.__vcRing=ring;
 
 /* 7. passer d'un lieu à l'autre par la scène : travelling vers le rayon ou la lampe ; retour par le geste vers le bas, le bord de la photo, Échap, le retour du navigateur, Baku Boom */
 var SC={rayon:$('#rayon'),comptoir:$('#comptoir')},WR=$('#wrap');
-function center(){if(!PAN)return;var sw=parseFloat(getComputedStyle(root).getPropertyValue('--sw'))||0,c=.5;WR.scrollLeft=Math.max(0,sw*c-innerWidth/2)}
+/* 22 nov. (Mauk Tenieb, 19 h 52 : « retiens la meilleure ») : le comptoir du 13 nov., vu de près, revient ; au téléphone debout, la vue se centre sur la télé et le téléphone */function center(){if(!PAN)return;var sw=parseFloat(getComputedStyle(root).getPropertyValue('--sw'))||0,c=scene==='comptoir'?.76:.5;WR.scrollLeft=Math.max(0,sw*c-innerWidth/2)}
 /* 12 nov. (Mauk Tenieb : « la plongée soudaine par voile sombre ») : vers un rayon, un quart de tour ; l'étagère entre de côté */
 function turn(el,id){if(RM||!el.animate)return;var L=S.foc[0]<.5,o=id==='rayon'?(L?'0% 50%':'100% 50%'):'50% 50%';
  var k0=id==='rayon'?'perspective(1400px) translateX('+(L?-18:18)+'%) rotateY('+(L?58:-58)+'deg)':'perspective(1400px) translateZ(-260px)';
