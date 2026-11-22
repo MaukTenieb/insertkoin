@@ -29,9 +29,9 @@ button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-sel
 #wrap.live{pointer-events:auto}/* 22 nov. (Mauk Tenieb) : zéro fond noir derrière le rayon et le comptoir ; l'allée reste dessous */.vfull .scene{-webkit-mask-image:none;mask-image:none}
 #wrap>.scene{grid-area:1/1}
 .scene{position:relative;width:var(--sw);height:var(--sh);opacity:0;visibility:hidden;transition:opacity .2s ease-out,visibility 0s .2s;
- -webkit-mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 3.5%,#000 96.5%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 3.5%,#000 96.5%,transparent);mask-composite:intersect}
+}
 .scene.on{opacity:1;visibility:visible;transition:opacity .25s ease-out}/* 10 nov. : le rayon et le comptoir paraissent en fondu lent */
-.scene::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 75% 80% at 50% 50%,transparent 55%,rgba(0,0,0,.5))}
+/* 22 nov. (Mauk Tenieb : « ce voile-aplat noir », « ce fondu débile sur les bords ») : zéro vignette noire, zéro bord fondu sur le rayon et le comptoir */
 .scene>img.bg{position:absolute;inset:0;width:100%;height:100%;display:block}
 .hot{position:absolute;cursor:pointer;outline:0}
 /* le téléphone à cadran du comptoir commande le Motel Sound (Mauk Tenieb, 10 nov., 19 h 25) ; lueur au survol, lueur tenue quand il est décroché, sans étiquette */
@@ -129,7 +129,7 @@ function eout(x){return 1-Math.pow(1-x,4)}
 var PAN=false,BH=17.2;
 /* 13 nov. 2026 (Mauk Tenieb : « attention aux marges des grandes images ») : la photo couvre l'écran quand la coupe reste sous 12 % ; sinon elle tient entière sur fond noir, le couloir ne transparaît plus dans les marges */
 function fit(){var W=innerWidth,Hh=innerHeight-barH(),sw=Math.min(W,Hh*IA),cov=Math.max(W,Hh*IA),full=cov/sw<=1.12;if(full)sw=cov;PAN=false;root.classList.toggle('vfull',full);
- if(sw<700&&innerHeight>innerWidth){PAN=true;sw=Math.min(Hh*.92,700)*IA}
+ if(sw<700&&innerHeight>innerWidth){PAN=true;sw=Hh*IA}/* téléphone debout : la photo prend toute la hauteur et défile du doigt */
  var sh=sw/IA;root.style.setProperty('--sw',sw+'px');root.style.setProperty('--sh',sh+'px');
  $('#wrap').classList.toggle('pan',PAN);
  rayon();center();size()}
@@ -303,7 +303,7 @@ function center(){if(!PAN)return;var sw=parseFloat(getComputedStyle(root).getPro
 /* 12 nov. (Mauk Tenieb : « la plongée soudaine par voile sombre ») : vers un rayon, un quart de tour ; l'étagère entre de côté */
 function turn(el,id){if(RM||!el.animate)return;var L=S.foc[0]<.5,o=id==='rayon'?(L?'0% 50%':'100% 50%'):'50% 50%';
  var k0=id==='rayon'?'perspective(1400px) translateX('+(L?-18:18)+'%) rotateY('+(L?58:-58)+'deg)':'perspective(1400px) translateZ(-260px)';
- el.animate([{transform:k0,transformOrigin:o,opacity:.15,filter:'brightness(.75)'},{transform:'none',transformOrigin:o,opacity:1,filter:'none'}],{duration:id==="rayon"?720:460,easing:"cubic-bezier(.25,.6,.25,1)"})}
+ el.animate([{transform:k0,transformOrigin:o,opacity:.15},{transform:'none',transformOrigin:o,opacity:1}],{duration:id==="rayon"?720:460,easing:"cubic-bezier(.25,.6,.25,1)"})}
 function reveal(id){scene=id;warm();turn(SC[id],id);Object.keys(SC).forEach(function(k){SC[k].classList.toggle('on',k===id)});WR.classList.add('live');hs.classList.add('off');cv.classList.add('dim');$('#grain').classList.add('on');
  if(id==='comptoir')comptoir();center();
  setTimeout(function(){if(scene!==id)return;if(id==='rayon'){var b=BOX[inHand?TAPES.indexOf(inHand):0];if(b)b.focus({preventScroll:true})}else $('#tv').focus({preventScroll:true})},RM?0:220)}
