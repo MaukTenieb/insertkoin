@@ -185,7 +185,7 @@ function toPhoto(px,py){var W=innerWidth,H=innerHeight,a=W/H,qx=(px-W/2)/H,qy=(p
 /* le fond de l'allée, où qu'il soit dans la récursion, mène au comptoir */
 /* 13 nov. 2026 (Mauk Tenieb : « que le visiteur puisse parcourir ce couloir infini un temps ») : le comptoir se découvre après quatre à huit sas parcourus, tirés au hasard à chaque visite ; avant, le fond de l'allée fait avancer */
 var GOAL=RM?0:4+Math.random()*4,FOUND=false;function found(){if(!FOUND&&S.D>=GOAL)FOUND=true;return FOUND}
-function zone(px,py){var s=toPhoto(px,py),z=s.p0||s,ex=(z[0]-V[0])/.03,ey=(z[1]-V[1])/.06;
+function zone(px,py){var s=toPhoto(px,py),z=s.p0||s,ex=(z[0]-V[0])/.0325,ey=(z[1]-V[1])/.065;/* 22 nov. (Mauk Tenieb, 19 h 36) : la cible du fond grandit de 8 % */
  if(ex*ex+ey*ey<1&&found())return 'E';var dx=(s[0]-V[0])*IA,dy=s[1]-V[1];if(Math.abs(dy)<(dy<0?.92:1.85)*Math.abs(dx))return dx<0?'L':'R';return 'F'}
 /* la boucle : le travelling lent, l'élan des gestes, les fondus de lumière */
 var TW=[],raf=0,last=0,t0=0;
