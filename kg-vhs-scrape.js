@@ -369,7 +369,7 @@
     return jina("https://www.youtube.com/playlist?list=" + L, 60000).then(function (h) {
       videosIn(initialData(h)).forEach(add); prog(out.length);
       function step(n) {
-        if (stop() || out.length >= want || n > 12 || !out.length) return out;
+        if (stop() || out.length >= want || n > 60 || !out.length) return out;
         var last = out[out.length - 1].id;
         return jina("https://www.youtube.com/watch?v=" + last + "&list=" + L + "&index=" + out.length, 60000).then(function (w) {
           var k = 0; panelOf(initialData(w)).forEach(function (v) { k += add(v); }); prog(out.length);

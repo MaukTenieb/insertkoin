@@ -53,7 +53,7 @@
     // localStorage key for the offline cache (last good tracks).
     cacheKey: "kg.vhs-library.tracks.v1",
     // Maximum tracks loaded into KG_VHS_TRACKS (protects the cabinet memory).
-    maxTracks: 9801,
+    maxTracks: 200000, /* 22 nov. 2026 (Mauk Tenieb) : une cassette garde toute la chaîne aspirée, bien au-delà de 99 */
     // Replace the shared JUKE_TRACKS global as well (affects the jukebox!).
     mirrorToJukebox: false,
     // Fetch timeout (ms).
@@ -317,7 +317,6 @@
     var tracks = [], all = 0;
     tapes = tapes.slice(0, 99);
     for (var i = 0; i < tapes.length; i++) {
-      if (tapes[i] && tapes[i].tracks && tapes[i].tracks.length > 99) tapes[i].tracks = tapes[i].tracks.slice(0, 99);
       var tt = (tapes[i] && tapes[i].tracks) || [];
       all += tt.length;
       if (!tapes[i].shelf) tracks = tracks.concat(tt);
@@ -450,8 +449,11 @@
     /** [IK] keep a cassette recorded in the page; `over` (a channel) is erased first — record-over */
     saveLocal: function (tape, over) {
       var a = readLocal().filter(function (t) { return t && t.channel !== tape.channel && (!over || t.channel !== over); });
-      a.push({ channel: tape.channel, channel_url: tape.channel_url || "", count: Math.min(99, tape.tracks.length), tracks: tape.tracks.slice(0, 99) });
-      writeLocal(a.slice(-99));
+      /* toute la chaîne ; pistes compactées ; si le navigateur manque de place, les plus anciennes cassettes enregistrées cèdent la leur */
+      var tr = tape.tracks.map(function (t) { var y = { id: t.id, title: t.title }; ["date", "duration", "views"].forEach(function (k) { if (t[k]) y[k] = t[k]; }); return y; });
+      a.push({ channel: tape.channel, channel_url: tape.channel_url || "", count: tr.length, expected: tape.expected || 0, tracks: tr });
+      a = a.slice(-99);
+      for (;;) { try { global.localStorage.setItem(LOCAL_KEY, JSON.stringify(a)); break; } catch (_e) { if (a.length <= 1) break; a.shift(); } }
       state.lastFailureAt = 0; state.status = "idle";
     },
     /** [IK] erase a cassette recorded in this browser */
