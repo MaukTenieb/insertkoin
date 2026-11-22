@@ -12,7 +12,7 @@
 </style>
 <style>
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;overscroll-behavior:none}
+html,body{-webkit-text-size-adjust:100%;overscroll-behavior:none}
 html,body{margin:0;height:100%;background:#050403;overflow:hidden;color:#ece6d6;font-family:Arimo,sans-serif;-webkit-tap-highlight-color:transparent}
 button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-select:none}
 /* 10 nov. 2026 (Mauk Tenieb, 19 h 30) : le couloir sans fin. La salle se dessine sur un tube WebGL : optique en barillet qui absorbe les bords, grain de pellicule, travelling vers le fond */
@@ -219,6 +219,8 @@ hs.addEventListener('pointermove',function(e){
 hs.addEventListener('pointerleave',function(){S.hov=false;S.hlT=[0,0,0];hs.classList.remove('lit');kick()});
 hs.addEventListener('pointerup',function(e){var p=pd;pd=null;if(!p||scene!=='salle'||busy)return;if(p.m<10&&performance.now()-p.t<600)act(zone(e.clientX,e.clientY))});
 hs.addEventListener('pointercancel',function(){pd=null});
+/* 22 nov. (Mauk Tenieb : « voile gris à l'amorce du premier pas, par le coin haut droit ») : le doigt qui marche dans l'allée ne déclenche plus l'effet de bord du téléphone (lueur grise de défilement, tirer pour rafraîchir) */
+hs.addEventListener('touchmove',function(e){if(e.cancelable)e.preventDefault()},{passive:false});hs.addEventListener('touchstart',function(e){if(e.touches.length===1&&e.cancelable)e.preventDefault()},{passive:false});
 addEventListener('wheel',function(e){if(scene!=='salle'||busy||$('#case.on'))return;e.preventDefault();var d=e.deltaMode?e.deltaY*30:e.deltaY;S.v=Math.max(-1.6,Math.min(1.6,S.v+d*.0011));kick()},{passive:false});
 function act(z){if(z==='L')go('rayon',[.22,.5]);else if(z==='R')go('rayon',[.78,.5]);else if(z==='E')go('comptoir',[.5,.497]);else{S.v=Math.min(1.6,S.v+.7);kick()}}
 
