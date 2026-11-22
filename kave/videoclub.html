@@ -308,7 +308,8 @@ function center(){if(!PAN)return;var sw=parseFloat(getComputedStyle(root).getPro
 /* 12 nov. (Mauk Tenieb : « la plongée soudaine par voile sombre ») : vers un rayon, un quart de tour ; l'étagère entre de côté */
 function turn(el,id){if(RM||!el.animate)return;var L=S.foc[0]<.5,o=id==='rayon'?(L?'0% 50%':'100% 50%'):'50% 50%';
  var k0=id==='rayon'?'perspective(1400px) translateX('+(L?-18:18)+'%) rotateY('+(L?58:-58)+'deg)':'perspective(1400px) translateZ(-260px)';
- el.animate([{transform:k0,transformOrigin:o,opacity:.15},{transform:'none',transformOrigin:o,opacity:1}],{duration:id==="rayon"?720:460,easing:"cubic-bezier(.25,.6,.25,1)"})}
+ /* 22 nov. (Mauk Tenieb : « voile gris à l'amorce du premier pas, par le coin haut droit ») : le rayon entrait à 15 % d'opacité ; sans le fond noir, ce pan translucide balayait l'allée en biais ; il entre désormais plein, dès la première image */
+ el.animate([{transform:k0,transformOrigin:o,opacity:1},{transform:'none',transformOrigin:o,opacity:1}],{duration:id==="rayon"?720:460,easing:"cubic-bezier(.25,.6,.25,1)"})}
 function reveal(id){scene=id;warm();turn(SC[id],id);Object.keys(SC).forEach(function(k){SC[k].classList.toggle('on',k===id)});WR.classList.add('live');hs.classList.add('off');cv.classList.add('dim');$('#grain').classList.add('on');
  if(id==='comptoir')comptoir();center();
  setTimeout(function(){if(scene!==id)return;if(id==='rayon'){var b=BOX[inHand?TAPES.indexOf(inHand):0];if(b)b.focus({preventScroll:true})}else $('#tv').focus({preventScroll:true})},RM?0:220)}
