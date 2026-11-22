@@ -164,4 +164,13 @@
     var f=function(){e.classList.toggle('ik-fond',e.scrollHeight-e.clientHeight-e.scrollTop>6);};e.addEventListener('scroll',f,{passive:true});
     if(window.ResizeObserver)new ResizeObserver(f).observe(e);setInterval(f,1200);f();}
     fond('#ctrl');})();
+  /* 22 nov. 2026 (Mauk Tenieb, « Accomplis 2 », puis « fais gaffe aux textes qui s'intriquent avec les pictogrammes ») :
+     les touches de famille gardent leur picto seul ; une ligne sous la rangée donne le nom de la famille choisie (ou survolée) */
+  (function(){var cap=null,hov=null;function put(){var f=document.getElementById('fams');if(!f)return;
+      if(!cap||!cap.isConnected){cap=document.createElement('div');cap.className='fam-cap';cap.setAttribute('aria-hidden','true');cap.appendChild(document.createElement('i'));f.parentNode.insertBefore(cap,f.nextSibling);
+        f.addEventListener('pointerover',function(e){var b=e.target.closest&&e.target.closest('button.fam');if(b&&e.pointerType==='mouse'){hov=b;put();}});
+        f.addEventListener('pointerleave',function(){hov=null;put();});}
+      var b=hov||f.querySelector('button.fam[aria-pressed=true]');var t=b?((b.getAttribute('aria-label')||b.title||'')+((b.textContent||'').trim()?'  ·  '+(b.textContent||'').trim():'')):'';
+      var it=cap.firstChild;if(it.textContent!==t){it.textContent=t;cap.classList.remove('tp');void cap.offsetWidth;var ov=it.scrollWidth-cap.clientWidth;if(ov>2){cap.style.setProperty('--ov',(-ov-6)+'px');cap.style.setProperty('--tt',Math.max(3,(ov+6)/22)+'s');cap.classList.add('tp');}}}
+    put();setInterval(put,800);})();
 })();
