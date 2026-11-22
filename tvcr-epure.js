@@ -85,6 +85,15 @@
     var fi0=q(r,'[data-vhs-find-input]'),tl0=q(r,'[data-vhs-tracklist]');
     if(fi0&&tl0){var vide=function(){var n=[].filter.call(tl0.querySelectorAll('button'),function(b){return b.offsetParent!==null;}).length;tl0.classList.toggle('tv-vide',!!fi0.value.trim()&&!n);};
       fi0.addEventListener('input',function(){setTimeout(vide,80);});new MutationObserver(function(){setTimeout(vide,80);}).observe(tl0,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden','style','class']});}
+    /* 22 nov. : au doigt, la façade reste entière ; un premier toucher la grossit autour du doigt (touches de plus de 40 px), le geste suivant agit, retour à 3 s */
+    var dk=q(r,'.vhs-deck');
+    if(dk&&window.matchMedia&&matchMedia('(pointer:coarse)').matches){var zT=0,zAt=0,unz=function(){dk.classList.remove('tv-zoom');r.classList.remove('tv-zoomed');};
+      dk.addEventListener('pointerdown',function(e){if(e.pointerType==='mouse')return;clearTimeout(zT);zT=setTimeout(unz,3000);
+        if(dk.classList.contains('tv-zoom'))return;var b=dk.getBoundingClientRect();
+        dk.style.transformOrigin=Math.round(e.clientX-b.left)+'px '+Math.round(e.clientY-b.top)+'px';dk.classList.add('tv-zoom');r.classList.add('tv-zoomed');zAt=performance.now();
+        e.preventDefault();e.stopPropagation();},true);
+      dk.addEventListener('click',function(e){if(performance.now()-zAt<350){e.preventDefault();e.stopPropagation();}},true);
+      D.addEventListener('pointerdown',function(e){if(dk.classList.contains('tv-zoom')&&!dk.contains(e.target)){clearTimeout(zT);unz();}},true);}
     /* gestes sur l'écran */
     var sc=q(r,'.vhs-screen');if(!sc)return;
     var g=D.createElement('div');g.className='tv-geste';g.setAttribute('aria-hidden','true');sc.appendChild(g);

@@ -111,3 +111,4 @@ html.kam-epure .kam-osd{display:none!important}
 html.kam-epure .kam-pl input:disabled{opacity:.3;cursor:default}
 html.kam-epure .kam-pl-n>span{display:inline-block}html.kam-epure .kam-pl-n.tp>span{animation:kamtp 9s ease-in-out infinite alternate}@keyframes kamtp{0%,15%{transform:translateX(0)}85%,100%{transform:translateX(var(--ov))}}
 @media (prefers-reduced-motion:reduce){html.kam-epure .kam-pl-n.tp>span{animation:none}}
+@media (max-width:700px) and (orientation:portrait){html.kam-epure #ctrl.ik-fond{-webkit-mask-image:linear-gradient(#000 calc(100% - 34px),rgba(0,0,0,.15));mask-image:linear-gradient(#000 calc(100% - 34px),rgba(0,0,0,.15))}}

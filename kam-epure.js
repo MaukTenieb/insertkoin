@@ -131,6 +131,7 @@
     setTimeout(function(){try{show(false);}catch(_){}},1600);}
 
   /* ---- test réel : bandeau permanent sous l'image, le nom du rendu et sa réglette d'intensité ---- */
+  var famF=null;
   function plaque(){var st=$('stage');if(!st||st.querySelector('.kam-pl'))return;
     var pl=D.createElement('div');pl.className='kam-pl';
     pl.innerHTML='<span class="kam-pl-n"></span><input type="range" min="5" max="100" step="5" value="100">';
@@ -140,10 +141,12 @@
     rg.addEventListener('input',function(){fill();if(S.cur)setAmt(+rg.value/100);});
     st.appendChild(pl);
     function sync(){var L=visibleCards().filter(swipable),k=curKey(),i=-1;for(var j=0;j<L.length;j++)if(L[j].k===k){i=j;break;}
-      var n=(($('lbName')||{}).textContent||'').toUpperCase();var fm=(($('lbFam')||{}).textContent||'').toUpperCase(),txt=(fm&&S.cur?fm+' · ':'')+(S.cur&&i>=0?(i+1)+'/'+L.length+'  ':'')+n;/* test réel : la famille du rendu se lit aussi */
+      var n=(($('lbName')||{}).textContent||'').toUpperCase();var fm=(($('lbFam')||{}).textContent||'').toUpperCase(),txt=(fm&&S.cur?fm+' · ':'')+(S.cur&&i>=0?(i+1)+'/'+L.length+'  ':'')+n;if(famF&&performance.now()<famF.u)txt=famF.t;/* test réel : la famille du rendu se lit aussi */
       var tl=nm.firstChild&&nm.firstChild.nodeType===1?nm.firstChild:null;if(!tl){nm.textContent='';tl=D.createElement('span');nm.appendChild(tl);}
       if(tl.textContent!==txt){tl.textContent=txt;var ov=tl.scrollWidth-nm.clientWidth;nm.classList.remove('tp');void nm.offsetWidth;nm.classList.toggle('tp',ov>4);nm.style.setProperty('--ov',(-ov-8)+'px');}/* trop long pour sa case : défilement sur place, recalculé seulement quand le texte change (troisième test réel) */
       rg.disabled=!S.cur;/* test réel : un rendu qui ajoute un cadre (Polaroid…) change la taille de l'image, l'intensité ne s'y applique pas : la réglette s'éteint */var a=S.cur&&S.cur.amt!=null?S.cur.amt:1;if(D.activeElement!==rg)rg.value=Math.round(a*100);fill();}
+    /* 22 nov. : une famille touchée dit son nom sur la plaque (pictos seuls dans le panneau) */
+    D.addEventListener('click',function(e){var f=e.target.closest&&e.target.closest('button.fam');if(!f)return;var t=(f.getAttribute('aria-label')||f.title||'').toUpperCase();var c=(f.textContent||'').trim();famF={t:t+(c?' · '+c:''),u:performance.now()+2600};sync();setTimeout(sync,2700);},true);
     var lb=$('lbName');if(lb)new MutationObserver(sync).observe(lb,{childList:true,characterData:true,subtree:true});
     setInterval(sync,700);sync();}
 
@@ -156,4 +159,9 @@
   /* test réel du 22 nov. : au téléphone couché, le panneau s'ouvrait déjà défilé (touches du haut coupées) ; il s'ouvre en haut tant que le visiteur n'y a pas touché */
   (function(){var c=document.getElementById('ctrl');if(!c)return;var touched=false;['pointerdown','wheel','touchstart','keydown'].forEach(function(t){c.addEventListener(t,function(){touched=true;},{passive:true});});
     var t0=performance.now();c.addEventListener('scroll',function(){if(!touched&&c.scrollTop&&performance.now()-t0<15000)c.scrollTop=0;},{passive:true});if(c.scrollTop)c.scrollTop=0;})();
+  /* 22 nov. : une zone qui défile au téléphone finit en fondu (la suite se devine) au lieu d'une coupe nette ; le fondu part en fin de course */
+  (function(){function fond(sel){var e=document.querySelector(sel);if(!e){setTimeout(function(){fond(sel);},800);return;}if(e._fond)return;e._fond=1;
+    var f=function(){e.classList.toggle('ik-fond',e.scrollHeight-e.clientHeight-e.scrollTop>6);};e.addEventListener('scroll',f,{passive:true});
+    if(window.ResizeObserver)new ResizeObserver(f).observe(e);setInterval(f,1200);f();}
+    fond('#ctrl');})();
 })();

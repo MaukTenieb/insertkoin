@@ -36,4 +36,9 @@
   /* infobulles (test réel, 22 nov.) : chaque picto de ce programme montre son nom au survol, tiré de son aria-label */
   (function(){function tt(root){if(!root)return;[].forEach.call(root.querySelectorAll('button[aria-label]:not([title]),[role=button][aria-label]:not([title])'),function(b){b.title=b.getAttribute('aria-label');});}
     var R='#mz';var go=function(){var r=typeof R==='string'?document.querySelector(R):R;if(r)tt(r);};go();setInterval(go,1500);})();
+  /* 22 nov. : une zone qui défile au téléphone finit en fondu (la suite se devine) au lieu d'une coupe nette ; le fondu part en fin de course */
+  (function(){function fond(sel){var e=document.querySelector(sel);if(!e){setTimeout(function(){fond(sel);},800);return;}if(e._fond)return;e._fond=1;
+    var f=function(){e.classList.toggle('ik-fond',e.scrollHeight-e.clientHeight-e.scrollTop>6);};e.addEventListener('scroll',f,{passive:true});
+    if(window.ResizeObserver)new ResizeObserver(f).observe(e);setInterval(f,1200);f();}
+    fond('#mz-rack');})();
 })();
