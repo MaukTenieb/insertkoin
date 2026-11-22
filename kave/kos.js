@@ -36,7 +36,7 @@ function icURI(name){if(name.indexOf('m:')===0)return 'url(a/m/'+name.slice(2)+'
 
 /* ---------- système de fichiers K:\ ---------- */
 function node(o){o.children=o.children||null;return o}
-function prog(p){var A={fotofauna:'kamera',vhs:'tv',terminal:'minitale'}[p.id];return node({name:A&&window.kaveName?kaveName(A):p.name,kind:'exe',icon:p.icon,size:p.size,date:COMMIT,prog:p,exe:p.exe})}
+function prog(p){var A={fotofauna:'kamera',vhs:'tv',terminal:'minitale',musik:'musik'}[p.id];return node({name:A&&window.kaveName?kaveName(A):p.name,kind:'exe',icon:p.icon,size:p.size,date:COMMIT,prog:p,exe:p.exe})}
 function url(name,u,icon){return node({name:name,kind:'url',icon:icon||'url',url:u,size:180+name.length*3,date:COMMIT})}
 function txt(name,text,icon){return node({name:name,kind:'txt',icon:icon||'txt',text:text,size:new Blob([text]).size,date:COMMIT})}
 function dir(name,children,icon){var d=node({name:name,kind:'dir',icon:icon||'folder',children:children,date:COMMIT});children.forEach(function(c){c.parent=d});return d}

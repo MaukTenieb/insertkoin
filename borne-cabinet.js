@@ -68,7 +68,7 @@
     fauneye:{t:'FaunEye',th:'borne-fauneye.jpg',nc:'#e2c27a',items:[['vhs','TVCR','thumb-vhs.jpg','#b9d84a'],['photo','KAMERA','thumb-photo.jpg?v=1113','#ff5a5a'],['fauneye','BAKUBOOK','borne-fauneye.jpg','#e2c27a']],extra:[['bb','MUSIK','borne-big-bb.jpg','#ff7043',2],['studio','STUDIORHOGO','borne-big-studio.jpg','#e2c27a',2]]},
     surf:{t:'SurFauna',th:'thumb-repo.jpg',nc:'#7fe0ff',items:[['repo','REPORHOGO','thumb-repo.jpg','#b9d84a'],['tor','FAUNATOR','thumb-repo.jpg','#9e9e9e']]}};
   /* 21 nov. 2026 : noms tirés au hasard des Kaves et artefacts (kaves.js) */
-  if(window.kaveName){GROUPS.fauneye.items.forEach(function(it){if(it[0]==='photo')it[1]=kaveName('kamera').toUpperCase();if(it[0]==='vhs')it[1]=kaveName('tv').toUpperCase();});}
+  if(window.kaveName){GROUPS.fauneye.items.forEach(function(it){if(it[0]==='photo')it[1]=kaveName('kamera').toUpperCase();if(it[0]==='vhs')it[1]=kaveName('tv').toUpperCase();});GROUPS.fauneye.extra.forEach(function(it){if(it[0]==='bb')it[1]=kaveName('musik').toUpperCase();});}
   /* la graphie des noms (KorhoGame, FaunEye, SurFauna) dans une gravure tout en capitales : les minuscules en petites capitales */
   function caps(b,t){b.textContent='';b.setAttribute('aria-label',t);t.replace(/([A-Z0-9!]+)|([a-z]+)/g,function(m,U,l){var e=document.createElement(l?'small':'span');e.textContent=m;e.className=l?'b-sc':'';b.appendChild(e);return m;});}
   function group(g){var G=GROUPS[g],c=el('div','cab b-group');c.dataset.grp='g-'+g;c.style.cssText='--th:url('+G.th+');--nc:'+G.nc;
@@ -206,7 +206,7 @@
   var GRP=[['puck','fi','faunarratics','chess','c4','hang','mm','erratic'],['vhs','photo','bb','studio','fauneye'],['terminal'],['repo','tor']];
   var NAME={chess:'FAUNA CHESS',fi:'FAUNINVADERS',diktat:'KAMERA',studio:'STUDIORHOGO',puck:'KORONG!',faunarratics:'FAUNARRATIK',bb:'MUSIK',c4:'KONNECT4',hang:'AKASZTÓFA',mm:'MASKERMIND',erratic:'ERRATIK',
     fauneye:'BAKUBOOK',vhs:'TVCR',kapture:'KAPTURE',photo:'KAMERA',terminal:'3615',repo:'REPORHOGO',tor:'FAUNATOR'};
-  if(window.kaveName){NAME.photo=NAME.diktat=kaveName('kamera').toUpperCase();NAME.vhs=kaveName('tv').toUpperCase();NAME.terminal='MINITALE';}
+  if(window.kaveName){NAME.photo=NAME.diktat=kaveName('kamera').toUpperCase();NAME.vhs=kaveName('tv').toUpperCase();NAME.terminal='MINITALE';NAME.bb=kaveName('musik').toUpperCase();}
   var CUR=null,SWAP=false;
   function launch(g){if(g==='diktat'){IK().openCalque&&IK().openCalque('fotofauna.html?son=1',window.kaveName?kaveName('kamera'):'Kamera');return;}if(KATA.indexOf(g)>=0)kata(g);else IK().go&&IK().go(g);}
   /* 8 nov. — adresse par programme : ?p=<programme> ouvre ce programme (lien des habillages KorhogOS, DVD, télé du motel, vidéoclub) */

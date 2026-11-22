@@ -11,7 +11,8 @@
     videoklub:{names:['VideoKave','VideoKlub'], url:'kave/videoclub.html'},
     desk:     {names:['Kalabass','Komptoir','Desk','KorhoDesk'], url:'kave/korhodesk/'},
     wiki:     {names:['FauxRhogo','KalabWiki','Weaky','WigWiki','Kerema'], url:'kave/wiki.html'},
-    minitale: {names:['MiniTale'], url:'/3615/'}
+    minitale: {names:['MiniTale'], url:'/3615/'},
+    musik:    {names:['Musik','Zene'], url:'?p=musik'}
   };
   var store=function(){try{return window.sessionStorage}catch(e){return null}}();
   function kaveName(id){

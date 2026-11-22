@@ -23,7 +23,7 @@
 - FauxRhogo, KalabWiki, Weaky, WigWiki, Kerema: the wiki. https://mauktenieb.github.io/insertkoin/fauxrhogo/
 - KorhogOS: the desktop. https://mauktenieb.github.io/insertkoin/korhogos/
 - Suites: KorhoGame https://mauktenieb.github.io/insertkoin/korhogame/ · FaunEye https://mauktenieb.github.io/insertkoin/fauneye/ · SurFauna https://mauktenieb.github.io/insertkoin/surfauna/
-- Musik https://mauktenieb.github.io/insertkoin/musik/ · StudioRhogo https://mauktenieb.github.io/studio/ · BakuBook https://mauktenieb.github.io/insertkoin/bakubook/ · SkopoRhogo https://mauktenieb.github.io/insertkoin/skoporhogo/ · Kapture https://mauktenieb.github.io/insertkoin/kapture/
+- Musik, Zene https://mauktenieb.github.io/insertkoin/musik/ · https://mauktenieb.github.io/insertkoin/zene/ · StudioRhogo https://mauktenieb.github.io/studio/ · BakuBook https://mauktenieb.github.io/insertkoin/bakubook/ · SkopoRhogo https://mauktenieb.github.io/insertkoin/skoporhogo/ · Kapture https://mauktenieb.github.io/insertkoin/kapture/
 - MiniTale, one name, one address: https://mauktenieb.github.io/3615/
 - Katabase, Burrows: the presentation of Mauk Tenieb and the Korhogo world. https://mauktenieb.github.io/katabase/ · https://mauktenieb.github.io/burrows/
 

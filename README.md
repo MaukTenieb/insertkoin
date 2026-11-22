@@ -31,7 +31,7 @@ Insert Koin is a network of Kaves: places of the Korhogo world, the world of the
   - [FaunEye](https://mauktenieb.github.io/insertkoin/fauneye/): the suite of machines.
     - TVCR, the television of the room.
     - [Kamera](https://mauktenieb.github.io/insertkoin/kamera/) / [Kamescope](https://mauktenieb.github.io/insertkoin/kamescope/) / [Kamcorder](https://mauktenieb.github.io/insertkoin/kamcorder/) / [VCR](https://mauktenieb.github.io/insertkoin/vcr/) / [KamOrhogo](https://mauktenieb.github.io/insertkoin/kamorhogo/) / [KeremaKam](https://mauktenieb.github.io/insertkoin/keremakam/): the camera and sound recorder, with 1,998 looks from 2010s photo apps.
-    - [Musik](https://mauktenieb.github.io/insertkoin/musik/): a sequencer of 15 to 21 steps, the Masks as figurines on a walnut bench, a turntable for sound and video.
+    - [Musik](https://mauktenieb.github.io/insertkoin/musik/) / [Zene](https://mauktenieb.github.io/insertkoin/zene/): a sequencer of 15 to 21 steps, the Masks as figurines on a walnut bench, a turntable for sound and video.
     - [StudioRhogo](https://mauktenieb.github.io/studio/): a 32-track studio that syncs a film to the music.
     - [BakuBook](https://mauktenieb.github.io/insertkoin/bakubook/): a reader: alchemy classics, Internet Archive, Gutenberg, Wikisource, the Korhogo Diary.
   - [SurFauna](https://mauktenieb.github.io/insertkoin/surfauna/): the suite of search tools.
@@ -213,7 +213,7 @@ The notes follow the house prose rules of the method repo ([prose/RULES.md](http
   - Faunarratik: a tale built from the sheets of the Masks. Still alpha test.
   - FaunInvaders: the eighteen Masks march and drop bombs, each Mask in its own way.
   - [Kamera](https://mauktenieb.github.io/insertkoin/kamera/): the camera and sound recorder, with 1,998 looks from 2010s photo apps.
-  - [Musik](https://mauktenieb.github.io/insertkoin/musik/): a sequencer of 15 to 21 steps, the Masks as figurines on a walnut bench, a turntable for sound and video.
+  - [Musik](https://mauktenieb.github.io/insertkoin/musik/) / [Zene](https://mauktenieb.github.io/insertkoin/zene/): a sequencer of 15 to 21 steps, the Masks as figurines on a walnut bench, a turntable for sound and video.
   - [StudioRhogo](https://mauktenieb.github.io/studio/): a 32-track studio that syncs a film to the music.
 - [MiniTale](https://mauktenieb.github.io/3615/): the Minitel of the Korhogo Fauna: messages, Koins, Kurations, the Hall of Kave.
 
