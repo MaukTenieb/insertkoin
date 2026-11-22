@@ -52,7 +52,14 @@ var svg='<svg viewBox="0 0 34 82" width="34" height="82" aria-hidden="true">'+
 '<path d="M17 31 L28.5 52.5 L17 75 L5.5 52.5 Z" fill="none" stroke="#e9dccb" stroke-width=".8" opacity=".75"/>'+
 '<circle cx="17" cy="33" r="2.3" fill="#2a2420"/>'+
 '<text x="17" y="55.5" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="5.6" letter-spacing=".6" fill="#efe3cf">KORHOGO</text></svg>';
-var IMG=P+'a/porte-cle.webp';
+/* 22 nov. : quatre motifs sur le porte-clé (dessin d'origine, signes a, b, c de Mauk Tenieb), un tirage à chaque écran.
+   Hasard pur, sans remise, par cycles de quatre : 25 %, 33,33 %, 50 %, 100 %, puis le sac se remplit à nouveau (4, 3, 2, 1, 4, 3…) */
+var MOT=['','-a','-b','-c'];
+function tirer(){var s=null;try{s=JSON.parse(localStorage.getItem('ik.cle')||'null')}catch(e){}
+ if(!s||!s.sac||!s.sac.length)s={sac:[0,1,2,3]};
+ var n=s.sac.splice(Math.floor(Math.random()*s.sac.length),1)[0];
+ try{localStorage.setItem('ik.cle',JSON.stringify(s))}catch(e){}return n}
+var IMG=P+'a/porte-cle'+MOT[tirer()]+'.webp';
 var w=document.createElement('div');w.id='mk';
 var b=document.createElement('button');b.className='fob';b.type='button';b.setAttribute('aria-expanded','false');
 b.innerHTML='<span class="sw"><span class="tw">'+svg+svg+'</span></span>';
