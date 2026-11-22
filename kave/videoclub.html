@@ -26,7 +26,7 @@ button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-sel
 #wrap{position:fixed;left:0;right:0;top:0;bottom:var(--ikbar,52px);display:grid;align-items:center;justify-items:center;overflow:hidden;scrollbar-width:none;pointer-events:none}
 #wrap::-webkit-scrollbar{display:none}
 #wrap.pan{overflow-x:auto;overflow-y:hidden;justify-items:start;touch-action:pan-x}
-#wrap.live{pointer-events:auto;background:#000}.vfull .scene{-webkit-mask-image:none;mask-image:none}
+#wrap.live{pointer-events:auto}/* 22 nov. (Mauk Tenieb) : zéro fond noir derrière le rayon et le comptoir ; l'allée reste dessous */.vfull .scene{-webkit-mask-image:none;mask-image:none}
 #wrap>.scene{grid-area:1/1}
 .scene{position:relative;width:var(--sw);height:var(--sh);opacity:0;visibility:hidden;transition:opacity .2s ease-out,visibility 0s .2s;
  -webkit-mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 3.5%,#000 96.5%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent,#000 2.5%,#000 97.5%,transparent),linear-gradient(transparent,#000 3.5%,#000 96.5%,transparent);mask-composite:intersect}
@@ -132,8 +132,8 @@ function fit(){var W=innerWidth,Hh=innerHeight-barH(),sw=Math.min(W,Hh*IA),cov=M
  if(sw<700&&innerHeight>innerWidth){PAN=true;sw=Math.min(Hh*.92,700)*IA}
  var sh=sw/IA;root.style.setProperty('--sw',sw+'px');root.style.setProperty('--sh',sh+'px');
  $('#wrap').classList.toggle('pan',PAN);
- /* boîtiers de 46 px de large au moins sous le doigt */
- BH=Math.min(11,Math.max(9.6,46/(sw*.399)*100));rayon();center();size()}
+ /* 22 nov. (Mauk Tenieb : « une précédente instance a niqué les proportions ») : neuf boîtiers 5:7 tiennent entre les deux montants du meuble, un jour entre chacun, sans déborder */
+ BH=(X1-X0)/(PER+(PER+1)*.12)*IA*7/5;rayon();center();size()}
 
 /* 2. le couloir : un tube WebGL ; barillet, aberration de lentille, vignette, grain ; deux tirages du même plan, l'un dans l'autre, font un travelling sans fin */
 var cv=$('#hall'),gl=null,P=null,U={},TEX=null,img=new Image(),ready=false;
@@ -180,11 +180,12 @@ function toPhoto(px,py){var W=innerWidth,H=innerHeight,a=W/H,qx=(px-W/2)/H,qy=(p
  var s=G.s;for(var k=0;k<5;k++){var tn=[V[0]+(p[0]-V[0])/(s*KD),V[1]+(p[1]-V[1])/(s*KD)],M=k?R0:G.M1,F=k?1:Math.max(G.F1,.02),m=1;for(var j=0;j<2;j++){m*=ss((tn[j]-M[j])/(FV[j]*F))*ss((M[j+2]-tn[j])/(FV[j]*F))}if(m<.5)break;s*=KD}
  var o=[V[0]+(p[0]-V[0])/s,V[1]+(p[1]-V[1])/s];o.p0=p;return o}
 /* zones de la photo : rayons à gauche et à droite, lampe du comptoir au fond, sol et plafond pour avancer */
+/* 22 nov. (Mauk Tenieb) : plafond et sol, sur toute leur surface, font marcher ; les rayons se touchent sur les étagères seules (lignes d'angle relevées sur la photo) ; le fond, petit exprès */
 /* le fond de l'allée, où qu'il soit dans la récursion, mène au comptoir */
 /* 13 nov. 2026 (Mauk Tenieb : « que le visiteur puisse parcourir ce couloir infini un temps ») : le comptoir se découvre après quatre à huit sas parcourus, tirés au hasard à chaque visite ; avant, le fond de l'allée fait avancer */
 var GOAL=RM?0:4+Math.random()*4,FOUND=false;function found(){if(!FOUND&&S.D>=GOAL)FOUND=true;return FOUND}
-function zone(px,py){var s=toPhoto(px,py),z=s.p0||s,ex=(z[0]-V[0])/.07,ey=(z[1]-V[1])/.14;
- if(ex*ex+ey*ey<1&&found())return 'E';if(s[1]<.03||s[1]>.97)return 'F';if(s[0]<.44)return 'L';if(s[0]>.56)return 'R';return 'F'}
+function zone(px,py){var s=toPhoto(px,py),z=s.p0||s,ex=(z[0]-V[0])/.03,ey=(z[1]-V[1])/.06;
+ if(ex*ex+ey*ey<1&&found())return 'E';var dx=(s[0]-V[0])*IA,dy=s[1]-V[1];if(Math.abs(dy)<(dy<0?.92:1.85)*Math.abs(dx))return dx<0?'L':'R';return 'F'}
 /* la boucle : le travelling lent, l'élan des gestes, les fondus de lumière */
 var TW=[],raf=0,last=0,t0=0;
 function tween(k,to,ms,fn,done){TW=TW.filter(function(x){return x.k!==k});TW.push({k:k,a:S[k],b:to,t:performance.now(),ms:RM?1:ms,fn:fn||ease,done:done});kick()}
@@ -227,14 +228,14 @@ var PROG=['korong','chess','erratik','faunarratik','invaders','katabatik','bakub
 var TAPES=D.F.map(function(f){return{kind:'mask',id:f.slug,title:f.name,img:'a/vc/vc-mask-'+f.slug+'.webp',fallback:'a/b-'+f.slug+'.webp',num:f.num,f:f,url:B+'fauna-'+f.slug+'.html'}})
  .concat(PROG.map(function(id){var p=D.P.filter(function(x){return x.id===id})[0];return p&&{kind:'prog',id:id,title:p.name,img:'a/vc/vc-prog-'+id+'.webp',p:p,url:p.url}}).filter(Boolean));
 /* le rayon : quatre étagères relevées sur la photo (surface à 29,5 / 50,5 / 71 / 92,5 % ; intérieur 11 à 89 %) */
-var SHELF=[31.6,49.5,67.3,85.3],X0=34.5,X1=66.3,PER=9,BOX=[],LOADED=false;
+var SHELF=[31.6,49.5,67.3,85.3],X0=35.3,X1=65.4,PER=9,BOX=[],LOADED=false;
 function rayon(){var host=$('#boxes');host.innerHTML='';BOX=[];var bw=BH*768/1376*5/7;
  TAPES.forEach(function(tp,i){var row=Math.floor(i/PER),col=i%PER;if(row>3)return;var n=Math.min(PER,TAPES.length-row*PER),gap=(X1-X0-n*bw)/(n+1);
   var b=h('div','box');b.setAttribute('role','button');b.tabIndex=0;b.setAttribute('aria-label',tp.title);b.dataset.r=row;b.dataset.c=col;b.dataset.i=i;
   b.style.cssText='left:'+(X0+gap+col*(bw+gap))+'%;top:'+(SHELF[row]-BH)+'%;width:'+bw+'%;height:'+BH+'%;--bw:calc(var(--sw)*'+(bw/100)+')';
   var s=h('div','sleeve '+tp.kind);s.innerHTML='<div class="t">'+esc(tp.title)+'</div><div class="k">KORHOGO</div>'+(tp.num?'<div class="n">'+tp.num+'</div>':'');s._tp=tp;if(LOADED)setImg(s,tp);b.appendChild(s);
   b.onclick=function(){if(!swiped)take(tp,b)};host.appendChild(b);BOX.push(b)});
- var r=$('#rails');r.innerHTML='';SHELF.forEach(function(y){var d=h('div');d.style.cssText='position:absolute;inset:0;background:url(a/vc/vc-02-rayon.webp?v=1114) 0 0/100% 100%;clip-path:inset('+(y-4.2)+'% 9% '+(100-y+0.4)+'% 9%)';r.appendChild(d)})}
+ var r=$('#rails');r.innerHTML='';SHELF.forEach(function(y){var d=h('div');d.style.cssText='position:absolute;inset:0;background:url(a/vc/vc-02-rayon.webp?v=1114) 0 0/100% 100%;clip-path:inset('+(y-1.1)+'% 9% '+(100-y-0.7)+'% 9%)';r.appendChild(d)})}
 function setImg(el,tp){if(el._set)return;el._set=1;var im=new Image();im.onload=function(){el.style.backgroundImage='url('+tp.img+')'};im.onerror=function(){el.style.background='#0b0908 url('+tp.fallback+') 50% 85%/80% auto no-repeat'};im.src=tp.img}
 /* les images du rayon et du comptoir arrivent après la salle : au premier geste, ou quatre secondes après le chargement */
 function warm(){if(LOADED)return;LOADED=true;$$('img[data-src]').forEach(function(i){i.src=i.dataset.src;i.removeAttribute('data-src')});$$('#boxes .sleeve').forEach(function(s){setImg(s,s._tp)})}
