@@ -430,7 +430,7 @@ function mount(){var p=document.getElementById('bb-panel');if(!p)return false;if
   return true}
 function paintPat(){if(!ROOT)return;[].forEach.call($('#mz-pat',ROOT).children,function(b,i){b.classList.toggle('on',i===S.pat)})}
 function paintLen(){if(!ROOT)return;[].forEach.call($('#mz-len',ROOT).children,function(b){b.classList.toggle('on',+b.textContent===S.n)})}
-function narrow(){return matchMedia('(max-width:760px)').matches}
+function narrow(){return matchMedia('(max-width:760px),(max-height:520px) and (orientation:landscape)').matches}/* 22 nov. 2026 (test réel) : téléphone couché, mêmes pages de 8 pas que debout ; cases de 20 x 8 px auparavant */
 function rack(){if(!ROOT)return;var pg=$('#mz-pg',ROOT);if(pg)pg.style.display=narrow()?'flex':'none';var s0=narrow()?Math.min(S.page||0,Math.ceil(S.n/8)-1)*8:0,s1=narrow()?Math.min(S.n,s0+8):S.n,R=$('#mz-rack',ROOT),sc=R.scrollTop,sl=R.scrollLeft,h='';
   S.ch.forEach(function(c,i){h+='<div class="mzrow'+(i===S.sel?' sel':'')+(c.mute?' mute':'')+'" data-i="'+i+'" style="--c:'+c.color+';--ti:'+tink(c.color)+'">'+(c.mask?'<button type="button" class="mznm mzfg" data-n="'+i+'" aria-label="'+String(c.name).replace(/"/g,'&quot;')+'"><canvas class="mzfc bust" data-mask="'+c.mask+'"></canvas></button>':'<button type="button" class="mznm'+(c.kind!=='syn'?' '+c.kind:'')+'" data-n="'+i+'"><i></i><span>'+String(c.name).replace(/</g,'&lt;')+'</span></button>')+'<div class="mzstp">';
     for(var s=s0;s<s1;s++)h+='<div class="mzs'+((s>>2)%2?' b':'')+(s%16===0&&s>s0?' g':'')+(c.steps[S.pat][s]?' on':'')+'" data-s="'+s+'"></div>';h+='</div></div>'});
