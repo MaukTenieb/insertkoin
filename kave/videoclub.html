@@ -138,7 +138,7 @@ function fit(){var W=innerWidth,Hh=innerHeight-barH(),sw=Math.min(W,Hh*IA),cov=M
 var cv=$('#hall'),gl=null,P=null,U={},TEX=null,img=new Image(),ready=false;
 /* 13 nov. 2026 (Mauk Tenieb) : nouvelles photos de l'allée, du rayon et du comptoir ; point de fuite, rayon et comptoir recalés */
 /* 10 nov. (A51) : l'allée sans fond ; le fond de l'allée contient la même allée, trois fois plus petite, à l'infini (récursion au point de fuite), sous l'optique en barillet qui mange les bords */
-/* 22 nov. (Mauk Tenieb : « ce filtre venant se répandre par le haut droit ») : à chaque bouclage, le cadrage montrait le bord haut de la photo, fondu au noir ; Z0 cadre désormais toujours à l'intérieur de la photo, coins compris */var K=.2,Z0=.83,KD=.33,V=[.494,.508],HOLE=[552/1376,275/768,808/1376,505/768],R0=HOLE.map(function(x,j){var c=V[j%2];return c+(x-c)/KD}),FV=[180/1376,115/768];
+/* 22 nov. (Mauk Tenieb : « ce filtre venant se répandre par le haut droit ») : à chaque bouclage, le cadrage montrait le bord haut de la photo, fondu au noir ; Z0 cadre désormais toujours à l'intérieur de la photo, coins compris */var K=.2,Z0=.83,KD=.33,V=[.5033,.5005]/* 22 nov. : point de fuite relevé sur la photo (néon à x 692,5 px, étagères à y 384 px) : la copie emboîtée prolonge le néon sans cassure */,HOLE=[552/1376,275/768,808/1376,505/768],R0=HOLE.map(function(x,j){var c=V[j%2];return c+(x-c)/KD}),FV=[180/1376,115/768];
 var S={D:0,v:0,push:0,foc:[.5,.49],hl:[0,0,0],hlT:[0,0,0],lum:RM?1:.1,tm:0,intro:-1};
 var CREEP=RM?0:.022;
 var VS='attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
