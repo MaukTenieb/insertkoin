@@ -426,6 +426,12 @@ body:not(.on-home) .info,body:not(.on-home) .foot{display:none}
 </style>
 <style id="b-veil">html:not(.borne-ready) body{background:transparent!important}html:not(.borne-ready) body>*{visibility:hidden!important}html:not(.borne-ready){background:#0b0908!important;min-height:100%}html:not(.borne-ready)::before{content:"";position:fixed;inset:7vmin;z-index:2147483647;background:var(--wait) center/contain no-repeat;box-shadow:none}html.borne-ready{transition:background-color .4s}</style>
 <script>(function(){var i=1+Math.floor(Math.random()*27),d=document.documentElement.style;d.setProperty("--wait","url(attente-"+(i<10?"0":"")+i+".webp)");d.setProperty("--waitsz","contain");setTimeout(function(){document.documentElement.classList.add("borne-ready")},5000)})()</script>
+<style id="b-veil-bar">html:not(.borne-ready)::after{content:"";position:fixed;z-index:2147483647;top:var(--wbt,calc(100% - 5vmin));left:var(--wbl,25%);width:var(--wbw,50%);height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(255,226,150,.55),#ffe6a6) 0 0/var(--wbp,0%) 100% no-repeat,rgba(255,240,210,.10);box-shadow:0 0 6px rgba(255,214,130,.25);transition:background-size .3s linear}</style>
+<script>/* 22 nov. 2026 (Mauk Tenieb) : une fine barre de progression sous la photo d'attente, à sa largeur */(function(){var d=document.documentElement,s=d.style,t0=performance.now(),im=new Image();
+function place(){if(!im.naturalWidth)return;var m=Math.min(innerWidth,innerHeight)*.07,W=innerWidth-2*m,H=innerHeight-2*m,k=Math.min(W/im.naturalWidth,H/im.naturalHeight),w=im.naturalWidth*k,h=im.naturalHeight*k;
+s.setProperty("--wbl",(innerWidth-w)/2+"px");s.setProperty("--wbw",w+"px");s.setProperty("--wbt",Math.min(innerHeight-6,(innerHeight+h)/2+Math.max(6,m*.35))+"px");}
+var u=(getComputedStyle(d).getPropertyValue("--wait")||s.getPropertyValue("--wait")||"").replace(/^\s*url\(["']?|["']?\)\s*$/g,"");if(u){im.onload=place;im.src=u;}addEventListener("resize",place);
+(function tick(){if(d.classList.contains("borne-ready"))return;var e=(performance.now()-t0)/1000,p=document.readyState==="complete"?Math.max(.9,1-Math.exp(-e/1.2)):1-Math.exp(-e/1.6);s.setProperty("--wbp",Math.min(p,.97)*100+"%");requestAnimationFrame(tick);})();})()</script>
 <link rel="stylesheet" href="borne-cabinet.css">
 <link rel="stylesheet" href="borne-charte.css">
 <link rel="stylesheet" href="borne-da2.css">
