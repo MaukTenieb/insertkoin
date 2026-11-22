@@ -150,11 +150,21 @@ button,a{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text
 #postit::before{content:"";position:absolute;left:0;right:0;top:0;height:16%;background:linear-gradient(rgba(0,0,0,.08),transparent)}
 #postit .pi-in{position:absolute;inset:7% 8% 6% 9%;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;font-family:"Permanent Marker","Marker Felt",cursive;color:#23306e;text-align:left}
 #postit .pi-env{width:34cqw;height:auto;margin:0 0 1cqw 2cqw;fill:none;stroke:#23306e;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;rotate:-4deg}
-#postit b{display:block;font-weight:400;font-size:12.5cqw;line-height:1.05;white-space:nowrap;letter-spacing:-.01em}
+#postit b{display:block;font-weight:400;font-size:11.2cqw;line-height:1.05;white-space:nowrap;letter-spacing:-.01em}
 #postit b:nth-of-type(2){margin-left:3cqw;rotate:-1.5deg}#postit b:nth-of-type(3){margin-left:6cqw;rotate:1deg}
-#postit:hover{translate:0 -.3cqmin}
+@media (hover:hover) and (pointer:fine){#postit:not(.zoom):hover{scale:2.6;rotate:0deg;z-index:6;transform-origin:30% 30%;transition:scale .18s ease-out,rotate .18s}}/* 22 nov. : Post-it réduit de moitié, loupe au survol */
 #stage.night #postit{filter:brightness(.72)}
 #postit.zoom{position:fixed;z-index:41;left:50%!important;top:calc((100dvh - var(--ikbar,52px))/2)!important;width:min(78vw,60dvh)!important;translate:-50% -50%;rotate:-2deg;box-shadow:0 2vmin 5vmin rgba(0,0,0,.7)}
+</style>
+<style>#pi-wait{position:fixed;inset:0;z-index:99;display:grid;place-items:center;background:#0b0908 var(--ph) center/contain no-repeat;opacity:0;transition:opacity .3s}
+#pi-wait.on{opacity:1}#pi-wait.photo .pi-big{display:none}
+#pi-wait .pi-big{position:relative;width:min(70vw,58dvh);aspect-ratio:1;padding:0;border:0;container-type:inline-size;rotate:-2deg;background:linear-gradient(170deg,#fff3a3 0%,#f9e37a 62%,#efd463 100%);box-shadow:0 2vmin 5vmin rgba(0,0,0,.7)}
+#pi-wait .pi-big .pi-in{position:absolute;inset:7% 8% 6% 9%;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;font-family:"Permanent Marker","Marker Felt",cursive;color:#23306e}
+#pi-wait .pi-big .pi-env{width:34cqw;height:auto;margin:0 0 1cqw 2cqw;fill:none;stroke:#23306e;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;rotate:-4deg}
+#pi-wait .pi-big b{display:block;font-weight:400;font-size:11.2cqw;line-height:1.05;white-space:nowrap}
+#pi-wait .pi-big b:nth-of-type(2){margin-left:3cqw;rotate:-1.5deg}#pi-wait .pi-big b:nth-of-type(3){margin-left:6cqw;rotate:1deg}
+#pi-wait>i{position:fixed;left:50%;bottom:7vmin;translate:-50% 0;width:min(70vw,58dvh);height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(255,226,150,.55),#ffe6a6) 0 0/0% 100% no-repeat,rgba(255,240,210,.10);box-shadow:0 0 6px rgba(255,214,130,.25);animation:piw 3.4s linear forwards}
+@keyframes piw{to{background-size:100% 100%,auto}}
 </style>
 </head>
 <body>
@@ -279,12 +289,16 @@ function layout(){
   st.style.width=w+'px';st.style.top=(ah/2)+'px';
   st.style.setProperty('--ar',L.ar);st.style.backgroundImage=`url(${L.bg})`;$('#blur').style.backgroundImage=`url(${L.bg})`;
   for(const id of ['neon','board','rack','bell','tvk']){const [x,y,w]=L[id],e=$('#'+id);e.style.left=x+'%';e.style.top=y+'%';e.style.width=w+'%'}
-  {const [x,y,w]=L.tvk,p=$('#postit');if(!p.classList.contains('zoom')){p.style.left=(x+w*.66)+'%';p.style.top=(y-w*.06)+'%';p.style.width=(w*.42)+'%'}}
+  {const [x,y,w]=L.tvk,p=$('#postit');if(!p.classList.contains('zoom')){p.style.left=(x+w*.76)+'%';p.style.top=(y-w*.02)+'%';p.style.width=(w*.24)+'%'}}
   dusk(L);st.style.setProperty('--dx',L.door[0]+'%');st.style.setProperty('--dy',L.door[1]+'%');st.style.setProperty('--lx',L.lamp[0]+'%');st.style.setProperty('--ly',L.lamp[1]+'%');
   const g=$('#glow');g.style.left=L.lamp[0]+'%';g.style.top=L.lamp[1]+'%';LAMP=L.lamp;const cv=$('#dust');cv.width=st.clientWidth;cv.height=st.clientHeight;
   const n=$('#racknav');n.style.left=L.nav[0]+'%';n.style.top=L.nav[1]+'%';
 }
-$('#tvk').addEventListener('click',()=>{location.href='https://mauktenieb.github.io/3615/'});
+/* 22 nov. 2026 (Mauk Tenieb) : écran d'attente obligatoire avant le MiniTale : le Post-it en grand (photo Midjourney à venir : img/postit-attente.webp), fine barre de progression */
+$('#tvk').addEventListener('click',()=>{if(document.getElementById('pi-wait'))return;const w=document.createElement('div');w.id='pi-wait';
+  const ph=new Image();ph.src='img/postit-attente.webp';ph.onload=()=>w.classList.add('photo');w.style.setProperty('--ph','url(img/postit-attente.webp)');
+  const pi=$('#postit').cloneNode(true);pi.removeAttribute('id');pi.className='pi-big';pi.removeAttribute('style');w.appendChild(pi);const bar=document.createElement('i');w.appendChild(bar);document.body.appendChild(w);
+  requestAnimationFrame(()=>w.classList.add('on'));setTimeout(()=>{location.href='https://mauktenieb.github.io/3615/'},3500)});
 {const p=$('#postit');p.addEventListener('click',e=>{e.stopPropagation();const z=!p.classList.contains('zoom');p.classList.toggle('zoom',z);if(!z)layout()});document.addEventListener('click',e=>{if(p.classList.contains('zoom')&&!p.contains(e.target)){p.classList.remove('zoom');layout()}});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&p.classList.contains('zoom')){p.classList.remove('zoom');layout()}})}
 addEventListener('resize',layout);
 
