@@ -167,3 +167,6 @@ Répliques du Kerema dites par la voix MBROLA us2 (espeak-ng, mbrola-us2), haute
 
 ## Voix des Masks au téléphone du Video Kave (kave/a/masks/*.mp3)
 Mottos des dix-huit Masks (kave/kdata.js, archive/kg-core.js) dits par les voix MBROLA us1, us2 et us3 (espeak-ng), hauteur et débit propres à chaque Mask, filtrés en ligne téléphonique (250-3800 Hz), compressés, -18 LUFS ; réglages choisis par transcription automatique (PocketSphinx), la version la mieux comprise retenue pour chaque Mask. Truce : deux voix synchrones. C7H5N3O6 : coupé net. Silent Pact : souffle de ligne. Grand Colonel : grondement synthétisé. Fabrication : 26 nov. 2026.
+
+## Annonces des programmes du Video Kave (kave/a/progs/*.mp3)
+Titres des quatorze programmes du rayon dits par la voix MBROLA us3 (espeak-ng), grave et lente, en voix de bande-annonce, filtrés 250-3800 Hz, -18 LUFS. Fabrication : 26 nov. 2026.

@@ -250,7 +250,10 @@ function warm(){if(LOADED)return;LOADED=true;$$('img[data-src]').forEach(functio
 
 /* 5. le boîtier en main : face, dos tiré de la fiche ; Nope le remet, Get it! l'emporte au comptoir */
 var cur=null,inHand=null,CASE=$('#case');
-function take(tp,from){inHand=tp;var face=$('.face',CASE),back=$('.back',CASE);face.innerHTML='';var s=h('div','sleeve '+tp.kind);s.innerHTML='<div class="t">'+esc(tp.title)+'</div>'+(tp.num?'<div class="n">'+tp.num+'</div>':'');s._tp=tp;setImg(s,tp);if(from&&$('.sleeve',from).style.backgroundImage)s.style.backgroundImage=$('.sleeve',from).style.backgroundImage;face.appendChild(s);
+/* 26 nov. (Mauk Tenieb, 22 h 52 : « les fiches pour chaque produit des étagères du club peuvent-elles de temps en temps produire leurs propres voix ») : une fois sur deux, la cassette en main parle — le Mask dit son motto de sa voix (a/masks), le programme s'annonce d'une voix de bande-annonce (a/progs) ; la voix se tait quand la cassette quitte la main */
+var VO={a:null,t:0};function voStop(){clearTimeout(VO.t);try{VO.a&&VO.a.pause()}catch(e){}VO.a=null}
+function voCase(tp){voStop();if(Math.random()>.5)return;VO.t=setTimeout(function(){if(inHand!==tp||!CASE.classList.contains('on'))return;try{var a=new Audio((tp.kind==='mask'?'a/masks/':'a/progs/')+tp.id+'.mp3');a.volume=.85;a.play().catch(function(){});VO.a=a}catch(e){}},700+Math.random()*1800)}
+function take(tp,from){inHand=tp;voCase(tp);var face=$('.face',CASE),back=$('.back',CASE);face.innerHTML='';var s=h('div','sleeve '+tp.kind);s.innerHTML='<div class="t">'+esc(tp.title)+'</div>'+(tp.num?'<div class="n">'+tp.num+'</div>':'');s._tp=tp;setImg(s,tp);if(from&&$('.sleeve',from).style.backgroundImage)s.style.backgroundImage=$('.sleeve',from).style.backgroundImage;face.appendChild(s);
  /* 13 nov. 2026 (Mauk Tenieb : « dans les jaquettes, cette logorrhée écrite est parfaitement inutile » ; « zéro lore écrit ») : le dos du boîtier reste nu, deux touches en pictos */
  back.innerHTML='';
  var a=h('div','acts'),/* 13 nov. 2026, 5 h 23 (Mauk Tenieb) : Nope et Get it! reviennent */no=h('button','btn no',t('no')),gt=h('button','btn go',t('go'));no.type=gt.type='button';no.onclick=function(){nope()};gt.onclick=function(){getIt()};a.appendChild(no);a.appendChild(gt);back.appendChild(a);
@@ -259,9 +262,9 @@ function take(tp,from){inHand=tp;var face=$('.face',CASE),back=$('.back',CASE);f
  /* la cassette quitte l'étagère et vient en main */
  if(from&&!RM&&face.animate){var A=from.getBoundingClientRect(),Z=face.getBoundingClientRect();if(Z.width){face.animate([{transform:'translate('+(A.left-Z.left)+'px,'+(A.top-Z.top)+'px) scale('+(A.width/Z.width)+')'},{transform:'none'}],{duration:340,easing:'cubic-bezier(.16,1,.3,1)'});back.animate([{opacity:0,transform:'translateX(-12px)'},{opacity:1,transform:'none'}],{duration:260,delay:90,easing:'cubic-bezier(.16,1,.3,1)',fill:'backwards'})}}
  setTimeout(function(){gt.focus({preventScroll:true})},RM?0:120)}
-function shut(){if(!CASE.classList.contains('on'))return;CASE.classList.remove('on');var b=inHand&&BOX[TAPES.indexOf(inHand)];if(b&&scene==='rayon')b.focus({preventScroll:true})}
+function shut(){voStop();if(!CASE.classList.contains('on'))return;CASE.classList.remove('on');var b=inHand&&BOX[TAPES.indexOf(inHand)];if(b&&scene==='rayon')b.focus({preventScroll:true})}
 function nope(){if(history.state&&history.state.vk==='case')history.back();else shut()}
-function getIt(){cur=inHand;CASE.classList.remove('on');rep('comptoir');show('comptoir')}
+function getIt(){voStop();cur=inHand;CASE.classList.remove('on');rep('comptoir');show('comptoir')}
 CASE.addEventListener('click',function(e){if(e.target===CASE)nope()});
 
 /* 6. le comptoir : le téléviseur montre la cassette louée ; un toucher la lit ; sans cassette, il renvoie au rayon */
