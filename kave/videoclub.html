@@ -83,8 +83,8 @@ button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-sel
 @media (max-aspect-ratio:1/1){#case{flex-direction:column;justify-content:flex-start;overflow:auto;padding:16px 0 0;gap:14px}#case .face{height:auto;width:min(78vw,44vh)}#case .back{height:auto;width:min(92vw,560px);overflow:visible}#case .acts{justify-content:stretch}#case .acts .btn{flex:1}}
 /* comptoir : la cassette louée passe dans le magnétoscope, l'image sur le téléviseur */
 /* 10 nov. (21 h 37) : cadre calé au pixel sur le verre de la photo ; verre bombé, sans excès : coins plus ronds, bords assombris, reflet courbe */
-#tv{position:absolute;left:66.42%;top:45.57%;width:15.33%;height:21.35%;border-radius:4%/5%;background:transparent center/cover;box-shadow:inset 0 0 9px 4px rgba(0,0,0,.6);cursor:pointer;overflow:hidden;filter:saturate(1.2) contrast(1.08) blur(.4px);outline:0}
-#tv::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(ellipse 120% 90% at 32% 18%,rgba(255,255,255,.12),rgba(255,255,255,0) 45%),radial-gradient(ellipse at 50% 50%,transparent 48%,rgba(0,0,0,.62))}
+/* 26 nov. (Mauk Tenieb : « l'écran du bureau est mal exploité, mal tourné ») : l'écran épouse le verre penché du tube (homographie sur ses quatre côtés mesurés), coins du tube, image claire et nette */#tv{position:absolute;left:66.42%;top:45.57%;width:15.33%;height:21.35%;border-radius:9%/11%;background:transparent center/cover;box-shadow:inset 0 0 4px 1px rgba(0,0,0,.45);cursor:pointer;overflow:hidden;filter:saturate(1.15) contrast(1.06);outline:0;transform-origin:0 0}
+#tv::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(ellipse 120% 90% at 32% 18%,rgba(255,255,255,.12),rgba(255,255,255,0) 45%),radial-gradient(ellipse at 50% 50%,transparent 58%,rgba(0,0,0,.3))}
 #tv:focus-visible{box-shadow:inset 0 0 6px 2px rgba(0,0,0,.55),0 0 18px 5px rgba(255,190,110,.5)}
 #tv .osd{position:absolute;left:7%;top:7%;font:max(12px,calc(var(--sh)*.022))/1 VT323,monospace;color:#fff;text-shadow:1px 1px 0 #000,0 0 3px rgba(255,255,255,.4);white-space:nowrap}
 /* grain de pellicule sur le rayon et le comptoir (la salle a le sien dans le tube) */
@@ -102,7 +102,7 @@ button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-sel
 <div id="salle" tabindex="-1" aria-label="Video Kave"></div>
 <div id="wrap">
  <div class="scene" id="rayon"><img class="bg" data-src="a/vc/vc-02-rayon.webp?v=1122" alt=""><div id="boxes"></div><div class="rail" id="rails"></div></div>
- <div class="scene" id="comptoir"><img class="bg" data-src="a/vc/vc-03-comptoir.webp?v=1122b" alt=""><div id="tv" role="button" tabindex="0" aria-label="VCR"><div class="osd"></div></div><div class="hot" id="hPhone" role="button" tabindex="0" aria-label="Motel Sound"></div></div>
+ <div class="scene" id="comptoir"><img class="bg" data-src="a/vc/vc-03-comptoir.webp?v=1126" alt=""><div id="tv" role="button" tabindex="0" aria-label="VCR"><div class="osd"></div></div><div class="hot" id="hPhone" role="button" tabindex="0" aria-label="Motel Sound"></div></div>
 </div>
 <div id="case" role="dialog" aria-modal="true"><div class="face"></div><div class="back"></div></div>
 <div id="grain" aria-hidden="true"></div>
@@ -270,8 +270,22 @@ var VC={ids:null,f:null};
 function vcIds(cb){if(VC.ids)return cb(VC.ids);fetch('../index.html').then(function(r){return r.text()}).then(function(t){var m=/var JUKE_TRACKS=(\[.*?\]);/.exec(t),a=[];try{a=m?JSON.parse(m[1]):[]}catch(e){}VC.ids=a.map(function(x){return x.id});cb(VC.ids)}).catch(function(){VC.ids=[];cb([])})}
 function vcClip(v){var tv=$('#tv');if(!v){if(VC.f){VC.f.remove();VC.f=null}return}if(VC.f)return;vcIds(function(ids){if(!ids.length||VC.f||cur||scene!=='comptoir')return;var o=ids.slice().sort(function(){return Math.random()-.5}).slice(0,40),f=document.createElement('iframe');
  f.src='https://www.youtube-nocookie.com/embed/'+o[0]+'?autoplay=1&mute=1&controls=0&disablekb=1&fs=0&iv_load_policy=3&modestbranding=1&playsinline=1&rel=0&loop=1&playlist='+o.join(',');
- f.allow='autoplay';f.tabIndex=-1;f.setAttribute('aria-hidden','true');f.style.cssText='position:absolute;left:-18%;top:-18%;width:136%;height:136%;border:0;pointer-events:none';tv.insertBefore(f,tv.firstChild);VC.f=f})}
-function comptoir(){var tv=$('#tv');vcClip(!cur);if(!cur){tv.style.backgroundImage='none';tv.style.backgroundColor='#000';$('.osd',tv).textContent='';return}tv.style.backgroundColor='#000';
+ f.allow='autoplay';f.tabIndex=-1;f.setAttribute('aria-hidden','true');f.style.cssText='position:absolute;left:-20.85%;top:-2%;width:141.7%;height:104%;border:0;pointer-events:none';tv.insertBefore(f,tv.firstChild);VC.f=f;tvWarp()})}
+/* 26 nov. : côtés du verre mesurés sur la photo du comptoir (vert d'incrustation), prolongés jusqu'à leurs croisements ; l'écran suit cette perspective sur tout format ; la vidéo 16:9 remplit le verre 4:3, rognée sur les côtés comme une VHS d'époque */
+var TVQ=[[914.1,350.2],[1125.5,349.9],[1124.1,516.9],[913.3,507.7]];
+function hom(a,b){var M=[],v=[],i,j,k;for(i=0;i<4;i++){var x=a[i][0],y=a[i][1],X=b[i][0],Y=b[i][1];M.push([x,y,1,0,0,0,-x*X,-y*X]);v.push(X);M.push([0,0,0,x,y,1,-x*Y,-y*Y]);v.push(Y)}
+ for(i=0;i<8;i++){var r=i;for(j=i+1;j<8;j++)if(Math.abs(M[j][i])>Math.abs(M[r][i]))r=j;var t=M[i];M[i]=M[r];M[r]=t;t=v[i];v[i]=v[r];v[r]=t;
+  for(j=i+1;j<8;j++){var f=M[j][i]/M[i][i];for(k=i;k<8;k++)M[j][k]-=f*M[i][k];v[j]-=f*v[i]}}
+ var h=[];for(i=7;i>=0;i--){var sm=v[i];for(k=i+1;k<8;k++)sm-=M[i][k]*h[k];h[i]=sm/M[i][i]}return h}
+function tvWarp(){var tv=$('#tv'),sc=$('#comptoir'),W=sc.offsetWidth,H=sc.offsetHeight;if(!W||!H)return;
+ var q=TVQ.map(function(p){return [p[0]/1376*W,p[1]/768*H]}),cx=(q[0][0]+q[1][0]+q[2][0]+q[3][0])/4,cy=(q[0][1]+q[1][1]+q[2][1]+q[3][1])/4;
+ q=q.map(function(p){var dx=p[0]-cx,dy=p[1]-cy,d=Math.hypot(dx,dy)||1;return [p[0]+dx/d*1.5,p[1]+dy/d*1.5]});
+ var bw=(q[1][0]-q[0][0]+q[2][0]-q[3][0])/2,bh=(q[3][1]-q[0][1]+q[2][1]-q[1][1])/2,m=hom([[0,0],[bw,0],[bw,bh],[0,bh]],q);
+ tv.style.left='0';tv.style.top='0';tv.style.width=bw+'px';tv.style.height=bh+'px';
+ tv.style.transform='matrix3d('+[m[0],m[3],0,m[6],m[1],m[4],0,m[7],0,0,1,0,m[2],m[5],0,1].join(',')+')';
+ if(VC.f){var w=104*16/9/(bw/bh);VC.f.style.width=w+'%';VC.f.style.left=(100-w)/2+'%'}}
+if(window.ResizeObserver)new ResizeObserver(tvWarp).observe($('#comptoir'));addEventListener('resize',tvWarp);
+function comptoir(){var tv=$('#tv');tvWarp();vcClip(!cur);if(!cur){tv.style.backgroundImage='none';tv.style.backgroundColor='#000';$('.osd',tv).textContent='';return}tv.style.backgroundColor='#000';
  tv.style.backgroundImage='url('+(cur.kind==='prog'?cur.p.thumb:cur.img)+')';$('.osd',tv).textContent=t('play')}
 function play(){if(!cur){go('rayon');return}if(ON)location.href=cur.url;else window.open(cur.url,'_blank','noopener')}
 $('#tv').onclick=function(){if(!swiped)play()};
