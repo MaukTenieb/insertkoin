@@ -102,7 +102,7 @@ button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-sel
 <div id="salle" tabindex="-1" aria-label="Video Kave"></div>
 <div id="wrap">
  <div class="scene" id="rayon"><img class="bg" data-src="a/vc/vc-02-rayon.webp?v=1122" alt=""><div id="boxes"></div><div class="rail" id="rails"></div></div>
- <div class="scene" id="comptoir"><img class="bg" data-src="a/vc/vc-03-comptoir.webp?v=1126" alt=""><div id="tv" role="button" tabindex="0" aria-label="VCR"><div class="osd"></div></div><div class="hot" id="hPhone" role="button" tabindex="0" aria-label="Motel Sound"></div></div>
+ <div class="scene" id="comptoir"><img class="bg" data-src="" alt=""><div id="tv" role="button" tabindex="0" aria-label="VCR"><div class="osd"></div></div><div class="hot" id="hPhone" role="button" tabindex="0" aria-label="Motel Sound"></div></div>
 </div>
 <div id="case" role="dialog" aria-modal="true"><div class="face"></div><div class="back"></div></div>
 <div id="grain" aria-hidden="true"></div>
@@ -272,7 +272,12 @@ function vcClip(v){var tv=$('#tv');if(!v){if(VC.f){VC.f.remove();VC.f=null}retur
  f.src='https://www.youtube-nocookie.com/embed/'+o[0]+'?autoplay=1&mute=1&controls=0&disablekb=1&fs=0&iv_load_policy=3&modestbranding=1&playsinline=1&rel=0&loop=1&playlist='+o.join(',');
  f.allow='autoplay';f.tabIndex=-1;f.setAttribute('aria-hidden','true');f.style.cssText='position:absolute;left:-20.85%;top:-2%;width:141.7%;height:104%;border:0;pointer-events:none';tv.insertBefore(f,tv.firstChild);VC.f=f;tvWarp()})}
 /* 26 nov. : côtés du verre mesurés sur la photo du comptoir (vert d'incrustation), prolongés jusqu'à leurs croisements ; l'écran suit cette perspective sur tout format ; la vidéo 16:9 remplit le verre 4:3, rognée sur les côtés comme une VHS d'époque */
-var TVQ=[[914.1,350.2],[1125.5,349.9],[1124.1,516.9],[913.3,507.7]];
+/* 26 nov. (Mauk Tenieb, 21 h 54) : le comptoir change d'une visite à l'autre, tiré au hasard parmi trois photos existantes, jamais deux fois de suite le même ; chacun garde son écran calé sur son verre, son téléphone et son cadrage */
+var CPT=[{img:'a/vc/vc-03-comptoir.webp?v=1126',q:[[914.1,350.2],[1125.5,349.9],[1124.1,516.9],[913.3,507.7]],ph:[80.3,79.7,10.2,11.4],c:.76},
+ {img:'a/vc/vc-03b-comptoir.webp?v=1126',q:[[595.4,245.4],[782.4,245.6],[781.2,388.8],[594.6,388.6]],ph:[71.95,60.55,9.45,11.2],c:.57},
+ {img:'a/vc/vc-03c-comptoir.webp?v=1126b',q:[[610.2,320.3],[726.5,320.4],[726.2,405.1],[610.5,405.1]],ph:[58.95,59.48,7.84,11.76],c:.54}];
+var CK=(function(){var k=NaN;try{k=parseInt(sessionStorage.getItem('vc.cpt'),10);if(isNaN(k)||!CPT[k]){var l=parseInt(localStorage.getItem('vc.cpt'),10),o=[0,1,2].filter(function(i){return i!==l});k=o[Math.floor(Math.random()*o.length)];sessionStorage.setItem('vc.cpt',k);localStorage.setItem('vc.cpt',k)}}catch(e){k=Math.floor(Math.random()*CPT.length)}return k})(),CP=CPT[CK],TVQ=CP.q;
+(function(){var b=$('#comptoir img.bg'),h=$('#hPhone'),f=CP.ph;b.setAttribute('data-src',CP.img);h.style.left='calc('+f[0]+'% - max('+f[2]/2+'%,24px))';h.style.top='calc('+f[1]+'% - max('+f[3]/2+'%,24px))';h.style.width='max('+f[2]+'%,48px)';h.style.height='max('+f[3]+'%,48px)'})();
 function hom(a,b){var M=[],v=[],i,j,k;for(i=0;i<4;i++){var x=a[i][0],y=a[i][1],X=b[i][0],Y=b[i][1];M.push([x,y,1,0,0,0,-x*X,-y*X]);v.push(X);M.push([0,0,0,x,y,1,-x*Y,-y*Y]);v.push(Y)}
  for(i=0;i<8;i++){var r=i;for(j=i+1;j<8;j++)if(Math.abs(M[j][i])>Math.abs(M[r][i]))r=j;var t=M[i];M[i]=M[r];M[r]=t;t=v[i];v[i]=v[r];v[r]=t;
   for(j=i+1;j<8;j++){var f=M[j][i]/M[i][i];for(k=i;k<8;k++)M[j][k]-=f*M[i][k];v[j]-=f*v[i]}}
@@ -318,7 +323,7 @@ PH.rt=setTimeout(ring,25000+Math.random()*35000);window.__vcRing=ring;
 
 /* 7. passer d'un lieu à l'autre par la scène : travelling vers le rayon ou la lampe ; retour par le geste vers le bas, le bord de la photo, Échap, le retour du navigateur, Baku Boom */
 var SC={rayon:$('#rayon'),comptoir:$('#comptoir')},WR=$('#wrap');
-/* 22 nov. (Mauk Tenieb, 19 h 52 : « retiens la meilleure ») : le comptoir du 13 nov., vu de près, revient ; au téléphone debout, la vue se centre sur la télé et le téléphone */function center(){if(!PAN)return;var sw=parseFloat(getComputedStyle(root).getPropertyValue('--sw'))||0,c=scene==='comptoir'?.76:.5;WR.scrollLeft=Math.max(0,sw*c-innerWidth/2)}
+/* 22 nov. (Mauk Tenieb, 19 h 52 : « retiens la meilleure ») : le comptoir du 13 nov., vu de près, revient ; au téléphone debout, la vue se centre sur la télé et le téléphone */function center(){if(!PAN)return;var sw=parseFloat(getComputedStyle(root).getPropertyValue('--sw'))||0,c=scene==='comptoir'?CP.c:.5;WR.scrollLeft=Math.max(0,sw*c-innerWidth/2)}
 /* 12 nov. (Mauk Tenieb : « la plongée soudaine par voile sombre ») : vers un rayon, un quart de tour ; l'étagère entre de côté */
 function turn(el,id){if(RM||!el.animate)return;var L=S.foc[0]<.5,o=id==='rayon'?(L?'0% 50%':'100% 50%'):'50% 50%';
  var k0=id==='rayon'?'perspective(1400px) translateX('+(L?-18:18)+'%) rotateY('+(L?58:-58)+'deg)':'perspective(1400px) translateZ(-260px)';
