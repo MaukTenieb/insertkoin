@@ -1871,6 +1871,7 @@ function saveRun(){try{RUN?localStorage.setItem('ik.run',JSON.stringify(RUN)):lo
 function loadRun(){try{const r=JSON.parse(localStorage.getItem('ik.run')||'null');if(r&&Array.isArray(r.order)&&r.order.length===18)return r;}catch(e){}return null;}
 function playRun(){saveRun();const id=RUN.order[RUN.idx];startMatch(R.findIndex(r=>r.id===id),RUN.idx);}
 function pickGuest(i){if(!kOwe())return;RUN=null;startMatch(i,null);KDUE=G;}
+/* 26 nov. (Mauk Tenieb : « le bouton Korong! qui pointe vers le bon jeu ») : ?p=puck&vs=<Mask> ouvre Korong! en duel contre ce Mask (bouton KORONG! des fiches de la Fauna) */(function(){const m=/[?&]vs=([a-z0-9_]+)/.exec(location.search);if(!m)return;let n=0;const t=setInterval(()=>{const i=R.findIndex(r=>r.id===m[1]),l=document.getElementById('lobby');if(++n>120||i<0){clearInterval(t);return;}if(l&&l.querySelector('.spot')&&getComputedStyle(l).display!=='none'&&l.offsetParent!==null){clearInterval(t);lobbyOut();pickGuest(i);}},250);})();
 /* palmarès of the run: Masks beaten, then goals let in over the whole run (continues included) */
 function palmKorong(won){const P=$('palm');if(P)P.innerHTML='';if(!window.IKP)return;
   /* a duel won against a Mask picked by hand: one Mask beaten, the goals of that match */
