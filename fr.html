@@ -1531,13 +1531,13 @@ function kSay(force){if(!G||G.e.isOver()||$("game").hidden)return;const now=perf
   const P=(KSAY[LANG]||KSAY.en).filter(x=>x!==kLast);let l=P[Math.floor(Math.random()*P.length)];kLast=l;l=l.replace('@',R[Math.floor(Math.random()*R.length)].name);
   kSaidAt=now;G.kSaid=(G.kSaid||0)+1;if(!G.tvs)return;const T=G.tvs;T.say=l;T.sayC=KDC[Math.floor(Math.random()*KDC.length)];tvPick(G.e,'say');T.until=G.t+6.5;}
 window.__kSay=kSay;setInterval(()=>{if(G&&G.started)kSay();},9000);
-function startMatch(i,rank){rollRoom(R[i].id);loadSheet(R[i]);if(RUN&&RUN.order[RUN.idx+1])loadSheet(R.find(q=>q.id===RUN.order[RUN.idx+1]));const r=R[i],e=new FaunaEngine(Object.assign({tick_hz:25},r.p,{max_score:rank==null?15:11}),r.sig);card(r);G_trail=[];
+function startMatch(i,rank){rollRoom(R[i].id);loadSheet(R[i]);if(RUN&&RUN.order[RUN.idx+1])loadSheet(R.find(q=>q.id===RUN.order[RUN.idx+1]));const r=R[i],e=new FaunaEngine(Object.assign({tick_hz:25},r.p,{max_score:rank==null?15:11}),r.sig);card(r);maskVoice(r.id);G_trail=[];
   G={i,r,e,prev:snap(e),cur:snap(e),t:0,face:0,faceT:0,blinkT:2,hitT:0,flash:0,started:false,drawn:[0,0],stroke:0,ang:0,spin:0,tv:0,krew:null};
   {const kd=document.querySelector('.score .kd');if(kd)kd.remove();G.fl=null;let face,fresh;const roll=()=>Math.random()<.5?kThrow():-1;if(RUN){if(RUN.kv==null){RUN.kv=roll();fresh=true;saveRun();}face=RUN.kv;}else{face=roll();fresh=true;}if(face>=0){kSwing(e,face);if(fresh)setTimeout(()=>{if(G&&G.e===e)kDie(face);},450);}G.kAt=kPlan(e.p.max_score);}
   if(RUN&&RUN.krew){const q=R.find(x=>x.id===RUN.krew);if(q){const n=parseInt(q.glow.slice(1),16);G.krew=[n>>16,n>>8&255,n&255];}}
   $('mRun').textContent=RUN?`${tr('runof')} ${RUN.idx+1} / 18`:'';$('count').hidden=true;$('oName').textContent=r.name.toUpperCase();$('mName').textContent=r.name.toUpperCase();$('mMotto').textContent='N° '+String(r.n).padStart(2,'0')+(r.motto?' · '+r.motto:'');$('msg').style.setProperty('--c',r.glow);hud();$('over').hidden=true;$('msg').hidden=false;show('game');}
 function toMenu(){letGo();G=null;buildLobby();show('select');}
-function endMatch(){letGo();const e=G.e,won=e.player_score>e.opponent_score;if(won&&!beaten.includes(G.r.id)){beaten.push(G.r.id);saveBeaten();}
+function endMatch(){letGo();const e=G.e,won=e.player_score>e.opponent_score;if(!won){const vid=G.r.id;setTimeout(()=>maskVoice(vid),700);}if(won&&!beaten.includes(G.r.id)){beaten.push(G.r.id);saveBeaten();}
   setFace(won?7:4,99);$('ovT').textContent=won?tr('win'):tr('lose');$('ovS').textContent=`${e.player_score} – ${e.opponent_score} · ${G.r.name.toUpperCase()}`;$('next').hidden=G.i>=R.length-1;$('over').hidden=false;afterMatch(won);}
 function setFace(f,t){G.face=(G.r&&G.r.sig==='silent')?0:f;G.faceT=t;}
 function tick(){const e=G.e;G.prev=G.cur;e.tick(mouse,btn);G.cur=snap(e);
@@ -1868,6 +1868,7 @@ function startRun(){if(!kOwe())return false;RUN={order:runOrder(),idx:0,id:Date.
 if($('run'))$('run').onclick=startRun;
 /* opponent card: number, name, motto, the six Korhogo stats */
 function card(r){$('mStats').innerHTML=Object.entries(r.st).map(([k,v])=>`<span><i>${k}</i><span class="bar0"><b style="width:${v*10}%"></b></span><em>${v}</em></span>`).join('');}
+/* 26 nov. (Mauk Tenieb : voix des Masks) : le Mask dit son motto de sa voix quand sa carte s'ouvre, et de nouveau quand il gagne le match ; son coupé, il se tait */let MV=null;function maskVoice(id){if(!sound)return;try{if(MV)MV.pause();MV=new Audio('kave/a/masks/'+id+'.mp3');MV.volume=.8;MV.play().catch(()=>{});}catch(e){}}
 function saveRun(){try{RUN?localStorage.setItem('ik.run',JSON.stringify(RUN)):localStorage.removeItem('ik.run');}catch(e){}}
 function loadRun(){try{const r=JSON.parse(localStorage.getItem('ik.run')||'null');if(r&&Array.isArray(r.order)&&r.order.length===18)return r;}catch(e){}return null;}
 function playRun(){saveRun();const id=RUN.order[RUN.idx];startMatch(R.findIndex(r=>r.id===id),RUN.idx);}
