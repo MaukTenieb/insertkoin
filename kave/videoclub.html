@@ -138,7 +138,7 @@ function fit(){var W=innerWidth,Hh=innerHeight-barH(),sw=Math.min(W,Hh*IA),cov=M
 var cv=$('#hall'),gl=null,P=null,U={},TEX=null,img=new Image(),ready=false;
 /* 13 nov. 2026 (Mauk Tenieb) : nouvelles photos de l'allée, du rayon et du comptoir ; point de fuite, rayon et comptoir recalés */
 /* 10 nov. (A51) : l'allée sans fond ; le fond de l'allée contient la même allée, trois fois plus petite, à l'infini (récursion au point de fuite), sous l'optique en barillet qui mange les bords */
-/* 22 nov. (Mauk Tenieb : « ce filtre venant se répandre par le haut droit ») : à chaque bouclage, le cadrage montrait le bord haut de la photo, fondu au noir ; Z0 cadre désormais toujours à l'intérieur de la photo, coins compris */var K=.2,Z0=.83,KD=.33,V=[.5033,.5005]/* 22 nov. : point de fuite relevé sur la photo (néon à x 692,5 px, étagères à y 384 px) : la copie emboîtée prolonge le néon sans cassure */,HOLE=[552/1376,275/768,808/1376,505/768],R0=HOLE.map(function(x,j){var c=V[j%2];return c+(x-c)/KD}),FV=[180/1376,115/768];
+/* 22 nov. (Mauk Tenieb : « ce filtre venant se répandre par le haut droit ») : à chaque bouclage, le cadrage montrait le bord haut de la photo, fondu au noir ; Z0 cadre désormais toujours à l'intérieur de la photo, coins compris */var K=.2,Z0=.83,KD=.33,V=[692.1/1376,383/768]/* 26 nov. : photo redressée ; mur gauche, mur droit, plafond et sol fuient vers ce point à 3 px près (avant : 28 px d'écart) ; planches, haut des étagères, plinthes et néon se prolongent d'un niveau emboîté à l'autre */,HOLE=[552/1376,275/768,808/1376,505/768],R0=HOLE.map(function(x,j){var c=V[j%2];return c+(x-c)/KD}),FV=[60/1376,30/768]/* 26 nov. : fondus du raccord resserrés (le fond devient opaque dès y 284 au plafond, 19 px sur les côtés) ; la fin du néon et la rampe transversale ne transparaissent plus en arc */;
 var S={D:0,v:0,push:0,foc:[.5,.49],hl:[0,0,0],hlT:[0,0,0],lum:1,tm:0,intro:-1};
 var CREEP=RM?0:.022;
 var VS='attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
@@ -146,7 +146,7 @@ var VS='attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
 var FS='precision highp float;uniform sampler2D T,T2;uniform vec2 R,Vp,Fo,Fv;uniform float Uu,Lk,Kd,Kk,Z,Pu,Lu,Tm,Ia,E1,F1;uniform vec3 Hl;uniform vec4 M1,M0;'+
 'vec2 fin(vec2 s){return Fo+(s-Fo)*(1.-.6*Pu);}'+
 'float ins(vec2 s){vec2 m=min(s,1.-s);return smoothstep(0.,.012,m.x)*smoothstep(0.,.012,m.y);}'+
-'float in2(vec2 s){vec2 m=min(s,1.-s);return smoothstep(0.,.2,m.x)*smoothstep(0.,.26,s.y)*smoothstep(0.,.09,1.-s.y);}'+
+'float in2(vec2 s){vec2 m=min(s,1.-s);return smoothstep(0.,.1,m.x)*smoothstep(0.,.1,s.y)*smoothstep(0.,.06,1.-s.y);}'+
 'float bx(vec2 p,vec4 r,vec2 f){return smoothstep(r.x,r.x+f.x,p.x)*smoothstep(r.z,r.z-f.x,p.x)*smoothstep(r.y,r.y+f.y,p.y)*smoothstep(r.w,r.w-f.y,p.y);}'+
 'vec3 bl(vec2 t){return max(texture2D(T2,clamp(t,.0,1.)).rgb,vec3(.03));}'+
 'void main(){vec2 q=(gl_FragCoord.xy-.5*R)/R.y;q.y=-q.y;float a=R.x/R.y,r2=dot(q,q)/(a*a*.25+.25),c=max(1.,a/Ia);'+
@@ -210,8 +210,8 @@ function startHall(){if(gl){gl.activeTexture(gl.TEXTURE0);TEX=gl.createTexture()
   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);var bc=document.createElement('canvas');bc.width=48;bc.height=27;var bx2=bc.getContext('2d');bx2.imageSmoothingQuality='high';bx2.drawImage(img,0,0,48,27);gl.activeTexture(gl.TEXTURE1);var TB=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,TB);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,bc);['TEXTURE_WRAP_S','TEXTURE_WRAP_T'].forEach(function(k){gl.texParameteri(gl.TEXTURE_2D,gl[k],gl.CLAMP_TO_EDGE)});gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.activeTexture(gl.TEXTURE0);/* 22 nov. (Mauk Tenieb : « cette ligne de nuances séparatrice ») : chaque niveau emboîté prend la nuance d'ensemble du niveau qui l'entoure, d'après cette photo floue ; zéro ligne de nuance au raccord */
  ready=true;size()}
  if(!RM)S.intro=performance.now();else S.lum=1;kick()}
-if(!glInit()){cv.style.display='none';var fl=$('#hallflat');fl.style.display='block';fl.src='a/vc/vc-01-salle.webp?v=1114'}
-img.onload=startHall;img.src='a/vc/vc-01-salle.webp?v=1114';
+if(!glInit()){cv.style.display='none';var fl=$('#hallflat');fl.style.display='block';fl.src='a/vc/vc-01-salle.webp?v=1126'}
+img.onload=startHall;img.src='a/vc/vc-01-salle.webp?v=1126';
 
 /* 3. les gestes dans la salle : glisser ou molette pour avancer, toucher un rayon, toucher la lampe du fond */
 var hs=$('#salle'),pd=null;
