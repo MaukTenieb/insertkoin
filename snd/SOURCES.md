@@ -164,3 +164,6 @@ Cinq extraits de 12 s des clips de Mauk Tenieb et de ses alias (Internet Archive
 
 ## Voix du Kerema (kave/a/kerema/kerema-1 à 6.mp3)
 Répliques du Kerema dites par la voix MBROLA us2 (espeak-ng, mbrola-us2), hauteur abaissée, filtrée en ligne téléphonique (320-3200 Hz), compressée, -18 LUFS. Fabrication : 13 nov. 2026.
+
+## Voix des Masks au téléphone du Video Kave (kave/a/masks/*.mp3)
+Mottos des dix-huit Masks (kave/kdata.js, archive/kg-core.js) dits par les voix MBROLA us1, us2 et us3 (espeak-ng), hauteur et débit propres à chaque Mask, filtrés en ligne téléphonique (320-3200 Hz), compressés, -18 LUFS. Truce : deux voix synchrones. C7H5N3O6 : coupé net. Silent Pact : souffle de ligne. Grand Colonel : grondement synthétisé. Fabrication : 26 nov. 2026.

@@ -37,7 +37,7 @@ button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-sel
 /* le téléphone à cadran du comptoir commande le Motel Sound (Mauk Tenieb, 10 nov., 19 h 25) ; lueur au survol, lueur tenue quand il est décroché, sans étiquette */
 #hPhone{border-radius:50%;left:calc(80.3% - max(5.1%,24px));top:calc(79.7% - max(5.7%,24px));width:max(10.2%,48px);height:max(11.4%,48px)}
 #hPhone::after{content:'';position:absolute;inset:-35%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,214,150,.30),rgba(255,180,90,.10) 55%,transparent);opacity:0;transition:opacity .35s;pointer-events:none}
-#hPhone.ringing{animation:phring .12s linear infinite}@keyframes phring{25%{transform:translate(-1px,1px) rotate(-3deg)}75%{transform:translate(1px,-1px) rotate(3deg)}}#hPhone.ringing::after{opacity:1}
+/* 26 nov. (Mauk Tenieb, 21 h 58) : pendant l'appel, le téléphone luit doucement, au rythme des sonneries */#hPhone.ringing::after{animation:phglow 3s ease-in-out infinite}@keyframes phglow{0%{opacity:.3}12%{opacity:1}35%{opacity:.7}100%{opacity:.3}}
 #tv .osd.ker{right:7%;padding:.3em .45em;background:rgba(4,10,4,.78);white-space:normal;line-height:1.15;font-family:'VT323','DM Mono',monospace;color:#b8ffb0;text-shadow:0 0 1px #000;letter-spacing:.02em;text-transform:none}
 #hPhone:focus-visible::after,#hPhone.up::after{opacity:1}#hPhone.up::after{animation:phglow 2.4s ease-in-out infinite}@keyframes phglow{50%{opacity:.55}}
 @media (hover:hover) and (pointer:fine){#hPhone:hover::after{opacity:1}}
@@ -312,12 +312,13 @@ function ringOnce(){try{var A=window.__phA||(window.__phA=new(window.AudioContex
 function ring(){if(PH.up||PH.ring||scene!=='comptoir'||document.hidden){PH.rt=setTimeout(ring,20000+Math.random()*40000);return}PH.ring=1;$('#hPhone').classList.add('ringing');var n=0;
  (function r(){if(!PH.ring)return;ringOnce();if(++n>=6){PH.ring=0;$('#hPhone').classList.remove('ringing');PH.rt=setTimeout(ring,90000+Math.random()*150000);return}PH.rr=setTimeout(r,3000)})()}
 function kerema(){PH.ring=0;clearTimeout(PH.rr);$('#hPhone').classList.remove('ringing');PH.up=true;$('#hPhone').classList.add('up');$('#hPhone').setAttribute('aria-pressed','true');
- var ki=Math.floor(Math.random()*KER.length),line=KER[ki],o=$('#tv .osd');clearTimeout(PH.t);
+ /* 26 nov. (Mauk Tenieb, 21 h 58) : l'appel vient d'un des dix-huit Masks, tiré au hasard, qui dit son motto (Silent Pact : la ligne souffle ; Grand Colonel : un grondement de loup ; C7H5N3O6 : coupé net) ; le Kerema reste l'un des appelants */
+ var FM=(window.KDATA&&KDATA.F)||[],pk=Math.floor(Math.random()*(FM.length+1)),mk=FM[pk],ki=Math.floor(Math.random()*KER.length),line=mk?(/^[A-Za-z]/.test(mk.motto)&&mk.slug!=='grand_colonel'?mk.motto:''):KER[ki],src=mk?'a/masks/'+mk.slug+'.mp3':'a/kerema/kerema-'+(ki+1)+'.mp3',o=$('#tv .osd');clearTimeout(PH.t);
  
  var t0=performance.now(),done=0,go=function(){if(done)return;done=1;var w=Math.max(0,line.length*55+2600-(performance.now()-t0));setTimeout(function(){if(window.IKMotel&&PH.up)IKMotel.on(true)},w)};
  /* 13 nov. 2026 : voix enregistrée (MBROLA us2, ligne téléphonique 320-3200 Hz), la même sur toutes les machines ; synthèse du navigateur en secours */
- try{var au=new Audio('a/kerema/kerema-'+(ki+1)+'.mp3');au.volume=.9;au.onended=go;au.onerror=speak;au.play().catch(speak);PH.au=au}catch(e){speak()}
- function speak(){try{var u=new SpeechSynthesisUtterance(line);u.lang='en-US';u.pitch=.35;u.rate=.78;u.volume=.9;u.onend=go;u.onerror=go;speechSynthesis.cancel();speechSynthesis.speak(u);setTimeout(function(){if(speechSynthesis.speaking)return;go()},6000)}catch(e){setTimeout(go,line.length*55+600)}}
+ try{var au=new Audio(src);au.volume=.9;au.onended=go;au.onerror=speak;au.play().catch(speak);PH.au=au}catch(e){speak()}
+ function speak(){if(!line){setTimeout(go,2400);return}try{var u=new SpeechSynthesisUtterance(line);u.lang='en-US';u.pitch=.35;u.rate=.78;u.volume=.9;u.onend=go;u.onerror=go;speechSynthesis.cancel();speechSynthesis.speak(u);setTimeout(function(){if(speechSynthesis.speaking)return;go()},6000)}catch(e){setTimeout(go,line.length*55+600)}}
  PH.rt=setTimeout(ring,120000+Math.random()*120000)}
 PH.rt=setTimeout(ring,25000+Math.random()*35000);window.__vcRing=ring;
 
