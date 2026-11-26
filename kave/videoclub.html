@@ -138,7 +138,7 @@ function fit(){var W=innerWidth,Hh=innerHeight-barH(),sw=Math.min(W,Hh*IA),cov=M
 var cv=$('#hall'),gl=null,P=null,U={},TEX=null,img=new Image(),ready=false;
 /* 13 nov. 2026 (Mauk Tenieb) : nouvelles photos de l'allée, du rayon et du comptoir ; point de fuite, rayon et comptoir recalés */
 /* 10 nov. (A51) : l'allée sans fond ; le fond de l'allée contient la même allée, trois fois plus petite, à l'infini (récursion au point de fuite), sous l'optique en barillet qui mange les bords */
-/* 22 nov. (Mauk Tenieb : « ce filtre venant se répandre par le haut droit ») : à chaque bouclage, le cadrage montrait le bord haut de la photo, fondu au noir ; Z0 cadre désormais toujours à l'intérieur de la photo, coins compris */var K=.2,Z0=.83,KD=.33,V=[692.1/1376,383/768]/* 26 nov. : photo redressée ; mur gauche, mur droit, plafond et sol fuient vers ce point à 3 px près (avant : 28 px d'écart) ; planches, haut des étagères, plinthes et néon se prolongent d'un niveau emboîté à l'autre */,HOLE=[552/1376,275/768,808/1376,505/768],R0=HOLE.map(function(x,j){var c=V[j%2];return c+(x-c)/KD}),FV=[60/1376,30/768]/* 26 nov. : fondus du raccord resserrés (le fond devient opaque dès y 284 au plafond, 19 px sur les côtés) ; la fin du néon et la rampe transversale ne transparaissent plus en arc */;
+/* 22 nov. (Mauk Tenieb : « ce filtre venant se répandre par le haut droit ») : à chaque bouclage, le cadrage montrait le bord haut de la photo, fondu au noir ; Z0 cadre désormais toujours à l'intérieur de la photo, coins compris */var K=.2,Z0=.83,KD=.33,V=[692.1/1376,383/768]/* 26 nov. (Mauk Tenieb, 21 h 28 : « une putain d'ombre au fond du couloir ») : la nuance imposée à chaque niveau par le niveau qui l'entoure (référence floue T2) reprenait le comptoir sombre caché derrière le fond et assombrissait le dernier tiers ; elle disparaît ; la photo, égalisée en lumière le long de chaque rayon du point de fuite, se raccorde d'elle-même */ /* 26 nov. : photo redressée ; mur gauche, mur droit, plafond et sol fuient vers ce point à 3 px près (avant : 28 px d'écart) ; planches, haut des étagères, plinthes et néon se prolongent d'un niveau emboîté à l'autre */,HOLE=[552/1376,275/768,808/1376,505/768],R0=HOLE.map(function(x,j){var c=V[j%2];return c+(x-c)/KD}),FV=[60/1376,30/768]/* 26 nov. : fondus du raccord resserrés (le fond devient opaque dès y 284 au plafond, 19 px sur les côtés) ; la fin du néon et la rampe transversale ne transparaissent plus en arc */;
 var S={D:0,v:0,push:0,foc:[.5,.49],hl:[0,0,0],hlT:[0,0,0],lum:1,tm:0,intro:-1};
 var CREEP=RM?0:.022;
 var VS='attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
@@ -150,8 +150,8 @@ var FS='precision highp float;uniform sampler2D T,T2;uniform vec2 R,Vp,Fo,Fv;uni
 'float bx(vec2 p,vec4 r,vec2 f){return smoothstep(r.x,r.x+f.x,p.x)*smoothstep(r.z,r.z-f.x,p.x)*smoothstep(r.y,r.y+f.y,p.y)*smoothstep(r.w,r.w-f.y,p.y);}'+
 'vec3 bl(vec2 t){return max(texture2D(T2,clamp(t,.0,1.)).rgb,vec3(.03));}'+
 'void main(){vec2 q=(gl_FragCoord.xy-.5*R)/R.y;q.y=-q.y;float a=R.x/R.y,r2=dot(q,q)/(a*a*.25+.25),c=max(1.,a/Ia);'+
-' float f=Z*(1.+Kk*r2);vec2 p0=fin(.5+q*f/(c*vec2(Ia,1.))),ab=(p0-.5)*.004*r2;float s=exp(Uu*Lk),w=1.;vec3 col=vec3(0.);vec3 ref=mix(bl(Vp+(p0-Vp)/s),bl(Vp+(p0-Vp)/(s*Kd)),smoothstep(0.,1.,Uu));'+
-' for(int k=0;k<6;k++){vec2 t=Vp+(p0-Vp)/s,d=ab/s;vec3 x=vec3(texture2D(T,t+d).r,texture2D(T,t).g,texture2D(T,t-d).b);x*=clamp(ref/bl(t),.7,1.4);'+
+' float f=Z*(1.+Kk*r2);vec2 p0=fin(.5+q*f/(c*vec2(Ia,1.))),ab=(p0-.5)*.004*r2;float s=exp(Uu*Lk),w=1.;vec3 col=vec3(0.);'+
+' for(int k=0;k<6;k++){vec2 t=Vp+(p0-Vp)/s,d=ab/s;vec3 x=vec3(texture2D(T,t+d).r,texture2D(T,t).g,texture2D(T,t-d).b);'+
 '  float l=1.-smoothstep(.40,.45,t.x),r=smoothstep(.55,.60,t.x);vec2 le=(t-vec2(.5,.497))/vec2(.06,.14);float lp=exp(-dot(le,le)*1.6);'+
 '  x*=1.+(l*Hl.x+r*Hl.y)*.35;x+=vec3(1.,.78,.5)*lp*(.09+.45*Hl.z);float e=k==0?ins(t):1.;'+
 '  float m=0.;if(k<5){vec2 tn=Vp+(p0-Vp)/(s*Kd);m=k==0?bx(tn,M1,Fv*F1)*mix(in2(tn),ins(tn),smoothstep(.75,1.,Uu)):bx(tn,M0,Fv);}col+=w*(1.-m)*x*e;w*=m;s*=Kd;}'+
@@ -210,8 +210,8 @@ function startHall(){if(gl){gl.activeTexture(gl.TEXTURE0);TEX=gl.createTexture()
   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);var bc=document.createElement('canvas');bc.width=48;bc.height=27;var bx2=bc.getContext('2d');bx2.imageSmoothingQuality='high';bx2.drawImage(img,0,0,48,27);gl.activeTexture(gl.TEXTURE1);var TB=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,TB);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,bc);['TEXTURE_WRAP_S','TEXTURE_WRAP_T'].forEach(function(k){gl.texParameteri(gl.TEXTURE_2D,gl[k],gl.CLAMP_TO_EDGE)});gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.activeTexture(gl.TEXTURE0);/* 22 nov. (Mauk Tenieb : « cette ligne de nuances séparatrice ») : chaque niveau emboîté prend la nuance d'ensemble du niveau qui l'entoure, d'après cette photo floue ; zéro ligne de nuance au raccord */
  ready=true;size()}
  if(!RM)S.intro=performance.now();else S.lum=1;kick()}
-if(!glInit()){cv.style.display='none';var fl=$('#hallflat');fl.style.display='block';fl.src='a/vc/vc-01-salle.webp?v=1126'}
-img.onload=startHall;img.src='a/vc/vc-01-salle.webp?v=1126';
+if(!glInit()){cv.style.display='none';var fl=$('#hallflat');fl.style.display='block';fl.src='a/vc/vc-01-salle.webp?v=1126b'}
+img.onload=startHall;img.src='a/vc/vc-01-salle.webp?v=1126b';
 
 /* 3. les gestes dans la salle : glisser ou molette pour avancer, toucher un rayon, toucher la lampe du fond */
 var hs=$('#salle'),pd=null;
