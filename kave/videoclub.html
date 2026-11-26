@@ -321,6 +321,8 @@ function kerema(){PH.ring=0;clearTimeout(PH.rr);$('#hPhone').classList.remove('r
  function speak(){if(!line){setTimeout(go,2400);return}try{var u=new SpeechSynthesisUtterance(line);u.lang='en-US';u.pitch=.35;u.rate=.78;u.volume=.9;u.onend=go;u.onerror=go;speechSynthesis.cancel();speechSynthesis.speak(u);setTimeout(function(){if(speechSynthesis.speaking)return;go()},6000)}catch(e){setTimeout(go,line.length*55+600)}}
  PH.rt=setTimeout(ring,120000+Math.random()*120000)}
 PH.rt=setTimeout(ring,25000+Math.random()*35000);window.__vcRing=ring;
+/* 26 nov. : le son du téléphone s'ouvre au premier toucher du visiteur (Safari d'iPhone et d'iPad garde muet un son préparé hors d'un toucher) */
+addEventListener('pointerdown',function un(){try{var A=window.__phA||(window.__phA=new(window.AudioContext||window.webkitAudioContext)());if(A.state!=='running')A.resume();var b=A.createBuffer(1,1,22050),s=A.createBufferSource();s.buffer=b;s.connect(A.destination);s.start(0)}catch(e){}removeEventListener('pointerdown',un,true)},true);
 
 /* 7. passer d'un lieu à l'autre par la scène : travelling vers le rayon ou la lampe ; retour par le geste vers le bas, le bord de la photo, Échap, le retour du navigateur, Baku Boom */
 var SC={rayon:$('#rayon'),comptoir:$('#comptoir')},WR=$('#wrap');
