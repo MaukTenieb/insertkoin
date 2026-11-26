@@ -36,8 +36,8 @@ button,[role=button]{touch-action:manipulation;user-select:none;-webkit-user-sel
 .hot{position:absolute;cursor:pointer;outline:0}
 /* le téléphone à cadran du comptoir commande le Motel Sound (Mauk Tenieb, 10 nov., 19 h 25) ; lueur au survol, lueur tenue quand il est décroché, sans étiquette */
 #hPhone{border-radius:50%;left:calc(80.3% - max(5.1%,24px));top:calc(79.7% - max(5.7%,24px));width:max(10.2%,48px);height:max(11.4%,48px)}
-#hPhone::after{content:'';position:absolute;inset:-35%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,214,150,.30),rgba(255,180,90,.10) 55%,transparent);opacity:0;transition:opacity .35s;pointer-events:none}
-/* 26 nov. (Mauk Tenieb, 21 h 58) : pendant l'appel, le téléphone luit doucement, au rythme des sonneries */#hPhone.ringing::after{animation:phglow 3s ease-in-out infinite}@keyframes phglow{0%{opacity:.3}12%{opacity:1}35%{opacity:.7}100%{opacity:.3}}
+#hPhone::after{content:'';position:absolute;inset:-35%;border-radius:50%;background:radial-gradient(closest-side,var(--phc1,rgba(255,214,150,.30)),var(--phc2,rgba(255,180,90,.10)) 55%,transparent);opacity:0;transition:opacity .35s;pointer-events:none}
+/* 26 nov. (Mauk Tenieb, 21 h 58) : pendant l'appel, le téléphone luit doucement, au rythme des sonneries */#hPhone.ringing::after{animation:phglow var(--php,3s) ease-in-out infinite}@keyframes phglow{0%{opacity:.2}12%{opacity:.85}40%{opacity:.5}100%{opacity:.2}}
 #tv .osd.ker{right:7%;padding:.3em .45em;background:rgba(4,10,4,.78);white-space:normal;line-height:1.15;font-family:'VT323','DM Mono',monospace;color:#b8ffb0;text-shadow:0 0 1px #000;letter-spacing:.02em;text-transform:none}
 #hPhone:focus-visible::after,#hPhone.up::after{opacity:1}#hPhone.up::after{animation:phglow 2.4s ease-in-out infinite}@keyframes phglow{50%{opacity:.55}}
 @media (hover:hover) and (pointer:fine){#hPhone:hover::after{opacity:1}}
@@ -305,12 +305,20 @@ $('#hPhone').onclick=function(){if(!swiped){if(!PH.up&&PH.ring){kerema();return}
 /* 13 nov. 2026 (Mauk Tenieb : « c'est le Kerema qui parle ») : le téléphone du comptoir sonne de temps en temps ; décroché pendant qu'il sonne, le Kerema parle —
    une de ses répliques déjà écrites dans les jeux (Katabatik, Fauna Chess), dite d'une voix lente et grave, sans rien d'écrit (Mauk Tenieb : « zéro lore écrit ») ; puis le Motel Sound prend la ligne. */
 var KER=['Kerema sees you anyway.','Touched by a muse?','U gotta stay tuned...','Need a hand? Shake ur Kalabass.','Kerema holds — for now.','Kerema awaits.'];
-function ringOnce(){try{var A=window.__phA||(window.__phA=new(window.AudioContext||window.webkitAudioContext)()),t=A.currentTime,g=A.createGain(),o=A.createOscillator(),o2=A.createOscillator(),am=A.createGain(),lf=A.createOscillator();
- o.frequency.value=440;o2.frequency.value=480;lf.type='square';lf.frequency.value=20;var lg=A.createGain();lg.gain.value=.5;lf.connect(lg);lg.connect(am.gain);am.gain.value=.5;o.connect(am);o2.connect(am);am.connect(g);g.connect(A.destination);
- g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.05,t+.03);g.gain.setValueAtTime(.05,t+.4);g.gain.linearRampToValueAtTime(0,t+.42);g.gain.setValueAtTime(0,t+.6);g.gain.linearRampToValueAtTime(.05,t+.63);g.gain.setValueAtTime(.05,t+1);g.gain.linearRampToValueAtTime(0,t+1.03);
- [o,o2,lf].forEach(function(x){x.start(t);x.stop(t+1.1)})}catch(e){}}
-function ring(){if(PH.up||PH.ring||scene!=='comptoir'||document.hidden){PH.rt=setTimeout(ring,20000+Math.random()*40000);return}PH.ring=1;$('#hPhone').classList.add('ringing');var n=0;
- (function r(){if(!PH.ring)return;ringOnce();if(++n>=6){PH.ring=0;$('#hPhone').classList.remove('ringing');PH.rt=setTimeout(ring,90000+Math.random()*150000);return}PH.rr=setTimeout(r,3000)})()}
+/* 26 nov. (Mauk Tenieb, 22 h 52 : « les sonneries du téléphone aléatoires » ; « lueur légère, bio ou électroluminescence de chromatisme aléatoire ») : chaque appel tire sa cadence (France, Royaume-Uni, Amérique du Nord, Allemagne, Japon, timbre mécanique), son nombre de sonneries (2 à 9), son attente (20 s à 5 min) et la couleur de sa lueur parmi des luminescences réelles */
+var RC=[{f:[440],tr:0,seg:[[0,1.5]],per:5},{f:[400,450],tr:0,seg:[[0,.4],[.6,1]],per:3},{f:[440,480],tr:0,seg:[[0,2]],per:6},{f:[425],tr:0,seg:[[0,1]],per:5},{f:[400],tr:16,seg:[[0,1]],per:3},{f:[440,480],tr:20,seg:[[0,.4],[.6,1]],per:3},{f:[1000,1250],tr:22,seg:[[0,1.2]],per:4}],
+ LUM=[[124,255,178],[91,230,255],[182,255,90],[111,247,232],[111,168,255],[255,196,107],[216,255,122],[196,155,255]];
+function ringOnce(c){try{var A=window.__phA||(window.__phA=new(window.AudioContext||window.webkitAudioContext)()),t=A.currentTime,g=A.createGain(),am=A.createGain(),os=[],end=0;am.gain.value=c.tr?.5:1;
+ c.f.forEach(function(f){var o=A.createOscillator();o.frequency.value=f;o.connect(am);os.push(o)});
+ if(c.tr){var lf=A.createOscillator(),lg=A.createGain();lf.type='square';lf.frequency.value=c.tr;lg.gain.value=.5;lf.connect(lg);lg.connect(am.gain);os.push(lf)}
+ am.connect(g);g.connect(A.destination);g.gain.setValueAtTime(0,t);
+ c.seg.forEach(function(q){g.gain.setValueAtTime(0,t+q[0]);g.gain.linearRampToValueAtTime(.05,t+q[0]+.03);g.gain.setValueAtTime(.05,t+q[1]);g.gain.linearRampToValueAtTime(0,t+q[1]+.03);end=q[1]+.05});
+ os.forEach(function(x){x.start(t);x.stop(t+end)})}catch(e){}}
+function nextCall(){var d=-Math.log(1-Math.random())*100000;return Math.max(20000,Math.min(300000,d))}
+function ring(){if(PH.up||PH.ring||scene!=='comptoir'||document.hidden){PH.rt=setTimeout(ring,15000+Math.random()*45000);return}PH.ring=1;
+ var c=RC[Math.floor(Math.random()*RC.length)],N=2+Math.floor(Math.random()*8),L=LUM[Math.floor(Math.random()*LUM.length)].map(function(v){return Math.max(0,Math.min(255,Math.round(v+(Math.random()-.5)*40)))}),h=$('#hPhone'),n=0;
+ h.style.setProperty('--phc1','rgba('+L+',.34)');h.style.setProperty('--phc2','rgba('+L+',.11)');h.style.setProperty('--php',c.per+'s');h.classList.add('ringing');
+ (function r(){if(!PH.ring)return;ringOnce(c);if(++n>=N){PH.ring=0;h.classList.remove('ringing');PH.rt=setTimeout(ring,nextCall());return}PH.rr=setTimeout(r,c.per*1000)})()}
 function kerema(){PH.ring=0;clearTimeout(PH.rr);$('#hPhone').classList.remove('ringing');PH.up=true;$('#hPhone').classList.add('up');$('#hPhone').setAttribute('aria-pressed','true');
  /* 26 nov. (Mauk Tenieb, 21 h 58) : l'appel vient d'un des dix-huit Masks, tiré au hasard, qui dit son motto (Silent Pact : la ligne souffle ; Grand Colonel : un grondement de loup ; C7H5N3O6 : coupé net) ; le Kerema reste l'un des appelants */
  var FM=(window.KDATA&&KDATA.F)||[],pk=Math.floor(Math.random()*(FM.length+1)),mk=FM[pk],ki=Math.floor(Math.random()*KER.length),line=mk?(/^[A-Za-z]/.test(mk.motto)&&mk.slug!=='grand_colonel'?mk.motto:''):KER[ki],src=mk?'a/masks/'+mk.slug+'.mp3':'a/kerema/kerema-'+(ki+1)+'.mp3',o=$('#tv .osd');clearTimeout(PH.t);
@@ -319,8 +327,8 @@ function kerema(){PH.ring=0;clearTimeout(PH.rr);$('#hPhone').classList.remove('r
  /* 13 nov. 2026 : voix enregistrée (MBROLA us2, ligne téléphonique 320-3200 Hz), la même sur toutes les machines ; synthèse du navigateur en secours */
  try{var au=new Audio(src);au.volume=.9;au.onended=go;au.onerror=speak;au.play().catch(speak);PH.au=au}catch(e){speak()}
  function speak(){if(!line){setTimeout(go,2400);return}try{var u=new SpeechSynthesisUtterance(line);u.lang='en-US';u.pitch=.35;u.rate=.78;u.volume=.9;u.onend=go;u.onerror=go;speechSynthesis.cancel();speechSynthesis.speak(u);setTimeout(function(){if(speechSynthesis.speaking)return;go()},6000)}catch(e){setTimeout(go,line.length*55+600)}}
- PH.rt=setTimeout(ring,120000+Math.random()*120000)}
-PH.rt=setTimeout(ring,25000+Math.random()*35000);window.__vcRing=ring;
+ PH.rt=setTimeout(ring,nextCall())}
+PH.rt=setTimeout(ring,15000+Math.random()*60000);window.__vcRing=ring;
 /* 26 nov. : le son du téléphone s'ouvre au premier toucher du visiteur (Safari d'iPhone et d'iPad garde muet un son préparé hors d'un toucher) */
 addEventListener('pointerdown',function un(){try{var A=window.__phA||(window.__phA=new(window.AudioContext||window.webkitAudioContext)());if(A.state!=='running')A.resume();var b=A.createBuffer(1,1,22050),s=A.createBufferSource();s.buffer=b;s.connect(A.destination);s.start(0)}catch(e){}removeEventListener('pointerdown',un,true)},true);
 
